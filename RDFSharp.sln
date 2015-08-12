@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp", "RDFSharp\RDFSharp.csproj", "{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.RDFFirebirdStore", "RDFSharp\Store\Engines\Firebird\RDFSharp.RDFFirebirdStore.csproj", "{B7278DB3-AC3D-4086-9229-B94419CCE243}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC} = {1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.RDFMySQLStore", "RDFSharp\Store\Engines\MySQL\RDFSharp.RDFMySQLStore.csproj", "{6F7FE654-1B71-4433-B008-6DA0AB0FCBE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC} = {1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.RDFPostgreSQLStore", "RDFSharp\Store\Engines\PostgreSQL\RDFSharp.RDFPostgreSQLStore.csproj", "{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC} = {1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.RDFSQLiteStore", "RDFSharp\Store\Engines\SQLite\RDFSharp.RDFSQLiteStore.csproj", "{5C96900F-2B4B-446A-B02F-32BB289E21E0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC} = {1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RDFSharp.Core", "RDFSharp.Core", "{125612D5-C867-4676-8873-23A42739C6B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RDFSharp.Stores", "RDFSharp.Stores", "{A4446818-1FA0-40D0-ACC1-3FA968940FA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7278DB3-AC3D-4086-9229-B94419CCE243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7278DB3-AC3D-4086-9229-B94419CCE243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7278DB3-AC3D-4086-9229-B94419CCE243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7278DB3-AC3D-4086-9229-B94419CCE243}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F7FE654-1B71-4433-B008-6DA0AB0FCBE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F7FE654-1B71-4433-B008-6DA0AB0FCBE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F7FE654-1B71-4433-B008-6DA0AB0FCBE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F7FE654-1B71-4433-B008-6DA0AB0FCBE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C96900F-2B4B-446A-B02F-32BB289E21E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C96900F-2B4B-446A-B02F-32BB289E21E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C96900F-2B4B-446A-B02F-32BB289E21E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C96900F-2B4B-446A-B02F-32BB289E21E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC} = {125612D5-C867-4676-8873-23A42739C6B3}
+		{6F7FE654-1B71-4433-B008-6DA0AB0FCBE1} = {A4446818-1FA0-40D0-ACC1-3FA968940FA1}
+		{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3} = {A4446818-1FA0-40D0-ACC1-3FA968940FA1}
+		{5C96900F-2B4B-446A-B02F-32BB289E21E0} = {A4446818-1FA0-40D0-ACC1-3FA968940FA1}
+		{B7278DB3-AC3D-4086-9229-B94419CCE243} = {A4446818-1FA0-40D0-ACC1-3FA968940FA1}
+	EndGlobalSection
+EndGlobal
