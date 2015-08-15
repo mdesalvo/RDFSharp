@@ -67,13 +67,13 @@ namespace RDFSharp.Semantics {
                 //Domain_Range
                 new RDFOntologyValidationRule(
                     "Domain_Range", 
-                    "This rule checks for consistency of domains and ranges",
+                    "This rule checks for consistency of rdfs:domain and rdfs:range axioms",
                     RDFOntologyValidationRuleSet.Domain_Range),
 
                 //ClassType
                 new RDFOntologyValidationRule(
                     "ClassType", 
-                    "This rule checks for consistency of classtypes",
+                    "This rule checks for consistency of rdf:type axioms",
                     RDFOntologyValidationRuleSet.ClassType),
 
                 //GlobalCardinalityConstraint
@@ -86,7 +86,13 @@ namespace RDFSharp.Semantics {
                 new RDFOntologyValidationRule(
                     "LocalCardinalityConstraint", 
                     "This rule checks for consistency of local cardinality constraints",
-                    RDFOntologyValidationRuleSet.LocalCardinalityConstraint)
+                    RDFOntologyValidationRuleSet.LocalCardinalityConstraint),
+
+                //Deprecation
+                new RDFOntologyValidationRule(
+                    "Deprecation", 
+                    "This rule checks for usage of deprecated classes and properties",
+                    RDFOntologyValidationRuleSet.Deprecation)
 
             };
         }

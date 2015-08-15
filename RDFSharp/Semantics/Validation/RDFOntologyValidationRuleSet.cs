@@ -608,7 +608,7 @@ namespace RDFSharp.Semantics {
 
         #region Rule:ClassType
         /// <summary>
-        /// Validation rule checking for consistency of 'rdf:type' axioms
+        /// Validation rule checking for consistency of rdf:type axioms
         /// </summary>
         internal static List<RDFOntologyValidationEvidence> ClassType(RDFOntology ontology) {
             var evidences           = new List<RDFOntologyValidationEvidence>();
@@ -794,6 +794,39 @@ namespace RDFSharp.Semantics {
                     }
                 }
             }
+
+            return evidences;
+        }
+        #endregion
+
+        #region Rule:Deprecation
+        /// <summary>
+        /// Validation rule checking for usage of deprecated classes and properties
+        /// </summary>
+        internal static List<RDFOntologyValidationEvidence> Deprecation(RDFOntology ontology) {
+            var evidences           = new List<RDFOntologyValidationEvidence>();
+
+            #region Class
+            foreach (var deprCls   in ontology.Data.Relations.ClassType.Where(c => c.TaxonomyObject.IsDeprecatedClass())) {
+                evidences.Add(new RDFOntologyValidationEvidence(
+                    RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Warning,
+                    "Deprecation",
+                    String.Format("Ontology fact '{0}' has a classtype '{1}', which is deprecated (may be removed in a future ontology version!).", deprCls.TaxonomySubject, deprCls.TaxonomyObject),
+                    String.Format("Update the classtype of ontology fact '{0}' to a non-deprecated class definition.", deprCls.TaxonomySubject)
+                ));
+            }
+            #endregion
+
+            #region Property
+            foreach (var deprProp  in ontology.Data.Relations.Assertions.Where(p => p.TaxonomyPredicate.IsDeprecatedProperty())) {
+                evidences.Add(new RDFOntologyValidationEvidence(
+                    RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Warning,
+                    "Deprecation",
+                    String.Format("Ontology fact '{0}' has an assertion using ontology property '{1}', which is deprecated (may be removed in a future ontology version!).", deprProp.TaxonomySubject, deprProp.TaxonomyPredicate),
+                    String.Format("Update the assertion of ontology fact '{0}' to a non-deprecated property definition.", deprProp.TaxonomySubject)
+                ));
+            }
+            #endregion
 
             return evidences;
         }
