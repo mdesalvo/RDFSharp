@@ -132,7 +132,6 @@
     <Compile Include="Semantics\RDFOntologyResource.cs" />
     <Compile Include="Semantics\RDFOntologyRestriction.cs" />
     <Compile Include="Semantics\RDFOntologyTaxonomy.cs" />
-    <Compile Include="Semantics\RDFOntologyVocabulary.cs" />
     <Compile Include="Semantics\RDFSemanticsEnums.cs" />
     <Compile Include="Semantics\RDFSemanticsException.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyComplementClass.cs" />
