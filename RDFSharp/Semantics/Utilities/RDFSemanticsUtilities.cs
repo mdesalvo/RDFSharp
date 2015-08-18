@@ -28,7 +28,7 @@ namespace RDFSharp.Semantics
     /// <summary>
     /// RDFSemanticsUtilities is a collector of reusable utility methods for RDF ontology management.
     /// </summary>
-    public static class RDFSemanticsUtilities {
+    internal static class RDFSemanticsUtilities {
 
         #region Initialize
         /// <summary>

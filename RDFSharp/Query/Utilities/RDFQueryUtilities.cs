@@ -29,7 +29,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    public static class RDFQueryUtilities {
+    internal static class RDFQueryUtilities {
 
         #region ADO.NET
         /// <summary>
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Parses the given string to return an instance of pattern member
         /// </summary>
-        public static RDFPatternMember ParseRDFPatternMember(String pMember) {
+        internal static RDFPatternMember ParseRDFPatternMember(String pMember) {
 
             if (pMember != null) { 
 
@@ -110,7 +110,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Compares the given pattern members, throwing a "Type Error" whenever the comparison operator detects sematically incompatible members;
         /// </summary>
-        public static Int32 CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right) {
+        internal static Int32 CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right) {
 
             #region CornerCase Comparisons
             if (left      == null) {
@@ -387,7 +387,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives a formatted string representation of the given pattern member
         /// </summary>
-        public static String PrintRDFPatternMember(RDFPatternMember patternMember) {
+        internal static String PrintRDFPatternMember(RDFPatternMember patternMember) {
 
             if (patternMember != null) { 
 
