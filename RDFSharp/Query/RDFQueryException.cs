@@ -15,18 +15,25 @@
 */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFQueryException represents an exception thrown during creation and execution of RDF queries.
+    /// RDFQueryException represents an exception thrown during creation and execution of SPARQL queries.
     /// </summary>
+    [Serializable]
     public class RDFQueryException: Exception {
 
         #region Ctors
         /// <summary>
-        /// Basic ctor to throw an RDFQueryException with message only
+        /// Basic ctor to throw an empty RDFQueryException
+        /// </summary>
+        public RDFQueryException(): base() { }
+
+        /// <summary>
+        /// Basic ctor to throw an RDFQueryException with message
         /// </summary>
         public RDFQueryException(String message): base(message) { }
 
@@ -34,6 +41,11 @@ namespace RDFSharp.Query
         /// Basic ctor to throw an RDFQueryException with message and inner exception
         /// </summary>
         public RDFQueryException(String message, Exception innerException): base(message, innerException) { }
+
+        /// <summary>
+        /// Basic ctor to support serialization of a remotely thrown RDFQueryException
+        /// </summary>
+        protected RDFQueryException(SerializationInfo info, StreamingContext context): base(info, context) { }
         #endregion
 
     }

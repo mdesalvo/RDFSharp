@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace RDFSharp.Store
 {
@@ -22,11 +23,17 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreException represents an exception thrown during manipulation of RDF data stores.
     /// </summary>
+    [Serializable]
     public class RDFStoreException : Exception {
 
         #region Ctors
         /// <summary>
-        /// Basic ctor to throw an RDFStoreException with message only
+        /// Basic ctor to throw an empty RDFStoreException
+        /// </summary>
+        public RDFStoreException(): base() { }
+
+        /// <summary>
+        /// Basic ctor to throw an RDFStoreException with message
         /// </summary>
         public RDFStoreException(String message): base(message) { }
 
@@ -34,6 +41,11 @@ namespace RDFSharp.Store
         /// Basic ctor to throw an RDFStoreException with message and inner exception
         /// </summary>
         public RDFStoreException(String message, Exception innerException): base(message, innerException) { }
+
+        /// <summary>
+        /// Basic ctor to support serialization of a remotely thrown RDFStoreException
+        /// </summary>
+        protected RDFStoreException(SerializationInfo info, StreamingContext context): base(info, context) { }
         #endregion
 
     }

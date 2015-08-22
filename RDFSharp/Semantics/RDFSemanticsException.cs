@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace RDFSharp.Semantics 
 {
@@ -22,11 +23,17 @@ namespace RDFSharp.Semantics
     /// <summary>
     /// RDFSemanticsException represents an exception thrown during creation and execution of RDF semantics.
     /// </summary>
+    [Serializable]
     public class RDFSemanticsException: Exception {
 
         #region Ctors
         /// <summary>
-        /// Basic ctor to throw an RDFSemanticsException with message only
+        /// Basic ctor to throw an empty RDFSemanticsException
+        /// </summary>
+        public RDFSemanticsException(): base() { }
+
+        /// <summary>
+        /// Basic ctor to throw an RDFSemanticsException with message
         /// </summary>
         public RDFSemanticsException(String message): base(message) { }
 
@@ -34,6 +41,11 @@ namespace RDFSharp.Semantics
         /// Basic ctor to throw an RDFSemanticsException with message and inner exception
         /// </summary>
         public RDFSemanticsException(String message, Exception innerException): base(message, innerException) { }
+
+        /// <summary>
+        /// Basic ctor to support serialization of a remotely thrown RDFSemanticsException
+        /// </summary>
+        protected RDFSemanticsException(SerializationInfo info, StreamingContext context): base(info, context) { }
         #endregion
 
     }
