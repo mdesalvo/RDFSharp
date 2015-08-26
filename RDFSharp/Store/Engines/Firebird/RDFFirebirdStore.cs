@@ -1077,48 +1077,6 @@ namespace RDFSharp.Store
         }
         #endregion		
 
-        #region Optimize
-        /// <summary>
-        /// Executes a special command to optimize Firebird store
-        /// </summary>
-        public void OptimizeStore() {
-            try {
-
-                //Open connection
-                this.Connection.Open();
-
-                //Create & Execute command
-                FbCommand command   = new FbCommand("SET STATISTICS INDEX IDX_CONTEXTID", this.Connection);
-                command.ExecuteNonQuery();
-                command.CommandText = "SET STATISTICS INDEX IDX_SUBJECTID";
-                command.ExecuteNonQuery();
-                command.CommandText = "SET STATISTICS INDEX IDX_PREDICATEID";
-                command.ExecuteNonQuery();
-                command.CommandText = "SET STATISTICS INDEX IDX_OBJECTID";
-                command.ExecuteNonQuery();
-                command.CommandText = "SET STATISTICS INDEX IDX_SUBJECTID_PREDICATEID";
-                command.ExecuteNonQuery();
-                command.CommandText = "SET STATISTICS INDEX IDX_SUBJECTID_OBJECTID";
-                command.ExecuteNonQuery();
-                command.CommandText = "SET STATISTICS INDEX IDX_PREDICATEID_OBJECTID";
-                command.ExecuteNonQuery();
-
-                //Close connection
-                this.Connection.Close();
-
-            }
-            catch (Exception ex) {
-
-                //Close connection
-                this.Connection.Close();
-
-                //Propagate exception
-                throw new RDFStoreException("Cannot optimize Firebird store because: " + ex.Message, ex);
-
-            }
-        }
-        #endregion
-
         #endregion
 
     }
