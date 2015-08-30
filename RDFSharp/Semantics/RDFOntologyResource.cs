@@ -105,6 +105,34 @@ namespace RDFSharp.Semantics
         }
 
         /// <summary>
+        /// Checks if this ontology resource represents an ontology functional property
+        /// </summary>
+        public Boolean IsFunctionalProperty() {
+            return (this is RDFOntologyProperty && ((RDFOntologyProperty)this).Functional);
+        }
+
+        /// <summary>
+        /// Checks if this ontology resource represents an ontology symmetric property
+        /// </summary>
+        public Boolean IsSymmetricProperty() {
+            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Symmetric);
+        }
+
+        /// <summary>
+        /// Checks if this ontology resource represents an ontology transitive property
+        /// </summary>
+        public Boolean IsTransitiveProperty() {
+            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Transitive);
+        }
+
+        /// <summary>
+        /// Checks if this ontology resource represents an ontology inverse functional property
+        /// </summary>
+        public Boolean IsInverseFunctionalProperty() {
+            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).InverseFunctional);
+        }
+
+        /// <summary>
         /// Checks if this ontology resource represents an ontology annotation property
         /// </summary>
         public Boolean IsAnnotationProperty() {
