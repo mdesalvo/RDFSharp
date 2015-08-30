@@ -39,13 +39,6 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Count of the deprecated properties composing the property model
-        /// </summary>
-        public Int64 DeprecatedPropertiesCount {
-            get { return this.Properties.Count(p => p.Value.IsDeprecatedProperty()); }
-        }
-
-        /// <summary>
         /// Count of the annotation properties composing the property model
         /// </summary>
         public Int64 AnnotationPropertiesCount {
@@ -99,17 +92,6 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public IEnumerator<RDFOntologyProperty> PropertiesEnumerator {
             get { return this.Properties.Values.GetEnumerator(); }
-        }
-
-        /// <summary>
-        /// Gets the enumerator on the property model's deprecated properties for iteration
-        /// </summary>
-        public IEnumerator<RDFOntologyDeprecatedProperty> DeprecatedPropertiesEnumerator {
-            get {
-                return this.Properties.Values.Where(p => p.IsDeprecatedProperty())
-                                             .OfType<RDFOntologyDeprecatedProperty>()
-                                             .GetEnumerator();
-            }
         }
 
         /// <summary>
@@ -737,9 +719,6 @@ namespace RDFSharp.Semantics {
                 if  (p.IsAnnotationProperty()) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ANNOTATION_PROPERTY));
                 }
-                else if (p.IsDeprecatedProperty()) {
-                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY));
-                }
                 else if (p.IsDatatypeProperty()) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATATYPE_PROPERTY));
                 }
@@ -757,6 +736,9 @@ namespace RDFSharp.Semantics {
                 }
                 if  (p.Functional) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY));
+                }
+                if  (p.Deprecated) {
+                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY));
                 }
                 if  (p.Domain != null) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDFS.DOMAIN, (RDFResource)p.Domain.Value));

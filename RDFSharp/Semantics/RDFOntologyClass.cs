@@ -29,6 +29,13 @@ namespace RDFSharp.Semantics
     /// </summary>
     public class RDFOntologyClass: RDFOntologyResource {
 
+        #region Properties
+        /// <summary>
+        /// Flag indicating that this ontology class is "owl:DeprecatedClass"
+        /// </summary>
+        public Boolean Deprecated { get; internal set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Default-ctor to build an ontology class with the given name
@@ -41,6 +48,19 @@ namespace RDFSharp.Semantics
             else {
                 throw new RDFSemanticsException("Cannot create RDFOntologyClass because given \"className\" parameter is null.");
             }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets or unsets this ontology class as "owl:DeprecatedClass"
+        /// </summary>
+        public RDFOntologyClass SetDeprecated(Boolean deprecated) {
+            if (!this.IsRestrictionClass() && !this.IsCompositeClass() &&
+                !this.IsDataRangeClass()   && !this.IsEnumerateClass()) {
+                 this.Deprecated = deprecated;
+            }
+            return this;
         }
         #endregion
 

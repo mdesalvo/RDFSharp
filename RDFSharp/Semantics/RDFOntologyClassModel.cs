@@ -38,13 +38,6 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Count of the deprecated classes composing the class model
-        /// </summary>
-        public Int64 DeprecatedClassesCount {
-            get { return this.Classes.Count(c => c.Value.IsDeprecatedClass()); }
-        }
-
-        /// <summary>
         /// Count of the restrictions classes composing the class model
         /// </summary>
         public Int64 RestrictionsCount {
@@ -77,17 +70,6 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public IEnumerator<RDFOntologyClass> ClassesEnumerator {
             get { return this.Classes.Values.GetEnumerator(); }
-        }
-
-        /// <summary>
-        /// Gets the enumerator on the class model's deprecated classes for iteration
-        /// </summary>
-        public IEnumerator<RDFOntologyDeprecatedClass> DeprecatedClassesEnumerator {
-            get {
-                return this.Classes.Values.Where(c => c.IsDeprecatedClass())
-                                          .OfType<RDFOntologyDeprecatedClass>()
-                                          .GetEnumerator();
-            }
         }
 
         /// <summary>
@@ -752,11 +734,11 @@ namespace RDFSharp.Semantics {
                         result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.UNION_OF, unionCollection.ReificationSubject));
                     }
                 }
-                else if(c.IsDeprecatedClass()) {
-                    result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_CLASS));
-                }
                 else {
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
+                    if (c.IsDeprecatedClass()) {
+                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_CLASS));
+                    }
                 }
             }
 

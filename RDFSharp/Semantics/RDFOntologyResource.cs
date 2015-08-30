@@ -57,7 +57,7 @@ namespace RDFSharp.Semantics
         /// Checks if this ontology resource represents an ontology deprecated class
         /// </summary>
         public Boolean IsDeprecatedClass() {
-            return (this is RDFOntologyDeprecatedClass);
+            return (this is RDFOntologyClass && ((RDFOntologyClass)this).Deprecated);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace RDFSharp.Semantics
         /// Checks if this ontology resource represents an ontology deprecated property
         /// </summary>
         public Boolean IsDeprecatedProperty() {
-            return (this is RDFOntologyDeprecatedProperty);
+            return (this is RDFOntologyProperty && ((RDFOntologyProperty)this).Deprecated);
         }
 
         /// <summary>

@@ -976,16 +976,16 @@ namespace RDFSharp.Semantics
                 }
                 #endregion
 
-                #region DeprecatedProperty
-                foreach (var dp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.DEPRECATED_PROPERTY)) {
-                    ontology.Model.PropertyModel.AddProperty(new RDFOntologyDeprecatedProperty((RDFResource)dp.Subject));
-                }
-                #endregion
-
                 #region DatatypeProperty
                 foreach (var dp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.DATATYPE_PROPERTY)) {
                     var dtp   = new RDFOntologyDatatypeProperty((RDFResource)dp.Subject);
                     ontology.Model.PropertyModel.AddProperty(dtp);
+
+                    #region DeprecatedProperty
+                    if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY))) {
+                        dtp.SetDeprecated(true);
+                    }
+                    #endregion
 
                     #region FunctionalProperty
                     if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY))) {
@@ -1000,6 +1000,12 @@ namespace RDFSharp.Semantics
                 foreach (var op in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.OBJECT_PROPERTY)) {
                     var obp  = new RDFOntologyObjectProperty((RDFResource)op.Subject);
                     ontology.Model.PropertyModel.AddProperty(obp);
+
+                    #region DeprecatedProperty
+                    if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY))) {
+                        obp.SetDeprecated(true);
+                    }
+                    #endregion
 
                     #region FunctionalProperty
                     if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY))) {
@@ -1026,11 +1032,19 @@ namespace RDFSharp.Semantics
                     #endregion
 
                 }
+
+                #region SymmetricProperty
                 foreach (var sp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.SYMMETRIC_PROPERTY)) {
                     var syp  = ontology.Model.PropertyModel.SelectProperty(sp.Subject.ToString());
                     if (syp == null) {
                         syp  = new RDFOntologyObjectProperty((RDFResource)sp.Subject);
                         ontology.Model.PropertyModel.AddProperty(syp);
+
+                        #region DeprecatedProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)syp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY))) {
+                            syp.SetDeprecated(true);
+                        }
+                        #endregion
 
                         #region FunctionalProperty
                         if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)syp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY))) {
@@ -1041,11 +1055,20 @@ namespace RDFSharp.Semantics
                     }
                     ((RDFOntologyObjectProperty)syp).SetSymmetric(true);
                 }
+                #endregion
+
+                #region TransitiveProperty
                 foreach (var tp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.TRANSITIVE_PROPERTY)) {
                     var trp  = ontology.Model.PropertyModel.SelectProperty(tp.Subject.ToString());
                     if (trp == null) {
                         trp  = new RDFOntologyObjectProperty((RDFResource)tp.Subject);
                         ontology.Model.PropertyModel.AddProperty(trp);
+
+                        #region DeprecatedProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)trp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY))) {
+                            trp.SetDeprecated(true);
+                        }
+                        #endregion
 
                         #region FunctionalProperty
                         if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)trp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY))) {
@@ -1056,11 +1079,20 @@ namespace RDFSharp.Semantics
                     }
                     ((RDFOntologyObjectProperty)trp).SetTransitive(true);
                 }
+                #endregion
+
+                #region InverseFunctionalProperty
                 foreach (var ip in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY)) {
                     var ifp  = ontology.Model.PropertyModel.SelectProperty(ip.Subject.ToString());
                     if (ifp == null) {
                         ifp  = new RDFOntologyObjectProperty((RDFResource)ip.Subject);
                         ontology.Model.PropertyModel.AddProperty(ifp);
+
+                        #region DeprecatedProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)ifp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY))) {
+                            ifp.SetDeprecated(true);
+                        }
+                        #endregion
 
                         #region FunctionalProperty
                         if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)ifp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY))) {
@@ -1072,20 +1104,27 @@ namespace RDFSharp.Semantics
                     ((RDFOntologyObjectProperty)ifp).SetInverseFunctional(true);
                 }
                 #endregion
+                #endregion
 
                 #endregion
 
                 #region ClassModel
 
                 #region Class
-                foreach (var c in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.CLASS)) {
-                    ontology.Model.ClassModel.AddClass(new RDFOntologyClass((RDFResource)c.Subject));
+                foreach (var c   in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.CLASS)) {
+                    var ontClass  = new RDFOntologyClass((RDFResource)c.Subject);
+                    ontology.Model.ClassModel.AddClass(ontClass);
+                    if   (ontGraph.ContainsTriple(new RDFTriple((RDFResource)ontClass.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_CLASS))) {
+                          ontClass.SetDeprecated(true);
+                    }
                 }
                 #endregion
 
                 #region DeprecatedClass
                 foreach (var dc  in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.DEPRECATED_CLASS)) {
-                    ontology.Model.ClassModel.AddClass(new RDFOntologyDeprecatedClass((RDFResource)dc.Subject));
+                    var ontClass  = new RDFOntologyClass((RDFResource)dc.Subject);
+                    ontClass.SetDeprecated(true);
+                    ontology.Model.ClassModel.AddClass(ontClass);
                 }
                 #endregion
 

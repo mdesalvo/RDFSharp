@@ -136,13 +136,11 @@
     <Compile Include="Semantics\RDFSemanticsException.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyComplementClass.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyDataRangeClass.cs" />
-    <Compile Include="Semantics\Extensions\Classes\RDFOntologyDeprecatedClass.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyEnumerateClass.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyIntersectionClass.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyUnionClass.cs" />
     <Compile Include="Semantics\Extensions\Properties\RDFOntologyAnnotationProperty.cs" />
     <Compile Include="Semantics\Extensions\Properties\RDFOntologyDatatypeProperty.cs" />
-    <Compile Include="Semantics\Extensions\Properties\RDFOntologyDeprecatedProperty.cs" />
     <Compile Include="Semantics\Extensions\Properties\RDFOntologyObjectProperty.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyAllValuesFromRestriction.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyCardinalityRestriction.cs" />

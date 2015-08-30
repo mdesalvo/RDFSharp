@@ -31,6 +31,11 @@ namespace RDFSharp.Semantics
 
         #region Properties
         /// <summary>
+        /// Flag indicating that this ontology property is "owl:DeprecatedProperty"
+        /// </summary>
+        public Boolean Deprecated { get; internal set; }
+
+        /// <summary>
         /// Flag indicating that this ontology property is "owl:FunctionalProperty"
         /// </summary>
         public Boolean Functional { get; internal set; }
@@ -93,6 +98,16 @@ namespace RDFSharp.Semantics
         public RDFOntologyProperty SetFunctional(Boolean functional) {
             if (!this.IsAnnotationProperty()) {
                  this.Functional = functional;
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this ontology property as "owl:DeprecatedProperty"
+        /// </summary>
+        public RDFOntologyProperty SetDeprecated(Boolean deprecated) {
+            if (!this.IsAnnotationProperty()) {
+                 this.Deprecated = deprecated;
             }
             return this;
         }

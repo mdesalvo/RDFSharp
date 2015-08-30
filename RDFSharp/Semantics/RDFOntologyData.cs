@@ -284,27 +284,6 @@ namespace RDFSharp.Semantics
             }
             return this;
         }
-
-        /// <summary>
-        /// Adds the "aFact -> deprecatedProperty -> bFact" relation to the data
-        /// </summary>
-        public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact, RDFOntologyDeprecatedProperty deprecatedProperty, RDFOntologyFact bFact) {
-            if (aFact != null && deprecatedProperty != null && bFact != null) {
-                this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, deprecatedProperty, bFact));
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the "ontologyFact -> deprecatedProperty -> ontologyLiteral" relation to the data
-        /// </summary>
-        public RDFOntologyData AddAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDeprecatedProperty deprecatedProperty, RDFOntologyLiteral ontologyLiteral) {
-            if (ontologyFact != null && deprecatedProperty != null && ontologyLiteral != null) {
-                this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, deprecatedProperty, ontologyLiteral));
-                this.AddLiteral(ontologyLiteral);
-            }
-            return this;
-        }
         #endregion
 
         #region Remove
@@ -440,26 +419,6 @@ namespace RDFSharp.Semantics
         public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral) {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null) {
                 this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the "aFact -> deprecatedProperty -> bFact" relation from the data
-        /// </summary>
-        public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact aFact, RDFOntologyDeprecatedProperty deprecatedProperty, RDFOntologyFact bFact) {
-            if (aFact != null && deprecatedProperty != null && bFact != null) {
-                this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, deprecatedProperty, bFact));
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the "ontologyFact -> deprecatedProperty -> ontologyLiteral" relation from the data
-        /// </summary>
-        public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDeprecatedProperty deprecatedProperty, RDFOntologyLiteral ontologyLiteral) {
-            if (ontologyFact != null && deprecatedProperty != null && ontologyLiteral != null) {
-                this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, deprecatedProperty, ontologyLiteral));
             }
             return this;
         }
