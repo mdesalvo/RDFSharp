@@ -678,7 +678,7 @@ namespace RDFSharp.Semantics {
                 foreach (var asn in assertions) {
 
                     #region Functional
-                    if  (prop.Functional) {
+                    if  (prop.IsFunctionalProperty()) {
 
                          if (!subjCache.ContainsKey(asn.TaxonomySubject.PatternMemberID)) {
                               subjCache.Add(asn.TaxonomySubject.PatternMemberID, asn.TaxonomySubject);
@@ -696,22 +696,20 @@ namespace RDFSharp.Semantics {
                          }
 
                          //FunctionalProperty cannot be TransitiveProperty (even indirectly)
-                         if (prop.IsObjectProperty() &&  
-                             (((RDFOntologyObjectProperty)prop).Transitive || RDFOntologyHelper.EnlistSuperPropertiesOf(prop, ontology.Model.PropertyModel).Any(p => p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).Transitive))) {
-                                evidences.Add(new RDFOntologyValidationEvidence(
-                                    RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
-                                    "GlobalCardinalityConstraint",
-                                    String.Format("Ontology property '{0}' has an 'owl:FunctionalProperty' global cardinality constraint, but it is also declared as 'owl:TransitiveProperty'. This is not allowed in OWL-DL.", prop),
-                                    String.Format("Remove the 'owl:FunctionalProperty' global cardinality constraint from the ontology property '{0}', or unset this property as 'owl:TransitiveProperty'.", prop)
-                                ));
+                         if (prop.IsTransitiveProperty() || RDFOntologyHelper.EnlistSuperPropertiesOf(prop, ontology.Model.PropertyModel).Any(p => p.IsTransitiveProperty())) {
+                             evidences.Add(new RDFOntologyValidationEvidence(
+                                 RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
+                                 "GlobalCardinalityConstraint",
+                                 String.Format("Ontology property '{0}' has an 'owl:FunctionalProperty' global cardinality constraint, but it is also declared as 'owl:TransitiveProperty'. This is not allowed in OWL-DL.", prop),
+                                 String.Format("Remove the 'owl:FunctionalProperty' global cardinality constraint from the ontology property '{0}', or unset this property as 'owl:TransitiveProperty'.", prop)
+                             ));
                          }
 
                     }
                     #endregion
 
                     #region InverseFunctional
-
-                    if  (prop.IsObjectProperty() && ((RDFOntologyObjectProperty)prop).InverseFunctional) {
+                    if  (prop.IsInverseFunctionalProperty()) {
                          if (!objCache.ContainsKey(asn.TaxonomyObject.PatternMemberID)) {
                               objCache.Add(asn.TaxonomyObject.PatternMemberID, asn.TaxonomyObject);
                          }
@@ -728,7 +726,7 @@ namespace RDFSharp.Semantics {
                          }
 
                          //InverseFunctionalProperty cannot be TransitiveProperty (even indirectly)
-                         if (((RDFOntologyObjectProperty)prop).Transitive || RDFOntologyHelper.EnlistSuperPropertiesOf(prop, ontology.Model.PropertyModel).Any(p => p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).Transitive)) {
+                         if (prop.IsTransitiveProperty() || RDFOntologyHelper.EnlistSuperPropertiesOf(prop, ontology.Model.PropertyModel).Any(p => p.IsTransitiveProperty())) {
                                evidences.Add(new RDFOntologyValidationEvidence(
                                    RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
                                    "GlobalCardinalityConstraint",
@@ -738,7 +736,6 @@ namespace RDFSharp.Semantics {
                          }
 
                     }
-
                     #endregion
 
                 }

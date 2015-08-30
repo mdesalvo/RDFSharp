@@ -63,28 +63,28 @@ namespace RDFSharp.Semantics {
         /// Count of the functional properties composing the property model
         /// </summary>
         public Int64 FunctionalPropertiesCount {
-            get { return this.Properties.Count(p => p.Value.Functional); }
+            get { return this.Properties.Count(p => p.Value.IsFunctionalProperty()); }
         }
 
         /// <summary>
         /// Count of the symmetric properties composing the property model
         /// </summary>
         public Int64 SymmetricPropertiesCount {
-            get { return this.Properties.Count(p => p.Value.IsObjectProperty() && ((RDFOntologyObjectProperty)p.Value).Symmetric); }
+            get { return this.Properties.Count(p => p.Value.IsSymmetricProperty()); }
         }
 
         /// <summary>
         /// Count of the transitive properties composing the property model
         /// </summary>
         public Int64 TransitivePropertiesCount {
-            get { return this.Properties.Count(p => p.Value.IsObjectProperty() && ((RDFOntologyObjectProperty)p.Value).Transitive); }
+            get { return this.Properties.Count(p => p.Value.IsTransitiveProperty()); }
         }
 
         /// <summary>
         /// Count of the inverse functional properties composing the property model
         /// </summary>
         public Int64 InverseFunctionalPropertiesCount {
-            get { return this.Properties.Count(p => p.Value.IsObjectProperty() && ((RDFOntologyObjectProperty)p.Value).InverseFunctional); }
+            get { return this.Properties.Count(p => p.Value.IsInverseFunctionalProperty()); }
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public IEnumerator<RDFOntologyProperty> FunctionalPropertiesEnumerator {
             get {
-                return this.Properties.Values.Where(p => p.Functional)
+                return this.Properties.Values.Where(p => p.IsFunctionalProperty())
                                              .GetEnumerator();
             }
         }
@@ -142,7 +142,7 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> SymmetricPropertiesEnumerator {
             get {
-                return this.Properties.Values.Where(p => p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).Symmetric)
+                return this.Properties.Values.Where(p => p.IsSymmetricProperty())
                                              .OfType<RDFOntologyObjectProperty>()
                                              .GetEnumerator();
             }
@@ -153,7 +153,7 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> TransitivePropertiesEnumerator {
             get {
-                return this.Properties.Values.Where(p => p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).Transitive)
+                return this.Properties.Values.Where(p => p.IsTransitiveProperty())
                                              .OfType<RDFOntologyObjectProperty>()
                                              .GetEnumerator();
             }
@@ -164,7 +164,7 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> InverseFunctionalPropertiesEnumerator {
             get {
-                return this.Properties.Values.Where(p => p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).InverseFunctional)
+                return this.Properties.Values.Where(p => p.IsInverseFunctionalProperty())
                                              .OfType<RDFOntologyObjectProperty>()
                                              .GetEnumerator();
             }
@@ -724,20 +724,20 @@ namespace RDFSharp.Semantics {
                 }
                 else if (p.IsObjectProperty()) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.OBJECT_PROPERTY));
-                     if (((RDFOntologyObjectProperty)p).Symmetric) {
+                     if (p.IsSymmetricProperty()) {
                          result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.SYMMETRIC_PROPERTY));
                      }
-                     if (((RDFOntologyObjectProperty)p).Transitive) {
+                     if (p.IsTransitiveProperty()) {
                          result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TRANSITIVE_PROPERTY));
                      }
-                     if (((RDFOntologyObjectProperty)p).InverseFunctional) {
+                     if (p.IsInverseFunctionalProperty()) {
                          result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY));
                      }
                 }
-                if  (p.Functional) {
+                if  (p.IsFunctionalProperty()) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY));
                 }
-                if  (p.Deprecated) {
+                if  (p.IsDeprecatedProperty()) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY));
                 }
                 if  (p.Domain != null) {
