@@ -918,10 +918,11 @@ namespace RDFSharp.Semantics
         /// Gets an ontology representation of the given graph
         /// </summary>
         internal static RDFOntology FromRDFGraph(RDFGraph ontGraph) {
-            var ontology          = new RDFOntology(new RDFResource(ontGraph.Context));
+            RDFOntology ontology  = null;
             if (ontGraph         != null) {
+                ontology          = new RDFOntology(new RDFResource(ontGraph.Context));
 
-                //Prefetch annotations
+                #region Prefetch
                 var versionInfo   = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_INFO);
                 var comment       = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.COMMENT);
                 var label         = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.LABEL);
@@ -932,7 +933,6 @@ namespace RDFSharp.Semantics
                 var incompWith    = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INCOMPATIBLE_WITH);
                 var priorVersion  = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PRIOR_VERSION);
 
-                //Prefetch taxonomies
                 var rdfType       = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
                 var subclassOf    = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF);
                 var subpropOf     = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_PROPERTY_OF);
@@ -955,6 +955,9 @@ namespace RDFSharp.Semantics
                 var maxcardinality= ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MAX_CARDINALITY);
                 var sameAs        = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SAME_AS);
                 var differentFrom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DIFFERENT_FROM);
+                #endregion
+
+                #region Load
 
                 #region Ontology
                 if (!rdfType.ContainsTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY))) {
@@ -963,6 +966,11 @@ namespace RDFSharp.Semantics
                          ontology.Value           = ont.Subject;
                          ontology.PatternMemberID = ontology.Value.PatternMemberID;
                      }
+                }
+                foreach (var t  in imports.SelectTriplesBySubject((RDFResource)ontology.Value)) {
+                    if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                         ontology.AddImportsAnnotation(new RDFOntology((RDFResource)t.Object));
+                    }
                 }
                 #endregion
 
@@ -1772,14 +1780,6 @@ namespace RDFSharp.Semantics
                 }
                 #endregion
 
-                #region Imports
-                foreach (var t in imports.SelectTriplesBySubject((RDFResource)ontology.Value)) {
-                    if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                         ontology.AddImportsAnnotation(new RDFOntology((RDFResource)t.Object));
-                    }
-                }
-                #endregion
-
                 #region BackwardCompatibleWith
                 foreach (var t in bcwcompWith.SelectTriplesBySubject((RDFResource)ontology.Value)) {
                     if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
@@ -2144,6 +2144,8 @@ namespace RDFSharp.Semantics
                     #endregion
 
                 }
+                #endregion
+
                 #endregion
 
                 #endregion

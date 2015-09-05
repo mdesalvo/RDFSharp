@@ -22,7 +22,6 @@ namespace RDFSharp.Model
 
     /// <summary>
     /// RDFLiteral represents a generic literal in the RDF model.
-    /// It can be an item of containers and collections.
     /// </summary>
     public abstract class RDFLiteral: RDFPatternMember {
 

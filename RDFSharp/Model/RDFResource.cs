@@ -21,8 +21,7 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFResource represents a generic resource in the RDF model. 
-    /// It can be an item of containers and collections.
+    /// RDFResource represents a generic resource in the RDF model.
     /// </summary>
     public class RDFResource: RDFPatternMember {
 

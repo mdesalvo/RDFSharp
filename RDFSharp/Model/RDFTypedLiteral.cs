@@ -20,7 +20,7 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFTypedLiteral represents a RDFLiteral which is denoted by a datatype.
+    /// RDFTypedLiteral represents a RDFLiteral which is denoted by a Datatype.
     /// </summary>
     public class RDFTypedLiteral: RDFLiteral {
 
