@@ -60,6 +60,7 @@
     <Compile Include="Model\RDFGraph.cs" />
     <Compile Include="Model\RDFGraphIndex.cs" />
     <Compile Include="Model\RDFGraphMetadata.cs" />
+    <Compile Include="Model\RDFGraphSerializer.cs" />
     <Compile Include="Model\RDFLiteral.cs" />
     <Compile Include="Model\RDFModelEnums.cs" />
     <Compile Include="Model\RDFModelException.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="Model\RDFNamespaceRegister.cs" />
     <Compile Include="Model\RDFPlainLiteral.cs" />
     <Compile Include="Model\RDFResource.cs" />
-    <Compile Include="Model\RDFSerializer.cs" />
     <Compile Include="Model\RDFTriple.cs" />
     <Compile Include="Model\RDFTypedLiteral.cs" />
     <Compile Include="Model\RDFVocabulary.cs" />
