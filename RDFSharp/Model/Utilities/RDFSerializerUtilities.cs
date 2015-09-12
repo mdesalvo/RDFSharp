@@ -37,15 +37,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch 8-byte unicodes in NTriples
         /// </summary>
-        private static readonly Regex regexU8 = new Regex(@"\\U([0-9A-Fa-f]{8})");
+        private static readonly Lazy<Regex> regexU8 = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
         /// <summary>
         /// Regex to catch 4-byte unicodes in NTriples
         /// </summary>
-        private static readonly Regex regexU4 = new Regex(@"\\u([0-9A-Fa-f]{4})");
+        private static readonly Lazy<Regex> regexU4 = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
         /// <summary>
         /// Regex to parse NTriples focusing on predicate position 
         /// </summary>
-        private static readonly Regex regexNT = new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.ExplicitCapture); 
+        private static readonly Lazy<Regex> regexNT = new Lazy<Regex>(() => new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.ExplicitCapture | RegexOptions.Compiled)); 
 
         /// <summary>
         /// Tries to parse the given NTriple, throwing an error in case of a basic syntactical error is found 
@@ -57,7 +57,7 @@ namespace RDFSharp.Model
             if (ntriple.StartsWith("_:") || ntriple.StartsWith("<")) {
                 
                 //Parse NTriple by exploiting surrounding spaces and angle brackets of predicate
-                tokens        = regexNT.Split(ntriple, 2);
+                tokens        = regexNT.Value.Split(ntriple, 2);
                 
                 //An illegal NTriple cannot be splitted into three parts with this regex, because predicate not being isolated
                 if (tokens.Length != 3) {
@@ -116,8 +116,8 @@ namespace RDFSharp.Model
         /// </summary>
         internal static String ASCII_To_Unicode(String asciiString) {
             if (asciiString  != null) {
-                asciiString   = regexU8.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-                asciiString   = regexU4.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));                
+                asciiString   = regexU8.Value.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString   = regexU4.Value.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));                
             }
             return asciiString;
         }

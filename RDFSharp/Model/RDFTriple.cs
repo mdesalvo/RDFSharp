@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Text;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -159,6 +160,51 @@ namespace RDFSharp.Model
             }
 
             return reifGraph;
+        }
+
+        /// <summary>
+        /// Gives the N-Triples string representation of this triple
+        /// </summary>
+        public String ToNTriples() {
+            var ntriple = new StringBuilder();
+
+            //Subject
+            if (((RDFResource)this.Subject).IsBlank) {
+                ntriple.Append(this.Subject.ToString().Replace("bnode:", "_:") + " ");
+            }
+            else {
+                ntriple.Append("<" + this.Subject + "> ");
+            }
+
+            //Predicate
+            ntriple.Append("<" + this.Predicate + "> ");
+
+            //Object
+            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                if (((RDFResource)this.Object).IsBlank) {
+                    ntriple.Append(this.Object.ToString().Replace("bnode:", "_:") + " .");
+                }
+                else {
+                    ntriple.Append("<" + this.Object + "> .");
+                }
+            }
+            else {
+                if (this.Object is RDFPlainLiteral) {
+                    if (((RDFPlainLiteral)this.Object).Language != String.Empty) {
+                        ntriple.Append("\"" + ((RDFPlainLiteral)this.Object).Value + "\"@" + ((RDFPlainLiteral)this.Object).Language + " .");
+                    }
+                    else {
+                        ntriple.Append("\"" + ((RDFPlainLiteral)this.Object).Value + "\" .");
+                    }
+                }
+                else {
+                    ntriple.Append("\"" + ((RDFTypedLiteral)this.Object).Value + "\"^^<" + ((RDFTypedLiteral)this.Object).Datatype + "> .");
+                }
+            }
+
+            return RDFSerializerUtilities.Unicode_To_ASCII(ntriple.ToString().Replace("\n", "\\n")
+                                                                             .Replace("\t", "\\t")
+                                                                             .Replace("\r", "\\r"));
         }
         #endregion
 

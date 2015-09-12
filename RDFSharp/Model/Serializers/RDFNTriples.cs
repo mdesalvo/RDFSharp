@@ -37,74 +37,8 @@ namespace RDFSharp.Model
 
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(filepath, false, Encoding.ASCII)) {
-                    var tripleTemplate = String.Empty;
-                    foreach(var t in graph) {
-
-                        #region template
-                        if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            tripleTemplate     = "<{SUBJ}> <{PRED}> <{OBJ}> .";
-                        }
-                        else {
-                            if (t.Object is RDFPlainLiteral) {
-                                tripleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} .";
-                            }
-                            else {
-                                tripleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
-                            }
-                        }
-                        #endregion
-
-                        #region subj
-                        if (((RDFResource)t.Subject).IsBlank) {
-                            tripleTemplate     = tripleTemplate.Replace("<{SUBJ}>", RDFSerializerUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"));
-                        }
-                        else {
-                            tripleTemplate     = tripleTemplate.Replace("{SUBJ}", RDFSerializerUtilities.Unicode_To_ASCII(t.Subject.ToString()));
-                        }
-                        #endregion
-
-                        #region pred
-                        tripleTemplate         = tripleTemplate.Replace("{PRED}", RDFSerializerUtilities.Unicode_To_ASCII(t.Predicate.ToString()));
-                        #endregion
-
-                        #region object
-                        if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            if (((RDFResource)t.Object).IsBlank) {
-                                tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFSerializerUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
-                            }
-                            else {
-                                tripleTemplate = tripleTemplate.Replace("{OBJ}", RDFSerializerUtilities.Unicode_To_ASCII(t.Object.ToString()));
-                            }
-                        }
-                        #endregion
-
-                        #region literal
-                        else {
-
-                            tripleTemplate         = tripleTemplate.Replace("{VAL}", RDFSerializerUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value).Replace("\"","\\\""));
-                            tripleTemplate         = tripleTemplate.Replace("\n", "\\n").Replace("\t", "\\t").Replace("\r", "\\r");
-
-                            #region plain literal
-                            if (t.Object is RDFPlainLiteral) {
-                                if (((RDFPlainLiteral)t.Object).Language != String.Empty) {
-                                    tripleTemplate = tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language);
-                                }
-                                else {
-                                    tripleTemplate = tripleTemplate.Replace("@{LANG}", String.Empty);
-                                }
-                            }
-                            #endregion
-
-                            #region typed literal
-                            else {
-                                tripleTemplate     = tripleTemplate.Replace("{DTYPE}", ((RDFTypedLiteral)t.Object).Datatype.ToString());
-                            }
-                            #endregion
-
-                        }
-                        #endregion
-
-                        sw.WriteLine(tripleTemplate);
+                    foreach (var    t in graph) {
+                        sw.WriteLine(t.ToNTriples());
                     }
                 }
                 #endregion
