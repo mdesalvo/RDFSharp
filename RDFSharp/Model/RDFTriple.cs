@@ -16,6 +16,7 @@
 
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -202,9 +203,135 @@ namespace RDFSharp.Model
                 }
             }
 
-            return RDFSerializerUtilities.Unicode_To_ASCII(ntriple.ToString().Replace("\n", "\\n")
-                                                                             .Replace("\t", "\\t")
-                                                                             .Replace("\r", "\\r"));
+            return RDFSerializerUtilities.Unicode_To_ASCII(ntriple.ToString());
+        }
+
+        /// <summary>
+        /// Builds a triple from the given N-Triples string representation
+        /// </summary>
+        public static RDFTriple FromNTriples(String ntriple) {
+            if (ntriple          != null) {
+                String[] tokens   = new String[3];
+                
+                //Preliminary checks (non-ASCII encoding to throw error, empty/comment line to ignore)
+                if (ntriple      != Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(ntriple))) {
+                    throw new RDFModelException("Given \"ntriple\" string contains non-ASCII characters");
+                }
+                ntriple           = RDFSerializerUtilities.ValidNTriples["StartSpace"].Value.Replace(ntriple, String.Empty);
+                ntriple           = RDFSerializerUtilities.ValidNTriples["EndSpace"].Value.Replace(ntriple,   String.Empty);
+                if (ntriple      == String.Empty || ntriple.StartsWith("#")) {
+                    return null;
+                }
+
+                //Effective parsing
+                if (ntriple.StartsWith("<")) {
+                    ntriple       = RDFSerializerUtilities.ASCII_To_Unicode(ntriple);
+                    if (RDFSerializerUtilities.ValidNTriples["Su_P_Ou"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = uris[2].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFResource(tokens[2]));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Su_P_Ob"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var buris = RDFSerializerUtilities.ValidNTriples["BndUri"].Value.Matches(ntriple);
+                        tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = buris[0].Value;
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFResource(tokens[2]));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Su_P_Lp"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var lp    = RDFSerializerUtilities.ValidNTriples["Lplain"].Value.Matches(ntriple);
+                        tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = lp[0].Value.Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(tokens[2]));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Su_P_Lpl"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var lpl   = RDFSerializerUtilities.ValidNTriples["Lplainlang"].Value.Matches(ntriple);
+                        tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = lpl[0].Value;
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("@")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litLn = tokens[2].Substring(tokens[2].LastIndexOf("@")+1);
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(litVl, litLn));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Su_P_Lt"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var lt    = RDFSerializerUtilities.ValidNTriples["Ltyped"].Value.Matches(ntriple);
+                        tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = lt[0].Value;
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("^^<")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litDt = tokens[2].Substring(tokens[2].LastIndexOf("^^<") + 3).TrimEnd(new Char[] { '>' });
+                        return new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFTypedLiteral(litVl, RDFModelUtilities.GetDatatypeFromString(litDt)));
+                    }
+                    else {
+                        throw new RDFModelException("Given \"ntriple\" string does not represent a well-formed N-Triple");
+                    }
+                }
+                else if (ntriple.StartsWith("_:")) {
+                    ntriple       = RDFSerializerUtilities.ASCII_To_Unicode(ntriple);
+                    if (RDFSerializerUtilities.ValidNTriples["Sb_P_Ou"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var buris = RDFSerializerUtilities.ValidNTriples["BndUri"].Value.Matches(ntriple);
+                        tokens[0] = buris[0].Value;
+                        tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFResource(tokens[2]));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Sb_P_Ob"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var buris = RDFSerializerUtilities.ValidNTriples["BndUri"].Value.Matches(ntriple);
+                        tokens[0] = buris[0].Value;
+                        tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = buris[1].Value;
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFResource(tokens[2]));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Sb_P_Lp"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var buris = RDFSerializerUtilities.ValidNTriples["BndUri"].Value.Matches(ntriple);
+                        var lp    = RDFSerializerUtilities.ValidNTriples["Lplain"].Value.Matches(ntriple);
+                        tokens[0] = buris[0].Value;
+                        tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = lp[0].Value.Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(tokens[2]));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Sb_P_Lpl"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var buris = RDFSerializerUtilities.ValidNTriples["BndUri"].Value.Matches(ntriple);
+                        var lpl   = RDFSerializerUtilities.ValidNTriples["Lplainlang"].Value.Matches(ntriple);
+                        tokens[0] = buris[0].Value;
+                        tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = lpl[0].Value;
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("@")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litLn = tokens[2].Substring(tokens[2].LastIndexOf("@")+1);
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(litVl, litLn));
+                    }
+                    else if (RDFSerializerUtilities.ValidNTriples["Sb_P_Lt"].Value.Match(ntriple).Success) {
+                        var uris  = RDFSerializerUtilities.ValidNTriples["BrkUri"].Value.Matches(ntriple);
+                        var buris = RDFSerializerUtilities.ValidNTriples["BndUri"].Value.Matches(ntriple);
+                        var lt    = RDFSerializerUtilities.ValidNTriples["Ltyped"].Value.Matches(ntriple);
+                        tokens[0] = buris[0].Value;
+                        tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
+                        tokens[2] = lt[0].Value;
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("^^<")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litDt = tokens[2].Substring(tokens[2].LastIndexOf("^^<") + 3).TrimEnd(new Char[] { '>' });
+                        return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFTypedLiteral(litVl, RDFModelUtilities.GetDatatypeFromString(litDt)));
+                    }
+                    else {
+                        throw new RDFModelException("Given \"ntriple\" string does not represent a well-formed N-Triple");
+                    }
+                }
+                else {
+                    throw new RDFModelException("Given \"ntriple\" string does not represent a well-formed N-Triple");
+                }
+
+            }
+            throw new RDFModelException("Given \"ntriple\" string is null");
         }
         #endregion
 

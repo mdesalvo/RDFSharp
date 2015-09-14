@@ -39,7 +39,8 @@ namespace RDFSharp.Model
         public override String ToString() {
             return this.Value.Replace("\n", "\\n")
                              .Replace("\t", "\\t")
-                             .Replace("\r", "\\r"); //little preventive sanitizations
+                             .Replace("\r", "\\r")
+                             .Replace("\0", "\\0");//little preventive sanitizations
         }
         #endregion
 
