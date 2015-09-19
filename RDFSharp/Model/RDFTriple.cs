@@ -246,7 +246,7 @@ namespace RDFSharp.Model
                         var lp    = RDFSerializerUtilities.ValidNTriples["Lplain"].Value.Matches(ntriple);
                         tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
-                        tokens[2] = lp[0].Value.Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        tokens[2] = lp[0].Value.Trim(new Char[] { '\"' });
                         return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(tokens[2]));
                     }
                     else if (RDFSerializerUtilities.ValidNTriples["Su_P_Lpl"].Value.Match(ntriple).Success) {
@@ -255,7 +255,7 @@ namespace RDFSharp.Model
                         tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[2] = lpl[0].Value;
-                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("@")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("@")).Trim(new Char[] { '\"' });
                         var litLn = tokens[2].Substring(tokens[2].LastIndexOf("@")+1);
                         return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(litVl, litLn));
                     }
@@ -265,7 +265,7 @@ namespace RDFSharp.Model
                         tokens[0] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[1] = uris[1].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[2] = lt[0].Value;
-                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("^^<")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("^^<")).Trim(new Char[] { '\"' });
                         var litDt = tokens[2].Substring(tokens[2].LastIndexOf("^^<") + 3).TrimEnd(new Char[] { '>' });
                         return new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFTypedLiteral(litVl, RDFModelUtilities.GetDatatypeFromString(litDt)));
                     }
@@ -297,7 +297,7 @@ namespace RDFSharp.Model
                         var lp    = RDFSerializerUtilities.ValidNTriples["Lplain"].Value.Matches(ntriple);
                         tokens[0] = buris[0].Value;
                         tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
-                        tokens[2] = lp[0].Value.Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        tokens[2] = lp[0].Value.Trim(new Char[] { '\"' });
                         return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(tokens[2]));
                     }
                     else if (RDFSerializerUtilities.ValidNTriples["Sb_P_Lpl"].Value.Match(ntriple).Success) {
@@ -307,7 +307,7 @@ namespace RDFSharp.Model
                         tokens[0] = buris[0].Value;
                         tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[2] = lpl[0].Value;
-                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("@")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("@")).Trim(new Char[] { '\"' });
                         var litLn = tokens[2].Substring(tokens[2].LastIndexOf("@")+1);
                         return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFPlainLiteral(litVl, litLn));
                     }
@@ -318,7 +318,7 @@ namespace RDFSharp.Model
                         tokens[0] = buris[0].Value;
                         tokens[1] = uris[0].Value.TrimStart(new Char[] { '<' }).TrimEnd(new Char[] { '>' });
                         tokens[2] = lt[0].Value;
-                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("^^<")).Trim(new Char[] { '\"' }).Replace("\\\"", "\"").Replace("\\\\", "\\");
+                        var litVl = tokens[2].Substring(0, tokens[2].LastIndexOf("^^<")).Trim(new Char[] { '\"' });
                         var litDt = tokens[2].Substring(tokens[2].LastIndexOf("^^<") + 3).TrimEnd(new Char[] { '>' });
                         return  new RDFTriple(new RDFResource(tokens[0]), new RDFResource(tokens[1]), new RDFTypedLiteral(litVl, RDFModelUtilities.GetDatatypeFromString(litDt)));
                     }

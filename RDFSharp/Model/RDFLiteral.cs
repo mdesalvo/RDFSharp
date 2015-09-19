@@ -37,10 +37,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the literal
         /// </summary>
         public override String ToString() {
-            return this.Value.Replace("\n", "\\n")
-                             .Replace("\t", "\\t")
-                             .Replace("\r", "\\r")
-                             .Replace("\0", "\\0");//little preventive sanitizations
+            return this.Value;
         }
         #endregion
 
