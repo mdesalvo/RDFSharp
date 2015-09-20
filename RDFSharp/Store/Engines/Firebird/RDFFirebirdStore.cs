@@ -41,23 +41,24 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build a Firebird store instance at the given path
         /// </summary>
-        public RDFFirebirdStore(String firebirdInstance, String dbPath) {
-			if(firebirdInstance    != null && firebirdInstance.Trim() != String.Empty){
-				firebirdInstance    = firebirdInstance.Trim();
-				if(RDFModelUtilities.CheckLocalPath(dbPath)){
-					dbPath          = dbPath.Trim();
+        public RDFFirebirdStore(String firebirdInstance, 
+                                String firebirdDbPath) {
+			if(firebirdInstance    != null){
+                if(firebirdDbPath  != null) {
 
 					//Initialize store structures
 					this.StoreType  = "FIREBIRD";
-                    this.Connection = new FbConnection(@"DataSource=" + firebirdInstance + ";Database=" + dbPath + ";User=SYSDBA;Password=masterkey;ServerType=0;Dialect=3;Charset=NONE;");
+                    this.Connection = new FbConnection(@"DataSource=" + firebirdInstance + 
+                                                        ";Database="  + firebirdDbPath   + 
+                                                        ";User=SYSDBA;Password=masterkey;ServerType=0;Dialect=3;Charset=NONE;");
 					this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
                     //Clone internal store template
-					if(!File.Exists(dbPath)) {
+                    if(!File.Exists(firebirdDbPath)) {
 						try {
 							Assembly firebird        = Assembly.GetExecutingAssembly();
                             using (var templateDB    = firebird.GetManifestResourceStream("RDFSharp.Store.Template.RDFFirebirdTemplate.fdb")) {
-								using (var destineDB = new FileStream(dbPath, FileMode.Create, FileAccess.ReadWrite)) {
+                                using (var destineDB = new FileStream(firebirdDbPath, FileMode.Create, FileAccess.ReadWrite)) {
                                     templateDB.CopyTo(destineDB);
 								}
 							}
@@ -74,11 +75,11 @@ namespace RDFSharp.Store
 
                 }
 				else {
-					throw new RDFStoreException("Cannot connect to Firebird store because: given \"dbPath\" parameter is null or does not indicate a local file");
+                    throw new RDFStoreException("Cannot connect to Firebird store because: given \"firebirdDbPath\" parameter is null.");
 				}
 			}
 			else {
-                throw new RDFStoreException("Cannot connect to Firebird store because: given \"firebirdInstance\" parameter is null or empty");
+                throw new RDFStoreException("Cannot connect to Firebird store because: given \"firebirdInstance\" parameter is null.");
             }
         }
         #endregion

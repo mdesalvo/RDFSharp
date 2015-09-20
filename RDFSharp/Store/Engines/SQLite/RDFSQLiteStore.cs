@@ -39,23 +39,23 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SQLite store instance
+        /// Default-ctor to build a SQLite store instance at the given path
         /// </summary>
-        public RDFSQLiteStore(String dbPath) {
-            if(RDFModelUtilities.CheckLocalPath(dbPath)){
-                dbPath          = dbPath.Trim();
+        public RDFSQLiteStore(String sqliteDbPath) {
+            if (sqliteDbPath   != null) {
 
                 //Initialize store structures
                 this.StoreType  = "SQLITE";
-                this.Connection = new SQLiteConnection(@"Data Source=" + dbPath + ";Version=3;FailIfMissing=False;");
+                this.Connection = new SQLiteConnection(@"Data Source=" + sqliteDbPath + 
+                                                        ";Version=3;FailIfMissing=False;");
                 this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
                 //Clone internal store template
-                if(!File.Exists(dbPath)) {
+                if(!File.Exists(sqliteDbPath)) {
                     try {
                         Assembly sqlite          = Assembly.GetExecutingAssembly();
                         using (var templateDB    = sqlite.GetManifestResourceStream("RDFSharp.Store.Template.RDFSQLiteTemplate.db")) {
-                            using (var destineDB = new FileStream(dbPath, FileMode.Create, FileAccess.ReadWrite)) {
+                            using (var destineDB = new FileStream(sqliteDbPath, FileMode.Create, FileAccess.ReadWrite)) {
                                 templateDB.CopyTo(destineDB);
                             }
                         }
@@ -72,7 +72,7 @@ namespace RDFSharp.Store
 
             }
             else {
-                throw new RDFStoreException("Cannot connect to SQLite store because: given \"dbPath\" parameter is null or does not indicate a local file");
+                throw new RDFStoreException("Cannot connect to SQLite store because: given \"sqliteDbPath\" parameter is null.");
             }
         }
         #endregion

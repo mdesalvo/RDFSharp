@@ -72,14 +72,6 @@ namespace RDFSharp.Model
         internal static Uri GenerateAnonUri() {
             return new Uri("bnode:" + Guid.NewGuid());
         }
-
-        /// <summary>
-        /// Checks if the given path is a rooted local path
-        /// </summary>
-        internal static Boolean CheckLocalPath(String path) {
-            Uri pathUri = null;
-            return (Uri.TryCreate(path, UriKind.Absolute, out pathUri) && pathUri.IsFile && pathUri.IsLoopback);
-        }
         #endregion
 
         #region Graph

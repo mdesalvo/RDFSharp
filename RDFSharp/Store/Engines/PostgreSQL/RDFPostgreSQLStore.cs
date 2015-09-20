@@ -37,20 +37,24 @@ namespace RDFSharp.Store {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a PostgreSQL store instance
+        /// Default-ctor to build a PostgreSQL store instance with the given credentials
         /// </summary>
-        public RDFPostgreSQLStore(String pgsqlInstance, String pgsqlDatabase, String pgsqlUser, String pgsqlPassword) {
-            if (pgsqlInstance             != null && pgsqlInstance.Trim() != String.Empty) {
-                pgsqlInstance              = pgsqlInstance.Trim();
-                if (pgsqlDatabase         != null && pgsqlDatabase.Trim() != String.Empty) {
-                    pgsqlDatabase          = pgsqlDatabase.Trim();
-                    if (pgsqlUser         != null && pgsqlUser.Trim()     != String.Empty) {
-                        pgsqlUser          = pgsqlUser.Trim();
+        public RDFPostgreSQLStore(String pgsqlInstance, 
+                                  String pgsqlDatabase, 
+                                  String pgsqlUser, 
+                                  String pgsqlPassword) {
+            if (pgsqlInstance             != null) {
+                if (pgsqlDatabase         != null) {
+                    if (pgsqlUser         != null) {
                         if (pgsqlPassword != null) {
 
                             //Initialize store structures
                             this.StoreType  = "PostgreSQL";
-                            this.Connection = new NpgsqlConnection(@"Server=" + pgsqlInstance + ";Database=" + pgsqlDatabase + ";User Id=" + pgsqlUser + ";Password=" + pgsqlPassword + ";Port=5432;");
+                            this.Connection = new NpgsqlConnection(@"Server="    + pgsqlInstance + 
+                                                                    ";Database=" + pgsqlDatabase + 
+                                                                    ";User Id="  + pgsqlUser     + 
+                                                                    ";Password=" + pgsqlPassword + 
+                                                                    ";Port=5432;");
                             this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
                             //Perform initial diagnostics
@@ -58,19 +62,19 @@ namespace RDFSharp.Store {
 
                         }
                         else {
-                            throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlPassword\" parameter is null");
+                            throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlPassword\" parameter is null.");
                         }
                     }
                     else {
-                        throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlUser\" parameter is null or empty");
+                        throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlUser\" parameter is null.");
                     }
                 }
                 else {
-                    throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlDatabase\" parameter is null or empty");
+                    throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlDatabase\" parameter is null.");
                 }
             }
             else {
-                throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlInstance\" parameter is null or empty");
+                throw new RDFStoreException("Cannot connect to PostgreSQL store because: given \"pgsqlInstance\" parameter is null.");
             }
         }
         #endregion

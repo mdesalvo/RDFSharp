@@ -37,20 +37,24 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a MySQL store instance
+        /// Default-ctor to build a MySQL store instance with the given credentials
         /// </summary>
-        public RDFMySQLStore(String mysqlInstance, String mysqlDatabase, String mysqlUser, String mysqlPassword) {
-            if(mysqlInstance             != null && mysqlInstance.Trim() != String.Empty){
-                mysqlInstance             = mysqlInstance.Trim();
-                if(mysqlDatabase         != null && mysqlDatabase.Trim() != String.Empty) {
-                    mysqlDatabase         = mysqlDatabase.Trim();
-                    if(mysqlUser         != null && mysqlUser.Trim()     != String.Empty) {
-                        mysqlUser         = mysqlUser.Trim();
-                        if(mysqlPassword != null) {
+        public RDFMySQLStore(String mysqlInstance, 
+                             String mysqlDatabase, 
+                             String mysqlUser, 
+                             String mysqlPassword) {
+            if(mysqlInstance               != null) {
+                if(mysqlDatabase           != null) {
+                    if(mysqlUser           != null) {
+                        if(mysqlPassword   != null) {
 
                             //Initialize store structures
                             this.StoreType  = "MYSQL";
-                            this.Connection = new MySqlConnection(@"Server=" + mysqlInstance + ";Database=" + mysqlDatabase + ";Uid=" + mysqlUser + ";Pwd=" + mysqlPassword + ";Port=3306;");
+                            this.Connection = new MySqlConnection(@"Server="    + mysqlInstance + 
+                                                                   ";Database=" + mysqlDatabase + 
+                                                                   ";Uid="      + mysqlUser     + 
+                                                                   ";Pwd="      + mysqlPassword + 
+                                                                   ";Port=3306;");
                             this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
                             //Perform initial diagnostics
@@ -58,19 +62,19 @@ namespace RDFSharp.Store
 
                         }
                         else {
-                            throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlPassword\" parameter is null");
+                            throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlPassword\" parameter.");
                         }
                     }
                     else {
-                        throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlUser\" parameter is null or empty");
+                        throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlUser\" parameter is null.");
                     }
                 }
                 else {
-                    throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlDatabase\" parameter is null or empty");
+                    throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlDatabase\" parameter is null.");
                 }
             }
             else {
-                throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlInstance\" parameter is null or empty");
+                throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlInstance\" parameter is null.");
             }
         }
         #endregion
