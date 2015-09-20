@@ -42,10 +42,9 @@
   </ItemGroup>
 
   <!-- 3rd party references -->
-  <Choose> 
-
+  <Choose>
     <!-- x64 -->
-    <When Condition="'$(PROCESSOR_ARCHITECTURE)'=='AMD64' Or '$(PROCESSOR_ARCHITEW6432)'=='AMD64'">  
+    <When Condition="'$(PROCESSOR_ARCHITECTURE)'=='AMD64' Or '$(PROCESSOR_ARCHITEW6432)'=='AMD64'">
       <ItemGroup>
         <Reference Include="System.Data.SQLite">
           <HintPath>Library\x64\System.Data.SQLite.dll</HintPath>
@@ -53,7 +52,6 @@
         </Reference>
       </ItemGroup>
     </When>
-
     <!-- x86 -->
     <Otherwise>
       <ItemGroup>
@@ -63,7 +61,6 @@
         </Reference>
       </ItemGroup>
     </Otherwise>
-
   </Choose>
   
   <!-- RDFSharp.RDFSQLiteStore sources -->

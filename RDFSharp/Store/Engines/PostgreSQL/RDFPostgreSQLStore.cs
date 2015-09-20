@@ -39,21 +39,21 @@ namespace RDFSharp.Store {
         /// <summary>
         /// Default-ctor to build a PostgreSQL store instance with the given credentials
         /// </summary>
-        public RDFPostgreSQLStore(String pgsqlInstance, 
-                                  String pgsqlDatabase, 
-                                  String pgsqlUser, 
+        public RDFPostgreSQLStore(String pgsqlInstance,
+                                  String pgsqlDatabase,
+                                  String pgsqlUser,
                                   String pgsqlPassword) {
-            if (pgsqlInstance             != null) {
-                if (pgsqlDatabase         != null) {
-                    if (pgsqlUser         != null) {
-                        if (pgsqlPassword != null) {
+            if(pgsqlInstance               != null) {
+                if(pgsqlDatabase           != null) {
+                    if(pgsqlUser           != null) {
+                        if(pgsqlPassword   != null) {
 
                             //Initialize store structures
                             this.StoreType  = "PostgreSQL";
-                            this.Connection = new NpgsqlConnection(@"Server="    + pgsqlInstance + 
-                                                                    ";Database=" + pgsqlDatabase + 
-                                                                    ";User Id="  + pgsqlUser     + 
-                                                                    ";Password=" + pgsqlPassword + 
+                            this.Connection = new NpgsqlConnection(@"Server="    + pgsqlInstance +
+                                                                    ";Database=" + pgsqlDatabase +
+                                                                    ";User Id="  + pgsqlUser     +
+                                                                    ";Password=" + pgsqlPassword +
                                                                     ";Port=5432;");
                             this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 

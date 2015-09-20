@@ -41,31 +41,31 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build a Firebird store instance at the given path
         /// </summary>
-        public RDFFirebirdStore(String firebirdInstance, 
+        public RDFFirebirdStore(String firebirdInstance,
                                 String firebirdDbPath) {
-			if(firebirdInstance    != null){
+            if(firebirdInstance    != null) {
                 if(firebirdDbPath  != null) {
 
-					//Initialize store structures
-					this.StoreType  = "FIREBIRD";
-                    this.Connection = new FbConnection(@"DataSource=" + firebirdInstance + 
-                                                        ";Database="  + firebirdDbPath   + 
+                    //Initialize store structures
+                    this.StoreType  = "FIREBIRD";
+                    this.Connection = new FbConnection(@"DataSource=" + firebirdInstance +
+                                                        ";Database="  + firebirdDbPath   +
                                                         ";User=SYSDBA;Password=masterkey;ServerType=0;Dialect=3;Charset=NONE;");
-					this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
+                    this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
                     //Clone internal store template
                     if(!File.Exists(firebirdDbPath)) {
-						try {
-							Assembly firebird        = Assembly.GetExecutingAssembly();
-                            using (var templateDB    = firebird.GetManifestResourceStream("RDFSharp.Store.Template.RDFFirebirdTemplate.fdb")) {
-                                using (var destineDB = new FileStream(firebirdDbPath, FileMode.Create, FileAccess.ReadWrite)) {
+                        try {
+                            Assembly firebird        = Assembly.GetExecutingAssembly();
+                            using(var templateDB     = firebird.GetManifestResourceStream("RDFSharp.Store.Template.RDFFirebirdTemplate.fdb")) {
+                                using(var destineDB  = new FileStream(firebirdDbPath, FileMode.Create, FileAccess.ReadWrite)) {
                                     templateDB.CopyTo(destineDB);
-								}
-							}
-						}
-						catch (Exception ex) {
-							throw new RDFStoreException("Cannot create Firebird store because: " + ex.Message, ex);
-						}
+                                }
+                            }
+                        }
+                        catch(Exception ex) {
+                            throw new RDFStoreException("Cannot create Firebird store because: " + ex.Message, ex);
+                        }
                     }
 
                     //Perform initial diagnostics
@@ -74,11 +74,11 @@ namespace RDFSharp.Store
                     }
 
                 }
-				else {
+                else {
                     throw new RDFStoreException("Cannot connect to Firebird store because: given \"firebirdDbPath\" parameter is null.");
-				}
-			}
-			else {
+                }
+            }
+            else {
                 throw new RDFStoreException("Cannot connect to Firebird store because: given \"firebirdInstance\" parameter is null.");
             }
         }

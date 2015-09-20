@@ -39,9 +39,9 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build a MySQL store instance with the given credentials
         /// </summary>
-        public RDFMySQLStore(String mysqlInstance, 
-                             String mysqlDatabase, 
-                             String mysqlUser, 
+        public RDFMySQLStore(String mysqlInstance,
+                             String mysqlDatabase,
+                             String mysqlUser,
                              String mysqlPassword) {
             if(mysqlInstance               != null) {
                 if(mysqlDatabase           != null) {
@@ -50,10 +50,10 @@ namespace RDFSharp.Store
 
                             //Initialize store structures
                             this.StoreType  = "MYSQL";
-                            this.Connection = new MySqlConnection(@"Server="    + mysqlInstance + 
-                                                                   ";Database=" + mysqlDatabase + 
-                                                                   ";Uid="      + mysqlUser     + 
-                                                                   ";Pwd="      + mysqlPassword + 
+                            this.Connection = new MySqlConnection(@"Server="    + mysqlInstance +
+                                                                   ";Database=" + mysqlDatabase +
+                                                                   ";Uid="      + mysqlUser     +
+                                                                   ";Pwd="      + mysqlPassword +
                                                                    ";Port=3306;");
                             this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
@@ -62,7 +62,7 @@ namespace RDFSharp.Store
 
                         }
                         else {
-                            throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlPassword\" parameter.");
+                            throw new RDFStoreException("Cannot connect to MySQL store because: given \"mysqlPassword\" parameter is null.");
                         }
                     }
                     else {

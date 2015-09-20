@@ -42,25 +42,25 @@ namespace RDFSharp.Store
         /// Default-ctor to build a SQLite store instance at the given path
         /// </summary>
         public RDFSQLiteStore(String sqliteDbPath) {
-            if (sqliteDbPath   != null) {
+            if(sqliteDbPath    != null) {
 
                 //Initialize store structures
                 this.StoreType  = "SQLITE";
-                this.Connection = new SQLiteConnection(@"Data Source=" + sqliteDbPath + 
+                this.Connection = new SQLiteConnection(@"Data Source=" + sqliteDbPath +
                                                         ";Version=3;FailIfMissing=False;");
                 this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
 
                 //Clone internal store template
                 if(!File.Exists(sqliteDbPath)) {
                     try {
-                        Assembly sqlite          = Assembly.GetExecutingAssembly();
-                        using (var templateDB    = sqlite.GetManifestResourceStream("RDFSharp.Store.Template.RDFSQLiteTemplate.db")) {
-                            using (var destineDB = new FileStream(sqliteDbPath, FileMode.Create, FileAccess.ReadWrite)) {
+                        Assembly sqlite         = Assembly.GetExecutingAssembly();
+                        using(var templateDB    = sqlite.GetManifestResourceStream("RDFSharp.Store.Template.RDFSQLiteTemplate.db")) {
+                            using(var destineDB = new FileStream(sqliteDbPath, FileMode.Create, FileAccess.ReadWrite)) {
                                 templateDB.CopyTo(destineDB);
                             }
                         }
                     }
-                    catch (Exception ex) {
+                    catch(Exception ex) {
                         throw new RDFStoreException("Cannot create SQLite store because: " + ex.Message, ex);
                     }
                 }
