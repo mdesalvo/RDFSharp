@@ -273,14 +273,14 @@ namespace RDFSharp.Model
                 if (uriNS.Fragment != String.Empty) {
                     type            = uriNS.Fragment.Replace("#", String.Empty);  //"integer"
                     if (type       != String.Empty) {
-                        ns          = ns.Replace(type, String.Empty);             //"http://www.w3.org/2001/XMLSchema#"
+                        ns          = ns.TrimEnd(type.ToCharArray());             //"http://www.w3.org/2001/XMLSchema#"
                     }
                 }
                 else {
                     // e.g.:  "http://example.org/integer"
                     if (uriNS.LocalPath != "/") {
                         if (!isDatatypeNamespace) {
-                            ns      = ns.Replace(uriNS.Segments[uriNS.Segments.Length - 1], String.Empty);
+                            ns      = ns.TrimEnd(uriNS.Segments[uriNS.Segments.Length-1].ToCharArray());
                         }
                     }
                 }
