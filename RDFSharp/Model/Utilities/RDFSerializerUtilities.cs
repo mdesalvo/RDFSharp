@@ -31,39 +31,88 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFSerializerUtilities {
 
-        #region Methods
-
         #region RDFNTriples
         /// <summary>
         /// Regex to catch 8-byte unicodes in NTriples
         /// </summary>
-        private static readonly Lazy<Regex> regexU8       = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexU8  = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
         /// <summary>
         /// Regex to catch 4-byte unicodes in NTriples
         /// </summary>
-        private static readonly Lazy<Regex> regexU4       = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
+        internal static readonly Lazy<Regex> regexU4  = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
         /// <summary>
-        /// Dictionary of regexes catching valid NTriples
+        /// Regex to parse NTriples focusing on predicate position 
         /// </summary>
-        internal static Dictionary<String, Lazy<Regex>> ValidNTriples = new Dictionary<String, Lazy<Regex>>() { 
-            { "Su_P_Ou",    new Lazy<Regex>(() => new Regex(@"(^<([^\s<>])+>\s+<([^\s<>])+>\s+<([^\s<>])+>\s+.$)",                          RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Sb_P_Ou",    new Lazy<Regex>(() => new Regex(@"(^_:([^\s<>])+\s+<([^\s<>])+>\s+<([^\s<>])+>\s+.$)",                          RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Su_P_Ob",    new Lazy<Regex>(() => new Regex(@"(^<([^\s<>])+>\s+<([^\s<>])+>\s+_:([^\s<>])+\s+.$)",                          RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Sb_P_Ob",    new Lazy<Regex>(() => new Regex(@"(^_:([^\s<>])+\s+<([^\s<>])+>\s+_:([^\s<>])+\s+.$)",                          RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Su_P_Lp",    new Lazy<Regex>(() => new Regex(@"(^<([^\s<>])+>\s+<([^\s<>])+>\s+\""(.)*\""\s+.$)",                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Su_P_Lpl",   new Lazy<Regex>(() => new Regex(@"(^<([^\s<>])+>\s+<([^\s<>])+>\s+\""(.)*\""@[a-zA-Z]+(\-[a-zA-Z0-9]+)*\s+.$)", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Su_P_Lt",    new Lazy<Regex>(() => new Regex(@"(^<([^\s<>])+>\s+<([^\s<>])+>\s+\""(.)*\""\^\^<([^\s<>])+>\s+.$)",            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Sb_P_Lp",    new Lazy<Regex>(() => new Regex(@"(^_:([^\s<>])+\s+<([^\s<>])+>\s+\""(.)*\""\s+.$)",                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Sb_P_Lpl",   new Lazy<Regex>(() => new Regex(@"(^_:([^\s<>])+\s+<([^\s<>])+>\s+\""(.)*\""@[a-zA-Z]+(\-[a-zA-Z0-9]+)*\s+.$)", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Sb_P_Lt",    new Lazy<Regex>(() => new Regex(@"(^_:([^\s<>])+\s+<([^\s<>])+>\s+\""(.)*\""\^\^<([^\s<>])+>\s+.$)",            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "BrkUri",     new Lazy<Regex>(() => new Regex(@"(<([^\s<>])+>)",                                                              RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "BndUri",     new Lazy<Regex>(() => new Regex(@"(_:([^\s<>])+)",                                                              RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Lplain",     new Lazy<Regex>(() => new Regex(@"(\""(.)*\"")",                                                                RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Lplainlang", new Lazy<Regex>(() => new Regex(@"(\""(.)*\""@[a-zA-Z]+(\-[a-zA-Z0-9]+)*)",                                     RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "Ltyped",     new Lazy<Regex>(() => new Regex(@"(\""(.)*\""\^\^<([^\s<>])+>)",                                                RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "StartSpace", new Lazy<Regex>(() => new Regex(@"(^\s+)",                                                                      RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) },
-            { "EndSpace",   new Lazy<Regex>(() => new Regex(@"(\s+$)",                                                                      RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline | RegexOptions.CultureInvariant)) }
-        };
+        internal static readonly Lazy<Regex> regexNT  = new Lazy<Regex>(() => new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.Compiled | RegexOptions.ExplicitCapture));
+        /// <summary>
+        /// Regex to detect presence of a plain literal with language tag within a given N-Triple
+        /// </summary>
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture)); 
+
+        /// <summary>
+        /// Tries to parse the given N-Triple
+        /// </summary>
+        internal static String[] ParseNTriple(String ntriple) {
+            String[] tokens   = new String[3];
+            
+            //A legal NTriple starts with "_:" of blanks or "<" of non-blanks
+            if (ntriple.StartsWith("_:") || ntriple.StartsWith("<")) {
+                
+                //Parse NTriple by exploiting surrounding spaces and angle brackets of predicate
+                tokens        = regexNT.Value.Split(ntriple, 2);
+                
+                //An illegal NTriple cannot be splitted into 3 parts with this regex
+                if (tokens.Length != 3) {
+                    throw new Exception("found illegal NTriple, predicate must be surrounded by \" <\" and \"> \"");
+                }
+
+                //Check subject for well-formedness
+                tokens[0]     = tokens[0].Trim(new Char[] { ' ', '\n', '\r', '\t' });
+                if (tokens[0].Contains(" ")) {
+                    throw new Exception("found illegal NTriple, subject Uri cannot contain spaces");
+                }
+                if ((tokens[0].StartsWith("<")   && !tokens[0].EndsWith(">")) ||
+                    (tokens[0].StartsWith("_:")  &&  tokens[0].EndsWith(">")) ||
+                    (tokens[0].Count(c => c.Equals('<')) > 1)                 ||
+                    (tokens[0].Count(c => c.Equals('>')) > 1))  {
+                    throw new Exception("found illegal NTriple, subject Uri is not well-formed");
+                }
+
+                //Check predicate for well-formedness
+                tokens[1]     = tokens[1].Trim(new Char[] { ' ', '\n', '\r', '\t' });
+                if (tokens[1].Contains(" ")) {
+                    throw new Exception("found illegal NTriple, predicate Uri cannot contain spaces");
+                }
+                if ((tokens[1].Count(c => c.Equals('<')) > 1)                 ||
+                    (tokens[1].Count(c => c.Equals('>')) > 1)) {
+                    throw new Exception("found illegal NTriple, predicate Uri is not well-formed");
+                }
+
+                //Check object for well-formedness
+                tokens[2]     = tokens[2].Trim(new Char[] { ' ', '\n', '\r', '\t' });
+                if (tokens[2].StartsWith("<")) {
+                    if (tokens[2].Contains(" ")) {
+                        throw new Exception("found illegal NTriple, object Uri cannot contain spaces");
+                    }
+                    if ((!tokens[2].EndsWith(">")                             ||
+                         (tokens[2].Count(c => c.Equals('<')) > 1)            ||
+                         (tokens[2].Count(c => c.Equals('>')) > 1))) {
+                        throw new Exception("found illegal NTriple, object Uri is not well-formed");
+                    }
+                }
+                else if (tokens[2].StartsWith("_:")) {
+                    if (tokens[2].EndsWith(">")) {
+                        throw new Exception("found illegal NTriple, object Uri is not well-formed");
+                    }
+                }
+
+            }
+            else {
+                throw new Exception("found illegal NTriple, must start with \"_:\" or with \"<\"");
+            }
+
+            return tokens;
+        }
 
         /// <summary>
         /// Turns back ASCII-encoded Unicodes into Unicodes. 
@@ -507,8 +556,6 @@ namespace RDFSharp.Model
             }
 
         }
-        #endregion
-
         #endregion
 
     }
