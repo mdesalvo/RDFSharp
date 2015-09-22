@@ -310,13 +310,13 @@ namespace RDFSharp.Model
 
                 // e.g.:  "http://www.w3.org/2001/XMLSchema#integer"
                 if (datatypeUri.Fragment != String.Empty) {
-                    type            = datatypeUri.Fragment.Replace("#", String.Empty);              //"integer"
-                    ns              = datatypeUri.AbsoluteUri.Replace(type, String.Empty);          //"http://www.w3.org/2001/XMLSchema#"
+                    type            = datatypeUri.Fragment.TrimStart(new Char[] { '#' });    //"integer"
+                    ns              = datatypeUri.AbsoluteUri.TrimEnd(type.ToCharArray());   //"http://www.w3.org/2001/XMLSchema#"
                 }
                 // e.g.:  "http://example.org/integer" or "ex:integer"
                 else {
-                    type            = datatypeUri.Segments[datatypeUri.Segments.Length - 1];        //"integer"
-                    ns              = datatypeUri.AbsoluteUri.Replace(type, String.Empty);          //"http://example.org/"  or "ex:"
+                    type            = datatypeUri.Segments[datatypeUri.Segments.Length - 1]; //"integer"
+                    ns              = datatypeUri.AbsoluteUri.TrimEnd(type.ToCharArray());   //"http://example.org/" or "ex:"
                 }
 
                 //First try to search the register for prefix and datatype
@@ -337,7 +337,7 @@ namespace RDFSharp.Model
 						    (RDFNamespaceRegister.GetByNamespace(ns) ?? 
 							     RDFModelUtilities.GenerateNamespace(ns, true));
 
-                        //If nothing found, we also have to create a new datatype (defaulting to "String" category)
+                        //If nothing found, we also have to create a new datatype
                         dt          = new RDFDatatype(nSpace.Prefix, nSpace.Namespace, type, RDFModelEnums.RDFDatatypeCategory.String);
 
                     }
