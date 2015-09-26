@@ -969,7 +969,9 @@ namespace RDFSharp.Semantics
                 }
                 foreach (var t  in imports.SelectTriplesBySubject((RDFResource)ontology.Value)) {
                     if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                         ontology.AddImportsAnnotation(new RDFOntology((RDFResource)t.Object));
+                         
+                         //Import referenced ontology
+
                     }
                 }
                 #endregion

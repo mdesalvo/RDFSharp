@@ -64,6 +64,7 @@
     <Compile Include="Model\RDFLiteral.cs" />
     <Compile Include="Model\RDFModelEnums.cs" />
     <Compile Include="Model\RDFModelException.cs" />
+    <Compile Include="Model\RDFModelUtilities.cs" />
     <Compile Include="Model\RDFNamespace.cs" />
     <Compile Include="Model\RDFNamespaceRegister.cs" />
     <Compile Include="Model\RDFPlainLiteral.cs" />
@@ -75,8 +76,6 @@
     <Compile Include="Model\Serializers\RDFTrix.cs" />
     <Compile Include="Model\Serializers\RDFTurtle.cs" />
     <Compile Include="Model\Serializers\RDFXml.cs" />
-    <Compile Include="Model\Utilities\RDFModelUtilities.cs" />
-    <Compile Include="Model\Utilities\RDFSerializerUtilities.cs" />
     <!-- Query -->
     <Compile Include="Query\RDFFilter.cs" />
     <Compile Include="Query\RDFModifier.cs" />
@@ -86,6 +85,7 @@
     <Compile Include="Query\RDFQueryEngine.cs" />
     <Compile Include="Query\RDFQueryEnums.cs" />
     <Compile Include="Query\RDFQueryException.cs" />
+    <Compile Include="Query\RDFQueryUtilities.cs" />
     <Compile Include="Query\RDFVariable.cs" />
     <Compile Include="Query\Filters\RDFBooleanAndFilter.cs" />
     <Compile Include="Query\Filters\RDFBooleanNotFilter.cs" />
@@ -116,7 +116,6 @@
     <Compile Include="Query\Queries\Select\RDFSelectQuery.cs" />
     <Compile Include="Query\Queries\Select\RDFSelectQueryEngine.cs" />
     <Compile Include="Query\Queries\Select\RDFSelectQueryResult.cs" />
-    <Compile Include="Query\Utilities\RDFQueryUtilities.cs" />
     <!-- Semantics -->
     <Compile Include="Semantics\RDFOntology.cs" />
     <Compile Include="Semantics\RDFOntologyClass.cs" />
@@ -134,6 +133,7 @@
     <Compile Include="Semantics\RDFOntologyTaxonomy.cs" />
     <Compile Include="Semantics\RDFSemanticsEnums.cs" />
     <Compile Include="Semantics\RDFSemanticsException.cs" />
+    <Compile Include="Semantics\RDFSemanticsUtilities.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyComplementClass.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyDataRangeClass.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyEnumerateClass.cs" />
@@ -146,7 +146,6 @@
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyCardinalityRestriction.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyHasValueRestriction.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologySomeValuesFromRestriction.cs" />
-    <Compile Include="Semantics\Utilities\RDFSemanticsUtilities.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationEvidence.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationReport.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationRule.cs" />
@@ -161,10 +160,10 @@
     <Compile Include="Store\RDFStoreException.cs" />
     <Compile Include="Store\RDFStoreIndex.cs" />
     <Compile Include="Store\RDFStoreSerializer.cs" />
+    <Compile Include="Store\RDFStoreUtilities.cs" />
     <Compile Include="Store\Engines\Memory\RDFMemoryStore.cs" />
     <Compile Include="Store\Engines\SQLServer\RDFSQLServerStore.cs" />
     <Compile Include="Store\Serializers\RDFNQuads.cs" />
-    <Compile Include="Store\Utilities\RDFStoreUtilities.cs" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

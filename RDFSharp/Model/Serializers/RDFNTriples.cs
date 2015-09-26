@@ -57,24 +57,24 @@ namespace RDFSharp.Model
 
                         #region subj
                         if (((RDFResource)t.Subject).IsBlank) {
-                            tripleTemplate     = tripleTemplate.Replace("<{SUBJ}>", RDFSerializerUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"));
+                            tripleTemplate     = tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"));
                         }
                         else {
-                            tripleTemplate     = tripleTemplate.Replace("{SUBJ}", RDFSerializerUtilities.Unicode_To_ASCII(t.Subject.ToString()));
+                            tripleTemplate     = tripleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()));
                         }
                         #endregion
 
                         #region pred
-                        tripleTemplate         = tripleTemplate.Replace("{PRED}", RDFSerializerUtilities.Unicode_To_ASCII(t.Predicate.ToString()));
+                        tripleTemplate         = tripleTemplate.Replace("{PRED}", RDFModelUtilities.Unicode_To_ASCII(t.Predicate.ToString()));
                         #endregion
 
                         #region object
                         if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavors.SPO) {
                             if (((RDFResource)t.Object).IsBlank) {
-                                tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFSerializerUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
+                                tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
                             }
                             else {
-                                tripleTemplate = tripleTemplate.Replace("{OBJ}", RDFSerializerUtilities.Unicode_To_ASCII(t.Object.ToString()));
+                                tripleTemplate = tripleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString()));
                             }
                         }
                         #endregion
@@ -82,7 +82,7 @@ namespace RDFSharp.Model
                         #region literal
                         else {
 
-                            tripleTemplate         = tripleTemplate.Replace("{VAL}", RDFSerializerUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value).Replace("\"","\\\""));
+                            tripleTemplate         = tripleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value).Replace("\"","\\\""));
                             tripleTemplate         = tripleTemplate.Replace("\n", "\\n").Replace("\t", "\\t").Replace("\r", "\\r");
 
                             #region plain literal
@@ -144,20 +144,20 @@ namespace RDFSharp.Model
                         }
 
                         //Parse the sanitized triple 
-                        tokens         = RDFSerializerUtilities.ParseNTriple(ntriple);                       
+                        tokens         = RDFModelUtilities.ParseNTriple(ntriple);                       
                         #endregion
 
                         #region subj
                         String subj    = tokens[0].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new   Char[] { '>' })
                                                   .Replace("_:", "bnode:");
-                        RDFResource S  = new RDFResource(RDFSerializerUtilities.ASCII_To_Unicode(subj));
+                        RDFResource S  = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
                         String pred    = tokens[1].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new   Char[] { '>' });
-                        RDFResource P  = new RDFResource(RDFSerializerUtilities.ASCII_To_Unicode(pred));
+                        RDFResource P  = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
 
                         #region object
@@ -168,7 +168,7 @@ namespace RDFSharp.Model
                                                   .TrimEnd(new Char[] { '>' })
                                                   .Replace("_:", "bnode:")
                                                   .Trim(new Char[] { ' ', '\n', '\t', '\r' });
-                            var O      = new RDFResource(RDFSerializerUtilities.ASCII_To_Unicode(obj));
+                            var O      = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
                             result.AddTriple(new RDFTriple(S, P, O));
                         }
                         #endregion
@@ -185,7 +185,7 @@ namespace RDFSharp.Model
                                                   .Replace("\\n",  "\n")
                                                   .Replace("\\t",  "\t")
                                                   .Replace("\\r",  "\r");
-                            tokens[2]  = RDFSerializerUtilities.ASCII_To_Unicode(tokens[2]);
+                            tokens[2]  = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
                             #endregion
 
                             #region plain literal
@@ -193,7 +193,7 @@ namespace RDFSharp.Model
                                  tokens[2].EndsWith("^^") ||
                                  tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<") {
                                  RDFPlainLiteral L    = null;
-                                 if (RDFSerializerUtilities.regexLPL.Value.Match(tokens[2]).Success) {
+                                 if (RDFModelUtilities.regexLPL.Value.Match(tokens[2]).Success) {
                                      tokens[2]        = tokens[2].Replace("\"@", "@");
                                      String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
                                      String pLitLang  = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);

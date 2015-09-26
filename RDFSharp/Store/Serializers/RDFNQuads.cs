@@ -57,24 +57,24 @@ namespace RDFSharp.Store {
 
                         #region subj
                         if (((RDFResource)q.Subject).IsBlank) {
-                            quadrupleTemplate     = quadrupleTemplate.Replace("<{SUBJ}>", RDFSerializerUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:"));
+                            quadrupleTemplate     = quadrupleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:"));
                         }
                         else {
-                            quadrupleTemplate     = quadrupleTemplate.Replace("{SUBJ}", RDFSerializerUtilities.Unicode_To_ASCII(q.Subject.ToString()));
+                            quadrupleTemplate     = quadrupleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()));
                         }
                         #endregion
 
                         #region pred
-                        quadrupleTemplate         = quadrupleTemplate.Replace("{PRED}", RDFSerializerUtilities.Unicode_To_ASCII(q.Predicate.ToString()));
+                        quadrupleTemplate         = quadrupleTemplate.Replace("{PRED}", RDFModelUtilities.Unicode_To_ASCII(q.Predicate.ToString()));
                         #endregion
 
                         #region object
                         if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavors.SPO) {
                             if (((RDFResource)q.Object).IsBlank) {
-                                quadrupleTemplate = quadrupleTemplate.Replace("<{OBJ}>", RDFSerializerUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:");
+                                quadrupleTemplate = quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:");
                             }
                             else {
-                                quadrupleTemplate = quadrupleTemplate.Replace("{OBJ}", RDFSerializerUtilities.Unicode_To_ASCII(q.Object.ToString()));
+                                quadrupleTemplate = quadrupleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString()));
                             }
                         }
                         #endregion
@@ -82,7 +82,7 @@ namespace RDFSharp.Store {
                         #region literal
                         else {
 
-                            quadrupleTemplate     = quadrupleTemplate.Replace("{VAL}", RDFSerializerUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value).Replace("\"", "\\\""));
+                            quadrupleTemplate     = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value).Replace("\"", "\\\""));
                             quadrupleTemplate     = quadrupleTemplate.Replace("\n", "\\n").Replace("\t", "\\t").Replace("\r", "\\r");
 
                             #region plain literal
@@ -106,7 +106,7 @@ namespace RDFSharp.Store {
                         #endregion
 
                         #region context
-                        quadrupleTemplate         = quadrupleTemplate.Replace("<{CTX}>", RDFSerializerUtilities.Unicode_To_ASCII(q.Context.ToString()).Replace("bnode:", "_:"));
+                        quadrupleTemplate         = quadrupleTemplate.Replace("<{CTX}>", RDFModelUtilities.Unicode_To_ASCII(q.Context.ToString()).Replace("bnode:", "_:"));
                         #endregion
 
                         sw.WriteLine(quadrupleTemplate);
@@ -116,7 +116,7 @@ namespace RDFSharp.Store {
 
             }
             catch (Exception ex) {
-                throw new RDFModelException("Cannot serialize N-Quads because: " + ex.Message, ex);
+                throw new RDFStoreException("Cannot serialize N-Quads because: " + ex.Message, ex);
             }
         }
         #endregion
