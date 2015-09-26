@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     public static class RDFModelEnums {
 
         /// <summary>
-        /// RDFFormats represents an enumeration for supported RDF serialization data formats.
+        /// RDFFormats represents an enumeration for supported RDF graph serialization data formats.
         /// </summary>
         public enum RDFFormats { NTriples, Turtle, TriX, RdfXml };
 

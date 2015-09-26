@@ -160,8 +160,10 @@
     <Compile Include="Store\RDFStoreEnums.cs" />
     <Compile Include="Store\RDFStoreException.cs" />
     <Compile Include="Store\RDFStoreIndex.cs" />
+    <Compile Include="Store\RDFStoreSerializer.cs" />
     <Compile Include="Store\Engines\Memory\RDFMemoryStore.cs" />
     <Compile Include="Store\Engines\SQLServer\RDFSQLServerStore.cs" />
+    <Compile Include="Store\Serializers\RDFNQuads.cs" />
     <Compile Include="Store\Utilities\RDFStoreUtilities.cs" />
   </ItemGroup>
 

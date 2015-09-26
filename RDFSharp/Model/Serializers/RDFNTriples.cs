@@ -25,13 +25,13 @@ namespace RDFSharp.Model
 {
     
     /// <summary>
-    /// RDFNTriples is responsible for managing serialization to and from NTriples data format.
+    /// RDFNTriples is responsible for managing serialization to and from N-Triples data format.
     /// </summary>
     internal static class RDFNTriples {
 
         #region Methods
         /// <summary>
-        /// Serializes the given graph to the given filepath using NTriples data format. 
+        /// Serializes the given graph to the given filepath using N-Triples data format. 
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath) {
             try {
@@ -117,7 +117,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Deserializes the given NTriples filepath to a graph. 
+        /// Deserializes the given N-Triples filepath to a graph. 
         /// </summary>
         internal static RDFGraph Deserialize(String filepath) {
             try {

@@ -27,6 +27,11 @@ namespace RDFSharp.Store
         /// </summary>
         public enum RDFStoreSQLErrors { NoErrors, InvalidDataSource, QuadruplesTableNotFound };
 
+        /// <summary>
+        /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
+        /// </summary>
+        public enum RDFFormats { NQuads };
+
     }
 
 }
