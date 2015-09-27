@@ -43,14 +43,14 @@ namespace RDFSharp.Store {
 
                         #region template
                         if (q.TripleFlavor   == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}>.";
+                            quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         }
                         else {
                             if (q.Object is RDFPlainLiteral) {
-                                quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}>.";
+                                quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> .";
                             }
                             else {
-                                quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}>.";
+                                quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
                             }
                         }
                         #endregion
@@ -106,7 +106,7 @@ namespace RDFSharp.Store {
                         #endregion
 
                         #region context
-                        quadrupleTemplate         = quadrupleTemplate.Replace("<{CTX}>", RDFModelUtilities.Unicode_To_ASCII(q.Context.ToString()).Replace("bnode:", "_:"));
+                        quadrupleTemplate         = quadrupleTemplate.Replace("{CTX}", RDFModelUtilities.Unicode_To_ASCII(q.Context.ToString()));
                         #endregion
 
                         sw.WriteLine(quadrupleTemplate);

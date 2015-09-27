@@ -22,7 +22,8 @@ namespace RDFSharp.Store
 {
 
     /// <summary>
-    /// RDFContext represents an object which can act as C-token of a pattern
+    /// RDFContext represents an object which can act as C-token of a pattern. 
+	/// It cannot start with "bnode:" because blank contexts are not supported.
     /// </summary>
     public class RDFContext: RDFPatternMember {
 
@@ -47,7 +48,7 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFContext(String contextString): this() {
             Uri tempUri                  = RDFModelUtilities.GetUriFromString(contextString);
-            if (tempUri                 != null) {
+            if (tempUri                 != null && !tempUri.ToString().StartsWith("bnode:")) {
                 this.Context             = tempUri;
 				this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());   
             }
@@ -59,7 +60,7 @@ namespace RDFSharp.Store
         public RDFContext(Uri contextUri): this() {
             if (contextUri              != null) {
                 Uri tempUri              = RDFModelUtilities.GetUriFromString(contextUri.ToString());
-                if (tempUri             != null) {
+                if (tempUri             != null && !tempUri.ToString().StartsWith("bnode:")) {
                     this.Context         = tempUri;
 					this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());   
                 }

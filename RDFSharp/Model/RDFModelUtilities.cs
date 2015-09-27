@@ -734,15 +734,15 @@ namespace RDFSharp.Model
 
         #region RDFNTriples
         /// <summary>
-        /// Regex to catch 8-byte unicodes in NTriples
+        /// Regex to catch 8-byte unicodes in N-Triples
         /// </summary>
         internal static readonly Lazy<Regex> regexU8  = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
         /// <summary>
-        /// Regex to catch 4-byte unicodes in NTriples
+        /// Regex to catch 4-byte unicodes in N-Triples
         /// </summary>
         internal static readonly Lazy<Regex> regexU4  = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
         /// <summary>
-        /// Regex to parse NTriples focusing on predicate position 
+        /// Regex to parse N-Triples focusing on predicate position 
         /// </summary>
         internal static readonly Lazy<Regex> regexNT  = new Lazy<Regex>(() => new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.Compiled | RegexOptions.ExplicitCapture));
         /// <summary>
@@ -764,52 +764,52 @@ namespace RDFSharp.Model
 
                 //An illegal NTriple cannot be splitted into 3 parts with this regex
                 if (tokens.Length != 3) {
-                    throw new Exception("found illegal NTriple, predicate must be surrounded by \" <\" and \"> \"");
+                    throw new Exception("found illegal N-Triple, predicate must be surrounded by \" <\" and \"> \"");
                 }
 
                 //Check subject for well-formedness
                 tokens[0]          = tokens[0].Trim(new Char[] { ' ', '\n', '\r', '\t' });
                 if (tokens[0].Contains(" ")) {
-                    throw new Exception("found illegal NTriple, subject Uri cannot contain spaces");
+                    throw new Exception("found illegal N-Triple, subject Uri cannot contain spaces");
                 }
                 if ((tokens[0].StartsWith("<") && !tokens[0].EndsWith(">")) ||
                     (tokens[0].StartsWith("_:") && tokens[0].EndsWith(">")) ||
                     (tokens[0].Count(c => c.Equals('<')) > 1) ||
                     (tokens[0].Count(c => c.Equals('>')) > 1)) {
-                    throw new Exception("found illegal NTriple, subject Uri is not well-formed");
+                    throw new Exception("found illegal N-Triple, subject Uri is not well-formed");
                 }
 
                 //Check predicate for well-formedness
                 tokens[1]          = tokens[1].Trim(new Char[] { ' ', '\n', '\r', '\t' });
                 if (tokens[1].Contains(" ")) {
-                    throw new Exception("found illegal NTriple, predicate Uri cannot contain spaces");
+                    throw new Exception("found illegal N-Triple, predicate Uri cannot contain spaces");
                 }
                 if ((tokens[1].Count(c => c.Equals('<')) > 1) ||
                     (tokens[1].Count(c => c.Equals('>')) > 1)) {
-                    throw new Exception("found illegal NTriple, predicate Uri is not well-formed");
+                    throw new Exception("found illegal N-Triple, predicate Uri is not well-formed");
                 }
 
                 //Check object for well-formedness
                 tokens[2]          = tokens[2].Trim(new Char[] { ' ', '\n', '\r', '\t' });
                 if (tokens[2].StartsWith("<")) {
                     if (tokens[2].Contains(" ")) {
-                        throw new Exception("found illegal NTriple, object Uri cannot contain spaces");
+                        throw new Exception("found illegal N-Triple, object Uri cannot contain spaces");
                     }
                     if ((!tokens[2].EndsWith(">") ||
                          (tokens[2].Count(c => c.Equals('<')) > 1) ||
                          (tokens[2].Count(c => c.Equals('>')) > 1))) {
-                        throw new Exception("found illegal NTriple, object Uri is not well-formed");
+                        throw new Exception("found illegal N-Triple, object Uri is not well-formed");
                     }
                 }
                 else if (tokens[2].StartsWith("_:")) {
                     if (tokens[2].EndsWith(">")) {
-                        throw new Exception("found illegal NTriple, object Uri is not well-formed");
+                        throw new Exception("found illegal N-Triple, object Uri is not well-formed");
                     }
                 }
 
             }
             else {
-                throw new Exception("found illegal NTriple, must start with \"_:\" or with \"<\"");
+                throw new Exception("found illegal N-Triple, must start with \"_:\" or with \"<\"");
             }
 
             return tokens;

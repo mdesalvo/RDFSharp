@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using RDFSharp.Model;
 
 namespace RDFSharp.Store
@@ -301,77 +302,6 @@ namespace RDFSharp.Store
             }
             return matchResult;
         }
-        #endregion
-
-        #region Serialization
-
-        #region RDFNQuads
-        /// <summary>
-        /// Tries to parse the given N-Quad
-        /// </summary>
-        internal static String[] ParseNQuadruple(String ntriple) {
-            String[] tokens   = new String[3];
-
-            //A legal N-Quad starts with "_:" of blanks or "<" of non-blanks
-            if (ntriple.StartsWith("_:") || ntriple.StartsWith("<")) {
-
-                //Parse N-Quad by exploiting surrounding spaces and angle brackets of predicate
-                tokens        = RDFModelUtilities.regexNT.Value.Split(ntriple, 3);
-
-                //An illegal N-Quad cannot be splitted into 4 parts with this regex
-                if (tokens.Length != 4) {
-                    throw new Exception("found illegal N-Quad, predicate must be surrounded by \" <\" and \"> \"");
-                }
-
-                //Check subject for well-formedness
-                tokens[0]     = tokens[0].Trim(new Char[] { ' ', '\n', '\r', '\t' });
-                if (tokens[0].Contains(" ")) {
-                    throw new Exception("found illegal N-Quad, subject Uri cannot contain spaces");
-                }
-                if ((tokens[0].StartsWith("<") && !tokens[0].EndsWith(">")) ||
-                    (tokens[0].StartsWith("_:") && tokens[0].EndsWith(">")) ||
-                    (tokens[0].Count(c => c.Equals('<')) > 1) ||
-                    (tokens[0].Count(c => c.Equals('>')) > 1)) {
-                    throw new Exception("found illegal N-Quad, subject Uri is not well-formed");
-                }
-
-                //Check predicate for well-formedness
-                tokens[1]     = tokens[1].Trim(new Char[] { ' ', '\n', '\r', '\t' });
-                if (tokens[1].Contains(" ")) {
-                    throw new Exception("found illegal N-Quad, predicate Uri cannot contain spaces");
-                }
-                if ((tokens[1].Count(c => c.Equals('<')) > 1) ||
-                    (tokens[1].Count(c => c.Equals('>')) > 1)) {
-                    throw new Exception("found illegal N-Quad, predicate Uri is not well-formed");
-                }
-
-                //Check object for well-formedness
-                tokens[2]     = tokens[2].Trim(new Char[] { ' ', '\n', '\r', '\t' });
-                if (tokens[2].StartsWith("<")) {
-                    if (tokens[2].Contains(" ")) {
-                        throw new Exception("found illegal N-Quad, object Uri cannot contain spaces");
-                    }
-                    if ((!tokens[2].EndsWith(">") ||
-                         (tokens[2].Count(c => c.Equals('<')) > 1) ||
-                         (tokens[2].Count(c => c.Equals('>')) > 1))) {
-                        throw new Exception("found illegal N-Quad, object Uri is not well-formed");
-                    }
-                }
-                else if (tokens[2].StartsWith("_:")) {
-                     if (tokens[2].EndsWith(">")) {
-                        throw new Exception("found illegal N-Quad, object Uri is not well-formed");
-                     }
-                }
-
-            }
-            else {
-                throw new Exception("found illegal N-Quad, must start with \"_:\" or with \"<\"");
-            }
-
-            return tokens;
-        }
-        #endregion
-
         #endregion
 
     }
