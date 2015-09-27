@@ -30,22 +30,11 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFGraph: IEquatable<RDFGraph>, IEnumerable<RDFTriple> {
 
-        #region Data
-        private Uri context;
-        #endregion
-
         #region Properties
         /// <summary>
         /// Uri of the graph
         /// </summary>
-        public Uri Context {
-            get {
-                return this.context;
-            } 
-            set {
-                this.context = (value ?? RDFNamespaceRegister.DefaultNamespace.Namespace);
-            } 
-        }
+        public Uri Context { get; internal set; }
 
         /// <summary>
         /// Count of the graph's triples
@@ -139,6 +128,16 @@ namespace RDFSharp.Model
         #region Methods
 
         #region Add
+        /// <summary>
+        /// Sets the context of the graph to the given Uri (null or blank-node Uris are not accepted)
+        /// </summary>
+        public RDFGraph SetContext(Uri contextUri) {
+            if (contextUri  != null && !contextUri.ToString().ToUpperInvariant().StartsWith("BNODE:")) {
+                this.Context = contextUri;
+            }
+            return this;
+        }
+
         /// <summary>
         /// Adds the given triple to the graph, avoiding duplicate insertions
         /// </summary>
@@ -424,7 +423,7 @@ namespace RDFSharp.Model
                     //Parse the name of the datatable for Uri, in order to assign the graph name
                     Uri graphUri;
                     if (Uri.TryCreate(table.TableName, UriKind.Absolute, out graphUri)) {
-                        result.Context = graphUri;
+                        result.SetContext(graphUri);
                     }
                     #endregion
 

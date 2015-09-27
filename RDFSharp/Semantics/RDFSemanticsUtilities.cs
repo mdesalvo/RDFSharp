@@ -2162,8 +2162,8 @@ namespace RDFSharp.Semantics
         /// Gets a graph representation of the given ontology
         /// </summary>
         internal static RDFGraph ToRDFGraph(RDFOntology ontology) {
-            var result         = new RDFGraph();
-            if (ontology      != null) {
+            var result    = new RDFGraph();
+            if (ontology != null) {
 
                 //Ontology
                 result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY));
@@ -2214,13 +2214,13 @@ namespace RDFSharp.Semantics
                 }
 
                 //Model
-                result         = result.UnionWith(ontology.Model.ToRDFGraph());
+                result    = result.UnionWith(ontology.Model.ToRDFGraph());
 
                 //Data
-                result         = result.UnionWith(ontology.Data.ToRDFGraph());
+                result    = result.UnionWith(ontology.Data.ToRDFGraph());
 
                 //Ontology Name
-                result.Context = ((RDFResource)ontology.Value).URI;            
+                result.SetContext(((RDFResource)ontology.Value).URI);
             }
 
             return result;

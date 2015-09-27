@@ -290,60 +290,60 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs       = new XmlReaderSettings(); 
-                xrs.IgnoreComments          = true;
-                xrs.DtdProcessing           = DtdProcessing.Ignore;
+                XmlReaderSettings xrs    = new XmlReaderSettings(); 
+                xrs.IgnoreComments       = true;
+                xrs.DtdProcessing        = DtdProcessing.Ignore;
 
-                RDFGraph result             = new RDFGraph();
-                using(XmlReader xr          = XmlReader.Create(new StreamReader(filepath, Encoding.UTF8), xrs)) {
+                RDFGraph result          = new RDFGraph();
+                using(XmlReader xr       = XmlReader.Create(new StreamReader(filepath, Encoding.UTF8), xrs)) {
 
                     #region load
-                    XmlDocument xmlDoc      = new XmlDocument();
+                    XmlDocument xmlDoc   = new XmlDocument();
                     xmlDoc.Load(xr);
                     #endregion
 
                     #region root
                     //Prepare the namespace table for the Xml selections
-                    XmlNamespaceManager nsMgr         = new XmlNamespaceManager(new NameTable());
+                    var nsMgr            = new XmlNamespaceManager(new NameTable());
                     nsMgr.AddNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI);
 
                     //Select "rdf:RDF" root node
-                    XmlNode rdfRDF                    = RDFModelUtilities.GetRdfRootNode(xmlDoc, nsMgr);
+                    XmlNode rdfRDF       = RDFModelUtilities.GetRdfRootNode(xmlDoc, nsMgr);
                     #endregion
 
                     #region prefixes
                     //Select "xmlns" attributes and try to add them to the namespace register
-                    XmlAttributeCollection xmlnsAttrs = RDFModelUtilities.GetXmlnsNamespaces(rdfRDF, nsMgr);
+                    var xmlnsAttrs       = RDFModelUtilities.GetXmlnsNamespaces(rdfRDF, nsMgr);
                         
                     //Try to get the "xml:base" attribute, which is needed to resolve eventual relative #IDs in "rdf:about" nodes
                     //If it is not found, set it to the graph Uri
-                    Uri xmlBase                       = null;
-                    if (xmlnsAttrs                   != null && xmlnsAttrs.Count > 0) {
-                        XmlAttribute xmlBaseAttr      = (rdfRDF.Attributes["xml:base"] ?? rdfRDF.Attributes["xmlns"]);
-                        if (xmlBaseAttr              != null) {
-                            xmlBase                   = RDFModelUtilities.GetUriFromString(xmlBaseAttr.Value);
+                    Uri xmlBase          = null;
+                    if (xmlnsAttrs      != null && xmlnsAttrs.Count > 0) {
+                        var xmlBaseAttr  = (rdfRDF.Attributes["xml:base"] ?? rdfRDF.Attributes["xmlns"]);
+                        if (xmlBaseAttr != null) {
+                            xmlBase      = RDFModelUtilities.GetUriFromString(xmlBaseAttr.Value);
                         }                        
                     }
                     //Always keep in synch the Context and the xmlBase
-                    if (xmlBase                      != null) {
-                        result.Context                = xmlBase;
+                    if (xmlBase         != null) {
+                        result.SetContext(xmlBase);
                     }
                     else {
-                        xmlBase                       = result.Context;
+                        xmlBase          = result.Context;
                     }
                     #endregion
 
                     #region elements
                     //Parse resource elements, which are the childs of root node and represent the subjects
                     if (rdfRDF.HasChildNodes) {
-                        IEnumerator subjNodesEnum     = rdfRDF.ChildNodes.GetEnumerator();
+                        var subjNodesEnum     = rdfRDF.ChildNodes.GetEnumerator();
                         while (subjNodesEnum != null && subjNodesEnum.MoveNext()) {
                                 
                             #region subj
                             //Get the current resource node
-                            XmlNode subjNode          = (XmlNode)subjNodesEnum.Current;
-                            RDFResource subj          = RDFModelUtilities.GetSubjectNode(subjNode, xmlBase, result);
-                            if (subj == null) {
+                            XmlNode subjNode  = (XmlNode)subjNodesEnum.Current;
+                            RDFResource subj  = RDFModelUtilities.GetSubjectNode(subjNode, xmlBase, result);
+                            if (subj         == null) {
                                 continue;
                             }
                             #endregion

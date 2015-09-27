@@ -190,7 +190,7 @@ namespace RDFSharp.Model
 
                                 #region uri
                                 if (triple.Name.Equals("uri", StringComparison.Ordinal)) {
-                                    g.Context           = RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText);
+                                    g.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText));
                                 }
                                 #endregion
 
@@ -311,8 +311,8 @@ namespace RDFSharp.Model
                             }
                             #endregion
 
-                            result                      = result.UnionWith(g);
-                            result.Context              = g.Context;
+                            result = result.UnionWith(g);
+                            result.SetContext(g.Context);
                         }
                     }
                     #endregion
