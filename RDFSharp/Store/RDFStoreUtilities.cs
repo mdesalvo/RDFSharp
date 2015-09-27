@@ -49,21 +49,19 @@ namespace RDFSharp.Store
                 String literal            = fetchedQuadruples["Object"].ToString();
 
                 //PlainLiteral
-                if (!literal.Contains("^^") || literal.EndsWith("^^") || RDFModelUtilities.GetUriFromString(literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
-                    RDFPlainLiteral pLit  = null;
-                    if (literal.Contains("@")) {
-                        if (!literal.EndsWith("@")) {
-                            Int32 lastAmp = literal.LastIndexOf('@');
-                            pLit          = new RDFPlainLiteral(literal.Substring(0, lastAmp), literal.Substring(lastAmp + 1));
-                        }
-                        else {
-                            pLit          = new RDFPlainLiteral(literal);
-                        }
-                    }
-                    else {
-                        pLit              = new RDFPlainLiteral(literal);
-                    }
-                    return new RDFQuadruple(qContext, qSubject, qPredicate, pLit);
+                if (!literal.Contains("^^") ||
+                     literal.EndsWith("^^") ||
+                     RDFModelUtilities.GetUriFromString(literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
+                     RDFPlainLiteral pLit = null;
+                     if (RDFModelUtilities.regexLPL.Value.Match(literal).Success) {
+                         String pLitValue = literal.Substring(0, literal.LastIndexOf("@", StringComparison.Ordinal));
+                         String pLitLang  = literal.Substring(literal.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                         pLit             = new RDFPlainLiteral(pLitValue, pLitLang);
+                     }
+                     else {
+                         pLit             = new RDFPlainLiteral(literal);
+                     }
+                     return new RDFQuadruple(qContext, qSubject, qPredicate, pLit);
                 }
 
                 //TypedLiteral
