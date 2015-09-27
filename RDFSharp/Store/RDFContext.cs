@@ -39,18 +39,23 @@ namespace RDFSharp.Store
         /// Default-ctor to build a predefined context
         /// </summary>
         public RDFContext() {
-            this.Context                 = RDFNamespaceRegister.DefaultNamespace.Namespace;
-            this.PatternMemberID         = RDFModelUtilities.CreateHash(this.ToString());   
+            this.Context         = RDFNamespaceRegister.DefaultNamespace.Namespace;
+            this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());   
         }
 
         /// <summary>
         /// String-based ctor to build a context from the given string 
         /// </summary>
         public RDFContext(String contextString): this() {
-            Uri tempUri                  = RDFModelUtilities.GetUriFromString(contextString);
-            if (tempUri                 != null && !tempUri.ToString().StartsWith("bnode:")) {
-                this.Context             = tempUri;
-				this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());   
+            Uri tempUri          = RDFModelUtilities.GetUriFromString(contextString);
+            if (tempUri         != null) {
+                if (!tempUri.ToString().ToUpperInvariant().StartsWith("BNODE:")) {
+                     this.Context         = tempUri;
+                     this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                }
+                else {
+                     throw new RDFStoreException("Cannot create RDFContext because given \"contextString\" parameter represents a blank node Uri.");
+                }
             }
         }
 
@@ -58,11 +63,16 @@ namespace RDFSharp.Store
         /// Uri-based ctor to build a context from the given Uri
         /// </summary>
         public RDFContext(Uri contextUri): this() {
-            if (contextUri              != null) {
-                Uri tempUri              = RDFModelUtilities.GetUriFromString(contextUri.ToString());
-                if (tempUri             != null && !tempUri.ToString().StartsWith("bnode:")) {
-                    this.Context         = tempUri;
-					this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());   
+            if (contextUri      != null) {
+                Uri tempUri      = RDFModelUtilities.GetUriFromString(contextUri.ToString());
+                if (tempUri     != null) {
+                    if (!tempUri.ToString().ToUpperInvariant().StartsWith("BNODE:")) {
+                         this.Context         = tempUri;
+                         this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                    }
+                    else {
+                         throw new RDFStoreException("Cannot create RDFContext because given \"contextUri\" parameter represents a blank node Uri.");
+                    }
                 }
             }
         }
