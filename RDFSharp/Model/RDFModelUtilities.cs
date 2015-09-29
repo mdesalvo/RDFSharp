@@ -748,7 +748,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture));
+        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled));
+        /// <summary>
+        /// Regex to detect presence of starting " in the value of a given N-Triple literal
+        /// </summary>
+        internal static readonly Lazy<Regex> regexSqt = new Lazy<Regex>(() => new Regex(@"^""", RegexOptions.Compiled));
+        /// <summary>
+        /// Regex to detect presence of ending " in the value of a given N-Triple literal
+        /// </summary>
+        internal static readonly Lazy<Regex> regexEqt = new Lazy<Regex>(() => new Regex(@"""$", RegexOptions.Compiled));
+
 
         /// <summary>
         /// Tries to parse the given N-Triple
@@ -820,7 +829,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static String ASCII_To_Unicode(String asciiString) {
             if (asciiString != null) {
-                asciiString = regexU8.Value.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU8.Value.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
                 asciiString = regexU4.Value.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
             }
             return asciiString;
@@ -832,13 +841,12 @@ namespace RDFSharp.Model
         internal static String Unicode_To_ASCII(String unicodeString) {
             if (unicodeString   != null) {
                 StringBuilder b  = new StringBuilder();
-                Char[] chars     = unicodeString.ToCharArray();
-                foreach (Char c in chars) {
-                    if (c <= 127) {
+                foreach (Char c in unicodeString.ToCharArray()) {
+                    if (c       <= 127) {
                         b.Append(c);
                     }
                     else {
-                        if (c <= 65535) {
+                        if (c   <= 65535) {
                             b.Append("\\u" + ((Int32)c).ToString("X4"));
                         }
                         else {

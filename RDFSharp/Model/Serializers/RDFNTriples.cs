@@ -37,9 +37,9 @@ namespace RDFSharp.Model
             try {
 
                 #region serialize
-                using (StreamWriter sw = new StreamWriter(filepath, false, Encoding.ASCII)) {
+                using (StreamWriter sw         = new StreamWriter(filepath, false, Encoding.ASCII)) {
                     String tripleTemplate      = String.Empty;
-                    foreach(RDFTriple t in graph) {
+                    foreach(RDFTriple t       in graph) {
 
                         #region template
                         if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavors.SPO) {
@@ -82,8 +82,10 @@ namespace RDFSharp.Model
                         #region literal
                         else {
 
-                            tripleTemplate         = tripleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value).Replace("\"","\\\""));
-                            tripleTemplate         = tripleTemplate.Replace("\n", "\\n").Replace("\t", "\\t").Replace("\r", "\\r");
+                            tripleTemplate         = tripleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\"", "\\\"")));
+                            tripleTemplate         = tripleTemplate.Replace("\n", "\\n")
+                                                                   .Replace("\t", "\\t")
+                                                                   .Replace("\r", "\\r");
 
                             #region plain literal
                             if (t.Object is RDFPlainLiteral) {
@@ -138,11 +140,6 @@ namespace RDFSharp.Model
                             continue;
                         }
 
-                        //Throw exception in case of unencoded non-ASCII char is found
-                        if (ntriple   != Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(ntriple))) {
-                            throw new RDFModelException("Given \"ntriple\" string contains non-ASCII characters");
-                        }
-
                         //Parse the sanitized triple 
                         tokens         = RDFModelUtilities.ParseNTriple(ntriple);                       
                         #endregion
@@ -177,10 +174,8 @@ namespace RDFSharp.Model
                         else {
 
                             #region sanitize
-                            tokens[2]  = tokens[2].TrimStart(new  Char[] { '\"' });
-                            if (tokens[2].EndsWith("\"")) {
-                                tokens[2] = tokens[2].TrimEnd(new Char[] { '\"' });
-                            }
+                            tokens[2]  = RDFModelUtilities.regexSqt.Value.Replace(tokens[2], String.Empty);
+                            tokens[2]  = RDFModelUtilities.regexEqt.Value.Replace(tokens[2], String.Empty);
                             tokens[2]  = tokens[2].Replace("\\\"", "\"")
                                                   .Replace("\\n",  "\n")
                                                   .Replace("\\t",  "\t")

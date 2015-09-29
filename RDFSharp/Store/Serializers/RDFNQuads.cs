@@ -37,13 +37,13 @@ namespace RDFSharp.Store {
             try {
 
                 #region serialize
-                using (StreamWriter sw        = new StreamWriter(filepath, false, Encoding.ASCII)) {
-                    String quadrupleTemplate  = String.Empty;
-                    foreach (RDFQuadruple q  in store.SelectAllQuadruples()) {
+                using (StreamWriter sw            = new StreamWriter(filepath, false, Encoding.ASCII)) {
+                    String quadrupleTemplate      = String.Empty;
+                    foreach (RDFQuadruple q      in store.SelectAllQuadruples()) {
 
                         #region template
-                        if (q.TripleFlavor   == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
+                        if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavors.SPO) {
+                            quadrupleTemplate     = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         }
                         else {
                             if (q.Object is RDFPlainLiteral) {
@@ -82,8 +82,10 @@ namespace RDFSharp.Store {
                         #region literal
                         else {
 
-                            quadrupleTemplate     = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value).Replace("\"", "\\\""));
-                            quadrupleTemplate     = quadrupleTemplate.Replace("\n", "\\n").Replace("\t", "\\t").Replace("\r", "\\r");
+                            quadrupleTemplate     = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\"", "\\\"")));
+                            quadrupleTemplate     = quadrupleTemplate.Replace("\n", "\\n")
+                                                                     .Replace("\t", "\\t")
+                                                                     .Replace("\r", "\\r");
 
                             #region plain literal
                             if (q.Object is RDFPlainLiteral) {
