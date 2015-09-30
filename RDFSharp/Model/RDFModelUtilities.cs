@@ -292,7 +292,6 @@ namespace RDFSharp.Model
             }
             throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" parameter is null or empty");
         }
-
         #endregion
 
         #region RDFDatatype
@@ -727,7 +726,6 @@ namespace RDFSharp.Model
             }
             throw new RDFModelException("Cannot validate RDFTypedLiteral because given \"typedLiteral\" parameter is null.");
         }
-
         #endregion
 
         #region Serialization
@@ -1265,6 +1263,13 @@ namespace RDFSharp.Model
             }
 
         }
+        #endregion
+
+        #region Turtle
+        /// <summary>
+        /// Regex to catch literals which must be escaped as long literals in Turtle
+        /// </summary>
+        internal static readonly Lazy<Regex> regexTTL = new Lazy<Regex>(() => new Regex("[\n\r\t\"]", RegexOptions.Compiled));
         #endregion
 
         #endregion

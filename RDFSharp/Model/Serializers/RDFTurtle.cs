@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
@@ -117,27 +118,35 @@ namespace RDFSharp.Model
                             if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                                 String obj           = triple.Object.ToString();
                                 if (!obj.StartsWith("_:")) {
-                                    result.Append(RDFModelUtilities.AbbreviateNamespace(obj));
+                                     result.Append(RDFModelUtilities.AbbreviateNamespace(obj));
                                 }
                                 else {
-                                    result.Append(obj);
+                                     result.Append(obj);
                                 }
                             }
                             #endregion
 
                             #region literal
                             else {
+
+                                //Detect presence of long-literals
+                                var litValDelim = "\"";
+                                if (RDFModelUtilities.regexTTL.Value.Match(triple.Object.ToString()).Success) {
+                                    litValDelim = "\"\"\"";
+                                }
+
                                 if (triple.Object is RDFTypedLiteral) {
-                                    String tLit = "\"" + ((RDFTypedLiteral)triple.Object).Value.Replace("\"","\\\"") + "\"^^" +  ((RDFTypedLiteral)triple.Object).Datatype;
+                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\"", "\\\"") + litValDelim + "^^" + ((RDFTypedLiteral)triple.Object).Datatype;
                                     result.Append(RDFModelUtilities.AbbreviateNamespace(tLit));
                                 }
                                 else {
-                                    String pLit = "\"" + ((RDFPlainLiteral)triple.Object).Value.Replace("\"", "\\\"") + "\"";
+                                    String pLit = litValDelim + ((RDFPlainLiteral)triple.Object).Value.Replace("\"", "\\\"") + litValDelim;
                                     if (((RDFPlainLiteral)triple.Object).Language != String.Empty) {
-                                        pLit    = pLit + "@" + ((RDFPlainLiteral)triple.Object).Language;
+                                        pLit    = pLit + "@"  + ((RDFPlainLiteral)triple.Object).Language;
                                     }
                                     result.Append(pLit);
                                 }
+
                             }
                             #endregion
 
