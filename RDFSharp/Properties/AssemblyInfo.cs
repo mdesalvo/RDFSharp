@@ -25,7 +25,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Marco De Salvo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.8.2")]
+[assembly: AssemblyVersion("0.8.3")]
 [assembly: ComVisible(false)]
 [assembly: Guid("1ef76fd3-c935-4965-9621-6ca0cbc275bf")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFFirebirdStore")]
