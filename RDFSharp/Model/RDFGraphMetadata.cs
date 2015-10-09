@@ -58,7 +58,7 @@ namespace RDFSharp.Model
         /// Collects the namespaces used by the given triple
         /// </summary>
         private void CollectNamespaces(RDFTriple triple) {
-            RDFNamespaceRegister.Instance.Register.ForEach(ns => {
+            RDFNamespaceRegister.Instance.Value.Register.ForEach(ns => {
                 String nSpace            = ns.ToString();
 
                 //Resolve subj Uri

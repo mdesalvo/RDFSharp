@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Singleton instance of the RDFDatatypeRegister class
         /// </summary>
-        public static RDFDatatypeRegister Instance { get; internal set; }
+        internal static Lazy<RDFDatatypeRegister> Instance { get; set; }
 
         /// <summary>
         /// List of registered datatypes
@@ -41,14 +41,14 @@ namespace RDFSharp.Model
         /// Count of the register's datatypes
         /// </summary>
         public static Int32 DatatypesCount {
-            get { return RDFDatatypeRegister.Instance.Register.Count; }
+            get { return RDFDatatypeRegister.Instance.Value.Register.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the register's datatypes for iteration
         /// </summary>
         public static IEnumerator<RDFDatatype> DatatypesEnumerator {
-            get { return RDFDatatypeRegister.Instance.Register.GetEnumerator(); }
+            get { return RDFDatatypeRegister.Instance.Value.Register.GetEnumerator(); }
         }
         #endregion
 
@@ -57,8 +57,8 @@ namespace RDFSharp.Model
         /// Default-ctor to initialize the singleton instance of the register
         /// </summary>
         static RDFDatatypeRegister() {
-            RDFDatatypeRegister.Instance          = new RDFDatatypeRegister();
-            RDFDatatypeRegister.Instance.Register = new List<RDFDatatype>();
+            RDFDatatypeRegister.Instance                = new Lazy<RDFDatatypeRegister>();
+            RDFDatatypeRegister.Instance.Value.Register = new List<RDFDatatype>();
 
             #region Datatypes
             RDFDatatypeRegister.AddDatatype(new RDFDatatype(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI, RDFVocabulary.RDFS.LITERAL.ToString().Replace(RDFVocabulary.RDFS.BASE_URI, String.Empty),            RDFModelEnums.RDFDatatypeCategory.String));
@@ -110,14 +110,14 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the register's datatypes
         /// </summary>
         IEnumerator<RDFDatatype> IEnumerable<RDFDatatype>.GetEnumerator() {
-            return RDFDatatypeRegister.Instance.Register.GetEnumerator();
+            return RDFDatatypeRegister.Instance.Value.Register.GetEnumerator();
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the register's datatypes
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return RDFDatatypeRegister.Instance.Register.GetEnumerator();
+            return RDFDatatypeRegister.Instance.Value.Register.GetEnumerator();
         }
         #endregion
 
@@ -128,7 +128,7 @@ namespace RDFSharp.Model
         public static void AddDatatype(RDFDatatype datatype) {
             if (datatype != null) {
                 if (!RDFDatatypeRegister.ContainsDatatype(datatype)) {
-                    RDFDatatypeRegister.Instance.Register.Add(datatype);
+                    RDFDatatypeRegister.Instance.Value.Register.Add(datatype);
                     RDFNamespaceRegister.AddNamespace(new RDFNamespace(datatype.Prefix, datatype.Namespace));
                 }
             }
@@ -139,7 +139,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static void RemoveDatatype(RDFDatatype datatype) {
             if (datatype != null) {
-                RDFDatatypeRegister.Instance.Register.RemoveAll(dt => 
+                RDFDatatypeRegister.Instance.Value.Register.RemoveAll(dt => 
                     (dt.Prefix.Equals(datatype.Prefix, StringComparison.Ordinal) || dt.Namespace.Equals(datatype.Namespace)) && dt.Datatype.Equals(datatype.Datatype, StringComparison.Ordinal));
             }
         }
@@ -149,7 +149,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static Boolean ContainsDatatype(RDFDatatype datatype) {
             if (datatype != null) {
-                return RDFDatatypeRegister.Instance.Register.Exists(dt =>
+                return RDFDatatypeRegister.Instance.Value.Register.Exists(dt =>
                     (dt.Prefix.Equals(datatype.Prefix, StringComparison.Ordinal) || dt.Namespace.Equals(datatype.Namespace)) && dt.Datatype.Equals(datatype.Datatype, StringComparison.Ordinal));
             }
             return false;
@@ -163,7 +163,7 @@ namespace RDFSharp.Model
                 if(datatype   != null && datatype.Trim() != String.Empty) {
                     Uri tempNS = RDFModelUtilities.GetUriFromString(nSpace);
                     if(tempNS != null){
-                        return RDFDatatypeRegister.Instance.Register.Find(dt =>
+                        return RDFDatatypeRegister.Instance.Value.Register.Find(dt =>
                             dt.Namespace.Equals(tempNS) && dt.Datatype.Equals(datatype, StringComparison.Ordinal));
                     }
                     throw new RDFModelException("Cannot retrieve RDFDatatype because given \"nSpace\" parameter (" + nSpace + ") does not represent a valid Uri.");
@@ -179,7 +179,7 @@ namespace RDFSharp.Model
         public static RDFDatatype GetByPrefixAndDatatype(String prefix, String datatype) {
             if (prefix       != null && prefix.Trim()   != String.Empty) {
                 if (datatype != null && datatype.Trim() != String.Empty) {
-                    return RDFDatatypeRegister.Instance.Register.Find(dt => 
+                    return RDFDatatypeRegister.Instance.Value.Register.Find(dt => 
                         dt.Prefix.Equals(prefix, StringComparison.Ordinal) && dt.Datatype.Equals(datatype, StringComparison.Ordinal));
                 }
                 throw new RDFModelException("Cannot retrieve RDFDatatype because given \"datatype\" parameter is null or empty.");

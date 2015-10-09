@@ -235,7 +235,7 @@ namespace RDFSharp.Model
 
             //Uri token: search a known namespace, if found replace it with its prefix
             Boolean abbreviationDone     = false;
-            RDFNamespaceRegister.Instance.Register.ForEach(ns => {
+            RDFNamespaceRegister.Instance.Value.Register.ForEach(ns => {
                 if (!abbreviationDone) {
                     String nS            = ns.ToString();
                     if (token.Contains(nS)) {
