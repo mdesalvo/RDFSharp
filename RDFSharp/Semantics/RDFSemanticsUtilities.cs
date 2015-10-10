@@ -967,13 +967,6 @@ namespace RDFSharp.Semantics
                          ontology.PatternMemberID = ontology.Value.PatternMemberID;
                      }
                 }
-                foreach (var t  in imports.SelectTriplesBySubject((RDFResource)ontology.Value)) {
-                    if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                         
-                         //Import referenced ontology
-
-                    }
-                }
                 #endregion
 
                 #region OntologyModel
@@ -1802,6 +1795,14 @@ namespace RDFSharp.Semantics
                 foreach (var t in priorVersion.SelectTriplesBySubject((RDFResource)ontology.Value)) {
                     if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                          ontology.AddPriorVersionAnnotation(new RDFOntology((RDFResource)t.Object));
+                    }
+                }
+                #endregion
+
+                #region Imports
+                foreach(var t in imports.SelectTriplesBySubject((RDFResource)ontology.Value)) {
+                    if (t.TripleFlavor  == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        ontology.AddImportsAnnotation(new RDFOntology((RDFResource)t.Object));
                     }
                 }
                 #endregion
