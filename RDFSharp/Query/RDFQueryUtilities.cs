@@ -29,7 +29,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    internal static class RDFQueryUtilities {
+    public static class RDFQueryUtilities {
 
         #region ADO.NET
         /// <summary>
@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void AddColumn(DataTable table, String columnName) {
             if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant())) {
-                table.Columns.Add(columnName.Trim().ToUpperInvariant(), Type.GetType("System.String"));
+                 table.Columns.Add(columnName.Trim().ToUpperInvariant(), Type.GetType("System.String"));
             }
         }
 
@@ -75,22 +75,19 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Plain Literal
-                if (!pMember.Contains("^^") || pMember.EndsWith("^^") ||
-                    RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
-                    RDFPlainLiteral pLit  = null;
-                    if (pMember.Contains("@")) {
-                        if (!pMember.EndsWith("@")) {
-                            Int32 lastAmp = pMember.LastIndexOf('@');
-                            pLit          = new RDFPlainLiteral(pMember.Substring(0, lastAmp), pMember.Substring(lastAmp + 1));
-                        }
-                        else {
-                            pLit          = new RDFPlainLiteral(pMember);
-                        }
-                    }
-                    else {
+                if (!pMember.Contains("^^") || 
+                     pMember.EndsWith("^^") ||
+                     RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
+                     RDFPlainLiteral pLit = null;
+                     if (RDFModelUtilities.regexLPL.Value.Match(pMember).Success) {
+                         String pLitVal   = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
+                         String pLitLng   = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                         pLit             = new RDFPlainLiteral(pLitVal, pLitLng);
+                     }
+                     else {
                         pLit              = new RDFPlainLiteral(pMember);
-                    }
-                    return pLit;
+                     }
+                     return pLit;
                 }
                 #endregion
 

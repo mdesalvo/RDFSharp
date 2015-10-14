@@ -28,7 +28,7 @@ namespace RDFSharp.Semantics
     /// <summary>
     /// RDFSemanticsUtilities is a collector of reusable utility methods for RDF ontology management.
     /// </summary>
-    internal static class RDFSemanticsUtilities {
+    public static class RDFSemanticsUtilities {
 
         #region Initialize
         /// <summary>
@@ -1429,8 +1429,8 @@ namespace RDFSharp.Semantics
 
                             #region ClassToEnumerateClass
                             if (!ec.IsEnumerateClass()) {
-                                ec      = new RDFOntologyEnumerateClass((RDFResource)e.Subject);
-                                ontology.Model.ClassModel.Classes[ec.PatternMemberID] = ec;
+                                 ec      = new RDFOntologyEnumerateClass((RDFResource)e.Subject);
+                                 ontology.Model.ClassModel.Classes[ec.PatternMemberID] = ec;
                             }
                             #endregion
 
@@ -1485,8 +1485,8 @@ namespace RDFSharp.Semantics
 
                             #region ClassToDataRangeClass
                             if (!dr.IsDataRangeClass()) {
-                                dr      = new RDFOntologyDataRangeClass((RDFResource)d.Subject);
-                                ontology.Model.ClassModel.Classes[dr.PatternMemberID] = dr;
+                                 dr      = new RDFOntologyDataRangeClass((RDFResource)d.Subject);
+                                 ontology.Model.ClassModel.Classes[dr.PatternMemberID] = dr;
                             }
                             #endregion
 
