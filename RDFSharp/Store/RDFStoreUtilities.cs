@@ -304,6 +304,18 @@ namespace RDFSharp.Store
         }
         #endregion
 
+        #region Events
+        /// <summary>
+        /// Event raised during RDF store management to signal a warning
+        /// </summary>
+        public static event RDFStoreEventHandler OnStoreWarning;
+
+        /// <summary>
+        /// Delegate to handle warning events generated during RDF store management
+        /// </summary>
+        public delegate void RDFStoreEventHandler(String storeEventMessage);
+        #endregion
+
     }
 
 }

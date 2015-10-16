@@ -423,6 +423,18 @@ namespace RDFSharp.Query
         }
         #endregion
 
+        #region EVENTS
+        /// <summary>
+        /// Event raised during RDF query management to signal a warning
+        /// </summary>
+        public static event RDFQueryEventHandler OnQueryWarning;
+
+        /// <summary>
+        /// Delegate to handle warning events generated during RDF query management
+        /// </summary>
+        public delegate void RDFQueryEventHandler(String queryEventMessage);
+        #endregion
+
     }
 
 }
