@@ -23,12 +23,23 @@ namespace RDFSharp.Model {
     /// </summary>
     public static class RDFModelEvents {
 
-        #region Events
+        #region OnModelWarning
+        /// <summary>
+        /// Event representing a warning message generated within the "RDFSharp.Model" namespace
+        /// </summary>
+        public static event RDFModelWarningEventHandler OnModelWarning = delegate { };
 
-        #endregion
+        /// <summary>
+        /// Delegate to handle warning events generated within the "RDFSharp.Model" namespace
+        /// </summary>
+        public delegate void RDFModelWarningEventHandler(String eventMessage);
 
-        #region Delegates
-
+        /// <summary>
+        /// Internal invoker of the warning event handler
+        /// </summary>
+        internal static void RaiseModelWarning(String eventMessage) {
+            RDFModelEvents.OnModelWarning(eventMessage);
+        }
         #endregion
 
     }

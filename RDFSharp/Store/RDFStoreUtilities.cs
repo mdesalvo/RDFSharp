@@ -27,7 +27,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreUtilities is a collector of reusable utility methods for RDF store management
     /// </summary>
-    public static class RDFStoreUtilities {
+    internal static class RDFStoreUtilities {
 
         #region Select
         /// <summary>

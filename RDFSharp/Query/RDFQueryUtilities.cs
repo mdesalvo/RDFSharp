@@ -29,7 +29,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    public static class RDFQueryUtilities {
+    internal static class RDFQueryUtilities {
 
         #region ADO.NET
         /// <summary>

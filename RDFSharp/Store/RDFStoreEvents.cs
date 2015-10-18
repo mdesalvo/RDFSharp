@@ -23,12 +23,23 @@ namespace RDFSharp.Store {
     /// </summary>
     public static class RDFStoreEvents {
 
-        #region Events
+        #region OnStoreWarning
+        /// <summary>
+        /// Event representing a warning message generated within the "RDFSharp.Store" namespace
+        /// </summary>
+        public static event RDFStoreWarningEventHandler OnStoreWarning = delegate { };
 
-        #endregion
+        /// <summary>
+        /// Delegate to handle warning events generated within the "RDFSharp.Store" namespace
+        /// </summary>
+        public delegate void RDFStoreWarningEventHandler(String eventMessage);
 
-        #region Delegates
-
+        /// <summary>
+        /// Internal invoker of the warning event handler
+        /// </summary>
+        internal static void RaiseStoreWarning(String eventMessage) {
+            RDFStoreEvents.OnStoreWarning(eventMessage);
+        }
         #endregion
 
     }

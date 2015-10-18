@@ -23,12 +23,23 @@ namespace RDFSharp.Query {
     /// </summary>
     public static class RDFQueryEvents {
 
-        #region Events
+        #region OnQueryWarning
+        /// <summary>
+        /// Event representing a warning message generated within the "RDFSharp.Query" namespace
+        /// </summary>
+        public static event RDFQueryWarningEventHandler OnQueryWarning = delegate { };
 
-        #endregion
+        /// <summary>
+        /// Delegate to handle warning events generated within the "RDFSharp.Query" namespace
+        /// </summary>
+        public delegate void RDFQueryWarningEventHandler(String eventMessage);
 
-        #region Delegates
-
+        /// <summary>
+        /// Internal invoker of the warning event handler
+        /// </summary>
+        internal static void RaiseQueryWarning(String eventMessage) {
+            RDFQueryEvents.OnQueryWarning(eventMessage);
+        }
         #endregion
 
     }

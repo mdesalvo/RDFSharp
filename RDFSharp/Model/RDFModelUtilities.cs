@@ -31,13 +31,13 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFModelUtilities is a collector of reusable utility methods for RDF model management
     /// </summary>
-    public static class RDFModelUtilities {
+    internal static class RDFModelUtilities {
 
         #region Greta
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
-        public static Int64 CreateHash(String input) {
+        internal static Int64 CreateHash(String input) {
             if(input != null) {
                 var md5Encryptor   = new MD5CryptoServiceProvider();
                 var inputBytes     = Encoding.UTF8.GetBytes(input);
@@ -70,7 +70,7 @@ namespace RDFSharp.Model
         /// Generates a new Uri for a blank resource.
         /// It starts by default with "bnode:", because it doesn't have to be dependant on namespaces.
         /// </summary>
-        public static Uri GenerateAnonUri() {
+        internal static Uri GenerateAnonUri() {
             return new Uri("bnode:" + Guid.NewGuid());
         }
         #endregion
