@@ -213,18 +213,6 @@ namespace RDFSharp.Model
         }
         #endregion
 
-        #region Events
-        /// <summary>
-        /// Event raised during RDF model management to signal a warning
-        /// </summary>
-        public static event RDFModelEventHandler OnModelWarning;
-
-        /// <summary>
-        /// Delegate to handle warning events generated during RDF model management
-        /// </summary>
-        public delegate void RDFModelEventHandler(String modelEventMessage);
-        #endregion
-
         #region RDFNamespace
         /// <summary>
         /// Finds if the given token contains a recognizable namespace and, if so, abbreviates it with its prefix.

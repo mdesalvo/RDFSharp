@@ -64,6 +64,7 @@
     <Compile Include="Model\RDFLiteral.cs" />
     <Compile Include="Model\RDFModelEnums.cs" />
     <Compile Include="Model\RDFModelException.cs" />
+    <Compile Include="Model\RDFModelEvents.cs" />
     <Compile Include="Model\RDFModelUtilities.cs" />
     <Compile Include="Model\RDFNamespace.cs" />
     <Compile Include="Model\RDFNamespaceRegister.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Query\RDFPatternMember.cs" />
     <Compile Include="Query\RDFQueryEngine.cs" />
     <Compile Include="Query\RDFQueryEnums.cs" />
+    <Compile Include="Query\RDFQueryEvents.cs" />
     <Compile Include="Query\RDFQueryException.cs" />
     <Compile Include="Query\RDFQueryUtilities.cs" />
     <Compile Include="Query\RDFVariable.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="Semantics\RDFOntologyRestriction.cs" />
     <Compile Include="Semantics\RDFOntologyTaxonomy.cs" />
     <Compile Include="Semantics\RDFSemanticsEnums.cs" />
+    <Compile Include="Semantics\RDFSemanticsEvents.cs" />
     <Compile Include="Semantics\RDFSemanticsException.cs" />
     <Compile Include="Semantics\RDFSemanticsUtilities.cs" />
     <Compile Include="Semantics\Extensions\Classes\RDFOntologyComplementClass.cs" />
@@ -157,6 +160,7 @@
     <Compile Include="Store\RDFQuadruple.cs" />
     <Compile Include="Store\RDFStore.cs" />
     <Compile Include="Store\RDFStoreEnums.cs" />
+    <Compile Include="Store\RDFStoreEvents.cs" />
     <Compile Include="Store\RDFStoreException.cs" />
     <Compile Include="Store\RDFStoreIndex.cs" />
     <Compile Include="Store\RDFStoreSerializer.cs" />
