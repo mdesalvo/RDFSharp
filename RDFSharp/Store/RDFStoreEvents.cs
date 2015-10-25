@@ -35,10 +35,10 @@ namespace RDFSharp.Store {
         public delegate void RDFStoreWarningEventHandler(String eventMessage);
 
         /// <summary>
-        /// Internal invoker of the warning event handler
+        /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseStoreWarning(String eventMessage) {
-            RDFStoreEvents.OnStoreWarning(eventMessage);
+            RDFStoreEvents.OnStoreWarning(DateTime.Now.ToString() + " - " + eventMessage);
         }
         #endregion
 

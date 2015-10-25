@@ -35,10 +35,10 @@ namespace RDFSharp.Model {
         public delegate void RDFModelWarningEventHandler(String eventMessage);
 
         /// <summary>
-        /// Internal invoker of the warning event handler
+        /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseModelWarning(String eventMessage) {
-            RDFModelEvents.OnModelWarning(eventMessage);
+            RDFModelEvents.OnModelWarning(DateTime.Now.ToString() + " - " + eventMessage);
         }
         #endregion
 

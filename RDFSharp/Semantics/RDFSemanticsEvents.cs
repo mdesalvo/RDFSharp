@@ -35,10 +35,10 @@ namespace RDFSharp.Semantics {
         public delegate void RDFSemanticsWarningEventHandler(String eventMessage);
 
         /// <summary>
-        /// Internal invoker of the warning event handler
+        /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseSemanticsWarning(String eventMessage) {
-            RDFSemanticsEvents.OnSemanticsWarning(eventMessage);
+            RDFSemanticsEvents.OnSemanticsWarning(DateTime.Now.ToString() + " - " + eventMessage);
         }
         #endregion
 

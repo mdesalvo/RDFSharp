@@ -35,10 +35,10 @@ namespace RDFSharp.Query {
         public delegate void RDFQueryWarningEventHandler(String eventMessage);
 
         /// <summary>
-        /// Internal invoker of the warning event handler
+        /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseQueryWarning(String eventMessage) {
-            RDFQueryEvents.OnQueryWarning(eventMessage);
+            RDFQueryEvents.OnQueryWarning(DateTime.Now.ToString() + " - " + eventMessage);
         }
         #endregion
 
