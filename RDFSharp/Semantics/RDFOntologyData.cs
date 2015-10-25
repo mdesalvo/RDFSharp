@@ -200,8 +200,6 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddCustomAnnotation(RDFOntologyFact ontologyFact, RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyResource ontologyResource) {
             if (ontologyFact   != null && ontologyAnnotationProperty != null && ontologyResource != null) {
-
-                //Standard RDFS/OWL annotation properties cannot be used in custom annotations
                 if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.VERSION_INFO)             ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.COMMENT)                 ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.LABEL)                   ||
@@ -211,6 +209,11 @@ namespace RDFSharp.Semantics
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH) ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH)        ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.PRIOR_VERSION)) {
+
+                    //Raise warning event to inform the user: Standard RDFS/OWL
+                    //annotation properties cannot be used in custom annotations
+                    RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+
                     return this;
                 }
                 
@@ -227,13 +230,17 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass) {
             if (ontologyFact != null && ontologyClass != null) {
-
-                //Only plain (or deprecated) classes can be explicitly assigned as class types of facts
                 if (!ontologyClass.IsRestrictionClass() && !ontologyClass.IsCompositeClass() &&
                     !ontologyClass.IsEnumerateClass()   && !ontologyClass.IsDataRangeClass()) {
                      this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFOntologyVocabulary.ObjectProperties.TYPE, ontologyClass));
                 }
+                else {
 
+                     //Raise warning event to inform the user: ClassType relation cannot be added to the data
+                     //because only plain classes can be explicitly assigned as class types of facts
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because only plain classes can be explicitly assigned as class types of facts.", ontologyFact, ontologyClass));
+                     
+                }
             }
             return this;
         }
@@ -247,6 +254,13 @@ namespace RDFSharp.Semantics
                      this.Relations.SameAs.AddEntry(new RDFOntologyTaxonomyEntry(aFact, RDFOntologyVocabulary.ObjectProperties.SAME_AS, bFact));
                      this.Relations.SameAs.AddEntry(new RDFOntologyTaxonomyEntry(bFact, RDFOntologyVocabulary.ObjectProperties.SAME_AS, aFact).SetInference(true));
                 }
+                else {
+
+                     //Raise warning event to inform the user: SameAs relation cannot be 
+                     //added to the data because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SameAs relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
+
+                }
             }
             return this;
         }
@@ -259,6 +273,13 @@ namespace RDFSharp.Semantics
                 if (!RDFOntologyHelper.IsSameFactAs(aFact, bFact, this)) {
                      this.Relations.DifferentFrom.AddEntry(new RDFOntologyTaxonomyEntry(aFact, RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, bFact));
                      this.Relations.DifferentFrom.AddEntry(new RDFOntologyTaxonomyEntry(bFact, RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, aFact).SetInference(true));
+                }
+                else {
+                     
+                     //Raise warning event to inform the user: DifferentFrom relation cannot be 
+                     //added to the data because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: DifferentFrom relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
+
                 }
             }
             return this;

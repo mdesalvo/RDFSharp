@@ -162,8 +162,6 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntology AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyResource ontologyResource) {
             if (ontologyAnnotationProperty != null && ontologyResource != null) {
-
-                //Standard RDFS/OWL annotation properties cannot be used in custom annotations
                 if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.VERSION_INFO)             ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.COMMENT)                 ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.LABEL)                   ||
@@ -173,9 +171,13 @@ namespace RDFSharp.Semantics
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH) ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH)        ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.PRIOR_VERSION)) {
+
+                    //Raise warning event to inform the user: Standard RDFS/OWL
+                    //annotation properties cannot be used in custom annotations
+                    RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+
                     return this;
                 }
-
                 this.Annotations.CustomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this, ontologyAnnotationProperty, ontologyResource));
             }
             return this;

@@ -228,8 +228,6 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyClassModel AddCustomAnnotation(RDFOntologyClass ontologyClass, RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyResource ontologyResource) {
             if (ontologyClass != null && ontologyAnnotationProperty != null && ontologyResource != null) {
-
-                //Standard RDFS/OWL annotation properties cannot be used in custom annotations
                 if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.VERSION_INFO)             ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.COMMENT)                 ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.LABEL)                   ||
@@ -239,9 +237,13 @@ namespace RDFSharp.Semantics {
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH) ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH)        ||
                     ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.PRIOR_VERSION)) {
+
+                    //Raise warning event to inform the user: Standard RDFS/OWL
+                    //annotation properties cannot be used in custom annotations
+                    RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+
                     return this;
                 }
-                
                 this.Annotations.CustomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, ontologyAnnotationProperty, ontologyResource));
             }
             return this;
@@ -254,10 +256,17 @@ namespace RDFSharp.Semantics {
             if (childClass != null && motherClass != null && !childClass.Equals(motherClass)) {
 
                 //Enforce taxonomy checks before adding the subClassOf relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubClassOf(motherClass, childClass, this)        &&
+                if (!RDFOntologyHelper.IsSubClassOf(motherClass,        childClass, this) &&
                     !RDFOntologyHelper.IsEquivalentClassOf(motherClass, childClass, this) &&
                     !RDFOntologyHelper.IsDisjointClassWith(motherClass, childClass, this)) {
                      this.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(childClass, RDFOntologyVocabulary.ObjectProperties.SUB_CLASS_OF, motherClass));
+                }
+                else {
+                     
+                     //Raise warning event to inform the user: SubClassOf relation cannot be 
+                     //added to the class model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
+
                 }
 
             }
@@ -271,11 +280,18 @@ namespace RDFSharp.Semantics {
             if (aClass != null && bClass != null && !aClass.Equals(bClass)) {
 
                 //Enforce taxonomy checks before adding the equivalentClass relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubClassOf(aClass, bClass, this)   &&
-                    !RDFOntologyHelper.IsSuperClassOf(aClass, bClass, this) &&
+                if (!RDFOntologyHelper.IsSubClassOf(aClass,        bClass, this) &&
+                    !RDFOntologyHelper.IsSuperClassOf(aClass,      bClass, this) &&
                     !RDFOntologyHelper.IsDisjointClassWith(aClass, bClass, this)) {
                      this.Relations.EquivalentClass.AddEntry(new RDFOntologyTaxonomyEntry(aClass, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_CLASS, bClass));
                      this.Relations.EquivalentClass.AddEntry(new RDFOntologyTaxonomyEntry(bClass, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_CLASS, aClass).SetInference(true));
+                }
+                else {
+
+                     //Raise warning event to inform the user: EquivalentClass relation cannot be 
+                     //added to the class model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
+
                 }
 
             }
@@ -289,11 +305,18 @@ namespace RDFSharp.Semantics {
             if (aClass != null && bClass != null && !aClass.Equals(bClass)) {
 
                 //Enforce taxonomy checks before adding the disjointWith relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubClassOf(aClass, bClass, this)   &&
-                    !RDFOntologyHelper.IsSuperClassOf(aClass, bClass, this) &&
+                if (!RDFOntologyHelper.IsSubClassOf(aClass,        bClass, this) &&
+                    !RDFOntologyHelper.IsSuperClassOf(aClass,      bClass, this) &&
                     !RDFOntologyHelper.IsEquivalentClassOf(aClass, bClass, this)) {
                      this.Relations.DisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(aClass, RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, bClass));
                      this.Relations.DisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(bClass, RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, aClass).SetInference(true));
+                }
+                else {
+
+                     //Raise warning event to inform the user: DisjointWith relation cannot be 
+                     //added to the class model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
+
                 }
 
             }

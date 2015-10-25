@@ -222,8 +222,6 @@ namespace RDFSharp.Semantics {
         public RDFOntologyPropertyModel AddProperty(RDFOntologyProperty ontologyProperty) {
             if (ontologyProperty != null) {
                 if (!this.Properties.ContainsKey(ontologyProperty.PatternMemberID)) {
-
-                     //Avoid usage of reserved annotation and taxonomy properties
                      if(ontologyProperty.Equals(RDFOntologyVocabulary.AnnotationProperties.COMMENT)                  ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.AnnotationProperties.LABEL)                    ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.AnnotationProperties.SEE_ALSO)                 ||
@@ -234,6 +232,7 @@ namespace RDFSharp.Semantics {
                         ontologyProperty.Equals(RDFOntologyVocabulary.AnnotationProperties.BACKWARD_COMPATIBLE_WITH) ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.AnnotationProperties.IMPORTS)                  ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.DatatypeProperties.ONE_OF)                     ||
+                        ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.ONE_OF)                       ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.TYPE)                         ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF)              ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.SUB_CLASS_OF)                 ||
@@ -246,9 +245,13 @@ namespace RDFSharp.Semantics {
                         ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_CLASS)             ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY)          ||
                         ontologyProperty.Equals(RDFOntologyVocabulary.ObjectProperties.INVERSE_OF)) {
+
+                        //Raise warning event to inform the user: Reserved annotation and 
+                        //taxonomy properties cannot be added to the property model
+                        RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Reserved annotation and taxonomy properties cannot be added to the property model.");
+
                         return this;
                      }
-
                      this.Properties.Add(ontologyProperty.PatternMemberID, ontologyProperty);
                 }
             }
@@ -321,8 +324,6 @@ namespace RDFSharp.Semantics {
         public RDFOntologyPropertyModel AddCustomAnnotation(RDFOntologyProperty ontologyProperty, RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyResource ontologyResource) {
             if (ontologyProperty != null && ontologyAnnotationProperty != null && ontologyResource != null) {
                 if (!ontologyProperty.IsAnnotationProperty()) {
-
-                     //Standard RDFS/OWL annotation properties cannot be used in custom annotations
                      if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.VERSION_INFO)             ||
                          ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.COMMENT)                 ||
                          ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.LABEL)                   ||
@@ -332,10 +333,21 @@ namespace RDFSharp.Semantics {
                          ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH) ||
                          ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH)        ||
                          ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.PRIOR_VERSION)) {
+
+                         //Raise warning event to inform the user: Standard RDFS/OWL
+                         //annotation properties cannot be used in custom annotations
+                         RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+
                          return this;
                      }
-
                      this.Annotations.CustomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, ontologyAnnotationProperty, ontologyResource));
+                }
+                else {
+
+                     //Raise warning event to inform the user: Annotation property cannot
+                     //be annotated because this is prohibited by OWL-DL specifications
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: Annotation property '{0}' cannot be annotated because this is prohibited by OWL-DL specifications.", ontologyProperty));
+
                 }
             }
             return this;
@@ -348,9 +360,16 @@ namespace RDFSharp.Semantics {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty)) {
 
                 //Enforce taxonomy checks before adding the subPropertyOf relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubPropertyOf(motherProperty, childProperty, this)        &&
+                if (!RDFOntologyHelper.IsSubPropertyOf(motherProperty,        childProperty, this) &&
                     !RDFOntologyHelper.IsEquivalentPropertyOf(motherProperty, childProperty, this)) {
-                        this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, motherProperty));
+                     this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, motherProperty));
+                }
+                else {
+
+                     //Raise warning event to inform the user: SubPropertyOf relation cannot be 
+                     //added to the property model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childProperty, motherProperty));
+
                 }
 
             }
@@ -364,9 +383,16 @@ namespace RDFSharp.Semantics {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty)) {
 
                 //Enforce taxonomy checks before adding the subPropertyOf relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubPropertyOf(motherProperty, childProperty, this) &&
+                if (!RDFOntologyHelper.IsSubPropertyOf(motherProperty,        childProperty, this) &&
                     !RDFOntologyHelper.IsEquivalentPropertyOf(motherProperty, childProperty, this)) {
-                        this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, motherProperty));
+                     this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, motherProperty));
+                }
+                else {
+
+                     //Raise warning event to inform the user: SubPropertyOf relation cannot be 
+                     //added to the property model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childProperty, motherProperty));
+
                 }
 
             }
@@ -380,10 +406,17 @@ namespace RDFSharp.Semantics {
             if (aProperty  != null && bProperty != null && !aProperty.Equals(bProperty)) {
 
                 //Enforce taxonomy checks before adding the equivalentProperty relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubPropertyOf(aProperty, bProperty, this)   &&
+                if (!RDFOntologyHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
                     !RDFOntologyHelper.IsSuperPropertyOf(aProperty, bProperty, this)) {
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, bProperty));
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, aProperty).SetInference(true));
+                     this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, bProperty));
+                     this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, aProperty).SetInference(true));
+                }
+                else {
+
+                     //Raise warning event to inform the user: EquivalentProperty relation cannot be 
+                     //added to the property model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+
                 }
 
             }
@@ -397,10 +430,17 @@ namespace RDFSharp.Semantics {
             if (aProperty  != null && bProperty != null && !aProperty.Equals(bProperty)) {
 
                 //Enforce taxonomy checks before adding the equivalentProperty relation, in order to not model inconsistencies
-                if (!RDFOntologyHelper.IsSubPropertyOf(aProperty, bProperty, this)   &&
+                if (!RDFOntologyHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
                     !RDFOntologyHelper.IsSuperPropertyOf(aProperty, bProperty, this)) {
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, bProperty));
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, aProperty).SetInference(true));
+                     this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, bProperty));
+                     this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, aProperty).SetInference(true));
+                }
+                else {
+
+                     //Raise warning event to inform the user: EquivalentProperty relation cannot be 
+                     //added to the property model because it violates the taxonomy consistency
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+
                 }
 
             }
@@ -412,10 +452,8 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyPropertyModel AddInverseOfRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty) {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty)) {
-                if (!aProperty.IsAnnotationProperty()) {
-                     this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, bProperty));
-                     this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, aProperty).SetInference(true));
-                }
+                this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, bProperty));
+                this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, aProperty).SetInference(true));
             }
             return this;
         }
