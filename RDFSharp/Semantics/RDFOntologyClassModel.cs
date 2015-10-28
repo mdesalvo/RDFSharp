@@ -676,9 +676,9 @@ namespace RDFSharp.Semantics {
 
         #region Convert
         /// <summary>
-        /// Gets a graph representation of this ontology class model
+        /// Gets a graph representation of this ontology class model, eventually including inferences
         /// </summary>
-        public RDFGraph ToRDFGraph() {
+        public RDFGraph ToRDFGraph(Boolean includeInferences) {
             var result   = new RDFGraph();
 
             //Definitions
@@ -717,7 +717,7 @@ namespace RDFSharp.Semantics {
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
                     var enumCollection                  = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
                     enumCollection.ReificationSubject   = new RDFResource("bnode:" + c.PatternMemberID);
-                    foreach (var enumMember in this.Relations.OneOf.SelectEntriesBySubject(c)) {
+                    foreach (var enumMember in this.Relations.OneOf.SelectEntriesBySubject(c).Where(tax   => (includeInferences || !tax.IsInference))) {
                         enumCollection.AddItem(enumMember.TaxonomyObject);
                     }
                     result = result.UnionWith(enumCollection.ReifyCollection());
@@ -727,7 +727,7 @@ namespace RDFSharp.Semantics {
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATA_RANGE));
                     var drangeCollection                = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
                     drangeCollection.ReificationSubject = new RDFResource("bnode:" + c.PatternMemberID);
-                    foreach (var drangeMember in this.Relations.OneOf.SelectEntriesBySubject(c)) {
+                    foreach (var drangeMember in this.Relations.OneOf.SelectEntriesBySubject(c).Where(tax => (includeInferences || !tax.IsInference))) {
                         drangeCollection.AddItem(drangeMember.TaxonomyObject);
                     }
                     result = result.UnionWith(drangeCollection.ReifyCollection());
@@ -741,7 +741,7 @@ namespace RDFSharp.Semantics {
                     else if (c is RDFOntologyIntersectionClass) {
                         var intersectCollection                = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
                         intersectCollection.ReificationSubject = new RDFResource("bnode:" + c.PatternMemberID);
-                        foreach (var intersectMember in this.Relations.IntersectionOf.SelectEntriesBySubject(c)) {
+                        foreach (var intersectMember in this.Relations.IntersectionOf.SelectEntriesBySubject(c).Where(tax => (includeInferences || !tax.IsInference))) {
                             intersectCollection.AddItem(intersectMember.TaxonomyObject);
                         }
                         result = result.UnionWith(intersectCollection.ReifyCollection());
@@ -750,7 +750,7 @@ namespace RDFSharp.Semantics {
                     else if (c is RDFOntologyUnionClass) {
                         var unionCollection                    = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
                         unionCollection.ReificationSubject     = new RDFResource("bnode:" + c.PatternMemberID);
-                        foreach (var unionMember in this.Relations.UnionOf.SelectEntriesBySubject(c)) {
+                        foreach (var unionMember in this.Relations.UnionOf.SelectEntriesBySubject(c).Where(tax            => (includeInferences || !tax.IsInference))) {
                             unionCollection.AddItem(unionMember.TaxonomyObject);
                         }
                         result = result.UnionWith(unionCollection.ReifyCollection());
@@ -766,27 +766,27 @@ namespace RDFSharp.Semantics {
             }
 
             //Relations
-            foreach (var subclassOf in this.Relations.SubClassOf) {
+            foreach (var subclassOf in this.Relations.SubClassOf.Where(tax        => (includeInferences || !tax.IsInference))) {
                 result.AddTriple(new RDFTriple((RDFResource)subclassOf.TaxonomySubject.Value, RDFVocabulary.RDFS.SUB_CLASS_OF, (RDFResource)subclassOf.TaxonomyObject.Value));
             }
-            foreach (var equivclassOf in this.Relations.EquivalentClass) {
+            foreach (var equivclassOf in this.Relations.EquivalentClass.Where(tax => (includeInferences || !tax.IsInference))) {
                 result.AddTriple(new RDFTriple((RDFResource)equivclassOf.TaxonomySubject.Value, RDFVocabulary.OWL.EQUIVALENT_CLASS, (RDFResource)equivclassOf.TaxonomyObject.Value));
             }
-            foreach (var disjointWith in this.Relations.DisjointWith) {
+            foreach (var disjointWith in this.Relations.DisjointWith.Where(tax    => (includeInferences || !tax.IsInference))) {
                 result.AddTriple(new RDFTriple((RDFResource)disjointWith.TaxonomySubject.Value, RDFVocabulary.OWL.DISJOINT_WITH, (RDFResource)disjointWith.TaxonomyObject.Value));
             }
 
             //Annotations
-            foreach (var versInfo in this.Annotations.VersionInfo) {
+            foreach (var versInfo in this.Annotations.VersionInfo.Where(tax       => (includeInferences || !tax.IsInference))) {
                 result.AddTriple(new RDFTriple((RDFResource)versInfo.TaxonomySubject.Value, RDFVocabulary.OWL.VERSION_INFO, (RDFLiteral)versInfo.TaxonomyObject.Value));
             }
-            foreach (var comment in this.Annotations.Comment) {
+            foreach (var comment in this.Annotations.Comment.Where(tax            => (includeInferences || !tax.IsInference))) {
                 result.AddTriple(new RDFTriple((RDFResource)comment.TaxonomySubject.Value, RDFVocabulary.RDFS.COMMENT, (RDFLiteral)comment.TaxonomyObject.Value));
             }
-            foreach (var label in this.Annotations.Label) {
+            foreach (var label in this.Annotations.Label.Where(tax                => (includeInferences || !tax.IsInference))) {
                 result.AddTriple(new RDFTriple((RDFResource)label.TaxonomySubject.Value, RDFVocabulary.RDFS.LABEL, (RDFLiteral)label.TaxonomyObject.Value));
             }
-            foreach (var seeAlso in this.Annotations.SeeAlso) {
+            foreach (var seeAlso in this.Annotations.SeeAlso.Where(tax            => (includeInferences || !tax.IsInference))) {
                 if  (seeAlso.TaxonomyObject.IsLiteral()) {
                      result.AddTriple(new RDFTriple((RDFResource)seeAlso.TaxonomySubject.Value, RDFVocabulary.RDFS.SEE_ALSO, (RDFLiteral)seeAlso.TaxonomyObject.Value));
                 }
@@ -794,7 +794,7 @@ namespace RDFSharp.Semantics {
                      result.AddTriple(new RDFTriple((RDFResource)seeAlso.TaxonomySubject.Value, RDFVocabulary.RDFS.SEE_ALSO, (RDFResource)seeAlso.TaxonomyObject.Value));
                 }
             }
-            foreach (var isDefBy in this.Annotations.IsDefinedBy) {
+            foreach (var isDefBy in this.Annotations.IsDefinedBy.Where(tax        => (includeInferences || !tax.IsInference))) {
                 if  (isDefBy.TaxonomyObject.IsLiteral()) {
                      result.AddTriple(new RDFTriple((RDFResource)isDefBy.TaxonomySubject.Value, RDFVocabulary.RDFS.IS_DEFINED_BY, (RDFLiteral)isDefBy.TaxonomyObject.Value));
                 }
@@ -802,7 +802,7 @@ namespace RDFSharp.Semantics {
                      result.AddTriple(new RDFTriple((RDFResource)isDefBy.TaxonomySubject.Value, RDFVocabulary.RDFS.IS_DEFINED_BY, (RDFResource)isDefBy.TaxonomyObject.Value));
                 }
             }
-            foreach (var custAnn in this.Annotations.CustomAnnotations) {
+            foreach (var custAnn in this.Annotations.CustomAnnotations.Where(tax  => (includeInferences || !tax.IsInference))) {
                 if  (custAnn.TaxonomyObject.IsLiteral()) {
                      result.AddTriple(new RDFTriple((RDFResource)custAnn.TaxonomySubject.Value, (RDFResource)custAnn.TaxonomyPredicate.Value, (RDFLiteral)custAnn.TaxonomyObject.Value));
                 }

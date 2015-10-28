@@ -125,10 +125,11 @@ namespace RDFSharp.Semantics
 
         #region Convert
         /// <summary>
-        /// Gets a graph representation of this ontology model
+        /// Gets a graph representation of this ontology model, eventually including inferences
         /// </summary>
-        public RDFGraph ToRDFGraph() {
-            return this.ClassModel.ToRDFGraph().UnionWith(this.PropertyModel.ToRDFGraph());
+        public RDFGraph ToRDFGraph(Boolean includeInferences) {
+            return this.ClassModel.ToRDFGraph(includeInferences)
+                                  .UnionWith(this.PropertyModel.ToRDFGraph(includeInferences));
         }
         #endregion
 

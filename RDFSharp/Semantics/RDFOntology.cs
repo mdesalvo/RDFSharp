@@ -424,10 +424,10 @@ namespace RDFSharp.Semantics
         }
 
         /// <summary>
-        /// Gets a graph representation of this ontology
+        /// Gets a graph representation of this ontology, eventually including inferences
         /// </summary>
-        public RDFGraph ToRDFGraph() {
-            return RDFSemanticsUtilities.ToRDFGraph(this);
+        public RDFGraph ToRDFGraph(Boolean includeInferences) {
+            return RDFSemanticsUtilities.ToRDFGraph(this, includeInferences);
         }
         #endregion
 
