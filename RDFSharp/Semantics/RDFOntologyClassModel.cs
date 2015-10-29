@@ -679,10 +679,10 @@ namespace RDFSharp.Semantics {
         /// Gets a graph representation of this ontology class model, eventually including inferences
         /// </summary>
         public RDFGraph ToRDFGraph(Boolean includeInferences) {
-            var result   = new RDFGraph();
+            var result     = new RDFGraph();
 
             //Definitions
-            foreach (var c in this) {
+            foreach (var   c in this) {
                 if  (c.IsRestrictionClass()) {
                      result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.RESTRICTION));
                      if (c is RDFOntologyAllValuesFromRestriction) {
@@ -766,50 +766,17 @@ namespace RDFSharp.Semantics {
             }
 
             //Relations
-            foreach (var subclassOf in this.Relations.SubClassOf.Where(tax        => (includeInferences || !tax.IsInference))) {
-                result.AddTriple(new RDFTriple((RDFResource)subclassOf.TaxonomySubject.Value, RDFVocabulary.RDFS.SUB_CLASS_OF, (RDFResource)subclassOf.TaxonomyObject.Value));
-            }
-            foreach (var equivclassOf in this.Relations.EquivalentClass.Where(tax => (includeInferences || !tax.IsInference))) {
-                result.AddTriple(new RDFTriple((RDFResource)equivclassOf.TaxonomySubject.Value, RDFVocabulary.OWL.EQUIVALENT_CLASS, (RDFResource)equivclassOf.TaxonomyObject.Value));
-            }
-            foreach (var disjointWith in this.Relations.DisjointWith.Where(tax    => (includeInferences || !tax.IsInference))) {
-                result.AddTriple(new RDFTriple((RDFResource)disjointWith.TaxonomySubject.Value, RDFVocabulary.OWL.DISJOINT_WITH, (RDFResource)disjointWith.TaxonomyObject.Value));
-            }
+            result         = result.UnionWith(this.Relations.SubClassOf.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Relations.EquivalentClass.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Relations.DisjointWith.ToRDFGraph(includeInferences));
 
             //Annotations
-            foreach (var versInfo in this.Annotations.VersionInfo.Where(tax       => (includeInferences || !tax.IsInference))) {
-                result.AddTriple(new RDFTriple((RDFResource)versInfo.TaxonomySubject.Value, RDFVocabulary.OWL.VERSION_INFO, (RDFLiteral)versInfo.TaxonomyObject.Value));
-            }
-            foreach (var comment in this.Annotations.Comment.Where(tax            => (includeInferences || !tax.IsInference))) {
-                result.AddTriple(new RDFTriple((RDFResource)comment.TaxonomySubject.Value, RDFVocabulary.RDFS.COMMENT, (RDFLiteral)comment.TaxonomyObject.Value));
-            }
-            foreach (var label in this.Annotations.Label.Where(tax                => (includeInferences || !tax.IsInference))) {
-                result.AddTriple(new RDFTriple((RDFResource)label.TaxonomySubject.Value, RDFVocabulary.RDFS.LABEL, (RDFLiteral)label.TaxonomyObject.Value));
-            }
-            foreach (var seeAlso in this.Annotations.SeeAlso.Where(tax            => (includeInferences || !tax.IsInference))) {
-                if  (seeAlso.TaxonomyObject.IsLiteral()) {
-                     result.AddTriple(new RDFTriple((RDFResource)seeAlso.TaxonomySubject.Value, RDFVocabulary.RDFS.SEE_ALSO, (RDFLiteral)seeAlso.TaxonomyObject.Value));
-                }
-                else {
-                     result.AddTriple(new RDFTriple((RDFResource)seeAlso.TaxonomySubject.Value, RDFVocabulary.RDFS.SEE_ALSO, (RDFResource)seeAlso.TaxonomyObject.Value));
-                }
-            }
-            foreach (var isDefBy in this.Annotations.IsDefinedBy.Where(tax        => (includeInferences || !tax.IsInference))) {
-                if  (isDefBy.TaxonomyObject.IsLiteral()) {
-                     result.AddTriple(new RDFTriple((RDFResource)isDefBy.TaxonomySubject.Value, RDFVocabulary.RDFS.IS_DEFINED_BY, (RDFLiteral)isDefBy.TaxonomyObject.Value));
-                }
-                else {
-                     result.AddTriple(new RDFTriple((RDFResource)isDefBy.TaxonomySubject.Value, RDFVocabulary.RDFS.IS_DEFINED_BY, (RDFResource)isDefBy.TaxonomyObject.Value));
-                }
-            }
-            foreach (var custAnn in this.Annotations.CustomAnnotations.Where(tax  => (includeInferences || !tax.IsInference))) {
-                if  (custAnn.TaxonomyObject.IsLiteral()) {
-                     result.AddTriple(new RDFTriple((RDFResource)custAnn.TaxonomySubject.Value, (RDFResource)custAnn.TaxonomyPredicate.Value, (RDFLiteral)custAnn.TaxonomyObject.Value));
-                }
-                else {
-                     result.AddTriple(new RDFTriple((RDFResource)custAnn.TaxonomySubject.Value, (RDFResource)custAnn.TaxonomyPredicate.Value, (RDFResource)custAnn.TaxonomyObject.Value));
-                }
-            }
+            result         = result.UnionWith(this.Annotations.VersionInfo.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Annotations.Comment.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Annotations.Label.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Annotations.SeeAlso.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Annotations.IsDefinedBy.ToRDFGraph(includeInferences))
+                                   .UnionWith(this.Annotations.CustomAnnotations.ToRDFGraph(includeInferences));
 
             return result;
         }

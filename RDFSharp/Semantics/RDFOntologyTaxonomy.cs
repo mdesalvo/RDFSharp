@@ -109,7 +109,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Checks if the taxonomy contains the given taxonomy entry
         /// </summary>
-        public Boolean ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry) {
+        internal Boolean ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry) {
             return (taxonomyEntry != null && this.Entries.ContainsKey(taxonomyEntry.TaxonomyEntryID));
         }
 
@@ -234,7 +234,7 @@ namespace RDFSharp.Semantics {
                 }
                 else {
                     if (!te.IsInference) {
-                        result.AddTriple(te.ToRDFTriple());
+                         result.AddTriple(te.ToRDFTriple());
                     }
                 }
             }

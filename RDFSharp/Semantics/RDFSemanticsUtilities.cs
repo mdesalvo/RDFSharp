@@ -2534,51 +2534,16 @@ namespace RDFSharp.Semantics
 
                 //Ontology
                 result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY));
-                foreach (var verInfo in ontology.Annotations.VersionInfo.Where(tax            => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.OWL.VERSION_INFO, (RDFLiteral)verInfo.TaxonomyObject.Value));
-                }
-                foreach (var comment in ontology.Annotations.Comment.Where(tax                => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDFS.COMMENT, (RDFLiteral)comment.TaxonomyObject.Value));
-                }
-                foreach (var label   in ontology.Annotations.Label.Where(tax                  => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDFS.LABEL, (RDFLiteral)label.TaxonomyObject.Value));
-                }
-                foreach (var seeAlso in ontology.Annotations.SeeAlso.Where(tax                => (includeInferences || !tax.IsInference))) {
-                    if  (seeAlso.TaxonomyObject.IsLiteral()) {
-                         result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDFS.SEE_ALSO, (RDFLiteral)seeAlso.TaxonomyObject.Value));
-                    }
-                    else {
-                         result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDFS.SEE_ALSO, (RDFResource)seeAlso.TaxonomyObject.Value));
-                    }
-                }
-                foreach (var isDefBy in ontology.Annotations.IsDefinedBy.Where(tax            => (includeInferences || !tax.IsInference))) {
-                    if  (isDefBy.TaxonomyObject.IsLiteral()) {
-                         result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDFS.IS_DEFINED_BY, (RDFLiteral)isDefBy.TaxonomyObject.Value));
-                    }
-                    else {
-                         result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDFS.IS_DEFINED_BY, (RDFResource)isDefBy.TaxonomyObject.Value));
-                    }
-                }
-                foreach (var priorVs in ontology.Annotations.PriorVersion.Where(tax           => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.OWL.PRIOR_VERSION, (RDFResource)priorVs.TaxonomyObject.Value));
-                }
-                foreach (var bwcWith in ontology.Annotations.BackwardCompatibleWith.Where(tax => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH, (RDFResource)bwcWith.TaxonomyObject.Value));
-                }
-                foreach (var incWith in ontology.Annotations.IncompatibleWith.Where(tax       => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.OWL.INCOMPATIBLE_WITH, (RDFResource)incWith.TaxonomyObject.Value));
-                }
-                foreach (var imports in ontology.Annotations.Imports.Where(tax                => (includeInferences || !tax.IsInference))) {
-                    result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.OWL.IMPORTS, (RDFResource)imports.TaxonomyObject.Value));
-                }
-                foreach (var custAnn in ontology.Annotations.CustomAnnotations.Where(tax      => (includeInferences || !tax.IsInference))) {
-                    if  (custAnn.TaxonomyObject.IsLiteral()) {
-                         result.AddTriple(new RDFTriple((RDFResource)ontology.Value, (RDFResource)custAnn.TaxonomyPredicate.Value, (RDFLiteral)custAnn.TaxonomyObject.Value));
-                    }
-                    else {
-                         result.AddTriple(new RDFTriple((RDFResource)ontology.Value, (RDFResource)custAnn.TaxonomyPredicate.Value, (RDFResource)custAnn.TaxonomyObject.Value));
-                    }
-                }
+                result    = result.UnionWith(ontology.Annotations.VersionInfo.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.Comment.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.Label.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.SeeAlso.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.IsDefinedBy.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.BackwardCompatibleWith.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.IncompatibleWith.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.PriorVersion.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.Imports.ToRDFGraph(includeInferences))
+                                  .UnionWith(ontology.Annotations.CustomAnnotations.ToRDFGraph(includeInferences));
 
                 //Model
                 result    = result.UnionWith(ontology.Model.ToRDFGraph(includeInferences));
