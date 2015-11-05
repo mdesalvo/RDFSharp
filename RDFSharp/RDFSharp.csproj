@@ -149,6 +149,10 @@
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyCardinalityRestriction.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyHasValueRestriction.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologySomeValuesFromRestriction.cs" />
+    <Compile Include="Semantics\Reasoning\RDFOntologyReasoner.cs" />
+    <Compile Include="Semantics\Reasoning\RDFOntologyReasoningEvidence.cs" />
+    <Compile Include="Semantics\Reasoning\RDFOntologyReasoningRule.cs" />
+    <Compile Include="Semantics\Reasoning\RDFOntologyReasoningRuleSet.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationEvidence.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationReport.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationRule.cs" />

@@ -17,9 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Store;
 using RDFSharp.Query;
@@ -27,7 +24,7 @@ using RDFSharp.Query;
 namespace RDFSharp.Semantics {
 
     /// <summary>
-    /// RDFOntologyValidationRule represents a rule analyzing a specific syntactic/semantic aspect of an ontology.
+    /// RDFOntologyValidationRule represents a rule which analyzes a specific syntactic/semantic aspect of an ontology.
     /// </summary>
     public class RDFOntologyValidationRule {
 
