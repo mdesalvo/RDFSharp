@@ -29,11 +29,26 @@ namespace RDFSharp.Semantics {
     public class RDFOntologyReasoningRule {
 
         #region Properties
-        
+        /// <summary>
+        /// Name of the rule
+        /// </summary>
+        public String RuleName { get; internal set; }
+
+        /// <summary>
+        /// Description of the rule
+        /// </summary>
+        public String RuleDescription { get; internal set; }
         #endregion
 
         #region Ctors
-        
+        /// <summary>
+        /// Default-ctor to build an empty reasoning rule with given name and description
+        /// </summary>
+        public RDFOntologyReasoningRule(String ruleName,
+                                        String ruleDescription) {
+            this.RuleName        = ruleName;
+            this.RuleDescription = ruleDescription;
+        }
         #endregion
 
         #region Interfaces
