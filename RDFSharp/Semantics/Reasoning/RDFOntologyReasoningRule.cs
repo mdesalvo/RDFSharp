@@ -38,25 +38,29 @@ namespace RDFSharp.Semantics {
         /// Description of the rule
         /// </summary>
         public String RuleDescription { get; internal set; }
+
+        /// <summary>
+        /// Delegate for the function which will be executed as body of the rule
+        /// </summary>
+        public delegate List<RDFOntologyReasoningEvidence> RuleDelegate(RDFOntology ontology);
+
+        /// <summary>
+        /// Function which will be executed as body of the rule
+        /// </summary>
+        public RuleDelegate ExecuteRule { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty reasoning rule with given name and description
+        /// Default-ctor to build an empty reasoning rule with given name, description and delegate
         /// </summary>
         public RDFOntologyReasoningRule(String ruleName,
-                                        String ruleDescription) {
+                                        String ruleDescription,
+                                        RuleDelegate ruleDelegate) {
             this.RuleName        = ruleName;
             this.RuleDescription = ruleDescription;
+            this.ExecuteRule     = ruleDelegate;
         }
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
         #endregion
 
     }

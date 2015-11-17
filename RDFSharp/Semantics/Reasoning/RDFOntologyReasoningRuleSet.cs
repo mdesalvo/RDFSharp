@@ -25,10 +25,10 @@ using RDFSharp.Query;
 namespace RDFSharp.Semantics {
 
     /// <summary>
-    /// RDFOntologyReasoningRuleSet represents a set of RDFS/OWL-DL rules which are applied by a validator 
+    /// RDFOntologyReasoningRuleSet represents a set of RDFS/OWL-DL rules which are applied by a reasoner 
     /// on a given ontology in order to materialize semantic inferences discovered within its model and data.
     /// </summary>
-    public class RDFOntologyReasoningRuleSet {
+    internal class RDFOntologyReasoningRuleSet {
 
         #region Properties
 

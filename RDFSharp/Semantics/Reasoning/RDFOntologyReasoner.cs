@@ -33,19 +33,19 @@ namespace RDFSharp.Semantics {
     public class RDFOntologyReasoner {
 
         #region Properties
-        
+        /// <summary>
+        /// Set of RDFS/OWL-DL rules characterizing this reasoner
+        /// </summary>
+        internal RDFOntologyReasoningRuleSet RuleSet { get; set; }
         #endregion
 
         #region Ctors
-        
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+        /// <summary>
+        /// Default-ctor to build a reasoner with predefined set of RDFS/OWL-DL rules
+        /// </summary>
+        public RDFOntologyReasoner() {
+            this.RuleSet = new RDFOntologyReasoningRuleSet();
+        }
         #endregion
 
     }
