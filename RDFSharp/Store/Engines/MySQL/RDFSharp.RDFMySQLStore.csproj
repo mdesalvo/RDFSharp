@@ -61,7 +61,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\RDFSharp.csproj">
       <Project>{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}</Project>
-      <Name>RDFSharp %28RDFSharp\RDFSharp%29</Name>
+      <Name>RDFSharp</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

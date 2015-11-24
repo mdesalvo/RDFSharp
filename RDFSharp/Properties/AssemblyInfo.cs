@@ -28,7 +28,6 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("0.8.3")]
 [assembly: ComVisible(false)]
 [assembly: Guid("1ef76fd3-c935-4965-9621-6ca0cbc275bf")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFFirebirdStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFSQLiteStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFMySQLStore")]
