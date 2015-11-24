@@ -40,6 +40,11 @@ namespace RDFSharp.Semantics {
         public String RuleDescription { get; internal set; }
 
         /// <summary>
+        /// Category of reasoning evidences produced by the rule
+        /// </summary>
+        public RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory RuleCategory { get; internal set; }
+
+        /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
         public delegate List<RDFOntologyReasoningEvidence> RuleDelegate(RDFOntology ontology);
@@ -52,14 +57,31 @@ namespace RDFSharp.Semantics {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty reasoning rule with given name, description and delegate
+        /// Default-ctor to build an empty reasoning rule with given name, description, category and delegate
         /// </summary>
         public RDFOntologyReasoningRule(String ruleName,
                                         String ruleDescription,
+                                        RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory ruleCategory,
                                         RuleDelegate ruleDelegate) {
-            this.RuleName        = ruleName;
-            this.RuleDescription = ruleDescription;
-            this.ExecuteRule     = ruleDelegate;
+            if (ruleName                    != null && ruleName.Trim() != String.Empty) {
+                if (ruleDescription         != null && ruleDescription.Trim() != String.Empty) {
+                    if (ruleDelegate        != null) {
+                        this.RuleName        = ruleName;
+                        this.RuleDescription = ruleDescription;
+                        this.RuleCategory    = ruleCategory;
+                        this.ExecuteRule     = ruleDelegate;
+                    }
+                    else {
+                        throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleDelegate\" parameter is null.");
+                    }
+                }
+                else {
+                    throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleDescription\" parameter is null or empty.");
+                }
+            }
+            else {
+                throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleName\" parameter is null or empty.");
+            }
         }
         #endregion
 

@@ -28,11 +28,6 @@ namespace RDFSharp.Semantics {
 
         #region Properties
         /// <summary>
-        /// Category of this evidence
-        /// </summary>
-        public RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory EvidenceCategory { get; internal set; }
-
-        /// <summary>
         /// Rule which has produced this evidence
         /// </summary>
         public RDFOntologyReasoningRule EvidenceProvenance { get; internal set; }
@@ -45,12 +40,10 @@ namespace RDFSharp.Semantics {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an evidence with given category, provenance and message
+        /// Default-ctor to build an evidence with given provenance and message
         /// </summary>
-        internal RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory evidenceCategory,
-                                              RDFOntologyReasoningRule evidenceProvenance,
+        internal RDFOntologyReasoningEvidence(RDFOntologyReasoningRule evidenceProvenance,
                                               RDFOntologyTaxonomyEntry evidenceMessage) {
-            this.EvidenceCategory   = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;
             this.EvidenceMessage    = evidenceMessage;;
         }

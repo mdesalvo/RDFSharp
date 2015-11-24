@@ -31,18 +31,42 @@ namespace RDFSharp.Semantics {
     internal class RDFOntologyReasoningRuleSet {
 
         #region Properties
-
+        /// <summary>
+        /// List of rules contained in the reasoning ruleset
+        /// </summary>
+        internal List<RDFOntologyReasoningRule> Rules { get; set; }
         #endregion
 
         #region Ctors
-
-        #endregion
-
-        #region Interfaces
-
+        /// <summary>
+        /// Default-ctor to build a predefined reasoning ruleset
+        /// </summary>
+        internal RDFOntologyReasoningRuleSet() {
+            this.Rules = new List<RDFOntologyReasoningRule>() { 
+            
+                //ClassModel_SubClassTransitivity
+                new RDFOntologyReasoningRule(
+                    "ClassModel_SubClassTransitivity", 
+                    "((C1 SUBCLASSOF C2) AND (C2 SUBCLASSOF C3)) => (C1 SUBCLASSOF C3)",
+                    RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel,
+                    RDFOntologyReasoningRuleSet.ClassModel_SubClassTransitivity)
+            
+            };
+        }
         #endregion
 
         #region Methods
+
+        #region ClassModel_SubClassTransitivity
+        /// <summary>
+        /// ((C1 SUBCLASSOF C2) AND (C2 SUBCLASSOF C3)) => (C1 SUBCLASSOF C3)
+        /// </summary>
+        internal static List<RDFOntologyReasoningEvidence> ClassModel_SubClassTransitivity(RDFOntology ontology) {
+            var evidences = new List<RDFOntologyReasoningEvidence>();
+
+            return evidences;
+        }
+        #endregion
 
         #endregion
 
