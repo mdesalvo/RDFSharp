@@ -47,7 +47,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        public delegate List<RDFOntologyReasoningEvidence> RuleDelegate(RDFOntology ontology);
+        public delegate void RuleDelegate(RDFOntology ontology);
 
         /// <summary>
         /// Function which will be executed as body of the rule

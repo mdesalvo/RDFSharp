@@ -75,8 +75,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((C1 [EQUIVALENTCLASS|SUBCLASSOF] C2) AND (C2 SUBCLASSOF C3)) => (C1 SUBCLASSOF C3)
         /// </summary>
-        internal static List<RDFOntologyReasoningEvidence> ClassModel_SubClassTransitivity(RDFOntology ontology) {
-            var evidences        = new List<RDFOntologyReasoningEvidence>();
+        internal static void ClassModel_SubClassTransitivity(RDFOntology ontology) {
             foreach (var c      in ontology.Model.ClassModel) {
                 var supcls       = RDFOntologyHelper.EnlistSuperClassesOf(c, ontology.Model.ClassModel);
                 foreach (var sc in supcls) {
@@ -84,7 +83,6 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(scTax.SetInference(true));
                 }
             }
-            return evidences;
         }
         #endregion
 
@@ -92,8 +90,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)
         /// </summary>
-        internal static List<RDFOntologyReasoningEvidence> ClassModel_EquivalentClassTransitivity(RDFOntology ontology) {
-            var evidences        = new List<RDFOntologyReasoningEvidence>();
+        internal static void ClassModel_EquivalentClassTransitivity(RDFOntology ontology) {
             foreach (var c in ontology.Model.ClassModel) {
                 var eqcls        = RDFOntologyHelper.EnlistEquivalentClassesOf(c, ontology.Model.ClassModel);
                 foreach (var ec in eqcls) {
@@ -101,7 +98,6 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecTax.SetInference(true));
                 }
             }
-            return evidences;
         }
         #endregion
 
@@ -109,8 +105,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((C1 [EQUIVALENTCLASS|SUBCLASSOF] C2) AND (C2 DISJOINTWITH C3)) => (C1 DISJOINTWITH C3)
         /// </summary>
-        internal static List<RDFOntologyReasoningEvidence> ClassModel_DisjointWithInference(RDFOntology ontology) {
-            var evidences        = new List<RDFOntologyReasoningEvidence>();
+        internal static void ClassModel_DisjointWithInference(RDFOntology ontology) {
             foreach (var c in ontology.Model.ClassModel) {
                 var dwcls        = RDFOntologyHelper.EnlistDisjointClassesWith(c, ontology.Model.ClassModel);
                 foreach (var dc in dwcls) {
@@ -118,7 +113,6 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcTax.SetInference(true));
                 }
             }
-            return evidences;
         }
         #endregion
 
