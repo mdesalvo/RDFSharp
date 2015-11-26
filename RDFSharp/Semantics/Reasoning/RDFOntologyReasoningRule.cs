@@ -85,6 +85,15 @@ namespace RDFSharp.Semantics {
         }
         #endregion
 
+        #region Interface
+        /// <summary>
+        /// Gives the string representation of the reasoning rule
+        /// </summary>
+        public override String ToString() {
+            return this.RuleName + ": " + this.RuleDescription;
+        }
+        #endregion
+
     }
 
 }
