@@ -63,7 +63,21 @@ namespace RDFSharp.Semantics {
                     "ClassModel_DisjointWithInference", 
                     "((C1 [EQUIVALENTCLASS|SUBCLASSOF] C2) AND (C2 DISJOINTWITH C3)) => (C1 DISJOINTWITH C3)",
                     RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel,
-                    RDFOntologyReasoningRuleSet.ClassModel_DisjointWithInference)
+                    RDFOntologyReasoningRuleSet.ClassModel_DisjointWithInference),
+
+                //PropertyModel_SubPropertyTransitivity
+                new RDFOntologyReasoningRule(
+                    "PropertyModel_SubPropertyTransitivity", 
+                    "((P1 [EQUIVALENTPROPERTY|SUBPROPERTYOF] P2) AND (P2 SUBPROPERTYOF P3)) => (P1 SUBPROPERTYOF P3)",
+                    RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel,
+                    RDFOntologyReasoningRuleSet.PropertyModel_SubPropertyTransitivity),
+
+                //PropertyModel_EquivalentPropertyTransitivity
+                new RDFOntologyReasoningRule(
+                    "PropertyModel_EquivalentPropertyTransitivity", 
+                    "((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)",
+                    RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel,
+                    RDFOntologyReasoningRuleSet.PropertyModel_EquivalentPropertyTransitivity)
             
             };
         }
@@ -111,6 +125,36 @@ namespace RDFSharp.Semantics {
                 foreach (var dc in dwcls) {
                     var dcTax    = new RDFOntologyTaxonomyEntry(c, RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, dc);
                     ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcTax.SetInference(true));
+                }
+            }
+        }
+        #endregion
+
+        #region Rule:PropertyModel_SubPropertyTransitivity
+        /// <summary>
+        /// ((P1 [EQUIVALENTPROPERTY|SUBPROPERTYOF] P2) AND (P2 SUBPROPERTYOF P3)) => (P1 SUBPROPERTYOF P3)
+        /// </summary>
+        internal static void PropertyModel_SubPropertyTransitivity(RDFOntology ontology) {
+            foreach (var p in ontology.Model.PropertyModel) {
+                var supprops     = RDFOntologyHelper.EnlistSuperPropertiesOf(p, ontology.Model.PropertyModel);
+                foreach (var sp in supprops) {
+                    var spTax    = new RDFOntologyTaxonomyEntry(p, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, sp);
+                    ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(spTax.SetInference(true));
+                }
+            }
+        }
+        #endregion
+
+        #region Rule:PropertyModel_EquivalentPropertyTransitivity
+        /// <summary>
+        /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)
+        /// </summary>
+        internal static void PropertyModel_EquivalentPropertyTransitivity(RDFOntology ontology) {
+            foreach (var p in ontology.Model.PropertyModel) {
+                var eqprops      = RDFOntologyHelper.EnlistEquivalentPropertiesOf(p, ontology.Model.PropertyModel);
+                foreach (var ep in eqprops) {
+                    var epTax    = new RDFOntologyTaxonomyEntry(p, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, ep);
+                    ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epTax.SetInference(true));
                 }
             }
         }
