@@ -523,7 +523,7 @@ namespace RDFSharp.Semantics {
                                                         ((RDFOntologyProperty)asn.TaxonomyPredicate).Domain != null ||
                                                         ((RDFOntologyProperty)asn.TaxonomyPredicate).Range  != null)) {
 
-                //Domain
+                #region Domain
                 var domain    = ((RDFOntologyProperty)assertion.TaxonomyPredicate).Domain;
                 if (domain   != null) {
 
@@ -559,8 +559,9 @@ namespace RDFSharp.Semantics {
                     }
 
                 }
+                #endregion
 
-                //Range
+                #region Range
                 var range     = ((RDFOntologyProperty)assertion.TaxonomyPredicate).Range;
                 if (range    != null) {
                     if (((RDFOntologyProperty)assertion.TaxonomyPredicate).IsObjectProperty()) {
@@ -600,6 +601,7 @@ namespace RDFSharp.Semantics {
 
                     }
                 }
+                #endregion
 
             }
             return evidences;
@@ -762,8 +764,8 @@ namespace RDFSharp.Semantics {
                               evidences.Add(new RDFOntologyValidationEvidence(
                                   RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
                                   "LocalCardinalityConstraint",
-                                  String.Format("Ontology property '{0}' is an 'owl:LocalCardinalityConstraint', but it has a local cardinality constraint '{1}'. This is not permitted in OWL-DL.", restrProp, cardRestr),
-                                  String.Format("Unset the ontology property '{0}' as 'owl:LocalCardinalityConstraint', or remove the local cardinality constraint '{1}' applied on it.", restrProp, cardRestr)
+                                  String.Format("Ontology property '{0}' is an 'owl:TransitiveProperty', but it has a local cardinality constraint '{1}'. This is not permitted in OWL-DL.", restrProp, cardRestr),
+                                  String.Format("Unset the ontology property '{0}' as 'owl:TransitiveProperty', or remove the local cardinality constraint '{1}' applied on it.", restrProp, cardRestr)
                               ));
                         }
                         foreach (var subProps in RDFOntologyHelper.EnlistSubPropertiesOf(restrProp, ontology.Model.PropertyModel)) {
@@ -772,8 +774,8 @@ namespace RDFSharp.Semantics {
                                        evidences.Add(new RDFOntologyValidationEvidence(
                                            RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
                                            "LocalCardinalityConstraint",
-                                           String.Format("Ontology property '{0}' has a local cardinality constraint '{1}', but it is also super property of ontology property '{2}', which is an 'owl:LocalCardinalityConstraint'. This is not permitted in OWL-DL.", restrProp, cardRestr, subProps),
-                                           String.Format("Unset the ontology property '{0}' as 'owl:LocalCardinalityConstraint', or remove the local cardinality constraint '{1}' applied on its super property '{2}'.", subProps, cardRestr, restrProp)
+                                           String.Format("Ontology property '{0}' has a local cardinality constraint '{1}', but it is also super property of ontology property '{2}', which is an 'owl:TransitiveProperty'. This is not permitted in OWL-DL.", restrProp, cardRestr, subProps),
+                                           String.Format("Unset the ontology property '{0}' as 'owl:TransitiveProperty', or remove the local cardinality constraint '{1}' applied on its super property '{2}'.", subProps, cardRestr, restrProp)
                                        ));
                                  }
                             }
@@ -783,8 +785,8 @@ namespace RDFSharp.Semantics {
                                    evidences.Add(new RDFOntologyValidationEvidence(
                                        RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
                                        "LocalCardinalityConstraint",
-                                       String.Format("Ontology property '{0}' has a local cardinality constraint '{1}', but it also has an 'owl:inverseOf' relation with ontology property '{2}', which is an 'owl:LocalCardinalityConstraint'. This is not permitted in OWL-DL.", restrProp, cardRestr, inverseProps.TaxonomyObject),
-                                       String.Format("Unset the ontology property '{0}' as 'owl:LocalCardinalityConstraint', or remove the local cardinality constraint '{1}' applied on its inverse ontology property '{2}'.", inverseProps.TaxonomyObject, cardRestr, restrProp)
+                                       String.Format("Ontology property '{0}' has a local cardinality constraint '{1}', but it also has an 'owl:inverseOf' relation with ontology property '{2}', which is an 'owl:TransitiveProperty'. This is not permitted in OWL-DL.", restrProp, cardRestr, inverseProps.TaxonomyObject),
+                                       String.Format("Unset the ontology property '{0}' as 'owl:TransitiveProperty', or remove the local cardinality constraint '{1}' applied on its inverse ontology property '{2}'.", inverseProps.TaxonomyObject, cardRestr, restrProp)
                                    ));
                             }
                         }
