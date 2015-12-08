@@ -103,7 +103,7 @@ namespace RDFSharp.Semantics {
         /// Analyzes the given ontology and produces a detailed report of found evidences
         /// </summary>
         internal RDFOntologyValidationReport AnalyzeOntology(RDFOntology ontology) {
-            var report = new RDFOntologyValidationReport();
+            var report = new RDFOntologyValidationReport(ontology.Value.PatternMemberID);
 
             //Step 1: Create the cache for storing the evidences found by the rules
             var rDict  = new Dictionary<RDFOntologyValidationRule, List<RDFOntologyValidationEvidence>>();

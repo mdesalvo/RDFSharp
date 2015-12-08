@@ -47,14 +47,20 @@ namespace RDFSharp.Semantics {
         /// List of evidences
         /// </summary>
         internal List<RDFOntologyValidationEvidence> Evidences { get; set; }
+
+        /// <summary>
+        /// Identifier of the validaton report
+        /// </summary>
+        internal Int64 ValidationReportID { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty report
         /// </summary>
-        internal RDFOntologyValidationReport() {
-            this.Evidences = new List<RDFOntologyValidationEvidence>();
+        internal RDFOntologyValidationReport(Int64 reportID) {
+            this.ValidationReportID = reportID;
+            this.Evidences          = new List<RDFOntologyValidationEvidence>();            
         }
         #endregion
 

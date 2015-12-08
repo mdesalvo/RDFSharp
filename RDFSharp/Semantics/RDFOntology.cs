@@ -440,6 +440,28 @@ namespace RDFSharp.Semantics
         }
         #endregion
 
+        #region Materialize
+        /// <summary>
+        /// Runs a RDFS/OWL-DL reasoner on this ontology to materialize inferred knowledge (only if the given validation report does not indicate errors).
+        /// </summary>
+        public void Materialize(RDFOntologyValidationReport report) {
+            if (report   != null && report.ValidationReportID.Equals(this.Value.PatternMemberID)) {
+                if (report.SelectErrors().Count      == 0) {
+                    if (report.SelectWarnings().Count > 0) {
+                        RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Materialization is going to start on given ontology, but the associated validator indicates it contains warnings: this could probably lead to inaccurate reasonings.");
+                    }
+                    (new RDFOntologyReasoner()).AnalyzeOntology(this);                    
+                }
+                else {
+                    RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Cannot start materialization on given ontology because the associated validator indicates it contains errors.");
+                }
+            }
+            else {
+                RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Cannot start materialization on given ontology because the associated validator is null or does not match the ontology identifier.");
+            }
+        }
+        #endregion
+
         #endregion
 
     }

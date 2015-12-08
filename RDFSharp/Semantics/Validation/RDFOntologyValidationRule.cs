@@ -26,18 +26,18 @@ namespace RDFSharp.Semantics {
     /// <summary>
     /// RDFOntologyValidationRule represents a rule which analyzes a specific syntactic/semantic aspect of an ontology.
     /// </summary>
-    public class RDFOntologyValidationRule {
+    internal class RDFOntologyValidationRule {
 
         #region Properties
         /// <summary>
         /// Name of the rule
         /// </summary>
-        public String RuleName { get; internal set; }
+        internal String RuleName { get; set; }
 
         /// <summary>
         /// Description of the rule
         /// </summary>
-        public String RuleDescription { get; internal set; }
+        internal String RuleDescription { get; set; }
 
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule

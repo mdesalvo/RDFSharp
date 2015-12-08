@@ -30,7 +30,7 @@ namespace RDFSharp.Semantics {
     /// RDFOntologyReasoner analyzes a given ontology through a set of RDFS/OWL-DL rules
     /// in order to materialize semantic inferences discovered within its model and data.
     /// </summary>
-    public class RDFOntologyReasoner {
+    internal class RDFOntologyReasoner {
 
         #region Properties
         /// <summary>
@@ -43,8 +43,17 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Default-ctor to build a reasoner with predefined set of RDFS/OWL-DL rules
         /// </summary>
-        public RDFOntologyReasoner() {
+        internal RDFOntologyReasoner() {
             this.RuleSet = new RDFOntologyReasoningRuleSet();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Runs the ruleset on the given ontology to materialize inferred knowledge
+        /// </summary>
+        internal void AnalyzeOntology(RDFOntology ontology) { 
+            
         }
         #endregion
 

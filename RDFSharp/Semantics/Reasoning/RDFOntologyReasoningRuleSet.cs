@@ -89,7 +89,8 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((C1 [EQUIVALENTCLASS|SUBCLASSOF] C2) AND (C2 SUBCLASSOF C3)) => (C1 SUBCLASSOF C3)
         /// </summary>
-        internal static void ClassModel_SubClassTransitivity(RDFOntology ontology) {
+        internal static Int64 ClassModel_SubClassTransitivity(RDFOntology ontology) {
+            Int64 entriesCount   = ontology.Model.ClassModel.Relations.SubClassOf.EntriesCount;
             foreach (var c      in ontology.Model.ClassModel) {
                 var supcls       = RDFOntologyHelper.EnlistSuperClassesOf(c, ontology.Model.ClassModel);
                 foreach (var sc in supcls) {
@@ -97,6 +98,7 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(scTax.SetInference(true));
                 }
             }
+            return (ontology.Model.ClassModel.Relations.SubClassOf.EntriesCount - entriesCount);
         }
         #endregion
 
@@ -104,7 +106,8 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)
         /// </summary>
-        internal static void ClassModel_EquivalentClassTransitivity(RDFOntology ontology) {
+        internal static Int64 ClassModel_EquivalentClassTransitivity(RDFOntology ontology) {
+            Int64 entriesCount   = ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount;
             foreach (var c in ontology.Model.ClassModel) {
                 var eqcls        = RDFOntologyHelper.EnlistEquivalentClassesOf(c, ontology.Model.ClassModel);
                 foreach (var ec in eqcls) {
@@ -112,6 +115,7 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecTax.SetInference(true));
                 }
             }
+            return (ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount - entriesCount);
         }
         #endregion
 
@@ -119,7 +123,8 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((C1 [EQUIVALENTCLASS|SUBCLASSOF] C2) AND (C2 DISJOINTWITH C3)) => (C1 DISJOINTWITH C3)
         /// </summary>
-        internal static void ClassModel_DisjointWithInference(RDFOntology ontology) {
+        internal static Int64 ClassModel_DisjointWithInference(RDFOntology ontology) {
+            Int64 entriesCount   = ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount;
             foreach (var c in ontology.Model.ClassModel) {
                 var dwcls        = RDFOntologyHelper.EnlistDisjointClassesWith(c, ontology.Model.ClassModel);
                 foreach (var dc in dwcls) {
@@ -127,6 +132,7 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcTax.SetInference(true));
                 }
             }
+            return (ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount - entriesCount);
         }
         #endregion
 
@@ -134,7 +140,8 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((P1 [EQUIVALENTPROPERTY|SUBPROPERTYOF] P2) AND (P2 SUBPROPERTYOF P3)) => (P1 SUBPROPERTYOF P3)
         /// </summary>
-        internal static void PropertyModel_SubPropertyTransitivity(RDFOntology ontology) {
+        internal static Int64 PropertyModel_SubPropertyTransitivity(RDFOntology ontology) {
+            Int64 entriesCount   = ontology.Model.PropertyModel.Relations.SubPropertyOf.EntriesCount;
             foreach (var p in ontology.Model.PropertyModel) {
                 var supprops     = RDFOntologyHelper.EnlistSuperPropertiesOf(p, ontology.Model.PropertyModel);
                 foreach (var sp in supprops) {
@@ -142,6 +149,7 @@ namespace RDFSharp.Semantics {
                     ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(spTax.SetInference(true));
                 }
             }
+            return (ontology.Model.PropertyModel.Relations.SubPropertyOf.EntriesCount - entriesCount);
         }
         #endregion
 
@@ -149,7 +157,8 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)
         /// </summary>
-        internal static void PropertyModel_EquivalentPropertyTransitivity(RDFOntology ontology) {
+        internal static Int64 PropertyModel_EquivalentPropertyTransitivity(RDFOntology ontology) {
+            Int64 entriesCount   = ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount;
             foreach (var p in ontology.Model.PropertyModel) {
                 var eqprops      = RDFOntologyHelper.EnlistEquivalentPropertiesOf(p, ontology.Model.PropertyModel);
                 foreach (var ep in eqprops) {
@@ -157,6 +166,7 @@ namespace RDFSharp.Semantics {
                     ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epTax.SetInference(true));
                 }
             }
+            return (ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount - entriesCount);
         }
         #endregion
 

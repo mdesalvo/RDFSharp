@@ -26,45 +26,45 @@ namespace RDFSharp.Semantics {
     /// <summary>
     /// RDFOntologyReasoningRule represents a rule which calculates a specific semantic inference on an ontology.
     /// </summary>
-    public class RDFOntologyReasoningRule {
+    internal class RDFOntologyReasoningRule {
 
         #region Properties
         /// <summary>
         /// Name of the rule
         /// </summary>
-        public String RuleName { get; internal set; }
+        internal String RuleName { get; set; }
 
         /// <summary>
         /// Description of the rule
         /// </summary>
-        public String RuleDescription { get; internal set; }
+        internal String RuleDescription { get; set; }
 
         /// <summary>
         /// Category of reasoning evidences produced by the rule
         /// </summary>
-        public RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory RuleCategory { get; internal set; }
+        internal RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory RuleCategory { get; set; }
 
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        public delegate void RuleDelegate(RDFOntology ontology);
+        internal delegate Int64 RuleDelegate(RDFOntology ontology);
 
         /// <summary>
         /// Function which will be executed as body of the rule
         /// </summary>
-        public RuleDelegate ExecuteRule { get; internal set; }
+        internal RuleDelegate ExecuteRule { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty reasoning rule with given name, description, category and delegate
         /// </summary>
-        public RDFOntologyReasoningRule(String ruleName,
-                                        String ruleDescription,
-                                        RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory ruleCategory,
-                                        RuleDelegate ruleDelegate) {
-            if (ruleName                    != null && ruleName.Trim() != String.Empty) {
-                if (ruleDescription         != null && ruleDescription.Trim() != String.Empty) {
+        internal RDFOntologyReasoningRule(String ruleName,
+                                          String ruleDescription,
+                                          RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory ruleCategory,
+                                          RuleDelegate ruleDelegate) {
+            if (ruleName                    != null) {
+                if (ruleDescription         != null) {
                     if (ruleDelegate        != null) {
                         this.RuleName        = ruleName;
                         this.RuleDescription = ruleDescription;
@@ -76,11 +76,11 @@ namespace RDFSharp.Semantics {
                     }
                 }
                 else {
-                    throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleDescription\" parameter is null or empty.");
+                    throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleDescription\" parameter is null.");
                 }
             }
             else {
-                throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleName\" parameter is null or empty.");
+                throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRule because given \"ruleName\" parameter is null.");
             }
         }
         #endregion
