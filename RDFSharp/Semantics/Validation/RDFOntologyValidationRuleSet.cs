@@ -42,7 +42,7 @@ namespace RDFSharp.Semantics {
                                                                       cls.ToString().StartsWith(RDFVocabulary.RDFS.BASE_URI) ||
                                                                       cls.ToString().StartsWith(RDFVocabulary.OWL.BASE_URI))) {
                 if (!c.Equals(RDFVocabulary.OWL.THING)    && !c.Equals(RDFVocabulary.OWL.NOTHING)     &&
-                    !c.Equals(RDFVocabulary.RDFS.LITERAL) && !c.Equals(RDFVocabulary.RDF.XML_LITERAL)) {
+                    !c.Equals(RDFVocabulary.RDFS.LITERAL) && !c.Equals(RDFVocabulary.RDF.XML_LITERAL) && !c.Equals(RDFVocabulary.RDF.HTML)) {
                      evidences.Add(new RDFOntologyValidationEvidence(
                         RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
                         "Vocabulary_Reservation",
