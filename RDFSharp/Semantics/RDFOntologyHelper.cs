@@ -204,7 +204,7 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Enlists the subProperties of the given class within the given property model
+        /// Enlists the sub properties of the given property within the given property model
         /// </summary>
         public static RDFOntologyPropertyModel EnlistSubPropertiesOf(RDFOntologyProperty ontProperty, RDFOntologyPropertyModel propertyModel) {
             var result         = new RDFOntologyPropertyModel();
@@ -232,7 +232,7 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Enlists the superProperties of the given class within the given property model
+        /// Enlists the super properties of the given property within the given property model
         /// </summary>
         public static RDFOntologyPropertyModel EnlistSuperPropertiesOf(RDFOntologyProperty ontProperty, RDFOntologyPropertyModel propertyModel) {
             var result         = new RDFOntologyPropertyModel();
@@ -266,6 +266,42 @@ namespace RDFSharp.Semantics {
             var result         = new RDFOntologyPropertyModel();
             if (ontProperty   != null && propertyModel != null) {
                 result         = RDFSemanticsUtilities.EnlistEquivalentPropertiesOf_Core(ontProperty, propertyModel, null).RemoveProperty(ontProperty);
+            }
+            return result;
+        }
+        #endregion
+
+        #region InverseOf
+        /// <summary>
+        /// Checks if the given aProperty is inverse property of the given bProperty within the given property model
+        /// </summary>
+        public static Boolean IsInversePropertyOf(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty, RDFOntologyPropertyModel propertyModel) {
+            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyHelper.EnlistInversePropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+        }
+
+        /// <summary>
+        /// Enlists the inverse properties of the given property within the given property model
+        /// </summary>
+        public static RDFOntologyPropertyModel EnlistInversePropertiesOf(RDFOntologyObjectProperty ontProperty, RDFOntologyPropertyModel propertyModel) {
+            var result              = new RDFOntologyPropertyModel();
+            if (ontProperty        != null && propertyModel != null) {
+                
+                //Subject-side inverse relation
+                foreach (var invOf in propertyModel.Relations.InverseOf.SelectEntriesBySubject(ontProperty)) {
+                    if  (invOf.TaxonomyObject.IsObjectProperty()) {
+                         result     = result.UnionWith(RDFOntologyHelper.EnlistEquivalentPropertiesOf((RDFOntologyObjectProperty)invOf.TaxonomyObject, propertyModel))
+                                            .AddProperty((RDFOntologyObjectProperty)invOf.TaxonomyObject);
+                    }
+                }
+
+                //Object-side inverse relation
+                foreach (var invOf in propertyModel.Relations.InverseOf.SelectEntriesByObject(ontProperty)) {
+                    if  (invOf.TaxonomySubject.IsObjectProperty()) {
+                         result     = result.UnionWith(RDFOntologyHelper.EnlistEquivalentPropertiesOf((RDFOntologyObjectProperty)invOf.TaxonomySubject, propertyModel))
+                                            .AddProperty((RDFOntologyObjectProperty)invOf.TaxonomySubject);
+                    }
+                }
+
             }
             return result;
         }
