@@ -368,7 +368,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: SubPropertyOf relation cannot be 
                      //added to the property model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childProperty, motherProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
 
                 }
 
@@ -391,7 +391,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: SubPropertyOf relation cannot be 
                      //added to the property model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childProperty, motherProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
 
                 }
 
@@ -452,8 +452,22 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyPropertyModel AddInverseOfRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty) {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty)) {
-                this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, bProperty));
-                this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, aProperty).SetInference(true));
+
+                //Enforce taxonomy checks before adding the inverseOf relation, in order to not model inconsistencies
+                if (!RDFOntologyHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
+                    !RDFOntologyHelper.IsSuperPropertyOf(aProperty, bProperty, this) &&
+                    !RDFOntologyHelper.IsEquivalentPropertyOf(aProperty, bProperty, this)) {
+                     this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, bProperty));
+                     this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, aProperty).SetInference(true));
+                }
+                else {
+
+                    //Raise warning event to inform the user: InverseOf relation cannot be 
+                    //added to the property model because it violates the taxonomy consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+
+                }
+
             }
             return this;
         }

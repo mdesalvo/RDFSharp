@@ -285,10 +285,17 @@ namespace RDFSharp.Semantics {
         public static RDFOntologyPropertyModel EnlistInversePropertiesOf(RDFOntologyObjectProperty ontProperty, RDFOntologyPropertyModel propertyModel) {
             var result              = new RDFOntologyPropertyModel();
             if (ontProperty        != null && propertyModel != null) {
+                
+                //Subject-side inverseOf relation
                 foreach (var invOf in propertyModel.Relations.InverseOf.SelectEntriesBySubject(ontProperty)) {
-                    result          = result.UnionWith(RDFOntologyHelper.EnlistEquivalentPropertiesOf((RDFOntologyObjectProperty)invOf.TaxonomyObject, propertyModel))
-                                            .AddProperty((RDFOntologyObjectProperty)invOf.TaxonomyObject);
+                    result.AddProperty((RDFOntologyObjectProperty)invOf.TaxonomyObject);
                 }
+
+                //Object-side inverseOf relation
+                foreach (var invOf in propertyModel.Relations.InverseOf.SelectEntriesByObject(ontProperty)) {
+                    result.AddProperty((RDFOntologyObjectProperty)invOf.TaxonomySubject);
+                }
+
                 result.RemoveProperty(ontProperty); //Safety deletion
             }
             return result;

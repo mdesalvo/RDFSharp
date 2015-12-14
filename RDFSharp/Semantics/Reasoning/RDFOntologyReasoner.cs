@@ -52,7 +52,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Runs the ruleset on the given ontology to materialize inferred knowledge
         /// </summary>
-        internal void AnalyzeOntology(RDFOntology ontology) { 
+        internal void AnalyzeOntology(RDFOntology ontology) {
             
         }
         #endregion
