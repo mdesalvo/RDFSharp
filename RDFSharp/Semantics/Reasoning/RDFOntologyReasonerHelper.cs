@@ -23,9 +23,9 @@ using RDFSharp.Query;
 namespace RDFSharp.Semantics {
 
     /// <summary>
-    /// RDFOntologyHelper represents an helper for lite RDFS/OWL-DL reasoning tasks.
+    /// RDFOntologyReasonerHelper represents an helper for lite RDFS/OWL-DL reasoning tasks.
     /// </summary>
-    public static class RDFOntologyHelper {
+    public static class RDFOntologyReasonerHelper {
 
         #region Model
 
@@ -36,7 +36,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aClass is subClass of the given bClass within the given class model
         /// </summary>
         public static Boolean IsSubClassOf(RDFOntologyClass aClass, RDFOntologyClass bClass, RDFOntologyClassModel classModel) {
-            return (aClass  != null && bClass != null && classModel != null ? RDFOntologyHelper.EnlistSuperClassesOf(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
+            return (aClass  != null && bClass != null && classModel != null ? RDFOntologyReasonerHelper.EnlistSuperClassesOf(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace RDFSharp.Semantics {
                 result       = RDFSemanticsUtilities.EnlistSubClassesOf_Core(ontClass, classModel);
 
                 //Step 2: Reason on the equivalent classes of the given class
-                foreach(var ec in RDFOntologyHelper.EnlistEquivalentClassesOf(ontClass, classModel)) {
+                foreach(var ec in RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(ontClass, classModel)) {
                     result   = result.UnionWith(RDFSemanticsUtilities.EnlistSubClassesOf_Core(ec, classModel));
                 }
 
@@ -64,7 +64,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aClass is superClass of the given bClass within the given class model
         /// </summary>
         public static Boolean IsSuperClassOf(RDFOntologyClass aClass, RDFOntologyClass bClass, RDFOntologyClassModel classModel) {
-            return (aClass  != null && bClass != null && classModel != null ? RDFOntologyHelper.EnlistSubClassesOf(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
+            return (aClass  != null && bClass != null && classModel != null ? RDFOntologyReasonerHelper.EnlistSubClassesOf(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace RDFSharp.Semantics {
                 result       = RDFSemanticsUtilities.EnlistSuperClassesOf_Core(ontClass, classModel);
 
                 //Step 2: Reason on the equivalent classes of the given class
-                foreach(var ec in RDFOntologyHelper.EnlistEquivalentClassesOf(ontClass, classModel)) {
+                foreach(var ec in RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(ontClass, classModel)) {
                     result   = result.UnionWith(RDFSemanticsUtilities.EnlistSuperClassesOf_Core(ec, classModel));
                 }
 
@@ -92,7 +92,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aClass is equivalentClass of the given bClass within the given class model
         /// </summary>
         public static Boolean IsEquivalentClassOf(RDFOntologyClass aClass, RDFOntologyClass bClass, RDFOntologyClassModel classModel) {
-            return(aClass != null && bClass != null && classModel != null ? RDFOntologyHelper.EnlistEquivalentClassesOf(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
+            return(aClass != null && bClass != null && classModel != null ? RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aClass is disjointClass with the given bClass within the given class model
         /// </summary>
         public static Boolean IsDisjointClassWith(RDFOntologyClass aClass, RDFOntologyClass bClass, RDFOntologyClassModel classModel) {
-            return(aClass != null && bClass != null && classModel != null ? RDFOntologyHelper.EnlistDisjointClassesWith(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
+            return(aClass != null && bClass != null && classModel != null ? RDFOntologyReasonerHelper.EnlistDisjointClassesWith(aClass, classModel).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given ontology class is domain of the given ontology property within the given ontology class model
         /// </summary>
         public static Boolean IsDomainClassOf(RDFOntologyClass domainClass, RDFOntologyProperty ontProperty, RDFOntologyClassModel classModel) {
-            return (domainClass != null && ontProperty != null && classModel != null ? RDFOntologyHelper.EnlistDomainClassesOf(ontProperty, classModel).Classes.ContainsKey(domainClass.PatternMemberID) : false);
+            return (domainClass != null && ontProperty != null && classModel != null ? RDFOntologyReasonerHelper.EnlistDomainClassesOf(ontProperty, classModel).Classes.ContainsKey(domainClass.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -142,8 +142,8 @@ namespace RDFSharp.Semantics {
             var result           = new RDFOntologyClassModel();
             if (ontProperty     != null  && classModel != null) {
                 if (ontProperty.Domain   != null) {
-                    result       = RDFOntologyHelper.EnlistSubClassesOf(ontProperty.Domain, classModel)
-                                       .UnionWith(RDFOntologyHelper.EnlistEquivalentClassesOf(ontProperty.Domain, classModel))
+                    result       = RDFOntologyReasonerHelper.EnlistSubClassesOf(ontProperty.Domain, classModel)
+                                       .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(ontProperty.Domain, classModel))
                                        .AddClass(ontProperty.Domain);
                 }
             }
@@ -156,7 +156,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given ontology class is range of the given ontology property within the given ontology class model
         /// </summary>
         public static Boolean IsRangeClassOf(RDFOntologyClass rangeClass, RDFOntologyProperty ontProperty, RDFOntologyClassModel classModel) {
-            return (rangeClass != null && ontProperty != null && classModel != null ? RDFOntologyHelper.EnlistRangeClassesOf(ontProperty, classModel).Classes.ContainsKey(rangeClass.PatternMemberID) : false);
+            return (rangeClass != null && ontProperty != null && classModel != null ? RDFOntologyReasonerHelper.EnlistRangeClassesOf(ontProperty, classModel).Classes.ContainsKey(rangeClass.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace RDFSharp.Semantics {
             var result          = new RDFOntologyClassModel();
             if (ontProperty    != null && classModel != null) {
                 if (ontProperty.Range  != null) {
-                    result      = RDFOntologyHelper.EnlistSubClassesOf(ontProperty.Range, classModel)
-                                     .UnionWith(RDFOntologyHelper.EnlistEquivalentClassesOf(ontProperty.Range, classModel))
+                    result      = RDFOntologyReasonerHelper.EnlistSubClassesOf(ontProperty.Range, classModel)
+                                     .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(ontProperty.Range, classModel))
                                      .AddClass(ontProperty.Range);
                 }
             }
@@ -184,8 +184,8 @@ namespace RDFSharp.Semantics {
             if (ontClass != null && classModel != null) {
                 result    = (ontClass.IsDataRangeClass()                                                                 ||
                              ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL)                                      ||
-                             RDFOntologyHelper.IsSubClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, classModel) ||
-                             RDFOntologyHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, classModel));
+                             RDFOntologyReasonerHelper.IsSubClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, classModel) ||
+                             RDFOntologyReasonerHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, classModel));
             }
             return result;
         }
@@ -200,7 +200,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aProperty is subProperty of the given bProperty within the given property model
         /// </summary>
         public static Boolean IsSubPropertyOf(RDFOntologyProperty aProperty, RDFOntologyProperty bProperty, RDFOntologyPropertyModel propertyModel) {
-            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyHelper.EnlistSuperPropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyReasonerHelper.EnlistSuperPropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace RDFSharp.Semantics {
                 result         = RDFSemanticsUtilities.EnlistSubPropertiesOf_Core(ontProperty, propertyModel);
 
                 //Step 2: Reason on the equivalent properties of the given property
-                foreach(var   ep in RDFOntologyHelper.EnlistEquivalentPropertiesOf(ontProperty, propertyModel)) {
+                foreach(var   ep in RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(ontProperty, propertyModel)) {
                     result     = result.UnionWith(RDFSemanticsUtilities.EnlistSubPropertiesOf_Core(ep, propertyModel));
                 }
 
@@ -228,7 +228,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aProperty is superProperty of the given bProperty within the given property model
         /// </summary>
         public static Boolean IsSuperPropertyOf(RDFOntologyProperty aProperty, RDFOntologyProperty bProperty, RDFOntologyPropertyModel propertyModel) {
-            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyHelper.EnlistSubPropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyReasonerHelper.EnlistSubPropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace RDFSharp.Semantics {
                 result         = RDFSemanticsUtilities.EnlistSuperPropertiesOf_Core(ontProperty, propertyModel);
 
                 //Step 2: Reason on the equivalent properties of the given property
-                foreach(var   ep in RDFOntologyHelper.EnlistEquivalentPropertiesOf(ontProperty, propertyModel)) {
+                foreach(var   ep in RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(ontProperty, propertyModel)) {
                     result     = result.UnionWith(RDFSemanticsUtilities.EnlistSuperPropertiesOf_Core(ep, propertyModel));
                 }
 
@@ -256,7 +256,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aProperty is equivalentProperty of the given bProperty within the given property model
         /// </summary>
         public static Boolean IsEquivalentPropertyOf(RDFOntologyProperty aProperty, RDFOntologyProperty bProperty, RDFOntologyPropertyModel propertyModel) {
-            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyHelper.EnlistEquivalentPropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aProperty is inverse property of the given bProperty within the given property model
         /// </summary>
         public static Boolean IsInversePropertyOf(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty, RDFOntologyPropertyModel propertyModel) {
-            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyHelper.EnlistInversePropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+            return (aProperty != null && bProperty != null && propertyModel != null ? RDFOntologyReasonerHelper.EnlistInversePropertiesOf(aProperty, propertyModel).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aFact is sameAs the given bFact within the given data
         /// </summary>
         public static Boolean IsSameFactAs(RDFOntologyFact aFact, RDFOntologyFact bFact, RDFOntologyData data) {
-            return (aFact != null && bFact != null && data != null ? RDFOntologyHelper.EnlistSameFactsAs(aFact, data).Facts.ContainsKey(bFact.PatternMemberID) : false);
+            return (aFact != null && bFact != null && data != null ? RDFOntologyReasonerHelper.EnlistSameFactsAs(aFact, data).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given aFact is differentFrom the given bFact within the given data
         /// </summary>
         public static Boolean IsDifferentFactFrom(RDFOntologyFact aFact, RDFOntologyFact bFact, RDFOntologyData data) {
-            return (aFact != null && bFact != null && data != null ? RDFOntologyHelper.EnlistDifferentFactsFrom(aFact, data).Facts.ContainsKey(bFact.PatternMemberID) : false);
+            return (aFact != null && bFact != null && data != null ? RDFOntologyReasonerHelper.EnlistDifferentFactsFrom(aFact, data).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the given fact is member of the given class within the given ontology
         /// </summary>
         public static Boolean IsMemberOf(RDFOntologyFact ontFact, RDFOntologyClass ontClass, RDFOntology ontology) { 
-            return(ontFact != null && ontClass != null && ontology != null ? RDFOntologyHelper.EnlistMembersOf(ontClass, ontology).Facts.ContainsKey(ontFact.PatternMemberID) : false);
+            return(ontFact != null && ontClass != null && ontology != null ? RDFOntologyReasonerHelper.EnlistMembersOf(ontClass, ontology).Facts.ContainsKey(ontFact.PatternMemberID) : false);
         }
 
         /// <summary>

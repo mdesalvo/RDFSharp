@@ -125,7 +125,6 @@
     <Compile Include="Semantics\RDFOntologyClassModel.cs" />
     <Compile Include="Semantics\RDFOntologyData.cs" />
     <Compile Include="Semantics\RDFOntologyFact.cs" />
-    <Compile Include="Semantics\RDFOntologyHelper.cs" />
     <Compile Include="Semantics\RDFOntologyLiteral.cs" />
     <Compile Include="Semantics\RDFOntologyMetadata.cs" />
     <Compile Include="Semantics\RDFOntologyModel.cs" />
@@ -151,6 +150,7 @@
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologyHasValueRestriction.cs" />
     <Compile Include="Semantics\Extensions\Restrictions\RDFOntologySomeValuesFromRestriction.cs" />
     <Compile Include="Semantics\Reasoning\RDFOntologyReasoner.cs" />
+    <Compile Include="Semantics\Reasoning\RDFOntologyReasonerHelper.cs" />
     <Compile Include="Semantics\Reasoning\RDFOntologyReasoningRule.cs" />
     <Compile Include="Semantics\Reasoning\RDFOntologyReasoningRuleSet.cs" />
     <Compile Include="Semantics\Validation\RDFOntologyValidationEvidence.cs" />

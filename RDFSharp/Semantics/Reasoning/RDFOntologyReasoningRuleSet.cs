@@ -92,7 +92,7 @@ namespace RDFSharp.Semantics {
         internal static Int64 ClassModel_SubClassTransitivity(RDFOntology ontology) {
             Int64 entriesCount   = ontology.Model.ClassModel.Relations.SubClassOf.EntriesCount;
             foreach (var c      in ontology.Model.ClassModel) {
-                var supcls       = RDFOntologyHelper.EnlistSuperClassesOf(c, ontology.Model.ClassModel);
+                var supcls       = RDFOntologyReasonerHelper.EnlistSuperClassesOf(c, ontology.Model.ClassModel);
                 foreach (var sc in supcls) {
                     var scTax    = new RDFOntologyTaxonomyEntry(c, RDFOntologyVocabulary.ObjectProperties.SUB_CLASS_OF, sc);
                     ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(scTax.SetInference(true));
@@ -109,7 +109,7 @@ namespace RDFSharp.Semantics {
         internal static Int64 ClassModel_EquivalentClassTransitivity(RDFOntology ontology) {
             Int64 entriesCount   = ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount;
             foreach (var c in ontology.Model.ClassModel) {
-                var eqcls        = RDFOntologyHelper.EnlistEquivalentClassesOf(c, ontology.Model.ClassModel);
+                var eqcls        = RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(c, ontology.Model.ClassModel);
                 foreach (var ec in eqcls) {
                     var ecTax    = new RDFOntologyTaxonomyEntry(c, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_CLASS, ec);
                     ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecTax.SetInference(true));
@@ -126,7 +126,7 @@ namespace RDFSharp.Semantics {
         internal static Int64 ClassModel_DisjointWithInference(RDFOntology ontology) {
             Int64 entriesCount   = ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount;
             foreach (var c in ontology.Model.ClassModel) {
-                var dwcls        = RDFOntologyHelper.EnlistDisjointClassesWith(c, ontology.Model.ClassModel);
+                var dwcls        = RDFOntologyReasonerHelper.EnlistDisjointClassesWith(c, ontology.Model.ClassModel);
                 foreach (var dc in dwcls) {
                     var dcTax    = new RDFOntologyTaxonomyEntry(c, RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, dc);
                     ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcTax.SetInference(true));
@@ -143,7 +143,7 @@ namespace RDFSharp.Semantics {
         internal static Int64 PropertyModel_SubPropertyTransitivity(RDFOntology ontology) {
             Int64 entriesCount   = ontology.Model.PropertyModel.Relations.SubPropertyOf.EntriesCount;
             foreach (var p in ontology.Model.PropertyModel) {
-                var supprops     = RDFOntologyHelper.EnlistSuperPropertiesOf(p, ontology.Model.PropertyModel);
+                var supprops     = RDFOntologyReasonerHelper.EnlistSuperPropertiesOf(p, ontology.Model.PropertyModel);
                 foreach (var sp in supprops) {
                     var spTax    = new RDFOntologyTaxonomyEntry(p, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, sp);
                     ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(spTax.SetInference(true));
@@ -160,7 +160,7 @@ namespace RDFSharp.Semantics {
         internal static Int64 PropertyModel_EquivalentPropertyTransitivity(RDFOntology ontology) {
             Int64 entriesCount   = ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount;
             foreach (var p in ontology.Model.PropertyModel) {
-                var eqprops      = RDFOntologyHelper.EnlistEquivalentPropertiesOf(p, ontology.Model.PropertyModel);
+                var eqprops      = RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(p, ontology.Model.PropertyModel);
                 foreach (var ep in eqprops) {
                     var epTax    = new RDFOntologyTaxonomyEntry(p, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, ep);
                     ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epTax.SetInference(true));
