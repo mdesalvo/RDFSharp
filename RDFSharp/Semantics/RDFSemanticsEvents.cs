@@ -23,6 +23,25 @@ namespace RDFSharp.Semantics {
     /// </summary>
     public static class RDFSemanticsEvents {
 
+        #region OnSemanticsInfo
+        /// <summary>
+        /// Event representing an information message generated within the "RDFSharp.Semantics" namespace
+        /// </summary>
+        public static event RDFSemanticsInfoEventHandler OnSemanticsInfo = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated within the "RDFSharp.Semantics" namespace
+        /// </summary>
+        public delegate void RDFSemanticsInfoEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseSemanticsInfo(String eventMessage) {
+            RDFSemanticsEvents.OnSemanticsInfo(DateTime.Now.ToString() + " - " + eventMessage);
+        }
+        #endregion
+
         #region OnSemanticsWarning
         /// <summary>
         /// Event representing a warning message generated within the "RDFSharp.Semantics" namespace

@@ -23,6 +23,25 @@ namespace RDFSharp.Query {
     /// </summary>
     public static class RDFQueryEvents {
 
+        #region OnQueryInfo
+        /// <summary>
+        /// Event representing an information message generated within the "RDFSharp.Query" namespace
+        /// </summary>
+        public static event RDFQueryInfoEventHandler OnQueryInfo = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated within the "RDFSharp.Query" namespace
+        /// </summary>
+        public delegate void RDFQueryInfoEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseQueryInfo(String eventMessage) {
+            RDFQueryEvents.OnQueryInfo(DateTime.Now.ToString() + " - " + eventMessage);
+        }
+        #endregion
+
         #region OnQueryWarning
         /// <summary>
         /// Event representing a warning message generated within the "RDFSharp.Query" namespace

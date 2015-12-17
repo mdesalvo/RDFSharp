@@ -23,6 +23,25 @@ namespace RDFSharp.Model {
     /// </summary>
     public static class RDFModelEvents {
 
+        #region OnModelInfo
+        /// <summary>
+        /// Event representing an information message generated within the "RDFSharp.Model" namespace
+        /// </summary>
+        public static event RDFModelInfoEventHandler OnModelInfo = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated within the "RDFSharp.Model" namespace
+        /// </summary>
+        public delegate void RDFModelInfoEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseModelInfo(String eventMessage) {
+            RDFModelEvents.OnModelInfo(DateTime.Now.ToString() + " - " + eventMessage);
+        }
+        #endregion
+
         #region OnModelWarning
         /// <summary>
         /// Event representing a warning message generated within the "RDFSharp.Model" namespace

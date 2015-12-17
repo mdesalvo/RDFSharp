@@ -23,6 +23,25 @@ namespace RDFSharp.Store {
     /// </summary>
     public static class RDFStoreEvents {
 
+        #region OnStoreInfo
+        /// <summary>
+        /// Event representing an information message generated within the "RDFSharp.Store" namespace
+        /// </summary>
+        public static event RDFStoreInfoEventHandler OnStoreInfo = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated within the "RDFSharp.Store" namespace
+        /// </summary>
+        public delegate void RDFStoreInfoEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseStoreInfo(String eventMessage) {
+            RDFStoreEvents.OnStoreInfo(DateTime.Now.ToString() + " - " + eventMessage);
+        }
+        #endregion
+
         #region OnStoreWarning
         /// <summary>
         /// Event representing a warning message generated within the "RDFSharp.Store" namespace
