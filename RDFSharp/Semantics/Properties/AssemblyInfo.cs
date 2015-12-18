@@ -16,20 +16,14 @@
 
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-[assembly: AssemblyTitle("RDFSharp")]
-[assembly: AssemblyDescription("RDFSharp - Start playing with RDF!")]
+[assembly: AssemblyTitle("RDFSharp.Semantics")]
+[assembly: AssemblyDescription("Create and manage OWL-DL ontologies with RDFSharp")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marco De Salvo")]
-[assembly: AssemblyProduct("RDFSharp")]
+[assembly: AssemblyProduct("RDFSharp.Semantics")]
 [assembly: AssemblyCopyright("Marco De Salvo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("0.8.3")]
 [assembly: ComVisible(false)]
-[assembly: Guid("1ef76fd3-c935-4965-9621-6ca0cbc275bf")]
-[assembly: InternalsVisibleTo("RDFSharp.Semantics")]
-[assembly: InternalsVisibleTo("RDFSharp.RDFFirebirdStore")]
-[assembly: InternalsVisibleTo("RDFSharp.RDFSQLiteStore")]
-[assembly: InternalsVisibleTo("RDFSharp.RDFMySQLStore")]
-[assembly: InternalsVisibleTo("RDFSharp.RDFPostgreSQLStore")]
+[assembly: Guid("2BE71F3A-943B-464A-8FE8-7D7BCBF23100")]
