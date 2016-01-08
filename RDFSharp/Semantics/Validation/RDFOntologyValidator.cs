@@ -70,6 +70,12 @@ namespace RDFSharp.Semantics {
                     "This rule checks for consistency of rdfs:domain and rdfs:range axioms",
                     RDFOntologyValidationRuleSet.Domain_Range),
 
+                //InverseOf
+                new RDFOntologyValidationRule(
+                    "InverseOf", 
+                    "This rule checks for consistency of owl:inverseOf axioms",
+                    RDFOntologyValidationRuleSet.InverseOf),
+
                 //ClassType
                 new RDFOntologyValidationRule(
                     "ClassType", 

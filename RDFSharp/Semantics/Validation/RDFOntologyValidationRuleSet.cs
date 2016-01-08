@@ -608,6 +608,49 @@ namespace RDFSharp.Semantics {
         }
         #endregion
 
+        #region Rule:InverseOf
+        /// <summary>
+        /// Validation rule checking for consistency of owl:inverseOf axioms
+        /// </summary>
+        internal static List<RDFOntologyValidationEvidence> InverseOf(RDFOntology ontology) {
+            var evidences         = new List<RDFOntologyValidationEvidence>();
+            foreach (var invOf   in ontology.Model.PropertyModel.Relations.InverseOf) {
+
+                //Domain VS Range check
+                if (((RDFOntologyObjectProperty)invOf.TaxonomySubject).Domain != null  &&
+                    ((RDFOntologyObjectProperty)invOf.TaxonomyObject).Range   != null)  {
+                    var subjDomainClasses = RDFOntologyReasonerHelper.EnlistDomainClassesOf((RDFOntologyObjectProperty)invOf.TaxonomySubject, ontology.Model.ClassModel);
+                    var objRangeClasses   = RDFOntologyReasonerHelper.EnlistRangeClassesOf((RDFOntologyObjectProperty)invOf.TaxonomyObject,   ontology.Model.ClassModel);
+                    if (subjDomainClasses.IntersectWith(objRangeClasses).ClassesCount  == 0) {
+                        evidences.Add(new RDFOntologyValidationEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
+                            "InverseOf",
+                            String.Format("Violation of 'rdfs:domain' and 'rdfs:range' constraint on 'owl:inverseOf' taxonomy between property '{0}' and property '{1}'.", invOf.TaxonomySubject, invOf.TaxonomyObject),
+                            String.Format("Review 'rdfs:domain' and 'rdfs:range' constraints on ontology properties '{0}' and '{1}' in order to have compatible domain/range class models.", invOf.TaxonomySubject, invOf.TaxonomyObject)
+                        ));
+                    }
+                }
+
+                //Range VS Domain check
+                if (((RDFOntologyObjectProperty)invOf.TaxonomySubject).Range != null  &&
+                    ((RDFOntologyObjectProperty)invOf.TaxonomyObject).Domain != null)  {
+                    var subjRangeClasses = RDFOntologyReasonerHelper.EnlistRangeClassesOf((RDFOntologyObjectProperty)invOf.TaxonomySubject, ontology.Model.ClassModel);
+                    var objDomainClasses = RDFOntologyReasonerHelper.EnlistDomainClassesOf((RDFOntologyObjectProperty)invOf.TaxonomyObject, ontology.Model.ClassModel);
+                    if (subjRangeClasses.IntersectWith(objDomainClasses).ClassesCount == 0) {
+                        evidences.Add(new RDFOntologyValidationEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error,
+                            "InverseOf",
+                            String.Format("Violation of 'rdfs:domain' and 'rdfs:range' constraint on 'owl:inverseOf' taxonomy between property '{0}' and property '{1}'.", invOf.TaxonomySubject, invOf.TaxonomyObject),
+                            String.Format("Review 'rdfs:domain' and 'rdfs:range' constraints on ontology properties '{0}' and '{1}' in order to have compatible domain/range class models.", invOf.TaxonomySubject, invOf.TaxonomyObject)
+                        ));
+                    }
+                }
+                
+            }
+            return evidences;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms

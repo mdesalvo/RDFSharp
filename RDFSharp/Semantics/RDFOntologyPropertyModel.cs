@@ -794,11 +794,9 @@ namespace RDFSharp.Semantics {
                 }
                 if  (p.Domain != null) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDFS.DOMAIN, (RDFResource)p.Domain.Value));
-                    //TODO: Include rdfs:domain inferences?
                 }
                 if  (p.Range  != null) {
                      result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDFS.RANGE,  (RDFResource)p.Range.Value));
-                    //TODO: Include rdfs:range inferences?
                 }
 
                 //Relations

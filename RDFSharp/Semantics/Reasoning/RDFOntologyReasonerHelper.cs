@@ -136,7 +136,7 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Enlist the domain classes of the given property within the given ontology class model
+        /// Enlists the domain classes of the given property within the given ontology class model
         /// </summary>
         public static RDFOntologyClassModel EnlistDomainClassesOf(RDFOntologyProperty ontProperty, RDFOntologyClassModel classModel) { 
             var result           = new RDFOntologyClassModel();
@@ -160,7 +160,7 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Enlist the range classes of the given property within the given ontology class model
+        /// Enlists the range classes of the given property within the given ontology class model
         /// </summary>
         public static RDFOntologyClassModel EnlistRangeClassesOf(RDFOntologyProperty ontProperty, RDFOntologyClassModel classModel) {
             var result          = new RDFOntologyClassModel();
