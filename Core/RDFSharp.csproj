@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- RDFSharp project properties -->
+  <PropertyGroup>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1EEA1A7E-A661-4745-810E-FBEB9F20B6FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RDFSharp</RootNamespace>
+    <AssemblyName>RDFSharp</AssemblyName>
+  </PropertyGroup>
+
+  <!-- RDFSharp build configurations -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Platform>AnyCPU</Platform>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Debug\RDFSharp.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Platform>AnyCPU</Platform>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Release\RDFSharp.XML</DocumentationFile>
+  </PropertyGroup>
+
+  <!-- Microsoft .NET references -->
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+
+  <!-- RDFSharp sources -->
+  <ItemGroup>
+    <!-- Assembly -->
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- Model -->
+    <Compile Include="Model\RDFCollection.cs" />
+    <Compile Include="Model\RDFContainer.cs" />
+    <Compile Include="Model\RDFDatatype.cs" />
+    <Compile Include="Model\RDFDatatypeRegister.cs" />
+    <Compile Include="Model\RDFGraph.cs" />
+    <Compile Include="Model\RDFGraphIndex.cs" />
+    <Compile Include="Model\RDFGraphMetadata.cs" />
+    <Compile Include="Model\RDFGraphSerializer.cs" />
+    <Compile Include="Model\RDFLiteral.cs" />
+    <Compile Include="Model\RDFModelEnums.cs" />
+    <Compile Include="Model\RDFModelException.cs" />
+    <Compile Include="Model\RDFModelEvents.cs" />
+    <Compile Include="Model\RDFModelUtilities.cs" />
+    <Compile Include="Model\RDFNamespace.cs" />
+    <Compile Include="Model\RDFNamespaceRegister.cs" />
+    <Compile Include="Model\RDFPlainLiteral.cs" />
+    <Compile Include="Model\RDFResource.cs" />
+    <Compile Include="Model\RDFTriple.cs" />
+    <Compile Include="Model\RDFTypedLiteral.cs" />
+    <Compile Include="Model\RDFVocabulary.cs" />
+    <Compile Include="Model\Serializers\RDFNTriples.cs" />
+    <Compile Include="Model\Serializers\RDFTrix.cs" />
+    <Compile Include="Model\Serializers\RDFTurtle.cs" />
+    <Compile Include="Model\Serializers\RDFXml.cs" />
+    <!-- Query -->
+    <Compile Include="Query\RDFFilter.cs" />
+    <Compile Include="Query\RDFModifier.cs" />
+    <Compile Include="Query\RDFPattern.cs" />
+    <Compile Include="Query\RDFPatternGroup.cs" />
+    <Compile Include="Query\RDFPatternMember.cs" />
+    <Compile Include="Query\RDFQueryEngine.cs" />
+    <Compile Include="Query\RDFQueryEnums.cs" />
+    <Compile Include="Query\RDFQueryEvents.cs" />
+    <Compile Include="Query\RDFQueryException.cs" />
+    <Compile Include="Query\RDFQueryUtilities.cs" />
+    <Compile Include="Query\RDFVariable.cs" />
+    <Compile Include="Query\Filters\RDFBooleanAndFilter.cs" />
+    <Compile Include="Query\Filters\RDFBooleanNotFilter.cs" />
+    <Compile Include="Query\Filters\RDFBooleanOrFilter.cs" />
+    <Compile Include="Query\Filters\RDFBoundFilter.cs" />
+    <Compile Include="Query\Filters\RDFComparisonFilter.cs" />
+    <Compile Include="Query\Filters\RDFDatatypeFilter.cs" />
+    <Compile Include="Query\Filters\RDFIsBlankFilter.cs" />
+    <Compile Include="Query\Filters\RDFIsLiteralFilter.cs" />
+    <Compile Include="Query\Filters\RDFIsNumericFilter.cs" />
+    <Compile Include="Query\Filters\RDFIsUriFilter.cs" />
+    <Compile Include="Query\Filters\RDFLangMatchesFilter.cs" />
+    <Compile Include="Query\Filters\RDFRegexFilter.cs" />
+    <Compile Include="Query\Filters\RDFSameTermFilter.cs" />
+    <Compile Include="Query\Modifiers\RDFDistinctModifier.cs" />
+    <Compile Include="Query\Modifiers\RDFLimitModifier.cs" />
+    <Compile Include="Query\Modifiers\RDFOffsetModifier.cs" />
+    <Compile Include="Query\Modifiers\RDFOrderByModifier.cs" />
+    <Compile Include="Query\Queries\Ask\RDFAskQuery.cs" />
+    <Compile Include="Query\Queries\Ask\RDFAskQueryEngine.cs" />
+    <Compile Include="Query\Queries\Ask\RDFAskQueryResult.cs" />
+    <Compile Include="Query\Queries\Construct\RDFConstructQuery.cs" />
+    <Compile Include="Query\Queries\Construct\RDFConstructQueryEngine.cs" />
+    <Compile Include="Query\Queries\Construct\RDFConstructQueryResult.cs" />
+    <Compile Include="Query\Queries\Describe\RDFDescribeQuery.cs" />
+    <Compile Include="Query\Queries\Describe\RDFDescribeQueryEngine.cs" />
+    <Compile Include="Query\Queries\Describe\RDFDescribeQueryResult.cs" />
+    <Compile Include="Query\Queries\Select\RDFSelectQuery.cs" />
+    <Compile Include="Query\Queries\Select\RDFSelectQueryEngine.cs" />
+    <Compile Include="Query\Queries\Select\RDFSelectQueryResult.cs" />
+    <!-- Store -->
+    <Compile Include="Store\RDFContext.cs" />
+    <Compile Include="Store\RDFFederation.cs" />
+    <Compile Include="Store\RDFQuadruple.cs" />
+    <Compile Include="Store\RDFStore.cs" />
+    <Compile Include="Store\RDFStoreEnums.cs" />
+    <Compile Include="Store\RDFStoreEvents.cs" />
+    <Compile Include="Store\RDFStoreException.cs" />
+    <Compile Include="Store\RDFStoreIndex.cs" />
+    <Compile Include="Store\RDFStoreSerializer.cs" />
+    <Compile Include="Store\RDFStoreUtilities.cs" />
+    <Compile Include="Store\Engines\Memory\RDFMemoryStore.cs" />
+    <Compile Include="Store\Engines\SQLServer\RDFSQLServerStore.cs" />
+    <Compile Include="Store\Serializers\RDFNQuads.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

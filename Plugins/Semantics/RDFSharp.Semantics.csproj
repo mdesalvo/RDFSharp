@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- RDFSharp.Semantics project properties -->
+  <PropertyGroup>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2BE71F3A-943B-464A-8FE8-7D7BCBF23100}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RDFSharp.Semantics</RootNamespace>
+    <AssemblyName>RDFSharp.Semantics</AssemblyName>
+  </PropertyGroup>
+  <!-- RDFSharp.Semantics build configurations -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Platform>AnyCPU</Platform>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Debug\RDFSharp.Semantics.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Platform>AnyCPU</Platform>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Release\RDFSharp.Semantics.XML</DocumentationFile>
+  </PropertyGroup>
+  <!-- Microsoft .NET references -->
+  <ItemGroup>
+    <Reference Include="RDFSharp, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\RDFSharp.0.8.3\lib\net40\RDFSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <!-- RDFSharp.Semantics source -->
+  <ItemGroup>
+    <!-- Assembly -->
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- Semantics -->
+    <Compile Include="RDFOntology.cs" />
+    <Compile Include="RDFOntologyClass.cs" />
+    <Compile Include="RDFOntologyClassModel.cs" />
+    <Compile Include="RDFOntologyData.cs" />
+    <Compile Include="RDFOntologyFact.cs" />
+    <Compile Include="RDFOntologyLiteral.cs" />
+    <Compile Include="RDFOntologyMetadata.cs" />
+    <Compile Include="RDFOntologyModel.cs" />
+    <Compile Include="RDFOntologyProperty.cs" />
+    <Compile Include="RDFOntologyPropertyModel.cs" />
+    <Compile Include="RDFOntologyResource.cs" />
+    <Compile Include="RDFOntologyRestriction.cs" />
+    <Compile Include="RDFOntologyTaxonomy.cs" />
+    <Compile Include="RDFSemanticsEnums.cs" />
+    <Compile Include="RDFSemanticsEvents.cs" />
+    <Compile Include="RDFSemanticsException.cs" />
+    <Compile Include="RDFSemanticsUtilities.cs" />
+    <Compile Include="Extensions\Classes\RDFOntologyComplementClass.cs" />
+    <Compile Include="Extensions\Classes\RDFOntologyDataRangeClass.cs" />
+    <Compile Include="Extensions\Classes\RDFOntologyEnumerateClass.cs" />
+    <Compile Include="Extensions\Classes\RDFOntologyIntersectionClass.cs" />
+    <Compile Include="Extensions\Classes\RDFOntologyUnionClass.cs" />
+    <Compile Include="Extensions\Properties\RDFOntologyAnnotationProperty.cs" />
+    <Compile Include="Extensions\Properties\RDFOntologyDatatypeProperty.cs" />
+    <Compile Include="Extensions\Properties\RDFOntologyObjectProperty.cs" />
+    <Compile Include="Extensions\Restrictions\RDFOntologyAllValuesFromRestriction.cs" />
+    <Compile Include="Extensions\Restrictions\RDFOntologyCardinalityRestriction.cs" />
+    <Compile Include="Extensions\Restrictions\RDFOntologyHasValueRestriction.cs" />
+    <Compile Include="Extensions\Restrictions\RDFOntologySomeValuesFromRestriction.cs" />
+    <Compile Include="Reasoning\RDFOntologyReasonerHelper.cs" />
+    <Compile Include="Validation\RDFOntologyValidationEvidence.cs" />
+    <Compile Include="Validation\RDFOntologyValidationReport.cs" />
+    <Compile Include="Validation\RDFOntologyValidationRule.cs" />
+    <Compile Include="Validation\RDFOntologyValidationRuleSet.cs" />
+    <Compile Include="Validation\RDFOntologyValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
