@@ -24,6 +24,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Marco De Salvo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.8.3")]
+[assembly: AssemblyVersion("0.8.4")]
 [assembly: ComVisible(false)]
 [assembly: Guid("73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3")]
