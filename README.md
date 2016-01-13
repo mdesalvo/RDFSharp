@@ -65,11 +65,12 @@ There are many ways that you can contribute to the RDFSharp project:
 
 <ul>
     <li>Submit a bug</li> 
-    <li>Verify fixes for bugs</li>  
     <li>Submit a code fix for a bug</li>  
-    <li>Submit a feature request</li>  
-    <li>Tell others about the RDFSharp project</li>  
-    <li><i>Kindly donate to non-profit charity organization <b><a href="http://www.soleterre.org/en/about-us">Soleterre</a></b> :)</i></li> 
+    <li>Submit a feature request</li>
+    <li>Submit code for a feature request</li>
+    <li>Submit code for a new plugin</li>
+    <li>Tell others about the RDFSharp project :)</li>  
+    <li><i>Kindly donate to non-profit italian charity organization <b><a href="http://www.soleterre.org/en/about-us">Soleterre</a></b> :)</i></li> 
 </ul>
 <hr>
 RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b> and <b><a href="https://rdfsharp.codeplex.com/">Codeplex</a></b>!
