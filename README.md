@@ -8,56 +8,56 @@ RDFSharp has a modular API made up of three layers:
 <ul>
     <li><b>RDFSharp.Model</b></li> 
     <ul>
-        <li>Create and manage <i>RDF models</i> (resources, literals, triples, graphs, namespaces, datatypes, ...);</li>
-        <li>Exchange them using standard <i>RDF formats</i> (N-Triples, TriX, Turtle, Xml);</li>
+        <li>Create and manage <i>RDF models</i> (resources, literals, triples, graphs, namespaces, datatypes, ...)</li>
+        <li>Exchange them using standard <i>RDF formats</i> (N-Triples, TriX, Turtle, Xml)</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.Store</b></li> 
     <ul>
-        <li>Create and manage <i>RDF stores</i> backing data on memory or SQL Server;</li>
-        <li>Exchange them using standard RDF formats (N-Quads);</li>
-        <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple stores;</li>
+        <li>Create and manage <i>RDF stores</i> backing data on memory or SQL Server</li>
+        <li>Exchange them using standard RDF formats (N-Quads)</li>
+        <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple stores</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.Query</b></li> 
     <ul>
-        <li>Create and execute <i>SPARQL queries</i> on graphs, stores and federations to fluently query RDF data;</li>
+        <li>Create and execute <i>SPARQL queries</i> on graphs, stores and federations to fluently query RDF data</li>
     </ul>
 </ul>
 <hr>
-Plugins are also available, to extend the capabilities of the core library with specific functionalities:
+Plugins are also available, to extend the capabilities of the core library with specific layers and functionalities:
 
 <ul>
     <li><b>RDFSharp.Semantics</b></li> 
     <ul>
-        <li>Create and manage <i>OWL-DL ontologies</i> (classes, properties, restrictions, facts, relations, ...);</li> 
-        <li>Validate them against RDFS/OWL-DL specifications to report warning/error evidences;</li>
+        <li>Create and manage <i>OWL-DL ontologies</i> (classes, properties, restrictions, facts, relations, ...)</li> 
+        <li>Validate them against RDFS/OWL-DL specifications to report warning/error evidences</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.RDFFirebirdStore</b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on Firebird;</li>
+        <li>Create and manage RDF stores backing data on Firebird</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.RDFMySQLStore</b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on MySQL;</li>
+        <li>Create and manage RDF stores backing data on MySQL</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.RDFPostgreSQLStore</b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on PostgreSQL;</li>
+        <li>Create and manage RDF stores backing data on PostgreSQL</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.RDFSQLiteStore</b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on SQLite;</li>
+        <li>Create and manage RDF stores backing data on SQLite</li>
     </ul>
 </ul>
 <hr>
