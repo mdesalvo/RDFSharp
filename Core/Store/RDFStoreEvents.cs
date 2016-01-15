@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Store {
 
@@ -38,7 +39,9 @@ namespace RDFSharp.Store {
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseStoreInfo(String eventMessage) {
-            RDFStoreEvents.OnStoreInfo(DateTime.Now.ToString() + " - " + eventMessage);
+            Task.Factory.StartNew(() => {
+                RDFStoreEvents.OnStoreInfo(DateTime.Now.ToString() + ";STORE INFO;" + eventMessage);
+            });
         }
         #endregion
 
@@ -57,7 +60,9 @@ namespace RDFSharp.Store {
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseStoreWarning(String eventMessage) {
-            RDFStoreEvents.OnStoreWarning(DateTime.Now.ToString() + " - " + eventMessage);
+            Task.Factory.StartNew(() => {
+                RDFStoreEvents.OnStoreWarning(DateTime.Now.ToString() + ";STORE WARNING;" + eventMessage);
+            });
         }
         #endregion
 

@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics {
 
@@ -38,7 +39,9 @@ namespace RDFSharp.Semantics {
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseSemanticsInfo(String eventMessage) {
-            RDFSemanticsEvents.OnSemanticsInfo(DateTime.Now.ToString() + " - " + eventMessage);
+            Task.Factory.StartNew(() => { 
+                RDFSemanticsEvents.OnSemanticsInfo(DateTime.Now.ToString() + ";SEMANTICS INFO;" + eventMessage); 
+            });
         }
         #endregion
 
@@ -57,7 +60,9 @@ namespace RDFSharp.Semantics {
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseSemanticsWarning(String eventMessage) {
-            RDFSemanticsEvents.OnSemanticsWarning(DateTime.Now.ToString() + " - " + eventMessage);
+            Task.Factory.StartNew(() => {
+                RDFSemanticsEvents.OnSemanticsWarning(DateTime.Now.ToString() + ";SEMANTICS WARNING;" + eventMessage);
+            });
         }
         #endregion
 

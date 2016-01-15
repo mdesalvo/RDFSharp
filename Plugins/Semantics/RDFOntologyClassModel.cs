@@ -240,7 +240,7 @@ namespace RDFSharp.Semantics {
 
                     //Raise warning event to inform the user: Standard RDFS/OWL
                     //annotation properties cannot be used in custom annotations
-                    RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+                    RDFSemanticsEvents.RaiseSemanticsWarning("Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
 
                     return this;
                 }
@@ -265,7 +265,7 @@ namespace RDFSharp.Semantics {
                      
                      //Raise warning event to inform the user: SubClassOf relation cannot be 
                      //added to the class model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
 
                 }
 
@@ -290,7 +290,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: EquivalentClass relation cannot be 
                      //added to the class model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
 
                 }
 
@@ -315,7 +315,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: DisjointWith relation cannot be 
                      //added to the class model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
 
                 }
 

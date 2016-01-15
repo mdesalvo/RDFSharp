@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Model {
 
@@ -38,7 +39,9 @@ namespace RDFSharp.Model {
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseModelInfo(String eventMessage) {
-            RDFModelEvents.OnModelInfo(DateTime.Now.ToString() + " - " + eventMessage);
+            Task.Factory.StartNew(() => {
+                RDFModelEvents.OnModelInfo(DateTime.Now.ToString() + ";MODEL INFO;" + eventMessage);
+            });
         }
         #endregion
 
@@ -57,7 +60,9 @@ namespace RDFSharp.Model {
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseModelWarning(String eventMessage) {
-            RDFModelEvents.OnModelWarning(DateTime.Now.ToString() + " - " + eventMessage);
+            Task.Factory.StartNew(() => {
+                RDFModelEvents.OnModelWarning(DateTime.Now.ToString() + ";MODEL WARNING;" + eventMessage);
+            });
         }
         #endregion
 

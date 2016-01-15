@@ -174,7 +174,7 @@ namespace RDFSharp.Semantics
 
                     //Raise warning event to inform the user: Standard RDFS/OWL
                     //annotation properties cannot be used in custom annotations
-                    RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+                    RDFSemanticsEvents.RaiseSemanticsWarning("Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
 
                     return this;
                 }

@@ -78,7 +78,7 @@
     <Compile Include="Extensions\Restrictions\RDFOntologyCardinalityRestriction.cs" />
     <Compile Include="Extensions\Restrictions\RDFOntologyHasValueRestriction.cs" />
     <Compile Include="Extensions\Restrictions\RDFOntologySomeValuesFromRestriction.cs" />
-    <Compile Include="Reasoning\RDFOntologyReasonerHelper.cs" />
+    <Compile Include="Reasoner\RDFOntologyReasonerHelper.cs" />
     <Compile Include="Validation\RDFOntologyValidationEvidence.cs" />
     <Compile Include="Validation\RDFOntologyValidationReport.cs" />
     <Compile Include="Validation\RDFOntologyValidationRule.cs" />

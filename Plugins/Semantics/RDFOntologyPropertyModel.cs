@@ -248,7 +248,7 @@ namespace RDFSharp.Semantics {
 
                         //Raise warning event to inform the user: Reserved annotation and 
                         //taxonomy properties cannot be added to the property model
-                        RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Reserved annotation and taxonomy properties cannot be added to the property model.");
+                        RDFSemanticsEvents.RaiseSemanticsWarning("Reserved annotation and taxonomy properties cannot be added to the property model.");
 
                         return this;
                      }
@@ -336,7 +336,7 @@ namespace RDFSharp.Semantics {
 
                          //Raise warning event to inform the user: Standard RDFS/OWL
                          //annotation properties cannot be used in custom annotations
-                         RDFSemanticsEvents.RaiseSemanticsWarning("SEMANTICS WARNING: Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
+                         RDFSemanticsEvents.RaiseSemanticsWarning("Standard RDFS/OWL annotation properties cannot be used in custom annotations.");
 
                          return this;
                      }
@@ -346,7 +346,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: Annotation property cannot
                      //be annotated because this is prohibited by OWL-DL specifications
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: Annotation property '{0}' cannot be annotated because this is prohibited by OWL-DL specifications.", ontologyProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Annotation property '{0}' cannot be annotated because this is prohibited by OWL-DL specifications.", ontologyProperty));
 
                 }
             }
@@ -368,7 +368,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: SubPropertyOf relation cannot be 
                      //added to the property model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
 
                 }
 
@@ -391,7 +391,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: SubPropertyOf relation cannot be 
                      //added to the property model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
 
                 }
 
@@ -415,7 +415,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: EquivalentProperty relation cannot be 
                      //added to the property model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
 
                 }
 
@@ -439,7 +439,7 @@ namespace RDFSharp.Semantics {
 
                      //Raise warning event to inform the user: EquivalentProperty relation cannot be 
                      //added to the property model because it violates the taxonomy consistency
-                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
 
                 }
 
@@ -464,7 +464,7 @@ namespace RDFSharp.Semantics {
 
                     //Raise warning event to inform the user: InverseOf relation cannot be 
                     //added to the property model because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SEMANTICS WARNING: InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
 
                 }
 
