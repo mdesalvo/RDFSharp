@@ -111,23 +111,10 @@ namespace RDFSharp.Semantics {
         internal RDFOntologyValidationReport AnalyzeOntology(RDFOntology ontology) {
             var report = new RDFOntologyValidationReport(ontology.Value.PatternMemberID);
 
-            //Step 1: Create the cache for storing the evidences found by the rules
-            var rDict  = new Dictionary<RDFOntologyValidationRule, List<RDFOntologyValidationEvidence>>();
-            foreach (var rule in this.Rules) {
-                rDict.Add(rule, new List<RDFOntologyValidationEvidence>());
-            }
-
-            //Step 2: Parallelize the execution of the rules on the given ontology
+            //Execute the validation rules
             Parallel.ForEach(this.Rules, rule => {
-                rDict[rule] = rule.ExecuteRule(ontology);
+                rule.ExecuteRule(ontology, report);
             });
-
-            //Step 3: Merge the evidences into the validator report
-            foreach (var rule in rDict) {
-                foreach (var evidence in rule.Value) {
-                    report.Evidences.Add(evidence);
-                }
-            }
 
             return report;
         }
