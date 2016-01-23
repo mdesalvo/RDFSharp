@@ -250,7 +250,7 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddSameAsRelation(RDFOntologyFact aFact, RDFOntologyFact bFact) {
             if (aFact != null && bFact != null && !aFact.Equals(bFact)) {
-                if (!RDFOntologyReasonerHelper.IsDifferentFactFrom(aFact, bFact, this)) {
+                if (!RDFOntologyReasoningHelper.IsDifferentFactFrom(aFact, bFact, this)) {
                      this.Relations.SameAs.AddEntry(new RDFOntologyTaxonomyEntry(aFact, RDFOntologyVocabulary.ObjectProperties.SAME_AS, bFact));
                      this.Relations.SameAs.AddEntry(new RDFOntologyTaxonomyEntry(bFact, RDFOntologyVocabulary.ObjectProperties.SAME_AS, aFact).SetInference(true));
                 }
@@ -270,7 +270,7 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddDifferentFromRelation(RDFOntologyFact aFact, RDFOntologyFact bFact) {
             if (aFact != null && bFact != null && !aFact.Equals(bFact)) {
-                if (!RDFOntologyReasonerHelper.IsSameFactAs(aFact, bFact, this)) {
+                if (!RDFOntologyReasoningHelper.IsSameFactAs(aFact, bFact, this)) {
                      this.Relations.DifferentFrom.AddEntry(new RDFOntologyTaxonomyEntry(aFact, RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, bFact));
                      this.Relations.DifferentFrom.AddEntry(new RDFOntologyTaxonomyEntry(bFact, RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, aFact).SetInference(true));
                 }

@@ -360,8 +360,8 @@ namespace RDFSharp.Semantics {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty)) {
 
                 //Enforce taxonomy checks before adding the subPropertyOf relation, in order to not model inconsistencies
-                if (!RDFOntologyReasonerHelper.IsSubPropertyOf(motherProperty,        childProperty, this) &&
-                    !RDFOntologyReasonerHelper.IsEquivalentPropertyOf(motherProperty, childProperty, this)) {
+                if (!RDFOntologyReasoningHelper.IsSubPropertyOf(motherProperty,        childProperty, this) &&
+                    !RDFOntologyReasoningHelper.IsEquivalentPropertyOf(motherProperty, childProperty, this)) {
                      this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, motherProperty));
                 }
                 else {
@@ -383,8 +383,8 @@ namespace RDFSharp.Semantics {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty)) {
 
                 //Enforce taxonomy checks before adding the subPropertyOf relation, in order to not model inconsistencies
-                if (!RDFOntologyReasonerHelper.IsSubPropertyOf(motherProperty,        childProperty, this) &&
-                    !RDFOntologyReasonerHelper.IsEquivalentPropertyOf(motherProperty, childProperty, this)) {
+                if (!RDFOntologyReasoningHelper.IsSubPropertyOf(motherProperty,        childProperty, this) &&
+                    !RDFOntologyReasoningHelper.IsEquivalentPropertyOf(motherProperty, childProperty, this)) {
                      this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, motherProperty));
                 }
                 else {
@@ -406,8 +406,8 @@ namespace RDFSharp.Semantics {
             if (aProperty  != null && bProperty != null && !aProperty.Equals(bProperty)) {
 
                 //Enforce taxonomy checks before adding the equivalentProperty relation, in order to not model inconsistencies
-                if (!RDFOntologyReasonerHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
-                    !RDFOntologyReasonerHelper.IsSuperPropertyOf(aProperty, bProperty, this)) {
+                if (!RDFOntologyReasoningHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
+                    !RDFOntologyReasoningHelper.IsSuperPropertyOf(aProperty, bProperty, this)) {
                      this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, bProperty));
                      this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, aProperty).SetInference(true));
                 }
@@ -430,8 +430,8 @@ namespace RDFSharp.Semantics {
             if (aProperty  != null && bProperty != null && !aProperty.Equals(bProperty)) {
 
                 //Enforce taxonomy checks before adding the equivalentProperty relation, in order to not model inconsistencies
-                if (!RDFOntologyReasonerHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
-                    !RDFOntologyReasonerHelper.IsSuperPropertyOf(aProperty, bProperty, this)) {
+                if (!RDFOntologyReasoningHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
+                    !RDFOntologyReasoningHelper.IsSuperPropertyOf(aProperty, bProperty, this)) {
                      this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, bProperty));
                      this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, aProperty).SetInference(true));
                 }
@@ -454,9 +454,9 @@ namespace RDFSharp.Semantics {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty)) {
 
                 //Enforce taxonomy checks before adding the inverseOf relation, in order to not model inconsistencies
-                if (!RDFOntologyReasonerHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
-                    !RDFOntologyReasonerHelper.IsSuperPropertyOf(aProperty, bProperty, this) &&
-                    !RDFOntologyReasonerHelper.IsEquivalentPropertyOf(aProperty, bProperty, this)) {
+                if (!RDFOntologyReasoningHelper.IsSubPropertyOf(aProperty,   bProperty, this) &&
+                    !RDFOntologyReasoningHelper.IsSuperPropertyOf(aProperty, bProperty, this) &&
+                    !RDFOntologyReasoningHelper.IsEquivalentPropertyOf(aProperty, bProperty, this)) {
                      this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, bProperty));
                      this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFOntologyVocabulary.ObjectProperties.INVERSE_OF, aProperty).SetInference(true));
                 }

@@ -191,8 +191,8 @@ namespace RDFSharp.Semantics
             // Step 2: Enlist equivalent classes of subclasses
             result2     = result2.UnionWith(result1);
             foreach(var sc in result1) {
-                result2 = result2.UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(sc, classModel)
-                                                .UnionWith(RDFOntologyReasonerHelper.EnlistSubClassesOf(sc, classModel)));
+                result2 = result2.UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(sc, classModel)
+                                                .UnionWith(RDFOntologyReasoningHelper.EnlistSubClassesOf(sc, classModel)));
             }
             
             return result2;
@@ -224,8 +224,8 @@ namespace RDFSharp.Semantics
             // Step 2: Enlist equivalent classes of superclasses
             result2     = result2.UnionWith(result1);
             foreach(var sc in result1) {
-                result2 = result2.UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(sc, classModel)
-                                                .UnionWith(RDFOntologyReasonerHelper.EnlistSuperClassesOf(sc, classModel)));
+                result2 = result2.UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(sc, classModel)
+                                                .UnionWith(RDFOntologyReasoningHelper.EnlistSuperClassesOf(sc, classModel)));
             }
 
             return result2;
@@ -298,8 +298,8 @@ namespace RDFSharp.Semantics
             result1           = result1.UnionWith(result2);
 
             // Inference: ((A EQUIVALENTCLASS B || A SUBCLASSOF B)  &&  (B DISJOINTWITH C))     =>  (A DISJOINTWITH C)
-            var compatibleCls = RDFOntologyReasonerHelper.EnlistSuperClassesOf(ontClass, classModel)
-                                        .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(ontClass, classModel));
+            var compatibleCls = RDFOntologyReasoningHelper.EnlistSuperClassesOf(ontClass, classModel)
+                                        .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(ontClass, classModel));
             foreach (var      ec in compatibleCls) {
                 result1       = result1.UnionWith(RDFSemanticsUtilities.EnlistDisjointClassesWith_Core(ec, classModel, visitContext));
             }
@@ -337,8 +337,8 @@ namespace RDFSharp.Semantics
             // Step 2: Enlist equivalent properties of subproperties
             result2     = result2.UnionWith(result1);
             foreach(var sp in result1) {
-                result2 = result2.UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(sp, propertyModel)
-                                                .UnionWith(RDFOntologyReasonerHelper.EnlistSubPropertiesOf(sp, propertyModel)));
+                result2 = result2.UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentPropertiesOf(sp, propertyModel)
+                                                .UnionWith(RDFOntologyReasoningHelper.EnlistSubPropertiesOf(sp, propertyModel)));
             }
 
             return result2;
@@ -370,8 +370,8 @@ namespace RDFSharp.Semantics
             // Step 2: Enlist equivalent properties of subproperties
             result2     = result2.UnionWith(result1);
             foreach(var sp in result1) {
-                result2 = result2.UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(sp, propertyModel)
-                                                .UnionWith(RDFOntologyReasonerHelper.EnlistSuperPropertiesOf(sp, propertyModel)));
+                result2 = result2.UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentPropertiesOf(sp, propertyModel)
+                                                .UnionWith(RDFOntologyReasoningHelper.EnlistSuperPropertiesOf(sp, propertyModel)));
             }
 
             return result2;
@@ -480,7 +480,7 @@ namespace RDFSharp.Semantics
             }
 
             // Inference: (A SAMEAS B         &&  B DIFFERENTFROM C  =>  A DIFFERENTFROM C)
-            foreach (var     sa in RDFOntologyReasonerHelper.EnlistSameFactsAs(ontFact, data)) {
+            foreach (var     sa in RDFOntologyReasoningHelper.EnlistSameFactsAs(ontFact, data)) {
                 result        = result.UnionWith(RDFSemanticsUtilities.EnlistDifferentFactsFrom_Core(sa, data, visitContext));
             }
 
@@ -496,8 +496,8 @@ namespace RDFSharp.Semantics
             var result     = new RDFOntologyData();
 
             //Enlist the properties which are compatible with the restriction's "OnProperty"
-            var compProps  = RDFOntologyReasonerHelper.EnlistSubPropertiesOf(ontRestriction.OnProperty, ontology.Model.PropertyModel)
-                                 .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentPropertiesOf(ontRestriction.OnProperty, ontology.Model.PropertyModel))
+            var compProps  = RDFOntologyReasoningHelper.EnlistSubPropertiesOf(ontRestriction.OnProperty, ontology.Model.PropertyModel)
+                                 .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentPropertiesOf(ontRestriction.OnProperty, ontology.Model.PropertyModel))
                                     .AddProperty(ontRestriction.OnProperty);
             
             //Filter assertions made with enlisted compatible properties
@@ -560,8 +560,8 @@ namespace RDFSharp.Semantics
                 var fCount      = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64, Int64>>();
 
                 //Enlist the classes which are compatible with the restricted "FromClass"
-                var compClasses = RDFOntologyReasonerHelper.EnlistSubClassesOf(((RDFOntologyAllValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel)
-                                      .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(((RDFOntologyAllValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel))
+                var compClasses = RDFOntologyReasoningHelper.EnlistSubClassesOf(((RDFOntologyAllValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel)
+                                      .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(((RDFOntologyAllValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel))
                                          .AddClass(((RDFOntologyAllValuesFromRestriction)ontRestriction).FromClass);
 
                 //Iterate the compatible assertions
@@ -576,8 +576,8 @@ namespace RDFSharp.Semantics
                     var fromClassFound            = false;
                     var objFactClassTypes         = ontology.Data.Relations.ClassType.SelectEntriesBySubject(tEntry.TaxonomyObject);
                     foreach (var objFactClassType in objFactClassTypes) {
-                        var compObjFactClassTypes = RDFOntologyReasonerHelper.EnlistSubClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel)
-                                                        .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel))
+                        var compObjFactClassTypes = RDFOntologyReasoningHelper.EnlistSubClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel)
+                                                        .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel))
                                                             .AddClass((RDFOntologyClass)objFactClassType.TaxonomyObject);
                         if  (compObjFactClassTypes.IntersectWith(compClasses).ClassesCount > 0) {
                              fromClassFound       = true;
@@ -616,8 +616,8 @@ namespace RDFSharp.Semantics
                 var fCount      = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64, Int64>>();
 
                 //Enlist the classes which are compatible with the restricted "FromClass"
-                var compClasses = RDFOntologyReasonerHelper.EnlistSubClassesOf(((RDFOntologySomeValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel)
-                                      .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(((RDFOntologySomeValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel))
+                var compClasses = RDFOntologyReasoningHelper.EnlistSubClassesOf(((RDFOntologySomeValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel)
+                                      .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(((RDFOntologySomeValuesFromRestriction)ontRestriction).FromClass, ontology.Model.ClassModel))
                                          .AddClass(((RDFOntologySomeValuesFromRestriction)ontRestriction).FromClass);
 
                 //Iterate the compatible assertions
@@ -632,8 +632,8 @@ namespace RDFSharp.Semantics
                     var fromClassFound            = false;
                     var objFactClassTypes         = ontology.Data.Relations.ClassType.SelectEntriesBySubject(tEntry.TaxonomyObject);
                     foreach (var objFactClassType in objFactClassTypes) {
-                        var compObjFactClassTypes = RDFOntologyReasonerHelper.EnlistSubClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel)
-                                                        .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel))
+                        var compObjFactClassTypes = RDFOntologyReasoningHelper.EnlistSubClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel)
+                                                        .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject, ontology.Model.ClassModel))
                                                             .AddClass((RDFOntologyClass)objFactClassType.TaxonomyObject);
                         if  (compObjFactClassTypes.IntersectWith(compClasses).ClassesCount > 0) {
                              fromClassFound       = true;
@@ -669,7 +669,7 @@ namespace RDFSharp.Semantics
                 if (((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue.IsFact()) {
 
                     //Enlist the same facts of the restriction's "RequiredValue"
-                    var compFacts = RDFOntologyReasonerHelper.EnlistSameFactsAs((RDFOntologyFact)((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue, ontology.Data)
+                    var compFacts = RDFOntologyReasoningHelper.EnlistSameFactsAs((RDFOntologyFact)((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue, ontology.Data)
                                         .AddFact((RDFOntologyFact)((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue);
 
                     //Iterate the compatible assertions
@@ -716,7 +716,7 @@ namespace RDFSharp.Semantics
                 
                 //Add the fact and its synonyms
                 if  (tEntry.TaxonomyObject.IsFact()) {
-                     result= result.UnionWith(RDFOntologyReasonerHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomyObject, ontology.Data))
+                     result= result.UnionWith(RDFOntologyReasoningHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomyObject, ontology.Data))
                                       .AddFact((RDFOntologyFact)tEntry.TaxonomyObject);
                 }
 
@@ -759,11 +759,11 @@ namespace RDFSharp.Semantics
                 var iTaxonomy     = ontology.Model.ClassModel.Relations.IntersectionOf.SelectEntriesBySubject(ontCompClass);
                 foreach (var      tEntry in iTaxonomy) {
                     if  (firstIter) {
-                        result    = RDFOntologyReasonerHelper.EnlistMembersOf((RDFOntologyClass)tEntry.TaxonomyObject, ontology);
+                        result    = RDFOntologyReasoningHelper.EnlistMembersOf((RDFOntologyClass)tEntry.TaxonomyObject, ontology);
                         firstIter = false;
                     }
                     else {
-                        result    = result.IntersectWith(RDFOntologyReasonerHelper.EnlistMembersOf((RDFOntologyClass)tEntry.TaxonomyObject, ontology));
+                        result    = result.IntersectWith(RDFOntologyReasoningHelper.EnlistMembersOf((RDFOntologyClass)tEntry.TaxonomyObject, ontology));
                     }
                 }
 
@@ -775,14 +775,14 @@ namespace RDFSharp.Semantics
                 //Filter "unionOf" relations made with the given union class
                 var uTaxonomy     = ontology.Model.ClassModel.Relations.UnionOf.SelectEntriesBySubject(ontCompClass);
                 foreach (var      tEntry in uTaxonomy) {
-                    result        = result.UnionWith(RDFOntologyReasonerHelper.EnlistMembersOf((RDFOntologyClass)tEntry.TaxonomyObject, ontology));
+                    result        = result.UnionWith(RDFOntologyReasoningHelper.EnlistMembersOf((RDFOntologyClass)tEntry.TaxonomyObject, ontology));
                 }
 
             }
 
             //Complement
             else if (ontCompClass is RDFOntologyComplementClass) {
-                result            = ontology.Data.DifferenceWith(RDFOntologyReasonerHelper.EnlistMembersOf(ontCompClass, ontology));
+                result            = ontology.Data.DifferenceWith(RDFOntologyReasoningHelper.EnlistMembersOf(ontCompClass, ontology));
             }
 
             return result;
@@ -797,8 +797,8 @@ namespace RDFSharp.Semantics
             //DataRange / Literal
             if (ontClass.IsDataRangeClass()                                                         
                 || ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL)
-                || RDFOntologyReasonerHelper.IsSubClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)
-                || RDFOntologyReasonerHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
+                || RDFOntologyReasoningHelper.IsSubClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)
+                || RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
 
                 //DataRange
                 if (ontClass.IsDataRangeClass()) {
@@ -810,7 +810,7 @@ namespace RDFSharp.Semantics
                     
                     //Pure Literal
                     if (ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL)                                                            || 
-                        RDFOntologyReasonerHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
+                        RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
                         foreach (var ontLit in ontology.Data.Literals.Values) {
                             result.AddLiteral(ontLit);
                         }
@@ -822,7 +822,7 @@ namespace RDFSharp.Semantics
                         //String-Literals
                         var xsdStringClass          = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.STRING.ToString());
                         if (ontClass.Equals(xsdStringClass)                                                            || 
-                            RDFOntologyReasonerHelper.IsEquivalentClassOf(ontClass, xsdStringClass, ontology.Model.ClassModel)) {
+                            RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, xsdStringClass, ontology.Model.ClassModel)) {
                             foreach (var ontLit    in ontology.Data.Literals.Values) {
                                 if  (ontLit.Value  is RDFPlainLiteral) {
                                      result.AddLiteral(ontLit);
@@ -831,8 +831,8 @@ namespace RDFSharp.Semantics
                                     var dTypeClass  = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
                                     if (dTypeClass != null) {
                                         if (dTypeClass.Equals(ontClass)                                                     ||
-                                            RDFOntologyReasonerHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel) ||
-                                            RDFOntologyReasonerHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
+                                            RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel) ||
+                                            RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
                                             result.AddLiteral(ontLit);
                                         }
                                     }
@@ -851,8 +851,8 @@ namespace RDFSharp.Semantics
                                 var  dTypeClass   = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
                                 if  (dTypeClass  != null) {
                                     if (dTypeClass.Equals(ontClass)                                                            ||
-                                        RDFOntologyReasonerHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)        ||
-                                        RDFOntologyReasonerHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
+                                        RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)        ||
+                                        RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
                                         result.AddLiteral(ontLit);
                                     }
                                 }
@@ -884,8 +884,8 @@ namespace RDFSharp.Semantics
             else {
 
                 //Get the compatible classes
-                var compCls    = RDFOntologyReasonerHelper.EnlistSubClassesOf(ontClass, ontology.Model.ClassModel)
-                                     .UnionWith(RDFOntologyReasonerHelper.EnlistEquivalentClassesOf(ontClass, ontology.Model.ClassModel))
+                var compCls    = RDFOntologyReasoningHelper.EnlistSubClassesOf(ontClass, ontology.Model.ClassModel)
+                                     .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(ontClass, ontology.Model.ClassModel))
                                         .AddClass(ontClass);
 
                 //Filter "classType" relations made with compatible classes
@@ -897,7 +897,7 @@ namespace RDFSharp.Semantics
 
                     //Add the fact and its synonyms
                     if (tEntry.TaxonomySubject.IsFact()) {
-                        result = result.UnionWith(RDFOntologyReasonerHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject, ontology.Data))
+                        result = result.UnionWith(RDFOntologyReasoningHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject, ontology.Data))
                                           .AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
                     }
 

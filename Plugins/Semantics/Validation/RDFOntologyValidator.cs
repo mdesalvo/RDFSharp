@@ -76,6 +76,12 @@ namespace RDFSharp.Semantics {
                     "This rule checks for consistency of owl:inverseOf axioms",
                     RDFOntologyValidationRuleSet.InverseOf),
 
+                //SymmetricProperty
+                new RDFOntologyValidationRule(
+                    "SymmetricProperty",
+                    "This rule checks for consistency of owl:SymmetricProperty axioms",
+                    RDFOntologyValidationRuleSet.SymmetricProperty),
+
                 //ClassType
                 new RDFOntologyValidationRule(
                     "ClassType", 
