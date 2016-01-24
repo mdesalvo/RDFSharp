@@ -1886,7 +1886,7 @@ namespace RDFSharp.Semantics
 
                             //Raise warning event to inform the user: assertion relation cannot be imported
                             //from graph, because definition of fact is not found in the data
-                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation on fact '{0}' cannot be imported from graph, because its definition is not found in the data.", t.Subject));
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation on fact '{0}' cannot be imported from graph, because definition of the fact is not found in the data. Ensure its classtype relation is specified.", t.Subject));
 
                         }
                     }
