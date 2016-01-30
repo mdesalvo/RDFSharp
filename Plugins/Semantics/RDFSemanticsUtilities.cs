@@ -676,7 +676,7 @@ namespace RDFSharp.Semantics
                     foreach (var  tEntry in fTaxonomy) {
                         if  (tEntry.TaxonomyObject.IsFact()) {
                              if (compFacts.SelectFact(tEntry.TaxonomyObject.ToString()) != null) {
-                                 result.AddFact((RDFOntologyFact)tEntry.TaxonomyObject);
+                                 result.AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
                              }
                         }
                     }
