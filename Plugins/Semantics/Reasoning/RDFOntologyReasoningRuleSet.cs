@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics {
 
@@ -33,6 +34,11 @@ namespace RDFSharp.Semantics {
         /// Description of the ruleset
         /// </summary>
         public String RuleSetDescription { get; internal set; }
+
+        /// <summary>
+        /// List of rules representing the ruleset
+        /// </summary>
+        internal List<RDFOntologyReasoningRule> Rules { get; set; }
         #endregion
 
         #region Ctors
@@ -40,10 +46,11 @@ namespace RDFSharp.Semantics {
         /// Default-ctor to build an empty reasoning ruleset with given name and description
         /// </summary>
         public RDFOntologyReasoningRuleSet(String rulesetName, String rulesetDescription) {
-            if(rulesetName            != null && rulesetName.Trim()        != String.Empty) {
-                if(rulesetDescription != null && rulesetDescription.Trim() != String.Empty) {                    
+            if(rulesetName                 != null && rulesetName.Trim()        != String.Empty) {
+                if(rulesetDescription      != null && rulesetDescription.Trim() != String.Empty) {                    
                     this.RuleSetName        = rulesetName.Trim();
                     this.RuleSetDescription = rulesetDescription.Trim();
+                    this.Rules              = new List<RDFOntologyReasoningRule>();
                 }
                 else {
                     throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRuleSet because given \"rulesetDescription\" parameter is null or empty.");
@@ -65,6 +72,36 @@ namespace RDFSharp.Semantics {
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Adds the given rule to the ruleset
+        /// </summary>
+        public RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
+            if(rule != null) {
+                if(this.SelectRule(rule.RuleName) == null) {
+                   this.Rules.Add(rule);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the given rule from the ruleset
+        /// </summary>
+        public RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
+            if(rule != null) {
+                if(this.SelectRule(rule.RuleName) != null) {
+                   this.Rules.RemoveAll(rs => rs.RuleName.ToUpperInvariant().Equals(rule.RuleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Selects the given rule from the ruleset
+        /// </summary>
+        public RDFOntologyReasoningRule SelectRule(String ruleName = "") {
+            return this.Rules.Find(rs => rs.RuleName.ToUpperInvariant().Equals(ruleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+        }
         #endregion
 
     }

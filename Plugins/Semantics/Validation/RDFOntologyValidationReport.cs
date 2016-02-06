@@ -88,7 +88,7 @@ namespace RDFSharp.Semantics {
 
         #region Methods
         /// <summary>
-        /// Enlist the names of the rules which have been applied on the ontology to produce this report
+        /// Enlist the names of the rules which have been applied by the validator
         /// </summary>
         public List<String> EnlistRuleNames() {
             return new List<String>() {
@@ -113,10 +113,10 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Gets the warning evidences of the given validation rule from the validation report
+        /// Gets the warning evidences of the given validation rule
         /// </summary>
         public List<RDFOntologyValidationEvidence> SelectWarningsByRuleName(String rulename="") {
-            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.ToUpperInvariant(), StringComparison.Ordinal) && 
+            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal) && 
                                                e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Warning));
         }
 
@@ -128,10 +128,10 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Gets the error evidences of the given validation rule from the validation report
+        /// Gets the error evidences of the given validation rule
         /// </summary>
         public List<RDFOntologyValidationEvidence> SelectErrorsByRuleName(String rulename = "") {
-            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.ToUpperInvariant(), StringComparison.Ordinal) &&
+            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal) &&
                                                e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidationEvidenceCategory.Error));
         }
 

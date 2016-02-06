@@ -81,6 +81,7 @@
     <Compile Include="Reasoning\RDFOntologyReasoner.cs" />
     <Compile Include="Reasoning\RDFOntologyReasoningEvidence.cs" />
     <Compile Include="Reasoning\RDFOntologyReasoningHelper.cs" />
+    <Compile Include="Reasoning\RDFOntologyReasoningReport.cs" />
     <Compile Include="Reasoning\RDFOntologyReasoningRule.cs" />
     <Compile Include="Reasoning\RDFOntologyReasoningRuleSet.cs" />
     <Compile Include="Validation\RDFOntologyValidationEvidence.cs" />

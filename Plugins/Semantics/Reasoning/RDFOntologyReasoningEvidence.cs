@@ -28,15 +28,33 @@ namespace RDFSharp.Semantics {
     public class RDFOntologyReasoningEvidence {
 
         #region Properties
+        /// <summary>
+        /// Category of this evidence
+        /// </summary>
+        public RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory EvidenceCategory { get; internal set; }
+
+        /// <summary>
+        /// Rule which has produced this evidence
+        /// </summary>
+        public String EvidenceProvenance { get; internal set; }
+
+        /// <summary>
+        /// Message of the evidence
+        /// </summary>
+        public String EvidenceMessage { get; internal set; }
         #endregion
 
         #region Ctors
-        #endregion
-
-        #region Interfaces
-        #endregion
-
-        #region Methods
+        /// <summary>
+        /// Default-ctor to build an evidence with given category, provenance and message
+        /// </summary>
+        internal RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory evidenceCategory,
+                                              String evidenceProvenance,
+                                              String evidenceMessage) {
+            this.EvidenceCategory   = evidenceCategory;
+            this.EvidenceProvenance = evidenceProvenance;
+            this.EvidenceMessage    = evidenceMessage;
+        }
         #endregion
 
     }

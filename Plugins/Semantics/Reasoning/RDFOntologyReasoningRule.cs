@@ -80,9 +80,6 @@ namespace RDFSharp.Semantics {
         }
         #endregion
 
-        #region Methods
-        #endregion
-
     }
 
 }
