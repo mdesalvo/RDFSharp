@@ -34,7 +34,7 @@
   <!-- Microsoft .NET references -->
   <ItemGroup>
     <Reference Include="RDFSharp, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\RDFSharp.0.8.3\lib\net40\RDFSharp.dll</HintPath>
+      <HintPath>..\packages\RDFSharp.0.8.3\lib\net40\RDFSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

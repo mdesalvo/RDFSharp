@@ -34,14 +34,14 @@ namespace RDFSharp.Semantics {
         public RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory EvidenceCategory { get; internal set; }
 
         /// <summary>
-        /// Rule which has produced this evidence
+        /// Ruleset:Rule which has produced this evidence
         /// </summary>
         public String EvidenceProvenance { get; internal set; }
 
         /// <summary>
-        /// Message of the evidence
+        /// Content of the evidence
         /// </summary>
-        public String EvidenceMessage { get; internal set; }
+        public RDFOntologyTaxonomyEntry EvidenceContent { get; internal set; }
         #endregion
 
         #region Ctors
@@ -50,10 +50,10 @@ namespace RDFSharp.Semantics {
         /// </summary>
         internal RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory evidenceCategory,
                                               String evidenceProvenance,
-                                              String evidenceMessage) {
+                                              RDFOntologyTaxonomyEntry evidenceContent) {
             this.EvidenceCategory   = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;
-            this.EvidenceMessage    = evidenceMessage;
+            this.EvidenceContent    = evidenceContent;
         }
         #endregion
 
