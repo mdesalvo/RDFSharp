@@ -62,6 +62,7 @@
     <Compile Include="RDFOntologyResource.cs" />
     <Compile Include="RDFOntologyRestriction.cs" />
     <Compile Include="RDFOntologyTaxonomy.cs" />
+    <Compile Include="RDFOntologyVocabulary.cs" />
     <Compile Include="RDFSemanticsEnums.cs" />
     <Compile Include="RDFSemanticsEvents.cs" />
     <Compile Include="RDFSemanticsException.cs" />
