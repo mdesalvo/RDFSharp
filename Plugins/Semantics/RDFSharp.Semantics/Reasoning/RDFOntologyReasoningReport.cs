@@ -88,6 +88,41 @@ namespace RDFSharp.Semantics {
 
         #region Methods
         /// <summary>
+        /// Gets the evidences having the given category
+        /// </summary>
+        public List<RDFOntologyReasoningEvidence> SelectEvidencesByCategory(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory evidenceCategory) {
+            return this.Evidences.FindAll(e => e.EvidenceCategory.Equals(evidenceCategory));
+        }
+
+        /// <summary>
+        /// Gets the evidences having the given provenance rule
+        /// </summary>
+        public List<RDFOntologyReasoningEvidence> SelectEvidencesByProvenance(String evidenceProvenance = "") {
+            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpper().Equals(evidenceProvenance.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Gets the evidences having the given content subject
+        /// </summary>
+        public List<RDFOntologyReasoningEvidence> SelectEvidencesByContentSubject(RDFOntologyResource evidenceContentSubject) {
+            return this.Evidences.FindAll(e => e.EvidenceContent.TaxonomySubject.Equals(evidenceContentSubject));
+        }
+
+        /// <summary>
+        /// Gets the evidences having the given content predicate
+        /// </summary>
+        public List<RDFOntologyReasoningEvidence> SelectEvidencesByContentPredicate(RDFOntologyResource evidenceContentPredicate) {
+            return this.Evidences.FindAll(e => e.EvidenceContent.TaxonomyPredicate.Equals(evidenceContentPredicate));
+        }
+
+        /// <summary>
+        /// Gets the evidences having the given content object
+        /// </summary>
+        public List<RDFOntologyReasoningEvidence> SelectEvidencesByContentObject(RDFOntologyResource evidenceContentObject) {
+            return this.Evidences.FindAll(e => e.EvidenceContent.TaxonomyObject.Equals(evidenceContentObject));
+        }
+
+        /// <summary>
         /// Adds the given evidence to the reasoning report
         /// </summary>
         internal void AddEvidence(RDFOntologyReasoningEvidence evidence) {

@@ -29,12 +29,12 @@ namespace RDFSharp.Semantics {
 
         #region Properties
         /// <summary>
-        /// Category of this evidence
+        /// Category of the evidence
         /// </summary>
         public RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory EvidenceCategory { get; internal set; }
 
         /// <summary>
-        /// Ruleset:Rule which has produced this evidence
+        /// Provenance rule of the evidence
         /// </summary>
         public String EvidenceProvenance { get; internal set; }
 
