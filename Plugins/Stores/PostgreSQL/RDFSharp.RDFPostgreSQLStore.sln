@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.RDFPostgreSQLStore", "RDFSharp.RDFPostgreSQLStore.csproj", "{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.RDFPostgreSQLStore", "RDFSharp.RDFPostgreSQLStore\RDFSharp.RDFPostgreSQLStore.csproj", "{73D109AE-673D-4EB4-8BC9-0E6DDFB3DED3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

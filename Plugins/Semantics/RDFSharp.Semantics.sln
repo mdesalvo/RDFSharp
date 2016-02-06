@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.Semantics", "RDFSharp.Semantics.csproj", "{2BE71F3A-943B-464A-8FE8-7D7BCBF23100}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDFSharp.Semantics", "RDFSharp.Semantics\RDFSharp.Semantics.csproj", "{2BE71F3A-943B-464A-8FE8-7D7BCBF23100}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
