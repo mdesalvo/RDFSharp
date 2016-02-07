@@ -37,19 +37,19 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        public delegate Int64 RuleDelegate(RDFOntology ontology);
+        public delegate void ReasoningRuleDelegate(RDFOntology ontology, RDFOntologyReasoningReport report);
 
         /// <summary>
         /// Function which will be executed as body of the rule
         /// </summary>
-        internal RuleDelegate ExecuteRule { get; set; }
+        internal ReasoningRuleDelegate ExecuteRule { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty reasoning rule with given name, description, category and delegate
         /// </summary>
-        public RDFOntologyReasoningRule(String ruleName, String ruleDescription, RuleDelegate ruleDelegate) {
+        public RDFOntologyReasoningRule(String ruleName, String ruleDescription, ReasoningRuleDelegate ruleDelegate) {
             if(ruleName                     != null && ruleName.Trim()        != String.Empty) {
                 if(ruleDescription          != null && ruleDescription.Trim() != String.Empty) {
                     if(ruleDelegate         != null) {
