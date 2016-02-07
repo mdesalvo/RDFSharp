@@ -75,7 +75,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Adds the given rule to the ruleset
         /// </summary>
-        public RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
+        public virtual RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
             if(rule != null) {
                 if(this.SelectRule(rule.RuleName) == null) {
                    this.Rules.Add(rule);
@@ -87,7 +87,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Removes the given rule from the ruleset
         /// </summary>
-        public RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
+        public virtual RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
             if(rule != null) {
                 if(this.SelectRule(rule.RuleName) != null) {
                    this.Rules.RemoveAll(rs => rs.RuleName.ToUpperInvariant().Equals(rule.RuleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
