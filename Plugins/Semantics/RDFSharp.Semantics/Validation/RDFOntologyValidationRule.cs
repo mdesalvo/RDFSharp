@@ -42,12 +42,12 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        internal delegate void RuleDelegate(RDFOntology ontology, RDFOntologyValidationReport report);
+        internal delegate void ValidationRuleDelegate(RDFOntology ontology, RDFOntologyValidationReport report);
 
         /// <summary>
         /// Function which will be executed as body of the rule
         /// </summary>
-        internal RuleDelegate ExecuteRule { get; set; }
+        internal ValidationRuleDelegate ExecuteRule { get; set; }
         #endregion
 
         #region Ctors
@@ -56,7 +56,7 @@ namespace RDFSharp.Semantics {
         /// </summary>
         internal RDFOntologyValidationRule(String ruleName,
                                            String ruleDescription,
-                                           RuleDelegate ruleDelegate) {
+                                           ValidationRuleDelegate ruleDelegate) {
             this.RuleName        = ruleName;
             this.RuleDescription = ruleDescription;
             this.ExecuteRule     = ruleDelegate;
