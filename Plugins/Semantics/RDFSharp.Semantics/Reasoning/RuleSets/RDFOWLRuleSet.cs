@@ -34,6 +34,22 @@ namespace RDFSharp.Semantics {
                                              "((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)",
                                              EquivalentClassTransitivity));
 
+            //DisjointWithEntailment
+            this.AddRule(
+                new RDFOntologyReasoningRule("DisjointWithEntailment",
+                                             "DisjointWithEntailment implements possible paths of 'owl:DisjointWith' entailment:" +
+                                             "((C1 EQUIVALENTCLASS C2) AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)"      +
+                                             "((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)"      +
+                                             "((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)",
+                                             DisjointWithEntailment));
+
+            //EquivalentPropertyTransitivity
+            this.AddRule(
+                new RDFOntologyReasoningRule("EquivalentPropertyTransitivity",
+                                             "EquivalentPropertyTransitivity implements possible paths of 'owl:EquivalentProperty' entailment:" +
+                                             "((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)",
+                                             EquivalentPropertyTransitivity));
+
         }
         #endregion
 
@@ -75,8 +91,58 @@ namespace RDFSharp.Semantics {
                     ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecInferB);
 
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquvalentClassTransitivity", ecInferA));
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquvalentClassTransitivity", ecInferB));
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquivalentClassTransitivity", ecInferA));
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquivalentClassTransitivity", ecInferB));
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// DisjointWithEntailment implements possible paths of 'owl:DisjointWith' entailment:
+        /// ((C1 EQUIVALENTCLASS C2) AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)
+        /// ((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)
+        /// ((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)
+        /// </summary>
+        internal static void DisjointWithEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var c       in ontology.Model.ClassModel) {
+                foreach(var dwc in RDFOntologyReasoningHelper.EnlistDisjointClassesWith(c, ontology.Model.ClassModel)) {
+
+                    //Create the inference as a taxonomy entry
+                    var dcInferA = new RDFOntologyTaxonomyEntry(c,   RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, dwc).SetInference(true);
+                    var dcInferB = new RDFOntologyTaxonomyEntry(dwc, RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, c).SetInference(true);
+
+                    //Enrich the class model with the inference
+                    ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcInferA);
+                    ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcInferB);
+
+                    //Add the inference into the reasoning report
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "DisjointWithEntailment", dcInferA));
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "DisjointWithEntailment", dcInferB));
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// EquivalentPropertyTransitivity implements possible paths of 'owl:EquivalentProperty' entailment:
+        /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)
+        /// </summary>
+        internal static void EquivalentPropertyTransitivity(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var p       in ontology.Model.PropertyModel) {
+                foreach(var ep  in RDFOntologyReasoningHelper.EnlistEquivalentPropertiesOf(p, ontology.Model.PropertyModel)) {
+
+                    //Create the inference as a taxonomy entry
+                    var epInferA = new RDFOntologyTaxonomyEntry(p,  RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, ep).SetInference(true);
+                    var epInferB = new RDFOntologyTaxonomyEntry(ep, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, p).SetInference(true);
+
+                    //Enrich the property model with the inference
+                    ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epInferA);
+                    ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epInferB);
+
+                    //Add the inference into the reasoning report
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferA));
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferB));
 
                 }
             }
