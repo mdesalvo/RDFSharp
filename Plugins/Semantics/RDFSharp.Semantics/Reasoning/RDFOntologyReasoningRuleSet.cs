@@ -97,6 +97,17 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
+        /// Enlists the name of the rules composing the ruleset
+        /// </summary>
+        public List<String> EnlistRuleNames() {
+            var result     = new List<String>();
+            foreach(var r in this.Rules) {
+                result.Add(r.RuleName);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Selects the given rule from the ruleset
         /// </summary>
         public RDFOntologyReasoningRule SelectRule(String ruleName = "") {

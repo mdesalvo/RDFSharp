@@ -45,6 +45,14 @@ namespace RDFSharp.Semantics {
                                              "((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)",
                                              SubPropertyTransitivity));
 
+            //ClassTypeEntailment
+            this.AddRule(
+                new RDFOntologyReasoningRule("ClassTypeEntailment",
+                                             "ClassTypeEntailment implements possible paths of 'rdf:type' entailment:" +
+                                             "((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)" +
+                                             "((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)",
+                                             ClassTypeEntailment));
+
         }
         #endregion
 
@@ -110,6 +118,28 @@ namespace RDFSharp.Semantics {
 
                     //Add the inference into the reasoning report
                     report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "SubPropertyTransitivity", spInfer));
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// ClassTypeEntailment implements possible paths of 'rdf:type' entailment:
+        /// ((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)
+        /// ((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)
+        /// </summary>
+        internal static void ClassTypeEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var c      in ontology.Model.ClassModel) {
+                foreach(var f  in RDFOntologyReasoningHelper.EnlistMembersOf(c, ontology)) {
+
+                    //Create the inference as a taxonomy entry
+                    var ctInfer = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.TYPE, c).SetInference(true);
+
+                    //Enrich the data with the inference
+                    ontology.Data.Relations.ClassType.AddEntry(ctInfer);
+
+                    //Add the inference into the reasoning report
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "ClassTypeEntailment", ctInfer));
 
                 }
             }

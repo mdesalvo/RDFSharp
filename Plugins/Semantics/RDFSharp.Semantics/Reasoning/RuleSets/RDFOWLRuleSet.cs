@@ -50,6 +50,21 @@ namespace RDFSharp.Semantics {
                                              "((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)",
                                              EquivalentPropertyTransitivity));
 
+            //SameAsTransitivity
+            this.AddRule(
+                new RDFOntologyReasoningRule("SameAsTransitivity",
+                                             "SameAsTransitivity implements possible paths of 'owl:sameAs' entailment:" +
+                                             "((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)",
+                                             SameAsTransitivity));
+
+            //DifferentFromEntailment
+            this.AddRule(
+                new RDFOntologyReasoningRule("DifferentFromEntailment",
+                                             "DifferentFromEntailment implements possible paths of 'owl:DifferentFrom' entailment:" +
+                                             "((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)" +
+                                             "((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)",
+                                             DifferentFromEntailment));
+
         }
         #endregion
 
@@ -143,6 +158,55 @@ namespace RDFSharp.Semantics {
                     //Add the inference into the reasoning report
                     report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferA));
                     report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferB));
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// SameAsTransitivity implements possible paths of 'owl:sameAs' entailment:
+        /// ((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)
+        /// </summary>
+        internal static void SameAsTransitivity(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var f       in ontology.Data) {
+                foreach(var sf  in RDFOntologyReasoningHelper.EnlistSameFactsAs(f, ontology.Data)) {
+
+                    //Create the inference as a taxonomy entry
+                    var sfInferA = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.SAME_AS, sf).SetInference(true);
+                    var sfInferB = new RDFOntologyTaxonomyEntry(sf, RDFOntologyVocabulary.ObjectProperties.SAME_AS, f).SetInference(true);
+
+                    //Enrich the data with the inference
+                    ontology.Data.Relations.SameAs.AddEntry(sfInferA);
+                    ontology.Data.Relations.SameAs.AddEntry(sfInferB);
+
+                    //Add the inference into the reasoning report
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsTransitivity", sfInferA));
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsTransitivity", sfInferB));
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// DifferentFromEntailment implements possible paths of 'owl:DifferentFrom' entailment:
+        /// ((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)
+        /// ((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)
+        /// </summary>
+        internal static void DifferentFromEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var f       in ontology.Data) {
+                foreach(var df  in RDFOntologyReasoningHelper.EnlistDifferentFactsFrom(f, ontology.Data)) {
+
+                    //Create the inference as a taxonomy entry
+                    var dfInferA = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, df).SetInference(true);
+                    var dfInferB = new RDFOntologyTaxonomyEntry(df, RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, f).SetInference(true);
+
+                    //Enrich the data with the inference
+                    ontology.Data.Relations.DifferentFrom.AddEntry(dfInferA);
+                    ontology.Data.Relations.DifferentFrom.AddEntry(dfInferB);
+
+                    //Add the inference into the reasoning report
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferA));
+                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferB));
 
                 }
             }
