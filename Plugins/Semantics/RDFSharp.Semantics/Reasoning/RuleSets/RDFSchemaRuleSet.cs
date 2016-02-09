@@ -61,6 +61,20 @@ namespace RDFSharp.Semantics {
                                              "((F1 P1 F2) AND (P1 EQUIVALENTPROPERTY P2)) => (F1 P2 F2)",
                                              PropertyEntailment));
 
+            //DomainEntailment (rdfs2)
+            this.AddRule(
+                new RDFOntologyReasoningRule("DomainEntailment",
+                                             "DomainEntailment (rdfs2) implements possible paths of 'rdfs:domain' entailment:" +
+                                             "((F1 P F2) AND (P RDFS:DOMAIN C)) => (F1 RDF:TYPE C)",
+                                             DomainEntailment));
+
+            //RangeEntailment (rdfs3)
+            this.AddRule(
+                new RDFOntologyReasoningRule("RangeEntailment",
+                                             "RangeEntailment (rdfs2) implements possible paths of 'rdfs:range' entailment:" +
+                                             "((F1 P F2) AND (P RDFS:RANGE C)) => (F2 RDF:TYPE C)",
+                                             RangeEntailment));
+
         }
         #endregion
 
@@ -183,6 +197,71 @@ namespace RDFSharp.Semantics {
 
                             //Add the inference into the reasoning report
                             report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "PropertyEntailment", peInfer));
+
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// "DomainEntailment (rdfs2) implements possible paths of 'rdfs:domain' entailment:"
+        /// "((F1 P F2) AND (P RDFS:DOMAIN C)) => (F1 RDF:TYPE C)"
+        /// </summary>
+        internal static void DomainEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var p    in ontology.Model.PropertyModel) {
+                if(p.Domain  != null) {
+
+                    //Filter the assertions using the current property (F1 P1 F2)
+                    var pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                    //Iterate the related assertions
+                    foreach(var pAsn in pAsns) {
+
+                        //Create the inference as a taxonomy entry
+                        var deInfer = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, RDFOntologyVocabulary.ObjectProperties.TYPE, p.Domain).SetInference(true);
+
+                        //Enrich the data with the inference
+                        ontology.Data.Relations.ClassType.AddEntry(deInfer);
+
+                        //Add the inference into the reasoning report
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DomainEntailment", deInfer));
+
+                    }
+
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// "RangeEntailment (rdfs3) implements possible paths of 'rdfs:range' entailment:"
+        /// "((F1 P F2) AND (P RDFS:RANGE C)) => (F2 RDF:TYPE C)"
+        /// </summary>
+        internal static void RangeEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
+            foreach(var p    in ontology.Model.PropertyModel) {
+                if(p.Range   != null && p.IsObjectProperty()) {
+
+                    //Filter the assertions using the current property (F1 P1 F2)
+                    var pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                    //Iterate the related assertions
+                    foreach(var pAsn in pAsns) {
+
+                        //Taxonomy-check for securing inference consistency
+                        if(pAsn.TaxonomyObject.IsFact()) {
+
+                            //Create the inference as a taxonomy entry
+                            var reInfer = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, RDFOntologyVocabulary.ObjectProperties.TYPE, p.Range).SetInference(true);
+
+                            //Enrich the data with the inference
+                            ontology.Data.Relations.ClassType.AddEntry(reInfer);
+
+                            //Add the inference into the reasoning report
+                            report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "RangeEntailment", reInfer));
 
                         }
 
