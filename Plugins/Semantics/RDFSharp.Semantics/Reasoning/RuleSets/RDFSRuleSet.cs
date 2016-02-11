@@ -30,7 +30,7 @@ namespace RDFSharp.Semantics {
         internal RDFSRuleSet(String rulesetName, String rulesetDescription): base(rulesetName, rulesetDescription) {
 
             //SubClassTransitivity (rdfs11)
-            this.AddRule(
+            this.Rules.Add(
                 new RDFOntologyReasoningRule("SubClassTransitivity",
                                              "SubClassTransitivity (rdfs11) implements possible paths of 'rdfs:subClassOf' subsumption:" +
                                              "((C1 SUBCLASSOF C2)      AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)"               +
@@ -39,7 +39,7 @@ namespace RDFSharp.Semantics {
                                              SubClassTransitivity));
 
             //SubPropertyTransitivity (rdfs5)
-            this.AddRule(
+            this.Rules.Add(
                 new RDFOntologyReasoningRule("SubPropertyTransitivity",
                                              "SubPropertyTransitivity (rdfs5) implements possible paths of 'rdfs:subPropertyOf' subsumption:" +
                                              "((P1 SUBPROPERTYOF P2)      AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)"           +
@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics {
                                              SubPropertyTransitivity));
 
             //ClassTypeEntailment (rdfs9)
-            this.AddRule(
+            this.Rules.Add(
                 new RDFOntologyReasoningRule("ClassTypeEntailment",
                                              "ClassTypeEntailment (rdfs9) implements possible paths of 'rdf:type' entailment:" +
                                              "((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)"                        +
@@ -56,7 +56,7 @@ namespace RDFSharp.Semantics {
                                              ClassTypeEntailment));
 
             //PropertyEntailment (rdfs7)
-            this.AddRule(
+            this.Rules.Add(
                 new RDFOntologyReasoningRule("PropertyEntailment",
                                              "PropertyEntailment (rdfs7) expands data assertions through 'rdfs:subPropertyOf' entailment:" +
                                              "((F1 P1 F2) AND (P1 SUBPROPERTYOF P2))      => (F1 P2 F2)"                                   +
@@ -64,14 +64,14 @@ namespace RDFSharp.Semantics {
                                              PropertyEntailment));
 
             //DomainEntailment (rdfs2)
-            this.AddRule(
+            this.Rules.Add(
                 new RDFOntologyReasoningRule("DomainEntailment",
                                              "DomainEntailment (rdfs2) implements possible paths of 'rdfs:domain' entailment:" +
                                              "((F1 P F2) AND (P RDFS:DOMAIN C)) => (F1 RDF:TYPE C)",
                                              DomainEntailment));
 
             //RangeEntailment (rdfs3)
-            this.AddRule(
+            this.Rules.Add(
                 new RDFOntologyReasoningRule("RangeEntailment",
                                              "RangeEntailment (rdfs2) implements possible paths of 'rdfs:range' entailment:" +
                                              "((F1 P F2) AND (P RDFS:RANGE C)) => (F2 RDF:TYPE C)",

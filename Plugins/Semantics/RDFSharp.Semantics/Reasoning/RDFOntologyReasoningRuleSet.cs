@@ -56,8 +56,8 @@ namespace RDFSharp.Semantics {
         /// Static-ctor to initialize static instances of the predefined rulesets
         /// </summary>
         static RDFOntologyReasoningRuleSet() {
-            RDFOntologyReasoningRuleSet.OWLDL = new RDFOWLRuleSet("RDFOWL", "This ruleset implements a subset of OWL-DL entailment rules");
-            RDFOntologyReasoningRuleSet.RDFS  = new RDFSRuleSet("RDFS", "This ruleset implements a subset of RDFS entailment rules");
+            OWLDL = new RDFOWLRuleSet("RDFOWL", "This ruleset implements a subset of OWL-DL entailment rules");
+            RDFS  = new RDFSRuleSet("RDFS",     "This ruleset implements a subset of RDFS entailment rules");
         }
 
         /// <summary>
