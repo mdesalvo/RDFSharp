@@ -14,18 +14,20 @@
    limitations under the License.
 */
 
+using System;
+
 namespace RDFSharp.Semantics {
 
     /// <summary>
     /// RDFSchemaRuleSet represents a subset of standard RDFS ruleset
     /// </summary>
-    public class RDFSchemaRuleSet: RDFOntologyReasoningRuleSet {
+    public class RDFSRuleSet: RDFOntologyReasoningRuleSet {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to initialize the singleton instance of the RDFS ruleset
         /// </summary>
-        internal RDFSchemaRuleSet(): base("RDFSchema", "This ruleset implements a subset of RDFS entailment rules") {
+        internal RDFSRuleSet(String rulesetName, String rulesetDescription): base(rulesetName, rulesetDescription) {
 
             //SubClassTransitivity (rdfs11)
             this.AddRule(
@@ -79,26 +81,6 @@ namespace RDFSharp.Semantics {
         #endregion
 
         #region Methods
-
-        #region Overrides
-        /// <summary>
-        /// Adds the given rule to the RDFS ruleset
-        /// </summary>
-        public override RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
-            RDFSemanticsEvents.RaiseSemanticsInfo("Cannot add or remove rules from a standard ruleset (RDFSchema).");
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the given rule from the RDFS ruleset
-        /// </summary>
-        public override RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
-            RDFSemanticsEvents.RaiseSemanticsInfo("Cannot add or remove rules from a standard ruleset (RDFSchema).");
-            return this;
-        }
-        #endregion
-
-        #region Rules
         /// <summary>
         /// SubClassTransitivity (rdfs11) implements possible paths of 'rdfs:subClassOf' subsumption:
         /// ((C1 SUBCLASSOF C2)      AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)
@@ -271,8 +253,6 @@ namespace RDFSharp.Semantics {
 
             }
         }
-        #endregion
-
         #endregion
 
     }

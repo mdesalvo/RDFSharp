@@ -102,11 +102,18 @@ namespace RDFSharp.Semantics {
         /// The ontology is progressively enriched with inferences discovered during the process.
         /// </summary>
         public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology) {
-            if(ontology   != null) {
-                var report = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+            if(ontology      != null) {
+                var report    = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
-                //TODO: Rulesets execution
+                //Iterate the ruleset attached to the reasoner
+                foreach(var  rs in this.RuleSets) {
+                    
+                    //Iterate the rules of the ruleset
+                    foreach(var rl in rs.Rules) {
+                        rl.ExecuteRule(ontology, report);
+                    }
 
+                }
 
                 return report;
             }

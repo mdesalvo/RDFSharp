@@ -14,18 +14,20 @@
    limitations under the License.
 */
 
+using System;
+
 namespace RDFSharp.Semantics {
 
     /// <summary>
-    /// RDFOWLRuleSet represents a subset of standard OWL-DL ruleset
+    /// RDFOWLRuleSet represents an extension of RDFS ruleset including a subset of standard OWL-DL ruleset
     /// </summary>
-    public class RDFOWLRuleSet: RDFOntologyReasoningRuleSet {
+    public class RDFOWLRuleSet: RDFSRuleSet {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to initialize the singleton instance of the OWL ruleset
         /// </summary>
-        internal RDFOWLRuleSet(): base("RDFOWL", "This ruleset implements a subset of OWL-DL entailment rules") {
+        internal RDFOWLRuleSet(String rulesetName, String rulesetDescription): base(rulesetName, rulesetDescription) {
 
             //EquivalentClassTransitivity
             this.AddRule(
@@ -69,26 +71,6 @@ namespace RDFSharp.Semantics {
         #endregion
 
         #region Methods
-
-        #region Overrides
-        /// <summary>
-        /// Adds the given rule to the RDFS ruleset
-        /// </summary>
-        public override RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
-            RDFSemanticsEvents.RaiseSemanticsInfo("Cannot add or remove rules from a standard ruleset (RDFOWL).");
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the given rule from the RDFS ruleset
-        /// </summary>
-        public override RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
-            RDFSemanticsEvents.RaiseSemanticsInfo("Cannot add or remove rules from a standard ruleset (RDFOWL).");
-            return this;
-        }
-        #endregion
-
-        #region Rules
         /// <summary>
         /// EquivalentClassTransitivity implements possible paths of 'owl:EquivalentClass' entailment:
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)
@@ -211,8 +193,6 @@ namespace RDFSharp.Semantics {
                 }
             }
         }
-        #endregion
-
         #endregion
 
     }

@@ -26,6 +26,16 @@ namespace RDFSharp.Semantics {
 
         #region Properties
         /// <summary>
+        /// Static instance of the predefined OWL-DL reasoning ruleset
+        /// </summary>
+        public static RDFOWLRuleSet OWLDL { get; internal set; }
+
+        /// <summary>
+        /// Static instance of the predefined RDFS reasoning ruleset
+        /// </summary>
+        public static RDFSRuleSet RDFS { get; internal set; }
+
+        /// <summary>
         /// Name of the ruleset
         /// </summary>
         public String RuleSetName { get; internal set; }
@@ -42,6 +52,14 @@ namespace RDFSharp.Semantics {
         #endregion
 
         #region Ctors
+        /// <summary>
+        /// Static-ctor to initialize static instances of the predefined rulesets
+        /// </summary>
+        static RDFOntologyReasoningRuleSet() {
+            RDFOntologyReasoningRuleSet.OWLDL = new RDFOWLRuleSet("RDFOWL", "This ruleset implements a subset of OWL-DL entailment rules");
+            RDFOntologyReasoningRuleSet.RDFS  = new RDFSRuleSet("RDFS", "This ruleset implements a subset of RDFS entailment rules");
+        }
+
         /// <summary>
         /// Default-ctor to build an empty reasoning ruleset with given name and description
         /// </summary>
@@ -73,10 +91,10 @@ namespace RDFSharp.Semantics {
 
         #region Methods
         /// <summary>
-        /// Adds the given rule to the ruleset
+        /// Adds the given rule to the ruleset (only if it is not a reserved ruleset)
         /// </summary>
-        public virtual RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
-            if(rule != null) {
+        public RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
+            if(rule != null && !this.IsReservedRuleSet()) {
                 if(this.SelectRule(rule.RuleName) == null) {
                    this.Rules.Add(rule);
                 }
@@ -85,10 +103,10 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Removes the given rule from the ruleset
+        /// Removes the given rule from the ruleset (only if it is not a reserved ruleset)
         /// </summary>
-        public virtual RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
-            if(rule != null) {
+        public RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
+            if(rule != null && !this.IsReservedRuleSet()) {
                 if(this.SelectRule(rule.RuleName) != null) {
                    this.Rules.RemoveAll(rs => rs.RuleName.ToUpperInvariant().Equals(rule.RuleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
                 }
@@ -112,6 +130,13 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyReasoningRule SelectRule(String ruleName = "") {
             return this.Rules.Find(rs => rs.RuleName.ToUpperInvariant().Equals(ruleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Checks if the ruleset is a reserved standard ruleset 
+        /// </summary>
+        public Boolean IsReservedRuleSet() {
+            return (this is RDFSRuleSet || this is RDFOWLRuleSet);
         }
         #endregion
 
