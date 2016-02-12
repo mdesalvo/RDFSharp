@@ -134,20 +134,20 @@ namespace RDFSharp.Semantics {
         /// </summary>
         internal static void ClassTypeEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
             foreach(var c in ontology.Model.ClassModel) {
-            	if (!RDFOntologyReasoningHelper.IsLiteralCompatibleClass(c, ontology.Model.ClassModel)) {
-            		 foreach(var f  in RDFOntologyReasoningHelper.EnlistMembersOf(c, ontology)) {
+                if (!RDFOntologyReasoningHelper.IsLiteralCompatibleClass(c, ontology.Model.ClassModel)) {
+                     foreach(var f  in RDFOntologyReasoningHelper.EnlistMembersOf(c, ontology)) {
 
-	                     //Create the inference as a taxonomy entry
-	                     var ctInfer = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.TYPE, c).SetInference(true);
+                         //Create the inference as a taxonomy entry
+                         var ctInfer = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.TYPE, c).SetInference(true);
 	
-	                     //Enrich the data with the inference
-	                     ontology.Data.Relations.ClassType.AddEntry(ctInfer);
+                         //Enrich the data with the inference
+                         ontology.Data.Relations.ClassType.AddEntry(ctInfer);
 	
-	                     //Add the inference into the reasoning report
-	                     report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "ClassTypeEntailment", ctInfer));
-	
-	                 }	
-            	}
+                         //Add the inference into the reasoning report
+                         report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "ClassTypeEntailment", ctInfer));
+
+                     }
+                }
             }
         }
 
