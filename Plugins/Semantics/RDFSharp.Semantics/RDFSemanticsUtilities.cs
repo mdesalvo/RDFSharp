@@ -49,6 +49,7 @@ namespace RDFSharp.Semantics
             //Taxonomies - Primitive Datatypes
             var rdfsLiteralCls   = ontology.Model.ClassModel.SelectClass(RDFVocabulary.RDFS.LITERAL.ToString());
             var rdfXmlLitCls     = ontology.Model.ClassModel.SelectClass(RDFVocabulary.RDF.XML_LITERAL.ToString());
+            var rdfHtmlCls       = ontology.Model.ClassModel.SelectClass(RDFVocabulary.RDF.HTML.ToString());
             var xsdStringCls     = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.STRING.ToString());
             var xsdBooleanCls    = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.BOOLEAN.ToString());
             var xsdBase64Cls     = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.BASE64_BINARY.ToString());
@@ -69,6 +70,7 @@ namespace RDFSharp.Semantics
             var xsdGDayCls       = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.G_DAY.ToString());
             var xsdGMonthCls     = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.G_MONTH.ToString());
             ontology.Model.ClassModel.AddSubClassOfRelation(rdfXmlLitCls,     rdfsLiteralCls);
+            ontology.Model.ClassModel.AddSubClassOfRelation(rdfHtmlCls,       rdfsLiteralCls);
             ontology.Model.ClassModel.AddSubClassOfRelation(xsdStringCls,     rdfsLiteralCls);
             ontology.Model.ClassModel.AddSubClassOfRelation(xsdBooleanCls,    rdfsLiteralCls);
             ontology.Model.ClassModel.AddSubClassOfRelation(xsdBase64Cls,     rdfsLiteralCls);
