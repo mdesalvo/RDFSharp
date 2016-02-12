@@ -28,55 +28,57 @@ namespace RDFSharp.Semantics {
         /// Default-ctor to initialize the singleton instance of the RDFS ruleset
         /// </summary>
         internal RDFSRuleSet(String rulesetName, String rulesetDescription): base(rulesetName, rulesetDescription) {
+            lock(this.SyncLock) {
 
-            //SubClassTransitivity (rdfs11)
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("SubClassTransitivity",
-                                             "SubClassTransitivity (rdfs11) implements possible paths of 'rdfs:subClassOf' subsumption:" +
-                                             "((C1 SUBCLASSOF C2)      AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)"               +
-                                             "((C1 SUBCLASSOF C2)      AND (C2 EQUIVALENTCLASS C3)) => (C1 SUBCLASSOF C3)"               +
-                                             "((C1 EQUIVALENTCLASS C2) AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)",
-                                             SubClassTransitivity));
+                //SubClassTransitivity (rdfs11)
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("SubClassTransitivity",
+                                                 "SubClassTransitivity (rdfs11) implements possible paths of 'rdfs:subClassOf' subsumption:" +
+                                                 "((C1 SUBCLASSOF C2)      AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)" +
+                                                 "((C1 SUBCLASSOF C2)      AND (C2 EQUIVALENTCLASS C3)) => (C1 SUBCLASSOF C3)" +
+                                                 "((C1 EQUIVALENTCLASS C2) AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)",
+                                                 SubClassTransitivity));
 
-            //SubPropertyTransitivity (rdfs5)
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("SubPropertyTransitivity",
-                                             "SubPropertyTransitivity (rdfs5) implements possible paths of 'rdfs:subPropertyOf' subsumption:" +
-                                             "((P1 SUBPROPERTYOF P2)      AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)"           +
-                                             "((P1 SUBPROPERTYOF P2)      AND (P2 EQUIVALENTPROPERTY P3)) => (P1 SUBPROPERTYOF P3)"           +
-                                             "((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)",
-                                             SubPropertyTransitivity));
+                //SubPropertyTransitivity (rdfs5)
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("SubPropertyTransitivity",
+                                                 "SubPropertyTransitivity (rdfs5) implements possible paths of 'rdfs:subPropertyOf' subsumption:" +
+                                                 "((P1 SUBPROPERTYOF P2)      AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)" +
+                                                 "((P1 SUBPROPERTYOF P2)      AND (P2 EQUIVALENTPROPERTY P3)) => (P1 SUBPROPERTYOF P3)" +
+                                                 "((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)",
+                                                 SubPropertyTransitivity));
 
-            //ClassTypeEntailment (rdfs9)
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("ClassTypeEntailment",
-                                             "ClassTypeEntailment (rdfs9) implements possible paths of 'rdf:type' entailment:" +
-                                             "((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)"                        +
-                                             "((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)",
-                                             ClassTypeEntailment));
+                //ClassTypeEntailment (rdfs9)
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("ClassTypeEntailment",
+                                                 "ClassTypeEntailment (rdfs9) implements possible paths of 'rdf:type' entailment:" +
+                                                 "((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)" +
+                                                 "((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)",
+                                                 ClassTypeEntailment));
 
-            //PropertyEntailment (rdfs7)
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("PropertyEntailment",
-                                             "PropertyEntailment (rdfs7) expands data assertions through 'rdfs:subPropertyOf' entailment:" +
-                                             "((F1 P1 F2) AND (P1 SUBPROPERTYOF P2))      => (F1 P2 F2)"                                   +
-                                             "((F1 P1 F2) AND (P1 EQUIVALENTPROPERTY P2)) => (F1 P2 F2)",
-                                             PropertyEntailment));
+                //PropertyEntailment (rdfs7)
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("PropertyEntailment",
+                                                 "PropertyEntailment (rdfs7) expands data assertions through 'rdfs:subPropertyOf' entailment:" +
+                                                 "((F1 P1 F2) AND (P1 SUBPROPERTYOF P2))      => (F1 P2 F2)" +
+                                                 "((F1 P1 F2) AND (P1 EQUIVALENTPROPERTY P2)) => (F1 P2 F2)",
+                                                 PropertyEntailment));
 
-            //DomainEntailment (rdfs2)
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("DomainEntailment",
-                                             "DomainEntailment (rdfs2) implements possible paths of 'rdfs:domain' entailment:" +
-                                             "((F1 P F2) AND (P RDFS:DOMAIN C)) => (F1 RDF:TYPE C)",
-                                             DomainEntailment));
+                //DomainEntailment (rdfs2)
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("DomainEntailment",
+                                                 "DomainEntailment (rdfs2) implements possible paths of 'rdfs:domain' entailment:" +
+                                                 "((F1 P F2) AND (P RDFS:DOMAIN C)) => (F1 RDF:TYPE C)",
+                                                 DomainEntailment));
 
-            //RangeEntailment (rdfs3)
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("RangeEntailment",
-                                             "RangeEntailment (rdfs2) implements possible paths of 'rdfs:range' entailment:" +
-                                             "((F1 P F2) AND (P RDFS:RANGE C)) => (F2 RDF:TYPE C)",
-                                             RangeEntailment));
+                //RangeEntailment (rdfs3)
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("RangeEntailment",
+                                                 "RangeEntailment (rdfs2) implements possible paths of 'rdfs:range' entailment:" +
+                                                 "((F1 P F2) AND (P RDFS:RANGE C)) => (F2 RDF:TYPE C)",
+                                                 RangeEntailment));
 
+            }
         }
         #endregion
 
@@ -111,7 +113,7 @@ namespace RDFSharp.Semantics {
         /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)
         /// </summary>
         internal static void SubPropertyTransitivity(RDFOntology ontology, RDFOntologyReasoningReport report) {
-            foreach(var p in ontology.Model.PropertyModel) {
+            foreach(var p      in ontology.Model.PropertyModel) {
                 foreach(var sp in RDFOntologyReasoningHelper.EnlistSuperPropertiesOf(p, ontology.Model.PropertyModel)) {
 
                     //Create the inference as a taxonomy entry
@@ -133,16 +135,16 @@ namespace RDFSharp.Semantics {
         /// ((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)
         /// </summary>
         internal static void ClassTypeEntailment(RDFOntology ontology, RDFOntologyReasoningReport report) {
-            foreach(var c in ontology.Model.ClassModel) {
+            foreach(var c           in ontology.Model.ClassModel) {
                 if (!RDFOntologyReasoningHelper.IsLiteralCompatibleClass(c, ontology.Model.ClassModel)) {
                      foreach(var f  in RDFOntologyReasoningHelper.EnlistMembersOf(c, ontology)) {
 
                          //Create the inference as a taxonomy entry
                          var ctInfer = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.TYPE, c).SetInference(true);
-	
+
                          //Enrich the data with the inference
                          ontology.Data.Relations.ClassType.AddEntry(ctInfer);
-	
+
                          //Add the inference into the reasoning report
                          report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "ClassTypeEntailment", ctInfer));
 
@@ -206,7 +208,7 @@ namespace RDFSharp.Semantics {
                     foreach(var pAsn in pAsns) {
 
                         //Create the inference as a taxonomy entry
-                        var deInfer = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, RDFOntologyVocabulary.ObjectProperties.TYPE, p.Domain).SetInference(true);
+                        var deInfer   = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, RDFOntologyVocabulary.ObjectProperties.TYPE, p.Domain).SetInference(true);
 
                         //Enrich the data with the inference
                         ontology.Data.Relations.ClassType.AddEntry(deInfer);
@@ -233,7 +235,7 @@ namespace RDFSharp.Semantics {
                     var pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
 
                     //Iterate the related assertions
-                    foreach(var pAsn in pAsns) {
+                    foreach(var pAsn   in pAsns) {
 
                         //Taxonomy-check for securing inference consistency
                         if(pAsn.TaxonomyObject.IsFact()) {

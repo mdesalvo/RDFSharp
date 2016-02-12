@@ -49,6 +49,11 @@ namespace RDFSharp.Semantics {
         /// List of rules representing the ruleset
         /// </summary>
         internal List<RDFOntologyReasoningRule> Rules { get; set; }
+
+        /// <summary>
+        /// Synchronization lock
+        /// </summary>
+        internal Object SyncLock { get; set; }
         #endregion
 
         #region Ctors
@@ -69,6 +74,7 @@ namespace RDFSharp.Semantics {
                     this.RuleSetName        = rulesetName.Trim();
                     this.RuleSetDescription = rulesetDescription.Trim();
                     this.Rules              = new List<RDFOntologyReasoningRule>();
+                    this.SyncLock           = new Object();
                 }
                 else {
                     throw new RDFSemanticsException("Cannot create RDFOntologyReasoningRuleSet because given \"rulesetDescription\" parameter is null or empty.");
@@ -95,8 +101,10 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyReasoningRuleSet AddRule(RDFOntologyReasoningRule rule) {
             if(rule != null && !this.IsReservedRuleSet()) {
-                if(this.SelectRule(rule.RuleName) == null) {
-                   this.Rules.Add(rule);
+                lock(this.SyncLock) {
+                     if(this.SelectRule(rule.RuleName) == null) {
+                        this.Rules.Add(rule);
+                     }
                 }
             }
             return this;
@@ -107,8 +115,10 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyReasoningRuleSet RemoveRule(RDFOntologyReasoningRule rule) {
             if(rule != null && !this.IsReservedRuleSet()) {
-                if(this.SelectRule(rule.RuleName) != null) {
-                   this.Rules.RemoveAll(rs => rs.RuleName.ToUpperInvariant().Equals(rule.RuleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+                lock(this.SyncLock) {
+                     if(this.SelectRule(rule.RuleName) != null) {
+                        this.Rules.RemoveAll(rs => rs.RuleName.ToUpperInvariant().Equals(rule.RuleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+                     }
                 }
             }
             return this;
@@ -136,7 +146,7 @@ namespace RDFSharp.Semantics {
         /// Checks if the ruleset is a reserved standard ruleset 
         /// </summary>
         public Boolean IsReservedRuleSet() {
-            return (this is RDFSRuleSet || this is RDFOWLRuleSet);
+            return (this is RDFOWLRuleSet || this is RDFSRuleSet);
         }
         #endregion
 

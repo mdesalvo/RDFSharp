@@ -48,6 +48,11 @@ namespace RDFSharp.Semantics {
         /// Dictionary of ontology entries composing the taxonomy
         /// </summary>
         internal Dictionary<Int64, RDFOntologyTaxonomyEntry> Entries { get; set; }
+
+        /// <summary>
+        /// Synchronization lock
+        /// </summary>
+        internal Object SyncLock { get; set; }
         #endregion
 
         #region Ctors
@@ -55,7 +60,8 @@ namespace RDFSharp.Semantics {
         /// Default-ctor to build an empty ontology taxonomy
         /// </summary>
         internal RDFOntologyTaxonomy() {
-            this.Entries = new Dictionary<Int64, RDFOntologyTaxonomyEntry>();
+            this.Entries  = new Dictionary<Int64, RDFOntologyTaxonomyEntry>();
+            this.SyncLock = new Object();
         }
         #endregion
 
@@ -83,8 +89,10 @@ namespace RDFSharp.Semantics {
         /// </summary>
         internal RDFOntologyTaxonomy AddEntry(RDFOntologyTaxonomyEntry taxonomyEntry) {
             if (taxonomyEntry != null) {
-                if (!this.Entries.ContainsKey(taxonomyEntry.TaxonomyEntryID)) {
-                     this.Entries.Add(taxonomyEntry.TaxonomyEntryID, taxonomyEntry);
+                lock (this.SyncLock) {
+                    if (!this.ContainsEntry(taxonomyEntry)) {
+                         this.Entries.Add(taxonomyEntry.TaxonomyEntryID, taxonomyEntry);
+                    }
                 }
             }
             return this;
@@ -97,8 +105,10 @@ namespace RDFSharp.Semantics {
         /// </summary>
         internal RDFOntologyTaxonomy RemoveEntry(RDFOntologyTaxonomyEntry taxonomyEntry) {
             if (taxonomyEntry != null) {
-                if (this.Entries.ContainsKey(taxonomyEntry.TaxonomyEntryID)) {
-                    this.Entries.Remove(taxonomyEntry.TaxonomyEntryID);
+                lock (this.SyncLock) {
+                    if (this.ContainsEntry(taxonomyEntry)) {
+                        this.Entries.Remove(taxonomyEntry.TaxonomyEntryID);
+                    }
                 }
             }
             return this;
@@ -117,9 +127,9 @@ namespace RDFSharp.Semantics {
         /// Gets a taxonomy with the entries having the specified ontology resource as subject 
         /// </summary>
         public RDFOntologyTaxonomy SelectEntriesBySubject(RDFOntologyResource subjectResource) {
-            var resultTaxonomy   = new RDFOntologyTaxonomy();
-            if (subjectResource != null) {                
-                foreach (var te in this.Where(tEntry => tEntry.TaxonomySubject.Equals(subjectResource))) {
+            var resultTaxonomy     = new RDFOntologyTaxonomy();
+            if (subjectResource   != null) {                
+                foreach (var te   in this.Where(tEntry => tEntry.TaxonomySubject.Equals(subjectResource))) {
                     resultTaxonomy.AddEntry(te);
                 }
             }
@@ -143,9 +153,9 @@ namespace RDFSharp.Semantics {
         /// Gets a taxonomy with the entries having the specified ontology resource as object 
         /// </summary>
         public RDFOntologyTaxonomy SelectEntriesByObject(RDFOntologyResource objectResource) {
-            var resultTaxonomy  = new RDFOntologyTaxonomy();
-            if (objectResource != null) {
-                foreach (var te in this.Where(tEntry => tEntry.TaxonomyObject.Equals(objectResource))) {
+            var resultTaxonomy     = new RDFOntologyTaxonomy();
+            if (objectResource    != null) {
+                foreach (var te   in this.Where(tEntry => tEntry.TaxonomyObject.Equals(objectResource))) {
                     resultTaxonomy.AddEntry(te);
                 }
             }
@@ -325,8 +335,6 @@ namespace RDFSharp.Semantics {
         #endregion
 
         #region Methods
-
-        #region Add
         /// <summary>
         /// Marks this taxonomy entry as a semantic inference, depending on the given parameter
         /// </summary>
@@ -334,9 +342,7 @@ namespace RDFSharp.Semantics {
             this.IsInference = isInference;
             return this;
         }
-        #endregion
 
-        #region Convert
         /// <summary>
         /// Get a triple representation of this taxonomy entry
         /// </summary>
@@ -348,8 +354,6 @@ namespace RDFSharp.Semantics {
                 return new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFResource)this.TaxonomyObject.Value);
             }
         }
-        #endregion
-
         #endregion
 
     }

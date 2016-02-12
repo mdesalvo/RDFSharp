@@ -28,45 +28,47 @@ namespace RDFSharp.Semantics {
         /// Default-ctor to initialize the singleton instance of the OWL ruleset
         /// </summary>
         internal RDFOWLRuleSet(String rulesetName, String rulesetDescription): base(rulesetName, rulesetDescription) {
+            lock(this.SyncLock) {
 
-            //EquivalentClassTransitivity
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("EquivalentClassTransitivity",
-                                             "EquivalentClassTransitivity implements possible paths of 'owl:EquivalentClass' entailment:" +
-                                             "((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)",
-                                             EquivalentClassTransitivity));
+                //EquivalentClassTransitivity
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("EquivalentClassTransitivity",
+                                                 "EquivalentClassTransitivity implements possible paths of 'owl:EquivalentClass' entailment:" +
+                                                 "((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)",
+                                                 EquivalentClassTransitivity));
 
-            //DisjointWithEntailment
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("DisjointWithEntailment",
-                                             "DisjointWithEntailment implements possible paths of 'owl:DisjointWith' entailment:" +
-                                             "((C1 EQUIVALENTCLASS C2) AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)"      +
-                                             "((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)"      +
-                                             "((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)",
-                                             DisjointWithEntailment));
+                //DisjointWithEntailment
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("DisjointWithEntailment",
+                                                 "DisjointWithEntailment implements possible paths of 'owl:DisjointWith' entailment:" +
+                                                 "((C1 EQUIVALENTCLASS C2) AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)" +
+                                                 "((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)" +
+                                                 "((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)",
+                                                 DisjointWithEntailment));
 
-            //EquivalentPropertyTransitivity
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("EquivalentPropertyTransitivity",
-                                             "EquivalentPropertyTransitivity implements possible paths of 'owl:EquivalentProperty' entailment:" +
-                                             "((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)",
-                                             EquivalentPropertyTransitivity));
+                //EquivalentPropertyTransitivity
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("EquivalentPropertyTransitivity",
+                                                 "EquivalentPropertyTransitivity implements possible paths of 'owl:EquivalentProperty' entailment:" +
+                                                 "((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)",
+                                                 EquivalentPropertyTransitivity));
 
-            //SameAsTransitivity
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("SameAsTransitivity",
-                                             "SameAsTransitivity implements possible paths of 'owl:sameAs' entailment:" +
-                                             "((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)",
-                                             SameAsTransitivity));
+                //SameAsTransitivity
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("SameAsTransitivity",
+                                                 "SameAsTransitivity implements possible paths of 'owl:sameAs' entailment:" +
+                                                 "((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)",
+                                                 SameAsTransitivity));
 
-            //DifferentFromEntailment
-            this.Rules.Add(
-                new RDFOntologyReasoningRule("DifferentFromEntailment",
-                                             "DifferentFromEntailment implements possible paths of 'owl:DifferentFrom' entailment:" +
-                                             "((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)" +
-                                             "((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)",
-                                             DifferentFromEntailment));
+                //DifferentFromEntailment
+                this.Rules.Add(
+                    new RDFOntologyReasoningRule("DifferentFromEntailment",
+                                                 "DifferentFromEntailment implements possible paths of 'owl:DifferentFrom' entailment:" +
+                                                 "((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)" +
+                                                 "((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)",
+                                                 DifferentFromEntailment));
 
+            }
         }
         #endregion
 
