@@ -342,6 +342,11 @@ namespace RDFSharp.Semantics {
             /// DifferentFromEntailment implements structural entailments based on 'owl:DifferentFrom' taxonomy
             /// </summary>
             public static RDFOntologyReasoningRule DifferentFromEntailment { get; internal set; }
+
+            /// <summary>
+            /// InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy
+            /// </summary>
+            public static RDFOntologyReasoningRule InverseOfEntailment { get; internal set; }
             #endregion
 
             #region Ctors
@@ -351,18 +356,18 @@ namespace RDFSharp.Semantics {
             static RDFOWLRuleSet() {
 
                 //EquivalentClassTransitivity
-                EquivalentClassTransitivity = new RDFOntologyReasoningRule("EquivalentClassTransitivity",
-                                                                           "EquivalentClassTransitivity implements structural entailments based on 'owl:EquivalentClass' taxonomy:" +
-                                                                           "((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)",
-                                                                           EquivalentClassTransitivityExec);
+                EquivalentClassTransitivity    = new RDFOntologyReasoningRule("EquivalentClassTransitivity",
+                                                                              "EquivalentClassTransitivity implements structural entailments based on 'owl:EquivalentClass' taxonomy:" +
+                                                                              "((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)",
+                                                                              EquivalentClassTransitivityExec);
 
                 //DisjointWithEntailment
-                DisjointWithEntailment      = new RDFOntologyReasoningRule("DisjointWithEntailment",
-                                                                           "DisjointWithEntailment implements structural entailments based on 'owl:DisjointWith' taxonomy:" +
-                                                                           "((C1 EQUIVALENTCLASS C2) AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)" +
-                                                                           "((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)" +
-                                                                           "((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)",
-                                                                           DisjointWithEntailmentExec);
+                DisjointWithEntailment         = new RDFOntologyReasoningRule("DisjointWithEntailment",
+                                                                              "DisjointWithEntailment implements structural entailments based on 'owl:DisjointWith' taxonomy:" +
+                                                                              "((C1 EQUIVALENTCLASS C2) AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)" +
+                                                                              "((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)" +
+                                                                              "((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)",
+                                                                              DisjointWithEntailmentExec);
 
                 //EquivalentPropertyTransitivity
                 EquivalentPropertyTransitivity = new RDFOntologyReasoningRule("EquivalentPropertyTransitivity",
@@ -382,6 +387,12 @@ namespace RDFSharp.Semantics {
                                                                               "((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)" +
                                                                               "((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)",
                                                                               DifferentFromEntailmentExec);
+
+                //InverseOfEntailment
+                InverseOfEntailment            = new RDFOntologyReasoningRule("InverseOfEntailment",
+                                                                              "InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy:" +
+                                                                              "((F1 P1 F2) AND (P1 INVERSEOF P2)) => (F2 P2 F1)",
+                                                                              InverseOfEntailmentExec);
 
             }
             #endregion
@@ -544,6 +555,48 @@ namespace RDFSharp.Semantics {
                         ontology.Data.Relations.DifferentFrom.AddEntry(dfInferB);
                         if(ontology.Data.Relations.DifferentFrom.EntriesCount > taxCnt) {
                             report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferB));
+                        }
+
+                    }
+                }
+            }
+
+            /// <summary>
+            /// InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy:
+            /// ((F1 P1 F2) AND (P1 INVERSEOF P2)) => (F2 P2 F1)
+            /// </summary>
+            internal static void InverseOfEntailmentExec(RDFOntology ontology, RDFOntologyReasoningReport report) {
+                foreach(var p1                 in ontology.Model.PropertyModel) {
+                    if (p1.IsObjectProperty())  {
+
+                        //Filter the assertions using the current property (F1 P1 F2)
+                        var p1Asns              = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p1);
+
+                        //Enlist the inverse properties of the current property
+                        foreach(var p2         in RDFOntologyReasoningHelper.EnlistInversePropertiesOf((RDFOntologyObjectProperty)p1, ontology.Model.PropertyModel)) {
+
+                            //Iterate the compatible assertions
+                            foreach(var p1Asn  in p1Asns) {
+
+                                //Taxonomy-check for securing inference consistency
+                                if(p2.IsObjectProperty() && p1Asn.TaxonomyObject.IsFact()) {
+
+                                    //Create the inference as a taxonomy entry
+                                    var ioInfer = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomyObject, p2, p1Asn.TaxonomySubject).SetInference(true);
+
+                                    //Enrich the data with the inference
+                                    var taxCnt  = ontology.Data.Relations.Assertions.EntriesCount;
+                                    ontology.Data.Relations.Assertions.AddEntry(ioInfer);
+
+                                    //Add the inference into the reasoning report
+                                    if(ontology.Data.Relations.Assertions.EntriesCount > taxCnt) {
+                                       report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "InverseOfEntailment", ioInfer));
+                                    }
+
+                                }
+
+                            }
+
                         }
 
                     }
