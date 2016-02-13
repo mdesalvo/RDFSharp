@@ -717,7 +717,7 @@ namespace RDFSharp.Semantics
             foreach (var   tEntry in enTaxonomy) {
                 
                 //Add the fact and its synonyms
-                if  (tEntry.TaxonomyObject.IsFact()) {
+                if  (tEntry.TaxonomySubject.IsEnumerateClass() && tEntry.TaxonomyObject.IsFact()) {
                      result= result.UnionWith(RDFOntologyReasoningHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomyObject, ontology.Data))
                                       .AddFact((RDFOntologyFact)tEntry.TaxonomyObject);
                 }
@@ -738,7 +738,7 @@ namespace RDFSharp.Semantics
             foreach (var   tEntry  in drTaxonomy) {
 
                 //Add the literal
-                if  (tEntry.TaxonomyObject.IsLiteral()) {
+                if  (tEntry.TaxonomySubject.IsDataRangeClass() && tEntry.TaxonomyObject.IsLiteral()) {
                      result.AddLiteral((RDFOntologyLiteral)tEntry.TaxonomyObject);
                 }
 
@@ -796,11 +796,18 @@ namespace RDFSharp.Semantics
         internal static RDFOntologyData EnlistMembersOfClass(RDFOntologyClass ontClass, RDFOntology ontology) {
             var result         = new RDFOntologyData();
 
+            //Composite
+            if(ontClass.IsCompositeClass()) {
+                result         = RDFSemanticsUtilities.EnlistMembersOfComposite(ontClass, ontology);
+            }
+
+            //Enumerate
+            else if(ontClass.IsEnumerateClass()) {
+                result         = RDFSemanticsUtilities.EnlistMembersOfEnumerate((RDFOntologyEnumerateClass)ontClass, ontology);
+            }
+
             //DataRange / Literal
-            if (ontClass.IsDataRangeClass()                                                         
-                || ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL)
-                || RDFOntologyReasoningHelper.IsSubClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)
-                || RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
+            else if(RDFOntologyReasoningHelper.IsLiteralCompatibleClass(ontClass, ontology.Model.ClassModel)) {
 
                 //DataRange
                 if (ontClass.IsDataRangeClass()) {
@@ -811,9 +818,8 @@ namespace RDFSharp.Semantics
                 else { 
                     
                     //Pure Literal
-                    if (ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL)                                                            || 
-                        RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
-                        foreach (var ontLit in ontology.Data.Literals.Values) {
+                    if (ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL) || RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
+                        foreach (var ontLit in ontology.Data.Literals.Values)   {
                             result.AddLiteral(ontLit);
                         }
                     }
@@ -823,7 +829,7 @@ namespace RDFSharp.Semantics
 
                         //String-Literals
                         var xsdStringClass          = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.STRING.ToString());
-                        if (ontClass.Equals(xsdStringClass)                                                            || 
+                        if (ontClass.Equals(xsdStringClass)                                                                     || 
                             RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, xsdStringClass, ontology.Model.ClassModel)) {
                             foreach (var ontLit    in ontology.Data.Literals.Values) {
                                 if  (ontLit.Value  is RDFPlainLiteral) {
@@ -832,8 +838,8 @@ namespace RDFSharp.Semantics
                                 else {
                                     var dTypeClass  = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
                                     if (dTypeClass != null) {
-                                        if (dTypeClass.Equals(ontClass)                                                     ||
-                                            RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel) ||
+                                        if (dTypeClass.Equals(ontClass)                                                                     ||
+                                            RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)        ||
                                             RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
                                             result.AddLiteral(ontLit);
                                         }
@@ -870,16 +876,6 @@ namespace RDFSharp.Semantics
 
                 }
 
-            }
-
-            //Composite
-            else if (ontClass.IsCompositeClass()) {
-                result         = RDFSemanticsUtilities.EnlistMembersOfComposite(ontClass, ontology);
-            }
-
-            //Enumerate
-            else if (ontClass.IsEnumerateClass()) {
-                result         = RDFSemanticsUtilities.EnlistMembersOfEnumerate((RDFOntologyEnumerateClass)ontClass, ontology);
             }
 
             //Class
