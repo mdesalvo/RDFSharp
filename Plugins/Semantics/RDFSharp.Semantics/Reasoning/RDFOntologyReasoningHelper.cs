@@ -368,22 +368,22 @@ namespace RDFSharp.Semantics {
                     result  = RDFSemanticsUtilities.EnlistMembersOfRestriction((RDFOntologyRestriction)ontClass,  ontology);
                 }
 
-                //Enumeration
+                //Composite
+                else if(ontClass.IsCompositeClass()) {
+                    result = RDFSemanticsUtilities.EnlistMembersOfComposite(ontClass, ontology);
+                }
+
+                //Enumerate
                 else if (ontClass.IsEnumerateClass()) {
                     result  = RDFSemanticsUtilities.EnlistMembersOfEnumerate((RDFOntologyEnumerateClass)ontClass, ontology);
                 }
 
-                //DataRange
-                else if (ontClass.IsDataRangeClass()) {
-                    result  = RDFSemanticsUtilities.EnlistMembersOfDataRange((RDFOntologyDataRangeClass)ontClass, ontology);
+                //DataRange/Literal
+                else if (RDFOntologyReasoningHelper.IsLiteralCompatibleClass(ontClass, ontology.Model.ClassModel)) {
+                    result  = RDFSemanticsUtilities.EnlistMembersOfLiteralCompatibleClass(ontClass, ontology);
                 }
 
-                //Composite
-                else if (ontClass.IsCompositeClass()) {
-                    result  = RDFSemanticsUtilities.EnlistMembersOfComposite(ontClass, ontology);
-                }
-
-                //SimpleClass
+                //Class
                 else {
                     result  = RDFSemanticsUtilities.EnlistMembersOfClass(ontClass, ontology);
                 }

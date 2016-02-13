@@ -728,26 +728,6 @@ namespace RDFSharp.Semantics
         }
 
         /// <summary>
-        /// Enlists the literals which are members of the given datarange within the given ontology
-        /// </summary>
-        internal static RDFOntologyData EnlistMembersOfDataRange(RDFOntologyDataRangeClass ontDataRangeClass, RDFOntology ontology) {
-            var result     = new RDFOntologyData();
-
-            //Filter "oneOf" relations made with the given datarange class
-            var drTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontDataRangeClass);
-            foreach (var   tEntry  in drTaxonomy) {
-
-                //Add the literal
-                if  (tEntry.TaxonomySubject.IsDataRangeClass() && tEntry.TaxonomyObject.IsLiteral()) {
-                     result.AddLiteral((RDFOntologyLiteral)tEntry.TaxonomyObject);
-                }
-
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Enlists the facts which are members of the given composition within the given ontology
         /// </summary>
         internal static RDFOntologyData EnlistMembersOfComposite(RDFOntologyClass ontCompClass, RDFOntology ontology) {
@@ -791,118 +771,110 @@ namespace RDFSharp.Semantics
         }
 
         /// <summary>
+        /// Enlists the literals which are members of the given literal-compatible class within the given ontology
+        /// </summary>
+        internal static RDFOntologyData EnlistMembersOfLiteralCompatibleClass(RDFOntologyClass ontClass, RDFOntology ontology) {
+            var result         = new RDFOntologyData();
+
+            //DataRange
+            if(ontClass.IsDataRangeClass()) {
+
+                //Filter "oneOf" relations made with the given datarange class
+                var drTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontClass);
+                foreach(var tEntry in drTaxonomy) {
+
+                    //Add the literal
+                    if(tEntry.TaxonomySubject.IsDataRangeClass() && tEntry.TaxonomyObject.IsLiteral()) {
+                        result.AddLiteral((RDFOntologyLiteral)tEntry.TaxonomyObject);
+                    }
+
+                }
+
+            }
+
+            //Pure Literal
+            else if(ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL) || RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
+                foreach(var ontLit in ontology.Data.Literals.Values) {
+                    result.AddLiteral(ontLit);
+                }
+            }
+
+            //Derived Literal
+            else {
+
+                //String-Literals
+                var xsdStringClass          = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.STRING.ToString());
+                if(ontClass.Equals(xsdStringClass) || RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, xsdStringClass, ontology.Model.ClassModel)) {
+                    foreach(var ontLit in ontology.Data.Literals.Values) {
+                        if(ontLit.Value is RDFPlainLiteral) {
+                            result.AddLiteral(ontLit);
+                        }
+                        else {
+                            var dTypeClass  = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
+                            if(dTypeClass != null) {
+                                if(dTypeClass.Equals(ontClass) || RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel) 
+                                                               || RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
+                                    result.AddLiteral(ontLit);
+                                }
+                            }
+                            else {
+                                if(dTypeClass.Equals(ontClass)) {
+                                    result.AddLiteral(ontLit);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //Other Literals
+                else {
+                    foreach(var ontLit in ontology.Data.Literals.Values.Where(l => l.Value is RDFTypedLiteral)) {
+                        var  dTypeClass   = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
+                        if(dTypeClass != null) {
+                            if(dTypeClass.Equals(ontClass) || RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel) 
+                                                           || RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
+                                result.AddLiteral(ontLit);
+                            }
+                        }
+                        else {
+                            if(dTypeClass.Equals(ontClass)) {
+                                result.AddLiteral(ontLit);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Enlists the facts which are members of the given class within the given ontology
         /// </summary>
         internal static RDFOntologyData EnlistMembersOfClass(RDFOntologyClass ontClass, RDFOntology ontology) {
-            var result         = new RDFOntologyData();
+            var result     = new RDFOntologyData();
 
-            //Composite
-            if(ontClass.IsCompositeClass()) {
-                result         = RDFSemanticsUtilities.EnlistMembersOfComposite(ontClass, ontology);
+            //Get the compatible classes
+            var compCls    = RDFOntologyReasoningHelper.EnlistSubClassesOf(ontClass, ontology.Model.ClassModel)
+                                    .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(ontClass, ontology.Model.ClassModel))
+                                    .AddClass(ontClass);
+
+            //Filter "classType" relations made with compatible classes
+            var fTaxonomy  = new RDFOntologyTaxonomy();
+            foreach (var   c in compCls) {
+                fTaxonomy  = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
             }
+            foreach (var   tEntry in fTaxonomy) {
 
-            //Enumerate
-            else if(ontClass.IsEnumerateClass()) {
-                result         = RDFSemanticsUtilities.EnlistMembersOfEnumerate((RDFOntologyEnumerateClass)ontClass, ontology);
-            }
-
-            //DataRange / Literal
-            else if(RDFOntologyReasoningHelper.IsLiteralCompatibleClass(ontClass, ontology.Model.ClassModel)) {
-
-                //DataRange
-                if (ontClass.IsDataRangeClass()) {
-                    result     = RDFSemanticsUtilities.EnlistMembersOfDataRange((RDFOntologyDataRangeClass)ontClass, ontology);
-                }
-
-                //Literal
-                else { 
-                    
-                    //Pure Literal
-                    if (ontClass.Equals(RDFOntologyVocabulary.Classes.LITERAL) || RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, RDFOntologyVocabulary.Classes.LITERAL, ontology.Model.ClassModel)) {
-                        foreach (var ontLit in ontology.Data.Literals.Values)   {
-                            result.AddLiteral(ontLit);
-                        }
-                    }
-
-                    //Derived Literal
-                    else {
-
-                        //String-Literals
-                        var xsdStringClass          = ontology.Model.ClassModel.SelectClass(RDFVocabulary.XSD.STRING.ToString());
-                        if (ontClass.Equals(xsdStringClass)                                                                     || 
-                            RDFOntologyReasoningHelper.IsEquivalentClassOf(ontClass, xsdStringClass, ontology.Model.ClassModel)) {
-                            foreach (var ontLit    in ontology.Data.Literals.Values) {
-                                if  (ontLit.Value  is RDFPlainLiteral) {
-                                     result.AddLiteral(ontLit);
-                                }
-                                else {
-                                    var dTypeClass  = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
-                                    if (dTypeClass != null) {
-                                        if (dTypeClass.Equals(ontClass)                                                                     ||
-                                            RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)        ||
-                                            RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
-                                            result.AddLiteral(ontLit);
-                                        }
-                                    }
-                                    else {
-                                        if (dTypeClass.Equals(ontClass)) {
-                                            result.AddLiteral(ontLit);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        //Other Literals
-                        else {
-                            foreach (var ontLit  in ontology.Data.Literals.Values.Where(l => l.Value is RDFTypedLiteral)) {
-                                var  dTypeClass   = ontology.Model.ClassModel.SelectClass(((RDFTypedLiteral)ontLit.Value).Datatype.ToString());
-                                if  (dTypeClass  != null) {
-                                    if (dTypeClass.Equals(ontClass)                                                            ||
-                                        RDFOntologyReasoningHelper.IsSubClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)        ||
-                                        RDFOntologyReasoningHelper.IsEquivalentClassOf(dTypeClass, ontClass, ontology.Model.ClassModel)) {
-                                        result.AddLiteral(ontLit);
-                                    }
-                                }
-                                else {
-                                    if (dTypeClass.Equals(ontClass)) {
-                                        result.AddLiteral(ontLit);
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
+                //Add the fact and its synonyms
+                if (tEntry.TaxonomySubject.IsFact()) {
+                    result = result.UnionWith(RDFOntologyReasoningHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject, ontology.Data))
+                                        .AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
                 }
 
             }
-
-            //Class
-            else {
-
-                //Get the compatible classes
-                var compCls    = RDFOntologyReasoningHelper.EnlistSubClassesOf(ontClass, ontology.Model.ClassModel)
-                                     .UnionWith(RDFOntologyReasoningHelper.EnlistEquivalentClassesOf(ontClass, ontology.Model.ClassModel))
-                                        .AddClass(ontClass);
-
-                //Filter "classType" relations made with compatible classes
-                var fTaxonomy  = new RDFOntologyTaxonomy();
-                foreach (var   c in compCls) {
-                    fTaxonomy  = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
-                }
-                foreach (var   tEntry in fTaxonomy) {
-
-                    //Add the fact and its synonyms
-                    if (tEntry.TaxonomySubject.IsFact()) {
-                        result = result.UnionWith(RDFOntologyReasoningHelper.EnlistSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject, ontology.Data))
-                                          .AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
-                    }
-
-                }
-
-            }
-
+ 
             return result;
         }
         #endregion
