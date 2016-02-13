@@ -347,6 +347,11 @@ namespace RDFSharp.Semantics {
             /// InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy
             /// </summary>
             public static RDFOntologyReasoningRule InverseOfEntailment { get; internal set; }
+
+            /// <summary>
+            /// SameAsEntailment implements data entailments based on 'owl:SameAs' taxonomy
+            /// </summary>
+            public static RDFOntologyReasoningRule SameAsEntailment { get; internal set; }
             #endregion
 
             #region Ctors
@@ -393,6 +398,13 @@ namespace RDFSharp.Semantics {
                                                                               "InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy:" +
                                                                               "((F1 P1 F2) AND (P1 INVERSEOF P2)) => (F2 P2 F1)",
                                                                               InverseOfEntailmentExec);
+
+                //SameAsEntailment
+                SameAsEntailment               = new RDFOntologyReasoningRule("SameAsEntailment",
+                                                                              "SameAsEntailment implements data entailments based on 'owl:SameAs' taxonomy:" +
+                                                                              "((F1 P F2) AND (F1 SAMEAS F3)) => (F3 P F2)" +
+                                                                              "((F1 P F2) AND (F2 SAMEAS F3)) => (F1 P F3)",
+                                                                              SameAsEntailmentExec);
 
             }
             #endregion
@@ -600,6 +612,74 @@ namespace RDFSharp.Semantics {
                         }
 
                     }
+                }
+            }
+
+            /// <summary>
+            /// SameAsEntailment implements data entailments based on 'owl:sameAs' taxonomy:
+            /// ((F1 P F2) AND (F1 SAMEAS F3)) => (F3 P F2)
+            /// ((F1 P F2) AND (F2 SAMEAS F3)) => (F1 P F3)
+            /// </summary>
+            internal static void SameAsEntailmentExec(RDFOntology ontology, RDFOntologyReasoningReport report) {
+                foreach(var f1             in ontology.Data) {
+
+                    //Filter the assertions using the current fact
+                    var f1AsnsSubj          = ontology.Data.Relations.Assertions.SelectEntriesBySubject(f1);
+                    var f1AsnsObj           = ontology.Data.Relations.Assertions.SelectEntriesByObject(f1);
+
+                    //Enlist the same facts of the current fact
+                    foreach(var f2         in RDFOntologyReasoningHelper.EnlistSameFactsAs(f1, ontology.Data)) {
+
+                        #region Subject-Side
+                        //Iterate the assertions having the current fact as subject
+                        foreach(var f1Asn  in f1AsnsSubj) {
+
+                            //Taxonomy-check for securing inference consistency
+                            if(f1Asn.TaxonomyPredicate.IsObjectProperty() && f1Asn.TaxonomyObject.IsFact()) {
+
+                                //Create the inference as a taxonomy entry
+                                var saInfer = new RDFOntologyTaxonomyEntry(f2, f1Asn.TaxonomyPredicate, f1Asn.TaxonomyObject).SetInference(true);
+
+                                //Enrich the data with the inference
+                                var taxCnt  = ontology.Data.Relations.Assertions.EntriesCount;
+                                ontology.Data.Relations.Assertions.AddEntry(saInfer);
+
+                                //Add the inference into the reasoning report
+                                if(ontology.Data.Relations.Assertions.EntriesCount > taxCnt) {
+                                   report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsEntailment", saInfer));
+                                }
+
+                            }
+
+                        }
+                        #endregion
+
+                        #region Object-Side
+                        //Iterate the assertions having the current fact as object
+                        foreach(var f1Asn  in f1AsnsObj) {
+
+                            //Taxonomy-check for securing inference consistency
+                            if(f1Asn.TaxonomyPredicate.IsObjectProperty() && f2.IsFact()) {
+
+                                //Create the inference as a taxonomy entry
+                                var saInfer = new RDFOntologyTaxonomyEntry(f1Asn.TaxonomySubject, f1Asn.TaxonomyPredicate, f2).SetInference(true);
+
+                                //Enrich the data with the inference
+                                var taxCnt  = ontology.Data.Relations.Assertions.EntriesCount;
+                                ontology.Data.Relations.Assertions.AddEntry(saInfer);
+
+                                //Add the inference into the reasoning report
+                                if(ontology.Data.Relations.Assertions.EntriesCount > taxCnt) {
+                                   report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsEntailment", saInfer));
+                                }
+
+                            }
+
+                        }
+                        #endregion
+
+                    }
+
                 }
             }
             #endregion
