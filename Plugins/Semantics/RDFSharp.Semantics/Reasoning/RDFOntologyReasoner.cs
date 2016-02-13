@@ -39,14 +39,9 @@ namespace RDFSharp.Semantics {
         public String ReasonerDescription { get; internal set; }
 
         /// <summary>
-        /// List of rulesets applied by the ontology validator
+        /// List of rules applied by the reasoner
         /// </summary>
-        internal List<RDFOntologyReasoningRuleSet> RuleSets { get; set; }
-
-        /// <summary>
-        /// Synchronization lock
-        /// </summary>
-        internal Object SyncLock { get; set; }
+        internal List<RDFOntologyReasoningRule> Rules { get; set; }
         #endregion
 
         #region Ctors
@@ -58,8 +53,7 @@ namespace RDFSharp.Semantics {
                 if(reasonerDescription      != null && reasonerDescription.Trim() != String.Empty) {
                     this.ReasonerName        = reasonerName;
                     this.ReasonerDescription = reasonerDescription;
-                    this.RuleSets            = new List<RDFOntologyReasoningRuleSet>();
-                    this.SyncLock            = new Object();
+                    this.Rules               = new List<RDFOntologyReasoningRule>();
                 }
                 else {
                     throw new RDFSemanticsException("Cannot create RDFOntologyReasoner because given \"reasonerDescription\" parameter is null or empty.");
@@ -73,73 +67,52 @@ namespace RDFSharp.Semantics {
 
         #region Methods
         /// <summary>
-        /// Adds the given ruleset to the reasoner
+        /// Adds the given rule to the reasoner
         /// </summary>
-        public RDFOntologyReasoner AddRuleSet(RDFOntologyReasoningRuleSet ruleSet) {
-            if(ruleSet != null) {
-                lock(this.SyncLock) {
-                     if(this.SelectRuleSet(ruleSet.RuleSetName) == null) {
-                        this.RuleSets.Add(ruleSet);
-                     }
+        public RDFOntologyReasoner AddRule(RDFOntologyReasoningRule rule) {
+            if(rule   != null) {
+                if(this.SelectRule(rule.RuleName) == null) {
+                   this.Rules.Add(rule);
                 }
             }
             return this;
         }
 
         /// <summary>
-        /// Removes the given ruleset from the reasoner
+        /// Removes the given rule from the reasoner
         /// </summary>
-        public RDFOntologyReasoner RemoveRuleSet(RDFOntologyReasoningRuleSet ruleSet) {
-            if(ruleSet != null) {
-                lock(this.SyncLock) {
-                     if(this.SelectRuleSet(ruleSet.RuleSetName) != null) {
-                        this.RuleSets.RemoveAll(rs => rs.RuleSetName.ToUpperInvariant().Equals(ruleSet.RuleSetName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
-                     }
+        public RDFOntologyReasoner RemoveRule(RDFOntologyReasoningRule rule) {
+            if(rule   != null) {
+                if(this.SelectRule(rule.RuleName) != null) {
+                   this.Rules.RemoveAll(rs => rs.RuleName.ToUpperInvariant().Equals(rule.RuleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
                 }
             }
             return this;
         }
 
         /// <summary>
-        /// Selects the given ruleset from the resoner
+        /// Selects the given rule from the resoner
         /// </summary>
-        public RDFOntologyReasoningRuleSet SelectRuleSet(String ruleSetName = "") {
-            return this.RuleSets.Find(rs => rs.RuleSetName.ToUpperInvariant().Equals(ruleSetName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
+        public RDFOntologyReasoningRule SelectRule(String ruleName = "") {
+            return this.Rules.Find(r => r.RuleName.ToUpperInvariant().Equals(ruleName.Trim().ToUpperInvariant(), StringComparison.Ordinal));
         }
 
         /// <summary>
         /// Applies the reasoner on the given ontology, producing a detailed reasoning report.
-        /// The ontology is progressively enriched with inferences discovered during the process.
         /// </summary>
         public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology) {
-            if(ontology            != null) {
-                var report          = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+            if(ontology        != null) {
+                var report      = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+                foreach(var r  in this.Rules) {
+                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of rule '{0}'", r.RuleName));
+                    var oldCnt  = report.EvidencesCount;
 
-                //Iterate the ruleset attached to the reasoner
-                foreach(var  rs    in this.RuleSets) {
+                    //Execute the reasoning rule
+                    r.ExecuteRule(ontology, report);
 
-                    //Raise an info event to signal starting of ruleset evaluation
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Starting evaluation of reasoning ruleset '{0}' on ontology '{1}'", rs.RuleSetName, ontology.Value));
-
-                    //Iterate the rules of the ruleset
-                    foreach(var rl in rs.Rules) {
-
-                        //Raise an info event to signal starting of rule evaluation
-                        RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Starting evaluation of reasoning rule '{0}'", rl.RuleName));
-
-                        //Execute the reasoning rule
-                        rl.ExecuteRule(ontology, report);
-
-                        //Raise an info event to signal ending of rule evaluation
-                        RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Finished evaluation of reasoning rule '{0}'", rl.RuleName));
-
-                    }
-
-                    //Raise an info event to signal ending of ruleset evaluation
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Finished evaluation of reasoning ruleset '{0}' on ontology '{1}'", rs.RuleSetName, ontology.Value));
-
+                    var newCnt  = report.EvidencesCount - oldCnt;
+                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Finished execution of rule '{0}': found {1} new evidences", r.RuleName, newCnt));
                 }
-
                 return report;
             }
             throw new RDFSemanticsException("Cannot apply RDFOntologyReasoner because given \"ontology\" parameter is null.");
