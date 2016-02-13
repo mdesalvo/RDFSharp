@@ -97,10 +97,13 @@ namespace RDFSharp.Semantics {
                     var scInfer = new RDFOntologyTaxonomyEntry(c, RDFOntologyVocabulary.ObjectProperties.SUB_CLASS_OF, sc).SetInference(true);
 
                     //Enrich the class model with the inference
+                    var taxCnt  = ontology.Model.ClassModel.Relations.SubClassOf.EntriesCount;
                     ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(scInfer);
 
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "SubClassTransitivity", scInfer));
+                    if(ontology.Model.ClassModel.Relations.SubClassOf.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "SubClassTransitivity", scInfer));
+                    }
 
                 }
             }
@@ -120,10 +123,13 @@ namespace RDFSharp.Semantics {
                     var spInfer = new RDFOntologyTaxonomyEntry(p, RDFOntologyVocabulary.ObjectProperties.SUB_PROPERTY_OF, sp).SetInference(true);
 
                     //Enrich the property model with the inference
+                    var taxCnt  = ontology.Model.PropertyModel.Relations.SubPropertyOf.EntriesCount;
                     ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(spInfer);
 
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "SubPropertyTransitivity", spInfer));
+                    if(ontology.Model.PropertyModel.Relations.SubPropertyOf.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "SubPropertyTransitivity", spInfer));
+                    }
 
                 }
             }
@@ -143,10 +149,13 @@ namespace RDFSharp.Semantics {
                          var ctInfer = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.TYPE, c).SetInference(true);
 
                          //Enrich the data with the inference
+                         var taxCnt  = ontology.Data.Relations.ClassType.EntriesCount;
                          ontology.Data.Relations.ClassType.AddEntry(ctInfer);
 
                          //Add the inference into the reasoning report
-                         report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "ClassTypeEntailment", ctInfer));
+                         if(ontology.Data.Relations.ClassType.EntriesCount > taxCnt) {
+                            report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "ClassTypeEntailment", ctInfer));
+                        }
 
                      }
                 }
@@ -179,10 +188,13 @@ namespace RDFSharp.Semantics {
                             var peInfer = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomySubject, p2, p1Asn.TaxonomyObject).SetInference(true);
 
                             //Enrich the data with the inference
+                            var taxCnt  = ontology.Data.Relations.Assertions.EntriesCount;
                             ontology.Data.Relations.Assertions.AddEntry(peInfer);
 
                             //Add the inference into the reasoning report
-                            report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "PropertyEntailment", peInfer));
+                            if(ontology.Data.Relations.Assertions.EntriesCount > taxCnt) {
+                                report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "PropertyEntailment", peInfer));
+                            }
 
                         }
 
@@ -211,10 +223,13 @@ namespace RDFSharp.Semantics {
                         var deInfer   = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, RDFOntologyVocabulary.ObjectProperties.TYPE, p.Domain).SetInference(true);
 
                         //Enrich the data with the inference
+                        var taxCnt  = ontology.Data.Relations.ClassType.EntriesCount;
                         ontology.Data.Relations.ClassType.AddEntry(deInfer);
 
                         //Add the inference into the reasoning report
-                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DomainEntailment", deInfer));
+                        if(ontology.Data.Relations.ClassType.EntriesCount > taxCnt) {
+                            report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DomainEntailment", deInfer));
+                        }
 
                     }
 
@@ -244,10 +259,13 @@ namespace RDFSharp.Semantics {
                             var reInfer = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, RDFOntologyVocabulary.ObjectProperties.TYPE, p.Range).SetInference(true);
 
                             //Enrich the data with the inference
+                            var taxCnt  = ontology.Data.Relations.ClassType.EntriesCount;
                             ontology.Data.Relations.ClassType.AddEntry(reInfer);
 
                             //Add the inference into the reasoning report
-                            report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "RangeEntailment", reInfer));
+                            if(ontology.Data.Relations.ClassType.EntriesCount > taxCnt) {
+                                report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "RangeEntailment", reInfer));
+                            }
 
                         }
 

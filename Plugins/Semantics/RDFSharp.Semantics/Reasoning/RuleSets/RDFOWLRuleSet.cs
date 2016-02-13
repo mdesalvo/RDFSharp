@@ -86,12 +86,20 @@ namespace RDFSharp.Semantics {
                     var ecInferB = new RDFOntologyTaxonomyEntry(ec, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_CLASS, c).SetInference(true);
 
                     //Enrich the class model with the inference
+                    var taxCnt   = ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount;
                     ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecInferA);
-                    ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecInferB);
 
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquivalentClassTransitivity", ecInferA));
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquivalentClassTransitivity", ecInferB));
+                    if(ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquivalentClassTransitivity", ecInferA));
+                    }
+
+                    //Exploit symmetry of EquivalentClass relation
+                    taxCnt       = ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount;
+                    ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(ecInferB);
+                    if(ontology.Model.ClassModel.Relations.EquivalentClass.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "EquivalentClassTransitivity", ecInferB));
+                    }
 
                 }
             }
@@ -112,12 +120,20 @@ namespace RDFSharp.Semantics {
                     var dcInferB = new RDFOntologyTaxonomyEntry(dwc, RDFOntologyVocabulary.ObjectProperties.DISJOINT_WITH, c).SetInference(true);
 
                     //Enrich the class model with the inference
+                    var taxCnt   = ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount;
                     ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcInferA);
-                    ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcInferB);
-
+                    
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "DisjointWithEntailment", dcInferA));
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "DisjointWithEntailment", dcInferB));
+                    if(ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "DisjointWithEntailment", dcInferA));
+                    }
+
+                    //Exploit symmetry of DisjointWith relation
+                    taxCnt       = ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount;
+                    ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(dcInferB);
+                    if(ontology.Model.ClassModel.Relations.DisjointWith.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.ClassModel, "DisjointWithEntailment", dcInferB));
+                    }
 
                 }
             }
@@ -136,12 +152,20 @@ namespace RDFSharp.Semantics {
                     var epInferB = new RDFOntologyTaxonomyEntry(ep, RDFOntologyVocabulary.ObjectProperties.EQUIVALENT_PROPERTY, p).SetInference(true);
 
                     //Enrich the property model with the inference
+                    var taxCnt   = ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount;
                     ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epInferA);
-                    ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epInferB);
 
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferA));
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferB));
+                    if(ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferA));
+                    }
+
+                    //Exploit symmetry of EquivalentProperty relation
+                    taxCnt       = ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount;
+                    ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(epInferB);
+                    if(ontology.Model.PropertyModel.Relations.EquivalentProperty.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", epInferB));
+                    }
 
                 }
             }
@@ -160,12 +184,20 @@ namespace RDFSharp.Semantics {
                     var sfInferB = new RDFOntologyTaxonomyEntry(sf, RDFOntologyVocabulary.ObjectProperties.SAME_AS, f).SetInference(true);
 
                     //Enrich the data with the inference
+                    var taxCnt   = ontology.Data.Relations.SameAs.EntriesCount;
                     ontology.Data.Relations.SameAs.AddEntry(sfInferA);
-                    ontology.Data.Relations.SameAs.AddEntry(sfInferB);
-
+                    
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsTransitivity", sfInferA));
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsTransitivity", sfInferB));
+                    if(ontology.Data.Relations.SameAs.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsTransitivity", sfInferA));
+                    }
+
+                    //Exploit symmetry of SameAs relation
+                    taxCnt       = ontology.Data.Relations.SameAs.EntriesCount;
+                    ontology.Data.Relations.SameAs.AddEntry(sfInferB);
+                    if(ontology.Data.Relations.SameAs.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SameAsTransitivity", sfInferB));
+                    }
 
                 }
             }
@@ -185,12 +217,20 @@ namespace RDFSharp.Semantics {
                     var dfInferB = new RDFOntologyTaxonomyEntry(df, RDFOntologyVocabulary.ObjectProperties.DIFFERENT_FROM, f).SetInference(true);
 
                     //Enrich the data with the inference
+                    var taxCnt   = ontology.Data.Relations.DifferentFrom.EntriesCount;
                     ontology.Data.Relations.DifferentFrom.AddEntry(dfInferA);
-                    ontology.Data.Relations.DifferentFrom.AddEntry(dfInferB);
 
                     //Add the inference into the reasoning report
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferA));
-                    report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferB));
+                    if(ontology.Data.Relations.DifferentFrom.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferA));
+                    }
+
+                    //Exploit symmetry of DifferentFrom relation
+                    taxCnt       = ontology.Data.Relations.DifferentFrom.EntriesCount;
+                    ontology.Data.Relations.DifferentFrom.AddEntry(dfInferB);
+                    if(ontology.Data.Relations.DifferentFrom.EntriesCount > taxCnt) {
+                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "DifferentFromEntailment", dfInferB));
+                    }
 
                 }
             }
