@@ -352,6 +352,11 @@ namespace RDFSharp.Semantics {
             /// SameAsEntailment implements data entailments based on 'owl:SameAs' taxonomy
             /// </summary>
             public static RDFOntologyReasoningRule SameAsEntailment { get; internal set; }
+
+            /// <summary>
+            /// SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom
+            /// </summary>
+            public static RDFOntologyReasoningRule SymmetricPropertyEntailment { get; internal set; }
             #endregion
 
             #region Ctors
@@ -405,6 +410,12 @@ namespace RDFSharp.Semantics {
                                                                               "((F1 P F2) AND (F1 SAMEAS F3)) => (F3 P F2)" +
                                                                               "((F1 P F2) AND (F2 SAMEAS F3)) => (F1 P F3)",
                                                                               SameAsEntailmentExec);
+
+                //SymmetricPropertyEntailment
+                SymmetricPropertyEntailment    = new RDFOntologyReasoningRule("SymmetricPropertyEntailment",
+                                                                              "SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom:" +
+                                                                              "((F1 P F2) AND (P TYPE SYMMETRICPROPERTY)) => (F2 P F1)",
+                                                                              SymmetricPropertyEntailmentExec);
 
             }
             #endregion
@@ -679,6 +690,43 @@ namespace RDFSharp.Semantics {
 
                             }
                             #endregion
+
+                        }
+
+                    }
+                }
+            }
+
+            /// <summary>
+            /// SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom:
+            /// ((F1 P F2) AND (P TYPE SYMMETRICPROPERTY)) => (F2 P F1)
+            /// </summary>
+            internal static void SymmetricPropertyEntailmentExec(RDFOntology ontology, RDFOntologyReasoningReport report) {
+                foreach(var p              in ontology.Model.PropertyModel) {
+                    if(p.IsSymmetricProperty()) {
+
+                        //Filter the assertions using the current property (F1 P F2)
+                        var pAsns           = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                        //Iterate those assertions
+                        foreach(var pAsn   in pAsns) {
+
+                            //Taxonomy-check for securing inference consistency
+                            if(pAsn.TaxonomyObject.IsFact()) {
+
+                                //Create the inference as a taxonomy entry
+                                var spInfer = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, p, pAsn.TaxonomySubject).SetInference(true);
+
+                                //Enrich the data with the inference
+                                var taxCnt  = ontology.Data.Relations.Assertions.EntriesCount;
+                                ontology.Data.Relations.Assertions.AddEntry(spInfer);
+
+                                //Add the inference into the reasoning report
+                                if(ontology.Data.Relations.Assertions.EntriesCount > taxCnt) {
+                                   report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "SymmetricPropertyEntailment", spInfer));
+                                }
+
+                            }
 
                         }
 
