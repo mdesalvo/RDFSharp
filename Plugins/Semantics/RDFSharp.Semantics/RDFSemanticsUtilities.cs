@@ -490,6 +490,41 @@ namespace RDFSharp.Semantics
         }
         #endregion
 
+        #region TransitiveProperty
+        /// <summary>
+        /// Enlists the transitive assertions of the given fact and the given property within the given data
+        /// </summary>
+        internal static RDFOntologyData EnlistTransitiveAssertionsOf_Core(RDFOntologyFact ontFact,
+                                                                          RDFOntologyObjectProperty ontProp,
+                                                                          RDFOntologyData data,
+                                                                          Dictionary<Int64, RDFOntologyFact> visitContext) {
+            var result        = new RDFOntologyData();
+
+            #region visitContext
+            if(visitContext  == null) {
+                visitContext  = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+            }
+            else {
+                if(!visitContext.ContainsKey(ontFact.PatternMemberID)) {
+                    visitContext.Add(ontFact.PatternMemberID, ontFact);
+                }
+                else {
+                    return result;
+                }
+            }
+            #endregion
+
+            // ((F1 P F2)    &&  (F2 P F3))  =>  (F1 P F3)
+            foreach(var ta   in data.Relations.Assertions.SelectEntriesBySubject(ontFact)
+                                                         .SelectEntriesByPredicate(ontProp)) {
+                result.AddFact((RDFOntologyFact)ta.TaxonomyObject);
+                result        = result.UnionWith(RDFSemanticsUtilities.EnlistTransitiveAssertionsOf_Core((RDFOntologyFact)ta.TaxonomyObject, ontProp, data, visitContext));
+            }
+
+            return result;
+        }
+        #endregion
+
         #region MembersOf
         /// <summary>
         /// Enlists the facts which are members of the given restriction within the given ontology

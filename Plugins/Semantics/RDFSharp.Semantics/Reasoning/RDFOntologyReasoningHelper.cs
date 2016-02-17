@@ -348,6 +348,19 @@ namespace RDFSharp.Semantics {
         }
         #endregion
 
+        #region TransitiveProperty
+        /// <summary>
+        /// Enlists the transitive assertions of the given fact and the given property within the given data
+        /// </summary>
+        internal static RDFOntologyData EnlistTransitiveAssertionsOf(RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, RDFOntologyData data) {
+            var result  = new RDFOntologyData();
+            if(ontFact != null && ontProp != null && ontProp.IsTransitiveProperty() && data != null) {
+                result  = RDFSemanticsUtilities.EnlistTransitiveAssertionsOf_Core(ontFact, ontProp, data, null);
+            }
+            return result;
+        }
+        #endregion
+
         #region EnlistMembersOf
         /// <summary>
         /// Checks if the given fact is member of the given class within the given ontology

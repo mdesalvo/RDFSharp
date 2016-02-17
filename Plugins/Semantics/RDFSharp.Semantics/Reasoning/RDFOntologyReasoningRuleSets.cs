@@ -357,6 +357,11 @@ namespace RDFSharp.Semantics {
             /// SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom
             /// </summary>
             public static RDFOntologyReasoningRule SymmetricPropertyEntailment { get; internal set; }
+
+            /// <summary>
+            /// TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom
+            /// </summary>
+            public static RDFOntologyReasoningRule TransitivePropertyEntailment { get; internal set; }
             #endregion
 
             #region Ctors
@@ -416,6 +421,12 @@ namespace RDFSharp.Semantics {
                                                                               "SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom:" +
                                                                               "((F1 P F2) AND (P TYPE SYMMETRICPROPERTY)) => (F2 P F1)",
                                                                               SymmetricPropertyEntailmentExec);
+
+                //TransitivePropertyEntailment
+                TransitivePropertyEntailment   = new RDFOntologyReasoningRule("TransitivePropertyEntailment",
+                                                                              "TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom:" +
+                                                                              "((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)",
+                                                                              TransitivePropertyEntailmentExec);
 
             }
             #endregion
@@ -733,9 +744,59 @@ namespace RDFSharp.Semantics {
                     }
                 }
             }
+
+            /// <summary>
+            /// TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom:
+            /// ((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)
+            /// </summary>
+            internal static void TransitivePropertyEntailmentExec(RDFOntology ontology, RDFOntologyReasoningReport report) {
+                var transPropCache          = new Dictionary<Int64, RDFOntologyData>();
+
+                foreach(var p              in ontology.Model.PropertyModel) {
+                    if(p.IsTransitiveProperty()) {                        
+
+                        //Filter the assertions using the current property (F1 P F2)
+                        var pAsns           = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                        //Iterate those assertions
+                        foreach(var pAsn   in pAsns) {
+
+                            //Taxonomy-check for securing inference consistency
+                            if(pAsn.TaxonomyObject.IsFact()) {
+
+                                if(!transPropCache.ContainsKey(pAsn.TaxonomySubject.PatternMemberID)) {
+                                    transPropCache.Add(pAsn.TaxonomySubject.PatternMemberID, RDFOntologyReasoningHelper.EnlistTransitiveAssertionsOf((RDFOntologyFact)pAsn.TaxonomySubject, (RDFOntologyObjectProperty)p, ontology.Data));
+                                }
+                                foreach(var te in transPropCache[pAsn.TaxonomySubject.PatternMemberID]) {
+
+                                    //Create the inference as a taxonomy entry
+                                    var teInfer = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, te).SetInference(true);
+
+                                    //Enrich the data with the inference
+                                    var taxCnt  = ontology.Data.Relations.Assertions.EntriesCount;
+                                    ontology.Data.Relations.Assertions.AddEntry(teInfer);
+
+                                    //Add the inference into the reasoning report
+                                    if(ontology.Data.Relations.Assertions.EntriesCount > taxCnt) {
+                                        report.AddEvidence(new RDFOntologyReasoningEvidence(RDFSemanticsEnums.RDFOntologyReasoningEvidenceCategory.Data, "TransitivePropertyEntailment", teInfer));
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        transPropCache.Clear();
+                    }
+                }
+
+            }
             #endregion
 
         }
+
+        
         #endregion
 
     }
