@@ -350,12 +350,19 @@ namespace RDFSharp.Semantics {
 
         #region TransitiveProperty
         /// <summary>
-        /// Enlists the transitive assertions of the given fact and the given property within the given data
+        /// Checks if the given "aFact -> transOntProp" assertion links to the given bFact within the given data
         /// </summary>
-        internal static RDFOntologyData EnlistTransitiveAssertionsOf(RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, RDFOntologyData data) {
+        public static Boolean IsTransitiveAssertionOf(RDFOntologyFact aFact, RDFOntologyObjectProperty transOntProp, RDFOntologyFact bFact, RDFOntologyData data) {
+            return (aFact != null && transOntProp != null && transOntProp.IsTransitiveProperty() && bFact != null && data != null ? RDFOntologyReasoningHelper.EnlistTransitiveAssertionsOf(aFact, transOntProp, data).Facts.ContainsKey(bFact.PatternMemberID) : false);
+        }
+
+        /// <summary>
+        /// Enlists the given "aFact -> transOntProp" assertions within the given data
+        /// </summary>
+        public static RDFOntologyData EnlistTransitiveAssertionsOf(RDFOntologyFact ontFact, RDFOntologyObjectProperty transOntProp, RDFOntologyData data) {
             var result  = new RDFOntologyData();
-            if(ontFact != null && ontProp != null && ontProp.IsTransitiveProperty() && data != null) {
-                result  = RDFSemanticsUtilities.EnlistTransitiveAssertionsOf_Core(ontFact, ontProp, data, null);
+            if(ontFact != null && transOntProp != null && transOntProp.IsTransitiveProperty() && data != null) {
+                result  = RDFSemanticsUtilities.EnlistTransitiveAssertionsOf_Core(ontFact, transOntProp, data, null);
             }
             return result;
         }
