@@ -290,7 +290,16 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact) {
             if (aFact != null && objectProperty != null && bFact != null) {
-                this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                if(!RDFOntologyReasoningHelper.IsTransitiveAssertionOf(bFact, objectProperty, aFact, this)) {
+                    this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                }
+                else {
+
+                    //Raise warning event to inform the user: Assertion relation cannot be 
+                    //added to the data because it violates the taxonomy transitive consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with transitive property '{2}' cannot be added to the data because it violates the taxonomy transitive consistency (we don't permit transitive loops).", aFact, bFact, objectProperty));
+
+                }
             }
             return this;
         }
