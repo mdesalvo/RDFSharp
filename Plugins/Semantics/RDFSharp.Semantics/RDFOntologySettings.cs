@@ -27,7 +27,7 @@ namespace RDFSharp.Semantics {
         /// <summary>
         /// If enabled, allows transitive properties to (eventually) generate cyclic assertions
         /// </summary>
-        public static Boolean EnableTransitivePropertyCycles { get; set; }
+        public static Boolean AllowTransitivePropertyCycles { get; set; }
         #endregion
 
     }

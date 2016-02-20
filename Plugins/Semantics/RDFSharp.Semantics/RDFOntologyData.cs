@@ -230,6 +230,8 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass) {
             if (ontologyFact != null && ontologyClass != null) {
+
+                //Classtype relations can be explicitly assigned only to plain classes
                 if (!ontologyClass.IsRestrictionClass() && !ontologyClass.IsCompositeClass() &&
                     !ontologyClass.IsEnumerateClass()   && !ontologyClass.IsDataRangeClass()) {
                      this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFOntologyVocabulary.ObjectProperties.TYPE, ontologyClass));
@@ -241,6 +243,7 @@ namespace RDFSharp.Semantics
                      RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because only plain classes can be explicitly assigned as class types of facts.", ontologyFact, ontologyClass));
                      
                 }
+
             }
             return this;
         }
@@ -290,7 +293,11 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact) {
             if (aFact != null && objectProperty != null && bFact != null) {
-                if (RDFOntologySettings.EnableTransitivePropertyCycles) {
+
+                //In case of a transitive property, the assertion may lead to cycles during transitive inferences.
+                //For this reason, we act in respect of the 'AllowTransitivePropertyCycles' configuration setting, 
+                //which is set by the user in order to accept or discard the assertion.
+                if (RDFOntologySettings.AllowTransitivePropertyCycles) {
                     this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
                 }
                 else {
@@ -305,6 +312,7 @@ namespace RDFSharp.Semantics
 
                     }
                 }
+
             }
             return this;
         }
