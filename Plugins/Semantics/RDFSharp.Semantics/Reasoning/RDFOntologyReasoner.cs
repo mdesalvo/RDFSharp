@@ -104,14 +104,14 @@ namespace RDFSharp.Semantics {
             if(ontology        != null) {
                 var report      = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
                 foreach(var r  in this.Rules) {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of rule '{0}'", r.RuleName));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'", r.RuleName));
                     var oldCnt  = report.EvidencesCount;
 
                     //Execute the reasoning rule
                     r.ExecuteRule(ontology, report);
 
                     var newCnt  = report.EvidencesCount - oldCnt;
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Finished execution of rule '{0}': found {1} new evidences", r.RuleName, newCnt));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of reasoning rule '{0}': found {1} new evidences", r.RuleName, newCnt));
                 }
                 return report;
             }
