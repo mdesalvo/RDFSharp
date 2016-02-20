@@ -25,12 +25,17 @@ namespace RDFSharp.Semantics
         /// <summary>
         /// RDFOntologyValidationEvidenceCategory represents an enumeration for possible categories of ontology validation evidence
         /// </summary>
-        public enum RDFOntologyValidationEvidenceCategory { Warning, Error };
+        public enum RDFOntologyValidationEvidenceCategory { Warning = 1, Error = 2 };
 
         /// <summary>
         /// RDFOntologyReasoningEvidenceCategory represents an enumeration for possible categories of ontology reasoning evidence
         /// </summary>
-        public enum RDFOntologyReasoningEvidenceCategory { ClassModel, PropertyModel, Data };
+        public enum RDFOntologyReasoningEvidenceCategory  { ClassModel = 1, PropertyModel = 2, Data = 3 };
+
+        /// <summary>
+        /// RDFOntologyReasoningRuleType represents an enumeration for possible types of a reasoning rule.
+        /// </summary>
+        public enum RDFOntologyReasoningRuleType          { Standard = 1, UserDefined = 2 };
 
     }
 

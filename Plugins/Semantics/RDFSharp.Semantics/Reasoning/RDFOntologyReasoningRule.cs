@@ -35,6 +35,11 @@ namespace RDFSharp.Semantics {
         public String RuleDescription { get; internal set; }
 
         /// <summary>
+        /// Type of the rule
+        /// </summary>
+        public RDFSemanticsEnums.RDFOntologyReasoningRuleType RuleType { get; internal set; }
+
+        /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
         public delegate void ReasoningRuleDelegate(RDFOntology ontology, RDFOntologyReasoningReport report);
@@ -47,14 +52,17 @@ namespace RDFSharp.Semantics {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty reasoning rule with given name, description, category and delegate
+        /// Default-ctor to build a reasoning rule with given name, description and delegate
         /// </summary>
-        public RDFOntologyReasoningRule(String ruleName, String ruleDescription, ReasoningRuleDelegate ruleDelegate) {
+        public RDFOntologyReasoningRule(String ruleName, 
+                                        String ruleDescription,
+                                        ReasoningRuleDelegate ruleDelegate) {
             if(ruleName                     != null && ruleName.Trim()        != String.Empty) {
                 if(ruleDescription          != null && ruleDescription.Trim() != String.Empty) {
                     if(ruleDelegate         != null) {
                         this.RuleName        = ruleName.Trim();
                         this.RuleDescription = ruleDescription.Trim();
+                        this.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined;
                         this.ExecuteRule     = ruleDelegate;
                     }
                     else {

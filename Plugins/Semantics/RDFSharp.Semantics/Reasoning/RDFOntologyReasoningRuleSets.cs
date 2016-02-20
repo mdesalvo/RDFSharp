@@ -110,6 +110,15 @@ namespace RDFSharp.Semantics {
                                                                        "((F1 P F2) AND (P RDFS:RANGE C)) => (F2 RDF:TYPE C)",
                                                                        RangeEntailmentExec);
 
+                #region Finalization
+                SubClassTransitivity.RuleType    = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SubPropertyTransitivity.RuleType = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                ClassTypeEntailment.RuleType     = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                PropertyEntailment.RuleType      = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                DomainEntailment.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                RangeEntailment.RuleType         = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                #endregion
+
             }
             #endregion
 
@@ -455,6 +464,18 @@ namespace RDFSharp.Semantics {
                                                                               "TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom:" +
                                                                               "((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)",
                                                                               TransitivePropertyEntailmentExec);
+
+                #region Finalization
+                EquivalentClassTransitivity.RuleType    = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                DisjointWithEntailment.RuleType         = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                EquivalentPropertyTransitivity.RuleType = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SameAsTransitivity.RuleType             = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                DifferentFromEntailment.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                InverseOfEntailment.RuleType            = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SameAsEntailment.RuleType               = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SymmetricPropertyEntailment.RuleType    = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                TransitivePropertyEntailment.RuleType   = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                #endregion
 
             }
             #endregion

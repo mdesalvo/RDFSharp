@@ -103,6 +103,11 @@ namespace RDFSharp.Semantics {
         public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology) {
             if(ontology        != null) {
                 var report      = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+
+                //Sort the reasoning rules by type, in order to always start with "Standard" ones
+                this.Rules.Sort((x, y) => x.RuleType.CompareTo(y.RuleType));
+
+                //Iterate the reasoning rules for sequential execution
                 foreach(var r  in this.Rules) {
                     RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'", r.RuleName));
                     var oldCnt  = report.EvidencesCount;
@@ -113,6 +118,7 @@ namespace RDFSharp.Semantics {
                     var newCnt  = report.EvidencesCount - oldCnt;
                     RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of reasoning rule '{0}': found {1} new evidences", r.RuleName, newCnt));
                 }
+
                 return report;
             }
             throw new RDFSemanticsException("Cannot apply RDFOntologyReasoner because given \"ontology\" parameter is null.");
