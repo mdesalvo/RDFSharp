@@ -293,26 +293,16 @@ namespace RDFSharp.Semantics
         /// </summary>
         public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact) {
             if (aFact != null && objectProperty != null && bFact != null) {
-
-                //In case of a transitive property, the assertion may lead to cycles during transitive inferences.
-                //For this reason, we act in respect of the 'AllowTransitivePropertyCycles' configuration setting, 
-                //which is set by the user in order to accept or discard the assertion.
-                if (RDFOntologySettings.AllowTransitivePropertyCycles) {
+                if(!RDFOntologyReasoningHelper.IsTransitiveAssertionOf(bFact, objectProperty, aFact, this)) {
                     this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
                 }
                 else {
-                    if(!RDFOntologyReasoningHelper.IsTransitiveAssertionOf(bFact, objectProperty, aFact, this)) {
-                        this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
-                    }
-                    else {
 
-                        //Raise warning event to inform the user: Assertion relation cannot be 
-                        //added to the data because it violates the taxonomy transitive consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with transitive property '{2}' cannot be added to the data because it violates the taxonomy transitive consistency (as of 'RDFOntologySettings.EnableTransitivePropertyCycles' configuration).", aFact, bFact, objectProperty));
+                    //Raise warning event to inform the user: Assertion relation cannot be 
+                    //added to the data because it violates the taxonomy transitive consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with transitive property '{2}' cannot be added to the data because it would violate the taxonomy consistency (transitive cycle detected).", aFact, bFact, objectProperty));
 
-                    }
                 }
-
             }
             return this;
         }
