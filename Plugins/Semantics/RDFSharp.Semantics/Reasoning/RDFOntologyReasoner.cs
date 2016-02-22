@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RDFSharp.Model;
 using RDFSharp.Store;
 using RDFSharp.Query;
@@ -101,21 +102,19 @@ namespace RDFSharp.Semantics {
         /// Applies the reasoner on the given ontology, producing a detailed reasoning report.
         /// </summary>
         public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology) {
-            if(ontology        != null) {
+            if (ontology       != null) {
                 var report      = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
-                //Sort the reasoning rules by type, in order to always start with "Standard" ones
-                this.Rules.Sort((x, y) => x.RuleType.CompareTo(y.RuleType));
-
-                //Iterate the reasoning rules for sequential execution
-                foreach(var r  in this.Rules) {
+                //Rules are ordered by type and then by descending priority
+                foreach(var r  in this.Rules.OrderBy(rule          => rule.RuleType)
+                                            .ThenByDescending(rule => rule.RulePriority)) {
                     RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'", r.RuleName));
-                    var oldCnt  = report.EvidencesCount;
 
                     //Execute the reasoning rule
+                    var oldCnt  = report.EvidencesCount;
                     r.ExecuteRule(ontology, report);
-
                     var newCnt  = report.EvidencesCount - oldCnt;
+
                     RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of reasoning rule '{0}': found {1} new evidences", r.RuleName, newCnt));
                 }
 
