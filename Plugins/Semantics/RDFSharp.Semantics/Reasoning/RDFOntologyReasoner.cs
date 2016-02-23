@@ -99,26 +99,48 @@ namespace RDFSharp.Semantics {
         }
 
         /// <summary>
-        /// Applies the reasoner on the given ontology, producing a detailed reasoning report.
+        /// Applies the reasoner on the given ontology, producing a reasoning report.
+        /// The ontology is progressively enriched with discovered inferences.
         /// </summary>
-        public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology) {
+        public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology, RDFOntologyValidationReport vReport) {
             if (ontology       != null) {
-                var report      = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+                if(vReport     != null && vReport.ValidationReportID == ontology.PatternMemberID) {
+                    var rReport = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
-                //Rules are ordered by type and then by descending priority
-                foreach(var r  in this.Rules.OrderBy(rule          => rule.RuleType)
-                                            .ThenByDescending(rule => rule.RulePriority)) {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'", r.RuleName));
+                    //Step 1: Inflate the ontology class model
+                    RDFSemanticsUtilities.TriggerRule("EquivalentClassTransitivity",    this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("SubClassTransitivity",           this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("DisjointWithEntailment",         this, ontology, rReport);
 
-                    //Execute the reasoning rule
-                    var oldCnt  = report.EvidencesCount;
-                    r.ExecuteRule(ontology, report);
-                    var newCnt  = report.EvidencesCount - oldCnt;
+                    //Step 2: Inflate the ontology property model
+                    RDFSemanticsUtilities.TriggerRule("EquivalentPropertyTransitivity", this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("SubPropertyTransitivity",        this, ontology, rReport);
 
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of reasoning rule '{0}': found {1} new evidences", r.RuleName, newCnt));
+                    //Step 3: Inflate the ontology data
+                    RDFSemanticsUtilities.TriggerRule("SameAsTransitivity",             this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("DifferentFromEntailment",        this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("ClassTypeEntailment",            this, ontology, rReport);
+
+                    //Step 4: Launch the standard rules (first round)
+                    RDFSemanticsUtilities.TriggerRule("DomainEntailment",               this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("RangeEntailment",                this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("InverseOfEntailment",            this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("SymmetricPropertyEntailment",    this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("PropertyEntailment",             this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("TransitivePropertyEntailment",   this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("SameAsEntailment",               this, ontology, rReport);
+
+                    //Step 5: Launch the standard rules (recursive round)
+                    //TODO
+
+                    //Step 6: Launch the user-defined rules
+                    foreach(var sr in this.Rules.Where(r => r.RuleType == RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined)) {
+                        RDFSemanticsUtilities.TriggerRule(sr.RuleName, this, ontology, rReport);
+                    }
+
+                    return rReport;
                 }
-
-                return report;
+                throw new RDFSemanticsException("Cannot apply RDFOntologyReasoner because given \"vReport\" parameter is null or does not represent a validation report of the given ontology.");
             }
             throw new RDFSemanticsException("Cannot apply RDFOntologyReasoner because given \"ontology\" parameter is null.");
         }

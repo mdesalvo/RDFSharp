@@ -40,11 +40,6 @@ namespace RDFSharp.Semantics {
         public RDFSemanticsEnums.RDFOntologyReasoningRuleType RuleType { get; internal set; }
 
         /// <summary>
-        /// Priority of the rule
-        /// </summary>
-        public UInt32 RulePriority { get; internal set; }
-
-        /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
         public delegate void ReasoningRuleDelegate(RDFOntology ontology, RDFOntologyReasoningReport report);
@@ -68,7 +63,6 @@ namespace RDFSharp.Semantics {
                         this.RuleName        = ruleName.Trim();
                         this.RuleDescription = ruleDescription.Trim();
                         this.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined;
-                        this.RulePriority    = 0;
                         this.ExecuteRule     = ruleDelegate;
                     }
                     else {
@@ -91,28 +85,6 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public override String ToString() {
             return "RULE " + this.RuleName + ": " + this.RuleDescription;
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Increases the rule priority by 1 (only if the rule is of type UserDefined)
-        /// </summary>
-        public RDFOntologyReasoningRule IncreasePriority() {
-            if (this.RuleType    == RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined) {
-                this.RulePriority = this.RulePriority + 1;
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Decreases the rule priority by 1 (only if the rule is of type UserDefined)
-        /// </summary>
-        public RDFOntologyReasoningRule DecreasePriority() {
-            if (this.RuleType    == RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined && this.RulePriority > 0) {
-                this.RulePriority = this.RulePriority - 1;
-            }
-            return this;
         }
         #endregion
 

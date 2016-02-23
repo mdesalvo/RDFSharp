@@ -111,18 +111,12 @@ namespace RDFSharp.Semantics {
                                                                        RangeEntailmentExec);
 
                 #region Finalization
-                SubClassTransitivity.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                SubClassTransitivity.RulePriority    = 14;
-                SubPropertyTransitivity.RuleType     = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                SubPropertyTransitivity.RulePriority = 11;
-                ClassTypeEntailment.RuleType         = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                ClassTypeEntailment.RulePriority     = 8;
-                PropertyEntailment.RuleType          = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                PropertyEntailment.RulePriority      = 3;
-                DomainEntailment.RuleType            = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                DomainEntailment.RulePriority        = 7;
-                RangeEntailment.RuleType             = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                RangeEntailment.RulePriority         = 6;
+                SubClassTransitivity.RuleType    = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SubPropertyTransitivity.RuleType = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                ClassTypeEntailment.RuleType     = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                PropertyEntailment.RuleType      = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                DomainEntailment.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                RangeEntailment.RuleType         = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
                 #endregion
 
             }
@@ -472,24 +466,15 @@ namespace RDFSharp.Semantics {
                                                                               TransitivePropertyEntailmentExec);
 
                 #region Finalization
-                EquivalentClassTransitivity.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                EquivalentClassTransitivity.RulePriority    = 15;
-                DisjointWithEntailment.RuleType             = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                DisjointWithEntailment.RulePriority         = 13;
-                EquivalentPropertyTransitivity.RuleType     = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                EquivalentPropertyTransitivity.RulePriority = 12;
-                SameAsTransitivity.RuleType                 = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                SameAsTransitivity.RulePriority             = 10;
-                DifferentFromEntailment.RuleType            = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                DifferentFromEntailment.RulePriority        = 9;
-                InverseOfEntailment.RuleType                = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                InverseOfEntailment.RulePriority            = 5;
-                SameAsEntailment.RuleType                   = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                SameAsEntailment.RulePriority               = 1;
-                SymmetricPropertyEntailment.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                SymmetricPropertyEntailment.RulePriority    = 4;
-                TransitivePropertyEntailment.RuleType       = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
-                TransitivePropertyEntailment.RulePriority   = 2;
+                EquivalentClassTransitivity.RuleType    = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                DisjointWithEntailment.RuleType         = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                EquivalentPropertyTransitivity.RuleType = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SameAsTransitivity.RuleType             = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                DifferentFromEntailment.RuleType        = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                InverseOfEntailment.RuleType            = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SameAsEntailment.RuleType               = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                SymmetricPropertyEntailment.RuleType    = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
+                TransitivePropertyEntailment.RuleType   = RDFSemanticsEnums.RDFOntologyReasoningRuleType.Standard;
                 #endregion
 
             }

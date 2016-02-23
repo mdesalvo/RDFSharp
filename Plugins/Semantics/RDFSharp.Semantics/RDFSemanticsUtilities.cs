@@ -2564,6 +2564,32 @@ namespace RDFSharp.Semantics
         }
         #endregion
 
+        #region Reason
+        /// <summary>
+        /// Triggers the execution of the given rule on the given ontology. 
+        /// Returns a boolean indicating if new evidences have been found.
+        /// </summary>
+        internal static Boolean TriggerRule(String ruleName, RDFOntologyReasoner reasoner, RDFOntology ontology, RDFOntologyReasoningReport report) {
+            var reasonerRule  = reasoner.SelectRule(ruleName);
+            if (reasonerRule != null) {
+
+                //Raise launching signal
+                RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'", ruleName));
+
+                //Launch the reasoning rule
+                var oldCnt    = report.EvidencesCount;
+                reasonerRule.ExecuteRule(ontology, report);
+                var newCnt    = report.EvidencesCount - oldCnt;
+
+                //Raise termination signal
+                RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of reasoning rule '{0}': found {1} new evidences", ruleName, newCnt));
+
+                return newCnt > 0;
+            }
+            return false;
+        }
+        #endregion
+
     }
 
 }
