@@ -40,6 +40,11 @@ namespace RDFSharp.Semantics {
         public String ReasonerDescription { get; internal set; }
 
         /// <summary>
+        /// Options of the reasoner
+        /// </summary>
+        public RDFOntologyReasonerOptions ReasonerOptions { get; internal set; }
+
+        /// <summary>
         /// List of rules applied by the reasoner
         /// </summary>
         internal List<RDFOntologyReasoningRule> Rules { get; set; }
@@ -47,13 +52,16 @@ namespace RDFSharp.Semantics {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty ontology reasoner
+        /// Default-ctor to build an empty ontology reasoner with given name, descriptions and options
         /// </summary>
-        public RDFOntologyReasoner(String reasonerName, String reasonerDescription) {
+        public RDFOntologyReasoner(String reasonerName, 
+                                   String reasonerDescription,
+                                   RDFOntologyReasonerOptions reasonerOptions) {
             if(reasonerName                 != null && reasonerName.Trim()        != String.Empty) {
                 if(reasonerDescription      != null && reasonerDescription.Trim() != String.Empty) {
                     this.ReasonerName        = reasonerName;
                     this.ReasonerDescription = reasonerDescription;
+                    this.ReasonerOptions     = (reasonerOptions ?? new RDFOntologyReasonerOptions());
                     this.Rules               = new List<RDFOntologyReasoningRule>();
                 }
                 else {
@@ -103,9 +111,9 @@ namespace RDFSharp.Semantics {
         /// The ontology is progressively enriched with discovered inferences.
         /// </summary>
         public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology, RDFOntologyValidationReport vReport) {
-            if (ontology       != null) {
-                if(vReport     != null && vReport.ValidationReportID == ontology.PatternMemberID) {
-                    var rReport = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+            if (ontology          != null) {
+                if(vReport        != null && vReport.ValidationReportID == ontology.PatternMemberID) {
+                    var rReport    = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
                     //Step 0: Raise warning/error reasoning concerns
                     if (vReport.SelectWarnings().Count > 0) {
@@ -131,12 +139,29 @@ namespace RDFSharp.Semantics {
                     RDFSemanticsUtilities.TriggerRule("DomainEntailment",               this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("RangeEntailment",                this, ontology, rReport);
 
+
                     //Step 4: Trigger standard rules
-                    RDFSemanticsUtilities.TriggerRule("InverseOfEntailment",            this, ontology, rReport);
-                    RDFSemanticsUtilities.TriggerRule("SymmetricPropertyEntailment",    this, ontology, rReport);
-                    RDFSemanticsUtilities.TriggerRule("TransitivePropertyEntailment",   this, ontology, rReport);
-                    RDFSemanticsUtilities.TriggerRule("PropertyEntailment",             this, ontology, rReport);
-                    RDFSemanticsUtilities.TriggerRule("SameAsEntailment",               this, ontology, rReport);                    
+                    var stepCnt   = 0;
+                    var infCnt    = new List<Boolean>() { false, false, false, false, false };
+                    while (true)  {
+                        infCnt[0] = RDFSemanticsUtilities.TriggerRule("InverseOfEntailment",          this, ontology, rReport);
+                        infCnt[1] = RDFSemanticsUtilities.TriggerRule("SymmetricPropertyEntailment",  this, ontology, rReport);
+                        infCnt[2] = RDFSemanticsUtilities.TriggerRule("TransitivePropertyEntailment", this, ontology, rReport);
+                        infCnt[3] = RDFSemanticsUtilities.TriggerRule("PropertyEntailment",           this, ontology, rReport);
+                        infCnt[4] = RDFSemanticsUtilities.TriggerRule("SameAsEntailment",             this, ontology, rReport);
+
+                        //Exit Condition A: recursion limit option is enabled and have been reached
+                        if (this.ReasonerOptions.EnableRecursionLimit) {
+                            stepCnt      = stepCnt + 1;
+                            if (stepCnt == 3) {
+                                break;
+                            }
+                        }
+                        //Exit Condition B: none of the rules have produced new inferences
+                        if (infCnt.TrueForAll(inf => inf == false)) {
+                            break;
+                        }
+                    }
 
                     //Step 5: Trigger user-defined rules
                     foreach(var sr in this.Rules.Where(r => r.RuleType == RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined)) {
@@ -148,6 +173,29 @@ namespace RDFSharp.Semantics {
                 throw new RDFSemanticsException("Cannot apply RDFOntologyReasoner because given \"vReport\" parameter is null or does not represent a validation report of the given ontology.");
             }
             throw new RDFSemanticsException("Cannot apply RDFOntologyReasoner because given \"ontology\" parameter is null.");
+        }
+        #endregion
+
+    }
+
+    /// <summary>
+    /// RDFOntologyReasonerOptions represents a set of options applied to a reasoner
+    /// </summary>
+    public class RDFOntologyReasonerOptions {
+
+        #region Properties
+        /// <summary>
+        /// Flag enabling the limit of recursion during application of standard rules
+        /// </summary>
+        public Boolean EnableRecursionLimit { get; set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build a predefined reasoner options object
+        /// </summary>
+        public RDFOntologyReasonerOptions() {
+            this.EnableRecursionLimit = true;
         }
         #endregion
 
