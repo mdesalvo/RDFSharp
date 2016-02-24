@@ -107,33 +107,38 @@ namespace RDFSharp.Semantics {
                 if(vReport     != null && vReport.ValidationReportID == ontology.PatternMemberID) {
                     var rReport = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
-                    //Step 1: Inflate the ontology class model
+                    //Step 0: Raise warning/error reasoning concerns
+                    if (vReport.SelectWarnings().Count > 0) {
+                        RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Inference process is going to start on ontology '{0}', for which the validation report indicates {1} warning evidences: this MAY generate potentially wrong and/or inconsistent inferences!", ontology));
+                    }
+                    if (vReport.SelectErrors().Count   > 0) {
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Inference process is going to start on ontology '{0}', for which the validation report indicates {1} error evidences: this WILL generate wrong and/or inconsistent inferences!", ontology));
+                    }
+
+                    //Step 1: Inflate ontology class model
                     RDFSemanticsUtilities.TriggerRule("EquivalentClassTransitivity",    this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("SubClassTransitivity",           this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("DisjointWithEntailment",         this, ontology, rReport);
 
-                    //Step 2: Inflate the ontology property model
+                    //Step 2: Inflate ontology property model
                     RDFSemanticsUtilities.TriggerRule("EquivalentPropertyTransitivity", this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("SubPropertyTransitivity",        this, ontology, rReport);
 
-                    //Step 3: Inflate the ontology data
+                    //Step 3: Inflate ontology data
                     RDFSemanticsUtilities.TriggerRule("SameAsTransitivity",             this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("DifferentFromEntailment",        this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("ClassTypeEntailment",            this, ontology, rReport);
-
-                    //Step 4: Launch the standard rules (first round)
                     RDFSemanticsUtilities.TriggerRule("DomainEntailment",               this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("RangeEntailment",                this, ontology, rReport);
+
+                    //Step 4: Trigger standard rules
                     RDFSemanticsUtilities.TriggerRule("InverseOfEntailment",            this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("SymmetricPropertyEntailment",    this, ontology, rReport);
-                    RDFSemanticsUtilities.TriggerRule("PropertyEntailment",             this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("TransitivePropertyEntailment",   this, ontology, rReport);
-                    RDFSemanticsUtilities.TriggerRule("SameAsEntailment",               this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("PropertyEntailment",             this, ontology, rReport);
+                    RDFSemanticsUtilities.TriggerRule("SameAsEntailment",               this, ontology, rReport);                    
 
-                    //Step 5: Launch the standard rules (recursive round)
-                    //TODO
-
-                    //Step 6: Launch the user-defined rules
+                    //Step 5: Trigger user-defined rules
                     foreach(var sr in this.Rules.Where(r => r.RuleType == RDFSemanticsEnums.RDFOntologyReasoningRuleType.UserDefined)) {
                         RDFSemanticsUtilities.TriggerRule(sr.RuleName, this, ontology, rReport);
                     }
