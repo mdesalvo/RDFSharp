@@ -33,7 +33,8 @@ Plugins are also available, to extend the capabilities of the core library with 
     <li><b>RDFSharp.Semantics</b></li> 
     <ul>
         <li>Create and manage <i>OWL-DL ontologies</i> (classes, properties, restrictions, facts, relations, ...)</li> 
-        <li>Validate them against RDFS/OWL-DL specifications to report warning/error evidences</li>
+        <li>Validate them against <i>RDFS/OWL-DL</i> specifications to report warning/error evidences</li>
+        <li>Create and manage <i>RDFS/OWL-DL/Custom</i> reasoners to materialize inferred knowledge</li>
     </ul>
 </ul>
 <ul>
