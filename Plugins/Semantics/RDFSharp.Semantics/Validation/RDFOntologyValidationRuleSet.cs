@@ -705,7 +705,6 @@ namespace RDFSharp.Semantics {
                     #endregion
 
                 }
-
             }
             #endregion
 

@@ -56,7 +56,7 @@ namespace RDFSharp.Semantics {
         /// </summary>
         public RDFOntologyReasoner(String reasonerName, 
                                    String reasonerDescription,
-                                   RDFOntologyReasonerOptions reasonerOptions) {
+                                   RDFOntologyReasonerOptions reasonerOptions=null) {
             if(reasonerName                 != null && reasonerName.Trim()        != String.Empty) {
                 if(reasonerDescription      != null && reasonerDescription.Trim() != String.Empty) {
                     this.ReasonerName        = reasonerName;
@@ -115,12 +115,16 @@ namespace RDFSharp.Semantics {
                 if (vReport      != null && vReport.ValidationReportID == ontology.PatternMemberID) {
                     var rReport   = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
-                    //Step 0: Raise warning/error reasoning concerns
-                    if (vReport.SelectWarnings().Count > 0) {
-                        RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Inference process is going to start on ontology '{0}', for which the validation report indicates {1} warning evidences: this MAY generate potentially wrong and/or inconsistent inferences!", ontology));
+                    //Step 0.A: Raise warning reasoning concerns
+                    var warnCount = vReport.SelectWarnings().Count;
+                    if (warnCount > 0) {
+                        RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Inference process is going to start on ontology '{0}', for which the validation report indicates {1} warning evidences: this MAY generate potentially wrong and/or inconsistent inferences!", ontology, warnCount));
                     }
-                    if (vReport.SelectErrors().Count   > 0) {
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Inference process is going to start on ontology '{0}', for which the validation report indicates {1} error evidences: this WILL generate wrong and/or inconsistent inferences!", ontology));
+
+                    //Step 0.B: Raise error reasoning concerns
+                    var errCount  = vReport.SelectErrors().Count;
+                    if (errCount  > 0) {
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Inference process is going to start on ontology '{0}', for which the validation report indicates {1} error evidences: this WILL generate wrong and/or inconsistent inferences!", ontology, errCount));
                     }
 
                     //Step 1: Inflate ontology class model
