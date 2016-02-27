@@ -111,9 +111,9 @@ namespace RDFSharp.Semantics {
         /// The ontology is progressively enriched with discovered inferences.
         /// </summary>
         public RDFOntologyReasoningReport ApplyToOntology(RDFOntology ontology, RDFOntologyValidationReport vReport) {
-            if (ontology          != null) {
-                if(vReport        != null && vReport.ValidationReportID == ontology.PatternMemberID) {
-                    var rReport    = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
+            if (ontology         != null) {
+                if (vReport      != null && vReport.ValidationReportID == ontology.PatternMemberID) {
+                    var rReport   = new RDFOntologyReasoningReport(ontology.Value.PatternMemberID);
 
                     //Step 0: Raise warning/error reasoning concerns
                     if (vReport.SelectWarnings().Count > 0) {
@@ -139,7 +139,6 @@ namespace RDFSharp.Semantics {
                     RDFSemanticsUtilities.TriggerRule("DomainEntailment",               this, ontology, rReport);
                     RDFSemanticsUtilities.TriggerRule("RangeEntailment",                this, ontology, rReport);
 
-
                     //Step 4: Trigger standard rules
                     var stepCnt   = 0;
                     var infCnt    = new List<Boolean>() { false, false, false, false, false };
@@ -150,17 +149,19 @@ namespace RDFSharp.Semantics {
                         infCnt[3] = RDFSemanticsUtilities.TriggerRule("PropertyEntailment",           this, ontology, rReport);
                         infCnt[4] = RDFSemanticsUtilities.TriggerRule("SameAsEntailment",             this, ontology, rReport);
 
-                        //Exit Condition A: recursion limit option is enabled and have been reached
+                        //Exit Condition A: none of the rules have produced new inferences
+                        if (infCnt.TrueForAll(inf => inf == false)) {
+                            break;
+                        }
+
+                        //Exit Condition B: recursion limit option is enabled and have been reached
                         if (this.ReasonerOptions.EnableRecursionLimit) {
                             stepCnt      = stepCnt + 1;
                             if (stepCnt == 3) {
                                 break;
                             }
                         }
-                        //Exit Condition B: none of the rules have produced new inferences
-                        if (infCnt.TrueForAll(inf => inf == false)) {
-                            break;
-                        }
+
                     }
 
                     //Step 5: Trigger user-defined rules
