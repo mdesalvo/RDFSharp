@@ -59,9 +59,13 @@ namespace RDFSharp.Store
                             Assembly firebird        = Assembly.GetExecutingAssembly();
                             using(var templateDB     = firebird.GetManifestResourceStream("RDFSharp.Store.Template.RDFFirebirdTemplate.fdb")) {
                                 using(var destineDB  = new FileStream(firebirdDbPath, FileMode.Create, FileAccess.ReadWrite)) {
-                                    templateDB.CopyTo(destineDB);
-                                }
-                            }
+                                    Byte[] buffer    = new Byte[4096];
+                                    Int32 count      = 0;
+                                    while ((count    = templateDB.Read(buffer, 0, buffer.Length)) != 0) {
+                                        destineDB.Write(buffer, 0, count);
+                                    }
+								}
+							}
                         }
                         catch(Exception ex) {
                             throw new RDFStoreException("Cannot create Firebird store because: " + ex.Message, ex);

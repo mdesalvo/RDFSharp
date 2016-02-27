@@ -56,7 +56,11 @@ namespace RDFSharp.Store
                         Assembly sqlite         = Assembly.GetExecutingAssembly();
                         using(var templateDB    = sqlite.GetManifestResourceStream("RDFSharp.Store.Template.RDFSQLiteTemplate.db")) {
                             using(var destineDB = new FileStream(sqliteDbPath, FileMode.Create, FileAccess.ReadWrite)) {
-                                templateDB.CopyTo(destineDB);
+                                Byte[] buffer    = new Byte[4096];
+                                Int32 count      = 0;
+                                while ((count    = templateDB.Read(buffer, 0, buffer.Length)) != 0) {
+                                    destineDB.Write(buffer, 0, count);
+                                }
                             }
                         }
                     }
