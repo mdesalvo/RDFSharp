@@ -54,7 +54,7 @@ namespace RDFSharp.Store
                      literal.EndsWith("^^") ||
                      RDFModelUtilities.GetUriFromString(literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
                      RDFPlainLiteral pLit = null;
-                     if (RDFModelUtilities.regexLPL.Value.Match(literal).Success) {
+                     if (RDFModelUtilities.regexLPL.Match(literal).Success) {
                          String pLitValue = literal.Substring(0, literal.LastIndexOf("@", StringComparison.Ordinal));
                          String pLitLang  = literal.Substring(literal.LastIndexOf("@", StringComparison.Ordinal) + 1);
                          pLit             = new RDFPlainLiteral(pLitValue, pLitLang);

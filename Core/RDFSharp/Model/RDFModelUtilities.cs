@@ -38,7 +38,7 @@ namespace RDFSharp.Model
         /// Performs MD5 hash calculation of the given string
         /// </summary>
         internal static Int64 CreateHash(String input) {
-            if(input != null) {
+            if (input != null) {
                 var md5Encryptor   = new MD5CryptoServiceProvider();
                 var inputBytes     = Encoding.UTF8.GetBytes(input);
                 var hashBytes      = md5Encryptor.ComputeHash(inputBytes);
@@ -80,7 +80,7 @@ namespace RDFSharp.Model
         /// Rebuild the metadata of the given graph
         /// </summary>
         internal static void RebuildGraph(RDFGraph graph) {
-            var triples = new Dictionary<Int64, RDFTriple>(graph.Triples);
+            var triples  = new Dictionary<Int64, RDFTriple>(graph.Triples);
             graph.ClearTriples();
             foreach (var t in triples) {
                 graph.AddTriple(t.Value);
@@ -235,7 +235,7 @@ namespace RDFSharp.Model
 
             //Uri token: search a known namespace, if found replace it with its prefix
             Boolean abbreviationDone     = false;
-            RDFNamespaceRegister.Instance.Value.Register.ForEach(ns => {
+            RDFNamespaceRegister.Instance.Register.ForEach(ns => {
                 if (!abbreviationDone) {
                     String nS            = ns.ToString();
                     if (token.Contains(nS)) {
@@ -734,40 +734,40 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch 8-byte unicodes in N-Triples
         /// </summary>
-        internal static readonly Lazy<Regex> regexU8  = new Lazy<Regex>(() => new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled));
+        internal static readonly Regex regexU8  = new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled);
         /// <summary>
         /// Regex to catch 4-byte unicodes in N-Triples
         /// </summary>
-        internal static readonly Lazy<Regex> regexU4  = new Lazy<Regex>(() => new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled));
+        internal static readonly Regex regexU4  = new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled);
         /// <summary>
         /// Regex to parse N-Triples focusing on predicate position 
         /// </summary>
-        internal static readonly Lazy<Regex> regexNT  = new Lazy<Regex>(() => new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.Compiled | RegexOptions.ExplicitCapture));
+        internal static readonly Regex regexNT  = new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Lazy<Regex> regexLPL = new Lazy<Regex>(() => new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled));
+        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Lazy<Regex> regexSqt = new Lazy<Regex>(() => new Regex(@"^""", RegexOptions.Compiled));
+        internal static readonly Regex regexSqt = new Regex(@"^""", RegexOptions.Compiled);
         /// <summary>
         /// Regex to detect presence of ending " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Lazy<Regex> regexEqt = new Lazy<Regex>(() => new Regex(@"""$", RegexOptions.Compiled));
+        internal static readonly Regex regexEqt = new Regex(@"""$", RegexOptions.Compiled);
 
 
         /// <summary>
         /// Tries to parse the given N-Triple
         /// </summary>
         internal static String[] ParseNTriple(String ntriple) {
-            String[] tokens   = new String[3];
+            String[] tokens        = new String[3];
 
             //A legal NTriple starts with "_:" of blanks or "<" of non-blanks
             if (ntriple.StartsWith("_:") || ntriple.StartsWith("<")) {
 
                 //Parse NTriple by exploiting surrounding spaces and angle brackets of predicate
-                tokens             = regexNT.Value.Split(ntriple, 2);
+                tokens             = regexNT.Split(ntriple, 2);
 
                 //An illegal NTriple cannot be splitted into 3 parts with this regex
                 if (tokens.Length != 3) {
@@ -827,8 +827,8 @@ namespace RDFSharp.Model
         /// </summary>
         internal static String ASCII_To_Unicode(String asciiString) {
             if (asciiString != null) {
-                asciiString = regexU8.Value.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-                asciiString = regexU4.Value.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU8.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU4.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
             }
             return asciiString;
         }
@@ -1269,7 +1269,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch literals which must be escaped as long literals in Turtle
         /// </summary>
-        internal static readonly Lazy<Regex> regexTTL = new Lazy<Regex>(() => new Regex("[\n\r\t\"]", RegexOptions.Compiled));
+        internal static readonly Regex regexTTL = new Regex("[\n\r\t\"]", RegexOptions.Compiled);
         #endregion
 
         #endregion

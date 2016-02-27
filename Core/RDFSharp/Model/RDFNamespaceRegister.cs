@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Singleton instance of the RDFNamespaceRegister class
         /// </summary>
-        internal static Lazy<RDFNamespaceRegister> Instance { get; set; }
+        internal static RDFNamespaceRegister Instance { get; set; }
 
         /// <summary>
         /// List of registered namespaces
@@ -46,14 +46,14 @@ namespace RDFSharp.Model
         /// Count of the register's namespaces
         /// </summary>
         public static Int32 NamespacesCount {
-            get { return RDFNamespaceRegister.Instance.Value.Register.Count; }
+            get { return RDFNamespaceRegister.Instance.Register.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the register's namespaces for iteration
         /// </summary>
         public static IEnumerator<RDFNamespace> NamespacesEnumerator {
-            get { return RDFNamespaceRegister.Instance.Value.Register.GetEnumerator(); }
+            get { return RDFNamespaceRegister.Instance.Register.GetEnumerator(); }
         }
         #endregion
 
@@ -62,8 +62,8 @@ namespace RDFSharp.Model
         /// Default-ctor to initialize the singleton instance of the register
         /// </summary>
         static RDFNamespaceRegister() {
-            RDFNamespaceRegister.Instance                = new Lazy<RDFNamespaceRegister>();
-            RDFNamespaceRegister.Instance.Value.Register = new List<RDFNamespace>();
+            RDFNamespaceRegister.Instance          = new RDFNamespaceRegister();
+            RDFNamespaceRegister.Instance.Register = new List<RDFNamespace>();
             RDFNamespaceRegister.SetDefaultNamespace(new RDFNamespace("rdfsharp", "http://rdfsharp.codeplex.com/default_graph#"));
 
             #region Basic Namespaces
@@ -110,14 +110,14 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the register's namespaces
         /// </summary>
         IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator() {
-            return RDFNamespaceRegister.Instance.Value.Register.GetEnumerator();
+            return RDFNamespaceRegister.Instance.Register.GetEnumerator();
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the register's namespaces
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return RDFNamespaceRegister.Instance.Value.Register.GetEnumerator();
+            return RDFNamespaceRegister.Instance.Register.GetEnumerator();
         }
         #endregion
 
@@ -138,7 +138,7 @@ namespace RDFSharp.Model
         public static void AddNamespace(RDFNamespace nSpace) {
             if (nSpace != null) {
                 if (!RDFNamespaceRegister.ContainsNamespace(nSpace)) {
-                    RDFNamespaceRegister.Instance.Value.Register.Add(nSpace);
+                    RDFNamespaceRegister.Instance.Register.Add(nSpace);
                 }
             }
         }
@@ -149,7 +149,7 @@ namespace RDFSharp.Model
         public static void RemoveNamespace(RDFNamespace nSpace) {
             //DefaultNamespace can't be removed
             if (nSpace != null && !nSpace.Equals(RDFNamespaceRegister.DefaultNamespace)) {
-                RDFNamespaceRegister.Instance.Value.Register.RemoveAll(ns => 
+                RDFNamespaceRegister.Instance.Register.RemoveAll(ns => 
 				    (ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal)) || ns.Namespace.Equals(nSpace.Namespace));
             }
         }
@@ -159,7 +159,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static Boolean ContainsNamespace(RDFNamespace nSpace) {
             if (nSpace != null) {
-                return RDFNamespaceRegister.Instance.Value.Register.Exists(ns => 
+                return RDFNamespaceRegister.Instance.Register.Exists(ns => 
 				    (ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal)) || ns.Namespace.Equals(nSpace.Namespace));
             }
             return false;
@@ -171,7 +171,7 @@ namespace RDFSharp.Model
         public static RDFNamespace GetByNamespace(String nSpace) {
             Uri tempNS = RDFModelUtilities.GetUriFromString(nSpace);
             if(tempNS != null){
-                return RDFNamespaceRegister.Instance.Value.Register.Find(ns => ns.Namespace.Equals(tempNS));
+                return RDFNamespaceRegister.Instance.Register.Find(ns => ns.Namespace.Equals(tempNS));
             }
             return null;
         }
@@ -181,7 +181,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFNamespace GetByPrefix(String prefix) {
             if (prefix != null && prefix.Trim() != String.Empty) {
-                return RDFNamespaceRegister.Instance.Value.Register.Find(ns => ns.Prefix.Equals(prefix, StringComparison.Ordinal));
+                return RDFNamespaceRegister.Instance.Register.Find(ns => ns.Prefix.Equals(prefix, StringComparison.Ordinal));
             }
             return null;
         }

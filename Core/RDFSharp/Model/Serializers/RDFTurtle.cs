@@ -131,7 +131,7 @@ namespace RDFSharp.Model
 
                                 //Detect presence of long-literals
                                 var litValDelim = "\"";
-                                if (RDFModelUtilities.regexTTL.Value.Match(triple.Object.ToString()).Success) {
+                                if (RDFModelUtilities.regexTTL.Match(triple.Object.ToString()).Success) {
                                     litValDelim = "\"\"\"";
                                 }
 

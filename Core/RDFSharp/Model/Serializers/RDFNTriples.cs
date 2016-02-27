@@ -174,8 +174,8 @@ namespace RDFSharp.Model
                         else {
 
                             #region sanitize
-                            tokens[2]  = RDFModelUtilities.regexSqt.Value.Replace(tokens[2], String.Empty);
-                            tokens[2]  = RDFModelUtilities.regexEqt.Value.Replace(tokens[2], String.Empty);
+                            tokens[2]  = RDFModelUtilities.regexSqt.Replace(tokens[2], String.Empty);
+                            tokens[2]  = RDFModelUtilities.regexEqt.Replace(tokens[2], String.Empty);
                             tokens[2]  = tokens[2].Replace("\\\"", "\"")
                                                   .Replace("\\n",  "\n")
                                                   .Replace("\\t",  "\t")
@@ -188,7 +188,7 @@ namespace RDFSharp.Model
                                  tokens[2].EndsWith("^^") ||
                                  tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<") {
                                  RDFPlainLiteral L    = null;
-                                 if (RDFModelUtilities.regexLPL.Value.Match(tokens[2]).Success) {
+                                 if (RDFModelUtilities.regexLPL.Match(tokens[2]).Success) {
                                      tokens[2]        = tokens[2].Replace("\"@", "@");
                                      String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
                                      String pLitLang  = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);

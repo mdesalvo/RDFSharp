@@ -40,7 +40,7 @@ namespace RDFSharp.Model
             this.Datatype            = RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "string");   
             this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());
             if (!RDFModelUtilities.ValidateTypedLiteral(this)) {
-                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed or not compatible with the category (" + this.Datatype.Category + ") of the datatype.");
+                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed or not compatible with the category (" + this.Datatype.Category + ") of the datatype.");
             }
         }
 
@@ -53,7 +53,7 @@ namespace RDFSharp.Model
                 this.Datatype        = datatype;
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 if (!RDFModelUtilities.ValidateTypedLiteral(this)) {
-                    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed or not compatible with the category (" + this.Datatype.Category + ") of the datatype.");
+                     throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed or not compatible with the category (" + this.Datatype.Category + ") of the datatype.");
                 }
             }
         }
