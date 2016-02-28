@@ -551,7 +551,7 @@ namespace RDFSharp.Semantics {
 
                         //Cache-Miss
                         if (!classCache.ContainsKey(domain.PatternMemberID)) {
-                             classCache.Add(domain.PatternMemberID, RDFOntologyReasoningHelper.EnlistMembersOfNonLiteralCompatible(domain, ontology));
+                             classCache.Add(domain.PatternMemberID, RDFOntologyReasoningHelper.EnlistMembersOf(domain, ontology));
                         }
 
                         //Cache-Check
