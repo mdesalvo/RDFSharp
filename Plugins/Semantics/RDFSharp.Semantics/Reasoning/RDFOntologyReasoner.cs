@@ -57,8 +57,8 @@ namespace RDFSharp.Semantics {
         public RDFOntologyReasoner(String reasonerName, 
                                    String reasonerDescription,
                                    RDFOntologyReasonerOptions reasonerOptions=null) {
-            if(reasonerName                 != null && reasonerName.Trim()        != String.Empty) {
-                if(reasonerDescription      != null && reasonerDescription.Trim() != String.Empty) {
+            if (reasonerName                != null && reasonerName.Trim()        != String.Empty) {
+                if (reasonerDescription     != null && reasonerDescription.Trim() != String.Empty) {
                     this.ReasonerName        = reasonerName;
                     this.ReasonerDescription = reasonerDescription;
                     this.ReasonerOptions     = (reasonerOptions ?? new RDFOntologyReasonerOptions());

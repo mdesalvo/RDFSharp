@@ -196,7 +196,7 @@ namespace RDFSharp.Semantics {
 
                     //Avoid reasoning on literal-compatible classes, since literals cannot be subject of triples
                     if(!RDFOntologyReasoningHelper.IsLiteralCompatibleClass(c, ontology.Model.ClassModel)) {
-                        foreach(var f  in RDFOntologyReasoningHelper.EnlistMembersOf(c, ontology)) {
+                        foreach(var f  in RDFOntologyReasoningHelper.EnlistMembersOfNonLiteralCompatible(c, ontology)) {
 
                             //Create the inference as a taxonomy entry
                             var ctInfer = new RDFOntologyTaxonomyEntry(f,  RDFOntologyVocabulary.ObjectProperties.TYPE, c).SetInference(true);
