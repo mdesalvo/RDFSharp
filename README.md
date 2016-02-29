@@ -30,35 +30,35 @@ RDFSharp has a modular API made up of three layers:
 Plugins are also available, to extend the capabilities of the core library with specific layers and functionalities:
 
 <ul>
-    <li><b>RDFSharp.Semantics</b></li> 
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">RDFSharp.Semantics</a></b></li> 
     <ul>
         <li>Create and manage <i>OWL-DL ontologies</i> (classes, properties, restrictions, facts, relations, ...)</li> 
-        <li>Validate them against <i>RDFS/OWL-DL</i> specifications to report warning/error evidences</li>
-        <li>Create and manage <i>RDFS/OWL-DL/Custom</i> reasoners to materialize inferred knowledge</li>
+        <li>Validate them against <i>RDFS/OWL-DL specifications</i> to detect warning/error evidences</li>
+		<li>Create and execute <i>RDFS/OWL-DL/Custom reasoners</i> and materialize inferred knowledge</li>
     </ul>
 </ul>
 <ul>
-    <li><b>RDFSharp.RDFFirebirdStore</b></li> 
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.RDFFirebirdStore">RDFSharp.RDFFirebirdStore</a></b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on Firebird</li>
+        <li>Create and manage RDF stores backing data on <i>Firebird</i></li>
     </ul>
 </ul>
 <ul>
-    <li><b>RDFSharp.RDFMySQLStore</b></li> 
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.RDFMySQLStore">RDFSharp.RDFMySQLStore</a></b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on MySQL</li>
+        <li>Create and manage RDF stores backing data on <i>MySQL</i></li>
     </ul>
 </ul>
 <ul>
-    <li><b>RDFSharp.RDFPostgreSQLStore</b></li> 
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.RDFPostgreSQLStore">RDFSharp.RDFPostgreSQLStore</a></b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on PostgreSQL</li>
+        <li>Create and manage RDF stores backing data on <i>PostgreSQL</i></li>
     </ul>
 </ul>
 <ul>
-    <li><b>RDFSharp.RDFSQLiteStore</b></li> 
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.RDFSQLiteStore">RDFSharp.RDFSQLiteStore</a></b></li> 
     <ul>
-        <li>Create and manage RDF stores backing data on SQLite</li>
+        <li>Create and manage RDF stores backing data on <i>SQLite</i></li>
     </ul>
 </ul>
 <hr>
@@ -69,9 +69,8 @@ There are many ways that you can contribute to the RDFSharp project:
     <li>Submit a code fix for a bug</li>  
     <li>Submit a feature request</li>
     <li>Submit code for a feature request</li>
-    <li>Submit code for a new plugin</li>
     <li>Tell others about the RDFSharp project :)</li>  
-    <li><i>Kindly donate to non-profit italian charity organization <b><a href="http://www.soleterre.org/en/about-us">Soleterre</a></b> :)</i></li> 
+    <li><i>Kindly donate to non-profit italian charity organization <b><a href="http://www.soleterre.org/en/">Soleterre</a></b> :)</i></li> 
 </ul>
 <hr>
 RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b> and <b><a href="https://rdfsharp.codeplex.com/">Codeplex</a></b>!
