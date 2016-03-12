@@ -107,6 +107,11 @@ namespace RDFSharp.Store
 
         #region Select
         /// <summary>
+        /// Gets a list containing the graphs saved in the store
+        /// </summary>
+        public abstract List<RDFGraph> ExtractGraphs();
+
+        /// <summary>
         /// Checks if the store contains the given quadruple 
         /// </summary>
         public abstract Boolean ContainsQuadruple(RDFQuadruple quadruple);

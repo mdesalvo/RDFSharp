@@ -30,7 +30,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
         /// </summary>
-        public enum RDFFormats { NQuads };
+        public enum RDFFormats { NQuads, TriX };
 
     }
 

@@ -15,8 +15,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using RDFSharp.Model;
 
 namespace RDFSharp.Store
@@ -614,6 +616,35 @@ namespace RDFSharp.Store
         #endregion
 
         #region Select
+        /// <summary>
+        /// Gets a list containing the graphs saved in the store
+        /// </summary>
+        public override List<RDFGraph> ExtractGraphs() {
+            var graphs      = new Dictionary<Int64, RDFGraph>();
+            foreach (var q in this.SelectAllQuadruples()) {
+
+                // Step 1: Cache-Update
+                if (!graphs.ContainsKey(q.Context.PatternMemberID)) {
+                     graphs.Add(q.Context.PatternMemberID, new RDFGraph());
+                     graphs[q.Context.PatternMemberID].SetContext(((RDFContext)q.Context).Context);
+                }
+
+                // Step 2: Result-Update
+                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
+                                                                              (RDFResource)q.Predicate,
+                                                                              (RDFResource)q.Object));
+                }
+                else {
+                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
+                                                                              (RDFResource)q.Predicate,
+                                                                              (RDFLiteral)q.Object));
+                }
+
+            }
+            return graphs.Values.ToList();
+        }
+
         /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>

@@ -133,6 +133,7 @@
     <Compile Include="Store\Engines\Memory\RDFMemoryStore.cs" />
     <Compile Include="Store\Engines\SQLServer\RDFSQLServerStore.cs" />
     <Compile Include="Store\Serializers\RDFNQuads.cs" />
+    <Compile Include="Store\Serializers\RDFTriX.cs" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

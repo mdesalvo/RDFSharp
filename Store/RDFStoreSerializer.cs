@@ -35,6 +35,9 @@ namespace RDFSharp.Store {
                         case RDFStoreEnums.RDFFormats.NQuads:
                              RDFNQuads.Serialize(store, filepath);
                              break;
+                        case RDFStoreEnums.RDFFormats.TriX:
+                             RDFTriX.Serialize(store, filepath);
+                             break;
                     }
                 }
                 else {
