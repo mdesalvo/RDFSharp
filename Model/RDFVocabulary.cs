@@ -650,6 +650,11 @@ namespace RDFSharp.Model
             /// owl:versionInfo
             /// </summary>
             public static readonly RDFResource VERSION_INFO = new RDFResource(OWL.BASE_URI + "versionInfo");
+			
+			/// <summary>
+            /// owl:versionIRI
+            /// </summary>
+            public static readonly RDFResource VERSION_IRI = new RDFResource(OWL.BASE_URI + "versionIRI");
             #endregion
 
         }
