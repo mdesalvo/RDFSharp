@@ -16,7 +16,7 @@ RDFSharp has a modular API made up of three layers:
     <li><b>RDFSharp.Store</b></li> 
     <ul>
         <li>Create and manage <i>RDF stores</i> backing data on memory or SQL Server</li>
-        <li>Exchange them using standard RDF formats (N-Quads)</li>
+        <li>Exchange them using standard RDF formats (N-Quads, TriX)</li>
         <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple stores</li>
     </ul>
 </ul>
