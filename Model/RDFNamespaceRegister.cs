@@ -24,7 +24,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNamespaceRegister is a singleton container for registered RDF namespaces.
     /// </summary>
-    public class RDFNamespaceRegister: IEnumerable<RDFNamespace> {
+    public sealed class RDFNamespaceRegister: IEnumerable<RDFNamespace> {
 
         #region Properties
         /// <summary>
@@ -46,14 +46,14 @@ namespace RDFSharp.Model
         /// Count of the register's namespaces
         /// </summary>
         public static Int32 NamespacesCount {
-            get { return RDFNamespaceRegister.Instance.Register.Count; }
+            get { return Instance.Register.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the register's namespaces for iteration
         /// </summary>
         public static IEnumerator<RDFNamespace> NamespacesEnumerator {
-            get { return RDFNamespaceRegister.Instance.Register.GetEnumerator(); }
+            get { return Instance.Register.GetEnumerator(); }
         }
         #endregion
 
@@ -62,45 +62,45 @@ namespace RDFSharp.Model
         /// Default-ctor to initialize the singleton instance of the register
         /// </summary>
         static RDFNamespaceRegister() {
-            RDFNamespaceRegister.Instance          = new RDFNamespaceRegister();
-            RDFNamespaceRegister.Instance.Register = new List<RDFNamespace>();
-            RDFNamespaceRegister.SetDefaultNamespace(new RDFNamespace("rdfsharp", "http://rdfsharp.codeplex.com/default_graph#"));
+            Instance          = new RDFNamespaceRegister();
+            Instance.Register = new List<RDFNamespace>();
+            SetDefaultNamespace(new RDFNamespace("rdfsharp", "http://rdfsharp.codeplex.com/default_graph#"));
 
             #region Basic Namespaces
             //xsd
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.XSD.PREFIX,           RDFVocabulary.XSD.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.XSD.PREFIX,           RDFVocabulary.XSD.BASE_URI));
             //xml
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.XML.PREFIX,           RDFVocabulary.XML.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.XML.PREFIX,           RDFVocabulary.XML.BASE_URI));
             //rdf
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.RDF.PREFIX,           RDFVocabulary.RDF.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.RDF.PREFIX,           RDFVocabulary.RDF.BASE_URI));
             //rdfs
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.RDFS.PREFIX,          RDFVocabulary.RDFS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.RDFS.PREFIX,          RDFVocabulary.RDFS.BASE_URI));
             //owl
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OWL.PREFIX,           RDFVocabulary.OWL.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OWL.PREFIX,           RDFVocabulary.OWL.BASE_URI));
             #endregion
 
             #region Extended Namespaces
             //foaf
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX,          RDFVocabulary.FOAF.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX,          RDFVocabulary.FOAF.BASE_URI));
             //skos
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX,          RDFVocabulary.SKOS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX,          RDFVocabulary.SKOS.BASE_URI));
             //dc
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX,            RDFVocabulary.DC.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.DC.DC_TERMS.PREFIX,   RDFVocabulary.DC.DC_TERMS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX,            RDFVocabulary.DC.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DC_TERMS.PREFIX,   RDFVocabulary.DC.DC_TERMS.BASE_URI));
             //geo
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX,           RDFVocabulary.GEO.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX,           RDFVocabulary.GEO.BASE_URI));
 			//rss
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.RSS.PREFIX,           RDFVocabulary.RSS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.RSS.PREFIX,           RDFVocabulary.RSS.BASE_URI));
             //dbpedia
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.DBPEDIA.PREFIX,       RDFVocabulary.DBPEDIA.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DBPEDIA.PREFIX,       RDFVocabulary.DBPEDIA.BASE_URI));
             //og
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.PREFIX,            RDFVocabulary.OG.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_MUSIC.PREFIX,   RDFVocabulary.OG.OG_MUSIC.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_VIDEO.PREFIX,   RDFVocabulary.OG.OG_VIDEO.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_ARTICLE.PREFIX, RDFVocabulary.OG.OG_ARTICLE.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_BOOK.PREFIX,    RDFVocabulary.OG.OG_BOOK.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_PROFILE.PREFIX, RDFVocabulary.OG.OG_PROFILE.BASE_URI));
-            RDFNamespaceRegister.AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_WEBSITE.PREFIX, RDFVocabulary.OG.OG_WEBSITE.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.PREFIX,            RDFVocabulary.OG.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_MUSIC.PREFIX,   RDFVocabulary.OG.OG_MUSIC.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_VIDEO.PREFIX,   RDFVocabulary.OG.OG_VIDEO.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_ARTICLE.PREFIX, RDFVocabulary.OG.OG_ARTICLE.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_BOOK.PREFIX,    RDFVocabulary.OG.OG_BOOK.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_PROFILE.PREFIX, RDFVocabulary.OG.OG_PROFILE.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_WEBSITE.PREFIX, RDFVocabulary.OG.OG_WEBSITE.BASE_URI));
             #endregion
         }
         #endregion
@@ -110,14 +110,14 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the register's namespaces
         /// </summary>
         IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator() {
-            return RDFNamespaceRegister.Instance.Register.GetEnumerator();
+            return Instance.Register.GetEnumerator();
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the register's namespaces
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return RDFNamespaceRegister.Instance.Register.GetEnumerator();
+            return Instance.Register.GetEnumerator();
         }
         #endregion
 
@@ -127,8 +127,8 @@ namespace RDFSharp.Model
         /// </summary>
         public static void SetDefaultNamespace(RDFNamespace defaultNamespace) {
             if (defaultNamespace != null) {
-                RDFNamespaceRegister.DefaultNamespace = defaultNamespace;
-                RDFNamespaceRegister.AddNamespace(defaultNamespace);
+                DefaultNamespace = defaultNamespace;
+                AddNamespace(defaultNamespace);
             }
         }
 
@@ -137,8 +137,8 @@ namespace RDFSharp.Model
         /// </summary>
         public static void AddNamespace(RDFNamespace nSpace) {
             if (nSpace != null) {
-                if (!RDFNamespaceRegister.ContainsNamespace(nSpace)) {
-                    RDFNamespaceRegister.Instance.Register.Add(nSpace);
+                if (!ContainsNamespace(nSpace)) {
+                     Instance.Register.Add(nSpace);
                 }
             }
         }
@@ -148,9 +148,9 @@ namespace RDFSharp.Model
         /// </summary>
         public static void RemoveNamespace(RDFNamespace nSpace) {
             //DefaultNamespace can't be removed
-            if (nSpace != null && !nSpace.Equals(RDFNamespaceRegister.DefaultNamespace)) {
-                RDFNamespaceRegister.Instance.Register.RemoveAll(ns => 
-				    (ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal)) || ns.Namespace.Equals(nSpace.Namespace));
+            if (nSpace != null && !nSpace.Equals(DefaultNamespace)) {
+                Instance.Register.RemoveAll(ns => ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal) 
+                                               || ns.Namespace.Equals(nSpace.Namespace));
             }
         }
 
@@ -159,8 +159,8 @@ namespace RDFSharp.Model
         /// </summary>
         public static Boolean ContainsNamespace(RDFNamespace nSpace) {
             if (nSpace != null) {
-                return RDFNamespaceRegister.Instance.Register.Exists(ns => 
-				    (ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal)) || ns.Namespace.Equals(nSpace.Namespace));
+                return Instance.Register.Exists(ns => ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal)
+                                                   || ns.Namespace.Equals(nSpace.Namespace));
             }
             return false;
         }
@@ -171,7 +171,7 @@ namespace RDFSharp.Model
         public static RDFNamespace GetByNamespace(String nSpace) {
             Uri tempNS = RDFModelUtilities.GetUriFromString(nSpace);
             if(tempNS != null){
-                return RDFNamespaceRegister.Instance.Register.Find(ns => ns.Namespace.Equals(tempNS));
+                return Instance.Register.Find(ns => ns.Namespace.Equals(tempNS));
             }
             return null;
         }
@@ -181,7 +181,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFNamespace GetByPrefix(String prefix) {
             if (prefix != null && prefix.Trim() != String.Empty) {
-                return RDFNamespaceRegister.Instance.Register.Find(ns => ns.Prefix.Equals(prefix, StringComparison.Ordinal));
+                return Instance.Register.Find(ns => ns.Prefix.Equals(prefix, StringComparison.Ordinal));
             }
             return null;
         }

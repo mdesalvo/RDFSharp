@@ -22,7 +22,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.
     /// </summary>
-    public static class RDFVocabulary {
+    public class RDFVocabulary {
 
         #region Basic
 
