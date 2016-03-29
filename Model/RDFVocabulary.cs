@@ -2500,6 +2500,60 @@ namespace RDFSharp.Model
         }
         #endregion
 
+        #region TGN
+        /// <summary>
+        /// TGN represents the Getty "Thesaurus of Geographic Names"
+        /// </summary>
+        public static class TGN {
+
+            #region Properties
+            /// <summary>
+            /// tgn
+            /// </summary>
+            public static readonly String PREFIX = "tgn";
+
+            /// <summary>
+            /// xmlns:tgn
+            /// </summary>
+            public static readonly String BASE_URI = "http://vocab.getty.edu/tgn/";
+
+            /// <summary>
+            /// tgn:contrib
+            /// </summary>
+            public static readonly RDFResource CONTRIB = new RDFResource(TGN.BASE_URI + "contrib/");
+
+            /// <summary>
+            /// tgn:rel
+            /// </summary>
+            public static readonly RDFResource REL = new RDFResource(TGN.BASE_URI + "rel/");
+
+            /// <summary>
+            /// tgn:rev
+            /// </summary>
+            public static readonly RDFResource REV = new RDFResource(TGN.BASE_URI + "rev/");
+
+            /// <summary>
+            /// tgn:scopeNote
+            /// </summary>
+            public static readonly RDFResource SCOPE_NOTE = new RDFResource(TGN.BASE_URI + "scopeNote/");
+
+            /// <summary>
+            /// tgn:source
+            /// </summary>
+            public static readonly RDFResource SOURCE = new RDFResource(TGN.BASE_URI + "source/");
+
+            /// <summary>
+            /// tgn:source_rev
+            /// </summary>
+            public static readonly RDFResource SOURCE_REV = new RDFResource(TGN.BASE_URI + "source/rev/");
+
+            /// <summary>
+            /// tgn:term
+            /// </summary>
+            public static readonly RDFResource TERM = new RDFResource(TGN.BASE_URI + "term/");
+            #endregion
+
+        }
         #endregion
 
     }
