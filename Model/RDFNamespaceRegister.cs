@@ -84,16 +84,18 @@ namespace RDFSharp.Model
             AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX,          RDFVocabulary.FOAF.BASE_URI));
             //skos
             AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX,          RDFVocabulary.SKOS.BASE_URI));
-            //dc
+            //dc (and extensions)
             AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX,            RDFVocabulary.DC.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DC_TERMS.PREFIX,   RDFVocabulary.DC.DC_TERMS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX,       RDFVocabulary.DC.DCAM.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX,    RDFVocabulary.DC.DCTERMS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCMITYPE.PREFIX,   RDFVocabulary.DC.DCMITYPE.BASE_URI));
             //geo
             AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX,           RDFVocabulary.GEO.BASE_URI));
 			//rss
             AddNamespace(new RDFNamespace(RDFVocabulary.RSS.PREFIX,           RDFVocabulary.RSS.BASE_URI));
             //dbpedia
             AddNamespace(new RDFNamespace(RDFVocabulary.DBPEDIA.PREFIX,       RDFVocabulary.DBPEDIA.BASE_URI));
-            //og
+            //og (and extensions)
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.PREFIX,            RDFVocabulary.OG.BASE_URI));
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_MUSIC.PREFIX,   RDFVocabulary.OG.OG_MUSIC.BASE_URI));
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_VIDEO.PREFIX,   RDFVocabulary.OG.OG_VIDEO.BASE_URI));
