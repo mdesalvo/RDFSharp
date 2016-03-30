@@ -2033,27 +2033,27 @@ namespace RDFSharp.Model
             /// <summary>
             /// dbpedia:resource
             /// </summary>
-            public static readonly RDFResource RESOURCE = new RDFResource(DBPEDIA.BASE_URI + "resource");
+            public static readonly RDFResource RESOURCE = new RDFResource(DBPEDIA.BASE_URI + "resource/");
 
 			/// <summary>
             /// dbpedia:class
             /// </summary>
-            public static readonly RDFResource CLASS = new RDFResource(DBPEDIA.BASE_URI + "class");
+            public static readonly RDFResource CLASS = new RDFResource(DBPEDIA.BASE_URI + "class/");
 
             /// <summary>
             /// dbpedia:class_yago
             /// </summary>
-            public static readonly RDFResource CLASS_YAGO = new RDFResource(DBPEDIA.BASE_URI + "class/yago");
+            public static readonly RDFResource CLASS_YAGO = new RDFResource(DBPEDIA.BASE_URI + "class/yago/");
 
             /// <summary>
             /// dbpedia:ontology
             /// </summary>
-            public static readonly RDFResource ONTOLOGY = new RDFResource(DBPEDIA.BASE_URI + "ontology");
+            public static readonly RDFResource ONTOLOGY = new RDFResource(DBPEDIA.BASE_URI + "ontology/");
 			
 			/// <summary>
             /// dbpedia:property
             /// </summary>
-            public static readonly RDFResource PROPERTY = new RDFResource(DBPEDIA.BASE_URI + "property");
+            public static readonly RDFResource PROPERTY = new RDFResource(DBPEDIA.BASE_URI + "property/");
             #endregion
 
         }
