@@ -39,7 +39,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "rdf";
 
             /// <summary>
-            /// xmlns:rdf
+            /// http://www.w3.org/1999/02/22-rdf-syntax-ns#
             /// </summary>
             public static readonly String  BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
@@ -145,7 +145,7 @@ namespace RDFSharp.Model
             public static readonly String  PREFIX = "rdfs";
 
             /// <summary>
-            /// xmlns:rdfs
+            /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
             public static readonly String  BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
@@ -241,7 +241,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "xsd";
 
             /// <summary>
-            /// xmlns:xsd
+            /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
             public static readonly String  BASE_URI = "http://www.w3.org/2001/XMLSchema#";
 
@@ -452,7 +452,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "owl";
 
             /// <summary>
-            /// xmlns:owl
+            /// http://www.w3.org/2002/07/owl#
             /// </summary>
             public static readonly String  BASE_URI = "http://www.w3.org/2002/07/owl#";
 
@@ -673,7 +673,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "xml";
 
             /// <summary>
-            /// xmlns:xml
+            /// http://www.w3.org/XML/1998/namespace#
             /// </summary>
             public static readonly String BASE_URI = "http://www.w3.org/XML/1998/namespace#";
 
@@ -697,7 +697,7 @@ namespace RDFSharp.Model
 
         #region DC
         /// <summary>
-        /// DC represents the Dublin Core vocabulary.
+        /// DC represents the Dublin Core vocabulary (with DCAM, DCTERMS and DCTYPE extensions).
         /// </summary>
         public static class DC {
 
@@ -708,7 +708,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "dc";
 
             /// <summary>
-            /// xmlns:dc
+            /// http://purl.org/dc/elements/1.1/
             /// </summary>
             public static readonly String BASE_URI = "http://purl.org/dc/elements/1.1/";
 
@@ -800,7 +800,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "dcam";
 
                 /// <summary>
-                /// xmlns:dcam
+                /// http://purl.org/dc/dcam/
                 /// </summary>
                 public static readonly String BASE_URI = "http://purl.org/dc/dcam/";
 
@@ -828,7 +828,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "dcterms";
 
                 /// <summary>
-                /// xmlns:dcterms
+                /// http://purl.org/dc/terms/
                 /// </summary>
                 public static readonly String BASE_URI = "http://purl.org/dc/terms/";
 
@@ -1331,79 +1331,79 @@ namespace RDFSharp.Model
             }
             #endregion
 
-            #region DCMITYPE
-            public static class DCMITYPE {
+            #region DCTYPE
+            public static class DCTYPE {
 
                 #region Properties
                 /// <summary>
-                /// dcmitype
+                /// dctype
                 /// </summary>
-                public static readonly String PREFIX = "dcmitype";
+                public static readonly String PREFIX = "dctype";
 
                 /// <summary>
-                /// xmlns:dcmitype
+                /// http://purl.org/dc/dcmitype/
                 /// </summary>
                 public static readonly String BASE_URI = "http://purl.org/dc/dcmitype/";
 
                 /// <summary>
-                /// dcmitype:Collection
+                /// dctype:Collection
                 /// </summary>
-                public static readonly RDFResource COLLECTION = new RDFResource(DCMITYPE.BASE_URI + "Collection");
+                public static readonly RDFResource COLLECTION = new RDFResource(DCTYPE.BASE_URI + "Collection");
 
                 /// <summary>
-                /// dcmitype:Dataset
+                /// dctype:Dataset
                 /// </summary>
-                public static readonly RDFResource DATASET = new RDFResource(DCMITYPE.BASE_URI + "Dataset");
+                public static readonly RDFResource DATASET = new RDFResource(DCTYPE.BASE_URI + "Dataset");
 
                 /// <summary>
-                /// dcmitype:Event
+                /// dctype:Event
                 /// </summary>
-                public static readonly RDFResource EVENT = new RDFResource(DCMITYPE.BASE_URI + "Event");
+                public static readonly RDFResource EVENT = new RDFResource(DCTYPE.BASE_URI + "Event");
 
                 /// <summary>
-                /// dcmitype:Image
+                /// dctype:Image
                 /// </summary>
-                public static readonly RDFResource IMAGE = new RDFResource(DCMITYPE.BASE_URI + "Image");
+                public static readonly RDFResource IMAGE = new RDFResource(DCTYPE.BASE_URI + "Image");
 
                 /// <summary>
-                /// dcmitype:InteractiveResource
+                /// dctype:InteractiveResource
                 /// </summary>
-                public static readonly RDFResource INTERACTIVE_RESOURCE = new RDFResource(DCMITYPE.BASE_URI + "InteractiveResource");
+                public static readonly RDFResource INTERACTIVE_RESOURCE = new RDFResource(DCTYPE.BASE_URI + "InteractiveResource");
 
                 /// <summary>
-                /// dcmitype:MovingImage
+                /// dctype:MovingImage
                 /// </summary>
-                public static readonly RDFResource MOVING_IMAGE = new RDFResource(DCMITYPE.BASE_URI + "MovingImage");
+                public static readonly RDFResource MOVING_IMAGE = new RDFResource(DCTYPE.BASE_URI + "MovingImage");
 
                 /// <summary>
-                /// dcmitype:PhysicalObject
+                /// dctype:PhysicalObject
                 /// </summary>
-                public static readonly RDFResource PHYSICAL_OBJECT = new RDFResource(DCMITYPE.BASE_URI + "PhysicalObject");
+                public static readonly RDFResource PHYSICAL_OBJECT = new RDFResource(DCTYPE.BASE_URI + "PhysicalObject");
 
                 /// <summary>
-                /// dcmitype:Service
+                /// dctype:Service
                 /// </summary>
-                public static readonly RDFResource SERVICE = new RDFResource(DCMITYPE.BASE_URI + "Service");
+                public static readonly RDFResource SERVICE = new RDFResource(DCTYPE.BASE_URI + "Service");
 
                 /// <summary>
-                /// dcmitype:Software
+                /// dctype:Software
                 /// </summary>
-                public static readonly RDFResource SOFTWARE = new RDFResource(DCMITYPE.BASE_URI + "Software");
+                public static readonly RDFResource SOFTWARE = new RDFResource(DCTYPE.BASE_URI + "Software");
 
                 /// <summary>
-                /// dcmitype:Sound
+                /// dctype:Sound
                 /// </summary>
-                public static readonly RDFResource SOUND = new RDFResource(DCMITYPE.BASE_URI + "Sound");
+                public static readonly RDFResource SOUND = new RDFResource(DCTYPE.BASE_URI + "Sound");
 
                 /// <summary>
-                /// dcmitype:StillImage
+                /// dctype:StillImage
                 /// </summary>
-                public static readonly RDFResource STILL_IMAGE = new RDFResource(DCMITYPE.BASE_URI + "StillImage");
+                public static readonly RDFResource STILL_IMAGE = new RDFResource(DCTYPE.BASE_URI + "StillImage");
 
                 /// <summary>
-                /// dcmitype:Text
+                /// dctype:Text
                 /// </summary>
-                public static readonly RDFResource TEXT = new RDFResource(DCMITYPE.BASE_URI + "Text");
+                public static readonly RDFResource TEXT = new RDFResource(DCTYPE.BASE_URI + "Text");
                 #endregion
 
             }
@@ -1427,7 +1427,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "foaf";
 
             /// <summary>
-            /// xmlns:foaf
+            /// http://xmlns.com/foaf/0.1/
             /// </summary>
             public static readonly String BASE_URI = "http://xmlns.com/foaf/0.1/";
 
@@ -1713,7 +1713,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "geo";
 
             /// <summary>
-            /// xmlns:geo
+            /// http://www.w3.org/2003/01/geo/wgs84_pos#
             /// </summary>
             public static readonly String BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
@@ -1769,7 +1769,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "skos";
 
             /// <summary>
-            /// xmlns:skos
+            /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
             public static readonly String BASE_URI = "http://www.w3.org/2004/02/skos/core#";
 
@@ -1955,7 +1955,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "rss";
 
             /// <summary>
-            /// xmlns:rss
+            /// http://purl.org/rss/1.0/
             /// </summary>
             public static readonly String BASE_URI = "http://purl.org/rss/1.0/";
 
@@ -2026,7 +2026,7 @@ namespace RDFSharp.Model
             public static readonly String  PREFIX = "dbpedia";
 
             /// <summary>
-            /// xmlns:dbpedia
+            /// http://dbpedia.org/
             /// </summary>
             public static readonly String  BASE_URI = "http://dbpedia.org/";
 
@@ -2067,7 +2067,7 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "og";
 
             /// <summary>
-            /// xmlns:og
+            /// http://ogp.me/ns#
             /// </summary>
             public static readonly String BASE_URI = "http://ogp.me/ns#";
 
@@ -2192,7 +2192,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "ogm";
 
                 /// <summary>
-                /// xmlns:ogm
+                /// http://ogp.me/ns/music#
                 /// </summary>
                 public static readonly String BASE_URI = "http://ogp.me/ns/music#";
 
@@ -2273,7 +2273,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "ogv";
 
                 /// <summary>
-                /// xmlns:ogv
+                /// http://ogp.me/ns/video#
                 /// </summary>
                 public static readonly String BASE_URI = "http://ogp.me/ns/video#";
 
@@ -2354,7 +2354,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "oga";
 
                 /// <summary>
-                /// xmlns:oga
+                /// http://ogp.me/ns/article#
                 /// </summary>
                 public static readonly String BASE_URI = "http://ogp.me/ns/article#";
 
@@ -2405,7 +2405,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "ogb";
 
                 /// <summary>
-                /// xmlns:ogb
+                /// http://ogp.me/ns/book#
                 /// </summary>
                 public static readonly String BASE_URI = "http://ogp.me/ns/book#";
 
@@ -2446,7 +2446,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "ogp";
 
                 /// <summary>
-                /// xmlns:ogp
+                /// http://ogp.me/ns/profile#
                 /// </summary>
                 public static readonly String BASE_URI = "http://ogp.me/ns/profile#";
 
@@ -2487,7 +2487,7 @@ namespace RDFSharp.Model
                 public static readonly String PREFIX = "ogw";
 
                 /// <summary>
-                /// xmlns:ogw
+                /// http://ogp.me/ns/website#
                 /// </summary>
                 public static readonly String BASE_URI = "http://ogp.me/ns/website#";
                 #endregion
@@ -2500,60 +2500,6 @@ namespace RDFSharp.Model
         }
         #endregion
 
-        #region TGN
-        /// <summary>
-        /// TGN represents the Getty "Thesaurus of Geographic Names"
-        /// </summary>
-        public static class TGN {
-
-            #region Properties
-            /// <summary>
-            /// tgn
-            /// </summary>
-            public static readonly String PREFIX = "tgn";
-
-            /// <summary>
-            /// xmlns:tgn
-            /// </summary>
-            public static readonly String BASE_URI = "http://vocab.getty.edu/tgn/";
-
-            /// <summary>
-            /// tgn:contrib
-            /// </summary>
-            public static readonly RDFResource CONTRIB = new RDFResource(TGN.BASE_URI + "contrib/");
-
-            /// <summary>
-            /// tgn:rel
-            /// </summary>
-            public static readonly RDFResource REL = new RDFResource(TGN.BASE_URI + "rel/");
-
-            /// <summary>
-            /// tgn:rev
-            /// </summary>
-            public static readonly RDFResource REV = new RDFResource(TGN.BASE_URI + "rev/");
-
-            /// <summary>
-            /// tgn:scopeNote
-            /// </summary>
-            public static readonly RDFResource SCOPE_NOTE = new RDFResource(TGN.BASE_URI + "scopeNote/");
-
-            /// <summary>
-            /// tgn:source
-            /// </summary>
-            public static readonly RDFResource SOURCE = new RDFResource(TGN.BASE_URI + "source/");
-
-            /// <summary>
-            /// tgn:source_rev
-            /// </summary>
-            public static readonly RDFResource SOURCE_REV = new RDFResource(TGN.BASE_URI + "source/rev/");
-
-            /// <summary>
-            /// tgn:term
-            /// </summary>
-            public static readonly RDFResource TERM = new RDFResource(TGN.BASE_URI + "term/");
-            #endregion
-
-        }
         #endregion
 
     }
