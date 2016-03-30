@@ -2039,7 +2039,12 @@ namespace RDFSharp.Model
             /// dbpedia:class
             /// </summary>
             public static readonly RDFResource CLASS = new RDFResource(DBPEDIA.BASE_URI + "class");
-			
+
+            /// <summary>
+            /// dbpedia:class_yago
+            /// </summary>
+            public static readonly RDFResource CLASS_YAGO = new RDFResource(DBPEDIA.BASE_URI + "class/yago");
+
             /// <summary>
             /// dbpedia:ontology
             /// </summary>
