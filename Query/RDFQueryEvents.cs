@@ -39,9 +39,7 @@ namespace RDFSharp.Query {
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseQueryInfo(String eventMessage) {
-            Task.Factory.StartNew(() => {
-                RDFQueryEvents.OnQueryInfo(DateTime.Now.ToString() + ";QUERY INFO;" + eventMessage);
-            });
+            Parallel.Invoke(() => OnQueryInfo(DateTime.Now.ToString() + ";QUERY_INFO;" + eventMessage));
         }
         #endregion
 
@@ -60,9 +58,7 @@ namespace RDFSharp.Query {
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseQueryWarning(String eventMessage) {
-            Task.Factory.StartNew(() => {
-                RDFQueryEvents.OnQueryWarning(DateTime.Now.ToString() + ";QUERY WARNING;" + eventMessage);
-            });
+            Parallel.Invoke(() => OnQueryWarning(DateTime.Now.ToString() + ";QUERY_WARNING;" + eventMessage));
         }
         #endregion
 
