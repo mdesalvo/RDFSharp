@@ -122,11 +122,6 @@ namespace RDFSharp.Model
             /// rdf:rest
             /// </summary>
             public static readonly RDFResource REST = new RDFResource(RDF.BASE_URI + "rest");
-
-            /// <summary>
-            /// rdf:HTML
-            /// </summary>
-            public static readonly RDFResource HTML = new RDFResource(RDF.BASE_URI + "HTML");
             #endregion
 
         }
