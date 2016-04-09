@@ -33,7 +33,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Connection to the SQL Server database
         /// </summary>
-        public SqlConnection Connection { get; internal set; }
+        internal SqlConnection Connection { get; set; }
         #endregion
 
         #region Ctors
@@ -113,7 +113,7 @@ namespace RDFSharp.Store
         /// Gives the string representation of the SQL Server store 
         /// </summary>
         public override String ToString() {
-            return base.ToString() + "|CONNECTION=" + this.Connection.ConnectionString;
+            return base.ToString() + "|SERVER=" + this.Connection.DataSource + ";DATABASE=" + this.Connection.Database;
         }
         #endregion
 
