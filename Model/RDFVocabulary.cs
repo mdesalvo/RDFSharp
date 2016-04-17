@@ -883,9 +883,9 @@ namespace RDFSharp.Model
                 public static readonly RDFResource BIBLIOGRAPHIC_CITATION = new RDFResource(DCTERMS.BASE_URI + "bibliographicCitation");
 
                 /// <summary>
-                /// dcterms:bibliographicResource
+                /// dcterms:BibliographicResource
                 /// </summary>
-                public static readonly RDFResource BIBLIOGRAPHIC_RESOURCE = new RDFResource(DCTERMS.BASE_URI + "bibliographicResource");
+                public static readonly RDFResource BIBLIOGRAPHIC_RESOURCE = new RDFResource(DCTERMS.BASE_URI + "BibliographicResource");
 
                 /// <summary>
                 /// dcterms:conformsTo
