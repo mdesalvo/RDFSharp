@@ -1216,7 +1216,7 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcterms:DCMIType
                 /// </summary>
-                public static readonly RDFResource DCMI_TYPE = new RDFResource(DCTERMS.BASE_URI + "DCMIType");
+                public static readonly RDFResource DCMITYPE = new RDFResource(DCTERMS.BASE_URI + "DCMIType");
 
                 /// <summary>
                 /// dcterms:DDC
