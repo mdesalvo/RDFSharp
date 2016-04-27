@@ -216,7 +216,7 @@ namespace RDFSharp.Model
         #region RDFNamespace
         /// <summary>
         /// Finds if the given token contains a recognizable namespace and, if so, abbreviates it with its prefix.
-        /// It also prepares the result in a format useful for RDFSerialization.
+        /// It also prepares the result in a format useful for serialization (it's used by Turtle writer).
         /// </summary>
         internal static String AbbreviateNamespace(String token) {
 
@@ -263,7 +263,7 @@ namespace RDFSharp.Model
             if (namespaceString    != null && namespaceString.Trim() != String.Empty) {
                 
                 //Extract the prefixable part from the Uri
-                Uri uriNS           = RDFModelUtilities.GetUriFromString(namespaceString);
+                Uri uriNS           = GetUriFromString(namespaceString);
                 if (uriNS          == null) {
                     throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
                 }
@@ -300,7 +300,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFDatatype GetDatatypeFromString(String datatypeString) {
             if (datatypeString     != null && datatypeString.Trim() != String.Empty) {
-                Uri datatypeUri     = RDFModelUtilities.GetUriFromString(datatypeString);
+                Uri datatypeUri     = GetUriFromString(datatypeString);
                 if (datatypeUri    == null) {
                     throw new RDFModelException("Cannot create RDFDatatype because given \"datatypeString\" (" + datatypeString + ") parameter cannot be converted to a valid Uri");
                 }
@@ -333,9 +333,7 @@ namespace RDFSharp.Model
                     if (dt         == null) {
 
                         //First try to find a namespace to work with
-                        RDFNamespace nSpace = 
-						    (RDFNamespaceRegister.GetByNamespace(ns) ?? 
-							     RDFModelUtilities.GenerateNamespace(ns, true));
+                        var nSpace  = (RDFNamespaceRegister.GetByNamespace(ns) ?? GenerateNamespace(ns, true));
 
                         //If nothing found, we also have to create a new datatype
                         dt          = new RDFDatatype(nSpace.Prefix, nSpace.Namespace, type, RDFModelEnums.RDFDatatypeCategory.String);
@@ -467,14 +465,24 @@ namespace RDFSharp.Model
                         //DATETIME
                         if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "dateTime"))) {
                             try {
-                                DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
+                                DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFK", CultureInfo.InvariantCulture);
                             }
                             catch {
                                 try {
-                                    DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss",  CultureInfo.InvariantCulture);
+                                    DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFF", CultureInfo.InvariantCulture);
                                 }
                                 catch {
-                                    validateResponse = false;
+                                    try {
+                                        DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
+                                    }
+                                    catch {
+                                        try {
+                                            DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                                        }
+                                        catch {
+                                            validateResponse = false;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -497,14 +505,24 @@ namespace RDFSharp.Model
                         //TIME
                         else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "time"))) {
                             try {
-                                DateTime.ParseExact(typedLiteral.Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
+                                DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFFK", CultureInfo.InvariantCulture);
                             }
                             catch {
                                 try {
-                                    DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss",  CultureInfo.InvariantCulture);
+                                    DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFF", CultureInfo.InvariantCulture);
                                 }
                                 catch {
-                                    validateResponse = false;
+                                    try {
+                                        DateTime.ParseExact(typedLiteral.Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
+                                    }
+                                    catch {
+                                        try {
+                                            DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                                        }
+                                        catch {
+                                            validateResponse = false;
+                                        }
+                                    }
                                 }
                             }
                         }

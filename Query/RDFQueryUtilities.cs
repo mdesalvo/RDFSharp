@@ -200,15 +200,15 @@ namespace RDFSharp.Query
                 switch (((RDFTypedLiteral)left).Datatype.Category) {
 
                     case RDFModelEnums.RDFDatatypeCategory.Numeric:
-                        Decimal leftValueDecimal    = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Number, CultureInfo.InvariantCulture);
-                        Decimal rightValueDecimal   = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Number, CultureInfo.InvariantCulture);
-                        comparison                  = leftValueDecimal.CompareTo(rightValueDecimal);
+                        Decimal leftValueDecimal           = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Number, CultureInfo.InvariantCulture);
+                        Decimal rightValueDecimal          = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Number, CultureInfo.InvariantCulture);
+                        comparison                         = leftValueDecimal.CompareTo(rightValueDecimal);
                         break;
 
                     case RDFModelEnums.RDFDatatypeCategory.Boolean:
-                        Boolean leftValueBoolean    = Boolean.Parse(((RDFTypedLiteral)left).Value);
-                        Boolean rightValueBoolean   = Boolean.Parse(((RDFTypedLiteral)right).Value);
-                        comparison                  = leftValueBoolean.CompareTo(rightValueBoolean);
+                        Boolean leftValueBoolean           = Boolean.Parse(((RDFTypedLiteral)left).Value);
+                        Boolean rightValueBoolean          = Boolean.Parse(((RDFTypedLiteral)right).Value);
+                        comparison                         = leftValueBoolean.CompareTo(rightValueBoolean);
                         break;
 
                     case RDFModelEnums.RDFDatatypeCategory.DateTime:
@@ -218,66 +218,86 @@ namespace RDFSharp.Query
                         //Detect exact type of left typed literal (dateTime, date, time, gYearMonth, gMonthDay, gYear, gMonth, gDay)
                         if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "dateTime"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddTHH:mm:ss.FFFK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                                try {
+                                    leftValueDateTime      = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddTHH:mm:ss.FFF", CultureInfo.InvariantCulture);
+                                }
+                                catch {
+                                    try {
+                                        leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
+                                    }
+                                    catch {
+                                        leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                                    }
+                                }
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "date"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "time"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "HH:mm:ss.FFFK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                                try {
+                                    leftValueDateTime      = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "HH:mm:ss.FFF", CultureInfo.InvariantCulture);
+                                }
+                                catch {
+                                    try {
+                                        leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
+                                    }
+                                    catch {
+                                        leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                                    }
+                                }
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gYearMonth"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MMK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MMK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy-MM", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gMonthDay"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "--MM-ddK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "--MM-ddK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "--MM-dd", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "--MM-dd", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gYear"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyyK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyyK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "yyyy", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gMonth"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "MMK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "MMK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "MM", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "MM", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gDay"))) {
                             try {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "ddK", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "ddK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                leftValueDateTime  = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "dd", CultureInfo.InvariantCulture);
+                                leftValueDateTime          = DateTime.ParseExact(((RDFTypedLiteral)left).Value, "dd", CultureInfo.InvariantCulture);
                             }
                         }
                         else {
@@ -287,85 +307,105 @@ namespace RDFSharp.Query
                         //Detect exact type of right typed literal (dateTime, date, time, gYearMonth, gMonthDay, gYear, gMonth, gDay)
                         if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "dateTime"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddTHH:mm:ss.FFFK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                                try {
+                                    rightValueDateTime     = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddTHH:mm:ss.FFF", CultureInfo.InvariantCulture);
+                                }
+                                catch {
+                                    try {
+                                        rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
+                                    }
+                                    catch {
+                                        rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                                    }
+                                }
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "date"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "time"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "HH:mm:ss.FFFK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                                try {
+                                    rightValueDateTime     = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "HH:mm:ss.FFF", CultureInfo.InvariantCulture);
+                                }
+                                catch {
+                                    try {
+                                        rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
+                                    }
+                                    catch {
+                                        rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                                    }
+                                }
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gYearMonth"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MMK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MMK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy-MM", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gMonthDay"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "--MM-ddK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "--MM-ddK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "--MM-dd", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "--MM-dd", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gYear"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyyK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyyK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "yyyy", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gMonth"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "MMK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "MMK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "MM", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "MM", CultureInfo.InvariantCulture);
                             }
                         }
                         else if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "gDay"))) {
                             try {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "ddK", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "ddK", CultureInfo.InvariantCulture);
                             }
                             catch {
-                                rightValueDateTime = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "dd", CultureInfo.InvariantCulture);
+                                rightValueDateTime         = DateTime.ParseExact(((RDFTypedLiteral)right).Value, "dd", CultureInfo.InvariantCulture);
                             }
                         }
                         else {
                             throw new RDFQueryException("Cannot parse typed literal (" + ((RDFTypedLiteral)right).Value + ") of DateTime category because unknown format detected. Please, switch to one of XSD types: 'dateTime', 'date', 'time', 'gYearMonth', 'gMonthDay', 'gYear', 'gMonth', 'gDay'.");
                         }
 
-                        comparison                  = leftValueDateTime.CompareTo(rightValueDateTime);
+                        comparison                         = leftValueDateTime.CompareTo(rightValueDateTime);
                         break;
 
                     case RDFModelEnums.RDFDatatypeCategory.TimeSpan:
-                        TimeSpan leftValueDuration  = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
-                        TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
-                        comparison                  = leftValueDuration.CompareTo(rightValueDuration);
+                        TimeSpan leftValueDuration         = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
+                        TimeSpan rightValueDuration        = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
+                        comparison                         = leftValueDuration.CompareTo(rightValueDuration);
                         break;
 
                     case RDFModelEnums.RDFDatatypeCategory.String:
-                        String leftValueString      = ((RDFTypedLiteral)left).Value;
-                        String rightValueString     = ((RDFTypedLiteral)right).Value;
-                        comparison                  = String.Compare(leftValueString, rightValueString, StringComparison.Ordinal);
+                        String leftValueString             = ((RDFTypedLiteral)left).Value;
+                        String rightValueString            = ((RDFTypedLiteral)right).Value;
+                        comparison                         = String.Compare(leftValueString, rightValueString, StringComparison.Ordinal);
                         break;
 
                 }
