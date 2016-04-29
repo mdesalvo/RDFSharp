@@ -1477,6 +1477,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource KNOWS = new RDFResource(FOAF.BASE_URI + "knows");
 
             /// <summary>
+            /// foaf:skypeID
+            /// </summary>
+            public static readonly RDFResource SKYPE_ID = new RDFResource(FOAF.BASE_URI + "skypeID");
+
+            /// <summary>
             /// foaf:based_near
             /// </summary>
             public static readonly RDFResource BASED_NEAR = new RDFResource(FOAF.BASE_URI + "based_near");
@@ -1540,8 +1545,23 @@ namespace RDFSharp.Model
             /// foaf:focus
             /// </summary>
             public static readonly RDFResource FOCUS = new RDFResource(FOAF.BASE_URI + "focus");
-			
-			/// <summary>
+
+            /// <summary>
+            /// foaf:fundedBy
+            /// </summary>
+            public static readonly RDFResource FUNDED_BY = new RDFResource(FOAF.BASE_URI + "fundedBy");
+
+            /// <summary>
+            /// foaf:geekcode
+            /// </summary>
+            public static readonly RDFResource GEEK_CODE = new RDFResource(FOAF.BASE_URI + "geekcode");
+
+            /// <summary>
+            /// foaf:theme
+            /// </summary>
+            public static readonly RDFResource THEME = new RDFResource(FOAF.BASE_URI + "theme");
+
+            /// <summary>
             /// foaf:nick
             /// </summary>
             public static readonly RDFResource NICK = new RDFResource(FOAF.BASE_URI + "nick");
@@ -1570,8 +1590,63 @@ namespace RDFSharp.Model
             /// foaf:jabberID
             /// </summary>
             public static readonly RDFResource JABBER_ID = new RDFResource(FOAF.BASE_URI + "jabberID");
-			
-			/// <summary>
+
+            /// <summary>
+            /// foaf:aimChatID
+            /// </summary>
+            public static readonly RDFResource AIM_CHAT_ID = new RDFResource(FOAF.BASE_URI + "aimChatID");
+
+            /// <summary>
+            /// foaf:icqChatID
+            /// </summary>
+            public static readonly RDFResource ICQ_CHAT_ID = new RDFResource(FOAF.BASE_URI + "icqChatID");
+
+            /// <summary>
+            /// foaf:msnChatID
+            /// </summary>
+            public static readonly RDFResource MSN_CHAT_ID = new RDFResource(FOAF.BASE_URI + "msnChatID");
+
+            /// <summary>
+            /// foaf:yahooChatID
+            /// </summary>
+            public static readonly RDFResource YAHOO_CHAT_ID = new RDFResource(FOAF.BASE_URI + "yahooChatID");
+
+            /// <summary>
+            /// foaf:myersBriggs
+            /// </summary>
+            public static readonly RDFResource MYERS_BRIGGS = new RDFResource(FOAF.BASE_URI + "myersBriggs");
+
+            /// <summary>
+            /// foaf:dnaChecksum
+            /// </summary>
+            public static readonly RDFResource DNA_CHECKSUM = new RDFResource(FOAF.BASE_URI + "dnaChecksum");
+
+            /// <summary>
+            /// foaf:membershipClass
+            /// </summary>
+            public static readonly RDFResource MEMBERSHIP_CLASS = new RDFResource(FOAF.BASE_URI + "membershipClass");
+
+            /// <summary>
+            /// foaf:holdsAccount
+            /// </summary>
+            public static readonly RDFResource HOLDS_ACCOUNT = new RDFResource(FOAF.BASE_URI + "holdsAccount");
+
+            /// <summary>
+            /// foaf:firstName
+            /// </summary>
+            public static readonly RDFResource FIRSTNAME = new RDFResource(FOAF.BASE_URI + "firstName");
+
+            /// <summary>
+            /// foaf:surname
+            /// </summary>
+            public static readonly RDFResource SURNAME = new RDFResource(FOAF.BASE_URI + "surname");
+
+            /// <summary>
+            /// foaf:plan
+            /// </summary>
+            public static readonly RDFResource PLAN = new RDFResource(FOAF.BASE_URI + "plan");
+
+            /// <summary>
             /// foaf:mbox_sha1sum
             /// </summary>
             public static readonly RDFResource MBOX_SHA1SUM = new RDFResource(FOAF.BASE_URI + "mbox_sha1sum");
@@ -1635,8 +1710,23 @@ namespace RDFSharp.Model
             /// foaf:OnlineAccount
             /// </summary>
             public static readonly RDFResource ONLINE_ACCOUNT = new RDFResource(FOAF.BASE_URI + "OnlineAccount");
-			
-			/// <summary>
+
+            /// <summary>
+            /// foaf:OnlineChatAccount
+            /// </summary>
+            public static readonly RDFResource ONLINE_CHAT_ACCOUNT = new RDFResource(FOAF.BASE_URI + "OnlineChatAccount");
+
+            /// <summary>
+            /// foaf:OnlineEcommerceAccount
+            /// </summary>
+            public static readonly RDFResource ONLINE_ECOMMERCE_ACCOUNT = new RDFResource(FOAF.BASE_URI + "OnlineEcommerceAccount");
+
+            /// <summary>
+            /// foaf:OnlineGamingAccount
+            /// </summary>
+            public static readonly RDFResource ONLINE_GAMING_ACCOUNT = new RDFResource(FOAF.BASE_URI + "OnlineGamingAccount");
+
+            /// <summary>
             /// foaf:accountName
             /// </summary>
             public static readonly RDFResource ACCOUNT_NAME = new RDFResource(FOAF.BASE_URI + "accountName");
@@ -2976,6 +3066,30 @@ namespace RDFSharp.Model
         }
         #endregion
 
+        #region VOCAB_STATUS
+        /// <summary>
+        /// VOCAB_STATUS represents the W3C status vocabulary.
+        /// </summary>
+        public static class VOCAB_STATUS {
+
+            #region Properties
+            /// <summary>
+            /// vs
+            /// </summary>
+            public static readonly String PREFIX = "vs";
+
+            /// <summary>
+            /// http://www.w3.org/2003/06/sw-vocab-status/ns#
+            /// </summary>
+            public static readonly String BASE_URI = "http://www.w3.org/2003/06/sw-vocab-status/ns#";
+
+            /// <summary>
+            /// vs:term_status
+            /// </summary>
+            public static readonly RDFResource TERM_STATUS = new RDFResource(VOCAB_STATUS.BASE_URI + "term_status");
+            #endregion
+
+        }
         #endregion
 
     }

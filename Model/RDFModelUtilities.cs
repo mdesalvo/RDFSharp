@@ -50,6 +50,25 @@ namespace RDFSharp.Model
 
         #region Strings
         /// <summary>
+        /// Gets the string representation of the given term status
+        /// </summary>
+        internal static String GetTermStatus(RDFModelEnums.RDFTermStatus termStatus) {
+            switch (termStatus) {
+                case RDFModelEnums.RDFTermStatus.Stable:
+                    return "stable";
+                case RDFModelEnums.RDFTermStatus.Unstable:
+                    return "unstable";
+                case RDFModelEnums.RDFTermStatus.Testing:
+                    return "testing";
+                case RDFModelEnums.RDFTermStatus.Archaic:
+                    return "archaic";
+
+                default:
+                    return "stable";
+            }
+        }
+
+        /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
         internal static Uri GetUriFromString(String uriString) {

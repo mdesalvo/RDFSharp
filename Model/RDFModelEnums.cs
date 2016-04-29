@@ -47,6 +47,11 @@ namespace RDFSharp.Model
         /// </summary>
         public enum RDFDatatypeCategory { Boolean, Numeric, DateTime, TimeSpan, String };
 
+        /// <summary>
+        /// RDFTermStatus represents an enumeration for supported values of "vs:term_status" triples
+        /// </summary>
+        public enum RDFTermStatus { Stable, Unstable, Testing, Archaic };
+
     }
 
 }
