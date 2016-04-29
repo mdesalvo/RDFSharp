@@ -3066,11 +3066,11 @@ namespace RDFSharp.Model
         }
         #endregion
 
-        #region VOCAB_STATUS
+        #region VS
         /// <summary>
-        /// VOCAB_STATUS represents the W3C status vocabulary.
+        /// VS represents the W3C status vocabulary.
         /// </summary>
-        public static class VOCAB_STATUS {
+        public static class VS {
 
             #region Properties
             /// <summary>
@@ -3086,10 +3086,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// vs:term_status
             /// </summary>
-            public static readonly RDFResource TERM_STATUS = new RDFResource(VOCAB_STATUS.BASE_URI + "term_status");
+            public static readonly RDFResource TERM_STATUS = new RDFResource(VS.BASE_URI + "term_status");
             #endregion
 
         }
+        #endregion
+
         #endregion
 
     }

@@ -106,7 +106,7 @@ namespace RDFSharp.Model
             //sioc
             AddNamespace(new RDFNamespace(RDFVocabulary.SIOC.PREFIX,          RDFVocabulary.SIOC.BASE_URI));
             //vs
-            AddNamespace(new RDFNamespace(RDFVocabulary.VOCAB_STATUS.PREFIX,  RDFVocabulary.VOCAB_STATUS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.VS.PREFIX,            RDFVocabulary.VS.BASE_URI));
             #endregion
         }
         #endregion
