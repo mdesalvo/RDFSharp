@@ -26,6 +26,8 @@ namespace RDFSharp.Model
     public static class RDFGraphSerializer {
 
         #region Methods
+
+        #region Write
         /// <summary>
         /// Writes the given graph to the given file in the given RDF format. 
         /// </summary>
@@ -55,14 +57,16 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot write RDF file because given \"graph\" parameter is null.");
             }
         }
+        #endregion
 
+        #region Read
         /// <summary>
         /// Reads the given file in the given RDF format to a graph. 
         /// </summary>
         public static RDFGraph ReadRDF(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
             if (filepath     != null) {
                 if (File.Exists(filepath)) {
-                    switch(rdfFormat) {
+                    switch     (rdfFormat) {
                         case RDFModelEnums.RDFFormats.NTriples:
                              return RDFNTriples.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.RdfXml:
@@ -77,8 +81,29 @@ namespace RDFSharp.Model
             }
             throw new RDFModelException("Cannot read RDF file because given \"filepath\" parameter is null.");
         }
+
+        /// <summary>
+        /// Reads the given stream in the given RDF format to a graph. 
+        /// </summary>
+        public static RDFGraph ReadRDF(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) {
+            if (inputStream != null) {
+                switch   (rdfFormat) {
+                    case RDFModelEnums.RDFFormats.NTriples:
+                         return RDFNTriples.Deserialize(inputStream);
+                    case RDFModelEnums.RDFFormats.RdfXml:
+                         return RDFXml.Deserialize(inputStream);
+                    case RDFModelEnums.RDFFormats.TriX:
+                         return RDFTrix.Deserialize(inputStream);
+                    case RDFModelEnums.RDFFormats.Turtle:
+                         throw new RDFModelException("Cannot read RDF stream because reading of Turtle format is not supported. What about joining the project to contribute it?");
+                }
+            }
+            throw new RDFModelException("Cannot read RDF stream because given \"inputStream\" parameter is null.");
+        }
         #endregion
-        
+
+        #endregion
+
     }
 
 }

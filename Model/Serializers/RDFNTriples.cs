@@ -30,6 +30,8 @@ namespace RDFSharp.Model
     internal static class RDFNTriples {
 
         #region Methods
+
+        #region Write
         /// <summary>
         /// Serializes the given graph to the given filepath using N-Triples data format. 
         /// </summary>
@@ -117,7 +119,9 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot serialize N-Triples because: " + ex.Message, ex);
             }
         }
+        #endregion
 
+        #region Read
         /// <summary>
         /// Deserializes the given N-Triples filepath to a graph. 
         /// </summary>
@@ -227,6 +231,118 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot deserialize N-Triples because: " + ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Deserializes the given N-Triples stream to a graph. 
+        /// </summary>
+        internal static RDFGraph Deserialize(Stream inputStream) {
+            try {
+
+                #region deserialize
+                using(StreamReader sr  = new StreamReader(inputStream)) {
+                    RDFGraph result    = new RDFGraph();
+                    String  ntriple    = String.Empty;
+                    String[] tokens    = new String[3];
+                    while((ntriple     = sr.ReadLine()) != null) {
+
+                        #region sanitize & parse
+                        //Preliminary sanitizations: clean trailing space-like chars
+                        ntriple        = ntriple.Trim(new Char[] { ' ', '\t', '\r', '\n', '.' });
+
+                        //Skip empty or comment lines
+                        if (ntriple   == String.Empty || ntriple.StartsWith("#")) {
+                            continue;
+                        }
+
+                        //Parse the sanitized triple 
+                        tokens         = RDFModelUtilities.ParseNTriple(ntriple);
+                        #endregion
+
+                        #region subj
+                        String subj    = tokens[0].TrimStart(new Char[] { '<' })
+                                                  .TrimEnd(new   Char[] { '>' })
+                                                  .Replace("_:", "bnode:");
+                        RDFResource S  = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
+                        #endregion
+
+                        #region pred
+                        String pred    = tokens[1].TrimStart(new Char[] { '<' })
+                                                  .TrimEnd(new   Char[] { '>' });
+                        RDFResource P  = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
+                        #endregion
+
+                        #region object
+                        if (tokens[2].StartsWith("<")      ||
+                            tokens[2].StartsWith("bnode:") ||
+                            tokens[2].StartsWith("_:")) {
+                            String obj = tokens[2].TrimStart(new Char[] { '<' })
+                                                  .TrimEnd(new Char[] { '>' })
+                                                  .Replace("_:", "bnode:")
+                                                  .Trim(new Char[] { ' ', '\n', '\t', '\r' });
+                            var O      = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
+                            result.AddTriple(new RDFTriple(S, P, O));
+                        }
+                        #endregion
+
+                        #region literal
+                        else {
+
+                            #region sanitize
+                            tokens[2] = RDFModelUtilities.regexSqt.Replace(tokens[2], String.Empty);
+                            tokens[2] = RDFModelUtilities.regexEqt.Replace(tokens[2], String.Empty);
+                            tokens[2] = tokens[2].Replace("\\\"", "\"")
+                                                  .Replace("\\n", "\n")
+                                                  .Replace("\\t", "\t")
+                                                  .Replace("\\r", "\r");
+                            tokens[2] = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
+                            #endregion
+
+                            #region plain literal
+                            if (!tokens[2].Contains("^^") ||
+                                 tokens[2].EndsWith("^^") ||
+                                 tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<") {
+                                RDFPlainLiteral L    = null;
+                                if (RDFModelUtilities.regexLPL.Match(tokens[2]).Success) {
+                                    tokens[2]        = tokens[2].Replace("\"@", "@");
+                                    String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
+                                    String pLitLang  = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
+                                    L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
+                                }
+                                else {
+                                    L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
+                                }
+                                result.AddTriple(new RDFTriple(S, P, L));
+                            }
+                            #endregion
+
+                            #region typed literal
+                            else {
+                                tokens[2]             = tokens[2].Replace("\"^^", "^^");
+                                String tLitValue      = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
+                                String tLitDatatype   = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
+                                                                 .TrimStart(new Char[] { '<' })
+                                                                 .TrimEnd(new   Char[] { '>' });
+                                RDFDatatype dt        = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                                RDFTypedLiteral L     = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
+                                result.AddTriple(new RDFTriple(S, P, L));
+                            }
+                            #endregion
+
+                        }
+                        #endregion
+
+                    }
+                    return result;
+                }
+                #endregion
+
+            }
+            catch(Exception ex) {
+                throw new RDFModelException("Cannot deserialize N-Triples because: " + ex.Message, ex);
+            }
+        }
+        #endregion
+
         #endregion
 
     }

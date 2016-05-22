@@ -32,6 +32,8 @@ namespace RDFSharp.Model
     internal static class RDFXml {
 
         #region Methods
+
+        #region Write
         /// <summary>
         /// Serializes the given graph to the given filepath using Xml data format. 
         /// </summary>
@@ -282,7 +284,9 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot serialize Xml because: " + ex.Message, ex);
             }
         }
+        #endregion
 
+        #region Read
         /// <summary>
         /// Deserializes the given Xml filepath to a graph. 
         /// </summary>
@@ -451,6 +455,177 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot deserialize Xml because: " + ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Deserializes the given Xml stream to a graph. 
+        /// </summary>
+        internal static RDFGraph Deserialize(Stream inputStream) {
+            try {
+
+                #region deserialize
+                XmlReaderSettings xrs    = new XmlReaderSettings();
+                xrs.IgnoreComments       = true;
+                xrs.DtdProcessing        = DtdProcessing.Ignore;
+
+                RDFGraph result          = new RDFGraph();
+                using(XmlReader xr       = XmlReader.Create(new StreamReader(inputStream, Encoding.UTF8), xrs)) {
+
+                    #region load
+                    XmlDocument xmlDoc   = new XmlDocument();
+                    xmlDoc.Load(xr);
+                    #endregion
+
+                    #region root
+                    //Prepare the namespace table for the Xml selections
+                    var nsMgr            = new XmlNamespaceManager(new NameTable());
+                    nsMgr.AddNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI);
+
+                    //Select "rdf:RDF" root node
+                    XmlNode rdfRDF       = RDFModelUtilities.GetRdfRootNode(xmlDoc, nsMgr);
+                    #endregion
+
+                    #region prefixes
+                    //Select "xmlns" attributes and try to add them to the namespace register
+                    var xmlnsAttrs       = RDFModelUtilities.GetXmlnsNamespaces(rdfRDF, nsMgr);
+
+                    //Try to get the "xml:base" attribute, which is needed to resolve eventual relative #IDs in "rdf:about" nodes
+                    //If it is not found, set it to the graph Uri
+                    Uri xmlBase          = null;
+                    if (xmlnsAttrs      != null && xmlnsAttrs.Count > 0) {
+                        var xmlBaseAttr  = (rdfRDF.Attributes["xml:base"] ?? rdfRDF.Attributes["xmlns"]);
+                        if (xmlBaseAttr != null) {
+                            xmlBase      = RDFModelUtilities.GetUriFromString(xmlBaseAttr.Value);
+                        }
+                    }
+                    //Always keep in synch the Context and the xmlBase
+                    if(xmlBase          != null) {
+                        result.SetContext(xmlBase);
+                    }
+                    else {
+                        xmlBase          = result.Context;
+                    }
+                    #endregion
+
+                    #region elements
+                    //Parse resource elements, which are the childs of root node and represent the subjects
+                    if (rdfRDF.HasChildNodes) {
+                        var subjNodesEnum     = rdfRDF.ChildNodes.GetEnumerator();
+                        while(subjNodesEnum  != null && subjNodesEnum.MoveNext()) {
+
+                            #region subj
+                            //Get the current resource node
+                            XmlNode subjNode  = (XmlNode)subjNodesEnum.Current;
+                            RDFResource subj  = RDFModelUtilities.GetSubjectNode(subjNode, xmlBase, result);
+                            if(subj          == null) {
+                                continue;
+                            }
+                            #endregion
+
+                            #region predObjList
+                            //Parse pred elements, which are the childs of subj element
+                            if (subjNode.HasChildNodes) {
+                                IEnumerator predNodesEnum     = subjNode.ChildNodes.GetEnumerator();
+                                while(predNodesEnum          != null && predNodesEnum.MoveNext()) {
+
+                                    //Get the current pred node
+                                    RDFResource pred          = null;
+                                    XmlNode predNode          = (XmlNode)predNodesEnum.Current;
+                                    if(predNode.NamespaceURI == String.Empty) {
+                                       pred                   = new RDFResource(xmlBase + predNode.LocalName);
+                                    }
+                                    else {
+                                        pred                  = (predNode.LocalName.StartsWith("autoNS") ?
+                                                                    new RDFResource(predNode.NamespaceURI) :
+                                                                    new RDFResource(predNode.NamespaceURI + predNode.LocalName));
+                                    }
+
+                                    #region object
+                                    //Check if there is a "rdf:about" or a "rdf:resource" attribute
+                                    XmlAttribute rdfObject    =
+                                        (RDFModelUtilities.GetRdfAboutAttribute(predNode) ??
+                                            RDFModelUtilities.GetRdfResourceAttribute(predNode));
+                                    if(rdfObject             != null) {
+                                        //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri
+                                        String rdfObjectValue = RDFModelUtilities.ResolveRelativeNode(rdfObject, xmlBase);
+                                        RDFResource  obj      = new RDFResource(rdfObjectValue);
+                                        result.AddTriple(new RDFTriple(subj, pred, obj));
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region typed literal
+                                    //Check if there is a "rdf:datatype" attribute
+                                    XmlAttribute rdfDatatype  = RDFModelUtilities.GetRdfDatatypeAttribute(predNode);
+                                    if (rdfDatatype          != null) {
+                                        RDFDatatype dt        = RDFModelUtilities.GetDatatypeFromString(rdfDatatype.Value);
+                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerText), dt);
+                                        result.AddTriple(new RDFTriple(subj, pred, tLit));
+                                        continue;
+                                    }
+                                    //Check if there is a "rdf:parseType=Literal" attribute
+                                    XmlAttribute parseLiteral = RDFModelUtilities.GetParseTypeLiteralAttribute(predNode);
+                                    if (parseLiteral         != null) {
+                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerXml), RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.RDFS.PREFIX, "Literal"));
+                                        result.AddTriple(new RDFTriple(subj, pred, tLit));
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region plain literal
+                                    //Check if there is a "xml:lang" attribute, or if a unique textual child
+                                    XmlAttribute xmlLang      = RDFModelUtilities.GetXmlLangAttribute(predNode);
+                                    if (xmlLang              != null || (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text)) {
+                                        RDFPlainLiteral pLit  = new RDFPlainLiteral(HttpUtility.HtmlDecode(predNode.InnerText), (xmlLang != null ? xmlLang.Value : String.Empty));
+                                        result.AddTriple(new RDFTriple(subj, pred, pLit));
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region collection
+                                    //Check if there is a "rdf:parseType=Collection" attribute
+                                    XmlAttribute rdfCollect   = RDFModelUtilities.GetParseTypeCollectionAttribute(predNode);
+                                    if (rdfCollect           != null) {
+                                        RDFModelUtilities.ParseCollectionElements(xmlBase, predNode, subj, pred, result);
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    #region container
+                                    //Check if there is a "rdf:[Bag|Seq|Alt]" child node
+                                    XmlNode container        = RDFModelUtilities.GetContainerNode(predNode);
+                                    if (container           != null) {
+                                        //Distinguish the right type of RDF container to build
+                                        if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.Ordinal)     || container.LocalName.Equals("Bag", StringComparison.Ordinal)) {
+                                            RDFModelUtilities.ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
+                                        }
+                                        else if(container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.Ordinal) || container.LocalName.Equals("Seq", StringComparison.Ordinal)) {
+                                            RDFModelUtilities.ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
+                                        }
+                                        else if(container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.Ordinal) || container.LocalName.Equals("Alt", StringComparison.Ordinal)) {
+                                            RDFModelUtilities.ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
+                                        }
+                                    }
+                                    #endregion
+
+                                }
+                            }
+                            #endregion
+
+                        }
+                    }
+                    #endregion
+
+                }
+                return result;
+                #endregion
+
+            }
+            catch(Exception ex) {
+                throw new RDFModelException("Cannot deserialize Xml because: " + ex.Message, ex);
+            }
+        }
+        #endregion
+
         #endregion
 
     }
