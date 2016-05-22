@@ -27,7 +27,7 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFXml is responsible for managing serialization to and from Xml data format.
+    /// RDFXml is responsible for managing serialization to and from XML data format.
     /// </summary>
     internal static class RDFXml {
 
@@ -35,13 +35,20 @@ namespace RDFSharp.Model
 
         #region Write
         /// <summary>
-        /// Serializes the given graph to the given filepath using Xml data format. 
+        /// Serializes the given graph to the given filepath using XML data format. 
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath) {
+            Serialize(graph, new FileStream(filepath, FileMode.Create));
+        }
+
+        /// <summary>
+        /// Serializes the given graph to the given stream using XML data format. 
+        /// </summary>
+        internal static void Serialize(RDFGraph graph, Stream outputStream) {
             try {
 
                 #region serialize
-                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(filepath, Encoding.UTF8))  {
+                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, Encoding.UTF8))  {
                     XmlDocument rdfDoc            = new XmlDocument();
                     rdfxmlWriter.Formatting       = Formatting.Indented;
 

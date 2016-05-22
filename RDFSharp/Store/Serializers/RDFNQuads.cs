@@ -34,12 +34,19 @@ namespace RDFSharp.Store {
         /// Serializes the given store to the given filepath using N-Quads data format. 
         /// </summary>
         internal static void Serialize(RDFStore store, String filepath) {
+            Serialize(store, new FileStream(filepath, FileMode.Create));
+        }
+
+        /// <summary>
+        /// Serializes the given store to the given filepath using N-Quads data format. 
+        /// </summary>
+        internal static void Serialize(RDFStore store, Stream outputStream) {
             try {
 
                 #region serialize
-                using (StreamWriter sw            = new StreamWriter(filepath, false, Encoding.ASCII)) {
+                using (StreamWriter sw            = new StreamWriter(outputStream, Encoding.ASCII)) {
                     String quadrupleTemplate      = String.Empty;
-                    foreach (RDFQuadruple q      in store.SelectAllQuadruples()) {
+                    foreach (var q               in store.SelectAllQuadruples()) {
 
                         #region template
                         if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavors.SPO) {

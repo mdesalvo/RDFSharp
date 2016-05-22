@@ -33,10 +33,17 @@ namespace RDFSharp.Model
         /// Serializes the given graph to the given filepath using Turtle data format. 
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath) {
+            Serialize(graph, new FileStream(filepath, FileMode.Create));
+        }
+
+        /// <summary>
+        /// Serializes the given graph to the given stream using Turtle data format. 
+        /// </summary>
+        internal static void Serialize(RDFGraph graph, Stream outputStream) {
             try {
 
                 #region serialize
-                using (StreamWriter sw = new StreamWriter(filepath, false, Encoding.UTF8)) {
+                using (StreamWriter sw = new StreamWriter(outputStream, Encoding.UTF8)) {
 
                     #region prefixes
                     //Write the namespaces collected by the graph

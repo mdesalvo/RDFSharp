@@ -57,6 +57,36 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot write RDF file because given \"graph\" parameter is null.");
             }
         }
+
+        /// <summary>
+        /// Writes the given graph to the given stream in the given RDF format. 
+        /// </summary>
+        public static void WriteRDF(RDFModelEnums.RDFFormats rdfFormat, RDFGraph graph, Stream outputStream) {
+            if (graph            != null) {
+                if (outputStream != null) {
+                    switch    (rdfFormat) {
+                        case RDFModelEnums.RDFFormats.NTriples:
+                             RDFNTriples.Serialize(graph, outputStream);
+                             break;
+                        case RDFModelEnums.RDFFormats.RdfXml:
+                             RDFXml.Serialize(graph, outputStream);
+                             break;
+                        case RDFModelEnums.RDFFormats.TriX:
+                             RDFTrix.Serialize(graph, outputStream);
+                             break;
+                        case RDFModelEnums.RDFFormats.Turtle:
+                             RDFTurtle.Serialize(graph, outputStream);
+                             break;
+                    }
+                }
+                else {
+                    throw new RDFModelException("Cannot write RDF file because given \"outputStream\" parameter is null.");
+                }
+            }
+            else {
+                throw new RDFModelException("Cannot write RDF file because given \"graph\" parameter is null.");
+            }
+        }
         #endregion
 
         #region Read

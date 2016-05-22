@@ -48,6 +48,30 @@ namespace RDFSharp.Store {
                 throw new RDFStoreException("Cannot write RDF file because given \"store\" parameter is null.");
             }
         }
+
+        /// <summary>
+        /// Writes the given store to the given stream in the given RDF format. 
+        /// </summary>
+        public static void WriteRDF(RDFStoreEnums.RDFFormats rdfFormat, RDFStore store, Stream outputStream) {
+            if (store            != null) {
+                if (outputStream != null) {
+                    switch    (rdfFormat) {
+                        case RDFStoreEnums.RDFFormats.NQuads:
+                             RDFNQuads.Serialize(store, outputStream);
+                             break;
+                        case RDFStoreEnums.RDFFormats.TriX:
+                             RDFTriX.Serialize(store, outputStream);
+                             break;
+                    }
+                }
+                else {
+                    throw new RDFStoreException("Cannot write RDF file because given \"outputStream\" parameter is null.");
+                }
+            }
+            else {
+                throw new RDFStoreException("Cannot write RDF file because given \"store\" parameter is null.");
+            }
+        }
         #endregion
 
     }

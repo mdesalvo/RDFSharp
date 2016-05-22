@@ -36,10 +36,17 @@ namespace RDFSharp.Model
         /// Serializes the given graph to the given filepath using TriX data format. 
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath) {
+            Serialize(graph, new FileStream(filepath, FileMode.Create));
+        }
+
+        /// <summary>
+        /// Serializes the given graph to the given stream using TriX data format. 
+        /// </summary>
+        internal static void Serialize(RDFGraph graph, Stream outputStream) {
             try {
 
                 #region serialize
-                using (XmlTextWriter trixWriter = new XmlTextWriter(filepath, Encoding.UTF8))  {
+                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, Encoding.UTF8))  {
                     XmlDocument trixDoc         = new XmlDocument();
                     trixWriter.Formatting       = Formatting.Indented;
 
