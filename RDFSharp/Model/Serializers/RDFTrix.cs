@@ -196,6 +196,10 @@ namespace RDFSharp.Model
 
                     #region graph
                     if (trixDoc.DocumentElement        != null) {
+                        if (trixDoc.DocumentElement.ChildNodes.Count > 1) {
+                            throw new Exception("given file encodes more than one <graph> element.");
+                        }
+
                         var graphEnum                   = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                         while(graphEnum                != null && graphEnum.MoveNext()) {
                             XmlNode  graph              = (XmlNode)graphEnum.Current;
