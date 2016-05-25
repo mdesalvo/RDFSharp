@@ -182,37 +182,44 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs       = new XmlReaderSettings();
-                xrs.IgnoreComments          = true;
-                xrs.DtdProcessing           = DtdProcessing.Ignore;
-
-                RDFGraph result             = new RDFGraph();
-                using(XmlReader xr          = XmlReader.Create(new StreamReader(inputStream, Encoding.UTF8), xrs)) {
+                XmlReaderSettings xrs                   = new XmlReaderSettings();
+                xrs.IgnoreComments                      = true;
+                xrs.DtdProcessing                       = DtdProcessing.Ignore;
+                                                        
+                RDFGraph result                         = new RDFGraph();
+                using(XmlReader xr                      = XmlReader.Create(new StreamReader(inputStream, Encoding.UTF8), xrs)) {
 
                     #region load
-                    XmlDocument trixDoc     = new XmlDocument();
+                    XmlDocument trixDoc                 = new XmlDocument();
                     trixDoc.Load(xr);
                     #endregion
 
                     #region graph
                     if (trixDoc.DocumentElement        != null) {
                         if (trixDoc.DocumentElement.ChildNodes.Count > 1) {
-                            throw new Exception("given file encodes more than one <graph> element.");
+                            throw new Exception(" given TriX file seems to encode more than one graph.");
                         }
 
                         var graphEnum                   = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                         while(graphEnum                != null && graphEnum.MoveNext()) {
                             XmlNode  graph              = (XmlNode)graphEnum.Current;
-                            RDFGraph g                  = new RDFGraph();
+                            if (!graph.Name.Equals("graph", StringComparison.Ordinal)) {
+                                 throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
+                            }                            
 
                             #region triple
+                            var encodedUris             = 0;
                             var tripleEnum              = graph.ChildNodes.GetEnumerator();
                             while (tripleEnum          != null && tripleEnum.MoveNext()) {
                                 XmlNode triple          = (XmlNode)tripleEnum.Current;
 
                                 #region uri
                                 if (triple.Name.Equals("uri", StringComparison.Ordinal)) {
-                                    g.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText));
+                                    encodedUris++;
+                                    if (encodedUris > 1) {
+                                        throw new Exception(" given file encodes a graph with more than one \"<uri>\" element.");
+                                    }
+                                    result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText));
                                 }
                                 #endregion
 
@@ -253,9 +260,9 @@ namespace RDFSharp.Model
                                                 triple.ChildNodes[2].InnerText = "bnode:" + triple.ChildNodes[2].InnerText.Replace("_:", String.Empty);
                                             }
                                         }
-                                        g.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                  new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                  new RDFResource(triple.ChildNodes[2].InnerText)));
+                                        result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                       new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                       new RDFResource(triple.ChildNodes[2].InnerText)));
                                     }
                                     #endregion
 
@@ -268,26 +275,26 @@ namespace RDFSharp.Model
                                             if(xmlLang          != null) {
 
                                                 //Plain literal with language
-                                                g.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                          new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                          new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText), xmlLang.Value)));
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText), xmlLang.Value)));
 
                                             }
                                             else {
 
                                                 //Plain literal without language
-                                                g.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                          new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                          new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText))));
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText))));
 
                                             }
                                         }
                                         else {
 
                                             //Plain literal without language
-                                            g.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                      new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                      new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText))));
+                                            result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                           new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                           new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText))));
 
                                         }
                                     }
@@ -297,10 +304,10 @@ namespace RDFSharp.Model
                                     else if(triple.ChildNodes[2].Name.Equals("typedLiteral", StringComparison.Ordinal)) {
                                         if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0) {
                                             XmlAttribute rdfDtype = triple.ChildNodes[2].Attributes["datatype"];
-                                            if(rdfDtype          != null) {
-                                                g.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                          new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                          new RDFTypedLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText), RDFModelUtilities.GetDatatypeFromString(rdfDtype.Value))));
+                                            if (rdfDtype         != null) {
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFTypedLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText), RDFModelUtilities.GetDatatypeFromString(rdfDtype.Value))));
                                             }
                                             else {
                                                 throw new Exception(" found typed literal without required \"datatype\" attribute.");
@@ -333,8 +340,6 @@ namespace RDFSharp.Model
                             }
                             #endregion
 
-                            result = result.UnionWith(g);
-                            result.SetContext(g.Context);
                         }
                     }
                     #endregion
