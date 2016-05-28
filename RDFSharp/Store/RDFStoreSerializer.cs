@@ -25,6 +25,8 @@ namespace RDFSharp.Store {
     public static class RDFStoreSerializer {
 
         #region Methods
+
+        #region Write
         /// <summary>
         /// Writes the given store to the given file in the given RDF format. 
         /// </summary>
@@ -72,6 +74,39 @@ namespace RDFSharp.Store {
                 throw new RDFStoreException("Cannot write RDF file because given \"store\" parameter is null.");
             }
         }
+        #endregion
+
+        #region Read
+        /// <summary>
+        /// Reads the given file in the given RDF format to a memory store. 
+        /// </summary>
+        public static RDFMemoryStore ReadRDF(RDFStoreEnums.RDFFormats rdfFormat, String filepath) {
+            if (filepath != null) {
+                if (File.Exists(filepath)) {
+                    switch(rdfFormat) {
+                        case RDFStoreEnums.RDFFormats.TriX:
+                             return RDFTriX.Deserialize(filepath);
+                    }
+                }
+                throw new RDFStoreException("Cannot read RDF file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+            }
+            throw new RDFStoreException("Cannot read RDF file because given \"filepath\" parameter is null.");
+        }
+
+        /// <summary>
+        /// Reads the given stream in the given RDF format to a memory store. 
+        /// </summary>
+        public static RDFMemoryStore ReadRDF(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream) {
+            if (inputStream != null) {
+                switch (rdfFormat) {
+                    case RDFStoreEnums.RDFFormats.TriX:
+                         return RDFTriX.Deserialize(inputStream);
+                }
+            }
+            throw new RDFStoreException("Cannot read RDF stream because given \"inputStream\" parameter is null.");
+        }
+        #endregion
+
         #endregion
 
     }
