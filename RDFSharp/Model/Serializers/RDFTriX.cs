@@ -25,9 +25,9 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFTrix is responsible for managing serialization to and from TriX data format.
+    /// RDFTriX is responsible for managing serialization to and from TriX data format.
     /// </summary>
-    internal static class RDFTrix {
+    internal static class RDFTriX {
 
         #region Methods
 

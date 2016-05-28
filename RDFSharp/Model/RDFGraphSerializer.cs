@@ -42,7 +42,7 @@ namespace RDFSharp.Model
                              RDFXml.Serialize(graph, filepath);
                              break;
                         case RDFModelEnums.RDFFormats.TriX:
-                             RDFTrix.Serialize(graph, filepath);
+                             RDFTriX.Serialize(graph, filepath);
                              break;
                         case RDFModelEnums.RDFFormats.Turtle:
                              RDFTurtle.Serialize(graph, filepath);
@@ -72,7 +72,7 @@ namespace RDFSharp.Model
                              RDFXml.Serialize(graph, outputStream);
                              break;
                         case RDFModelEnums.RDFFormats.TriX:
-                             RDFTrix.Serialize(graph, outputStream);
+                             RDFTriX.Serialize(graph, outputStream);
                              break;
                         case RDFModelEnums.RDFFormats.Turtle:
                              RDFTurtle.Serialize(graph, outputStream);
@@ -102,7 +102,7 @@ namespace RDFSharp.Model
                         case RDFModelEnums.RDFFormats.RdfXml:
                              return RDFXml.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.TriX:
-                             return RDFTrix.Deserialize(filepath);
+                             return RDFTriX.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.Turtle:
                              throw new RDFModelException("Cannot read RDF file because reading of Turtle format is not supported. What about joining the project to contribute it?");
                     }
@@ -123,7 +123,7 @@ namespace RDFSharp.Model
                     case RDFModelEnums.RDFFormats.RdfXml:
                          return RDFXml.Deserialize(inputStream);
                     case RDFModelEnums.RDFFormats.TriX:
-                         return RDFTrix.Deserialize(inputStream);
+                         return RDFTriX.Deserialize(inputStream);
                     case RDFModelEnums.RDFFormats.Turtle:
                          throw new RDFModelException("Cannot read RDF stream because reading of Turtle format is not supported. What about joining the project to contribute it?");
                 }

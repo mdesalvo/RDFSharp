@@ -75,7 +75,7 @@
     <Compile Include="Model\RDFTypedLiteral.cs" />
     <Compile Include="Model\RDFVocabulary.cs" />
     <Compile Include="Model\Serializers\RDFNTriples.cs" />
-    <Compile Include="Model\Serializers\RDFTrix.cs" />
+    <Compile Include="Model\Serializers\RDFTriX.cs" />
     <Compile Include="Model\Serializers\RDFTurtle.cs" />
     <Compile Include="Model\Serializers\RDFXml.cs" />
     <!-- Query -->
