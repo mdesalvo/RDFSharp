@@ -2024,6 +2024,54 @@ namespace RDFSharp.Model
             public static readonly RDFResource MAPPING_RELATION = new RDFResource(SKOS.BASE_URI + "mappingRelation");
             #endregion
 
+            #region Extended Properties
+            public static class SKOSXL {
+
+                #region Properties
+                /// <summary>
+                /// skosxl
+                /// </summary>
+                public static readonly String PREFIX = "skosxl";
+
+                /// <summary>
+                /// http://www.w3.org/2008/05/skos-xl#
+                /// </summary>
+                public static readonly String BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
+
+                /// <summary>
+                /// skosxl:Label
+                /// </summary>
+                public static readonly RDFResource LABEL = new RDFResource(SKOSXL.BASE_URI + "Label");
+
+                /// <summary>
+                /// skosxl:altLabel
+                /// </summary>
+                public static readonly RDFResource ALT_LABEL = new RDFResource(SKOSXL.BASE_URI + "altLabel");
+
+                /// <summary>
+                /// skosxl:hiddenLabel
+                /// </summary>
+                public static readonly RDFResource HIDDEN_LABEL = new RDFResource(SKOSXL.BASE_URI + "hiddenLabel");
+
+                /// <summary>
+                /// skosxl:labelRelation
+                /// </summary>
+                public static readonly RDFResource LABEL_RELATION = new RDFResource(SKOSXL.BASE_URI + "labelRelation");
+
+                /// <summary>
+                /// skosxl:literalForm
+                /// </summary>
+                public static readonly RDFResource LITERAL_FORM = new RDFResource(SKOSXL.BASE_URI + "literalForm");
+
+                /// <summary>
+                /// skosxl:prefLabel
+                /// </summary>
+                public static readonly RDFResource PREF_LABEL = new RDFResource(SKOSXL.BASE_URI + "prefLabel");
+                #endregion
+
+            }
+            #endregion
+
         }
         #endregion
 

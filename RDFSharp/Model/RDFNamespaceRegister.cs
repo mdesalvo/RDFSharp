@@ -82,8 +82,9 @@ namespace RDFSharp.Model
             #region Extended Namespaces
             //foaf
             AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX,          RDFVocabulary.FOAF.BASE_URI));
-            //skos
+            //skos (and extensions)
             AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX,          RDFVocabulary.SKOS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX,   RDFVocabulary.SKOS.SKOSXL.BASE_URI));
             //dc (and extensions)
             AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX,            RDFVocabulary.DC.BASE_URI));
             AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX,       RDFVocabulary.DC.DCAM.BASE_URI));
