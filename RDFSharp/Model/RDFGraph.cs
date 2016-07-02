@@ -272,6 +272,57 @@ namespace RDFSharp.Model
             this.GraphMetadata.ClearMetadata();
             return this;
         }
+
+        /// <summary>
+        /// Compacts the reified triples by removing their 4 standard statements
+        /// </summary>
+        public RDFGraph UnReifyTriples() {
+
+            //Create SPARQL SELECT query for detecting reified triples
+            var T = new RDFVariable("T", true);
+            var S = new RDFVariable("S", true);
+            var P = new RDFVariable("P", true);
+            var O = new RDFVariable("O", true);
+            var Q = new RDFSelectQuery()
+                            .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
+                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
+                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
+                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))
+                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O)));
+
+            //Apply it to the graph
+            var R = Q.ApplyToGraph(this);
+
+            //Iterate results
+            var reifiedTriples = R.SelectResults.Rows.GetEnumerator();
+            while (reifiedTriples.MoveNext()) {
+
+                //Get reification data (T, S, P, O)
+                var tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?T"].ToString());
+                var tSubject   = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?S"].ToString());
+                var tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?P"].ToString());
+                var tObject    = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?O"].ToString());
+
+                //Cleanup graph from detected reifications
+                if (tObject   is RDFResource) {
+                    this.AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
+                }
+                else {
+                    this.AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
+                }
+
+            }
+
+            return this;
+        }
         #endregion
 
         #region Select
