@@ -30,6 +30,8 @@ namespace RDFSharp.Store {
     internal static class RDFNQuads {
 
         #region Methods
+
+        #region Write
         /// <summary>
         /// Serializes the given store to the given filepath using N-Quads data format. 
         /// </summary>
@@ -128,6 +130,8 @@ namespace RDFSharp.Store {
                 throw new RDFStoreException("Cannot serialize N-Quads because: " + ex.Message, ex);
             }
         }
+        #endregion
+
         #endregion
 
     }

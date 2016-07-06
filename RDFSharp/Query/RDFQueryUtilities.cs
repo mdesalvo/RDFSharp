@@ -79,7 +79,7 @@ namespace RDFSharp.Query
                      pMember.EndsWith("^^") ||
                      RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
                      RDFPlainLiteral pLit = null;
-                     if (RDFModelUtilities.regexLPL.Match(pMember).Success) {
+                     if (RDFNTriples.regexLPL.Match(pMember).Success) {
                          String pLitVal   = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
                          String pLitLng   = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
                          pLit             = new RDFPlainLiteral(pLitVal, pLitLng);

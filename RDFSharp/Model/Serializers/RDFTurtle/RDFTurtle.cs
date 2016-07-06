@@ -28,7 +28,16 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFTurtle {
 
+        #region Properties
+        /// <summary>
+        /// Regex to catch literals which must be escaped as long literals in Turtle
+        /// </summary>
+        internal static readonly Regex regexTTL = new Regex("[\n\r\t\"]", RegexOptions.Compiled);
+        #endregion
+
         #region Methods
+
+        #region Write
         /// <summary>
         /// Serializes the given graph to the given filepath using Turtle data format. 
         /// </summary>
@@ -138,7 +147,7 @@ namespace RDFSharp.Model
 
                                 //Detect presence of long-literals
                                 var litValDelim = "\"";
-                                if (RDFModelUtilities.regexTTL.Match(triple.Object.ToString()).Success) {
+                                if (regexTTL.Match(triple.Object.ToString()).Success) {
                                     litValDelim = "\"\"\"";
                                 }
 
@@ -189,6 +198,41 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot serialize Turtle because: " + ex.Message, ex);
             }
         }
+        #endregion
+
+        #region Read
+        /// <summary>
+        /// Deserializes the given Turtle filepath to a graph. 
+        /// </summary>
+        internal static RDFGraph Deserialize(String filepath) {
+            return Deserialize(new FileStream(filepath, FileMode.Open));
+        }
+
+        /// <summary>
+        /// Deserializes the given Turtle stream to a graph. 
+        /// </summary>
+        internal static RDFGraph Deserialize(Stream inputStream) {
+            try {
+
+                #region deserialize
+                using(StreamReader sr  = new StreamReader(inputStream)) {
+                      RDFGraph result  = new RDFGraph();
+                      while (!sr.EndOfStream) {
+
+                          
+
+                      }
+                      return result;
+                }
+                #endregion
+
+            }
+            catch(Exception ex) {
+                throw new RDFModelException("Cannot deserialize Turtle because: " + ex.Message, ex);
+            }
+        }
+        #endregion
+
         #endregion
 
     }

@@ -15,11 +15,12 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+
 
 namespace RDFSharp.Model
 {
@@ -28,6 +29,25 @@ namespace RDFSharp.Model
     /// RDFNTriples is responsible for managing serialization to and from N-Triples data format.
     /// </summary>
     internal static class RDFNTriples {
+
+        #region Properties
+        /// <summary>
+        /// Regex to parse N-Triples focusing on predicate position 
+        /// </summary>
+        internal static readonly Regex regexNT  = new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        /// <summary>
+        /// Regex to detect presence of a plain literal with language tag within a given N-Triple
+        /// </summary>
+        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
+        /// <summary>
+        /// Regex to detect presence of starting " in the value of a given N-Triple literal
+        /// </summary>
+        internal static readonly Regex regexSqt = new Regex(@"^""", RegexOptions.Compiled);
+        /// <summary>
+        /// Regex to detect presence of ending " in the value of a given N-Triple literal
+        /// </summary>
+        internal static readonly Regex regexEqt = new Regex(@"""$", RegexOptions.Compiled);
+        #endregion
 
         #region Methods
 
@@ -159,7 +179,7 @@ namespace RDFSharp.Model
                         }
 
                         //Parse the sanitized triple 
-                        tokens         = RDFModelUtilities.ParseNTriple(ntriple);
+                        tokens         = ParseNTriple(ntriple);
                         #endregion
 
                         #region subj
@@ -192,8 +212,8 @@ namespace RDFSharp.Model
                         else {
 
                             #region sanitize
-                            tokens[2] = RDFModelUtilities.regexSqt.Replace(tokens[2], String.Empty);
-                            tokens[2] = RDFModelUtilities.regexEqt.Replace(tokens[2], String.Empty);
+                            tokens[2] = regexSqt.Replace(tokens[2], String.Empty);
+                            tokens[2] = regexEqt.Replace(tokens[2], String.Empty);
                             tokens[2] = tokens[2].Replace("\\\"", "\"")
                                                   .Replace("\\n", "\n")
                                                   .Replace("\\t", "\t")
@@ -206,7 +226,7 @@ namespace RDFSharp.Model
                                  tokens[2].EndsWith("^^") ||
                                  tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<") {
                                 RDFPlainLiteral L    = null;
-                                if (RDFModelUtilities.regexLPL.Match(tokens[2]).Success) {
+                                if (regexLPL.Match(tokens[2]).Success) {
                                     tokens[2]        = tokens[2].Replace("\"@", "@");
                                     String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
                                     String pLitLang  = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
@@ -244,6 +264,73 @@ namespace RDFSharp.Model
             catch(Exception ex) {
                 throw new RDFModelException("Cannot deserialize N-Triples because: " + ex.Message, ex);
             }
+        }
+        #endregion
+
+        #region Utilities
+        /// <summary>
+        /// Tries to parse the given N-Triple
+        /// </summary>
+        internal static String[] ParseNTriple(String ntriple) {
+            String[] tokens        = new String[3];
+
+            //A legal NTriple starts with "_:" of blanks or "<" of non-blanks
+            if (ntriple.StartsWith("_:") || ntriple.StartsWith("<")) {
+
+                //Parse NTriple by exploiting surrounding spaces and angle brackets of predicate
+                tokens             = regexNT.Split(ntriple, 2);
+
+                //An illegal NTriple cannot be splitted into 3 parts with this regex
+                if (tokens.Length != 3) {
+                    throw new Exception("found illegal N-Triple, predicate must be surrounded by \" <\" and \"> \"");
+                }
+
+                //Check subject for well-formedness
+                tokens[0]          = tokens[0].Trim(new Char[] { ' ', '\n', '\r', '\t' });
+                if (tokens[0].Contains(" ")) {
+                    throw new Exception("found illegal N-Triple, subject Uri cannot contain spaces");
+                }
+                if ((tokens[0].StartsWith("<")  && !tokens[0].EndsWith(">")) ||
+                    (tokens[0].StartsWith("_:") &&  tokens[0].EndsWith(">")) ||
+                    (tokens[0].Count(c => c.Equals('<')) > 1)                ||
+                    (tokens[0].Count(c => c.Equals('>')) > 1)) {
+                    throw new Exception("found illegal N-Triple, subject Uri is not well-formed");
+                }
+
+                //Check predicate for well-formedness
+                tokens[1]          = tokens[1].Trim(new Char[] { ' ', '\n', '\r', '\t' });
+                if (tokens[1].Contains(" ")) {
+                    throw new Exception("found illegal N-Triple, predicate Uri cannot contain spaces");
+                }
+                if ((tokens[1].Count(c => c.Equals('<')) > 1)  ||
+                    (tokens[1].Count(c => c.Equals('>')) > 1))  {
+                    throw new Exception("found illegal N-Triple, predicate Uri is not well-formed");
+                }
+
+                //Check object for well-formedness
+                tokens[2]          = tokens[2].Trim(new Char[] { ' ', '\n', '\r', '\t' });
+                if (tokens[2].StartsWith("<")) {
+                    if (tokens[2].Contains(" ")) {
+                        throw new Exception("found illegal N-Triple, object Uri cannot contain spaces");
+                    }
+                    if ((!tokens[2].EndsWith(">")                   ||
+                         (tokens[2].Count(c => c.Equals('<')) > 1)  ||
+                         (tokens[2].Count(c => c.Equals('>')) > 1))) {
+                        throw new Exception("found illegal N-Triple, object Uri is not well-formed");
+                    }
+                }
+                else if (tokens[2].StartsWith("_:")) {
+                     if (tokens[2].EndsWith(">")) {
+                         throw new Exception("found illegal N-Triple, object Uri is not well-formed");
+                     }
+                }
+
+            }
+            else {
+                throw new Exception("found illegal N-Triple, must start with \"_:\" or with \"<\"");
+            }
+
+            return tokens;
         }
         #endregion
 
