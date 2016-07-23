@@ -73,10 +73,10 @@
     <Compile Include="Model\RDFTriple.cs" />
     <Compile Include="Model\RDFTypedLiteral.cs" />
     <Compile Include="Model\RDFVocabulary.cs" />
-    <Compile Include="Model\Serializers\RDFNTriples\RDFNTriples.cs" />
-    <Compile Include="Model\Serializers\RDFTriX\RDFTriX.cs" />
-    <Compile Include="Model\Serializers\RDFTurtle\RDFTurtle.cs" />
-    <Compile Include="Model\Serializers\RDFXml\RDFXml.cs" />
+    <Compile Include="Model\Serializers\RDFNTriples.cs" />
+    <Compile Include="Model\Serializers\RDFTriX.cs" />
+    <Compile Include="Model\Serializers\RDFTurtle.cs" />
+    <Compile Include="Model\Serializers\RDFXml.cs" />
     <!-- Query -->
     <Compile Include="Query\RDFFilter.cs" />
     <Compile Include="Query\RDFModifier.cs" />

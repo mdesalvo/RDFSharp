@@ -104,7 +104,7 @@ namespace RDFSharp.Model
                         case RDFModelEnums.RDFFormats.TriX:
                              return RDFTriX.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.Turtle:
-                             return RDFTurtle.Deserialize(filepath);
+                             throw new RDFModelException("Cannot read RDF file because reading of Turtle format is not supported. What about joining the project to contribute it?");
                     }
                 }
                 throw new RDFModelException("Cannot read RDF file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
@@ -125,7 +125,7 @@ namespace RDFSharp.Model
                     case RDFModelEnums.RDFFormats.TriX:
                          return RDFTriX.Deserialize(inputStream);
                     case RDFModelEnums.RDFFormats.Turtle:
-                         return RDFTurtle.Deserialize(inputStream);
+                         throw new RDFModelException("Cannot read RDF stream because reading of Turtle format is not supported. What about joining the project to contribute it?");
                 }
             }
             throw new RDFModelException("Cannot read RDF stream because given \"inputStream\" parameter is null.");

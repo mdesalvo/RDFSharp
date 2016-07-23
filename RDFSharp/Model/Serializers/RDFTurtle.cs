@@ -36,8 +36,6 @@ namespace RDFSharp.Model
         #endregion
 
         #region Methods
-
-        #region Write
         /// <summary>
         /// Serializes the given graph to the given filepath using Turtle data format. 
         /// </summary>
@@ -198,41 +196,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot serialize Turtle because: " + ex.Message, ex);
             }
         }
-        #endregion
-
-        #region Read
-        /// <summary>
-        /// Deserializes the given Turtle filepath to a graph. 
-        /// </summary>
-        internal static RDFGraph Deserialize(String filepath) {
-            return Deserialize(new FileStream(filepath, FileMode.Open));
-        }
-
-        /// <summary>
-        /// Deserializes the given Turtle stream to a graph. 
-        /// </summary>
-        internal static RDFGraph Deserialize(Stream inputStream) {
-            try {
-
-                #region deserialize
-                using(StreamReader sr  = new StreamReader(inputStream)) {
-                      RDFGraph result  = new RDFGraph();
-                      while (!sr.EndOfStream) {
-
-                          
-
-                      }
-                      return result;
-                }
-                #endregion
-
-            }
-            catch(Exception ex) {
-                throw new RDFModelException("Cannot deserialize Turtle because: " + ex.Message, ex);
-            }
-        }
-        #endregion
-
         #endregion
 
     }
