@@ -33,7 +33,7 @@ namespace RDFSharp.Store {
         #region Properties
         internal static readonly Regex SPB        = new Regex(@"^<[^>]+>\s*<[^>]+>\s*_:[^>]+\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPO        = new Regex(@"^<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPBC       = new Regex(@"^<[^>]+>\s*<[^>]+>\s*_:[^>]+\s*<[^>]+>\s*.$", RegexOptions.Compiled);
@@ -405,7 +405,20 @@ namespace RDFSharp.Store {
 
                     //S->P->L(PLAIN)->
                     if (SPL_PLAIN.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //object
+                        tokens[2] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
