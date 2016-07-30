@@ -522,14 +522,45 @@ namespace RDFSharp.Store {
 
                     //B->P->O->C
                     if (BPOC.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //object
+                        tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
+
+                        //context
+                        tokens[3] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
 
                     //B->P->O->
                     if (BPO.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //object
+                        tokens[2] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
