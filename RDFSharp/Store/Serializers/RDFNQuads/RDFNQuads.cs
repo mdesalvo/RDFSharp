@@ -34,23 +34,23 @@ namespace RDFSharp.Store {
         internal static readonly Regex SPB        = new Regex(@"^<[^>]+>\s*<[^>]+>\s*_:[^>]+\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPO        = new Regex(@"^<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPBC       = new Regex(@"^<[^>]+>\s*<[^>]+>\s*_:[^>]+\s*<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPOC       = new Regex(@"^<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""@[\w]+(-[\w]+)?\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPLC_TLIT  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*""[\w]+""\^\^<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_TLIT  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex BPB        = new Regex(@"^_:[^>]+\s*<[^>]+>\s*_:[^>]+\s*.$", RegexOptions.Compiled);
         internal static readonly Regex BPO        = new Regex(@"^_:[^>]+\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_PLAIN  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*""[\w]+""\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*""[\w]+""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_TLIT   = new Regex(@"^_:[^>]+\s*<[^>]+>\s*""[\w]+""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_PLAIN  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_TLIT   = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex BPBC       = new Regex(@"^_:[^>]+\s*<[^>]+>\s*_:[^>]+\s*<[^>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex BPOC       = new Regex(@"^_:[^>]+\s*<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^>]+\s*<[^>]+>\s*""[\w]+""\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^>]+\s*<[^>]+>\s*""[\w]+""@[\w]+(-[\w]+)?\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPLC_TLIT  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*""[\w]+""\^\^<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_TLIT  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
         #endregion
 
         #region Methods
@@ -398,7 +398,25 @@ namespace RDFSharp.Store {
 
                     //S->P->L(PLAIN)->C
                     if (SPLC_PLAIN.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal
+                        tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
+
+                        //context
+                        tokens[3] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
