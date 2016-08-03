@@ -15,9 +15,7 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -183,6 +181,13 @@ namespace RDFSharp.Store {
                     while((nquad          = sr.ReadLine()) != null) {
 
                         #region sanitize  & tokenize
+                        //Cleanup previous data
+                        S                 = null;
+                        P                 = null;
+                        O                 = null;
+                        L                 = null;
+                        C                 = new RDFContext();
+
                         //Preliminary sanitizations: clean trailing space-like chars
                         nquad             = nquad.Trim(new Char[] { ' ', '\t', '\r', '\n' });
 
@@ -488,14 +493,45 @@ namespace RDFSharp.Store {
 
                     //S->P->L(TLIT)->C
                     if (SPLC_TLIT.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //typed literal
+                        tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
+
+                        //context
+                        tokens[3] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
 
                     //S->P->L(TLIT)->
                     if (SPL_TLIT.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //typed literal
+                        tokens[2] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
@@ -643,28 +679,90 @@ namespace RDFSharp.Store {
 
                     //B->P->L(PLANG)->C
                     if (BPLC_PLANG.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal with language
+                        tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
+
+                        //context
+                        tokens[3] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
 
                     //B->P->L(PLANG)->
                     if (BPL_PLANG.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal with language
+                        tokens[2] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
 
                     //B->P->L(TLIT)->C
                     if (BPLC_TLIT.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //typed literal
+                        tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
+
+                        //context
+                        tokens[3] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
 
                     //B->P->L(TLIT)->
                     if (BPL_TLIT.Match(nquad).Success) {
-                        nquad = nquad.TrimEnd(new Char[] { '.' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
+                        nquad     = nquad.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        nquad     = nquad.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //typed literal
+                        tokens[2] = nquad.Trim(new Char[] { ' ', '\t' });
 
                         return tokens;
                     }
