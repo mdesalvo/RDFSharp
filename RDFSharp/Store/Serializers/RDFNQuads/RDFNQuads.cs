@@ -416,7 +416,7 @@ namespace RDFSharp.Store {
                         tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
                         //plain literal
-                        tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                        tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
                         nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
                         tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
 
@@ -461,7 +461,7 @@ namespace RDFSharp.Store {
                         tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
                         //plain literal with language
-                        tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                        tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
                         nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
                         tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
 
@@ -647,7 +647,7 @@ namespace RDFSharp.Store {
                         tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
                         //plain literal
-                        tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                        tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
                         nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
                         tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
 
@@ -692,7 +692,7 @@ namespace RDFSharp.Store {
                         tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
                         //plain literal with language
-                        tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
+                        tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
                         nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
                         tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
 
