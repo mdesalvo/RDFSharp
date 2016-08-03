@@ -183,10 +183,14 @@ namespace RDFSharp.Store {
                         #region sanitize  & tokenize
                         //Cleanup previous data
                         S                 = null;
+                        tokens[0]         = String.Empty;
                         P                 = null;
+                        tokens[1]         = String.Empty;
                         O                 = null;
                         L                 = null;
+                        tokens[2]         = String.Empty;
                         C                 = new RDFContext();
+                        tokens[3]         = String.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
                         nquad             = nquad.Trim(new Char[] { ' ', '\t', '\r', '\n' });
@@ -493,7 +497,7 @@ namespace RDFSharp.Store {
 
                     //S->P->L(TLIT)->C
                     if (SPLC_TLIT.Match(nquad).Success) {
-                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t', '>' });
 
                         //subject
                         tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -506,7 +510,7 @@ namespace RDFSharp.Store {
                         tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
                         //typed literal
-                        tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
                         nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
                         tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
 
@@ -724,7 +728,7 @@ namespace RDFSharp.Store {
 
                     //B->P->L(TLIT)->C
                     if (BPLC_TLIT.Match(nquad).Success) {
-                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
+                        nquad     = nquad.Trim(new Char[] { '.', ' ', '\t', '>' });
 
                         //subject
                         tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -737,7 +741,7 @@ namespace RDFSharp.Store {
                         tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
                         //typed literal
-                        tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
+                        tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
                         nquad     = nquad.Substring(tokens[2].Length).Trim(new Char[] { ' ', '\t' });
                         tokens[2] = tokens[2].Trim(new Char[] { ' ', '\t' });
 
