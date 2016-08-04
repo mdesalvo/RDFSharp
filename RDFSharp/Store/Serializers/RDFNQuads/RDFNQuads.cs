@@ -29,26 +29,26 @@ namespace RDFSharp.Store {
     internal static class RDFNQuads {
 
         #region Properties
-        internal static readonly Regex SPB        = new Regex(@"^<[^>]+>\s*<[^>]+>\s*_:[^>]+\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPO        = new Regex(@"^<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPBC       = new Regex(@"^<[^>]+>\s*<[^>]+>\s*_:[^>]+\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPOC       = new Regex(@"^<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPLC_TLIT  = new Regex(@"^<[^>]+>\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPB        = new Regex(@"^_:[^>]+\s*<[^>]+>\s*_:[^>]+\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPO        = new Regex(@"^_:[^>]+\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_PLAIN  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_TLIT   = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPBC       = new Regex(@"^_:[^>]+\s*<[^>]+>\s*_:[^>]+\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPOC       = new Regex(@"^_:[^>]+\s*<[^>]+>\s*<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""@[\w]+(-[\w]+)?\s*<[^>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPLC_TLIT  = new Regex(@"^_:[^>]+\s*<[^>]+>\s*\""(.)+\""\^\^<[^>]+>\s*<[^>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPB        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPO        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPBC       = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPOC       = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_TLIT  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPB        = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPO        = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_PLAIN  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)+\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_TLIT   = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)+\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPBC       = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPOC       = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)+\""\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)+\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_TLIT  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)+\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
         #endregion
 
         #region Methods
