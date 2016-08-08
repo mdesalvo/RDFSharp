@@ -208,6 +208,7 @@ namespace RDFSharp.Model
         /// Deserializes the given N-Triples stream to a graph. 
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream) {
+            Int64 ntripleIndex         = 0;
             try {
 
                 #region deserialize
@@ -220,6 +221,7 @@ namespace RDFSharp.Model
                     RDFResource O      = null;
                     RDFLiteral  L      = null;
                     while((ntriple     = sr.ReadLine()) != null) {
+                        ntripleIndex++;
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
@@ -328,7 +330,7 @@ namespace RDFSharp.Model
 
             }
             catch(Exception ex) {
-                throw new RDFModelException("Cannot deserialize N-Triples because: " + ex.Message, ex);
+                throw new RDFModelException("Cannot deserialize N-Triples (line " + ntripleIndex + ") because: " + ex.Message, ex);
             }
         }
         #endregion

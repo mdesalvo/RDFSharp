@@ -195,6 +195,7 @@ namespace RDFSharp.Store {
         /// Deserializes the given N-Quads stream to a memory store. 
         /// </summary>
         internal static RDFMemoryStore Deserialize(Stream inputStream) {
+            Int64 nquadIndex              = 0;
             try {
 
                 #region deserialize
@@ -208,6 +209,7 @@ namespace RDFSharp.Store {
                     RDFLiteral  L         = null;
                     RDFContext  C         = new RDFContext();
                     while((nquad          = sr.ReadLine()) != null) {
+                        nquadIndex++;
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
@@ -306,12 +308,14 @@ namespace RDFSharp.Store {
                         if (!String.IsNullOrEmpty(tokens[3])) {
                              String ctx     = tokens[3].TrimStart(new Char[] { '<' })
                                                        .TrimEnd(new   Char[] { '>' });
-                            if (Uri.IsWellFormedUriString(ctx, UriKind.Absolute)) {
-                                C           = new RDFContext(RDFModelUtilities.ASCII_To_Unicode(ctx));
-                            }
-                            else {
-                                throw new RDFModelException("found context '" + ctx +"' which is not a well-formed absolute Uri");
-                            }
+
+                             Uri ctxUri     = null;
+                             if (Uri.TryCreate(ctx, UriKind.Absolute, out ctxUri)) {
+                                 C          = new RDFContext(RDFModelUtilities.ASCII_To_Unicode(ctxUri.ToString()));
+                             }
+                             else {
+                                 throw new RDFModelException("found context '" + ctx +"' which is not a well-formed absolute Uri");
+                             }
                         }
                         #endregion
 
@@ -331,7 +335,7 @@ namespace RDFSharp.Store {
 
             }
             catch(Exception ex) {
-                throw new RDFModelException("Cannot deserialize N-Quads because: " + ex.Message, ex);
+                throw new RDFModelException("Cannot deserialize N-Quads (line " + nquadIndex + ") because: " + ex.Message, ex);
             }
         }
         #endregion
