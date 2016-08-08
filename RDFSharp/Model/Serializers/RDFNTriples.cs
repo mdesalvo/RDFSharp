@@ -32,17 +32,65 @@ namespace RDFSharp.Model
 
         #region Properties
         /// <summary>
-        /// Regex to parse N-Triples focusing on predicate position 
+        /// Regex to detect S->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex regexNT  = new Regex(@"(?<pred>\s+<[^>]+>\s+)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        internal static readonly Regex SPB        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->O form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex SPO        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->L(PLAIN) form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->L(TYPED) form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->B form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex BPB        = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->O form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex BPO        = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->L(PLAIN) form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex BPL_PLAIN  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->L(TYPED) form of N-Triple/N-Quad
+        /// </summary>
+        internal static readonly Regex BPL_TLIT   = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
+        
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
         internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
+        
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
         /// </summary>
         internal static readonly Regex regexSqt = new Regex(@"^""", RegexOptions.Compiled);
+        
         /// <summary>
         /// Regex to detect presence of ending " in the value of a given N-Triple literal
         /// </summary>
@@ -163,36 +211,49 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                using(StreamReader sr  = new StreamReader(inputStream)) {
+                using (StreamReader sr = new StreamReader(inputStream)) {
                     RDFGraph result    = new RDFGraph();
                     String  ntriple    = String.Empty;
                     String[] tokens    = new String[3];
+                    RDFResource S      = null;
+                    RDFResource P      = null;
+                    RDFResource O      = null;
+                    RDFLiteral  L      = null;
                     while((ntriple     = sr.ReadLine()) != null) {
 
-                        #region sanitize & parse
+                        #region sanitize  & tokenize
+                        //Cleanup previous data
+                        S              = null;
+                        tokens[0]      = String.Empty;
+                        P              = null;
+                        tokens[1]      = String.Empty;
+                        O              = null;
+                        L              = null;
+                        tokens[2]      = String.Empty;
+
                         //Preliminary sanitizations: clean trailing space-like chars
-                        ntriple        = ntriple.Trim(new Char[] { ' ', '\t', '\r', '\n', '.' });
+                        ntriple        = ntriple.Trim(new Char[] { ' ', '\t', '\r', '\n' });
 
                         //Skip empty or comment lines
                         if (ntriple   == String.Empty || ntriple.StartsWith("#")) {
                             continue;
                         }
 
-                        //Parse the sanitized triple 
-                        tokens         = ParseNTriple(ntriple);
+                        //Tokenizes the sanitized triple 
+                        tokens         = TokenizeNTriple(ntriple);
                         #endregion
 
                         #region subj
                         String subj    = tokens[0].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new   Char[] { '>' })
                                                   .Replace("_:", "bnode:");
-                        RDFResource S  = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
+                        S              = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
                         String pred    = tokens[1].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new   Char[] { '>' });
-                        RDFResource P  = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
+                        P              = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
 
                         #region object
@@ -203,8 +264,7 @@ namespace RDFSharp.Model
                                                   .TrimEnd(new Char[] { '>' })
                                                   .Replace("_:", "bnode:")
                                                   .Trim(new Char[] { ' ', '\n', '\t', '\r' });
-                            var O      = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
-                            result.AddTriple(new RDFTriple(S, P, O));
+                            O          = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
                         }
                         #endregion
 
@@ -212,20 +272,19 @@ namespace RDFSharp.Model
                         else {
 
                             #region sanitize
-                            tokens[2] = regexSqt.Replace(tokens[2], String.Empty);
-                            tokens[2] = regexEqt.Replace(tokens[2], String.Empty);
-                            tokens[2] = tokens[2].Replace("\\\"", "\"")
+                            tokens[2]  = regexSqt.Replace(tokens[2], String.Empty);
+                            tokens[2]  = regexEqt.Replace(tokens[2], String.Empty);
+                            tokens[2]  = tokens[2].Replace("\\\"", "\"")
                                                   .Replace("\\n", "\n")
                                                   .Replace("\\t", "\t")
                                                   .Replace("\\r", "\r");
-                            tokens[2] = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
+                            tokens[2]  = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
                             #endregion
 
                             #region plain literal
                             if (!tokens[2].Contains("^^") ||
                                  tokens[2].EndsWith("^^") ||
                                  tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<") {
-                                RDFPlainLiteral L    = null;
                                 if (regexLPL.Match(tokens[2]).Success) {
                                     tokens[2]        = tokens[2].Replace("\"@", "@");
                                     String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
@@ -235,23 +294,30 @@ namespace RDFSharp.Model
                                 else {
                                     L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
                                 }
-                                result.AddTriple(new RDFTriple(S, P, L));
                             }
                             #endregion
 
                             #region typed literal
                             else {
-                                tokens[2]             = tokens[2].Replace("\"^^", "^^");
-                                String tLitValue      = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
-                                String tLitDatatype   = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
-                                                                 .TrimStart(new Char[] { '<' })
-                                                                 .TrimEnd(new   Char[] { '>' });
-                                RDFDatatype dt        = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                                RDFTypedLiteral L     = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
-                                result.AddTriple(new RDFTriple(S, P, L));
+                                tokens[2]            = tokens[2].Replace("\"^^", "^^");
+                                String tLitValue     = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
+                                String tLitDatatype  = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
+                                                                .TrimStart(new Char[] { '<' })
+                                                                .TrimEnd(new   Char[] { '>' });
+                                RDFDatatype dt       = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                                L                    = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
                             }
                             #endregion
 
+                        }
+                        #endregion
+
+                        #region addtriple
+                        if (O != null) {
+                            result.AddTriple(new RDFTriple(S, P, O));
+                        }
+                        else {
+                            result.AddTriple(new RDFTriple(S, P, L));
                         }
                         #endregion
 
@@ -269,60 +335,224 @@ namespace RDFSharp.Model
 
         #region Utilities
         /// <summary>
-        /// Tries to parse the given N-Triple
+        /// Tries to tokenize the given N-Triple
         /// </summary>
-        internal static String[] ParseNTriple(String ntriple) {
+        internal static String[] TokenizeNTriple(String ntriple) {
             String[] tokens        = new String[3];
 
-            //A legal NTriple starts with "_:" of blanks or "<" of non-blanks
+            //A legal N-Triple starts with "_:" of blanks or "<" of non-blanks
             if (ntriple.StartsWith("_:") || ntriple.StartsWith("<")) {
 
-                //Parse NTriple by exploiting surrounding spaces and angle brackets of predicate
-                tokens             = regexNT.Split(ntriple, 2);
+                //S->-> triple
+                if (ntriple.StartsWith("<")) {
 
-                //An illegal NTriple cannot be splitted into 3 parts with this regex
-                if (tokens.Length != 3) {
-                    throw new Exception("found illegal N-Triple, predicate must be surrounded by \" <\" and \"> \"");
-                }
+                    //S->P->B
+                    if (SPB.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
 
-                //Check subject for well-formedness
-                tokens[0]          = tokens[0].Trim(new Char[] { ' ', '\n', '\r', '\t' });
-                if (tokens[0].Contains(" ")) {
-                    throw new Exception("found illegal N-Triple, subject Uri cannot contain spaces");
-                }
-                if ((tokens[0].StartsWith("<")  && !tokens[0].EndsWith(">")) ||
-                    (tokens[0].StartsWith("_:") &&  tokens[0].EndsWith(">")) ||
-                    (tokens[0].Count(c => c.Equals('<')) > 1)                ||
-                    (tokens[0].Count(c => c.Equals('>')) > 1)) {
-                    throw new Exception("found illegal N-Triple, subject Uri is not well-formed");
-                }
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
 
-                //Check predicate for well-formedness
-                tokens[1]          = tokens[1].Trim(new Char[] { ' ', '\n', '\r', '\t' });
-                if (tokens[1].Contains(" ")) {
-                    throw new Exception("found illegal N-Triple, predicate Uri cannot contain spaces");
-                }
-                if ((tokens[1].Count(c => c.Equals('<')) > 1)  ||
-                    (tokens[1].Count(c => c.Equals('>')) > 1))  {
-                    throw new Exception("found illegal N-Triple, predicate Uri is not well-formed");
-                }
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
 
-                //Check object for well-formedness
-                tokens[2]          = tokens[2].Trim(new Char[] { ' ', '\n', '\r', '\t' });
-                if (tokens[2].StartsWith("<")) {
-                    if (tokens[2].Contains(" ")) {
-                        throw new Exception("found illegal N-Triple, object Uri cannot contain spaces");
+                        //object
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
                     }
-                    if ((!tokens[2].EndsWith(">")                   ||
-                         (tokens[2].Count(c => c.Equals('<')) > 1)  ||
-                         (tokens[2].Count(c => c.Equals('>')) > 1))) {
-                        throw new Exception("found illegal N-Triple, object Uri is not well-formed");
+
+                    //S->P->O
+                    if (SPO.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //object
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
                     }
+
+                    //S->P->L(PLAIN)
+                    if (SPL_PLAIN.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //S->P->L(PLANG)
+                    if (SPL_PLANG.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal with language
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //S->P->L(TLIT)
+                    if (SPL_TLIT.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //typed literal
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    throw new Exception("found illegal N-Triple, unrecognized 'S->->' structure");
                 }
-                else if (tokens[2].StartsWith("_:")) {
-                     if (tokens[2].EndsWith(">")) {
-                         throw new Exception("found illegal N-Triple, object Uri is not well-formed");
-                     }
+
+                //B->-> triple
+                else {
+
+                    //B->P->B
+                    if (BPB.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //object
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //B->P->O
+                    if (BPO.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //object
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //B->P->L(PLAIN)
+                    if (BPL_PLAIN.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //B->P->L(PLANG)
+                    if (BPL_PLANG.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //plain literal with language
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //B->P->L(TLIT)
+                    if (BPL_TLIT.Match(ntriple).Success) {
+                        ntriple   = ntriple.Trim(new Char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        ntriple   = ntriple.Substring(tokens[0].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new Char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple   = ntriple.Substring(tokens[1].Length).Trim(new Char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new Char[] { ' ', '\t' });
+
+                        //typed literal
+                        tokens[2] = ntriple.Trim(new Char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    throw new Exception("found illegal N-Triple, unrecognized 'B->->' structure");
                 }
 
             }
@@ -330,7 +560,6 @@ namespace RDFSharp.Model
                 throw new Exception("found illegal N-Triple, must start with \"_:\" or with \"<\"");
             }
 
-            return tokens;
         }
         #endregion
 

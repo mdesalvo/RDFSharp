@@ -29,25 +29,54 @@ namespace RDFSharp.Store {
     internal static class RDFNQuads {
 
         #region Properties
-        internal static readonly Regex SPB        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPO        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex SPL_TLIT   = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
+        /// <summary>
+        /// Regex to detect S->P->B->C form of N-Quad
+        /// </summary>
         internal static readonly Regex SPBC       = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->O->C form of N-Quad
+        /// </summary>
         internal static readonly Regex SPOC       = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->L(PLAIN)->C form of N-Quad
+        /// </summary>
         internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->L(PLAIN LANGUAGE)->C form of N-Quad
+        /// </summary>
         internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect S->P->B->L(TYPED) form of N-Quad
+        /// </summary>
         internal static readonly Regex SPLC_TLIT  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPB        = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPO        = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_PLAIN  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
-        internal static readonly Regex BPL_TLIT   = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->B->C form of N-Quad
+        /// </summary>
         internal static readonly Regex BPBC       = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->O->C form of N-Quad
+        /// </summary>
         internal static readonly Regex BPOC       = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->L(PLAIN)->C form of N-Quad
+        /// </summary>
         internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->L(PLAIN LANGUAGE)->C form of N-Quad
+        /// </summary>
         internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regex to detect B->P->L(TYPED)->C form of N-Quad
+        /// </summary>
         internal static readonly Regex BPLC_TLIT  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
         #endregion
 
@@ -346,7 +375,7 @@ namespace RDFSharp.Store {
                     }
 
                     //S->P->B->
-                    if (SPB.Match(nquad).Success) {
+                    if (RDFNTriples.SPB.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -391,7 +420,7 @@ namespace RDFSharp.Store {
                     }
 
                     //S->P->O->
-                    if (SPO.Match(nquad).Success) {
+                    if (RDFNTriples.SPO.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -436,7 +465,7 @@ namespace RDFSharp.Store {
                     }
 
                     //S->P->L(PLAIN)->
-                    if (SPL_PLAIN.Match(nquad).Success) {
+                    if (RDFNTriples.SPL_PLAIN.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -481,7 +510,7 @@ namespace RDFSharp.Store {
                     }
 
                     //S->P->L(PLANG)->
-                    if (SPL_PLANG.Match(nquad).Success) {
+                    if (RDFNTriples.SPL_PLANG.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -526,7 +555,7 @@ namespace RDFSharp.Store {
                     }
 
                     //S->P->L(TLIT)->
-                    if (SPL_TLIT.Match(nquad).Success) {
+                    if (RDFNTriples.SPL_TLIT.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -577,7 +606,7 @@ namespace RDFSharp.Store {
                     }
 
                     //B->P->B->
-                    if (BPB.Match(nquad).Success) {
+                    if (RDFNTriples.BPB.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -622,7 +651,7 @@ namespace RDFSharp.Store {
                     }
 
                     //B->P->O->
-                    if (BPO.Match(nquad).Success) {
+                    if (RDFNTriples.BPO.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -667,7 +696,7 @@ namespace RDFSharp.Store {
                     }
 
                     //B->P->L(PLAIN)->
-                    if (BPL_PLAIN.Match(nquad).Success) {
+                    if (RDFNTriples.BPL_PLAIN.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -712,7 +741,7 @@ namespace RDFSharp.Store {
                     }
 
                     //B->P->L(PLANG)->
-                    if (BPL_PLANG.Match(nquad).Success) {
+                    if (RDFNTriples.BPL_PLANG.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
@@ -757,7 +786,7 @@ namespace RDFSharp.Store {
                     }
 
                     //B->P->L(TLIT)->
-                    if (BPL_TLIT.Match(nquad).Success) {
+                    if (RDFNTriples.BPL_TLIT.Match(nquad).Success) {
                         nquad     = nquad.Trim(new Char[] { '.', ' ', '\t' });
 
                         //subject
