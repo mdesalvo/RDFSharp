@@ -29,6 +29,7 @@ namespace RDFSharp.Store {
     internal static class RDFNQuads {
 
         #region Properties
+        internal static readonly Regex ENDCOMMENT = new Regex(@".(\s*#(.)*)?$", RegexOptions.Compiled);
         internal static readonly Regex SPB        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPO        = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
         internal static readonly Regex SPL_PLAIN  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)+\""\s*.$", RegexOptions.Compiled);
@@ -194,6 +195,11 @@ namespace RDFSharp.Store {
 
                         //Preliminary sanitizations: clean trailing space-like chars
                         nquad             = nquad.Trim(new Char[] { ' ', '\t', '\r', '\n' });
+
+                        //Preliminary sanitizations: trim comments after ending dot
+                        if (ENDCOMMENT.IsMatch(nquad)) {
+                            nquad         = ENDCOMMENT.Replace(nquad, String.Empty) + ".";
+                        }
 
                         //Skip empty or comment lines
                         if (nquad        == String.Empty || nquad.StartsWith("#")) {
