@@ -127,8 +127,8 @@
     <Compile Include="Store\RDFStoreIndex.cs" />
     <Compile Include="Store\RDFStoreSerializer.cs" />
     <Compile Include="Store\RDFStoreUtilities.cs" />
-    <Compile Include="Store\Engines\Memory\RDFMemoryStore.cs" />
-    <Compile Include="Store\Engines\SQLServer\RDFSQLServerStore.cs" />
+    <Compile Include="Store\Engines\RDFMemoryStore.cs" />
+    <Compile Include="Store\Engines\RDFSQLServerStore.cs" />
     <Compile Include="Store\Serializers\RDFNQuads.cs" />
     <Compile Include="Store\Serializers\RDFTriX.cs" />
   </ItemGroup>
