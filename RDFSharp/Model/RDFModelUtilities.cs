@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -276,6 +277,40 @@ namespace RDFSharp.Model
         #endregion
 
         #region RDFNamespace
+        /// <summary>
+        /// Looksup the given prefix or namespace into the prefix.cc service
+        /// </summary>
+        internal static RDFNamespace LookupPrefixCC(String data, Int32 lookupMode) {
+            var lookupString       = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
+                                                        "http://prefix.cc/reverse?uri=" + data + "&format=txt");
+
+            using (var webclient   = new WebClient()) {
+                try {
+                    var response   = webclient.DownloadString(lookupString);
+                    var new_prefix = response.Split('\t')[0];
+                    var new_nspace = response.Split('\t')[1].TrimEnd(new Char[] { '\n' });
+                    var result     = new RDFNamespace(new_prefix, new_nspace);
+
+                    //Also add the namespace to the register, to avoid future lookups
+                    RDFNamespaceRegister.AddNamespace(result);
+
+                    //Return the found result
+                    return result;
+                }
+                catch  (WebException wex) {
+                    if (wex.Message.Contains("404")) {
+                        return null;
+                    }
+                    else {
+                        throw new RDFModelException("Cannot retrieve data from prefix.cc service because: " + wex.Message, wex);
+                    }
+                }
+                catch(Exception ex) {
+                    throw new RDFModelException("Cannot retrieve data from prefix.cc service because: " + ex.Message, ex);
+                }
+            }
+        }
+
         /// <summary>
         /// Finds if the given token contains a recognizable namespace and, if so, abbreviates it with its prefix.
         /// It also prepares the result in a format useful for serialization (it's used by Turtle writer).
