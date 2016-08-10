@@ -18,8 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using RDFSharp.Store;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -288,7 +286,11 @@ namespace RDFSharp.Model
                                 .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
                                 .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
                                 .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))
-                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O)));
+                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O))
+                                .AddFilter(new RDFIsUriFilter(T))
+                                .AddFilter(new RDFIsUriFilter(S))
+                                .AddFilter(new RDFIsUriFilter(P))
+                             );
 
             //Apply it to the graph
             var R = Q.ApplyToGraph(this);
