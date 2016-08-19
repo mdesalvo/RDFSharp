@@ -448,18 +448,17 @@ namespace RDFSharp.Model
         /// </summary>
         internal static Boolean ValidateTypedLiteral(RDFTypedLiteral typedLiteral) {
             if (typedLiteral != null) {
-                Boolean validateResponse             = true;
-                switch (typedLiteral.Datatype.Category) { 
+                Boolean validateResponse = true;
+                switch (typedLiteral.Datatype.Category) {
 
-
-                    //STRING TYPES
+                    #region STRING CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.String:
 
                         //ANYURI
                         if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "anyURI"))) {
                             Uri outUri;
                             if (!Uri.TryCreate(typedLiteral.Value, UriKind.Absolute, out outUri)) {
-                                validateResponse     = false;
+                                 validateResponse = false;
                             }
                         }
 
@@ -469,7 +468,7 @@ namespace RDFSharp.Model
                                 XDocument.Parse(typedLiteral.Value);
                             }
                             catch {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
@@ -479,7 +478,7 @@ namespace RDFSharp.Model
                                 XmlConvert.VerifyName(typedLiteral.Value);
                             }
                             catch {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
@@ -489,7 +488,7 @@ namespace RDFSharp.Model
                                 XmlConvert.VerifyNCName(typedLiteral.Value);
                             }
                             catch {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
@@ -499,7 +498,7 @@ namespace RDFSharp.Model
                                 XmlConvert.VerifyTOKEN(typedLiteral.Value);
                             }
                             catch {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
@@ -509,21 +508,21 @@ namespace RDFSharp.Model
                                 XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
                             }
                             catch {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
                         //NORMALIZED_STRING
                         else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "normalizedString"))) {
                             if (typedLiteral.Value.Contains('\r') || typedLiteral.Value.Contains('\n') || typedLiteral.Value.Contains('\t')) {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
                         //LANGUAGE
                         else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "language"))) {
                             if (!Regex.IsMatch(typedLiteral.Value, "^[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$")) {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
@@ -533,30 +532,30 @@ namespace RDFSharp.Model
                                 Convert.FromBase64String(typedLiteral.Value);
                             }
                             catch {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
                         //HEX_BINARY
                         else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "hexBinary"))) {
                             if ((typedLiteral.Value.Length % 2 != 0) || (!Regex.IsMatch(typedLiteral.Value, @"^[a-fA-F0-9]+$"))) {
-                                validateResponse     = false;
+                                validateResponse = false;
                             }
                         }
 
                         break;
+                    #endregion
 
-
-                    //BOOLEAN TYPES
+                    #region BOOLEAN CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.Boolean:
                         Boolean outBool;
                         if (!Boolean.TryParse(typedLiteral.Value, out outBool)) {
-                            validateResponse         = false;
+                             validateResponse = false;
                         }
                         break;
+                    #endregion
 
-
-                    //DATETIME TYPES
+                    #region DATETIME CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.DateTime:
 
                         //DATETIME
@@ -700,48 +699,52 @@ namespace RDFSharp.Model
 						}
 
                         break;
+                    #endregion
 
-
-                    //TIMESPAN TYPES
+                    #region TIMESPAN CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.TimeSpan:
                         try {
                             XmlConvert.ToTimeSpan(typedLiteral.Value);
                         }
                         catch {
-                            validateResponse         = false;
+                            validateResponse = false;
                         }
                         break;
+                    #endregion
 
-
-                    //NUMERIC TYPES
+                    #region NUMERIC CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.Numeric:
                         Decimal outDecimal;
-                        if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outDecimal)) { 
-                            
-                            //INTEGER
-                            if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "integer"))            ||
-                                typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "int"))                ||
-                                typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "positiveInteger"))    ||
-                                typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "negativeInteger"))    ||
-                                typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "nonPositiveInteger")) ||
-                                typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "nonNegativeInteger"))) {
-                                Int32 outInteger;
-                                if (Int32.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outInteger)) { 
-                                    
-                                    //SUB-INTEGER
-                                    if(typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "positiveInteger"))       ||
-                                       typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "nonNegativeInteger")))    {
-                                        if (outInteger < 0) {
-                                            validateResponse = false;
-                                        }
-                                    }
-                                    else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "negativeInteger")) ||
-                                        typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX,  "nonPositiveInteger")))  {
-                                        if (outInteger >= 0) {
-                                            validateResponse = false;
-                                        }
-                                    }
+                        if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outDecimal)) {
+                            typedLiteral.Value = outDecimal.ToString(CultureInfo.InvariantCulture);
 
+                            //DOUBLE
+                            if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "double"))) {
+                                Double outDouble;
+                                if (Double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outDouble)) {
+                                    typedLiteral.Value = outDouble.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
+
+                            //FLOAT
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "float"))) {
+                                Single outFloat;
+                                if (Single.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outFloat)) {
+                                    typedLiteral.Value = outFloat.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
+
+                            //INTEGER
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "integer"))) {
+                                Decimal outInteger;
+                                if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInteger)) {
+                                    typedLiteral.Value = outInteger.ToString(CultureInfo.InvariantCulture);
                                 }
                                 else {
                                     validateResponse = false;
@@ -750,8 +753,22 @@ namespace RDFSharp.Model
 
                             //LONG
                             else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "long"))) {
-                                Int64 outlong;
-                                if (!Int64.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outlong)) { 
+                                Int64 outLong;
+                                if (Int64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outLong)) {
+                                    typedLiteral.Value = outLong.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
+
+                            //INT
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "int"))) {
+                                Int32 outInt;
+                                if (Int32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInt)) {
+                                    typedLiteral.Value = outInt.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
                                     validateResponse = false;
                                 }
                             }
@@ -759,23 +776,10 @@ namespace RDFSharp.Model
                             //SHORT
                             else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "short"))) {
                                 Int16 outShort;
-                                if (!Int16.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outShort)) {
-                                    validateResponse = false;
+                                if (Int16.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outShort)) {
+                                    typedLiteral.Value = outShort.ToString(CultureInfo.InvariantCulture);
                                 }
-                            }
-
-                            //FLOAT
-                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "float"))) {
-                                Single outFloat;
-                                if (!Single.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outFloat)) {
-                                    validateResponse = false;
-                                }
-                            }
-
-                            //DOUBLE
-                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "double"))) {
-                                Double outDouble;
-                                if (!Double.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outDouble)) {
+                                else {
                                     validateResponse = false;
                                 }
                             }
@@ -783,49 +787,112 @@ namespace RDFSharp.Model
                             //BYTE
                             else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "byte"))) {
                                 SByte outSByte;
-                                if (!SByte.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outSByte)) {
+                                if (SByte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outSByte)) {
+                                    typedLiteral.Value = outSByte.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
                                     validateResponse = false;
                                 }
                             }
 
-                            //UNSIGNED TYPES
-                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedByte"))  ||
-                                     typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedShort")) ||
-                                     typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedInt"))   ||
-                                     typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedLong")))  {
-                                
-                                //UNSIGNED BYTE
-                                if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedByte"))) {
-                                    Byte outByte;
-                                    if (!Byte.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outByte)) {
-                                        validateResponse = false;
-                                    }    
+                            //UNSIGNED LONG
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedLong"))) {
+                                UInt64 outULong;
+                                if (UInt64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outULong)) {
+                                    typedLiteral.Value = outULong.ToString(CultureInfo.InvariantCulture);
                                 }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
 
-                                //UNSIGNED SHORT
-                                else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedShort"))) {
-                                    UInt16 outUShort;
-                                    if (!UInt16.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outUShort)) {
+                            //UNSIGNED INT
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedInt"))) {
+                                UInt32 outUInt;
+                                if (UInt32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outUInt)) {
+                                    typedLiteral.Value = outUInt.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
+
+                            //UNSIGNED SHORT
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedShort"))) {
+                                UInt16 outUShort;
+                                if (UInt16.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outUShort)) {
+                                    typedLiteral.Value = outUShort.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
+
+                            //UNSIGNED BYTE
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedByte"))) {
+                                Byte outByte;
+                                if (Byte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outByte)) {
+                                    typedLiteral.Value = outByte.ToString(CultureInfo.InvariantCulture);
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
+
+                            //NON-POSITIVE INTEGER [Decimal.MinValue, 0]
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "nonPositiveInteger"))) {
+                                Decimal outNPInteger;
+                                if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNPInteger)) {
+                                    typedLiteral.Value = outNPInteger.ToString(CultureInfo.InvariantCulture);
+                                    if (outNPInteger > 0) {
                                         validateResponse = false;
                                     }
                                 }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
 
-                                //UNSIGNED INT
-                                else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedInt"))) {
-                                    UInt32 outUInt;
-                                    if (!UInt32.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outUInt)) {
+                            //NEGATIVE INTEGER [Decimal.MinValue, -1]
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "negativeInteger"))) {
+                                Decimal outNInteger;
+                                if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNInteger)) {
+                                    typedLiteral.Value = outNInteger.ToString(CultureInfo.InvariantCulture);
+                                    if (outNInteger > -1) {
                                         validateResponse = false;
                                     }
                                 }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
 
-                                //UNSIGNED LONG
-                                else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "unsignedLong"))) {
-                                    UInt64 outULong;
-                                    if (!UInt64.TryParse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out outULong)) {
+                            //NON-NEGATIVE INTEGER [0, Decimal.MaxValue]
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "nonNegativeInteger"))) {
+                                Decimal outNNInteger;
+                                if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNNInteger)) {
+                                    typedLiteral.Value = outNNInteger.ToString(CultureInfo.InvariantCulture);
+                                    if (outNNInteger < 0) {
                                         validateResponse = false;
                                     }
                                 }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
 
+                            //POSITIVE INTEGER [1, Decimal.MaxValue]
+                            else if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "positiveInteger"))) {
+                                Decimal outPInteger;
+                                if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outPInteger)) {
+                                    typedLiteral.Value = outPInteger.ToString(CultureInfo.InvariantCulture);
+                                    if (outPInteger < 1) {
+                                        validateResponse = false;
+                                    }
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
                             }
 
                         }
@@ -834,7 +901,7 @@ namespace RDFSharp.Model
                         }
 
                         break;
-
+                    #endregion
 
                 }
                 return validateResponse;

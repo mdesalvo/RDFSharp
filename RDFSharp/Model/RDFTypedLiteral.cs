@@ -33,28 +33,31 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default ctor to build a typed literal with value and default "xsd:string" datatype
+        /// Default-ctor to build a typed literal with given value and "xsd:string" datatype.
         /// </summary>
         public RDFTypedLiteral(String value) {
             this.Value               = (value ?? String.Empty);
-            this.Datatype            = RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "string");   
+            this.Datatype            = RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "string");
             this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());
-            if (!RDFModelUtilities.ValidateTypedLiteral(this)) {
-                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed or not compatible with the category (" + this.Datatype.Category + ") of the datatype.");
-            }
         }
 
         /// <summary>
-        /// Default ctor to build a typed literal with value and datatype
+        /// Default-ctor to build a typed literal with given value and given datatype. 
+        /// Semantic validation of given value against given datatype is performed.
         /// </summary>
         public RDFTypedLiteral(String value, RDFDatatype datatype)  {
             if (datatype            != null) {
 			    this.Value           = (value ?? String.Empty);
                 this.Datatype        = datatype;
-                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-                if (!RDFModelUtilities.ValidateTypedLiteral(this)) {
-                     throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed or not compatible with the category (" + this.Datatype.Category + ") of the datatype.");
+                if (RDFModelUtilities.ValidateTypedLiteral(this)) {
+                    this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
+                else {
+                    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + datatype + ") or it is not compatible with the datatype category (" + datatype.Category + ").");
+                }                
+            }
+            else {
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"datatype\" parameter is null.");
             }
         }
         #endregion
