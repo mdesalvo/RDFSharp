@@ -25,32 +25,122 @@ namespace RDFSharp.Model
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF graph serialization data formats.
         /// </summary>
-        public enum RDFFormats { NTriples, Turtle, TriX, RdfXml };
+        public enum RDFFormats {
+            /// <summary>
+            /// N-Triples serialization
+            /// </summary>
+            NTriples = 0,
+            /// <summary>
+            /// Turtle serialization
+            /// </summary>
+            Turtle = 1,
+            /// <summary>
+            /// TriX serialization
+            /// </summary>
+            TriX = 2,
+            /// <summary>
+            /// XML serialization
+            /// </summary>
+            RdfXml = 3
+        };
 
         /// <summary>
         /// RDFTripleFlavors represents an enumeration for possible triple pattern flavors.
         /// </summary>
-        public enum RDFTripleFlavors  { SPO = 1, SPL = 2, SPV = 3 };
+        public enum RDFTripleFlavors  {
+            /// <summary>
+            /// Indicates that the object of the triple is a resource
+            /// </summary>
+            SPO = 1,
+            /// <summary>
+            /// Indicates that the object of the triple is a literal
+            /// </summary>
+            SPL = 2,
+            /// <summary>
+            /// Indicates that the object of the triple is a variable
+            /// </summary>
+            SPV = 3
+        };
         
         /// <summary>
         /// RDFContainerTypes represents an enumeration for supported container types.
         /// </summary>
-        public enum RDFContainerTypes { Bag, Seq, Alt };
+        public enum RDFContainerTypes {
+            /// <summary>
+            /// Represents an unordered list which allows duplicates
+            /// </summary>
+            Bag = 0,
+            /// <summary>
+            /// Represents an ordered list which allows duplicates
+            /// </summary>
+            Seq = 1,
+            /// <summary>
+            /// Represents an unordered list which does not allow duplicates
+            /// </summary>
+            Alt = 2
+        };
 
         /// <summary>
         /// RDFItemTypes represents an enumeration for acceptable RDFContainer and RDFCollection item types.
         /// </summary>
-        public enum RDFItemTypes { Resource, Literal };
+        public enum RDFItemTypes {
+            /// <summary>
+            /// Indicates that a container/collection accepts only resources
+            /// </summary>
+            Resource = 1,
+            /// <summary>
+            /// Indicates that a container/collection accepts only literals
+            /// </summary>
+            Literal = 2
+        };
 
         /// <summary>
         /// RDFDatatypeCategory represents an enumeration for supported categories of datatype
         /// </summary>
-        public enum RDFDatatypeCategory { Boolean, Numeric, DateTime, TimeSpan, String };
+        public enum RDFDatatypeCategory {
+            /// <summary>
+            /// Value of the typed literal is in the boolean domain
+            /// </summary>
+            Boolean = 1,
+            /// <summary>
+            /// Value of the typed literal is in the decimal domain
+            /// </summary>
+            Numeric = 2,
+            /// <summary>
+            /// Value of the typed literal is in the datetime domain
+            /// </summary>
+            DateTime = 3,
+            /// <summary>
+            /// Value of the typed literal is in the duration domain
+            /// </summary>
+            TimeSpan = 4,
+            /// <summary>
+            /// Value of the typed literal is in the string domain
+            /// </summary>
+            String = 5
+        };
 
         /// <summary>
         /// RDFTermStatus represents an enumeration for supported values of "vs:term_status" triples
         /// </summary>
-        public enum RDFTermStatus { Stable, Unstable, Testing, Archaic };
+        public enum RDFTermStatus {
+            /// <summary>
+            /// stable
+            /// </summary>
+            Stable = 1,
+            /// <summary>
+            /// unstable
+            /// </summary>
+            Unstable = 2,
+            /// <summary>
+            /// testing
+            /// </summary>
+            Testing = 3,
+            /// <summary>
+            /// archaic
+            /// </summary>
+            Archaic = 4
+        };
 
     }
 

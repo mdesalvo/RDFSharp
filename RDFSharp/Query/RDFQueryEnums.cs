@@ -25,17 +25,51 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFPatternHoles represents an enumeration for possible positions of holes in a pattern.
         /// </summary>
-        internal enum RDFPatternHoles    { C, S, P, O, CS, CP, CO, CSP, CSO, CPO, CSPO, SP, SO, PO, SPO };
+        internal enum RDFPatternHoles { C, S, P, O, CS, CP, CO, CSP, CSO, CPO, CSPO, SP, SO, PO, SPO };
 
         /// <summary>
         /// RDFOrderByFlavors represents an enumeration for possible directions of query results ordering on a given variable.
         /// </summary>
-        public enum RDFOrderByFlavors    { ASC, DESC };
+        public enum RDFOrderByFlavors {
+            /// <summary>
+            /// Orders SPARQL results in ascending mode on the selected variable
+            /// </summary>
+            ASC = 1,
+            /// <summary>
+            /// Orders SPARQL results in descending mode on the selected variable
+            /// </summary>
+            DESC = 2
+        };
 
         /// <summary>
         /// RDFComparisonFlavors represents an enumeration for possible comparison modes between two patten members.
         /// </summary>
-        public enum RDFComparisonFlavors { LessOrEqualThan, LessThan, EqualTo, NotEqualTo, GreaterThan, GreaterOrEqualThan };
+        public enum RDFComparisonFlavors {
+            /// <summary>
+            /// Represents the less-or-equal comparison operator
+            /// </summary>
+            LessOrEqualThan = 1,
+            /// <summary>
+            /// Represents the less comparison operator
+            /// </summary>
+            LessThan = 2,
+            /// <summary>
+            /// Represents the equal comparison operator
+            /// </summary>
+            EqualTo = 3,
+            /// <summary>
+            /// Represents the not-equal comparison operator
+            /// </summary>
+            NotEqualTo = 4,
+            /// <summary>
+            /// Represents the greater comparison operator
+            /// </summary>
+            GreaterThan = 5,
+            /// <summary>
+            /// Represents the greater-or-equal comparison operator
+            /// </summary>
+            GreaterOrEqualThan = 6
+        };
 
     }
 

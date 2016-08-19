@@ -25,12 +25,34 @@ namespace RDFSharp.Store
         /// <summary>
         /// RDFStoreSQLErrors represents an enumeration for situations which can be found on a SQL-backing store
         /// </summary>
-        public enum RDFStoreSQLErrors { NoErrors, InvalidDataSource, QuadruplesTableNotFound };
+        public enum RDFStoreSQLErrors {
+            /// <summary>
+            /// Indicates that diagnostics on the selected database has passed
+            /// </summary>
+            NoErrors = 0,
+            /// <summary>
+            /// Indicates that diagnostics on the selected database has not passed because of a connection error
+            /// </summary>
+            InvalidDataSource = 1,
+            /// <summary>
+            /// Indicates that diagnostics on the selected database has not passed because it's not ready for use with RDFSharp
+            /// </summary>
+            QuadruplesTableNotFound = 2
+        };
 
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
         /// </summary>
-        public enum RDFFormats { NQuads, TriX };
+        public enum RDFFormats {
+            /// <summary>
+            /// N-Quads serialization
+            /// </summary>
+            NQuads = 1,
+            /// <summary>
+            /// TriX serialization
+            /// </summary>
+            TriX = 2
+        };
 
     }
 
