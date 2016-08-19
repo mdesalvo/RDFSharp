@@ -25,7 +25,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Marco De Salvo")]
 [assembly: AssemblyTrademark("Marco De Salvo")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.0.5688")]
+[assembly: AssemblyVersion("1.0.0.5696")]
 [assembly: ComVisible(false)]
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
