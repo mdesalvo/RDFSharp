@@ -200,8 +200,8 @@ namespace RDFSharp.Query
                 switch (((RDFTypedLiteral)left).Datatype.Category) {
 
                     case RDFModelEnums.RDFDatatypeCategory.Numeric:
-                        Decimal leftValueDecimal           = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Float, CultureInfo.InvariantCulture);
-                        Decimal rightValueDecimal          = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+                        Decimal leftValueDecimal           = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Any, CultureInfo.InvariantCulture);
+                        Decimal rightValueDecimal          = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Any, CultureInfo.InvariantCulture);
                         comparison                         = leftValueDecimal.CompareTo(rightValueDecimal);
                         break;
 
