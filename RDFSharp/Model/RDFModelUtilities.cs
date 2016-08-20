@@ -548,10 +548,34 @@ namespace RDFSharp.Model
 
                     #region BOOLEAN CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.Boolean:
-                        Boolean outBool;
-                        if (!Boolean.TryParse(typedLiteral.Value, out outBool)) {
-                             validateResponse = false;
+
+                        //XSD:BOOLEAN
+                        if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "boolean"))) {
+                            Boolean outBool;
+                            if (Boolean.TryParse(typedLiteral.Value, out outBool)) {
+                                typedLiteral.Value = (outBool ? "true" : "false");
+                            }
+                            else {
+                                if (typedLiteral.Value.Equals("1")) {
+                                    typedLiteral.Value = "true";
+                                }
+                                else if (typedLiteral.Value.Equals("0")) {
+                                    typedLiteral.Value = "false";
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
+                            }
                         }
+
+                        //CUSTOM:BOOLEAN
+                        else {
+                            if (!RDFModelOptions.BooleanTrueAlternatives.Contains(typedLiteral.Value)  &&
+                                !RDFModelOptions.BooleanFalseAlternatives.Contains(typedLiteral.Value)) {
+                                 validateResponse = false;
+                            }
+                        }
+
                         break;
                     #endregion
 

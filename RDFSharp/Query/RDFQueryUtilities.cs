@@ -200,15 +200,48 @@ namespace RDFSharp.Query
                 switch (((RDFTypedLiteral)left).Datatype.Category) {
 
                     case RDFModelEnums.RDFDatatypeCategory.Numeric:
-                        Decimal leftValueDecimal           = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Any, CultureInfo.InvariantCulture);
-                        Decimal rightValueDecimal          = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Any, CultureInfo.InvariantCulture);
-                        comparison                         = leftValueDecimal.CompareTo(rightValueDecimal);
+                        Decimal leftValueDecimal  = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Any, CultureInfo.InvariantCulture);
+                        Decimal rightValueDecimal = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                        comparison = leftValueDecimal.CompareTo(rightValueDecimal);
                         break;
 
                     case RDFModelEnums.RDFDatatypeCategory.Boolean:
-                        Boolean leftValueBoolean           = Boolean.Parse(((RDFTypedLiteral)left).Value);
-                        Boolean rightValueBoolean          = Boolean.Parse(((RDFTypedLiteral)right).Value);
-                        comparison                         = leftValueBoolean.CompareTo(rightValueBoolean);
+                        Boolean leftValueBoolean;
+                        Boolean rightValueBoolean;
+
+                        //LEFT
+                        if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "boolean"))) {
+                            leftValueBoolean = Boolean.Parse(((RDFTypedLiteral)left).Value);
+                        }
+                        else {
+                            if (RDFModelOptions.BooleanTrueAlternatives.Contains(((RDFTypedLiteral)left).Value)) {
+                                leftValueBoolean = true;
+                            }
+                            else if(RDFModelOptions.BooleanFalseAlternatives.Contains(((RDFTypedLiteral)left).Value)) {
+                                leftValueBoolean = false;
+                            }
+                            else {
+                                throw new RDFQueryException("Cannot compare given typed literal of category=BOOLEAN because its value (" + ((RDFTypedLiteral)left).Value + ") is not an alternative representation of boolean");
+                            }
+                        }
+
+                        //RIGHT
+                        if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "boolean"))) {
+                            rightValueBoolean = Boolean.Parse(((RDFTypedLiteral)right).Value);
+                        }
+                        else {
+                            if (RDFModelOptions.BooleanTrueAlternatives.Contains(((RDFTypedLiteral)right).Value)) {
+                                rightValueBoolean = true;
+                            }
+                            else if(RDFModelOptions.BooleanFalseAlternatives.Contains(((RDFTypedLiteral)right).Value)) {
+                                rightValueBoolean = false;
+                            }
+                            else {
+                                throw new RDFQueryException("Cannot compare given typed literal of category=BOOLEAN because its value (" + ((RDFTypedLiteral)right).Value + ") is not an alternative representation of boolean");
+                            }
+                        }
+
+                        comparison = leftValueBoolean.CompareTo(rightValueBoolean);
                         break;
 
                     case RDFModelEnums.RDFDatatypeCategory.DateTime:
