@@ -61,21 +61,12 @@ namespace RDFSharp.Model
             Instance.Register = new List<RDFDatatype>();
 
             #region Datatypes
+            //STRING
             AddDatatype(new RDFDatatype(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI, RDFVocabulary.RDFS.LITERAL.ToString().Replace(RDFVocabulary.RDFS.BASE_URI, String.Empty),            RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.RDF.PREFIX,  RDFVocabulary.RDF.BASE_URI,  RDFVocabulary.RDF.XML_LITERAL.ToString().Replace(RDFVocabulary.RDF.BASE_URI, String.Empty),          RDFModelEnums.RDFDatatypeCategory.String));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.BOOLEAN.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.Boolean));
-			AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DATETIME.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),             RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DATE.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                 RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.TIME.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                 RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_YEAR_MONTH.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),         RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_MONTH_DAY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),          RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_YEAR.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),               RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_MONTH.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.DateTime));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_DAY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                RDFModelEnums.RDFDatatypeCategory.DateTime));
-			AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DURATION.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),             RDFModelEnums.RDFDatatypeCategory.TimeSpan));
-			AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.STRING.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),               RDFModelEnums.RDFDatatypeCategory.String));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.STRING.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),               RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.ANY_URI.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.String));
-			AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.HEX_BINARY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),           RDFModelEnums.RDFDatatypeCategory.String));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.HEX_BINARY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),           RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.BASE64_BINARY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),        RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.LANGUAGE.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),             RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.NORMALIZED_STRING.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),    RDFModelEnums.RDFDatatypeCategory.String));
@@ -84,7 +75,9 @@ namespace RDFSharp.Model
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.NAME.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                 RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.NCNAME.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),               RDFModelEnums.RDFDatatypeCategory.String));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.NOTATION.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),             RDFModelEnums.RDFDatatypeCategory.String));
-			AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DECIMAL.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.Numeric));
+
+            //NUMERIC
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DECIMAL.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.Numeric));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.FLOAT.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                RDFModelEnums.RDFDatatypeCategory.Numeric));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DOUBLE.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),               RDFModelEnums.RDFDatatypeCategory.Numeric));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.INTEGER.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.Numeric));
@@ -99,7 +92,23 @@ namespace RDFSharp.Model
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.UNSIGNED_LONG.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),        RDFModelEnums.RDFDatatypeCategory.Numeric));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.UNSIGNED_INT.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),         RDFModelEnums.RDFDatatypeCategory.Numeric));
             AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.UNSIGNED_SHORT.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),       RDFModelEnums.RDFDatatypeCategory.Numeric));
-            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.UNSIGNED_BYTE.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),        RDFModelEnums.RDFDatatypeCategory.Numeric));            
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.UNSIGNED_BYTE.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),        RDFModelEnums.RDFDatatypeCategory.Numeric));
+
+            //BOOLEAN
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.BOOLEAN.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.Boolean));
+
+            //DATETIME
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DATETIME.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),             RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DATE.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                 RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.TIME.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                 RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_YEAR_MONTH.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),         RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_MONTH_DAY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),          RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_YEAR.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),               RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_MONTH.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),              RDFModelEnums.RDFDatatypeCategory.DateTime));
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.G_DAY.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),                RDFModelEnums.RDFDatatypeCategory.DateTime));
+
+            //TIMESPAN
+            AddDatatype(new RDFDatatype(RDFVocabulary.XSD.PREFIX,  RDFVocabulary.XSD.BASE_URI,  RDFVocabulary.XSD.DURATION.ToString().Replace(RDFVocabulary.XSD.BASE_URI, String.Empty),             RDFModelEnums.RDFDatatypeCategory.TimeSpan));
             #endregion
         }
         #endregion

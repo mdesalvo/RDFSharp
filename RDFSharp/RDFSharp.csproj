@@ -65,7 +65,6 @@
     <Compile Include="Model\RDFLiteral.cs" />
     <Compile Include="Model\RDFModelEnums.cs" />
     <Compile Include="Model\RDFModelException.cs" />
-    <Compile Include="Model\RDFModelOptions.cs" />
     <Compile Include="Model\RDFModelUtilities.cs" />
     <Compile Include="Model\RDFNamespace.cs" />
     <Compile Include="Model\RDFNamespaceRegister.cs" />

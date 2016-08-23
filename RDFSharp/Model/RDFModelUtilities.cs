@@ -549,31 +549,24 @@ namespace RDFSharp.Model
                     #region BOOLEAN CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.Boolean:
 
-                        //BOOLEAN
-                        if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "boolean"))) {
-                            Boolean outBool;
-                            if (Boolean.TryParse(typedLiteral.Value, out outBool)) {
-                                typedLiteral.Value = (outBool ? "true" : "false");
+                        Boolean outBool;
+                        if (Boolean.TryParse(typedLiteral.Value, out outBool)) {
+                            typedLiteral.Value = (outBool ? "true" : "false");
+                        }
+                        else {
+
+                            //MUST SUPPORT ALSO 1/0 BOOLEAN REPRESENTATION
+                            //WHICH IS EVENTUALLY CONVERTED TO TRUE/FALSE
+                            if (typedLiteral.Value.Equals("1")) {
+                                typedLiteral.Value = "true";
+                            }
+                            else if (typedLiteral.Value.Equals("0")) {
+                                typedLiteral.Value = "false";
                             }
                             else {
-                                if (typedLiteral.Value.Equals("1")) {
-                                    typedLiteral.Value = "true";
-                                }
-                                else if (typedLiteral.Value.Equals("0")) {
-                                    typedLiteral.Value = "false";
-                                }
-                                else {
-                                    validateResponse = false;
-                                }
+                                validateResponse = false;
                             }
-                        }
 
-                        //OTHER
-                        else {
-                            if (!RDFModelOptions.BooleanTrueAlternatives.Contains(typedLiteral.Value)  &&
-                                !RDFModelOptions.BooleanFalseAlternatives.Contains(typedLiteral.Value)) {
-                                 validateResponse = false;
-                            }
                         }
 
                         break;
@@ -739,7 +732,6 @@ namespace RDFSharp.Model
                     #region TIMESPAN CATEGORY
                     case RDFModelEnums.RDFDatatypeCategory.TimeSpan:
 
-                        //DURATION / OTHER
                         try {
                             XmlConvert.ToTimeSpan(typedLiteral.Value);
                         }
