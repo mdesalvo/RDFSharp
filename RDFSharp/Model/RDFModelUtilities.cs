@@ -555,18 +555,22 @@ namespace RDFSharp.Model
                         }
                         else {
 
-                            //MUST SUPPORT ALSO 1/0 BOOLEAN REPRESENTATION
-                            //WHICH IS EVENTUALLY CONVERTED TO TRUE/FALSE
-                            if (typedLiteral.Value.Equals("1")) {
-                                typedLiteral.Value = "true";
-                            }
-                            else if (typedLiteral.Value.Equals("0")) {
-                                typedLiteral.Value = "false";
+                            //XSD:BOOLEAN MUST ALSO SUPPORT 1/0 BOOLEAN REPRESENTATION
+                            //WHICH IS EVENTUALLY CONVERTED TO STANDARD TRUE/FALSE
+                            if (typedLiteral.Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "boolean"))) {
+                                if (typedLiteral.Value.Equals("1")) {
+                                    typedLiteral.Value = "true";
+                                }
+                                else if(typedLiteral.Value.Equals("0")) {
+                                    typedLiteral.Value = "false";
+                                }
+                                else {
+                                    validateResponse = false;
+                                }
                             }
                             else {
                                 validateResponse = false;
                             }
-
                         }
 
                         break;
