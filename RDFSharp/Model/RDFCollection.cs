@@ -153,7 +153,7 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to remove a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemType.Resource) {
                     ArrayList resultList = new ArrayList();
                     foreach(var itemEnum in this) {
                         if (!((RDFResource)itemEnum).Equals((RDFResource)item)) {
@@ -164,7 +164,7 @@ namespace RDFSharp.Model
                 }
 
                 //Try to remove a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemType.Literal) {
                     ArrayList resultList = new ArrayList();
                     foreach(var itemEnum in this) {
                         if (!((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
