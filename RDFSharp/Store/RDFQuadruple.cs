@@ -35,7 +35,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Flavor of the triple nested into the quadruple
         /// </summary>
-        public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
+        public RDFModelEnums.RDFTripleFlavor TripleFlavor { get; internal set; }
 
         /// <summary>
         /// Member acting as context token of the quadruple
@@ -70,7 +70,7 @@ namespace RDFSharp.Store
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPO;
+            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavor.SPO;
 
             //Context
             this.Context           = (context ?? new RDFContext());
@@ -106,7 +106,7 @@ namespace RDFSharp.Store
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPL;
+            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavor.SPL;
 
             //Context
             this.Context           = (context ?? new RDFContext());
@@ -163,7 +163,7 @@ namespace RDFSharp.Store
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.TYPE,       RDFVocabulary.RDF.STATEMENT));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.SUBJECT,    (RDFResource)this.Subject));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.PREDICATE,  (RDFResource)this.Predicate));
-            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
                 reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
             }
             else {

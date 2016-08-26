@@ -112,15 +112,15 @@ namespace RDFSharp.Model
                         //It is a container subj, so add it to the containers pool
                         if (graph.GraphMetadata.Containers.Keys.Any(k => k.ToString().Equals(subj, StringComparison.Ordinal)) && !floatingContainers) {
                             switch (graph.GraphMetadata.Containers.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value) {
-                                case RDFModelEnums.RDFContainerTypes.Bag:
+                                case RDFModelEnums.RDFContainerType.Bag:
                                     subjNode  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Bag", RDFVocabulary.RDF.BASE_URI);
                                     containers.Add(new RDFResource(subj), subjNode);
                                     break;
-                                case RDFModelEnums.RDFContainerTypes.Seq:
+                                case RDFModelEnums.RDFContainerType.Seq:
                                     subjNode  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Seq", RDFVocabulary.RDF.BASE_URI);
                                     containers.Add(new RDFResource(subj), subjNode);
                                     break;
-                                case RDFModelEnums.RDFContainerTypes.Alt:
+                                case RDFModelEnums.RDFContainerType.Alt:
                                     subjNode  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Alt", RDFVocabulary.RDF.BASE_URI);
                                     containers.Add(new RDFResource(subj), subjNode);
                                     break;
@@ -130,7 +130,7 @@ namespace RDFSharp.Model
                         //It is a subj of a collection of resources, so do not append triples having it as a subject
                         //because we will reconstruct the collection and append it as a whole
                         else if (graph.GraphMetadata.Collections.Keys.Any(k => k.ToString().Equals(subj, StringComparison.Ordinal))                                                         &&
-                                 graph.GraphMetadata.Collections.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value.ItemType == RDFModelEnums.RDFItemTypes.Resource &&
+                                 graph.GraphMetadata.Collections.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value.ItemType == RDFModelEnums.RDFItemType.Resource &&
                                  !floatingCollections) {
                             continue;
                         }
@@ -189,7 +189,7 @@ namespace RDFSharp.Model
                                 #endregion
 
                                 #region object
-                                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
 
                                     //If the object is a container subj, we must append its entire node saved in the containers dictionary
                                     if (containers.Keys.Any(k => k.Equals(triple.Object)) && !floatingContainers) {
@@ -198,7 +198,7 @@ namespace RDFSharp.Model
 
                                     //Else, if the object is a subject of a collection of resources, we must append the "rdf:parseType=Collection" attribute to the predicate node
                                     else if (graph.GraphMetadata.Collections.Keys.Any(k => k.Equals(triple.Object))                                                                                     &&
-                                             graph.GraphMetadata.Collections.Single(c => c.Key.Equals(triple.Object)).Value.ItemType == RDFModelEnums.RDFItemTypes.Resource &&
+                                             graph.GraphMetadata.Collections.Single(c => c.Key.Equals(triple.Object)).Value.ItemType == RDFModelEnums.RDFItemType.Resource &&
                                              !floatingCollections) {
                                         XmlAttribute rdfParseType  = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":parseType", RDFVocabulary.RDF.BASE_URI);
                                         XmlText rdfParseTypeText   = rdfDoc.CreateTextNode("Collection");
@@ -400,17 +400,17 @@ namespace RDFSharp.Model
 
                                     #region typed literal
                                     //Check if there is a "rdf:datatype" attribute
-                                    XmlAttribute rdfDatatype  = GetRdfDatatypeAttribute(predNode);
-                                    if (rdfDatatype          != null) {
-                                        RDFDatatype dt        = RDFModelUtilities.GetDatatypeFromString(rdfDatatype.Value);
-                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerText), dt);
+                                    XmlAttribute rdfDatatype         = GetRdfDatatypeAttribute(predNode);
+                                    if (rdfDatatype                 != null) {
+                                        RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(rdfDatatype.Value);
+                                        RDFTypedLiteral tLit         = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerText), dt);
                                         result.AddTriple(new RDFTriple(subj, pred, tLit));
                                         continue;
                                     }
                                     //Check if there is a "rdf:parseType=Literal" attribute
                                     XmlAttribute parseLiteral = GetParseTypeLiteralAttribute(predNode);
                                     if (parseLiteral         != null) {
-                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerXml), RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.RDFS.PREFIX, "Literal"));
+                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerXml), RDFModelEnums.RDFDatatype.RDFS_LITERAL);
                                         result.AddTriple(new RDFTriple(subj, pred, tLit));
                                         continue;
                                     }
@@ -441,13 +441,13 @@ namespace RDFSharp.Model
                                     if (container           != null) {
                                         //Distinguish the right type of RDF container to build
                                         if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.Ordinal)     || container.LocalName.Equals("Bag", StringComparison.Ordinal)) {
-                                            ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
+                                            ParseContainerElements(RDFModelEnums.RDFContainerType.Bag, container, subj, pred, result);
                                         }
                                         else if(container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.Ordinal) || container.LocalName.Equals("Seq", StringComparison.Ordinal)) {
-                                            ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
+                                            ParseContainerElements(RDFModelEnums.RDFContainerType.Seq, container, subj, pred, result);
                                         }
                                         else if(container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.Ordinal) || container.LocalName.Equals("Alt", StringComparison.Ordinal)) {
-                                            ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
+                                            ParseContainerElements(RDFModelEnums.RDFContainerType.Alt, container, subj, pred, result);
                                         }
                                     }
                                     #endregion
@@ -797,7 +797,7 @@ namespace RDFSharp.Model
         /// Given an element representing a RDF container, iterates on its constituent elements
         /// to build its standard reification triples. 
         /// </summary>
-        internal static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container,
+        internal static void ParseContainerElements(RDFModelEnums.RDFContainerType contType, XmlNode container,
                                                     RDFResource subj, RDFResource pred, RDFGraph result) {
 
             //Attach the container as the blank object of the current pred
@@ -806,10 +806,10 @@ namespace RDFSharp.Model
 
             //obj -> rdf:type -> rdf:[Bag|Seq|Alt]
             switch(contType) {
-                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerType.Bag:
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
                     break;
-                case RDFModelEnums.RDFContainerTypes.Seq:
+                case RDFModelEnums.RDFContainerType.Seq:
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
                     break;
                 default:
@@ -837,7 +837,7 @@ namespace RDFSharp.Model
                         }
 
                         //obj -> rdf:_N -> VALUE 
-                        if (contType          == RDFModelEnums.RDFContainerTypes.Alt) {
+                        if (contType          == RDFModelEnums.RDFContainerType.Alt) {
                             if (!elemVals.Contains(elemUri.Value)) {
                                  elemVals.Add(elemUri.Value);
                                  result.AddTriple(new RDFTriple(obj, new RDFResource(RDFVocabulary.RDF.BASE_URI + elem.LocalName), new RDFResource(elemUri.Value)));
@@ -866,7 +866,7 @@ namespace RDFSharp.Model
                         }
 
                         //obj -> rdf:_N -> VALUE 
-                        if (contType          == RDFModelEnums.RDFContainerTypes.Alt) {
+                        if (contType          == RDFModelEnums.RDFContainerType.Alt) {
                             if (!elemVals.Contains(literal.ToString())) {
                                  elemVals.Add(literal.ToString());
                                  result.AddTriple(new RDFTriple(obj, new RDFResource(RDFVocabulary.RDF.BASE_URI + elem.LocalName), literal));

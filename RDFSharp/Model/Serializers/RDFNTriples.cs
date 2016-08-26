@@ -118,7 +118,7 @@ namespace RDFSharp.Model
                     foreach(var t             in graph) {
 
                         #region template
-                        if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavor.SPO) {
                             tripleTemplate     = "<{SUBJ}> <{PRED}> <{OBJ}> .";
                         }
                         else {
@@ -145,7 +145,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
                             if(((RDFResource)t.Object).IsBlank) {
                                 tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
                             }
@@ -300,13 +300,13 @@ namespace RDFSharp.Model
 
                             #region typed literal
                             else {
-                                tokens[2]            = tokens[2].Replace("\"^^", "^^");
-                                String tLitValue     = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
-                                String tLitDatatype  = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
-                                                                .TrimStart(new Char[] { '<' })
-                                                                .TrimEnd(new   Char[] { '>' });
-                                RDFDatatype dt       = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                                L                    = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
+                                tokens[2]                    = tokens[2].Replace("\"^^", "^^");
+                                String tLitValue             = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
+                                String tLitDatatype          = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
+                                                                        .TrimStart(new Char[] { '<' })
+                                                                        .TrimEnd(new   Char[] { '>' });
+                                RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                                L                            = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
                             }
                             #endregion
 

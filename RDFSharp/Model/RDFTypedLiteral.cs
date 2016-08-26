@@ -28,36 +28,22 @@ namespace RDFSharp.Model
         /// <summary>
         /// Mandatory datatype of the typed literal
         /// </summary>
-        public RDFDatatype Datatype { get; internal set; }
+        public RDFModelEnums.RDFDatatype Datatype { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and "xsd:string" datatype.
-        /// </summary>
-        public RDFTypedLiteral(String value) {
-            this.Value               = (value ?? String.Empty);
-            this.Datatype            = RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "string");
-            this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());
-        }
-
-        /// <summary>
         /// Default-ctor to build a typed literal with given value and given datatype. 
         /// Semantic validation of given value against given datatype is performed.
         /// </summary>
-        public RDFTypedLiteral(String value, RDFDatatype datatype)  {
-            if (datatype            != null) {
-			    this.Value           = (value ?? String.Empty);
-                this.Datatype        = datatype;
-                if (RDFModelUtilities.ValidateTypedLiteral(this)) {
-                    this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-                }
-                else {
-                    throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + datatype + ") or it is not compatible with the datatype category (" + datatype.Category + ").");
-                }                
+        public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatype datatype)  {
+            this.Value    = (value ?? String.Empty);
+            this.Datatype = datatype;
+            if (RDFModelUtilities.ValidateTypedLiteral(this)) {
+                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {
-                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"datatype\" parameter is null.");
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ")");
             }
         }
         #endregion
@@ -67,7 +53,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the typed literal
         /// </summary>
         public override String ToString() {
-            return base.ToString() + "^^" + this.Datatype;
+            return base.ToString() + "^^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype);
         }
         #endregion
 

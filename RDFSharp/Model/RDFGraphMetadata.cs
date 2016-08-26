@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Dictionary of resources acting as container subjects in the graph
         /// </summary>
-        internal Dictionary<RDFResource, RDFModelEnums.RDFContainerTypes> Containers { get; set; }
+        internal Dictionary<RDFResource, RDFModelEnums.RDFContainerType> Containers { get; set; }
 
         /// <summary>
         /// Dictionary of resources acting as collection subjects in the graph
@@ -48,7 +48,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFGraphMetadata() {
             this.Namespaces  = new List<RDFNamespace>();
-            this.Containers  = new Dictionary<RDFResource, RDFModelEnums.RDFContainerTypes>();
+            this.Containers  = new Dictionary<RDFResource, RDFModelEnums.RDFContainerType>();
             this.Collections = new Dictionary<RDFResource, RDFCollectionItem>();
         }
         #endregion
@@ -65,7 +65,7 @@ namespace RDFSharp.Model
                 String subj              = triple.Subject.ToString();
                 if (subj.Contains(nSpace) || subj.StartsWith(ns.Prefix + ":")) {
                     if (!this.Namespaces.Contains(ns)) {
-                        this.Namespaces.Add(ns);
+                         this.Namespaces.Add(ns);
                     }
                 }
 
@@ -73,16 +73,16 @@ namespace RDFSharp.Model
                 String pred              = triple.Predicate.ToString();
                 if (pred.Contains(nSpace) || pred.StartsWith(ns.Prefix + ":")) {
                     if (!this.Namespaces.Contains(ns)) {
-                        this.Namespaces.Add(ns);
+                         this.Namespaces.Add(ns);
                     }
                 }
 
                 //Resolve object Uri
-                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
                     String obj           = triple.Object.ToString();
                     if (obj.Contains(nSpace) || obj.StartsWith(ns.Prefix + ":")) {
                         if (!this.Namespaces.Contains(ns)) {
-                            this.Namespaces.Add(ns);
+                             this.Namespaces.Add(ns);
                         }
                     }
                 }
@@ -92,7 +92,7 @@ namespace RDFSharp.Model
                         String tLit      = ((RDFTypedLiteral)triple.Object).Datatype.ToString();
                         if (tLit.Contains(nSpace) || tLit.StartsWith(ns.Prefix + ":")) {
                             if (!this.Namespaces.Contains(ns)) {
-                                this.Namespaces.Add(ns);
+                                 this.Namespaces.Add(ns);
                             }
                         }
                     }
@@ -104,25 +104,25 @@ namespace RDFSharp.Model
         /// Verifies if the given triple carries a container subj and, if so, collects it
         /// </summary>
         private void CollectContainers(RDFTriple triple) {
-            if (triple != null && triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+            if (triple != null && triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
                 //SUBJECT -> rdf:type -> rdf:[Bag|Seq|Alt]
                 if (triple.Predicate.Equals(RDFVocabulary.RDF.TYPE)) {
                     //rdf:Bag
                     if (triple.Object.Equals(RDFVocabulary.RDF.BAG)) {
                         if (!this.Containers.ContainsKey((RDFResource)triple.Subject)) {
-                            this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerTypes.Bag);
+                             this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerType.Bag);
                         }
                     }
                     //rdf:Seq
                     else if (triple.Object.Equals(RDFVocabulary.RDF.SEQ)) {
                         if (!this.Containers.ContainsKey((RDFResource)triple.Subject)) {
-                            this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerTypes.Seq);
+                             this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerType.Seq);
                         }
                     }
                     //rdf:Alt
                     else if (triple.Object.Equals(RDFVocabulary.RDF.ALT)) {
                         if (!this.Containers.ContainsKey((RDFResource)triple.Subject)) {
-                            this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerTypes.Alt);
+                             this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerType.Alt);
                         }
                     }
                 }
@@ -135,26 +135,26 @@ namespace RDFSharp.Model
         private void CollectCollections(RDFTriple triple) {
             if (triple != null) {
                 //SUBJECT -> rdf:type -> rdf:list
-                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO && triple.Predicate.Equals(RDFVocabulary.RDF.TYPE)) {
+                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO && triple.Predicate.Equals(RDFVocabulary.RDF.TYPE)) {
                     if (triple.Object.Equals(RDFVocabulary.RDF.LIST)) {
                         if (!this.Collections.ContainsKey((RDFResource)triple.Subject)) {
-                            this.Collections.Add((RDFResource)triple.Subject, new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, null, null));
+                             this.Collections.Add((RDFResource)triple.Subject, new RDFCollectionItem(RDFModelEnums.RDFItemType.Resource, null, null));
                         }
                     }
                 }
                 //SUBJECT -> rdf:first -> [OBJECT|LITERAL]
                 else if (triple.Predicate.Equals(RDFVocabulary.RDF.FIRST)) {
                     if (this.Collections.ContainsKey((RDFResource)triple.Subject)) {
-                        if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, (RDFResource)triple.Object, null);
+                        if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                            this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(RDFModelEnums.RDFItemType.Resource, (RDFResource)triple.Object, null);
                         }
                         else {
-                            this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Literal,  (RDFLiteral)triple.Object,  null);
+                            this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(RDFModelEnums.RDFItemType.Literal,  (RDFLiteral)triple.Object,  null);
                         }
                     }
                 }
                 //SUBJECT -> rdf:rest -> [BNODE|RDF:NIL]
-                else if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO && triple.Predicate.Equals(RDFVocabulary.RDF.REST)) {
+                else if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO && triple.Predicate.Equals(RDFVocabulary.RDF.REST)) {
                     if (this.Collections.ContainsKey((RDFResource)triple.Subject)) {
                         this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(this.Collections[(RDFResource)triple.Subject].ItemType,
                                                                                               this.Collections[(RDFResource)triple.Subject].ItemValue, 
@@ -177,7 +177,7 @@ namespace RDFSharp.Model
         /// Updates the metadata of the graph with the info carried by the given triple 
         /// </summary>
         internal void UpdateMetadata(RDFTriple triple) {
-            if(triple != null){
+            if (triple != null){
                 this.CollectNamespaces(triple);
                 this.CollectContainers(triple);
                 this.CollectCollections(triple);

@@ -65,10 +65,10 @@ namespace RDFSharp.Store
                 }
 
                 //TypedLiteral
-                String tLitValue          = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
-                String tLitDatatype       = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
-                RDFDatatype dt            = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                RDFTypedLiteral tLit      = new RDFTypedLiteral(tLitValue, dt);
+                String tLitValue             = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
+                String tLitDatatype          = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                RDFTypedLiteral tLit         = new RDFTypedLiteral(tLitValue, dt);
                 return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
             }
             throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");

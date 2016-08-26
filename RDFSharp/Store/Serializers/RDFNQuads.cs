@@ -102,7 +102,7 @@ namespace RDFSharp.Store {
                     foreach (var q               in store.SelectAllQuadruples()) {
 
                         #region template
-                        if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavor.SPO) {
                             quadrupleTemplate     = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
                         }
                         else {
@@ -129,7 +129,7 @@ namespace RDFSharp.Store {
                         #endregion
 
                         #region object
-                        if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavor.SPO) {
                             if (((RDFResource)q.Object).IsBlank) {
                                 quadrupleTemplate = quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:");
                             }
@@ -291,13 +291,13 @@ namespace RDFSharp.Store {
 
                             #region typed literal
                             else {
-                                tokens[2] = tokens[2].Replace("\"^^", "^^");
-                                String tLitValue    = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
-                                String tLitDatatype = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
-                                                               .TrimStart(new Char[] { '<' })
-                                                               .TrimEnd(new   Char[] { '>' });
-                                RDFDatatype dt      = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                                L                   = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
+                                tokens[2]                    = tokens[2].Replace("\"^^", "^^");
+                                String tLitValue             = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
+                                String tLitDatatype          = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
+                                                                        .TrimStart(new Char[] { '<' })
+                                                                        .TrimEnd(new   Char[] { '>' });
+                                RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                                L                            = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
                             }
                             #endregion
 

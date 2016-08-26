@@ -31,20 +31,20 @@ namespace RDFSharp.Model
         /// <summary>
         /// Writes the given graph to the given file in the given RDF format. 
         /// </summary>
-        public static void WriteRDF(RDFModelEnums.RDFFormats rdfFormat, RDFGraph graph, String filepath) {
+        public static void WriteRDF(RDFModelEnums.RDFFormat rdfFormat, RDFGraph graph, String filepath) {
             if (graph        != null) {
                 if (filepath != null) {
                     switch(rdfFormat) {
-                        case RDFModelEnums.RDFFormats.NTriples:
+                        case RDFModelEnums.RDFFormat.NTriples:
                              RDFNTriples.Serialize(graph, filepath);
                              break;
-                        case RDFModelEnums.RDFFormats.RdfXml:
+                        case RDFModelEnums.RDFFormat.RdfXml:
                              RDFXml.Serialize(graph, filepath);
                              break;
-                        case RDFModelEnums.RDFFormats.TriX:
+                        case RDFModelEnums.RDFFormat.TriX:
                              RDFTriX.Serialize(graph, filepath);
                              break;
-                        case RDFModelEnums.RDFFormats.Turtle:
+                        case RDFModelEnums.RDFFormat.Turtle:
                              RDFTurtle.Serialize(graph, filepath);
                              break;
                     }
@@ -61,20 +61,20 @@ namespace RDFSharp.Model
         /// <summary>
         /// Writes the given graph to the given stream in the given RDF format. 
         /// </summary>
-        public static void WriteRDF(RDFModelEnums.RDFFormats rdfFormat, RDFGraph graph, Stream outputStream) {
+        public static void WriteRDF(RDFModelEnums.RDFFormat rdfFormat, RDFGraph graph, Stream outputStream) {
             if (graph            != null) {
                 if (outputStream != null) {
                     switch    (rdfFormat) {
-                        case RDFModelEnums.RDFFormats.NTriples:
+                        case RDFModelEnums.RDFFormat.NTriples:
                              RDFNTriples.Serialize(graph, outputStream);
                              break;
-                        case RDFModelEnums.RDFFormats.RdfXml:
+                        case RDFModelEnums.RDFFormat.RdfXml:
                              RDFXml.Serialize(graph, outputStream);
                              break;
-                        case RDFModelEnums.RDFFormats.TriX:
+                        case RDFModelEnums.RDFFormat.TriX:
                              RDFTriX.Serialize(graph, outputStream);
                              break;
-                        case RDFModelEnums.RDFFormats.Turtle:
+                        case RDFModelEnums.RDFFormat.Turtle:
                              RDFTurtle.Serialize(graph, outputStream);
                              break;
                     }
@@ -93,17 +93,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads the given file in the given RDF format to a graph. 
         /// </summary>
-        public static RDFGraph ReadRDF(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
+        public static RDFGraph ReadRDF(RDFModelEnums.RDFFormat rdfFormat, String filepath) {
             if (filepath     != null) {
                 if (File.Exists(filepath)) {
                     switch     (rdfFormat) {
-                        case RDFModelEnums.RDFFormats.NTriples:
+                        case RDFModelEnums.RDFFormat.NTriples:
                              return RDFNTriples.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.RdfXml:
+                        case RDFModelEnums.RDFFormat.RdfXml:
                              return RDFXml.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.TriX:
+                        case RDFModelEnums.RDFFormat.TriX:
                              return RDFTriX.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.Turtle:
+                        case RDFModelEnums.RDFFormat.Turtle:
                              throw new RDFModelException("Cannot read RDF file because reading of Turtle format is not supported. What about joining the project to contribute it?");
                     }
                 }
@@ -115,16 +115,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads the given stream in the given RDF format to a graph. 
         /// </summary>
-        public static RDFGraph ReadRDF(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) {
+        public static RDFGraph ReadRDF(RDFModelEnums.RDFFormat rdfFormat, Stream inputStream) {
             if (inputStream != null) {
                 switch   (rdfFormat) {
-                    case RDFModelEnums.RDFFormats.NTriples:
+                    case RDFModelEnums.RDFFormat.NTriples:
                          return RDFNTriples.Deserialize(inputStream);
-                    case RDFModelEnums.RDFFormats.RdfXml:
+                    case RDFModelEnums.RDFFormat.RdfXml:
                          return RDFXml.Deserialize(inputStream);
-                    case RDFModelEnums.RDFFormats.TriX:
+                    case RDFModelEnums.RDFFormat.TriX:
                          return RDFTriX.Deserialize(inputStream);
-                    case RDFModelEnums.RDFFormats.Turtle:
+                    case RDFModelEnums.RDFFormat.Turtle:
                          throw new RDFModelException("Cannot read RDF stream because reading of Turtle format is not supported. What about joining the project to contribute it?");
                 }
             }

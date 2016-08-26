@@ -480,7 +480,7 @@ namespace RDFSharp.Store
 
                 //Valorize parameters
                 command.Parameters["OBJID"].Value = objectResource.PatternMemberID;
-                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavors.SPO;
+                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavor.SPO;
 
                 try {
 
@@ -532,7 +532,7 @@ namespace RDFSharp.Store
 
                 //Valorize parameters
                 command.Parameters["OBJID"].Value = literalObject.PatternMemberID;
-                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavors.SPL;
+                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavor.SPL;
 
                 try {
 
@@ -689,7 +689,7 @@ namespace RDFSharp.Store
                 }
 
                 // Step 2: Result-Update
-                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
                     graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
                                                                               (RDFResource)q.Predicate,
                                                                               (RDFResource)q.Object));
@@ -709,7 +709,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override Boolean ContainsQuadruple(RDFQuadruple quadruple) {
             if (quadruple   != null) {
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
                     return (this.SelectQuadruples((RDFContext)quadruple.Context,
                                                   (RDFResource)quadruple.Subject,
                                                   (RDFResource)quadruple.Predicate,
@@ -792,7 +792,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                             command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                             command.Parameters["PREDID"].Value = pred.PatternMemberID;
@@ -807,7 +807,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                                 command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                                 command.Parameters["PREDID"].Value = pred.PatternMemberID;
@@ -833,7 +833,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("CTXID",  SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                             command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                             command.Parameters["OBJID"].Value  = obj.PatternMemberID;
@@ -846,7 +846,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("CTXID",  SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                                 command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                                 command.Parameters["OBJID"].Value  = lit.PatternMemberID;
@@ -871,7 +871,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("CTXID",  SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                             command.Parameters["PREDID"].Value = pred.PatternMemberID;
                             command.Parameters["OBJID"].Value  = obj.PatternMemberID;
@@ -884,7 +884,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("CTXID",  SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                                 command.Parameters["PREDID"].Value = pred.PatternMemberID;
                                 command.Parameters["OBJID"].Value  = lit.PatternMemberID;
@@ -906,7 +906,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
                             command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["CTXID"].Value = ctx.PatternMemberID;
                             command.Parameters["OBJID"].Value = obj.PatternMemberID;
                         }
@@ -917,7 +917,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
                                 command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["CTXID"].Value = ctx.PatternMemberID;
                                 command.Parameters["OBJID"].Value = lit.PatternMemberID;
                             }
@@ -941,7 +941,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                             command.Parameters["PREDID"].Value = pred.PatternMemberID;
                             command.Parameters["OBJID"].Value  = obj.PatternMemberID;
@@ -954,7 +954,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                                 command.Parameters["PREDID"].Value = pred.PatternMemberID;
                                 command.Parameters["OBJID"].Value  = lit.PatternMemberID;
@@ -976,7 +976,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("TFV",    SqlDbType.Int));
                             command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                             command.Parameters["OBJID"].Value  = obj.PatternMemberID;
                         }
@@ -987,7 +987,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("TFV",    SqlDbType.Int));
                                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["SUBJID"].Value = subj.PatternMemberID;
                                 command.Parameters["OBJID"].Value  = lit.PatternMemberID;
                             }
@@ -1008,7 +1008,7 @@ namespace RDFSharp.Store
                             command.Parameters.Add(new SqlParameter("TFV",    SqlDbType.Int));
                             command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["PREDID"].Value = pred.PatternMemberID;
                             command.Parameters["OBJID"].Value  = obj.PatternMemberID;
                         }
@@ -1019,7 +1019,7 @@ namespace RDFSharp.Store
                                 command.Parameters.Add(new SqlParameter("TFV",    SqlDbType.Int));
                                 command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value    = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["PREDID"].Value = pred.PatternMemberID;
                                 command.Parameters["OBJID"].Value  = lit.PatternMemberID;
                             }
@@ -1037,7 +1037,7 @@ namespace RDFSharp.Store
                             command  = new SqlCommand("SELECT [TripleFlavor], [Context], [Subject], [Predicate], [Object] FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
                             command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
                             command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
-                            command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavors.SPO;
+                            command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavor.SPO;
                             command.Parameters["OBJID"].Value = obj.PatternMemberID;
                         }
                         else {
@@ -1046,7 +1046,7 @@ namespace RDFSharp.Store
                                 command = new SqlCommand("SELECT [TripleFlavor], [Context], [Subject], [Predicate], [Object] FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
                                 command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
                                 command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
-                                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavors.SPL;
+                                command.Parameters["TFV"].Value   = RDFModelEnums.RDFTripleFlavor.SPL;
                                 command.Parameters["OBJID"].Value = lit.PatternMemberID;
                             }
                             else {

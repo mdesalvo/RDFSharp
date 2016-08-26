@@ -92,10 +92,10 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Typed Literal
-                String tLitValue          = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
-                String tLitDatatype       = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
-                RDFDatatype dt            = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                RDFTypedLiteral tLit      = new RDFTypedLiteral(tLitValue, dt);
+                String tLitValue             = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
+                String tLitDatatype          = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                RDFTypedLiteral tLit         = new RDFTypedLiteral(tLitValue, dt);
                 return tLit;
                 #endregion
 
@@ -132,7 +132,7 @@ namespace RDFSharp.Query
                 }
 
                 //RESOURCE/CONTEXT VS "XSD:ANYURI" TYPED LITERAL
-                if (right is RDFTypedLiteral && ((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "anyURI"))) {
+                if (right is RDFTypedLiteral && ((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
                     return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                 }
 
@@ -156,7 +156,7 @@ namespace RDFSharp.Query
                 }
 
                 //PLAIN LITERAL VS "XSD:STRING" TYPED LITERAL
-                if (((RDFTypedLiteral)right).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "string"))) {
+                if (((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)) {
                     return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                 }
 
@@ -171,7 +171,7 @@ namespace RDFSharp.Query
             if (right is RDFResource || right is RDFContext) {
 
                 //"XSD:ANYURI" TYPED LITERAL VS RESOURCE/CONTEXT
-                if (left is RDFTypedLiteral && ((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "anyURI"))) {
+                if (left is RDFTypedLiteral && ((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
                     return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                 }
 
@@ -184,7 +184,7 @@ namespace RDFSharp.Query
             if (right is RDFPlainLiteral) {
 
                 //"XSD:STRING" TYPED LITERAL VS PLAIN LITERAL
-                if (((RDFTypedLiteral)left).Datatype.Equals(RDFDatatypeRegister.GetByPrefixAndDatatype(RDFVocabulary.XSD.PREFIX, "string"))) {
+                if (((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)) {
                     return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                 }
 
@@ -194,48 +194,121 @@ namespace RDFSharp.Query
             }
 
             //TYPED LITERAL VS TYPED LITERAL
-            //SEMANTICALLY COMPATIBLE CATEGORY
-            if (((RDFTypedLiteral)left).Datatype.Category.Equals(((RDFTypedLiteral)right).Datatype.Category)) {
-                Int32 comparison = 0;
-                switch (((RDFTypedLiteral)left).Datatype.Category) {
+            //Detect left typed literal's category
+            RDFModelEnums.RDFDatatype leftDType  = ((RDFTypedLiteral)left).Datatype;
+            Boolean isLeftDTypeBoolean           = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_BOOLEAN);
+            Boolean isLeftDTypeNumeric           = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_BYTE)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DECIMAL)            ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DOUBLE)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_FLOAT)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_INT)                ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_INTEGER)            ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_LONG)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER)    ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER) ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER) ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER)    ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_SHORT)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE)       ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT)        ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG)       ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT);
+            Boolean isLeftDTypeDateTime          = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)          ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)         ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_TIME);
+            Boolean isLeftDTypeTimeSpan          = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DURATION);
+            Boolean isLeftDTypeString            = leftDType.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)         ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_BASE64BINARY)       ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)          ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)            ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)   ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NOTATION)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_QNAME)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN);
 
-                    case RDFModelEnums.RDFDatatypeCategory.Numeric:
-                        Decimal leftValueDecimal    = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Any, CultureInfo.InvariantCulture);
-                        Decimal rightValueDecimal   = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Any, CultureInfo.InvariantCulture);
-                        comparison                  = leftValueDecimal.CompareTo(rightValueDecimal);
-                        break;
+            //Detect right typed literal's category
+            RDFModelEnums.RDFDatatype rightDType = ((RDFTypedLiteral)right).Datatype;
+            Boolean isRightDTypeBoolean          = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_BOOLEAN);
+            Boolean isRightDTypeNumeric          = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_BYTE)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DECIMAL)            ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DOUBLE)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_FLOAT)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_INT)                ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_INTEGER)            ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_LONG)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER)    ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER) ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER) ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER)    ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_SHORT)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE)       ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT)        ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG)       ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT);
+            Boolean isRightDTypeDateTime         = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)          ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)         ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_TIME);
+            Boolean isRightDTypeTimeSpan         = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DURATION);
+            Boolean isRightDTypeString           = rightDType.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)         ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_BASE64BINARY)       ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)          ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)            ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)   ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NOTATION)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_QNAME)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN);
 
-                    case RDFModelEnums.RDFDatatypeCategory.Boolean:
-                        Boolean leftValueBoolean    = Boolean.Parse(((RDFTypedLiteral)left).Value);
-                        Boolean rightValueBoolean   = Boolean.Parse(((RDFTypedLiteral)right).Value);
-                        comparison                  = leftValueBoolean.CompareTo(rightValueBoolean);
-                        break;
-
-                    case RDFModelEnums.RDFDatatypeCategory.DateTime:
-                        DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture, DateTimeStyles.None);
-                        DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.None);
-                        comparison                  = leftValueDateTime.CompareTo(rightValueDateTime);
-                        break;
-
-                    case RDFModelEnums.RDFDatatypeCategory.TimeSpan:
-                        TimeSpan leftValueDuration  = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
-                        TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
-                        comparison                  = leftValueDuration.CompareTo(rightValueDuration);
-                        break;
-
-                    case RDFModelEnums.RDFDatatypeCategory.String:
-                        String leftValueString      = ((RDFTypedLiteral)left).Value;
-                        String rightValueString     = ((RDFTypedLiteral)right).Value;
-                        comparison                  = leftValueString.CompareTo(rightValueString);
-                        break;
-
-                }
-                return comparison;
+            //Compare typed literals, only if categories are semantically compatible
+            if (isLeftDTypeBoolean         && isRightDTypeBoolean)  {
+                Boolean leftValueBoolean    = Boolean.Parse(((RDFTypedLiteral)left).Value);
+                Boolean rightValueBoolean   = Boolean.Parse(((RDFTypedLiteral)right).Value);
+                return leftValueBoolean.CompareTo(rightValueBoolean);
             }
-
-            //SEMANTICALLY INCOMPATIBLE CATEGORY
-            throw new RDFQueryException("Type Error: Typed Literal of category (" + ((RDFTypedLiteral)left).Datatype.Category + ") cannot be compared to Typed Literal of category (" + ((RDFTypedLiteral)right).Datatype.Category + ")");
-
+            else if(isLeftDTypeDateTime    && isRightDTypeDateTime) {
+                DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture, DateTimeStyles.None);
+                DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.None);
+                return leftValueDateTime.CompareTo(rightValueDateTime);
+            }
+            else if(isLeftDTypeNumeric     && isRightDTypeNumeric)  {
+                Decimal leftValueDecimal    = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Any, CultureInfo.InvariantCulture);
+                Decimal rightValueDecimal   = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                return leftValueDecimal.CompareTo(rightValueDecimal);
+            }
+            else if(isLeftDTypeString      && isRightDTypeString)   {
+                String leftValueString      = ((RDFTypedLiteral)left).Value;
+                String rightValueString     = ((RDFTypedLiteral)right).Value;
+                return leftValueString.CompareTo(rightValueString);
+            }
+            else if(isLeftDTypeTimeSpan    && isRightDTypeTimeSpan) {
+                TimeSpan leftValueDuration  = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
+                TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
+                return leftValueDuration.CompareTo(rightValueDuration);
+            }
+            else {
+               throw new RDFQueryException("Type Error: Typed Literal of datatype (" + RDFModelUtilities.GetDatatypeFromEnum(leftDType) + ") cannot be compared to Typed Literal of datatype (" + RDFModelUtilities.GetDatatypeFromEnum(rightDType) + ")");
+            }           
             #endregion
 
             #endregion

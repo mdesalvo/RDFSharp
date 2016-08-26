@@ -103,56 +103,56 @@ namespace RDFSharp.Query {
             //In case LeftMember is a variable, try to get the value corresponding to its column; if column not found, the filter fails
             if (this.LeftMember is RDFVariable) {
                 if (row.Table.Columns.Contains(this.LeftMember.ToString())) {
-                    leftValue           = RDFQueryUtilities.ParseRDFPatternMember(row[this.LeftMember.ToString()].ToString());
+                    leftValue        = RDFQueryUtilities.ParseRDFPatternMember(row[this.LeftMember.ToString()].ToString());
                 }
                 else {
-                    keepRow             = false;
+                    keepRow          = false;
                 }
             }
 
             //In case RightMember is a variable, try to get the value corresponding to its column; if column not found, the filter fails
-            if (keepRow                && this.RightMember is RDFVariable) {
+            if (keepRow             && this.RightMember is RDFVariable) {
                 if (row.Table.Columns.Contains(this.RightMember.ToString())) {
-                    rightValue          = RDFQueryUtilities.ParseRDFPatternMember(row[this.RightMember.ToString()].ToString());
+                    rightValue       = RDFQueryUtilities.ParseRDFPatternMember(row[this.RightMember.ToString()].ToString());
                 }
                 else {
-                    keepRow             = false;
+                    keepRow          = false;
                 }
             }
 
             //Perform the comparison between leftValue and rightValue
             if(keepRow) {
                 try {
-                    Int32 comparison    = RDFQueryUtilities.CompareRDFPatternMembers(leftValue, rightValue);
+                    Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(leftValue, rightValue);
                     switch (this.ComparisonFlavor) {
                         case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                            keepRow     = (comparison  < 0);
+                            keepRow  = (comparison  < 0);
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                            keepRow     = (comparison <= 0);
+                            keepRow  = (comparison <= 0);
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                            keepRow     = (comparison == 0);
+                            keepRow  = (comparison == 0);
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                            keepRow     = (comparison != 0);
+                            keepRow  = (comparison != 0);
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                            keepRow     = (comparison >= 0);
+                            keepRow  = (comparison >= 0);
                             break;
                         case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                            keepRow     = (comparison  > 0);
+                            keepRow  = (comparison  > 0);
                             break;
                     }
                 }
                 catch {                    
-                    keepRow             = false; //Type Error
+                    keepRow = false; //Type Error
                 }
             }
 
             //Apply the eventual negation
             if (applyNegation) {
-                keepRow                 = !keepRow;
+                keepRow = !keepRow;
             }
 
             return keepRow;

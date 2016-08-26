@@ -83,20 +83,20 @@ namespace RDFSharp.Query
 
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString())) {
-                String variableValue  = row[this.Variable.ToString()].ToString().ToUpperInvariant();
+                String variableValue   = row[this.Variable.ToString()].ToString().ToUpperInvariant();
                 
                 //Successfull match if NO language is found in the variable
-                if(this.Language     == String.Empty) {
-                    keepRow           = !Regex.IsMatch(variableValue, "@[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$");
+                if (this.Language     == String.Empty) {
+                    keepRow            = !Regex.IsMatch(variableValue, "@[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$");
                 }
                 else{
                     //Successfull match if ANY language is found in the variable
-                    if(this.Language == "*") {
-                        keepRow       = Regex.IsMatch(variableValue, "@[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$");
+                    if (this.Language == "*") {
+                        keepRow        = Regex.IsMatch(variableValue, "@[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$");
                     }
 					//Successfull match if GIVEN language is found in the variable
                     else{
-                        keepRow       = Regex.IsMatch(variableValue, "@" + this.Language + "([\\-][a-zA-Z0-9]+)*$");
+                        keepRow        = Regex.IsMatch(variableValue, "@" + this.Language + "([\\-][a-zA-Z0-9]+)*$");
                     }
                 }
 

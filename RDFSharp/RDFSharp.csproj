@@ -56,8 +56,6 @@
     <!-- Model -->
     <Compile Include="Model\RDFCollection.cs" />
     <Compile Include="Model\RDFContainer.cs" />
-    <Compile Include="Model\RDFDatatype.cs" />
-    <Compile Include="Model\RDFDatatypeRegister.cs" />
     <Compile Include="Model\RDFGraph.cs" />
     <Compile Include="Model\RDFGraphIndex.cs" />
     <Compile Include="Model\RDFGraphMetadata.cs" />
