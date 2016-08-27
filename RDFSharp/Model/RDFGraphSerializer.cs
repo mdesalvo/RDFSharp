@@ -21,9 +21,9 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFSerializer exposes choices to read and write RDF data in supported formats.
+    /// RDFGraphSerializer exposes choices to read and write RDF graph data in supported formats.
     /// </summary>
-    public static partial class RDFSerializer {
+    public static class RDFGraphSerializer {
 
         #region Methods
 

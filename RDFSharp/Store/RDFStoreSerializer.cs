@@ -20,9 +20,9 @@ using System.IO;
 namespace RDFSharp.Store {
 
     /// <summary>
-    /// RDFSerializer exposes choices to read and write RDF data in supported formats.
+    /// RDFStoreSerializer exposes choices to read and write RDF store data in supported formats.
     /// </summary>
-    public static partial class RDFSerializer {
+    public static class RDFStoreSerializer {
 
         #region Methods
 

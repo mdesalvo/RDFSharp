@@ -59,7 +59,7 @@
     <Compile Include="Model\RDFGraph.cs" />
     <Compile Include="Model\RDFGraphIndex.cs" />
     <Compile Include="Model\RDFGraphMetadata.cs" />
-    <Compile Include="Model\RDFSerializer.cs" />
+    <Compile Include="Model\RDFGraphSerializer.cs" />
     <Compile Include="Model\RDFLiteral.cs" />
     <Compile Include="Model\RDFModelEnums.cs" />
     <Compile Include="Model\RDFModelException.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="Store\RDFStoreEnums.cs" />
     <Compile Include="Store\RDFStoreException.cs" />
     <Compile Include="Store\RDFStoreIndex.cs" />
-    <Compile Include="Store\RDFSerializer.cs" />
+    <Compile Include="Store\RDFStoreSerializer.cs" />
     <Compile Include="Store\RDFStoreUtilities.cs" />
     <Compile Include="Store\Engines\RDFMemoryStore.cs" />
     <Compile Include="Store\Engines\RDFSQLServerStore.cs" />

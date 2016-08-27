@@ -160,7 +160,7 @@ namespace RDFSharp.Store {
 
                             #region typed literal
                             else {
-                                quadrupleTemplate = quadrupleTemplate.Replace("{DTYPE}", ((RDFTypedLiteral)q.Object).Datatype.ToString());
+                                quadrupleTemplate = quadrupleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)q.Object).Datatype));
                             }
                             #endregion
 
