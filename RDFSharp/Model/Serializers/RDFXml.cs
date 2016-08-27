@@ -250,7 +250,7 @@ namespace RDFSharp.Model
                                     else {
                                         RDFTypedLiteral tLit      = (RDFTypedLiteral)triple.Object;
                                         XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":datatype", RDFVocabulary.RDF.BASE_URI);
-                                        XmlText typedLiteralNodeDescText  = rdfDoc.CreateTextNode(tLit.Datatype.ToString());
+                                        XmlText typedLiteralNodeDescText  = rdfDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(tLit.Datatype));
                                         typedLiteralNodeDesc.AppendChild(typedLiteralNodeDescText);
                                         predNode.Attributes.Append(typedLiteralNodeDesc);
                                     }
@@ -272,7 +272,7 @@ namespace RDFSharp.Model
                         if (!subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.Ordinal) &&
                             !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.Ordinal) &&
                             !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.Ordinal)) {
-                            rdfRoot.AppendChild(subjNode);
+                             rdfRoot.AppendChild(subjNode);
                         }
                         #endregion
 

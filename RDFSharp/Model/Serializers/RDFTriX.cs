@@ -133,7 +133,7 @@ namespace RDFSharp.Model
                             else {
                                 XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", null);
                                 XmlAttribute datatype       = trixDoc.CreateAttribute("datatype");
-                                XmlText datatypeText        = trixDoc.CreateTextNode(((RDFTypedLiteral)t.Object).Datatype.ToString());
+                                XmlText datatypeText        = trixDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
                                 datatype.AppendChild(datatypeText);
                                 typedLiteralElement.Attributes.Append(datatype);
                                 XmlText typedLiteralText    = trixDoc.CreateTextNode(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value));
