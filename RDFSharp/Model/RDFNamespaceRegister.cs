@@ -28,6 +28,11 @@ namespace RDFSharp.Model
 
         #region Properties
         /// <summary>
+        /// Flag to enable search into prefix.cc service when a prefix/namespace is not found
+        /// </summary>
+        public static Boolean EnablePrefixCCService { get; set; }
+
+        /// <summary>
         /// Default namespace of the library
         /// </summary>
         public static RDFNamespace DefaultNamespace { get; internal set; }
@@ -64,7 +69,7 @@ namespace RDFSharp.Model
         static RDFNamespaceRegister() {
             Instance          = new RDFNamespaceRegister();
             Instance.Register = new List<RDFNamespace>();
-            SetDefaultNamespace(new RDFNamespace("rdfsharp", "http://rdfsharp.codeplex.com/default_graph#"));
+            SetDefaultNamespace(new RDFNamespace("rdfsharp", "https://rdfsharp.codeplex.com/default_graph#"));
 
             #region Basic Namespaces
             //xsd
@@ -92,10 +97,8 @@ namespace RDFSharp.Model
             AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX,     RDFVocabulary.DC.DCTYPE.BASE_URI));
             //geo
             AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX,           RDFVocabulary.GEO.BASE_URI));
-			//rss
-            AddNamespace(new RDFNamespace(RDFVocabulary.RSS.PREFIX,           RDFVocabulary.RSS.BASE_URI));
-            //dbpedia
-            AddNamespace(new RDFNamespace(RDFVocabulary.DBPEDIA.PREFIX,       RDFVocabulary.DBPEDIA.BASE_URI));
+            //sioc
+            AddNamespace(new RDFNamespace(RDFVocabulary.SIOC.PREFIX,          RDFVocabulary.SIOC.BASE_URI));
             //og (and extensions)
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.PREFIX,            RDFVocabulary.OG.BASE_URI));
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_MUSIC.PREFIX,   RDFVocabulary.OG.OG_MUSIC.BASE_URI));
@@ -104,10 +107,6 @@ namespace RDFSharp.Model
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_BOOK.PREFIX,    RDFVocabulary.OG.OG_BOOK.BASE_URI));
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_PROFILE.PREFIX, RDFVocabulary.OG.OG_PROFILE.BASE_URI));
             AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_WEBSITE.PREFIX, RDFVocabulary.OG.OG_WEBSITE.BASE_URI));
-            //sioc
-            AddNamespace(new RDFNamespace(RDFVocabulary.SIOC.PREFIX,          RDFVocabulary.SIOC.BASE_URI));
-            //vs
-            AddNamespace(new RDFNamespace(RDFVocabulary.VS.PREFIX,            RDFVocabulary.VS.BASE_URI));
             #endregion
         }
         #endregion
@@ -172,14 +171,14 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Retrieves a namespace from the register by seeking presence of its Uri.
-        /// If not found, and the lookupPrefixCC parameter is true, it tries to resolve
-        /// the namespace with a lookup to the prefix.cc service
+        /// If not found, and the EnablePrefixCCService configuration is true, it 
+        /// tries to resolve the namespace with a reverse lookup to prefix.cc service.
         /// </summary>
-        public static RDFNamespace GetByNamespace(String nSpace, Boolean lookupPrefixCC=false) {
+        public static RDFNamespace GetByNamespace(String nSpace) {
             Uri tempNS      = RDFModelUtilities.GetUriFromString(nSpace.Trim());
             if (tempNS     != null){
                 var result  = Instance.Register.Find(ns => ns.Namespace.Equals(tempNS));
-                if (result == null && lookupPrefixCC) {
+                if (result == null && EnablePrefixCCService) {
                     result  = RDFModelUtilities.LookupPrefixCC(nSpace.Trim(), 2);
                 }
                 return result;
@@ -189,13 +188,13 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Retrieves a namespace from the register by seeking presence of its prefix.
-        /// If not found, and the lookupPrefixCC parameter is true, it tries to resolve
-        /// the namespace with a lookup to the prefix.cc service
+        /// If not found, and the EnablePrefixCCService configuration is true, it 
+        /// tries to resolve the prefix with a lookup to prefix.cc service.
         /// </summary>
-        public static RDFNamespace GetByPrefix(String prefix, Boolean lookupPrefixCC=false) {
+        public static RDFNamespace GetByPrefix(String prefix) {
             if (prefix     != null && prefix.Trim() != String.Empty) {
                 var result  = Instance.Register.Find(ns => ns.Prefix.Equals(prefix.Trim(), StringComparison.Ordinal));
-                if (result == null && lookupPrefixCC) {
+                if (result == null && EnablePrefixCCService) {
                     result  = RDFModelUtilities.LookupPrefixCC(prefix.Trim(), 1);
                 }
                 return result;
