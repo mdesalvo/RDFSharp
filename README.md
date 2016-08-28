@@ -8,7 +8,7 @@ RDFSharp has a modular API made up of three layers:
 <ul>
     <li><b>RDFSharp.Model</b></li> 
     <ul>
-        <li>Create and manage <i>RDF models</i> (resources, literals, triples, graphs, namespaces, datatypes, ...)</li>
+        <li>Create and manage <i>RDF models</i> (resources, literals, triples, graphs, namespaces, ...)</li>
         <li>Exchange them using standard <i>RDF formats</i> (N-Triples, TriX, Turtle, Xml)</li>
     </ul>
 </ul>
