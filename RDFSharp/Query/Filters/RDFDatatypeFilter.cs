@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
-            return "FILTER ( DATATYPE(" + this.Variable + ") = <" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + ">) )";
+            return "FILTER ( DATATYPE(" + this.Variable + ") = <" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "> )";
         }
         #endregion
 
