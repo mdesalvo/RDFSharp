@@ -77,19 +77,21 @@ namespace RDFSharp.Query
                     String litVal                  = row[this.Variable.ToString()].ToString();
 
                     //Plain Literal
-                    if (!litVal.Contains("^^") || litVal.EndsWith("^^") || RDFModelUtilities.GetUriFromString(litVal.Substring(litVal.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
-                        try {
-                            Decimal.Parse(litVal, NumberStyles.Number, CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            keepRow = false;
-                        }
+                    if (!litVal.Contains("^^") || 
+                         litVal.EndsWith("^^") || 
+                         RDFModelUtilities.GetUriFromString(litVal.Substring(litVal.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
+                         try {
+                             Decimal.Parse(litVal, CultureInfo.InvariantCulture);
+                         }
+                         catch {
+                             keepRow = false;
+                         }
                     }
 
                     //Typed Literal
                     else {
                         try {
-                            Decimal.Parse(litVal.Substring(0, litVal.LastIndexOf("^^", StringComparison.Ordinal)), NumberStyles.Number, CultureInfo.InvariantCulture);
+                            Decimal.Parse(litVal.Substring(0, litVal.LastIndexOf("^^", StringComparison.Ordinal)), CultureInfo.InvariantCulture);
                         }
                         catch {
                             keepRow = false;
