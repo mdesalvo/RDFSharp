@@ -89,7 +89,7 @@ namespace RDFSharp.Model
                 else {
                     //Resolve typed literal Uri
                     if (triple.Object is RDFTypedLiteral) {
-                        String tLit      = ((RDFTypedLiteral)triple.Object).Datatype.ToString();
+                        String tLit      = RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
                         if (tLit.Contains(nSpace) || tLit.StartsWith(ns.Prefix + ":")) {
                             if (!this.Namespaces.Contains(ns)) {
                                  this.Namespaces.Add(ns);

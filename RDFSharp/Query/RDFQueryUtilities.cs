@@ -348,7 +348,7 @@ namespace RDFSharp.Query
                     }
                     return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"";
                 }
-                return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^<" + ((RDFTypedLiteral)patternMember).Datatype + ">";
+                return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^<" + RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)patternMember).Datatype) + ">";
                 #endregion
 
                 #endregion
