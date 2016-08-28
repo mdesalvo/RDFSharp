@@ -155,8 +155,9 @@ namespace RDFSharp.Query
                     return String.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
                 }
 
-                //PLAIN LITERAL VS "XSD:STRING" TYPED LITERAL
-                if (((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)) {
+                //PLAIN LITERAL VS "RDFS:LITERAL" OR "XSD:STRING" TYPED LITERAL
+                if (((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL) ||
+                    ((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING))   {
                     return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                 }
 
@@ -183,8 +184,9 @@ namespace RDFSharp.Query
             //TYPED LITERAL VS PLAIN LITERAL
             if (right is RDFPlainLiteral) {
 
-                //"XSD:STRING" TYPED LITERAL VS PLAIN LITERAL
-                if (((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)) {
+                //"RDFS:LITERAL" OR "XSD:STRING" TYPED LITERAL VS PLAIN LITERAL
+                if (((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL) ||
+                    ((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING))   {
                     return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                 }
 
@@ -287,13 +289,13 @@ namespace RDFSharp.Query
                 return leftValueBoolean.CompareTo(rightValueBoolean);
             }
             else if(isLeftDTypeDateTime    && isRightDTypeDateTime) {
-                DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture, DateTimeStyles.None);
-                DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.None);
+                DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture);
+                DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                 return leftValueDateTime.CompareTo(rightValueDateTime);
             }
             else if(isLeftDTypeNumeric     && isRightDTypeNumeric)  {
-                Decimal leftValueDecimal    = Decimal.Parse(((RDFTypedLiteral)left).Value,  NumberStyles.Any, CultureInfo.InvariantCulture);
-                Decimal rightValueDecimal   = Decimal.Parse(((RDFTypedLiteral)right).Value, NumberStyles.Any, CultureInfo.InvariantCulture);
+                Decimal leftValueDecimal    = Decimal.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture);
+                Decimal rightValueDecimal   = Decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                 return leftValueDecimal.CompareTo(rightValueDecimal);
             }
             else if(isLeftDTypeString      && isRightDTypeString)   {
