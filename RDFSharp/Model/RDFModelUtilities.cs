@@ -665,6 +665,7 @@ namespace RDFSharp.Model
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
                     Uri outUri;
                     if (Uri.TryCreate(typedLiteral.Value, UriKind.Absolute, out outUri)) {
+                        typedLiteral.Value = Convert.ToString(outUri);
                         return true;
                     }
                     return false;
