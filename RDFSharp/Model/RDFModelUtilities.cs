@@ -653,7 +653,7 @@ namespace RDFSharp.Model
                 //XML_LITERAL
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)) {
                     try {
-                        XDocument.Parse(typedLiteral.Value);
+                        XDocument.Parse(typedLiteral.Value, LoadOptions.PreserveWhitespace);
                         return true;
                     }
                     catch {
@@ -674,7 +674,8 @@ namespace RDFSharp.Model
                 //NAME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)) {
                     try {
-                        XmlConvert.VerifyName(typedLiteral.Value);
+                        var name = XmlConvert.VerifyName(typedLiteral.Value);
+                        typedLiteral.Value = name;
                         return true;
                     }
                     catch {
@@ -685,7 +686,8 @@ namespace RDFSharp.Model
                 //NCNAME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)) {
                     try {
-                        XmlConvert.VerifyNCName(typedLiteral.Value);
+                        var ncname = XmlConvert.VerifyNCName(typedLiteral.Value);
+                        typedLiteral.Value = ncname;
                         return true;
                     }
                     catch {
@@ -696,7 +698,8 @@ namespace RDFSharp.Model
                 //TOKEN
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN)) {
                     try {
-                        XmlConvert.VerifyTOKEN(typedLiteral.Value);
+                        var token = XmlConvert.VerifyTOKEN(typedLiteral.Value);
+                        typedLiteral.Value = token;
                         return true;
                     }
                     catch {
@@ -707,7 +710,8 @@ namespace RDFSharp.Model
                 //NMTOKEN
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)) {
                     try {
-                        XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
+                        var nmtoken = XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
+                        typedLiteral.Value = nmtoken;
                         return true;
                     }
                     catch {
