@@ -653,7 +653,7 @@ namespace RDFSharp.Model
                 //XML_LITERAL
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)) {
                     try {
-                        XDocument.Parse(typedLiteral.Value, LoadOptions.PreserveWhitespace);
+                        XDocument.Parse(typedLiteral.Value);
                         return true;
                     }
                     catch {
@@ -674,8 +674,7 @@ namespace RDFSharp.Model
                 //NAME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)) {
                     try {
-                        var name = XmlConvert.VerifyName(typedLiteral.Value);
-                        typedLiteral.Value = name;
+                        XmlConvert.VerifyName(typedLiteral.Value);
                         return true;
                     }
                     catch {
@@ -686,8 +685,7 @@ namespace RDFSharp.Model
                 //NCNAME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)) {
                     try {
-                        var ncname = XmlConvert.VerifyNCName(typedLiteral.Value);
-                        typedLiteral.Value = ncname;
+                        XmlConvert.VerifyNCName(typedLiteral.Value);
                         return true;
                     }
                     catch {
@@ -698,8 +696,7 @@ namespace RDFSharp.Model
                 //TOKEN
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN)) {
                     try {
-                        var token = XmlConvert.VerifyTOKEN(typedLiteral.Value);
-                        typedLiteral.Value = token;
+                        XmlConvert.VerifyTOKEN(typedLiteral.Value);
                         return true;
                     }
                     catch {
@@ -710,8 +707,7 @@ namespace RDFSharp.Model
                 //NMTOKEN
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)) {
                     try {
-                        var nmtoken = XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
-                        typedLiteral.Value = nmtoken;
+                        XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
                         return true;
                     }
                     catch {
@@ -721,8 +717,8 @@ namespace RDFSharp.Model
 
                 //NORMALIZED_STRING
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)) {
-                    if (!typedLiteral.Value.Contains('\r') && typedLiteral.Value.Contains('\n') && typedLiteral.Value.Contains('\t')) {
-                         return true;
+                    if (typedLiteral.Value.IndexOfAny(new Char[] { '\n', '\r', '\t' }) == -1) {
+                        return true;
                     }
                     else {
                          return false;
