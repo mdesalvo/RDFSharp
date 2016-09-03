@@ -48,7 +48,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPL_PLANG  = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect S->P->L(TYPED) form of N-Triple/N-Quad
@@ -73,7 +73,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPL_PLANG  = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED) form of N-Triple/N-Quad
@@ -83,7 +83,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]+(\-[a-zA-Z0-9]+)*$", RegexOptions.Compiled);
+        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled);
         
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal

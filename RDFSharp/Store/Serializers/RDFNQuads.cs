@@ -47,7 +47,7 @@ namespace RDFSharp.Store {
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect S->P->B->L(TYPED) form of N-Quad
@@ -72,7 +72,7 @@ namespace RDFSharp.Store {
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]+(-[a-zA-Z0-9]+)?\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED)->C form of N-Quad

@@ -727,7 +727,7 @@ namespace RDFSharp.Model
 
                 //LANGUAGE
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)) {
-                    if (Regex.IsMatch(typedLiteral.Value, "^[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$")) {
+                    if (Regex.IsMatch(typedLiteral.Value, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
                         return true;
                     }
                     else {

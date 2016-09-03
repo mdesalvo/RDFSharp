@@ -46,7 +46,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a plain literal with language
         /// </summary>
         public RDFPlainLiteral(String value, String language): this(value)  {
-            if (language            != null && Regex.IsMatch(language, "^[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$")) {
+            if (language            != null && Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
                 this.Language        = language.ToUpperInvariant();
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }

@@ -46,7 +46,7 @@ namespace RDFSharp.Query
         public RDFLangMatchesFilter(RDFVariable variable, String language) {
             if (variable != null) {
                 if (language != null) {
-                    if (language == String.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$")) {
+                    if (language == String.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
                             this.Variable = variable;
                             this.Language = language.ToUpperInvariant();
                             this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
@@ -87,16 +87,16 @@ namespace RDFSharp.Query
                 
                 //Successfull match if NO language is found in the variable
                 if (this.Language     == String.Empty) {
-                    keepRow            = !Regex.IsMatch(variableValue, "@[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$");
+                    keepRow            = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$");
                 }
                 else{
                     //Successfull match if ANY language is found in the variable
                     if (this.Language == "*") {
-                        keepRow        = Regex.IsMatch(variableValue, "@[a-zA-Z]+([\\-][a-zA-Z0-9]+)*$");
+                        keepRow        = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$");
                     }
 					//Successfull match if GIVEN language is found in the variable
                     else{
-                        keepRow        = Regex.IsMatch(variableValue, "@" + this.Language + "([\\-][a-zA-Z0-9]+)*$");
+                        keepRow        = Regex.IsMatch(variableValue, "@" + this.Language + "(-[a-zA-Z0-9]{1,8})*$");
                     }
                 }
 
