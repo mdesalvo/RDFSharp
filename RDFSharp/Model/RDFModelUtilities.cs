@@ -748,8 +748,8 @@ namespace RDFSharp.Model
 
                 //HEX_BINARY
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)) {
-                    if ((typedLiteral.Value.Length % 2 == 0) && Regex.IsMatch(typedLiteral.Value, @"^[a-fA-F0-9]+$")) {
-                         return true;
+                    if (Regex.IsMatch(typedLiteral.Value, @"^([0-9a-fA-F]{2})*$")) {
+                        return true;
                     }
                     else {
                          return false;
