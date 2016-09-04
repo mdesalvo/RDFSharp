@@ -785,151 +785,147 @@ namespace RDFSharp.Model
                 #region DATETIME CATEGORY
                 //DATETIME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)) {
-                    try {
-                        DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-ddTHH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            try {
-                                DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture);
-                            }
-                            catch {
-                                try {
-                                    DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-                                }
-                                catch {
-                                    return false;
-                                }
-                            }
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-ddTHH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ssK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                        return true;
+                    }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
                 }
 
                 //DATE
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)) {
-                    try {
-                        DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-dd",  CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            return false;
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
+                    else {
+                        return false;
+                    }
                 }
 
                 //TIME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TIME)) {
-                    try {
-                        DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            try {
-                                DateTime.ParseExact(typedLiteral.Value, "HH:mm:ssK", CultureInfo.InvariantCulture);
-                            }
-                            catch {
-                                try {
-                                    DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss", CultureInfo.InvariantCulture);
-                                }
-                                catch {
-                                    return false;
-                                }
-                            }
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "HH:mm:ssK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+                        return true;
+                    }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
                 }
 
                 //G_MONTH_DAY
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)) {
-                    try {
-                        DateTime.ParseExact(typedLiteral.Value, "--MM-ddK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "--MM-ddK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("--MM-dd", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "--MM-dd",  CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            return false;
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "--MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("--MM-dd", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
+                    else {
+                        return false;
+                    }
                 }
 
                 //G_YEAR_MONTH
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)) {
-                    try {
-                        DateTime.ParseExact(typedLiteral.Value, "yyyy-MMK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MMK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "yyyy-MM",  CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            return false;
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy-MM", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
+                    else {
+                        return false;
+                    }
                 }
 
 				//G_YEAR
 				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)) {
-					try {
-                        DateTime.ParseExact(typedLiteral.Value, "yyyyK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "yyyyK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "yyyy",  CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            return false;
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("yyyy", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
-				}
+                    else {
+                        return false;
+                    }
+                }
 						
 				//G_MONTH
 				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)) {
-					try {
-                        DateTime.ParseExact(typedLiteral.Value, "MMK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "MMK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("MM", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "MM",  CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            return false;
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "MM", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("MM", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
-				}
+                    else {
+                        return false;
+                    }
+                }
 						
 				//G_DAY
 				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)) {
-					try {
-                        DateTime.ParseExact(typedLiteral.Value, "ddK", CultureInfo.InvariantCulture);
+                    DateTime parsedDateTime;
+                    if (DateTime.TryParseExact(typedLiteral.Value, "ddK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("dd", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    catch {
-                        try {
-                            DateTime.ParseExact(typedLiteral.Value, "dd",  CultureInfo.InvariantCulture);
-                        }
-                        catch {
-                            return false;
-                        }
+                    else if (DateTime.TryParseExact(typedLiteral.Value, "dd", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
+                        typedLiteral.Value = parsedDateTime.ToString("dd", CultureInfo.InvariantCulture);
+                        return true;
                     }
-                    return true;
-				}
+                    else {
+                        return false;
+                    }
+                }
                 #endregion
 
                 #region TIMESPAN CATEGORY

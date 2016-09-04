@@ -289,8 +289,8 @@ namespace RDFSharp.Query
                 return leftValueBoolean.CompareTo(rightValueBoolean);
             }
             else if(isLeftDTypeDateTime    && isRightDTypeDateTime) {
-                DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture);
-                DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                 return leftValueDateTime.CompareTo(rightValueDateTime);
             }
             else if(isLeftDTypeNumeric     && isRightDTypeNumeric)  {
