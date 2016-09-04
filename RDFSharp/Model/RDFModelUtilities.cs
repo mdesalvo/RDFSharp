@@ -786,11 +786,11 @@ namespace RDFSharp.Model
                 //DATETIME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)) {
                     try {
-                        DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFK", CultureInfo.InvariantCulture);
+                        DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture);
                     }
                     catch {
                         try {
-                            DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFF", CultureInfo.InvariantCulture);
+                            DateTime.ParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
                         }
                         catch {
                             try {
@@ -828,11 +828,11 @@ namespace RDFSharp.Model
                 //TIME
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TIME)) {
                     try {
-                        DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFFK", CultureInfo.InvariantCulture);
+                        DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture);
                     }
                     catch {
                         try {
-                            DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFF", CultureInfo.InvariantCulture);
+                            DateTime.ParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
                         }
                         catch {
                             try {
