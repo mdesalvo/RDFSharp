@@ -28,7 +28,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Mandatory datatype of the typed literal
         /// </summary>
-        public RDFModelEnums.RDFDatatype Datatype { get; internal set; }
+        public RDFModelEnums.RDFDatatypes Datatype { get; internal set; }
         #endregion
 
         #region Ctors
@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a typed literal with given value and given datatype. 
         /// Semantic validation of given value against given datatype is performed.
         /// </summary>
-        public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatype datatype)  {
+        public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatypes datatype)  {
             this.Value    = (value ?? String.Empty);
             this.Datatype = datatype;
             if (RDFModelUtilities.ValidateTypedLiteral(this)) {

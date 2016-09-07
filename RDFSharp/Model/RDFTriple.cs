@@ -34,7 +34,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flavor of the triple
         /// </summary>
-        public RDFModelEnums.RDFTripleFlavor TripleFlavor { get; internal set; }
+        public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
         /// <summary>
         /// Member acting as subject token of the triple
@@ -64,7 +64,7 @@ namespace RDFSharp.Model
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavor.SPO;
+            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPO;
 
             //Subject
             this.Subject           = (subj ?? new RDFResource());
@@ -97,7 +97,7 @@ namespace RDFSharp.Model
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavor.SPL;
+            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPL;
 
             //Subject
             this.Subject           = (subj ?? new RDFResource());
@@ -151,7 +151,7 @@ namespace RDFSharp.Model
             reifGraph.AddTriple(new RDFTriple(this.ReificationSubject,     RDFVocabulary.RDF.TYPE,      RDFVocabulary.RDF.STATEMENT));
             reifGraph.AddTriple(new RDFTriple(this.ReificationSubject,     RDFVocabulary.RDF.SUBJECT,   (RDFResource)this.Subject));
             reifGraph.AddTriple(new RDFTriple(this.ReificationSubject,     RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
-            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                 reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT,    (RDFResource)this.Object));
             }
             else {

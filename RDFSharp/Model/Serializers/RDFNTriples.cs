@@ -118,7 +118,7 @@ namespace RDFSharp.Model
                     foreach(var t             in graph) {
 
                         #region template
-                        if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavor.SPO) {
+                        if (t.TripleFlavor    == RDFModelEnums.RDFTripleFlavors.SPO) {
                             tripleTemplate     = "<{SUBJ}> <{PRED}> <{OBJ}> .";
                         }
                         else {
@@ -145,7 +145,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                             if(((RDFResource)t.Object).IsBlank) {
                                 tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
                             }
@@ -305,7 +305,7 @@ namespace RDFSharp.Model
                                 String tLitDatatype          = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
                                                                         .TrimStart(new Char[] { '<' })
                                                                         .TrimEnd(new   Char[] { '>' });
-                                RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                                RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
                                 L                            = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
                             }
                             #endregion

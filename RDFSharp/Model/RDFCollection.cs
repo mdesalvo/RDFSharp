@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Type of the items of the collection
         /// </summary>
-        public RDFModelEnums.RDFItemType ItemType { get; internal set; }
+        public RDFModelEnums.RDFItemTypes ItemType { get; internal set; }
 
         /// <summary>
         /// Subject of the collection's reification
@@ -61,7 +61,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default ctor to build an empty collection of the given type
         /// </summary>
-        public RDFCollection(RDFModelEnums.RDFItemType itemType) {
+        public RDFCollection(RDFModelEnums.RDFItemTypes itemType) {
            this.ItemType           = itemType;
            this.ReificationSubject = new RDFResource();
            this.Items              = new ArrayList();        
@@ -70,10 +70,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// List-based ctor to build a collection of the given type with given items
         /// </summary>
-        public RDFCollection(RDFModelEnums.RDFItemType itemType, ArrayList items): this(itemType) {
+        public RDFCollection(RDFModelEnums.RDFItemTypes itemType, ArrayList items): this(itemType) {
             if (items != null) {
                 switch (this.ItemType) {
-                    case RDFModelEnums.RDFItemType.Resource:
+                    case RDFModelEnums.RDFItemTypes.Resource:
                         foreach(var item in items){
                             if(item is RDFResource){
                                 this.AddItem(item);
@@ -83,7 +83,7 @@ namespace RDFSharp.Model
                             }
                         }
                         break;
-                    case RDFModelEnums.RDFItemType.Literal:
+                    case RDFModelEnums.RDFItemTypes.Literal:
                         foreach (var item in items) {
                             if (item is RDFLiteral) {
                                 this.AddItem(item);
@@ -115,7 +115,7 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to add a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemType.Resource) {
+                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
                     Boolean itemFound    = false;
                     foreach(var itemEnum in this) {
                         if(((RDFResource)itemEnum).Equals((RDFResource)item)){
@@ -129,7 +129,7 @@ namespace RDFSharp.Model
                 }
 
                 //Try to add a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemType.Literal) {
+                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
                     Boolean itemFound    = false;
                     foreach(var itemEnum in this) {
                         if (((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
@@ -153,7 +153,7 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to remove a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemType.Resource) {
+                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
                     ArrayList resultList = new ArrayList();
                     foreach(var itemEnum in this) {
                         if (!((RDFResource)itemEnum).Equals((RDFResource)item)) {
@@ -164,7 +164,7 @@ namespace RDFSharp.Model
                 }
 
                 //Try to remove a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemType.Literal) {
+                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
                     ArrayList resultList = new ArrayList();
                     foreach(var itemEnum in this) {
                         if (!((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
@@ -220,7 +220,7 @@ namespace RDFSharp.Model
                     reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
                     //  Subject -> rdf:first -> RDFCollection.ITEM[i]
-                    if (this.ItemType     == RDFModelEnums.RDFItemType.Resource) {
+                    if (this.ItemType     == RDFModelEnums.RDFItemTypes.Resource) {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
                     }
                     else {
@@ -257,7 +257,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Type of the collection item
         /// </summary>
-        internal RDFModelEnums.RDFItemType ItemType { get; set; }
+        internal RDFModelEnums.RDFItemTypes ItemType { get; set; }
 
         /// <summary>
         /// Value of the collection item
@@ -274,7 +274,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a RDFCollectionItem with the given parameters
         /// </summary>
-        internal RDFCollectionItem(RDFModelEnums.RDFItemType itemType, Object itemValue, Object itemNext) {
+        internal RDFCollectionItem(RDFModelEnums.RDFItemTypes itemType, Object itemValue, Object itemNext) {
             this.ItemType  = itemType;
             this.ItemValue = itemValue;
             this.ItemNext  = itemNext;

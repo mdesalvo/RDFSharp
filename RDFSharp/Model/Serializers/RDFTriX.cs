@@ -95,7 +95,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        if (t.TripleFlavor        == RDFModelEnums.RDFTripleFlavor.SPO) {
+                        if (t.TripleFlavor        == RDFModelEnums.RDFTripleFlavors.SPO) {
                             XmlNode objElement     = null;
                             XmlText objElementText = null;
                             if (((RDFResource)t.Object).IsBlank)  {

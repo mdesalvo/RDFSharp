@@ -36,14 +36,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Datatype to be filtered
         /// </summary>
-        public RDFModelEnums.RDFDatatype Datatype { get; internal set; }
+        public RDFModelEnums.RDFDatatypes Datatype { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a filter on the given variable for the given datatype 
         /// </summary>
-        public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatype datatype) {
+        public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype) {
             if (variable     != null) {
                 this.Variable = variable;
                 this.Datatype = datatype;

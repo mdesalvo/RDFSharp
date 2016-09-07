@@ -129,7 +129,7 @@ namespace RDFSharp.Model
 
                             #region object
                             //Collect the object or the literal to the Turtle token
-                            if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                            if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                                 String obj           = triple.Object.ToString();
                                 if (!obj.StartsWith("_:")) {
                                      result.Append(RDFModelUtilities.AbbreviateNamespace(obj));

@@ -105,7 +105,7 @@ namespace RDFSharp.Store {
                 }
 
                 //Object
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                     if (!this.Objects.ContainsKey(quadruple.Object.PatternMemberID)) {
                          this.Objects.Add(quadruple.Object.PatternMemberID, new Dictionary<Int64, Object>() { {quadruple.QuadrupleID, null} });
                     }
@@ -171,7 +171,7 @@ namespace RDFSharp.Store {
                 }
 
                 //Object
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                     if (this.Objects.ContainsKey(quadruple.Object.PatternMemberID)) {
                         if (this.Objects[quadruple.Object.PatternMemberID].ContainsKey(quadruple.QuadrupleID)) {
                             this.Objects[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);

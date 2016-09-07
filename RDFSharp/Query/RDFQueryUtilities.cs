@@ -94,7 +94,7 @@ namespace RDFSharp.Query
                 #region Typed Literal
                 String tLitValue             = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
                 String tLitDatatype          = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
-                RDFModelEnums.RDFDatatype dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+                RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
                 RDFTypedLiteral tLit         = new RDFTypedLiteral(tLitValue, dt);
                 return tLit;
                 #endregion
@@ -132,7 +132,7 @@ namespace RDFSharp.Query
                 }
 
                 //RESOURCE/CONTEXT VS "XSD:ANYURI" TYPED LITERAL
-                if (right is RDFTypedLiteral && ((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
+                if (right is RDFTypedLiteral && ((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)) {
                     return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                 }
 
@@ -156,8 +156,8 @@ namespace RDFSharp.Query
                 }
 
                 //PLAIN LITERAL VS "RDFS:LITERAL" OR "XSD:STRING" TYPED LITERAL
-                if (((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL) ||
-                    ((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING))   {
+                if (((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
+                    ((RDFTypedLiteral)right).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))   {
                     return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                 }
 
@@ -172,7 +172,7 @@ namespace RDFSharp.Query
             if (right is RDFResource || right is RDFContext) {
 
                 //"XSD:ANYURI" TYPED LITERAL VS RESOURCE/CONTEXT
-                if (left is RDFTypedLiteral && ((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
+                if (left is RDFTypedLiteral && ((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)) {
                     return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                 }
 
@@ -185,8 +185,8 @@ namespace RDFSharp.Query
             if (right is RDFPlainLiteral) {
 
                 //"RDFS:LITERAL" OR "XSD:STRING" TYPED LITERAL VS PLAIN LITERAL
-                if (((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL) ||
-                    ((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING))   {
+                if (((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
+                    ((RDFTypedLiteral)left).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))   {
                     return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                 }
 
@@ -197,90 +197,92 @@ namespace RDFSharp.Query
 
             //TYPED LITERAL VS TYPED LITERAL
             //Detect left typed literal's category
-            RDFModelEnums.RDFDatatype leftDType  = ((RDFTypedLiteral)left).Datatype;
-            Boolean isLeftDTypeBoolean           = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_BOOLEAN);
-            Boolean isLeftDTypeNumeric           = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_BYTE)               ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DECIMAL)            ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DOUBLE)             ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_FLOAT)              ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_INT)                ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_INTEGER)            ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_LONG)               ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER)    ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER) ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER) ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER)    ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_SHORT)              ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE)       ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT)        ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG)       ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT);
-            Boolean isLeftDTypeDateTime          = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)               ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)           ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)               ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)             ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)          ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)              ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)         ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_TIME);
-            Boolean isLeftDTypeTimeSpan          = leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_DURATION);
-            Boolean isLeftDTypeString            = leftDType.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL)           ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)         ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)             ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_BASE64BINARY)       ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)          ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)           ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)               ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)             ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)            ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)   ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_NOTATION)           ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_QNAME)              ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)             ||
-                                                   leftDType.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN);
+            RDFModelEnums.RDFDatatypes leftDType  = ((RDFTypedLiteral)left).Datatype;
+            Boolean isLeftDTypeBoolean           = leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+            Boolean isLeftDTypeNumeric           = leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL)            ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_INT)                ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER)            ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)    ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER) ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER) ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)    ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE)       ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT)        ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG)       ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT);
+            Boolean isLeftDTypeDateTime          = leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GDAY)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTH)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY)          ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEAR)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH)         ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_TIME);
+            Boolean isLeftDTypeTimeSpan          = leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION);
+            Boolean isLeftDTypeString            = leftDType.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)         ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)       ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)          ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NAME)               ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_ID)                 ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NMTOKEN)            ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING)   ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NOTATION)           ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_QNAME)              ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)             ||
+                                                   leftDType.Equals(RDFModelEnums.RDFDatatypes.XSD_TOKEN);
 
             //Detect right typed literal's category
-            RDFModelEnums.RDFDatatype rightDType = ((RDFTypedLiteral)right).Datatype;
-            Boolean isRightDTypeBoolean          = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_BOOLEAN);
-            Boolean isRightDTypeNumeric          = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_BYTE)               ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DECIMAL)            ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DOUBLE)             ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_FLOAT)              ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_INT)                ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_INTEGER)            ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_LONG)               ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER)    ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER) ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER) ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER)    ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_SHORT)              ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE)       ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT)        ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG)       ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT);
-            Boolean isRightDTypeDateTime         = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)               ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)           ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)               ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)             ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)          ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)              ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)         ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_TIME);
-            Boolean isRightDTypeTimeSpan         = rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_DURATION);
-            Boolean isRightDTypeString           = rightDType.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL)           ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)         ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)             ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_BASE64BINARY)       ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)          ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)           ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)               ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)             ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)            ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)   ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_NOTATION)           ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_QNAME)              ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)             ||
-                                                   rightDType.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN);
+            RDFModelEnums.RDFDatatypes rightDType = ((RDFTypedLiteral)right).Datatype;
+            Boolean isRightDTypeBoolean          = rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+            Boolean isRightDTypeNumeric          = rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL)            ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_INT)                ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER)            ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)    ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER) ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER) ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)    ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE)       ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT)        ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG)       ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT);
+            Boolean isRightDTypeDateTime         = rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GDAY)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTH)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY)          ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEAR)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH)         ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_TIME);
+            Boolean isRightDTypeTimeSpan         = rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION);
+            Boolean isRightDTypeString           = rightDType.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)         ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)       ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)          ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NAME)               ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_ID)                 ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NMTOKEN)            ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING)   ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_NOTATION)           ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_QNAME)              ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)             ||
+                                                   rightDType.Equals(RDFModelEnums.RDFDatatypes.XSD_TOKEN);
 
             //Compare typed literals, only if categories are semantically compatible
             if (isLeftDTypeBoolean         && isRightDTypeBoolean)  {

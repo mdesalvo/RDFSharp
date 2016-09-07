@@ -429,6 +429,11 @@ namespace RDFSharp.Model
             /// xsd:NCName
             /// </summary>
             public static readonly RDFResource NCNAME = new RDFResource(XSD.BASE_URI + "NCName");
+
+            /// <summary>
+            /// xsd:ID
+            /// </summary>
+            public static readonly RDFResource ID = new RDFResource(XSD.BASE_URI + "ID");
             #endregion
 
         }

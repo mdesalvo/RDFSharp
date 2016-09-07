@@ -376,7 +376,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parse the given string in order to give the corresponding RDF/RDFS/XSD datatype
         /// </summary>
-        internal static RDFModelEnums.RDFDatatype GetDatatypeFromString(String datatypeString) {
+        internal static RDFModelEnums.RDFDatatypes GetDatatypeFromString(String datatypeString) {
             if (datatypeString != null) {
 
                 //Preliminary check to verify if datatypeString is a valid Uri
@@ -387,124 +387,127 @@ namespace RDFSharp.Model
 
                 //Identification of specific RDF/RDFS/XSD datatype
                 if (dtypeStringUri.ToString().Equals(RDFVocabulary.RDF.XML_LITERAL.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.RDF_XMLLITERAL;
+                    return RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.ANY_URI.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_ANYURI;
+                    return RDFModelEnums.RDFDatatypes.XSD_ANYURI;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.BASE64_BINARY.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_BASE64BINARY;
+                    return RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.BOOLEAN.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_BOOLEAN;
+                    return RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.BYTE.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_BYTE;
+                    return RDFModelEnums.RDFDatatypes.XSD_BYTE;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.DATE.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_DATE;
+                    return RDFModelEnums.RDFDatatypes.XSD_DATE;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.DATETIME.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_DATETIME;
+                    return RDFModelEnums.RDFDatatypes.XSD_DATETIME;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.DECIMAL.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_DECIMAL;
+                    return RDFModelEnums.RDFDatatypes.XSD_DECIMAL;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.DOUBLE.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_DOUBLE;
+                    return RDFModelEnums.RDFDatatypes.XSD_DOUBLE;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.DURATION.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_DURATION;
+                    return RDFModelEnums.RDFDatatypes.XSD_DURATION;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.FLOAT.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_FLOAT;
+                    return RDFModelEnums.RDFDatatypes.XSD_FLOAT;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.G_DAY.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_GDAY;
+                    return RDFModelEnums.RDFDatatypes.XSD_GDAY;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.G_MONTH.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_GMONTH;
+                    return RDFModelEnums.RDFDatatypes.XSD_GMONTH;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.G_MONTH_DAY.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_GMONTHDAY;
+                    return RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.G_YEAR.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_GYEAR;
+                    return RDFModelEnums.RDFDatatypes.XSD_GYEAR;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.G_YEAR_MONTH.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_GYEARMONTH;
+                    return RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.HEX_BINARY.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_HEXBINARY;
+                    return RDFModelEnums.RDFDatatypes.XSD_HEXBINARY;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.INT.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_INT;
+                    return RDFModelEnums.RDFDatatypes.XSD_INT;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_INTEGER;
+                    return RDFModelEnums.RDFDatatypes.XSD_INTEGER;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.LANGUAGE.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_LANGUAGE;
+                    return RDFModelEnums.RDFDatatypes.XSD_LANGUAGE;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.LONG.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_LONG;
+                    return RDFModelEnums.RDFDatatypes.XSD_LONG;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NAME.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NAME;
+                    return RDFModelEnums.RDFDatatypes.XSD_NAME;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NCNAME.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NCNAME;
+                    return RDFModelEnums.RDFDatatypes.XSD_NCNAME;
+                }
+                else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.ID.ToString(), StringComparison.Ordinal)) {
+                    return RDFModelEnums.RDFDatatypes.XSD_ID;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NEGATIVE_INTEGER.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER;
+                    return RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NMTOKEN.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NMTOKEN;
+                    return RDFModelEnums.RDFDatatypes.XSD_NMTOKEN;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER;
+                    return RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER;
+                    return RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NORMALIZED_STRING.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING;
+                    return RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.NOTATION.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_NOTATION;
+                    return RDFModelEnums.RDFDatatypes.XSD_NOTATION;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.POSITIVE_INTEGER.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER;
+                    return RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.QNAME.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_QNAME;
+                    return RDFModelEnums.RDFDatatypes.XSD_QNAME;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.SHORT.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_SHORT;
+                    return RDFModelEnums.RDFDatatypes.XSD_SHORT;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.STRING.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_STRING;
+                    return RDFModelEnums.RDFDatatypes.XSD_STRING;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.TIME.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_TIME;
+                    return RDFModelEnums.RDFDatatypes.XSD_TIME;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.TOKEN.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_TOKEN;
+                    return RDFModelEnums.RDFDatatypes.XSD_TOKEN;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.UNSIGNED_BYTE.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE;
+                    return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.UNSIGNED_INT.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT;
+                    return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.UNSIGNED_LONG.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG;
+                    return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG;
                 }
                 else if (dtypeStringUri.ToString().Equals(RDFVocabulary.XSD.UNSIGNED_SHORT.ToString(), StringComparison.Ordinal)) {
-                    return RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT;
+                    return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT;
                 }
                 else {
-                    return RDFModelEnums.RDFDatatype.RDFS_LITERAL; //Default unsupported datatypes to rdfs:Literal
+                    return RDFModelEnums.RDFDatatypes.RDFS_LITERAL; //Default unsupported datatypes to rdfs:Literal
                 }
 
             }
@@ -514,122 +517,125 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the given RDF/RDFS/XSD datatype
         /// </summary>
-        internal static String GetDatatypeFromEnum(RDFModelEnums.RDFDatatype datatype) {
-            if (datatype.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)) {
+        internal static String GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype) {
+            if (datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)) {
                 return RDFVocabulary.RDF.XML_LITERAL.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)) {
                 return RDFVocabulary.XSD.ANY_URI.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_BASE64BINARY)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)) {
                 return RDFVocabulary.XSD.BASE64_BINARY.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_BOOLEAN)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)) {
                 return RDFVocabulary.XSD.BOOLEAN.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_BYTE)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE)) {
                 return RDFVocabulary.XSD.BYTE.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE)) {
                 return RDFVocabulary.XSD.DATE.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME)) {
                 return RDFVocabulary.XSD.DATETIME.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DECIMAL)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL)) {
                 return RDFVocabulary.XSD.DECIMAL.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DOUBLE)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) {
                 return RDFVocabulary.XSD.DOUBLE.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DURATION)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION)) {
                 return RDFVocabulary.XSD.DURATION.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_FLOAT)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT)) {
                 return RDFVocabulary.XSD.FLOAT.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GDAY)) {
                 return RDFVocabulary.XSD.G_DAY.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTH)) {
                 return RDFVocabulary.XSD.G_MONTH.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY)) {
                 return RDFVocabulary.XSD.G_MONTH_DAY.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEAR)) {
                 return RDFVocabulary.XSD.G_YEAR.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH)) {
                 return RDFVocabulary.XSD.G_YEAR_MONTH.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)) {
                 return RDFVocabulary.XSD.HEX_BINARY.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_INT)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INT)) {
                 return RDFVocabulary.XSD.INT.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_INTEGER)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER)) {
                 return RDFVocabulary.XSD.INTEGER.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)) {
                 return RDFVocabulary.XSD.LANGUAGE.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_LONG)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG)) {
                 return RDFVocabulary.XSD.LONG.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NAME)) {
                 return RDFVocabulary.XSD.NAME.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME)) {
                 return RDFVocabulary.XSD.NCNAME.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID)) {
+                return RDFVocabulary.XSD.ID.ToString();
+            }
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)) {
                 return RDFVocabulary.XSD.NEGATIVE_INTEGER.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NMTOKEN)) {
                 return RDFVocabulary.XSD.NMTOKEN.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) {
                 return RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER)) {
                 return RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING)) {
                 return RDFVocabulary.XSD.NORMALIZED_STRING.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NOTATION)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NOTATION)) {
                 return RDFVocabulary.XSD.NOTATION.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)) {
                 return RDFVocabulary.XSD.POSITIVE_INTEGER.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_QNAME)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_QNAME)) {
                 return RDFVocabulary.XSD.QNAME.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_SHORT)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT)) {
                 return RDFVocabulary.XSD.SHORT.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) {
                 return RDFVocabulary.XSD.STRING.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TIME)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TIME)) {
                 return RDFVocabulary.XSD.TIME.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TOKEN)) {
                 return RDFVocabulary.XSD.TOKEN.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE)) {
                 return RDFVocabulary.XSD.UNSIGNED_BYTE.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT)) {
                 return RDFVocabulary.XSD.UNSIGNED_INT.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG)) {
                 return RDFVocabulary.XSD.UNSIGNED_LONG.ToString();
             }
-            else if (datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT)) {
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT)) {
                 return RDFVocabulary.XSD.UNSIGNED_SHORT.ToString();
             }
             else {
@@ -645,13 +651,13 @@ namespace RDFSharp.Model
 
                 #region STRING CATEGORY
                 //LITERAL / STRING
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.RDFS_LITERAL) ||
-                    typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_STRING))   {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
+                    typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))   {
                     return true;
                 }
 
                 //XML_LITERAL
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.RDF_XMLLITERAL)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)) {
                     try {
                         XDocument.Parse(typedLiteral.Value);
                         return true;
@@ -662,7 +668,7 @@ namespace RDFSharp.Model
                 }
 
                 //ANYURI
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_ANYURI)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)) {
                     Uri outUri;
                     if (Uri.TryCreate(typedLiteral.Value, UriKind.Absolute, out outUri)) {
                         typedLiteral.Value = Convert.ToString(outUri);
@@ -672,7 +678,7 @@ namespace RDFSharp.Model
                 }
 
                 //NAME
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NAME)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NAME)) {
                     try {
                         XmlConvert.VerifyName(typedLiteral.Value);
                         return true;
@@ -682,8 +688,9 @@ namespace RDFSharp.Model
                     }
                 }
 
-                //NCNAME
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NCNAME)) {
+                //NCNAME / ID
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME) ||
+                    typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID))     {
                     try {
                         XmlConvert.VerifyNCName(typedLiteral.Value);
                         return true;
@@ -694,7 +701,7 @@ namespace RDFSharp.Model
                 }
 
                 //TOKEN
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TOKEN)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TOKEN)) {
                     try {
                         XmlConvert.VerifyTOKEN(typedLiteral.Value);
                         return true;
@@ -705,7 +712,7 @@ namespace RDFSharp.Model
                 }
 
                 //NMTOKEN
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NMTOKEN)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NMTOKEN)) {
                     try {
                         XmlConvert.VerifyNMTOKEN(typedLiteral.Value);
                         return true;
@@ -716,7 +723,7 @@ namespace RDFSharp.Model
                 }
 
                 //NORMALIZED_STRING
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NORMALIZEDSTRING)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING)) {
                     if (typedLiteral.Value.IndexOfAny(new Char[] { '\n', '\r', '\t' }) == -1) {
                         return true;
                     }
@@ -726,7 +733,7 @@ namespace RDFSharp.Model
                 }
 
                 //LANGUAGE
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_LANGUAGE)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)) {
                     if (Regex.IsMatch(typedLiteral.Value, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
                         return true;
                     }
@@ -736,7 +743,7 @@ namespace RDFSharp.Model
                 }
 
                 //BASE64_BINARY
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_BASE64BINARY)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)) {
                     try {
                         Convert.FromBase64String(typedLiteral.Value);
                         return true;
@@ -747,7 +754,7 @@ namespace RDFSharp.Model
                 }
 
                 //HEX_BINARY
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_HEXBINARY)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)) {
                     if (Regex.IsMatch(typedLiteral.Value, @"^([0-9a-fA-F]{2})*$")) {
                         return true;
                     }
@@ -758,7 +765,7 @@ namespace RDFSharp.Model
                 #endregion
 
                 #region BOOLEAN CATEGORY
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_BOOLEAN)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)) {
                     Boolean outBool;
                     if (Boolean.TryParse(typedLiteral.Value, out outBool)) {
                         typedLiteral.Value = (outBool ? "true" : "false");
@@ -784,7 +791,7 @@ namespace RDFSharp.Model
 
                 #region DATETIME CATEGORY
                 //DATETIME
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATETIME)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddTHH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-ddTHH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
@@ -808,7 +815,7 @@ namespace RDFSharp.Model
                 }
 
                 //DATE
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DATE)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MM-ddK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -824,7 +831,7 @@ namespace RDFSharp.Model
                 }
 
                 //TIME
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_TIME)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TIME)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "HH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture);
@@ -848,7 +855,7 @@ namespace RDFSharp.Model
                 }
 
                 //G_MONTH_DAY
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTHDAY)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "--MM-ddK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("--MM-dd", CultureInfo.InvariantCulture);
@@ -864,7 +871,7 @@ namespace RDFSharp.Model
                 }
 
                 //G_YEAR_MONTH
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GYEARMONTH)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "yyyy-MMK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("yyyy-MM", CultureInfo.InvariantCulture);
@@ -880,7 +887,7 @@ namespace RDFSharp.Model
                 }
 
 				//G_YEAR
-				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GYEAR)) {
+				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEAR)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "yyyyK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("yyyy", CultureInfo.InvariantCulture);
@@ -896,7 +903,7 @@ namespace RDFSharp.Model
                 }
 						
 				//G_MONTH
-				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GMONTH)) {
+				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTH)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "MMK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("MM", CultureInfo.InvariantCulture);
@@ -912,7 +919,7 @@ namespace RDFSharp.Model
                 }
 						
 				//G_DAY
-				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_GDAY)) {
+				if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GDAY)) {
                     DateTime parsedDateTime;
                     if (DateTime.TryParseExact(typedLiteral.Value, "ddK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDateTime)) {
                         typedLiteral.Value = parsedDateTime.ToString("dd", CultureInfo.InvariantCulture);
@@ -930,7 +937,7 @@ namespace RDFSharp.Model
 
                 #region TIMESPAN CATEGORY
                 //DURATION
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DURATION)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION)) {
                     try {
                         XmlConvert.ToTimeSpan(typedLiteral.Value);
                         return true;
@@ -943,7 +950,7 @@ namespace RDFSharp.Model
 
                 #region NUMERIC CATEGORY
                 //DECIMAL
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DECIMAL)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL)) {
                     Decimal outDecimal;
                     if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out outDecimal)) {
                         typedLiteral.Value = Convert.ToString(outDecimal, CultureInfo.InvariantCulture);
@@ -955,7 +962,7 @@ namespace RDFSharp.Model
                 }
 
                 //DOUBLE
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_DOUBLE)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) {
                     Double outDouble;
                     if (Double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outDouble)) {
                         typedLiteral.Value = Convert.ToString(outDouble, CultureInfo.InvariantCulture);
@@ -967,7 +974,7 @@ namespace RDFSharp.Model
                 }
 
                 //FLOAT
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_FLOAT)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT)) {
                     Single outFloat;
                     if (Single.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outFloat)) {
                         typedLiteral.Value = Convert.ToString(outFloat, CultureInfo.InvariantCulture);
@@ -979,7 +986,7 @@ namespace RDFSharp.Model
                 }
 
                 //INTEGER
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_INTEGER)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER)) {
                     Decimal outInteger;
                     if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInteger)) {
                         typedLiteral.Value = Convert.ToString(outInteger, CultureInfo.InvariantCulture);
@@ -991,7 +998,7 @@ namespace RDFSharp.Model
                 }
 
                 //LONG
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_LONG)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG)) {
                     Int64 outLong;
                     if (Int64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outLong)) {
                         typedLiteral.Value = Convert.ToString(outLong, CultureInfo.InvariantCulture);
@@ -1003,7 +1010,7 @@ namespace RDFSharp.Model
                 }
 
                 //INT
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_INT)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INT)) {
                     Int32 outInt;
                     if (Int32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInt)) {
                         typedLiteral.Value = Convert.ToString(outInt, CultureInfo.InvariantCulture);
@@ -1015,7 +1022,7 @@ namespace RDFSharp.Model
                 }
 
                 //SHORT
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_SHORT)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT)) {
                     Int16 outShort;
                     if (Int16.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outShort)) {
                         typedLiteral.Value = Convert.ToString(outShort, CultureInfo.InvariantCulture);
@@ -1027,7 +1034,7 @@ namespace RDFSharp.Model
                 }
 
                 //BYTE
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_BYTE)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE)) {
                     SByte outSByte;
                     if (SByte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outSByte)) {
                         typedLiteral.Value = Convert.ToString(outSByte, CultureInfo.InvariantCulture);
@@ -1039,7 +1046,7 @@ namespace RDFSharp.Model
                 }
 
                 //UNSIGNED LONG
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDLONG)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG)) {
                     UInt64 outULong;
                     if (UInt64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outULong)) {
                         typedLiteral.Value = Convert.ToString(outULong, CultureInfo.InvariantCulture);
@@ -1051,7 +1058,7 @@ namespace RDFSharp.Model
                 }
 
                 //UNSIGNED INT
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDINT)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT)) {
                     UInt32 outUInt;
                     if (UInt32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outUInt)) {
                         typedLiteral.Value = Convert.ToString(outUInt, CultureInfo.InvariantCulture);
@@ -1063,7 +1070,7 @@ namespace RDFSharp.Model
                 }
 
                 //UNSIGNED SHORT
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDSHORT)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT)) {
                     UInt16 outUShort;
                     if (UInt16.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outUShort)) {
                         typedLiteral.Value = Convert.ToString(outUShort, CultureInfo.InvariantCulture);
@@ -1075,7 +1082,7 @@ namespace RDFSharp.Model
                 }
 
                 //UNSIGNED BYTE
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_UNSIGNEDBYTE)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE)) {
                     Byte outByte;
                     if (Byte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outByte)) {
                         typedLiteral.Value = Convert.ToString(outByte, CultureInfo.InvariantCulture);
@@ -1087,7 +1094,7 @@ namespace RDFSharp.Model
                 }
 
                 //NON-POSITIVE INTEGER [Decimal.MinValue, 0]
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NONPOSITIVEINTEGER)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER)) {
                     Decimal outNPInteger;
                     if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNPInteger)) {
                         typedLiteral.Value = Convert.ToString(outNPInteger, CultureInfo.InvariantCulture);
@@ -1102,7 +1109,7 @@ namespace RDFSharp.Model
                 }
 
                 //NEGATIVE INTEGER [Decimal.MinValue, -1]
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NEGATIVEINTEGER)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)) {
                     Decimal outNInteger;
                     if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNInteger)) {
                         typedLiteral.Value = Convert.ToString(outNInteger, CultureInfo.InvariantCulture);
@@ -1117,7 +1124,7 @@ namespace RDFSharp.Model
                 }
 
                 //NON-NEGATIVE INTEGER [0, Decimal.MaxValue]
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_NONNEGATIVEINTEGER)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) {
                     Decimal outNNInteger;
                     if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNNInteger)) {
                         typedLiteral.Value = Convert.ToString(outNNInteger, CultureInfo.InvariantCulture);
@@ -1132,7 +1139,7 @@ namespace RDFSharp.Model
                 }
 
                 //POSITIVE INTEGER [1, Decimal.MaxValue]
-                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatype.XSD_POSITIVEINTEGER)) {
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)) {
                     Decimal outPInteger;
                     if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outPInteger)) {
                         typedLiteral.Value = Convert.ToString(outPInteger, CultureInfo.InvariantCulture);

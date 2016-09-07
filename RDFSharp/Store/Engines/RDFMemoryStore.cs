@@ -131,7 +131,7 @@ namespace RDFSharp.Store
             if (graph != null) {
                 var graphCtx             = new RDFContext(graph.Context);
                 foreach (var t          in graph) {
-                    if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                    if  (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                          this.AddQuadruple(new RDFQuadruple(graphCtx, (RDFResource)t.Subject, (RDFResource)t.Predicate, (RDFResource)t.Object));
                     }
                     else {
@@ -316,7 +316,7 @@ namespace RDFSharp.Store
                 }
 
                 // Step 2: Result-Update
-                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavor.SPO) {
+                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                     graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
                                                                               (RDFResource)q.Predicate,
                                                                               (RDFResource)q.Object));

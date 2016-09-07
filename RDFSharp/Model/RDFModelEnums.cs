@@ -23,9 +23,9 @@ namespace RDFSharp.Model
     public static class RDFModelEnums {
 
         /// <summary>
-        /// RDFFormat represents an enumeration for supported RDF graph serialization data formats.
+        /// RDFFormats represents an enumeration for supported RDF graph serialization data formats.
         /// </summary>
-        public enum RDFFormat {
+        public enum RDFFormats {
             /// <summary>
             /// N-Triples serialization
             /// </summary>
@@ -45,9 +45,9 @@ namespace RDFSharp.Model
         };
 
         /// <summary>
-        /// RDFTripleFlavor represents an enumeration for possible triple pattern flavors.
+        /// RDFTripleFlavors represents an enumeration for possible triple pattern flavors.
         /// </summary>
-        public enum RDFTripleFlavor  {
+        public enum RDFTripleFlavors  {
             /// <summary>
             /// Indicates that the object of the triple is a resource
             /// </summary>
@@ -63,9 +63,9 @@ namespace RDFSharp.Model
         };
         
         /// <summary>
-        /// RDFDatatype represents an enumeration for supported datatypes (RDF/RDFS/XSD).
+        /// RDFDatatypes represents an enumeration for supported datatypes (RDF/RDFS/XSD).
         /// </summary>
-        public enum RDFDatatype {
+        public enum RDFDatatypes {
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#Literal
             /// </summary>
@@ -226,12 +226,16 @@ namespace RDFSharp.Model
             /// http://www.w3.org/2001/XMLSchema#NCName
             /// </summary>
             XSD_NCNAME = 39,
+            /// <summary>
+            /// http://www.w3.org/2001/XMLSchema#ID
+            /// </summary>
+            XSD_ID = 40
         };
 
         /// <summary>
-        /// RDFContainerType represents an enumeration for supported container types.
+        /// RDFContainerTypes represents an enumeration for supported container types.
         /// </summary>
-        public enum RDFContainerType {
+        public enum RDFContainerTypes {
             /// <summary>
             /// Represents an unordered list which allows duplicates
             /// </summary>
@@ -247,9 +251,9 @@ namespace RDFSharp.Model
         };
 
         /// <summary>
-        /// RDFItemType represents an enumeration for acceptable RDFContainer and RDFCollection item types.
+        /// RDFItemTypes represents an enumeration for acceptable RDFContainer and RDFCollection item types.
         /// </summary>
-        public enum RDFItemType {
+        public enum RDFItemTypes {
             /// <summary>
             /// Indicates that a container/collection accepts only resources
             /// </summary>

@@ -30,12 +30,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Type of the container
         /// </summary>
-        public RDFModelEnums.RDFContainerType ContainerType { get; internal set; }
+        public RDFModelEnums.RDFContainerTypes ContainerType { get; internal set; }
         
         /// <summary>
         /// Type of the items of the container
         /// </summary>
-        public RDFModelEnums.RDFItemType ItemType { get; internal set; }
+        public RDFModelEnums.RDFItemTypes ItemType { get; internal set; }
 
         /// <summary>
         /// Subject of the container's reification
@@ -66,7 +66,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default ctor to build an empty container of the given flavor and given type
         /// </summary>
-        public RDFContainer(RDFModelEnums.RDFContainerType containerType, RDFModelEnums.RDFItemType itemType) {
+        public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType) {
             this.ContainerType          = containerType;
             this.ItemType               = itemType;
             this.ReificationSubject     = new RDFResource();
@@ -76,10 +76,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// List-based ctor to build a container of the given flavor and given type with given items
         /// </summary>
-        public RDFContainer(RDFModelEnums.RDFContainerType containerType, RDFModelEnums.RDFItemType itemType, ArrayList items): this(containerType, itemType) {
+        public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType, ArrayList items): this(containerType, itemType) {
             if (items != null) {
                 switch (this.ItemType) {
-                    case RDFModelEnums.RDFItemType.Resource:
+                    case RDFModelEnums.RDFItemTypes.Resource:
                         foreach (var item in items) {
                             if (item is RDFResource) {
                                 this.AddItem(item);
@@ -89,7 +89,7 @@ namespace RDFSharp.Model
                             }
                         }
                         break;
-                    case RDFModelEnums.RDFItemType.Literal:
+                    case RDFModelEnums.RDFItemTypes.Literal:
                         foreach (var item in items) {
                             if (item is RDFLiteral)  {
                                 this.AddItem(item);
@@ -121,9 +121,9 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to add a resource
-                if (item is RDFResource     && this.ItemType == RDFModelEnums.RDFItemType.Resource) {
+                if (item is RDFResource     && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
                     //In case this is an "Alt" container, we do not allow duplicates
-                    if (this.ContainerType   == RDFModelEnums.RDFContainerType.Alt) {
+                    if (this.ContainerType   == RDFModelEnums.RDFContainerTypes.Alt) {
                         Boolean itemFound    = false;
                         foreach(var itemEnum in this) {
                             if (((RDFResource)itemEnum).Equals((RDFResource)item)) {
@@ -142,9 +142,9 @@ namespace RDFSharp.Model
                 }
 
                 //Try to add a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemType.Literal) {
+                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
                     //In case this is an "Alt" container, we do not allow duplicates
-                    if (this.ContainerType  == RDFModelEnums.RDFContainerType.Alt) {
+                    if (this.ContainerType  == RDFModelEnums.RDFContainerTypes.Alt) {
                         Boolean itemFound    = false;
                         foreach(var itemEnum in this) {
                             if (((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
@@ -173,7 +173,7 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to remove a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemType.Resource) {
+                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
                     ArrayList resultList = new ArrayList();
                     foreach(var itemEnum in this) {
                         if (!((RDFResource)itemEnum).Equals((RDFResource)item)) {
@@ -184,7 +184,7 @@ namespace RDFSharp.Model
                 }
 
                 //Try to remove a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemType.Literal) {
+                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
                     ArrayList resultList = new ArrayList();
                     foreach(var itemEnum in this) {
                         if (!((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
@@ -216,13 +216,13 @@ namespace RDFSharp.Model
 
             //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt] 
             switch (this.ContainerType) {
-                case RDFModelEnums.RDFContainerType.Bag:
+                case RDFModelEnums.RDFContainerTypes.Bag:
                      reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
                      break;
-                case RDFModelEnums.RDFContainerType.Seq:
+                case RDFModelEnums.RDFContainerTypes.Seq:
                      reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
                      break;
-                case RDFModelEnums.RDFContainerType.Alt:
+                case RDFModelEnums.RDFContainerTypes.Alt:
                      reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
                      break;
             }
@@ -231,7 +231,7 @@ namespace RDFSharp.Model
             Int32 index = 0;
             foreach (Object item in this) {
                 RDFResource ordPred = new RDFResource(RDFVocabulary.RDF.BASE_URI + "_" + (++index));
-                if (this.ItemType  == RDFModelEnums.RDFItemType.Resource) {
+                if (this.ItemType  == RDFModelEnums.RDFItemTypes.Resource) {
                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFResource)item));
                 }
                 else {
