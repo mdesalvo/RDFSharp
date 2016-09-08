@@ -73,40 +73,32 @@ namespace RDFSharp.Model
 
             #region Basic Namespaces
             //xsd
-            AddNamespace(new RDFNamespace(RDFVocabulary.XSD.PREFIX,           RDFVocabulary.XSD.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.XSD.PREFIX,         RDFVocabulary.XSD.BASE_URI));
             //xml
-            AddNamespace(new RDFNamespace(RDFVocabulary.XML.PREFIX,           RDFVocabulary.XML.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.XML.PREFIX,         RDFVocabulary.XML.BASE_URI));
             //rdf
-            AddNamespace(new RDFNamespace(RDFVocabulary.RDF.PREFIX,           RDFVocabulary.RDF.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.RDF.PREFIX,         RDFVocabulary.RDF.BASE_URI));
             //rdfs
-            AddNamespace(new RDFNamespace(RDFVocabulary.RDFS.PREFIX,          RDFVocabulary.RDFS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.RDFS.PREFIX,        RDFVocabulary.RDFS.BASE_URI));
             //owl
-            AddNamespace(new RDFNamespace(RDFVocabulary.OWL.PREFIX,           RDFVocabulary.OWL.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.OWL.PREFIX,         RDFVocabulary.OWL.BASE_URI));
             #endregion
 
             #region Extended Namespaces
+            //dc
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX,          RDFVocabulary.DC.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX,     RDFVocabulary.DC.DCAM.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX,  RDFVocabulary.DC.DCTERMS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX,   RDFVocabulary.DC.DCTYPE.BASE_URI));
             //foaf
-            AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX,          RDFVocabulary.FOAF.BASE_URI));
-            //skos (and extensions)
-            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX,          RDFVocabulary.SKOS.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX,   RDFVocabulary.SKOS.SKOSXL.BASE_URI));
-            //dc (and extensions)
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX,            RDFVocabulary.DC.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX,       RDFVocabulary.DC.DCAM.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX,    RDFVocabulary.DC.DCTERMS.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX,     RDFVocabulary.DC.DCTYPE.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX,        RDFVocabulary.FOAF.BASE_URI));
             //geo
-            AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX,           RDFVocabulary.GEO.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX,         RDFVocabulary.GEO.BASE_URI));
+            //skos
+            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX,        RDFVocabulary.SKOS.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI));
             //sioc
-            AddNamespace(new RDFNamespace(RDFVocabulary.SIOC.PREFIX,          RDFVocabulary.SIOC.BASE_URI));
-            //og (and extensions)
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.PREFIX,            RDFVocabulary.OG.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_MUSIC.PREFIX,   RDFVocabulary.OG.OG_MUSIC.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_VIDEO.PREFIX,   RDFVocabulary.OG.OG_VIDEO.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_ARTICLE.PREFIX, RDFVocabulary.OG.OG_ARTICLE.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_BOOK.PREFIX,    RDFVocabulary.OG.OG_BOOK.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_PROFILE.PREFIX, RDFVocabulary.OG.OG_PROFILE.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.OG.OG_WEBSITE.PREFIX, RDFVocabulary.OG.OG_WEBSITE.BASE_URI));
+            AddNamespace(new RDFNamespace(RDFVocabulary.SIOC.PREFIX,        RDFVocabulary.SIOC.BASE_URI));
             #endregion
         }
         #endregion
