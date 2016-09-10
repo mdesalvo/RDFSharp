@@ -39,7 +39,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Empty-ctor to build a blank resource
+        /// Builds a blank resource
         /// </summary>
         public RDFResource() {
             this.URI                 = RDFModelUtilities.GenerateAnonUri();
@@ -48,12 +48,11 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// String-based ctor to build a non-blank resource;
-        /// When given string starts with "bnode:" it builds a blank resource 
+        /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource) 
         /// </summary>
         public RDFResource(String uriString) {
             Uri tempUri              = RDFModelUtilities.GetUriFromString(uriString);
-            if(tempUri              != null){
+            if (tempUri             != null){
                 this.URI             = tempUri;
                 this.IsBlank         = this.URI.ToString().StartsWith("bnode:");
 				this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
@@ -62,21 +61,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
             }
         }
-
-        /// <summary>
-        /// Uri-based ctor to build a non-blank resource;
-        /// When given Uri starts with "bnode:" it builds a blank resource
-        /// </summary>
-        public RDFResource(Uri uri) {
-            if (uri                 != null) {
-                this.URI             = RDFModelUtilities.GetUriFromString(uri.ToString());
-                this.IsBlank         = this.URI.ToString().StartsWith("bnode:");
-				this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-            }
-            else {
-                throw new RDFModelException("Cannot create RDFResource because given \"uri\" parameter is null");
-            }            
-        }        
         #endregion
 
         #region Interfaces
