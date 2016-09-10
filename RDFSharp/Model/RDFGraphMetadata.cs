@@ -63,7 +63,7 @@ namespace RDFSharp.Model
 
                 //Resolve subj Uri
                 String subj              = triple.Subject.ToString();
-                if (subj.Contains(nSpace) || subj.StartsWith(ns.Prefix + ":")) {
+                if (subj.Contains(nSpace) || subj.StartsWith(ns.NamespacePrefix + ":")) {
                     if (!this.Namespaces.Contains(ns)) {
                          this.Namespaces.Add(ns);
                     }
@@ -71,7 +71,7 @@ namespace RDFSharp.Model
 
                 //Resolve pred Uri
                 String pred              = triple.Predicate.ToString();
-                if (pred.Contains(nSpace) || pred.StartsWith(ns.Prefix + ":")) {
+                if (pred.Contains(nSpace) || pred.StartsWith(ns.NamespacePrefix + ":")) {
                     if (!this.Namespaces.Contains(ns)) {
                          this.Namespaces.Add(ns);
                     }
@@ -80,7 +80,7 @@ namespace RDFSharp.Model
                 //Resolve object Uri
                 if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                     String obj           = triple.Object.ToString();
-                    if (obj.Contains(nSpace) || obj.StartsWith(ns.Prefix + ":")) {
+                    if (obj.Contains(nSpace) || obj.StartsWith(ns.NamespacePrefix + ":")) {
                         if (!this.Namespaces.Contains(ns)) {
                              this.Namespaces.Add(ns);
                         }
@@ -90,7 +90,7 @@ namespace RDFSharp.Model
                     //Resolve typed literal Uri
                     if (triple.Object is RDFTypedLiteral) {
                         String tLit      = RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
-                        if (tLit.Contains(nSpace) || tLit.StartsWith(ns.Prefix + ":")) {
+                        if (tLit.Contains(nSpace) || tLit.StartsWith(ns.NamespacePrefix + ":")) {
                             if (!this.Namespaces.Contains(ns)) {
                                  this.Namespaces.Add(ns);
                             }

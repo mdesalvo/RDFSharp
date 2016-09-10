@@ -69,7 +69,7 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty graph
         /// </summary>
         public RDFGraph() {
-            this.Context       = RDFNamespaceRegister.DefaultNamespace.Namespace;
+            this.Context       = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.GraphMetadata = new RDFGraphMetadata();
             this.GraphIndex    = new RDFGraphIndex();
             this.Triples       = new Dictionary<Int64, RDFTriple>();

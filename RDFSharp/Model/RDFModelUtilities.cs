@@ -262,15 +262,15 @@ namespace RDFSharp.Model
         /// Looksup the given prefix or namespace into the prefix.cc service
         /// </summary>
         internal static RDFNamespace LookupPrefixCC(String data, Int32 lookupMode) {
-            var lookupString       = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
-                                                        "http://prefix.cc/reverse?uri=" + data + "&format=txt");
+            var lookupString     = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
+                                                      "http://prefix.cc/reverse?uri=" + data + "&format=txt");
 
-            using (var webclient   = new WebClient()) {
+            using (var webclient = new WebClient()) {
                 try {
-                    var response   = webclient.DownloadString(lookupString);
-                    var new_prefix = response.Split('\t')[0];
-                    var new_nspace = response.Split('\t')[1].TrimEnd(new Char[] { '\n' });
-                    var result     = new RDFNamespace(new_prefix, new_nspace);
+                    var response = webclient.DownloadString(lookupString);
+                    var prefix   = response.Split('\t')[0];
+                    var nspace   = response.Split('\t')[1].TrimEnd(new Char[] { '\n' });
+                    var result   = new RDFNamespace(prefix, nspace);
 
                     //Also add the namespace to the register, to avoid future lookups
                     RDFNamespaceRegister.AddNamespace(result);
@@ -317,7 +317,7 @@ namespace RDFSharp.Model
                 if (!abbreviationDone) {
                     String nS            = ns.ToString();
                     if (token.Contains(nS)) {
-                        token            = token.Replace(nS, ns.Prefix + ":").TrimEnd(new Char[] { '/' });
+                        token            = token.Replace(nS, ns.NamespacePrefix + ":").TrimEnd(new Char[] { '/' });
                         abbreviationDone = true;
                     }
                 }
@@ -365,7 +365,7 @@ namespace RDFSharp.Model
                 }
 
                 //Check if a namespace with the extracted Uri is in the register, or generate an automatic one
-                return (RDFNamespaceRegister.GetByNamespace(ns) ?? new RDFNamespace("autoNS", ns));
+                return (RDFNamespaceRegister.GetByUri(ns) ?? new RDFNamespace("autoNS", ns));
 
             }
             throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" parameter is null or empty");

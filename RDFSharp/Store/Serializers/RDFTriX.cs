@@ -207,7 +207,7 @@ namespace RDFSharp.Store {
                             if (!graph.Name.Equals("graph", StringComparison.Ordinal)) {
                                  throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
                             }
-                            Uri   graphUri              = RDFNamespaceRegister.DefaultNamespace.Namespace;
+                            Uri   graphUri              = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
                             Int64 graphID               = RDFNamespaceRegister.DefaultNamespace.NamespaceID;
                             if (!graphs.ContainsKey(graphID)) {
                                  graphs.Add(graphID, new RDFGraph().SetContext(graphUri));

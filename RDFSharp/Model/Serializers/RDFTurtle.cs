@@ -54,8 +54,8 @@ namespace RDFSharp.Model
 
                     #region prefixes
                     //Write the namespaces collected by the graph
-                    foreach(var ns in graph.GraphMetadata.Namespaces.OrderBy(n => n.Prefix)) {
-                        sw.WriteLine("@prefix " + ns.Prefix + ": <" + ns.Namespace + ">.");
+                    foreach(var ns in graph.GraphMetadata.Namespaces.OrderBy(n => n.NamespacePrefix)) {
+                        sw.WriteLine("@prefix " + ns.NamespacePrefix + ": <" + ns.NamespaceUri + ">.");
                     }
                     sw.WriteLine("@base <" + graph.Context + ">.\n");
                     #endregion

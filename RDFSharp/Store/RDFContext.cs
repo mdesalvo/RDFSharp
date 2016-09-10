@@ -39,7 +39,7 @@ namespace RDFSharp.Store
         /// Default-ctor to build a predefined context
         /// </summary>
         public RDFContext() {
-            this.Context         = RDFNamespaceRegister.DefaultNamespace.Namespace;
+            this.Context         = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());   
         }
 

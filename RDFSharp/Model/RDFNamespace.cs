@@ -32,31 +32,32 @@ namespace RDFSharp.Model
         internal Int64 NamespaceID { get; set;}
 
         /// <summary>
-        /// Prefix abbreviation of the namespace
+        /// Prefix representation of the namespace
         /// </summary>
-        public String Prefix { get; internal set; }
+        public String NamespacePrefix { get; internal set; }
 
         /// <summary>
-        /// Full-Uri representation of the namespace
+        /// Uri representation of the namespace
         /// </summary>
-        public Uri Namespace { get; internal set; }
+        public Uri NamespaceUri { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// String-based ctor to build a namespace with prefix and uri
+        /// Builds a namespace with given prefix and Uri
         /// </summary>
-        public RDFNamespace(String prefix, String nSpace) {
+        public RDFNamespace(String prefix, String uri) {
             if (prefix != null && Regex.IsMatch(prefix, @"^[a-zA-Z0-9_]+$")) {
-                if (prefix.ToUpperInvariant() != "BNODE" && prefix.ToUpperInvariant() != "XMLNS") {
+                if (prefix.ToUpperInvariant()   != "BNODE" && 
+                    prefix.ToUpperInvariant()   != "XMLNS") {
 
-                    Uri nSpaceUri              = RDFModelUtilities.GetUriFromString(nSpace);
-                    if (nSpaceUri             != null    && 
-                        !nSpaceUri.ToString().ToUpperInvariant().StartsWith("BNODE:") &&
-                        !nSpaceUri.ToString().ToUpperInvariant().StartsWith("XMLNS:")) {
-                            this.Prefix        = prefix;
-                            this.Namespace     = nSpaceUri;
-                            this.NamespaceID   = RDFModelUtilities.CreateHash(this.ToString());
+                    Uri nSpaceUri                = RDFModelUtilities.GetUriFromString(uri);
+                    if (nSpaceUri               != null    
+                        && !nSpaceUri.ToString().ToUpperInvariant().StartsWith("BNODE:") 
+                        && !nSpaceUri.ToString().ToUpperInvariant().StartsWith("XMLNS:")) {
+                            this.NamespacePrefix = prefix;
+                            this.NamespaceUri    = nSpaceUri;
+                            this.NamespaceID     = RDFModelUtilities.CreateHash(this.ToString());
                     }
                     else {
                         throw new RDFModelException("Cannot create RDFNamespace because \"nSpace\" parameter is null or cannot start with \"bnode\" or \"xmlns\" prefixes, because they are reserved.");
@@ -68,7 +69,7 @@ namespace RDFSharp.Model
                 }
             }
             else {
-                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or contains not allowed characters.");
+                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or contains unallowed characters.");
             }
         }
         #endregion
@@ -78,7 +79,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the namespace
         /// </summary>
         public override String ToString() {
-            return this.Namespace.ToString();
+            return this.NamespaceUri.ToString();
         }
 
         /// <summary>

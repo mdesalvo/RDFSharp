@@ -67,8 +67,8 @@ namespace RDFSharp.Model
                     #region prefixes
                     //Write the graph's prefixes (except for "rdf", which has already been written)
                     graph.GraphMetadata.Namespaces.ForEach(p => {
-                        if (!p.Prefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal) && !p.Prefix.Equals("base", StringComparison.Ordinal)) {
-                            XmlAttribute pfRootNS     = rdfDoc.CreateAttribute("xmlns:" + p.Prefix);
+                        if (!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal) && !p.NamespacePrefix.Equals("base", StringComparison.Ordinal)) {
+                            XmlAttribute pfRootNS     = rdfDoc.CreateAttribute("xmlns:" + p.NamespacePrefix);
                             XmlText pfRootNSText      = rdfDoc.CreateTextNode(p.ToString());
                             pfRootNS.AppendChild(pfRootNSText);
                             rdfRoot.Attributes.Append(pfRootNS);
@@ -168,10 +168,10 @@ namespace RDFSharp.Model
                                 String predString     = triple.Predicate.ToString();
                                 //"<predPREF:predURI"
                                 RDFNamespace predNS   = 
-								    (RDFNamespaceRegister.GetByNamespace(predString) ?? 
+								    (RDFNamespaceRegister.GetByUri(predString) ?? 
 									     RDFModelUtilities.GenerateNamespace(predString, false));
                                 //Refine the pred with eventually necessary sanitizations
-                                String predUri        = predString.Replace(predNS.ToString(), predNS.Prefix + ":")
+                                String predUri        = predString.Replace(predNS.ToString(), predNS.NamespacePrefix + ":")
                                                                   .Replace(":#", ":")
                                                                   .TrimEnd(new Char[] { ':', '/' });
                                 //Sanitize eventually detected automatic namespace
@@ -504,10 +504,10 @@ namespace RDFSharp.Model
                         //if not resolved, create new namespace with scope limited to actual node
                         RDFNamespace ns  =
                         (RDFNamespaceRegister.GetByPrefix(attr.LocalName) ??
-                                RDFNamespaceRegister.GetByNamespace(attr.Value) ??
+                                RDFNamespaceRegister.GetByUri(attr.Value) ??
                                     new RDFNamespace(attr.LocalName, attr.Value));
 
-                        nsMgr.AddNamespace(ns.Prefix, ns.Namespace.ToString());
+                        nsMgr.AddNamespace(ns.NamespacePrefix, ns.NamespaceUri.ToString());
 
                     }
                 }

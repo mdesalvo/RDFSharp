@@ -64,7 +64,7 @@ namespace RDFSharp.Model
         static RDFNamespaceRegister() {
             Instance          = new RDFNamespaceRegister();
             Instance.Register = new List<RDFNamespace>();
-            SetDefaultNamespace(new RDFNamespace("rdfsharp", "https://rdfsharp.codeplex.com/default_graph#"));
+            SetDefaultNamespace(new RDFNamespace("rdfsharp", "https://rdfsharp.codeplex.com/"));
 
             #region Basic Namespaces
             //xsd
@@ -116,57 +116,54 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Sets the given namespace as default namespace of the library 
+        /// Sets the given namespace as default namespace of the library.
         /// </summary>
-        public static void SetDefaultNamespace(RDFNamespace defaultNamespace) {
-            if (defaultNamespace != null) {
-                DefaultNamespace  = defaultNamespace;
-                AddNamespace(defaultNamespace);
+        public static void SetDefaultNamespace(RDFNamespace nSpace) {
+            if (nSpace          != null) {
+                DefaultNamespace = nSpace;
+
+                //Also add it to the register
+                AddNamespace(nSpace);
             }
         }
 
         /// <summary>
-        /// Adds the given namespace to the register, avoiding duplicate insertions
+        /// Adds the given namespace to the register, if it has unique prefix and uri.
         /// </summary>
         public static void AddNamespace(RDFNamespace nSpace) {
             if (nSpace != null) {
-                if (!ContainsNamespace(nSpace)) {
-                     Instance.Register.Add(nSpace);
+                if (GetByPrefix(nSpace.NamespacePrefix) == null && GetByUri(nSpace.NamespaceUri.ToString()) == null) {
+                    Instance.Register.Add(nSpace);
                 }
             }
         }
 
         /// <summary>
-        /// Removes the given namespace from the register
+        /// Removes the namespace having the given Uri.
         /// </summary>
-        public static void RemoveNamespace(RDFNamespace nSpace) {
-            //DefaultNamespace can't be removed
-            if (nSpace != null && !nSpace.Equals(DefaultNamespace)) {
-                Instance.Register.RemoveAll(ns => ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal) || ns.Namespace.Equals(nSpace.Namespace));
+        public static void RemoveByUri(String uri) {
+            if (uri != null) {
+                Instance.Register.RemoveAll(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
             }
         }
 
         /// <summary>
-        /// Checks for existence of the given namespace in the register by seeking presence of its prefix or its uri
+        /// Removes the namespace having the given prefix.
         /// </summary>
-        public static Boolean ContainsNamespace(RDFNamespace nSpace) {
-            if (nSpace != null) {
-                return Instance.Register.Exists(ns => ns.Prefix.Equals(nSpace.Prefix, StringComparison.Ordinal) || ns.Namespace.Equals(nSpace.Namespace));
+        public static void RemoveByPrefix(String prefix) {
+            if (prefix != null) {
+                Instance.Register.RemoveAll(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
             }
-            return false;
         }
 
         /// <summary>
-        /// Retrieves a namespace from the register by seeking presence of its Uri.
-        /// If not found, and the "enablePrefixCCService" parameter is true, it tries 
-        /// to resolve the namespace with a reverse lookup to prefix.cc service.
+        /// Retrieves a namespace by seeking presence of its Uri.
         /// </summary>
-        public static RDFNamespace GetByNamespace(String nSpace, Boolean enablePrefixCCService=false) {
-            Uri tempNS      = RDFModelUtilities.GetUriFromString(nSpace.Trim());
-            if (tempNS     != null){
-                var result  = Instance.Register.Find(ns => ns.Namespace.Equals(tempNS));
+        public static RDFNamespace GetByUri(String uri, Boolean enablePrefixCCService=false) {
+            if (uri        != null) {
+                var result  = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService) {
-                    result  = RDFModelUtilities.LookupPrefixCC(nSpace.Trim(), 2);
+                    result  = RDFModelUtilities.LookupPrefixCC(uri.Trim(), 2);
                 }
                 return result;
             }
@@ -174,13 +171,11 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Retrieves a namespace from the register by seeking presence of its prefix.
-        /// If not found, and the "enablePrefixCCService" parameter is true, it tries 
-        /// to resolve the prefix with a lookup to prefix.cc service.
+        /// Retrieves a namespace by seeking presence of its prefix.
         /// </summary>
         public static RDFNamespace GetByPrefix(String prefix, Boolean enablePrefixCCService=false) {
-            if (prefix     != null && prefix.Trim() != String.Empty) {
-                var result  = Instance.Register.Find(ns => ns.Prefix.Equals(prefix.Trim(), StringComparison.Ordinal));
+            if (prefix     != null) {
+                var result  = Instance.Register.Find(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService) {
                     result  = RDFModelUtilities.LookupPrefixCC(prefix.Trim(), 1);
                 }
