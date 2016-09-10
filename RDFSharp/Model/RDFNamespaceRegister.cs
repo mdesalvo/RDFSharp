@@ -28,11 +28,6 @@ namespace RDFSharp.Model
 
         #region Properties
         /// <summary>
-        /// Flag to enable search into prefix.cc service when a prefix/namespace is not found
-        /// </summary>
-        public static Boolean EnablePrefixCCService { get; set; }
-
-        /// <summary>
         /// Default namespace of the library
         /// </summary>
         public static RDFNamespace DefaultNamespace { get; internal set; }
@@ -163,14 +158,14 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Retrieves a namespace from the register by seeking presence of its Uri.
-        /// If not found, and the EnablePrefixCCService configuration is true, it 
-        /// tries to resolve the namespace with a reverse lookup to prefix.cc service.
+        /// If not found, and the "enablePrefixCCService" parameter is true, it tries 
+        /// to resolve the namespace with a reverse lookup to prefix.cc service.
         /// </summary>
-        public static RDFNamespace GetByNamespace(String nSpace) {
+        public static RDFNamespace GetByNamespace(String nSpace, Boolean enablePrefixCCService=false) {
             Uri tempNS      = RDFModelUtilities.GetUriFromString(nSpace.Trim());
             if (tempNS     != null){
                 var result  = Instance.Register.Find(ns => ns.Namespace.Equals(tempNS));
-                if (result == null && EnablePrefixCCService) {
+                if (result == null && enablePrefixCCService) {
                     result  = RDFModelUtilities.LookupPrefixCC(nSpace.Trim(), 2);
                 }
                 return result;
@@ -180,13 +175,13 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Retrieves a namespace from the register by seeking presence of its prefix.
-        /// If not found, and the EnablePrefixCCService configuration is true, it 
-        /// tries to resolve the prefix with a lookup to prefix.cc service.
+        /// If not found, and the "enablePrefixCCService" parameter is true, it tries 
+        /// to resolve the prefix with a lookup to prefix.cc service.
         /// </summary>
-        public static RDFNamespace GetByPrefix(String prefix) {
+        public static RDFNamespace GetByPrefix(String prefix, Boolean enablePrefixCCService=false) {
             if (prefix     != null && prefix.Trim() != String.Empty) {
                 var result  = Instance.Register.Find(ns => ns.Prefix.Equals(prefix.Trim(), StringComparison.Ordinal));
-                if (result == null && EnablePrefixCCService) {
+                if (result == null && enablePrefixCCService) {
                     result  = RDFModelUtilities.LookupPrefixCC(prefix.Trim(), 1);
                 }
                 return result;

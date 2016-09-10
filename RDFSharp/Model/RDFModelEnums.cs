@@ -191,7 +191,7 @@ namespace RDFSharp.Model
             /// </summary>
             XSD_BASE64BINARY = 30,
             /// <summary>
-            /// http://www.w3.org/2001/XMLSchema#anyUri
+            /// http://www.w3.org/2001/XMLSchema#anyURI
             /// </summary>
             XSD_ANYURI = 31,
             /// <summary>

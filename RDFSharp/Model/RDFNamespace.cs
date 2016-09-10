@@ -71,34 +71,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or contains not allowed characters.");
             }
         }
-
-        /// <summary>
-        /// Uri-based ctor to build a namespace with prefix and uri
-        /// </summary>
-        public RDFNamespace(String prefix, Uri nSpace) {
-            if (prefix != null && Regex.IsMatch(prefix, @"^[a-zA-Z0-9_]+$")) {
-                if (prefix.ToUpperInvariant() != "BNODE" && prefix.ToUpperInvariant() != "XMLNS") {
-
-                    if (nSpace                != null    &&
-                        !nSpace.ToString().ToUpperInvariant().StartsWith("BNODE:") &&
-                        !nSpace.ToString().ToUpperInvariant().StartsWith("XMLNS:")) {
-	                        this.Prefix        = prefix;
-	                        this.Namespace     = RDFModelUtilities.GetUriFromString(nSpace.ToString());
-                            this.NamespaceID   = RDFModelUtilities.CreateHash(this.ToString());
-	                }
-	                else {
-                        throw new RDFModelException("Cannot create RDFNamespace because \"nSpace\" parameter is null or cannot start with \"bnode\" or \"xmlns\" prefixes, because they are reserved.");
-	                }
-
-				}
-                else {
-                    throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\"or \"xmlns\", because they are reserved.");
-                }
-            }
-            else {
-                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or not alphanumeric.");
-            }
-        }
         #endregion
 
         #region Interfaces
