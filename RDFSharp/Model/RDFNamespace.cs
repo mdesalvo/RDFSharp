@@ -16,6 +16,7 @@
 
 using System;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace RDFSharp.Model
 { 
@@ -47,30 +48,52 @@ namespace RDFSharp.Model
         /// Builds a namespace with given prefix and Uri
         /// </summary>
         public RDFNamespace(String prefix, String uri) {
-            if (prefix != null && Regex.IsMatch(prefix, @"^[a-zA-Z0-9_]+$")) {
-                if (prefix.ToUpperInvariant()   != "BNODE" && 
-                    prefix.ToUpperInvariant()   != "XMLNS") {
 
-                    Uri nSpaceUri                = RDFModelUtilities.GetUriFromString(uri);
-                    if (nSpaceUri               != null    
-                        && !nSpaceUri.ToString().ToUpperInvariant().StartsWith("BNODE:") 
-                        && !nSpaceUri.ToString().ToUpperInvariant().StartsWith("XMLNS:")) {
-                            this.NamespacePrefix = prefix;
-                            this.NamespaceUri    = nSpaceUri;
-                            this.NamespaceID     = RDFModelUtilities.CreateHash(this.ToString());
-                    }
-                    else {
-                        throw new RDFModelException("Cannot create RDFNamespace because \"nSpace\" parameter is null or cannot start with \"bnode\" or \"xmlns\" prefixes, because they are reserved.");
-                    }
+            //Validate prefix: must be compliant with "xsd:NCName" and cannot be "bnode" or "xmlns"
+            if (prefix != null && prefix.Trim() != String.Empty) {
+                prefix  = prefix.Trim();
 
+                if (prefix.ToUpperInvariant()   != "BNODE" && prefix.ToUpperInvariant() != "XMLNS") {
+                    try {
+                        XmlConvert.VerifyNCName(prefix);
+                    }
+                    catch {
+                        throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is not a valid xsd:NCName");
+                    }
                 }
                 else {
-                    throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\", because they are reserved.");
+                    throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
                 }
+
             }
             else {
-                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or contains unallowed characters.");
+                throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is null or empty");
             }
+
+            //Validate uri: must be an absolute Uri and cannot start with "bnode:" or "xmlns:"
+            if (uri      != null && uri.Trim() != String.Empty)  {
+                uri       = uri.Trim();
+
+                Uri _uri  = RDFModelUtilities.GetUriFromString(uri);
+                if (_uri != null) {
+                    if (!_uri.ToString().ToUpperInvariant().StartsWith("BNODE:") && !_uri.ToString().ToUpperInvariant().StartsWith("XMLNS:")) {
+                         this.NamespacePrefix   = prefix;
+                         this.NamespaceUri      = _uri;
+                         this.NamespaceID       = RDFModelUtilities.CreateHash(this.ToString());
+                    }
+                    else {
+                        throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter cannot start with \"bnode:\" or \"xmlns:\"");
+                    }
+                }
+                else {
+                    throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
+                }
+
+            }
+            else {
+                throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is null or empty");
+            }
+
         }
         #endregion
 
