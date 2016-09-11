@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Singleton instance of the RDFNamespaceRegister class
         /// </summary>
-        internal static RDFNamespaceRegister Instance { get; set; }
+        public static RDFNamespaceRegister Instance { get; internal set; }
 
         /// <summary>
         /// List of registered namespaces
