@@ -163,7 +163,7 @@ namespace RDFSharp.Model
             if (uri        != null) {
                 var result  = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService) {
-                    result  = RDFModelUtilities.LookupPrefixCC(uri.Trim(), 2);
+                    result  = RDFModelUtilities.LookupPrefixCC(uri.Trim().TrimEnd(new Char[] { '#' }), 2);
                 }
                 return result;
             }
