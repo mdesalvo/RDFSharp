@@ -16,7 +16,6 @@
 
 using System;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace RDFSharp.Model
 { 
@@ -49,20 +48,17 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFNamespace(String prefix, String uri) {
 
-            //Validate prefix: must be compliant with "xsd:NCName" and cannot be "bnode" or "xmlns"
+            //Validate prefix: must contain only letters/numbers and cannot be "bnode" or "xmlns"
             if (prefix != null && prefix.Trim() != String.Empty) {
                 prefix  = prefix.Trim();
 
-                if (prefix.ToUpperInvariant()   != "BNODE" && prefix.ToUpperInvariant() != "XMLNS") {
-                    try {
-                        XmlConvert.VerifyNCName(prefix);
-                    }
-                    catch {
-                        throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter is not a valid xsd:NCName");
+                if (Regex.IsMatch(prefix, @"^[a-zA-Z0-9_]+$")) {
+                    if (prefix.ToUpperInvariant() == "BNODE" || prefix.ToUpperInvariant() == "XMLNS") {
+                        throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
                     }
                 }
                 else {
-                    throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
+                    throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter contains unallowed characters");
                 }
 
             }
