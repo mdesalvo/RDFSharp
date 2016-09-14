@@ -54,7 +54,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Subject of the triple's reification
         /// </summary>
-        public RDFResource ReificationSubject { get; internal set; }
+        public RDFResource ReificationSubject {
+            get { return new RDFResource("bnode:" + this.TripleID); }
+        }
         #endregion
 
         #region Ctors
@@ -64,30 +66,27 @@ namespace RDFSharp.Model
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPO;
+            this.TripleFlavor  = RDFModelEnums.RDFTripleFlavors.SPO;
 
             //Subject
-            this.Subject           = (subj ?? new RDFResource());
+            this.Subject       = (subj ?? new RDFResource());
 
             //Predicate
             if (pred != null) {
                 if (pred.IsBlank) {
                     throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
                 }
-                this.Predicate     = pred;
+                this.Predicate = pred;
             }
             else {
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
             }
 
             //Object
-            this.Object            = (obj ?? new RDFResource());
+            this.Object        = (obj ?? new RDFResource());
 
             //TripleID
-            this.TripleID          = RDFModelUtilities.CreateHash(this.ToString());
-
-            //ReificationSubject
-            this.ReificationSubject= new RDFResource("bnode:" + this.TripleID);
+            this.TripleID      = RDFModelUtilities.CreateHash(this.ToString());
 
         }
 
@@ -97,30 +96,27 @@ namespace RDFSharp.Model
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPL;
+            this.TripleFlavor  = RDFModelEnums.RDFTripleFlavors.SPL;
 
             //Subject
-            this.Subject           = (subj ?? new RDFResource());
+            this.Subject       = (subj ?? new RDFResource());
 
             //Predicate
             if (pred != null) {
                 if (pred.IsBlank) {
                     throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
                 }
-                this.Predicate     = pred;
+                this.Predicate = pred;
             }
             else {
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
             }
 
             //Object
-            this.Object            = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object        = (lit ?? new RDFPlainLiteral(String.Empty));
 
             //TripleID
-            this.TripleID          = RDFModelUtilities.CreateHash(this.ToString());
-
-            //ReificationSubject
-            this.ReificationSubject= new RDFResource("bnode:" + this.TripleID);
+            this.TripleID      = RDFModelUtilities.CreateHash(this.ToString());
 
         }
         #endregion
@@ -146,16 +142,17 @@ namespace RDFSharp.Model
         /// Builds the reification graph of the triple
         /// </summary>
         public RDFGraph ReifyTriple() {
-            RDFGraph reifGraph     = new RDFGraph();
+            var reifGraph = new RDFGraph();
+            var reifSubj  = this.ReificationSubject;
 
-            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject,     RDFVocabulary.RDF.TYPE,      RDFVocabulary.RDF.STATEMENT));
-            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject,     RDFVocabulary.RDF.SUBJECT,   (RDFResource)this.Subject));
-            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject,     RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
             if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT,    (RDFResource)this.Object));
+                reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
             }
             else {
-                reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT,    (RDFLiteral)this.Object));
+                reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
             }
 
             return reifGraph;

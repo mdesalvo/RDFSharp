@@ -75,7 +75,7 @@ namespace RDFSharp.Model
                 switch (this.ItemType) {
                     case RDFModelEnums.RDFItemTypes.Resource:
                         foreach(var item in items){
-                            if(item is RDFResource){
+                            if (item is RDFResource){
                                 this.AddItem(item);
                             }
                             else{
@@ -84,7 +84,7 @@ namespace RDFSharp.Model
                         }
                         break;
                     case RDFModelEnums.RDFItemTypes.Literal:
-                        foreach (var item in items) {
+                        foreach(var item in items) {
                             if (item is RDFLiteral) {
                                 this.AddItem(item);
                             }

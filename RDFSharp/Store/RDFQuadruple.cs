@@ -60,7 +60,9 @@ namespace RDFSharp.Store
         /// <summary>
         /// Subject of the quadruple's reification
         /// </summary>
-        public RDFResource ReificationSubject { get; internal set; }
+        public RDFResource ReificationSubject {
+            get { return new RDFResource("bnode:" + this.QuadrupleID); }
+        }
         #endregion
 
         #region Ctors
@@ -70,33 +72,30 @@ namespace RDFSharp.Store
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPO;
+            this.TripleFlavor  = RDFModelEnums.RDFTripleFlavors.SPO;
 
             //Context
-            this.Context           = (context ?? new RDFContext());
+            this.Context       = (context ?? new RDFContext());
 
             //Subject
-            this.Subject           = (subj ?? new RDFResource());
+            this.Subject       = (subj ?? new RDFResource());
 
             //Predicate
             if (pred != null) {
                 if (pred.IsBlank) {
                     throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
                 }
-                this.Predicate     = pred;
+                this.Predicate = pred;
             }
             else {
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
             }
 
             //Object
-            this.Object            = (obj ?? new RDFResource());
+            this.Object        = (obj ?? new RDFResource());
 
             //QuadrupleID
-            this.QuadrupleID       = RDFModelUtilities.CreateHash(this.ToString());
-
-            //ReificationSubject
-            this.ReificationSubject= new RDFResource("bnode:" + this.QuadrupleID);
+            this.QuadrupleID   = RDFModelUtilities.CreateHash(this.ToString());
 
         }
 
@@ -106,33 +105,30 @@ namespace RDFSharp.Store
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit) {
 
             //TripleFlavor
-            this.TripleFlavor      = RDFModelEnums.RDFTripleFlavors.SPL;
+            this.TripleFlavor  = RDFModelEnums.RDFTripleFlavors.SPL;
 
             //Context
-            this.Context           = (context ?? new RDFContext());
+            this.Context       = (context ?? new RDFContext());
 
             //Subject
-            this.Subject           = (subj ?? new RDFResource());
+            this.Subject       = (subj ?? new RDFResource());
 
             //Predicate
             if (pred != null) {
                 if (pred.IsBlank) {
                     throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
                 }
-                this.Predicate     = pred;
+                this.Predicate = pred;
             }
             else {
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
             }
 
             //Object
-            this.Object            = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object        = (lit ?? new RDFPlainLiteral(String.Empty));
 
             //QuadrupleID
-            this.QuadrupleID       = RDFModelUtilities.CreateHash(this.ToString());
-
-            //ReificationSubject
-            this.ReificationSubject= new RDFResource("bnode:" + this.QuadrupleID);
+            this.QuadrupleID   = RDFModelUtilities.CreateHash(this.ToString());
 
         }
         #endregion
@@ -157,17 +153,18 @@ namespace RDFSharp.Store
         /// <summary>
         /// Builds the reification store of the quadruple
         /// </summary>
-        public RDFStore ReifyQuadruple() {
-            RDFStore reifStore     = new RDFMemoryStore();
+        public RDFMemoryStore ReifyQuadruple() {
+            var reifStore = new RDFMemoryStore();
+            var reifSubj  = this.ReificationSubject;
 
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.TYPE,       RDFVocabulary.RDF.STATEMENT));
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.SUBJECT,    (RDFResource)this.Subject));
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.PREDICATE,  (RDFResource)this.Predicate));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
             if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
+                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
             }
             else {
-                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
+                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
             }
 
             return reifStore;
