@@ -174,12 +174,11 @@ namespace RDFSharp.Model {
         /// <summary>
         /// Clears the index
         /// </summary>
-        internal RDFGraphIndex ClearIndex() {
+        internal void ClearIndex() {
             this.Subjects.Clear();
             this.Predicates.Clear();
             this.Objects.Clear();
             this.Literals.Clear();
-            return this;
         }
         #endregion
 

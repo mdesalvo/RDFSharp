@@ -66,7 +66,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default ctor to build an empty graph
+        /// Builds an empty graph
         /// </summary>
         public RDFGraph() {
             this.Context       = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
@@ -76,7 +76,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// List-based ctor to build a graph with the given list of triples
+        /// Builds a graph with the given list of triples
         /// </summary>
         public RDFGraph(List<RDFTriple> triples): this() {
             if (triples != null) {
@@ -100,9 +100,9 @@ namespace RDFSharp.Model
             if (other == null || this.TriplesCount != other.TriplesCount) {
                 return false;
             }
-            foreach (RDFTriple t in this) {
+            foreach (var t in this) {
                 if (!other.ContainsTriple(t)) {
-                    return false;
+                     return false;
                 }
             }
             return true;
@@ -264,11 +264,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Clears the triples and metadata of the graph
         /// </summary>
-        public RDFGraph ClearTriples() {
+        public void ClearTriples() {
             this.Triples.Clear();
             this.GraphIndex.ClearIndex();
             this.GraphMetadata.ClearMetadata();
-            return this;
         }
 
         /// <summary>
@@ -417,7 +416,7 @@ namespace RDFSharp.Model
                 //Add difference triples
                 foreach(var t in this) {
                     if (!graph.ContainsTriple(t)) {
-                        result.AddTriple(t);
+                         result.AddTriple(t);
                     }
                 }
 
@@ -485,19 +484,19 @@ namespace RDFSharp.Model
 
                         #region SUBJECT
                         //Parse the triple subject
-                        if (!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty) {
+                        if(!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty) {
                             var rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
                             if (rowSubj is RDFResource) {
 
                                 #region PREDICATE
                                 //Parse the triple predicate
-                                if (!tableRow.IsNull("PREDICATE")  && tableRow["PREDICATE"].ToString() != String.Empty) {
+                                if(!tableRow.IsNull("PREDICATE")  && tableRow["PREDICATE"].ToString() != String.Empty) {
                                     var rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
                                     if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank) {
 
                                         #region OBJECT
                                         //Parse the triple object
-                                        if (!tableRow.IsNull("OBJECT")) {
+                                        if(!tableRow.IsNull("OBJECT")) {
                                             var rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
                                             if (rowObj is RDFResource) {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
