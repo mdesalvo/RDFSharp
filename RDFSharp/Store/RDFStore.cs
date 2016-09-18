@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using RDFSharp.Model;
 
 namespace RDFSharp.Store
@@ -159,6 +161,79 @@ namespace RDFSharp.Store
                                                           RDFResource predicateResource,
                                                           RDFResource objectResource,
                                                           RDFLiteral  objectLiteral);
+        #endregion
+
+        #region Convert
+
+        #region Exporters
+        /// <summary>
+        /// Writes the store into a file in the given RDF format. 
+        /// </summary>
+        public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath) {
+            if (filepath != null && filepath.Trim() != String.Empty) {
+                switch  (rdfFormat) {
+                    case RDFStoreEnums.RDFFormats.NQuads:
+                         RDFNQuads.Serialize(this, filepath);
+                         break;
+                    case RDFStoreEnums.RDFFormats.TriX:
+                         RDFTriX.Serialize(this, filepath);
+                         break;
+                }
+            }
+            else {
+                throw new RDFStoreException("Cannot write RDF store to file because given \"filepath\" parameter is null or empty.");
+            }
+        }
+
+        /// <summary>
+        /// Writes the store into a stream in the given RDF format. 
+        /// </summary>
+        public void ToStream(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream) {
+            if (outputStream != null) {
+                switch  (rdfFormat) {
+                    case RDFStoreEnums.RDFFormats.NQuads:
+                         RDFNQuads.Serialize(this, outputStream);
+                         break;
+                    case RDFStoreEnums.RDFFormats.TriX:
+                         RDFTriX.Serialize(this, outputStream);
+                         break;
+                }
+            }
+            else {
+                throw new RDFStoreException("Cannot write RDF store to stream because given \"outputStream\" parameter is null.");
+            }
+        }
+
+        /// <summary>
+        /// Writes the store into a datatable with "Context-Subject-Predicate-Object" columns
+        /// </summary>
+        public DataTable ToDataTable() {
+
+            //Create the structure of the result datatable
+            DataTable result                = new DataTable(this.ToString());
+            result.Columns.Add("CONTEXT",   Type.GetType("System.String"));
+            result.Columns.Add("SUBJECT",   Type.GetType("System.String"));
+            result.Columns.Add("PREDICATE", Type.GetType("System.String"));
+            result.Columns.Add("OBJECT",    Type.GetType("System.String"));
+            result.AcceptChanges();
+
+            //Iterate the quadruples of the store to populate the result datatable
+            result.BeginLoadData();
+            foreach (var q in this.SelectAllQuadruples()) {
+                DataRow newRow              = result.NewRow();
+                newRow["CONTEXT"]           = q.Context.ToString();
+                newRow["SUBJECT"]           = q.Subject.ToString();
+                newRow["PREDICATE"]         = q.Predicate.ToString();
+                newRow["OBJECT"]            = q.Object.ToString();
+                newRow.AcceptChanges();
+                result.Rows.Add(newRow);
+            }
+            result.EndLoadData();
+
+            return result;
+        }
+        #endregion
+
         #endregion
 
         #endregion

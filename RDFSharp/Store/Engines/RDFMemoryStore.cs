@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -463,40 +464,46 @@ namespace RDFSharp.Store
         #endregion
 
         #region Convert
+
+        #region Importers
         /// <summary>
-        /// Converts the store into a "Context-Subject-Predicate-Object" datatable 
+        /// Creates a memory store from a file of the given RDF format. 
         /// </summary>
-        public DataTable ToDataTable() {
-
-            //Create the structure of the result datatable
-            DataTable result                = new DataTable(this.ToString());
-            result.Columns.Add("CONTEXT",   Type.GetType("System.String"));
-            result.Columns.Add("SUBJECT",   Type.GetType("System.String"));
-            result.Columns.Add("PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("OBJECT",    Type.GetType("System.String"));
-            result.AcceptChanges();
-
-            //Iterate the quadruples of the store to populate the result datatable
-            result.BeginLoadData();
-            foreach(RDFQuadruple q in this) {
-                DataRow newRow              = result.NewRow();
-                newRow["CONTEXT"]           = q.Context.ToString();
-                newRow["SUBJECT"]           = q.Subject.ToString();
-                newRow["PREDICATE"]         = q.Predicate.ToString();
-                newRow["OBJECT"]            = q.Object.ToString();
-                newRow.AcceptChanges();
-                result.Rows.Add(newRow);
+        public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath) {
+            if (filepath != null && filepath.Trim() != String.Empty) {
+                if (File.Exists(filepath)) {
+                    switch  (rdfFormat) {
+                        case RDFStoreEnums.RDFFormats.TriX:
+                             return RDFTriX.Deserialize(filepath);
+                        case RDFStoreEnums.RDFFormats.NQuads:
+                             return RDFNQuads.Deserialize(filepath);
+                    }
+                }
+                throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
             }
-            result.EndLoadData();
-
-            return result;
+            throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter is null or empty.");
         }
 
         /// <summary>
-        /// Creates a store from a "Context-Subject-Predicate-Object" datatable 
+        /// Creates a memory store from a stream of the given RDF format. 
+        /// </summary>
+        public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream) {
+            if (inputStream != null) {
+                switch  (rdfFormat) {
+                    case RDFStoreEnums.RDFFormats.TriX:
+                         return RDFTriX.Deserialize(inputStream);
+                    case RDFStoreEnums.RDFFormats.NQuads:
+                         return RDFNQuads.Deserialize(inputStream);
+                }
+            }
+            throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
+        }
+
+        /// <summary>
+        /// Creates a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
         /// </summary>
         public static RDFMemoryStore FromDataTable(DataTable table) {
-            RDFMemoryStore result = new RDFMemoryStore();
+            var result = new RDFMemoryStore();
 
             //Check the structure of the datatable for consistency against the "C-S-P-O" RDF model
             if (table != null && table.Columns.Count == 4) {
@@ -507,25 +514,25 @@ namespace RDFSharp.Store
 
                         #region CONTEXT
                         //Parse the quadruple context
-                        if (!tableRow.IsNull("CONTEXT") && tableRow["CONTEXT"].ToString() != String.Empty) {
+                        if(!tableRow.IsNull("CONTEXT") && tableRow["CONTEXT"].ToString() != String.Empty) {
                             RDFPatternMember rowCont  = RDFQueryUtilities.ParseRDFPatternMember(tableRow["CONTEXT"].ToString());
                             if (rowCont is RDFResource) {
 
                                 #region SUBJECT
                                 //Parse the quadruple subject
-                                if (!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty) {
+                                if(!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty) {
                                     RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
                                     if (rowSubj is RDFResource) {
 
                                         #region PREDICATE
                                         //Parse the quadruple predicate
-                                        if (!tableRow.IsNull("PREDICATE") && tableRow["PREDICATE"].ToString() != String.Empty) {
+                                        if(!tableRow.IsNull("PREDICATE") && tableRow["PREDICATE"].ToString() != String.Empty) {
                                             RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
                                             if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank) {
 
                                                 #region OBJECT
                                                 //Parse the quadruple object
-                                                if (!tableRow.IsNull("OBJECT")) {
+                                                if(!tableRow.IsNull("OBJECT")) {
                                                     RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
                                                     if (rowObj is RDFResource) {
                                                         result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCont.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
@@ -535,37 +542,37 @@ namespace RDFSharp.Store
                                                     }
                                                 }
                                                 else {
-                                                    throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row having NULL value in the \"OBJECT\" column.");
+                                                    throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL value in the \"OBJECT\" column.");
                                                 }
                                                 #endregion
 
                                             }
                                             else {
-                                                throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row not having a resource, or having a blank resource, in the \"PREDICATE\" column.");
+                                                throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"PREDICATE\" column.");
                                             }
                                         }
                                         else {
-                                            throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row having null or empty value in the \"PREDICATE\" column.");
+                                            throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"PREDICATE\" column.");
                                         }
                                         #endregion
 
                                     }
                                     else {
-                                        throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row not having a resource in the \"SUBJECT\" column.");
+                                        throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"SUBJECT\" column.");
                                     }
                                 }
                                 else {
-                                    throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row having null or empty value in the \"SUBJECT\" column.");
+                                    throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"SUBJECT\" column.");
                                 }
                                 #endregion
 
                             }
                             else {
-                                throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row not having a context in the \"CONTEXT\" column.");
+                                throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a context in the \"CONTEXT\" column.");
                             }
                         }
                         else {
-                            throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter contains a row having null or empty value in the \"CONTEXT\" column.");
+                            throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"CONTEXT\" column.");
                         }
                         #endregion
 
@@ -573,15 +580,17 @@ namespace RDFSharp.Store
 
                 }
                 else {
-                    throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter does not have the required 4 columns: \"CONTEXT\", \"SUBJECT\", \"PREDICATE\", \"OBJECT\".");
+                    throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"CONTEXT\", \"SUBJECT\", \"PREDICATE\", \"OBJECT\".");
                 }
             }
             else {
-                throw new RDFModelException("Cannot create RDFMemoryStore because given \"table\" parameter is null, or it does not have exactly the required 4 columns.");
+                throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter is null, or it does not have exactly 4 columns.");
             }
 
             return result;
         }
+        #endregion
+
         #endregion
 
         #endregion

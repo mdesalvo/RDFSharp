@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -434,8 +435,60 @@ namespace RDFSharp.Model
         #endregion
 
         #region Convert
+
+        #region Exporters
         /// <summary>
-        /// Converts the graph into a "Subject-Predicate-Object" datatable 
+        /// Writes the graph into a file in the given RDF format. 
+        /// </summary>
+        public void ToFile(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
+            if (filepath != null && filepath.Trim() != String.Empty) {
+                switch  (rdfFormat) {
+                    case RDFModelEnums.RDFFormats.NTriples:
+                         RDFNTriples.Serialize(this, filepath);
+                         break;
+                    case RDFModelEnums.RDFFormats.RdfXml:
+                         RDFXml.Serialize(this, filepath);
+                         break;
+                    case RDFModelEnums.RDFFormats.TriX:
+                         RDFTriX.Serialize(this, filepath);
+                         break;
+                    case RDFModelEnums.RDFFormats.Turtle:
+                         RDFTurtle.Serialize(this, filepath);
+                         break;
+                }
+            }
+            else {
+                throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
+            }
+        }
+
+        /// <summary>
+        /// Writes the graph into a stream in the given RDF format. 
+        /// </summary>
+        public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream) {
+            if (outputStream != null) {
+                switch  (rdfFormat) {
+                    case RDFModelEnums.RDFFormats.NTriples:
+                         RDFNTriples.Serialize(this, outputStream);
+                         break;
+                    case RDFModelEnums.RDFFormats.RdfXml:
+                         RDFXml.Serialize(this, outputStream);
+                         break;
+                    case RDFModelEnums.RDFFormats.TriX:
+                         RDFTriX.Serialize(this, outputStream);
+                         break;
+                    case RDFModelEnums.RDFFormats.Turtle:
+                         RDFTurtle.Serialize(this, outputStream);
+                         break;
+                }
+            }
+            else {
+                throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
+            }
+        }
+
+        /// <summary>
+        /// Writes the graph into a datatable with "Subject-Predicate-Object" columns
         /// </summary>
         public DataTable ToDataTable() {
 
@@ -460,9 +513,52 @@ namespace RDFSharp.Model
 
             return result;
         }
+        #endregion
+
+        #region Importers
+        /// <summary>
+        /// Creates a graph from a file of the given RDF format. 
+        /// </summary>
+        public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
+            if (filepath != null && filepath.Trim() != String.Empty) {
+                if (File.Exists(filepath)) {
+                    switch  (rdfFormat) {
+                        case RDFModelEnums.RDFFormats.NTriples:
+                             return RDFNTriples.Deserialize(filepath);
+                        case RDFModelEnums.RDFFormats.RdfXml:
+                             return RDFXml.Deserialize(filepath);
+                        case RDFModelEnums.RDFFormats.TriX:
+                             return RDFTriX.Deserialize(filepath);
+                        case RDFModelEnums.RDFFormats.Turtle:
+                             throw new RDFModelException("Cannot read RDF graph from file because Turtle format is not supported. What about joining the project to contribute it?");
+                    }
+                }
+                throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+            }
+            throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
+        }
 
         /// <summary>
-        /// Creates a graph from a "Subject-Predicate-Object" datatable 
+        /// Creates a graph from a stream of the given RDF format. 
+        /// </summary>
+        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) {
+            if (inputStream != null) {
+                switch  (rdfFormat) {
+                    case RDFModelEnums.RDFFormats.NTriples:
+                         return RDFNTriples.Deserialize(inputStream);
+                    case RDFModelEnums.RDFFormats.RdfXml:
+                         return RDFXml.Deserialize(inputStream);
+                    case RDFModelEnums.RDFFormats.TriX:
+                         return RDFTriX.Deserialize(inputStream);
+                    case RDFModelEnums.RDFFormats.Turtle:
+                         throw new RDFModelException("Cannot read RDF graph from stream because Turtle format is not supported. What about joining the project to contribute it?");
+                }
+            }
+            throw new RDFModelException("Cannot read RDF graph from stream because given \"filepath\" parameter is null.");
+        }
+
+        /// <summary>
+        /// Creates a graph from a datatable with "Subject-Predicate-Object" columns.
         /// </summary>
         public static RDFGraph FromDataTable(DataTable table) {
             var result = new RDFGraph();
@@ -506,27 +602,27 @@ namespace RDFSharp.Model
                                             }
                                         }
                                         else {
-                                            throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter contains a row having NULL value in the \"OBJECT\" column.");
+                                            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having NULL value in the \"OBJECT\" column.");
                                         }
                                         #endregion
 
                                     }
                                     else {
-                                        throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter contains a row not having a resource, or having a blank resource, in the \"PREDICATE\" column.");
+                                        throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"PREDICATE\" column.");
                                     }
                                 }
                                 else {
-                                    throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter contains a row having null or empty value in the \"PREDICATE\" column.");
+                                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"PREDICATE\" column.");
                                 }
                                 #endregion
 
                             }
                             else {
-                                throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter contains a row not having a resource in the \"SUBJECT\" column.");
+                                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"SUBJECT\" column.");
                             }
                         }
                         else {
-                            throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter contains a row having null or empty value in the \"SUBJECT\" column.");
+                            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"SUBJECT\" column.");
                         }
                         #endregion
 
@@ -534,15 +630,17 @@ namespace RDFSharp.Model
 
                 }
                 else {
-                    throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter does not have the required 3 columns: \"SUBJECT\", \"PREDICATE\", \"OBJECT\".");
+                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"SUBJECT\", \"PREDICATE\", \"OBJECT\".");
                 }
             }
             else {
-                throw new RDFModelException("Cannot create RDFGraph because given \"table\" parameter is null, or it does not have exactly 3 columns.");
+                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter is null, or it does not have exactly 3 columns.");
             }
 
             return result;
         }
+        #endregion
+
         #endregion
 
         #endregion
