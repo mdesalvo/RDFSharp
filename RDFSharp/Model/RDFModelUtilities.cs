@@ -117,6 +117,25 @@ namespace RDFSharp.Model
             }
             return unicodeString;
         }
+
+        /// <summary>
+        /// Replaces character controls for XML compatibility
+        /// </summary>
+        internal static String EscapeControlCharsForXML(String data) {
+            if (data            != null) {
+                StringBuilder b  = new StringBuilder();
+                foreach (Char c in data.ToCharArray()) {
+                    if  (Char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D') {
+                         b.Append("\\u" + ((Int32)c).ToString("X4"));
+                    }
+                    else {
+                         b.Append(c);
+                    }
+                }
+                data             = b.ToString();
+            }
+            return data;
+        }
         #endregion
 
         #region Graph

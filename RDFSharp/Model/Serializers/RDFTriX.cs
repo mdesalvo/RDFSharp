@@ -123,7 +123,7 @@ namespace RDFSharp.Model
                                     xmlLang.AppendChild(xmlLangText);
                                     plainLiteralElement.Attributes.Append(xmlLang);
                                 }
-                                XmlText plainLiteralText    = trixDoc.CreateTextNode(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value));
+                                XmlText plainLiteralText    = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
                                 plainLiteralElement.AppendChild(plainLiteralText);
                                 tripleElement.AppendChild(plainLiteralElement);
                             }
@@ -136,7 +136,7 @@ namespace RDFSharp.Model
                                 XmlText datatypeText        = trixDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
                                 datatype.AppendChild(datatypeText);
                                 typedLiteralElement.Attributes.Append(datatype);
-                                XmlText typedLiteralText    = trixDoc.CreateTextNode(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value));
+                                XmlText typedLiteralText    = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
                                 typedLiteralElement.AppendChild(typedLiteralText);
                                 tripleElement.AppendChild(typedLiteralElement);
                             }
@@ -276,7 +276,7 @@ namespace RDFSharp.Model
                                                 //Plain literal with language
                                                 result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                               new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText), xmlLang.Value)));
+                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
 
                                             }
                                             else {
@@ -284,7 +284,7 @@ namespace RDFSharp.Model
                                                 //Plain literal without language
                                                 result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                               new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText))));
+                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
 
                                             }
                                         }
@@ -293,7 +293,7 @@ namespace RDFSharp.Model
                                             //Plain literal without language
                                             result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                            new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                           new RDFPlainLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText))));
+                                                                           new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
 
                                         }
                                     }
@@ -306,7 +306,7 @@ namespace RDFSharp.Model
                                             if (rdfDtype         != null) {
                                                 result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                               new RDFTypedLiteral(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText), RDFModelUtilities.GetDatatypeFromString(rdfDtype.Value))));
+                                                                               new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(rdfDtype.Value))));
                                             }
                                             else {
                                                 throw new Exception(" found typed literal without required \"datatype\" attribute.");
