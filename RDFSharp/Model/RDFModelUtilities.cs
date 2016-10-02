@@ -77,10 +77,17 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Generates a new Uri for a blank resource.
-        /// It starts by default with "bnode:".
+        /// It starts with "bnode:" and is a Guid with "-" character removed.
         /// </summary>
         internal static Uri GenerateAnonUri() {
-            return new Uri("bnode:" + Guid.NewGuid());
+            return new Uri("bnode:" + StringifyGuid(Guid.NewGuid()));
+        }
+
+        /// <summary>
+        /// Replaces the "-" character from the given Guid.
+        /// </summary>
+        internal static String StringifyGuid(Guid guid) {
+            return guid.ToString().Replace("-", String.Empty);
         }
 
         /// <summary>

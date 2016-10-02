@@ -68,7 +68,7 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFMemoryStore() {
             this.StoreType  = "MEMORY";
-            this.StoreGUID  = Guid.NewGuid().ToString();
+            this.StoreGUID  = RDFModelUtilities.StringifyGuid(Guid.NewGuid());
             this.StoreIndex = new RDFStoreIndex();
             this.StoreID    = RDFModelUtilities.CreateHash(this.ToString());
             this.Quadruples = new Dictionary<Int64, RDFQuadruple>();
