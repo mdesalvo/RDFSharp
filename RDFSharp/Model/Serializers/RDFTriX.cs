@@ -181,36 +181,35 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs                   = new XmlReaderSettings();
-                xrs.IgnoreComments                      = true;
-                xrs.DtdProcessing                       = DtdProcessing.Ignore;
+                XmlReaderSettings xrs            = new XmlReaderSettings();
+                xrs.IgnoreComments               = true;
+                xrs.DtdProcessing                = DtdProcessing.Ignore;
                                                         
-                RDFGraph result                         = new RDFGraph();
-                using(XmlReader xr                      = XmlReader.Create(new StreamReader(inputStream, Encoding.UTF8), xrs)) {
-
-                    #region load
-                    XmlDocument trixDoc                 = new XmlDocument();
-                    trixDoc.Load(xr);
-                    #endregion
+                RDFGraph result                  = new RDFGraph();
+                using(XmlTextReader trixReader   = new XmlTextReader(inputStream)) {
+                    XmlDocument trixDoc          = new XmlDocument();
+                    trixReader.DtdProcessing     = DtdProcessing.Ignore;
+                    trixReader.Normalization     = false;
+                    trixDoc.Load(trixReader);
 
                     #region graph
-                    if (trixDoc.DocumentElement        != null) {
+                    if (trixDoc.DocumentElement != null) {
                         if (trixDoc.DocumentElement.ChildNodes.Count > 1) {
                             throw new Exception(" given TriX file seems to encode more than one graph.");
                         }
 
-                        var graphEnum                   = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
-                        while(graphEnum                != null && graphEnum.MoveNext()) {
-                            XmlNode  graph              = (XmlNode)graphEnum.Current;
+                        var graphEnum            = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
+                        while(graphEnum         != null && graphEnum.MoveNext()) {
+                            XmlNode  graph       = (XmlNode)graphEnum.Current;
                             if (!graph.Name.Equals("graph", StringComparison.Ordinal)) {
                                  throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
                             }                            
 
                             #region triple
-                            var encodedUris             = 0;
-                            var tripleEnum              = graph.ChildNodes.GetEnumerator();
-                            while (tripleEnum          != null && tripleEnum.MoveNext()) {
-                                XmlNode triple          = (XmlNode)tripleEnum.Current;
+                            var encodedUris      = 0;
+                            var tripleEnum       = graph.ChildNodes.GetEnumerator();
+                            while (tripleEnum   != null && tripleEnum.MoveNext()) {
+                                XmlNode triple   = (XmlNode)tripleEnum.Current;
 
                                 #region uri
                                 if (triple.Name.Equals("uri", StringComparison.Ordinal)) {
