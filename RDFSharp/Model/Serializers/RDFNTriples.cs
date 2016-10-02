@@ -286,15 +286,15 @@ namespace RDFSharp.Model
                             if (!tokens[2].Contains("^^") ||
                                  tokens[2].EndsWith("^^") ||
                                  tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<") {
-                                if (regexLPL.Match(tokens[2]).Success) {
-                                    tokens[2]        = tokens[2].Replace("\"@", "@");
-                                    String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
-                                    String pLitLang  = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
-                                    L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
-                                }
-                                else {
-                                    L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
-                                }
+                                 if (regexLPL.Match(tokens[2]).Success) {
+                                     tokens[2]        = tokens[2].Replace("\"@", "@");
+                                     String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
+                                     String pLitLang  = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
+                                     L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
+                                 }
+                                 else {
+                                     L                = new RDFPlainLiteral(HttpUtility.HtmlDecode(tokens[2]));
+                                 }
                             }
                             #endregion
 
