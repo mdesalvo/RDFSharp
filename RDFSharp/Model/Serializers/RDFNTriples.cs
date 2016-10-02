@@ -158,7 +158,7 @@ namespace RDFSharp.Model
                         #region literal
                         else {
 
-                            tripleTemplate     = tripleTemplate.Replace("{VAL}", RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\"", "\\\"")));
+                            tripleTemplate     = tripleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))));
                             tripleTemplate     = tripleTemplate.Replace("\n", "\\n")
                                                                .Replace("\t", "\\t")
                                                                .Replace("\r", "\\r");
@@ -275,7 +275,8 @@ namespace RDFSharp.Model
                             #region sanitize
                             tokens[2]  = regexSqt.Replace(tokens[2], String.Empty);
                             tokens[2]  = regexEqt.Replace(tokens[2], String.Empty);
-                            tokens[2]  = tokens[2].Replace("\\\"", "\"")
+                            tokens[2]  = tokens[2].Replace("\\\\", "\\")
+                                                  .Replace("\\\"", "\"")
                                                   .Replace("\\n", "\n")
                                                   .Replace("\\t", "\t")
                                                   .Replace("\\r", "\r");
