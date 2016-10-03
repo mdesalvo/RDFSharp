@@ -181,10 +181,6 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs            = new XmlReaderSettings();
-                xrs.IgnoreComments               = true;
-                xrs.DtdProcessing                = DtdProcessing.Ignore;
-                                                        
                 RDFGraph result                  = new RDFGraph();
                 using(XmlTextReader trixReader   = new XmlTextReader(inputStream)) {
                     XmlDocument trixDoc          = new XmlDocument();
