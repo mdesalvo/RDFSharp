@@ -150,11 +150,11 @@ namespace RDFSharp.Model
                                 }
 
                                 if (triple.Object is RDFTypedLiteral) {
-                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\"", "\\\"") + litValDelim + "^^" + RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
+                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim + "^^" + RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
                                     result.Append(RDFModelUtilities.AbbreviateNamespace(tLit));
                                 }
                                 else {
-                                    String pLit = litValDelim + ((RDFPlainLiteral)triple.Object).Value.Replace("\"", "\\\"") + litValDelim;
+                                    String pLit = litValDelim + ((RDFPlainLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim;
                                     if (((RDFPlainLiteral)triple.Object).Language != String.Empty) {
                                         pLit    = pLit + "@"  + ((RDFPlainLiteral)triple.Object).Language;
                                     }
