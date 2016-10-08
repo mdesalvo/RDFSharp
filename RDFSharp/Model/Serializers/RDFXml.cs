@@ -257,7 +257,7 @@ namespace RDFSharp.Model
                                     #endregion
 
                                     //litVALUE</predPREF:predURI>"
-                                    XmlText litNodeDescText       = rdfDoc.CreateTextNode(((RDFLiteral)triple.Object).Value);
+                                    XmlText litNodeDescText       = rdfDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)triple.Object).Value)));
                                     predNode.AppendChild(litNodeDescText);
                                 }
                                 #endregion
@@ -308,25 +308,27 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs    = new XmlReaderSettings();
-                xrs.IgnoreComments       = true;
-                xrs.DtdProcessing        = DtdProcessing.Ignore;
+                XmlReaderSettings xrs         = new XmlReaderSettings();
+                xrs.IgnoreComments            = true;
+                xrs.DtdProcessing             = DtdProcessing.Ignore;
 
-                RDFGraph result          = new RDFGraph();
-                using(XmlReader xr       = XmlReader.Create(new StreamReader(inputStream, Encoding.UTF8), xrs)) {
+                RDFGraph result               = new RDFGraph();
+                using(XmlTextReader xmlReader = new XmlTextReader(inputStream)) {
+                    xmlReader.DtdProcessing   = DtdProcessing.Ignore;
+                    xmlReader.Normalization   = false;
 
-                    #region load
-                    XmlDocument xmlDoc   = new XmlDocument();
-                    xmlDoc.Load(xr);
+                    #region document
+                    XmlDocument xmlDoc        = new XmlDocument();
+                    xmlDoc.Load(xmlReader);
                     #endregion
 
                     #region root
                     //Prepare the namespace table for the Xml selections
-                    var nsMgr            = new XmlNamespaceManager(new NameTable());
+                    var nsMgr  = new XmlNamespaceManager(new NameTable());
                     nsMgr.AddNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI);
 
                     //Select "rdf:RDF" root node
-                    XmlNode rdfRDF       = GetRdfRootNode(xmlDoc, nsMgr);
+                    var rdfRDF = GetRdfRootNode(xmlDoc, nsMgr);
                     #endregion
 
                     #region prefixes
@@ -400,17 +402,17 @@ namespace RDFSharp.Model
 
                                     #region typed literal
                                     //Check if there is a "rdf:datatype" attribute
-                                    XmlAttribute rdfDatatype         = GetRdfDatatypeAttribute(predNode);
-                                    if (rdfDatatype                 != null) {
+                                    XmlAttribute rdfDatatype          = GetRdfDatatypeAttribute(predNode);
+                                    if (rdfDatatype                  != null) {
                                         RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(rdfDatatype.Value);
-                                        RDFTypedLiteral tLit         = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerText), dt);
+                                        RDFTypedLiteral tLit          = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), dt);
                                         result.AddTriple(new RDFTriple(subj, pred, tLit));
                                         continue;
                                     }
                                     //Check if there is a "rdf:parseType=Literal" attribute
                                     XmlAttribute parseLiteral = GetParseTypeLiteralAttribute(predNode);
                                     if (parseLiteral         != null) {
-                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(HttpUtility.HtmlDecode(predNode.InnerXml), RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
+                                        RDFTypedLiteral tLit  = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerXml)), RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
                                         result.AddTriple(new RDFTriple(subj, pred, tLit));
                                         continue;
                                     }
@@ -420,7 +422,7 @@ namespace RDFSharp.Model
                                     //Check if there is a "xml:lang" attribute, or if a unique textual child
                                     XmlAttribute xmlLang      = GetXmlLangAttribute(predNode);
                                     if (xmlLang              != null || (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text)) {
-                                        RDFPlainLiteral pLit  = new RDFPlainLiteral(HttpUtility.HtmlDecode(predNode.InnerText), (xmlLang != null ? xmlLang.Value : String.Empty));
+                                        RDFPlainLiteral pLit  = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), (xmlLang != null ? xmlLang.Value : String.Empty));
                                         result.AddTriple(new RDFTriple(subj, pred, pLit));
                                         continue;
                                     }
