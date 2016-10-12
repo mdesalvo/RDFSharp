@@ -207,11 +207,11 @@ namespace RDFSharp.Model
         /// Deserializes the given N-Triples stream to a graph. 
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream) {
-            Int64 ntripleIndex         = 0;
+            Int64 ntripleIndex = 0;
             try {
 
                 #region deserialize
-                using (StreamReader sr = new StreamReader(inputStream)) {
+                using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII)) {
                     RDFGraph result    = new RDFGraph();
                     String  ntriple    = String.Empty;
                     String[] tokens    = new String[3];
