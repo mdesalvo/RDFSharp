@@ -230,8 +230,8 @@ namespace RDFSharp.Model
                                             triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal)) {
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal)) {
-                                                if(!triple.ChildNodes[0].InnerText.StartsWith("bnode:")) {
-                                                    triple.ChildNodes[0].InnerText = "bnode:" + triple.ChildNodes[0].InnerText.Replace("_:", String.Empty);
+                                                if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:")) {
+                                                     triple.ChildNodes[0].InnerText = "bnode:" + triple.ChildNodes[0].InnerText.Replace("_:", String.Empty);
                                                 }
                                             }
                                         }
@@ -243,8 +243,8 @@ namespace RDFSharp.Model
 
                                         #region pred
                                         //Predicate is not valid: exception must be raised
-                                        if(!triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal)) {
-                                            throw new RDFModelException("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
+                                        if (!triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal)) {
+                                             throw new RDFModelException("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
                                         }
                                         #endregion
 
@@ -254,8 +254,8 @@ namespace RDFSharp.Model
                                             triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))  {
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal)) {
-                                                if(!triple.ChildNodes[2].InnerText.StartsWith("bnode:")) {
-                                                    triple.ChildNodes[2].InnerText = "bnode:" + triple.ChildNodes[2].InnerText.Replace("_:", String.Empty);
+                                                if (!triple.ChildNodes[2].InnerText.StartsWith("bnode:")) {
+                                                     triple.ChildNodes[2].InnerText = "bnode:" + triple.ChildNodes[2].InnerText.Replace("_:", String.Empty);
                                                 }
                                             }
                                             result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
@@ -270,7 +270,7 @@ namespace RDFSharp.Model
                                         else if(triple.ChildNodes[2].Name.Equals("plainLiteral")) {
                                             if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0) {
                                                 XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
-                                                if(xmlLang          != null) {
+                                                if (xmlLang         != null) {
 
                                                     //Plain literal with language
                                                     result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),

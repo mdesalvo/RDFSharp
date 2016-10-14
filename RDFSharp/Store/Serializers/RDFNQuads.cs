@@ -97,9 +97,9 @@ namespace RDFSharp.Store {
             try {
 
                 #region serialize
-                using (StreamWriter sw            = new StreamWriter(outputStream, Encoding.ASCII)) {
-                    String quadrupleTemplate      = String.Empty;
-                    foreach (var q               in store.SelectAllQuadruples()) {
+                using (StreamWriter sw        = new StreamWriter(outputStream, Encoding.ASCII)) {
+                    String quadrupleTemplate  = String.Empty;
+                    foreach (var q           in store.SelectAllQuadruples()) {
 
                         #region template
                         if (q.TripleFlavor       == RDFModelEnums.RDFTripleFlavors.SPO) {
@@ -195,11 +195,11 @@ namespace RDFSharp.Store {
         /// Deserializes the given N-Quads stream to a memory store. 
         /// </summary>
         internal static RDFMemoryStore Deserialize(Stream inputStream) {
-            Int64 nquadIndex              = 0;
+            Int64 nquadIndex = 0;
             try {
 
                 #region deserialize
-                using (StreamReader sr    = new StreamReader(inputStream)) {
+                using (StreamReader sr    = new StreamReader(inputStream, Encoding.ASCII)) {
                     RDFMemoryStore result = new RDFMemoryStore();
                     String  nquad         = String.Empty;
                     String[] tokens       = new String[4];
