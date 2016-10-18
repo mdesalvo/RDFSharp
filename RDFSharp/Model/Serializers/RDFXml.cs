@@ -65,18 +65,18 @@ namespace RDFSharp.Model
                     rdfRoot.Attributes.Append(rdfRootNS);
 
                     #region prefixes
-                    //Write the graph's prefixes (except for "rdf", which has already been written)
-                    graph.GraphMetadata.Namespaces.ForEach(p => {
-                        if (!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal) && !p.NamespacePrefix.Equals("base", StringComparison.Ordinal)) {
-                            XmlAttribute pfRootNS     = rdfDoc.CreateAttribute("xmlns:" + p.NamespacePrefix);
-                            XmlText pfRootNSText      = rdfDoc.CreateTextNode(p.ToString());
+                    //Write the prefixes (except for "rdf" and "base")
+                    RDFModelUtilities.GetGraphNamespaces(graph).ForEach(p => {
+                        if(!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal) && !p.NamespacePrefix.Equals("base", StringComparison.Ordinal)) {
+                            XmlAttribute pfRootNS = rdfDoc.CreateAttribute("xmlns:" + p.NamespacePrefix);
+                            XmlText pfRootNSText  = rdfDoc.CreateTextNode(p.ToString());
                             pfRootNS.AppendChild(pfRootNSText);
                             rdfRoot.Attributes.Append(pfRootNS);
                         }
                     });
                     //Write the graph's base uri to resolve eventual relative #IDs
-                    XmlAttribute pfBaseNS             = rdfDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":base");
-                    XmlText pfBaseNSText              = rdfDoc.CreateTextNode(graph.Context.ToString());
+                    XmlAttribute pfBaseNS         = rdfDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":base");
+                    XmlText pfBaseNSText          = rdfDoc.CreateTextNode(graph.Context.ToString());
                     pfBaseNS.AppendChild(pfBaseNSText);
                     rdfRoot.Attributes.Append(pfBaseNS);
                     #endregion
@@ -95,11 +95,11 @@ namespace RDFSharp.Model
                     Dictionary<RDFResource, XmlNode> containers = new Dictionary<RDFResource, XmlNode>();
                     
                     //Floating containers have reification subject which is never object of any graph's triple
-                    Boolean floatingContainers                  = graph.GraphMetadata.Containers.Keys.Any(k =>
-                                                                        graph.Triples.Values.Count(v => v.Object.Equals(k)) == 0);
+                    Boolean floatingContainers        = graph.GraphMetadata.Containers.Keys.Any(k =>
+                                                            graph.Triples.Values.Count(v => v.Object.Equals(k)) == 0);
                     //Floating collections have reification subject which is never object of any graph's triple
-                    Boolean floatingCollections                 = graph.GraphMetadata.Collections.Keys.Any(k => 
-                                                                        graph.Triples.Values.Count(v => v.Object.Equals(k)) == 0);
+                    Boolean floatingCollections       = graph.GraphMetadata.Collections.Keys.Any(k => 
+                                                            graph.Triples.Values.Count(v => v.Object.Equals(k)) == 0);
 
                     foreach (var group in groupedList) {
 
@@ -111,19 +111,19 @@ namespace RDFSharp.Model
 
                         //It is a container subj, so add it to the containers pool
                         if (graph.GraphMetadata.Containers.Keys.Any(k => k.ToString().Equals(subj, StringComparison.Ordinal)) && !floatingContainers) {
-                            switch (graph.GraphMetadata.Containers.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value) {
+                            switch  (graph.GraphMetadata.Containers.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value) {
                                 case RDFModelEnums.RDFContainerTypes.Bag:
-                                    subjNode  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Bag", RDFVocabulary.RDF.BASE_URI);
-                                    containers.Add(new RDFResource(subj), subjNode);
-                                    break;
+                                     subjNode         = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Bag", RDFVocabulary.RDF.BASE_URI);
+                                     containers.Add(new RDFResource(subj), subjNode);
+                                     break;
                                 case RDFModelEnums.RDFContainerTypes.Seq:
-                                    subjNode  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Seq", RDFVocabulary.RDF.BASE_URI);
-                                    containers.Add(new RDFResource(subj), subjNode);
-                                    break;
+                                     subjNode         = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Seq", RDFVocabulary.RDF.BASE_URI);
+                                     containers.Add(new RDFResource(subj), subjNode);
+                                     break;
                                 case RDFModelEnums.RDFContainerTypes.Alt:
-                                    subjNode  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Alt", RDFVocabulary.RDF.BASE_URI);
-                                    containers.Add(new RDFResource(subj), subjNode);
-                                    break;
+                                     subjNode         = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Alt", RDFVocabulary.RDF.BASE_URI);
+                                     containers.Add(new RDFResource(subj), subjNode);
+                                     break;
                             }
                         }
 

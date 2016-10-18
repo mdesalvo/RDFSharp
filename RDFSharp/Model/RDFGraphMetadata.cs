@@ -27,11 +27,6 @@ namespace RDFSharp.Model
 
         #region Properties
         /// <summary>
-        /// List of registered namespaces used by the graph
-        /// </summary>
-        internal List<RDFNamespace> Namespaces { get; set; }
-
-        /// <summary>
         /// Dictionary of resources acting as container subjects in the graph
         /// </summary>
         internal Dictionary<RDFResource, RDFModelEnums.RDFContainerTypes> Containers { get; set; }
@@ -47,59 +42,12 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty metadata
         /// </summary>
         internal RDFGraphMetadata() {
-            this.Namespaces  = new List<RDFNamespace>();
             this.Containers  = new Dictionary<RDFResource, RDFModelEnums.RDFContainerTypes>();
             this.Collections = new Dictionary<RDFResource, RDFCollectionItem>();
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Collects the namespaces used by the given triple
-        /// </summary>
-        private void CollectNamespaces(RDFTriple triple) {
-            RDFNamespaceRegister.Instance.Register.ForEach(ns => {
-                String nSpace            = ns.ToString();
-
-                //Resolve subj Uri
-                String subj              = triple.Subject.ToString();
-                if (subj.Contains(nSpace) || subj.StartsWith(ns.NamespacePrefix + ":")) {
-                    if (!this.Namespaces.Contains(ns)) {
-                         this.Namespaces.Add(ns);
-                    }
-                }
-
-                //Resolve pred Uri
-                String pred              = triple.Predicate.ToString();
-                if (pred.Contains(nSpace) || pred.StartsWith(ns.NamespacePrefix + ":")) {
-                    if (!this.Namespaces.Contains(ns)) {
-                         this.Namespaces.Add(ns);
-                    }
-                }
-
-                //Resolve object Uri
-                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                    String obj           = triple.Object.ToString();
-                    if (obj.Contains(nSpace) || obj.StartsWith(ns.NamespacePrefix + ":")) {
-                        if (!this.Namespaces.Contains(ns)) {
-                             this.Namespaces.Add(ns);
-                        }
-                    }
-                }
-                else {
-                    //Resolve typed literal Uri
-                    if (triple.Object is RDFTypedLiteral) {
-                        String tLit      = RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
-                        if (tLit.Contains(nSpace) || tLit.StartsWith(ns.NamespacePrefix + ":")) {
-                            if (!this.Namespaces.Contains(ns)) {
-                                 this.Namespaces.Add(ns);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
         /// <summary>
         /// Verifies if the given triple carries a container subj and, if so, collects it
         /// </summary>
@@ -168,7 +116,6 @@ namespace RDFSharp.Model
         /// Clears the metadata of the graph
         /// </summary>
         internal void ClearMetadata() {
-            this.Namespaces.Clear();
             this.Containers.Clear();
             this.Collections.Clear();
         }
@@ -178,7 +125,6 @@ namespace RDFSharp.Model
         /// </summary>
         internal void UpdateMetadata(RDFTriple triple) {
             if (triple != null){
-                this.CollectNamespaces(triple);
                 this.CollectContainers(triple);
                 this.CollectCollections(triple);
             }

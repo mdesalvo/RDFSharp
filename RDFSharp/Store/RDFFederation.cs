@@ -58,7 +58,7 @@ namespace RDFSharp.Store
         /// Default ctor to build an empty federation
         /// </summary>
         public RDFFederation() {
-            this.FederationName = "FEDERATION|ID=" + RDFModelUtilities.StringifyGuid(Guid.NewGuid());
+            this.FederationName = "FEDERATION|ID=" + Guid.NewGuid();
             this.Stores         = new Dictionary<Int64, RDFStore>();
         }
 

@@ -77,17 +77,10 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Generates a new Uri for a blank resource.
-        /// It starts with "bnode:" and is a Guid with "-" character removed.
+        /// It starts with "bnode:" and is a Guid.
         /// </summary>
         internal static Uri GenerateAnonUri() {
-            return new Uri("bnode:" + StringifyGuid(Guid.NewGuid()));
-        }
-
-        /// <summary>
-        /// Replaces the "-" character from the given Guid.
-        /// </summary>
-        internal static String StringifyGuid(Guid guid) {
-            return guid.ToString().Replace("-", String.Empty);
+            return new Uri("bnode:" + Guid.NewGuid());
         }
 
         /// <summary>
@@ -371,30 +364,57 @@ namespace RDFSharp.Model
                 if (uriNS          == null) {
                     throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
                 }
-                String type         = null;
-                String ns           = uriNS.AbsoluteUri;
+                String fragment     = null;
+                String nspace       = uriNS.AbsoluteUri;
 
                 // e.g.:  "http://www.w3.org/2001/XMLSchema#integer"
                 if (uriNS.Fragment != String.Empty) {
-                    type            = uriNS.Fragment.Replace("#", String.Empty);  //"integer"
-                    if (type       != String.Empty) {
-                        ns          = ns.TrimEnd(type.ToCharArray());             //"http://www.w3.org/2001/XMLSchema#"
+                    fragment        = uriNS.Fragment.Replace("#", String.Empty);           //"integer"
+                    if (fragment   != String.Empty) {
+                        nspace      = Regex.Replace(nspace, fragment + "$", String.Empty); //"http://www.w3.org/2001/XMLSchema#"
                     }
                 }
                 else {
                     // e.g.:  "http://example.org/integer"
                     if (uriNS.LocalPath != "/") {
                         if (!isDatatypeNamespace) {
-                            ns      = ns.TrimEnd(uriNS.Segments[uriNS.Segments.Length-1].ToCharArray());
+                             nspace = Regex.Replace(nspace, uriNS.Segments[uriNS.Segments.Length-1] + "$", String.Empty);
                         }
                     }
                 }
 
                 //Check if a namespace with the extracted Uri is in the register, or generate an automatic one
-                return (RDFNamespaceRegister.GetByUri(ns) ?? new RDFNamespace("autoNS", ns));
+                return (RDFNamespaceRegister.GetByUri(nspace) ?? new RDFNamespace("autoNS", nspace));
 
             }
             throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" parameter is null or empty");
+        }
+        
+        /// <summary>
+        /// Gets the list of namespaces used within the triples of the given graph
+        /// </summary>
+        internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph) {
+            var result     = new List<RDFNamespace>();
+            foreach (var   t in graph) {
+                var subj   = t.Subject.ToString();
+                var pred   = t.Predicate.ToString();
+                var obj    = t.Object is RDFResource ? t.Object.ToString() : 
+                                (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : String.Empty);
+
+                //Resolve subject Uri
+                var subjNS = RDFNamespaceRegister.Instance.Register.Where(x => subj.StartsWith(x.ToString()));
+
+                //Resolve predicate Uri
+                var predNS = RDFNamespaceRegister.Instance.Register.Where(x => pred.StartsWith(x.ToString()));
+
+                //Resolve object Uri
+                var objNS  = RDFNamespaceRegister.Instance.Register.Where(x => obj.StartsWith(x.ToString()));
+
+                result.AddRange(subjNS);
+                result.AddRange(predNS);
+                result.AddRange(objNS);
+            }
+            return result.Distinct().ToList();
         }
         #endregion
 
