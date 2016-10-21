@@ -734,6 +734,33 @@ namespace RDFSharp.Model
                     }
                 }
 
+                //QNAME
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_QNAME)) {
+                    var prefixedQName = typedLiteral.Value.Split(':');
+                    if (prefixedQName.Length == 1) {
+                        try {
+                            XmlConvert.VerifyNCName(prefixedQName[0]);
+                            return true;
+                        }
+                        catch {
+                            return false;
+                        }
+                    }
+                    else if(prefixedQName.Length == 2) {
+                        try {
+                            XmlConvert.VerifyNCName(prefixedQName[0]);
+                            XmlConvert.VerifyNCName(prefixedQName[1]);
+                            return true;
+                        }
+                        catch {
+                            return false;
+                        }
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
                 //NCNAME / ID
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME) ||
                     typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID))     {
