@@ -145,7 +145,6 @@ namespace RDFSharp.Model
                             XmlAttribute subjNodeDesc      = null;
                             XmlText subjNodeDescText       = rdfDoc.CreateTextNode(group.Key.subj);
                             if (group.Key.subj.StartsWith("bnode:")) {
-                                subjNodeDescText.InnerText = subjNodeDescText.InnerText.Replace("bnode:", String.Empty);
                                 subjNodeDesc               = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
                             }
                             //<rdf:Description rdf:about="subjURI">
@@ -213,7 +212,6 @@ namespace RDFSharp.Model
                                         XmlText predNodeDescText       = rdfDoc.CreateTextNode(objString);
                                         //  rdf:nodeID="blankID">
                                         if (objString.StartsWith("bnode:")) {
-                                            predNodeDescText.InnerText = predNodeDescText.InnerText.Replace("bnode:", String.Empty);  
                                             predNodeDesc               = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
                                         }
                                         //  rdf:resource="objURI">
@@ -627,25 +625,23 @@ namespace RDFSharp.Model
         /// </summary>
         internal static String ResolveRelativeNode(XmlAttribute attr, Uri xmlBase) {
             if (attr               != null && xmlBase != null) {
-                String attrValue    = attr.Value;
+                String attrValue   = attr.Value;
 
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
-                if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":ID", StringComparison.Ordinal) ||
-                    attr.LocalName.Equals("ID", StringComparison.Ordinal)) {
-                    attrValue       = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
+                if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":ID", StringComparison.Ordinal) || attr.LocalName.Equals("ID", StringComparison.Ordinal)) {
+                    attrValue      = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
                 }
 
                 //"rdf:nodeID" relative Uri: must be resolved against the "bnode:" prefix
-                else if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":nodeID", StringComparison.Ordinal) ||
-                         attr.LocalName.Equals("nodeID", StringComparison.Ordinal)) {
+                else if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":nodeID", StringComparison.Ordinal) || attr.LocalName.Equals("nodeID", StringComparison.Ordinal)) {
                     if (!attrValue.StartsWith("bnode:")) {
-                         attrValue  = "bnode:" + attrValue;
+                         attrValue = "bnode:" + attrValue;
                     }
                 }
 
                 //"rdf:about" or "rdf:resource" relative Uri: must be resolved against the xmlBase namespace
                 else if (RDFModelUtilities.GetUriFromString(attrValue) == null) {
-                    attrValue       = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
+                    attrValue      = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
                 }
 
                 return attrValue;
