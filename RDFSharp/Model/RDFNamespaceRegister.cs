@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 
 namespace RDFSharp.Model
 {
@@ -163,7 +164,7 @@ namespace RDFSharp.Model
             if (uri        != null) {
                 var result  = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService) {
-                    result  = RDFModelUtilities.LookupPrefixCC(uri.Trim().TrimEnd(new Char[] { '#' }), 2);
+                    result  = LookupPrefixCC(uri.Trim().TrimEnd(new Char[] { '#' }), 2);
                 }
                 return result;
             }
@@ -177,11 +178,45 @@ namespace RDFSharp.Model
             if (prefix     != null) {
                 var result  = Instance.Register.Find(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService) {
-                    result  = RDFModelUtilities.LookupPrefixCC(prefix.Trim(), 1);
+                    result  = LookupPrefixCC(prefix.Trim(), 1);
                 }
                 return result;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Looksup the given prefix or namespace into the prefix.cc service
+        /// </summary>
+        internal static RDFNamespace LookupPrefixCC(String data, Int32 lookupMode) {
+            var lookupString     = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
+                                                      "http://prefix.cc/reverse?uri=" + data + "&format=txt");
+
+            using (var webclient = new WebClient()) {
+                try {
+                    var response = webclient.DownloadString(lookupString);
+                    var prefix   = response.Split('\t')[0];
+                    var nspace   = response.Split('\t')[1].TrimEnd(new Char[] { '\n' });
+                    var result   = new RDFNamespace(prefix, nspace);
+
+                    //Also add the namespace to the register, to avoid future lookups
+                    AddNamespace(result);
+
+                    //Return the found result
+                    return result;
+                }
+                catch  (WebException wex) {
+                    if (wex.Message.Contains("404")) {
+                        return null;
+                    }
+                    else {
+                        throw new RDFModelException("Cannot retrieve data from prefix.cc service because: " + wex.Message, wex);
+                    }
+                }
+                catch(Exception ex) {
+                    throw new RDFModelException("Cannot retrieve data from prefix.cc service because: " + ex.Message, ex);
+                }
+            }
         }
         #endregion
 

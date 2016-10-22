@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Web;
+using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
@@ -66,7 +67,9 @@ namespace RDFSharp.Model
 
                     #region prefixes
                     //Write the prefixes (except for "rdf" and "base")
-                    RDFModelUtilities.GetGraphNamespaces(graph).ForEach(p => {
+                    var graphNamespaces           = RDFModelUtilities.GetGraphNamespaces(graph);
+                    var autoNamespaces            = GetAutomaticNamespaces(graph);
+                    graphNamespaces.Union(autoNamespaces).ToList().ForEach(p => {
                         if(!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.Ordinal) && !p.NamespacePrefix.Equals("base", StringComparison.Ordinal)) {
                             XmlAttribute pfRootNS = rdfDoc.CreateAttribute("xmlns:" + p.NamespacePrefix);
                             XmlText pfRootNSText  = rdfDoc.CreateTextNode(p.ToString());
@@ -167,25 +170,19 @@ namespace RDFSharp.Model
                                 #region pred
                                 String predString     = triple.Predicate.ToString();
                                 //"<predPREF:predURI"
-                                RDFNamespace predNS   = 
-								    (RDFNamespaceRegister.GetByUri(predString) ?? 
-									     RDFModelUtilities.GenerateNamespace(predString, false));
-                                //Refine the pred with eventually necessary sanitizations
-                                String predUri        = predString.Replace(predNS.ToString(), predNS.NamespacePrefix + ":")
-                                                                  .Replace(":#", ":")
-                                                                  .TrimEnd(new Char[] { ':', '/' });
-                                //Sanitize eventually detected automatic namespace
-                                if (predUri.StartsWith("autoNS:")) {
-                                    predUri           = predUri.Replace("autoNS:", string.Empty);
+                                RDFNamespace predNS   = RDFNamespaceRegister.GetByUri(predString) ?? GenerateNamespace(predString, false);
+                                String predUri        = (predNS.NamespacePrefix.Equals("autoNS", StringComparison.OrdinalIgnoreCase) ?
+                                                            predString.Replace(predNS.ToString(), autoNamespaces.Find(ns => ns.NamespaceUri.Equals(predNS.NamespaceUri)).NamespacePrefix + ":") :
+                                                            predString.Replace(predNS.ToString(), predNS.NamespacePrefix + ":"))
+                                                        .Replace(":#", ":")
+                                                        .TrimEnd(new Char[] { ':', '/' });
+                                try {
+                                    var predUriQName  = new RDFTypedLiteral(predUri, RDFModelEnums.RDFDatatypes.XSD_QNAME);
                                 }
-                                //Do not write "xmlns" attribute if the predUri is the context of the graph
-                                XmlNode predNode      = null;
-                                if (predNS.ToString().Equals(graph.Context.ToString(), StringComparison.Ordinal)) {
-                                    predNode          = rdfDoc.CreateNode(XmlNodeType.Element, predUri, null);
+                                catch {
+                                    throw new RDFModelException(String.Format("found '{0}' predicate which cannot be abbreviated to a valid QName", predUri));
                                 }
-                                else {
-                                    predNode          = rdfDoc.CreateNode(XmlNodeType.Element, predUri, predNS.ToString());
-                                }
+                                XmlNode predNode      = rdfDoc.CreateNode(XmlNodeType.Element, predUri, predNS.ToString());
                                 #endregion
 
                                 #region object
@@ -517,6 +514,69 @@ namespace RDFSharp.Model
 
             }
             return xmlns;
+        }
+
+        /// <summary>
+        /// Generates an automatic prefix for a namespace
+        /// </summary>
+        internal static RDFNamespace GenerateNamespace(String namespaceString, Boolean isDatatypeNamespace) {
+            if (namespaceString    != null && namespaceString.Trim() != String.Empty) {
+
+                //Extract the prefixable part from the Uri
+                Uri uriNS           = RDFModelUtilities.GetUriFromString(namespaceString);
+                if (uriNS          == null) {
+                    throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
+                }
+                String fragment     = null;
+                String nspace       = uriNS.AbsoluteUri;
+
+                // e.g.:  "http://www.w3.org/2001/XMLSchema#integer"
+                if (uriNS.Fragment != String.Empty) {
+                    fragment        = uriNS.Fragment.Replace("#", String.Empty);           //"integer"
+                    if (fragment   != String.Empty) {
+                        nspace      = Regex.Replace(nspace, fragment + "$", String.Empty); //"http://www.w3.org/2001/XMLSchema#"
+                    }
+                }
+                else {
+                    // e.g.:  "http://example.org/integer"
+                    if (uriNS.LocalPath != "/") {
+                        if (!isDatatypeNamespace) {
+                             nspace = Regex.Replace(nspace, uriNS.Segments[uriNS.Segments.Length - 1] + "$", String.Empty);
+                        }
+                    }
+                }
+
+                //Check if a namespace with the extracted Uri is in the register, or generate an automatic one
+                return (RDFNamespaceRegister.GetByUri(nspace) ?? new RDFNamespace("autoNS", nspace));
+
+            }
+            throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" parameter is null or empty");
+        }
+
+        /// <summary>
+        /// Gets the list of automatic namespaces used within the predicates of the triples of the given graph
+        /// </summary>
+        internal static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph) {
+            var result       = new List<RDFNamespace>();
+            var buffer       = new List<RDFNamespace>();
+            foreach (var p  in graph.Triples.Select(x => x.Value.Predicate.ToString()).Distinct()) {
+                var  nspace  = GenerateNamespace(p, false);
+                if (!nspace.NamespaceUri.ToString().Equals(p)) {
+                     if (nspace.NamespacePrefix.StartsWith("autoNS")) {
+                         var cnt = buffer.Count(ns => ns.NamespacePrefix.StartsWith("autoNS")) + 1;
+                         buffer.Add(new RDFNamespace("autoNS" + cnt, nspace.NamespaceUri.ToString()));
+                     }
+                }
+                else {
+                     throw new RDFModelException(String.Format("found '{0}' predicate which cannot be abbreviated to a valid QName.", p));
+                }
+            }
+            buffer.ForEach(ns => {
+                if (!result.Contains(ns)) {
+                     result.Add(new RDFNamespace("autoNS" + (result.Count + 1), ns.NamespaceUri.ToString()));
+                }
+            });
+            return result.ToList();
         }
 
         /// <summary>

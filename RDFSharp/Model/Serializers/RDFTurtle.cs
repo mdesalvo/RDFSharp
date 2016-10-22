@@ -36,6 +36,8 @@ namespace RDFSharp.Model
         #endregion
 
         #region Methods
+
+        #region Write
         /// <summary>
         /// Serializes the given graph to the given filepath using Turtle data format. 
         /// </summary>
@@ -97,7 +99,7 @@ namespace RDFSharp.Model
                             actualSubj          = group.Key.subj;
                             actualPred          = String.Empty;
                             if (!actualSubj.StartsWith("_:")) {
-                                abbreviatedSubj = RDFModelUtilities.AbbreviateNamespace(actualSubj);
+                                abbreviatedSubj = AbbreviateNamespace(actualSubj);
                             }
                             else {
                                 abbreviatedSubj = actualSubj;
@@ -118,7 +120,7 @@ namespace RDFSharp.Model
                                     result.Append(spaceConst.PadRight(abbreviatedSubj.Length + 1)); //pretty-printing spaces to align the predList
                                 }
                                 actualPred          = triple.Predicate.ToString();
-                                abbreviatedPred     = RDFModelUtilities.AbbreviateNamespace(actualPred);
+                                abbreviatedPred     = AbbreviateNamespace(actualPred);
                                 //Turtle goody for "rdf:type" shortcutting to "a"
                                 if (abbreviatedPred == RDFVocabulary.RDF.PREFIX + ":type") {
                                     abbreviatedPred = "a";
@@ -132,7 +134,7 @@ namespace RDFSharp.Model
                             if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                                 String obj           = triple.Object.ToString();
                                 if (!obj.StartsWith("_:")) {
-                                     result.Append(RDFModelUtilities.AbbreviateNamespace(obj));
+                                     result.Append(AbbreviateNamespace(obj));
                                 }
                                 else {
                                      result.Append(obj);
@@ -151,7 +153,7 @@ namespace RDFSharp.Model
 
                                 if (triple.Object is RDFTypedLiteral) {
                                     String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim + "^^" + RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
-                                    result.Append(RDFModelUtilities.AbbreviateNamespace(tLit));
+                                    result.Append(AbbreviateNamespace(tLit));
                                 }
                                 else {
                                     String pLit = litValDelim + ((RDFPlainLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim;
@@ -196,6 +198,67 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot serialize Turtle because: " + ex.Message, ex);
             }
         }
+        #endregion
+
+        #region Utilities
+        /// <summary>
+        /// Finds if the given token contains a recognizable namespace and, if so, abbreviates it with its prefix.
+        /// It also prepares the result in a format useful for serialization (it's used by Turtle writer).
+        /// </summary>
+        internal static String AbbreviateNamespace(String token) {
+
+            //Null or Space token: it's a trick, give empty result
+            if (token == null || token.Trim() == String.Empty) {
+                return String.Empty;
+            }
+
+            //Blank token: abbreviate it with "_"
+            if (token.StartsWith("bnode:")) {
+                return token.Replace("bnode:", "_:");
+            }
+
+            //Prefixed token: check if it starts with a known prefix, if so just return it
+            if (RDFNamespaceRegister.GetByPrefix(token.Split(':')[0]) != null) {
+                return token;
+            }
+
+            //Uri token: search a known namespace, if found replace it with its prefix
+            String  tokenBackup          = token;
+            Boolean abbrev               = false;
+            RDFNamespaceRegister.Instance.Register.ForEach(ns => {
+                if (!abbrev) {
+                     String nS           = ns.ToString();
+                     if (!token.Equals(nS, StringComparison.OrdinalIgnoreCase)) {
+                          if (token.StartsWith(nS)) {
+                              token      = token.Replace(nS, ns.NamespacePrefix + ":").TrimEnd(new Char[] { '/' });
+
+                              //Accept the abbreviation only if it has generated a valid XSD QName
+                              try {
+                                  var qn = new RDFTypedLiteral(token, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                                  abbrev = true;
+                              }
+                              catch {
+                                  token  = tokenBackup;
+                                  abbrev = false;
+                              }
+
+                          }
+                     }
+                }
+            });
+
+            //Search done, let's analyze results:
+            if (abbrev) {
+                return token; //token is a relative or a blank uri
+            }
+            if (token.Contains("^^")) { //token is a typedLiteral absolute uri
+                return token.Replace("^^", "^^<") + ">";
+            }
+            return "<" + token + ">"; //token is an absolute uri
+
+        }
+        #endregion
+
         #endregion
 
     }
