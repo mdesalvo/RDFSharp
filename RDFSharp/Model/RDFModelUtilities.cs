@@ -31,13 +31,13 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFModelUtilities is a collector of reusable utility methods for RDF model management
     /// </summary>
-    internal static class RDFModelUtilities {
+    public static class RDFModelUtilities {
 
         #region Greta
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
-        internal static Int64 CreateHash(String input) {
+        public static Int64 CreateHash(String input) {
             if (input != null) {
                 var md5Encryptor   = new MD5CryptoServiceProvider();
                 var inputBytes     = Encoding.UTF8.GetBytes(input);
