@@ -558,24 +558,22 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph) {
             var result       = new List<RDFNamespace>();
-            var buffer       = new List<RDFNamespace>();
             foreach (var p  in graph.Triples.Select(x => x.Value.Predicate.ToString()).Distinct()) {
                 var  nspace  = GenerateNamespace(p, false);
+
+                //Check if the predicate can be abbreviated to a valid QName
                 if (!nspace.NamespaceUri.ToString().Equals(p)) {
                      if (nspace.NamespacePrefix.StartsWith("autoNS")) {
-                         var cnt = buffer.Count(ns => ns.NamespacePrefix.StartsWith("autoNS")) + 1;
-                         buffer.Add(new RDFNamespace("autoNS" + cnt, nspace.NamespaceUri.ToString()));
+                         if (!result.Contains(nspace)) {
+                              result.Add(new RDFNamespace("autoNS" + (result.Count + 1), nspace.NamespaceUri.ToString()));
+                         }
                      }
                 }
                 else {
                      throw new RDFModelException(String.Format("found '{0}' predicate which cannot be abbreviated to a valid QName.", p));
                 }
+
             }
-            buffer.ForEach(ns => {
-                if (!result.Contains(ns)) {
-                     result.Add(new RDFNamespace("autoNS" + (result.Count + 1), ns.NamespaceUri.ToString()));
-                }
-            });
             return result.ToList();
         }
 

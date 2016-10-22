@@ -85,10 +85,9 @@ namespace RDFSharp.Model
                     foreach (var group in groupedList) {
                         var groupLast           = group.Last();
 
+                        #region subj
                         //Reset the flag of subj printing for the new iteration
                         Boolean subjPrint       = false;
-
-                        #region subj
                         //New subj found: write the finished Turtle token to the file, then start collecting the new one
                         if (!actualSubj.Equals(group.Key.subj, StringComparison.Ordinal)) {
                             if (result.Length > 0) {
@@ -152,8 +151,8 @@ namespace RDFSharp.Model
                                 }
 
                                 if (triple.Object is RDFTypedLiteral) {
-                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim + "^^" + RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype);
-                                    result.Append(AbbreviateNamespace(tLit));
+                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim + "^^" + AbbreviateNamespace(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype));
+                                    result.Append(tLit);
                                 }
                                 else {
                                     String pLit = litValDelim + ((RDFPlainLiteral)triple.Object).Value.Replace("\\","\\\\") + litValDelim;
@@ -203,7 +202,7 @@ namespace RDFSharp.Model
         #region Utilities
         /// <summary>
         /// Finds if the given token contains a recognizable namespace and, if so, abbreviates it with its prefix.
-        /// It also prepares the result in a format useful for serialization (it's used by Turtle writer).
+        /// It also prepares the result in a format useful for serialization.
         /// </summary>
         internal static String AbbreviateNamespace(String token) {
 
