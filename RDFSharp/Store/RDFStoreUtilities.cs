@@ -65,10 +65,10 @@ namespace RDFSharp.Store
                 }
 
                 //TypedLiteral
-                String tLitValue             = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
-                String tLitDatatype          = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                String tLitValue              = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
+                String tLitDatatype           = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                RDFTypedLiteral tLit         = new RDFTypedLiteral(tLitValue, dt);
+                RDFTypedLiteral tLit          = new RDFTypedLiteral(tLitValue, dt);
                 return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
             }
             throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
@@ -94,35 +94,35 @@ namespace RDFSharp.Store
 
                 //Filter by Context
                 if (ctx         != null) {
-                    foreach (var q in store.StoreIndex.SelectIndexByContext(ctx).Keys) {
+                    foreach (var q in store.StoreIndex.SelectIndexByContext(ctx)) {
                         matchCtx.Add(store.Quadruples[q]);
                     }
                 }
 
                 //Filter by Subject
                 if (subj        != null) {
-                    foreach (var q in store.StoreIndex.SelectIndexBySubject(subj).Keys) {
+                    foreach (var q in store.StoreIndex.SelectIndexBySubject(subj)) {
                         matchSubj.Add(store.Quadruples[q]);
                     }
                 }
 
                 //Filter by Predicate
                 if (pred        != null) {
-                    foreach (var q in store.StoreIndex.SelectIndexByPredicate(pred).Keys) {
+                    foreach (var q in store.StoreIndex.SelectIndexByPredicate(pred)) {
                         matchPred.Add(store.Quadruples[q]);
                     }
                 }
 
                 //Filter by Object
                 if (obj         != null) {
-                    foreach (var q in store.StoreIndex.SelectIndexByObject(obj).Keys) {
+                    foreach (var q in store.StoreIndex.SelectIndexByObject(obj)) {
                         matchObj.Add(store.Quadruples[q]);
                     }
                 }
 
                 //Filter by Literal
                 if (lit         != null) {
-                    foreach (var q in store.StoreIndex.SelectIndexByLiteral(lit).Keys) {
+                    foreach (var q in store.StoreIndex.SelectIndexByLiteral(lit)) {
                         matchLit.Add(store.Quadruples[q]);
                     }
                 }
@@ -136,7 +136,7 @@ namespace RDFSharp.Store
                                 matchResult     = matchCtx.Intersect(matchSubj)
                                                           .Intersect(matchPred)
                                                           .Intersect(matchObj)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                             }
                             else {
                                 if (lit        != null) {
@@ -144,13 +144,13 @@ namespace RDFSharp.Store
                                     matchResult = matchCtx.Intersect(matchSubj)
                                                           .Intersect(matchPred)
                                                           .Intersect(matchLit)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                                 else {
                                     //C->S->P->
                                     matchResult = matchCtx.Intersect(matchSubj)
                                                           .Intersect(matchPred)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                             }
                         }
@@ -159,19 +159,19 @@ namespace RDFSharp.Store
                                 //C->S->->O
                                 matchResult     = matchCtx.Intersect(matchSubj)
                                                           .Intersect(matchObj)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                             }
                             else {
                                 if (lit        != null) {
                                     //C->S->->L
                                     matchResult = matchCtx.Intersect(matchSubj)
                                                           .Intersect(matchLit)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                                 else {
                                     //C->S->->
                                     matchResult = matchCtx.Intersect(matchSubj)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                             }
                         }
@@ -182,19 +182,19 @@ namespace RDFSharp.Store
                                 //C->->P->O
                                 matchResult     = matchCtx.Intersect(matchPred)
                                                           .Intersect(matchObj)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                             }
                             else {
                                 if (lit        != null) {
                                     //C->->P->L
                                     matchResult = matchCtx.Intersect(matchPred)
                                                           .Intersect(matchLit)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                                 else {
                                     //C->->P->
                                     matchResult = matchCtx.Intersect(matchPred)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                             }
                         }
@@ -202,13 +202,13 @@ namespace RDFSharp.Store
                             if (obj            != null) {
                                 //C->->->O
                                 matchResult     = matchCtx.Intersect(matchObj)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                             }
                             else {
                                 if (lit        != null) {
                                     //C->->->L
                                     matchResult = matchCtx.Intersect(matchLit)
-                                                          .ToList<RDFQuadruple>();
+                                                          .ToList();
                                 }
                                 else {
                                     //C->->->
@@ -225,19 +225,19 @@ namespace RDFSharp.Store
                                 //->S->P->O
                                 matchResult     = matchSubj.Intersect(matchPred)
                                                            .Intersect(matchObj)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                             }
                             else {
                                 if (lit        != null) {
                                     //->S->P->L
                                     matchResult = matchSubj.Intersect(matchPred)
                                                            .Intersect(matchLit)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                                 }
                                 else {
                                     //->S->P->
                                     matchResult = matchSubj.Intersect(matchPred)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                                 }
                             }
                         }
@@ -245,13 +245,13 @@ namespace RDFSharp.Store
                             if (obj            != null) {
                                 //->S->->O
                                 matchResult     = matchSubj.Intersect(matchObj)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                             }
                             else {
                                 if (lit        != null) {
                                     //->S->->L
                                     matchResult = matchSubj.Intersect(matchLit)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                                 }
                                 else {
                                     //->S->->
@@ -265,13 +265,13 @@ namespace RDFSharp.Store
                             if (obj            != null) {
                                 //->->P->O
                                 matchResult     = matchPred.Intersect(matchObj)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                             }
                             else {
                                 if (lit        != null) {
                                     //->->P->L
                                     matchResult = matchPred.Intersect(matchLit)
-                                                           .ToList<RDFQuadruple>();
+                                                           .ToList();
                                 }
                                 else {
                                     //->->P->
@@ -291,7 +291,7 @@ namespace RDFSharp.Store
                                 }
                                 else {
                                     //->->->
-                                    matchResult = store.Quadruples.Values.ToList<RDFQuadruple>();
+                                    matchResult = store.Quadruples.Values.ToList();
                                 }
                             }
                         }

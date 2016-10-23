@@ -166,28 +166,28 @@ namespace RDFSharp.Model
                 
                 //Filter by Subject
                 if (subj        != null) {
-                    foreach (var t in graph.GraphIndex.SelectIndexBySubject(subj).Keys) {
+                    foreach (var t in graph.GraphIndex.SelectIndexBySubject(subj)) {
                         matchSubj.Add(graph.Triples[t]);
                     }
                 }
 
                 //Filter by Predicate
                 if (pred        != null) {
-                    foreach (var t in graph.GraphIndex.SelectIndexByPredicate(pred).Keys) {
+                    foreach (var t in graph.GraphIndex.SelectIndexByPredicate(pred)) {
                         matchPred.Add(graph.Triples[t]);
                     }
                 }
 
                 //Filter by Object
                 if (obj         != null) {
-                    foreach (var t in graph.GraphIndex.SelectIndexByObject(obj).Keys) {
+                    foreach (var t in graph.GraphIndex.SelectIndexByObject(obj)) {
                         matchObj.Add(graph.Triples[t]);
                     }
                 }
 
                 //Filter by Literal
                 if (lit         != null) {
-                    foreach (var t in graph.GraphIndex.SelectIndexByLiteral(lit).Keys) {
+                    foreach (var t in graph.GraphIndex.SelectIndexByLiteral(lit)) {
                         matchLit.Add(graph.Triples[t]);
                     }
                 }
@@ -199,19 +199,19 @@ namespace RDFSharp.Model
                             //S->P->O
                             matchResult     = matchSubj.Intersect(matchPred)
                                                        .Intersect(matchObj)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                         }
                         else {
                             if (lit        != null) {
                                 //S->P->L
                                 matchResult = matchSubj.Intersect(matchPred)
                                                        .Intersect(matchLit)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                             }
                             else {
                                 //S->P->
                                 matchResult = matchSubj.Intersect(matchPred)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                             }
                         }
                     }
@@ -219,13 +219,13 @@ namespace RDFSharp.Model
                         if (obj            != null) {
                             //S->->O
                             matchResult     = matchSubj.Intersect(matchObj)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                         }
                         else {
                             if (lit        != null) {
                                 //S->->L
                                 matchResult = matchSubj.Intersect(matchLit)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                             }
                             else {
                                 //S->->
@@ -239,13 +239,13 @@ namespace RDFSharp.Model
                         if (obj            != null) {
                             //->P->O
                             matchResult     = matchPred.Intersect(matchObj)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                         }
                         else {
                             if (lit        != null) {
                                 //->P->L
                                 matchResult = matchPred.Intersect(matchLit)
-                                                       .ToList<RDFTriple>();
+                                                       .ToList();
                             }
                             else {
                                 //->P->
@@ -265,7 +265,7 @@ namespace RDFSharp.Model
                             }
                             else {
                                 //->->
-                                matchResult = graph.Triples.Values.ToList<RDFTriple>();
+                                matchResult = graph.Triples.Values.ToList();
                             }
                         }
                     }

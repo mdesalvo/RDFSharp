@@ -574,7 +574,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
-        public override RDFStore ClearQuadruples() {
+        public override void ClearQuadruples() {
 
             //Create command
             var command = new SqlCommand("DELETE FROM [dbo].[Quadruples]", this.Connection);
@@ -612,13 +612,13 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
             }
-            return this;
+
         }
 
         /// <summary>
         /// Compacts the reified quadruples by removing their 4 standard statements 
         /// </summary>
-        public override RDFStore UnreifyQuadruples() {
+        public override void UnreifyQuadruples() {
 
             //Create SPARQL SELECT query for detecting reified quadruples
             var T = new RDFVariable("T", true);
@@ -670,7 +670,6 @@ namespace RDFSharp.Store
 
             }
 
-            return this;
         }
         #endregion
 

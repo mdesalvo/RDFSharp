@@ -104,12 +104,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
-        public abstract RDFStore ClearQuadruples();
+        public abstract void ClearQuadruples();
 
         /// <summary>
         /// Compacts the reified quadruples by removing their 4 standard statements 
         /// </summary>
-        public abstract RDFStore UnreifyQuadruples();
+        public abstract void UnreifyQuadruples();
         #endregion
 
         #region Select

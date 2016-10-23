@@ -274,7 +274,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Compacts the reified triples by removing their 4 standard statements
         /// </summary>
-        public RDFGraph UnreifyTriples() {
+        public void UnreifyTriples() {
 
             //Create SPARQL SELECT query for detecting reified triples
             var T = new RDFVariable("T", true);
@@ -323,7 +323,6 @@ namespace RDFSharp.Model
 
             }
 
-            return this;
         }
         #endregion
 
