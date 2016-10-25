@@ -67,40 +67,10 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty container of the given flavor and given type
         /// </summary>
         public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType) {
-            this.ContainerType          = containerType;
-            this.ItemType               = itemType;
-            this.ReificationSubject     = new RDFResource();
-            this.Items                  = new ArrayList();
-        }
-
-        /// <summary>
-        /// List-based ctor to build a container of the given flavor and given type with given items
-        /// </summary>
-        public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType, ArrayList items): this(containerType, itemType) {
-            if (items != null) {
-                switch (this.ItemType) {
-                    case RDFModelEnums.RDFItemTypes.Resource:
-                        foreach(var item in items) {
-                            if (item is RDFResource) {
-                                this.AddItem(item);
-                            }
-                            else {
-                                throw new RDFModelException("Cannot create RDFContainer because all the elements must be resources.");
-                            }
-                        }
-                        break;
-                    case RDFModelEnums.RDFItemTypes.Literal:
-                        foreach(var item in items) {
-                            if (item is RDFLiteral)  {
-                                this.AddItem(item);
-                            }
-                            else {
-                                throw new RDFModelException("Cannot create RDFContainer because all the elements must be literals.");
-                            }
-                        }
-                        break;
-                }
-            }
+            this.ContainerType      = containerType;
+            this.ItemType           = itemType;
+            this.ReificationSubject = new RDFResource();
+            this.Items              = new ArrayList();
         }
         #endregion
 
@@ -201,9 +171,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes all the items from the container
         /// </summary>
-        public RDFContainer ClearItems() {
+        public void ClearItems() {
             this.Items.Clear();
-            return this;
         }
 
         /// <summary>

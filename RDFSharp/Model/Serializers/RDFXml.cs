@@ -86,11 +86,11 @@ namespace RDFSharp.Model
 
                     #region linq
                     //Group the graph's triples by subj
-                    var groupedList =  (from    triple in graph
-                                        orderby triple.Subject.ToString()
-                                        group   triple by new {
-                                            subj = triple.Subject.ToString()
-                                        });
+                    var groupedList = (from    triple in graph
+                                       orderby triple.Subject.ToString()
+                                       group   triple by new {
+                                           subj = triple.Subject.ToString()
+                                       });
                     #endregion
 
                     #region graph

@@ -66,36 +66,6 @@ namespace RDFSharp.Model
            this.ReificationSubject = new RDFResource();
            this.Items              = new ArrayList();        
         }
-
-        /// <summary>
-        /// List-based ctor to build a collection of the given type with given items
-        /// </summary>
-        public RDFCollection(RDFModelEnums.RDFItemTypes itemType, ArrayList items): this(itemType) {
-            if (items != null) {
-                switch (this.ItemType) {
-                    case RDFModelEnums.RDFItemTypes.Resource:
-                        foreach(var item in items){
-                            if (item is RDFResource){
-                                this.AddItem(item);
-                            }
-                            else{
-                                throw new RDFModelException("Cannot create RDFCollection because all the elements must be resources.");
-                            }
-                        }
-                        break;
-                    case RDFModelEnums.RDFItemTypes.Literal:
-                        foreach(var item in items) {
-                            if (item is RDFLiteral) {
-                                this.AddItem(item);
-                            }
-                            else {
-                                throw new RDFModelException("Cannot create RDFCollection because all the elements must be literals.");
-                            }
-                        }
-                        break;
-                }                
-            }
-        }
         #endregion
 
         #region Interfaces
@@ -181,9 +151,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes all the items from the collection
         /// </summary>
-        public RDFCollection ClearItems() {
+        public void ClearItems() {
             this.Items.Clear();
-            return this;
         }
 
         /// <summary>

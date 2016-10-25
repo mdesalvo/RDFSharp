@@ -73,16 +73,9 @@ namespace RDFSharp.Model
                         XmlNode tripleElement   = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
 
                         #region subj
-                        XmlNode subjElement     = null;
-                        XmlText subjElementText = null;
-                        if (((RDFResource)t.Subject).IsBlank) {
-                            subjElement         = trixDoc.CreateNode(XmlNodeType.Element, "id", null);
-                            subjElementText     = trixDoc.CreateTextNode(t.Subject.ToString().Replace("bnode:", String.Empty));
-                        }
-                        else {
-                            subjElement         = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                            subjElementText     = trixDoc.CreateTextNode(t.Subject.ToString());
-                        }
+                        XmlNode subjElement     = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null)  :
+                                                                                      trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                        XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
                         subjElement.AppendChild(subjElementText);
                         tripleElement.AppendChild(subjElement);
                         #endregion
@@ -95,17 +88,10 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        if (t.TripleFlavor        == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            XmlNode objElement     = null;
-                            XmlText objElementText = null;
-                            if (((RDFResource)t.Object).IsBlank)  {
-                                objElement         = trixDoc.CreateNode(XmlNodeType.Element, "id", null);
-                                objElementText     = trixDoc.CreateTextNode(t.Object.ToString().Replace("bnode:", String.Empty));
-                            }
-                            else  {
-                                objElement         = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                                objElementText     = trixDoc.CreateTextNode(t.Object.ToString());
-                            }
+                        if (t.TripleFlavor     == RDFModelEnums.RDFTripleFlavors.SPO) {
+                            XmlNode objElement  = (((RDFResource)t.Object).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null)  :
+                                                                                     trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                            XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
                             objElement.AppendChild(objElementText);
                             tripleElement.AppendChild(objElement);
                         }
