@@ -61,15 +61,6 @@ namespace RDFSharp.Store
             this.FederationName = "FEDERATION|ID=" + Guid.NewGuid();
             this.Stores         = new Dictionary<Int64, RDFStore>();
         }
-
-        /// <summary>
-        /// List-based ctor to build a federation with the given list of stores
-        /// </summary>
-        public RDFFederation(List<RDFStore> stores): this() {
-            if (stores != null) {
-                stores.ForEach(s => this.AddStore(s));
-            }
-        }
         #endregion
 
         #region Interfaces
@@ -89,7 +80,7 @@ namespace RDFSharp.Store
             }
             foreach(RDFStore store in this) {
                 if (!other.Stores.ContainsKey(store.StoreID)) {
-                    return false;
+                     return false;
                 }
             }
             return true;
@@ -119,7 +110,7 @@ namespace RDFSharp.Store
         public RDFFederation AddStore(RDFStore store) {
             if (store != null) {
                 if (!this.Stores.ContainsKey(store.StoreID)) {
-                    this.Stores.Add(store.StoreID, store);
+                     this.Stores.Add(store.StoreID, store);
                 }
             }
             return this;
@@ -142,9 +133,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Clears the stores of the federation.
         /// </summary>
-        public RDFFederation ClearStores() {
+        public void ClearStores() {
             this.Stores.Clear();
-            return this;
         }
         #endregion
 

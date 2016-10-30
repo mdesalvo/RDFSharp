@@ -77,7 +77,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// List-based ctor to build a memory store with the given list of quadruples
         /// </summary>
-        public RDFMemoryStore(List<RDFQuadruple> quadruples): this() {
+        internal RDFMemoryStore(List<RDFQuadruple> quadruples): this() {
             if (quadruples != null) {
                 quadruples.ForEach(q => this.AddQuadruple(q));
             }
@@ -101,7 +101,7 @@ namespace RDFSharp.Store
             }
             foreach(RDFQuadruple q in this) {
                 if (!other.ContainsQuadruple(q)) {
-                    return false;
+                     return false;
                 }
             }
             return true;
@@ -174,7 +174,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruplesByContext(RDFContext contextResource) {
             if (contextResource        != null) {
-                foreach (var quadruple in (RDFMemoryStore)this.SelectQuadruplesByContext(contextResource)) {
+                foreach (var quadruple in this.SelectQuadruplesByContext(contextResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
@@ -187,7 +187,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruplesBySubject(RDFResource subjectResource) {
             if (subjectResource        != null) {
-                foreach (var quadruple in (RDFMemoryStore)this.SelectQuadruplesBySubject(subjectResource)) {
+                foreach (var quadruple in this.SelectQuadruplesBySubject(subjectResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
@@ -200,7 +200,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruplesByPredicate(RDFResource predicateResource) {
             if (predicateResource      != null && !predicateResource.IsBlank) {
-                foreach (var quadruple in (RDFMemoryStore)this.SelectQuadruplesByPredicate(predicateResource)) {
+                foreach (var quadruple in this.SelectQuadruplesByPredicate(predicateResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
@@ -213,7 +213,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruplesByObject(RDFResource objectResource) {
             if (objectResource         != null) {
-                foreach (var quadruple in (RDFMemoryStore)this.SelectQuadruplesByObject(objectResource)) {
+                foreach (var quadruple in this.SelectQuadruplesByObject(objectResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
@@ -226,7 +226,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruplesByLiteral(RDFLiteral literalObject) {
             if (literalObject          != null) {
-                foreach (var quadruple in (RDFMemoryStore)this.SelectQuadruplesByLiteral(literalObject)) {
+                foreach (var quadruple in this.SelectQuadruplesByLiteral(literalObject)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
@@ -395,7 +395,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Builds a new intersection store from this store and a given one
         /// </summary>
-        public RDFStore IntersectWith(RDFStore store) {
+        public RDFMemoryStore IntersectWith(RDFStore store) {
             var result = new RDFMemoryStore();
             if (store != null) {
 
@@ -413,7 +413,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Builds a new union store from this store and a given one
         /// </summary>
-        public RDFStore UnionWith(RDFStore store) {
+        public RDFMemoryStore UnionWith(RDFStore store) {
             var result = new RDFMemoryStore();
 
             //Add quadruples from this store
@@ -425,7 +425,7 @@ namespace RDFSharp.Store
             if (store != null) {
 
                 //Add quadruples from the given store
-                foreach (var q in (RDFMemoryStore)store.SelectAllQuadruples()) {
+                foreach (var q in store.SelectAllQuadruples()) {
                     result.AddQuadruple(q);
                 }
 
@@ -437,14 +437,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Builds a new difference store from this store and a given one
         /// </summary>
-        public RDFStore DifferenceWith(RDFStore store) {
+        public RDFMemoryStore DifferenceWith(RDFStore store) {
             var result = new RDFMemoryStore();
             if (store != null) {
 
                 //Add difference quadruples
                 foreach (var q in this) {
                     if (!store.ContainsQuadruple(q)) {
-                        result.AddQuadruple(q);
+                         result.AddQuadruple(q);
                     }
                 }
 
@@ -468,7 +468,7 @@ namespace RDFSharp.Store
         /// Creates a memory store from a file of the given RDF format. 
         /// </summary>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath) {
-            if (filepath != null && filepath.Trim() != String.Empty) {
+            if (filepath != null) {
                 if (File.Exists(filepath)) {
                     switch  (rdfFormat) {
                         case RDFStoreEnums.RDFFormats.TriX:
@@ -513,25 +513,25 @@ namespace RDFSharp.Store
                         #region CONTEXT
                         //Parse the quadruple context
                         if(!tableRow.IsNull("CONTEXT") && tableRow["CONTEXT"].ToString() != String.Empty) {
-                            RDFPatternMember rowCont  = RDFQueryUtilities.ParseRDFPatternMember(tableRow["CONTEXT"].ToString());
-                            if (rowCont is RDFResource) {
+                            var rowCont = RDFQueryUtilities.ParseRDFPatternMember(tableRow["CONTEXT"].ToString());
+                            if (rowCont is RDFResource && !((RDFResource)rowCont).IsBlank) {
 
                                 #region SUBJECT
                                 //Parse the quadruple subject
                                 if(!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty) {
-                                    RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
+                                    var rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
                                     if (rowSubj is RDFResource) {
 
                                         #region PREDICATE
                                         //Parse the quadruple predicate
                                         if(!tableRow.IsNull("PREDICATE") && tableRow["PREDICATE"].ToString() != String.Empty) {
-                                            RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
+                                            var rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
                                             if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank) {
 
                                                 #region OBJECT
                                                 //Parse the quadruple object
                                                 if(!tableRow.IsNull("OBJECT")) {
-                                                    RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
+                                                    var rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
                                                     if (rowObj is RDFResource) {
                                                         result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCont.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
                                                     }
@@ -566,7 +566,7 @@ namespace RDFSharp.Store
 
                             }
                             else {
-                                throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a context in the \"CONTEXT\" column.");
+                                throw new RDFModelException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a blank resource or a literal in the \"CONTEXT\" column.");
                             }
                         }
                         else {

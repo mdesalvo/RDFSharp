@@ -45,7 +45,7 @@ namespace RDFSharp.Model
             try {
 
                 #region serialize
-                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, Encoding.UTF8))  {
+                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, Encoding.UTF8)) {
                     XmlDocument trixDoc         = new XmlDocument();
                     trixWriter.Formatting       = Formatting.Indented;
 
@@ -189,7 +189,7 @@ namespace RDFSharp.Model
                                 XmlNode  graph       = (XmlNode)graphEnum.Current;
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal)) {
                                      throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
-                                }                            
+                                }
 
                                 #region triple
                                 var encodedUris      = 0;
@@ -213,7 +213,7 @@ namespace RDFSharp.Model
                                         #region subj
                                         //Subject is a resource ("<uri>") or a blank node ("<id>")
                                         if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal) ||
-                                            triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal)) {
+                                            triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))  {
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal)) {
                                                 if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:")) {

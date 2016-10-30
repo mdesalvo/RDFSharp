@@ -519,7 +519,7 @@ namespace RDFSharp.Model
         /// Creates a graph from a file of the given RDF format. 
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
-            if (filepath != null && filepath.Trim() != String.Empty) {
+            if (filepath != null) {
                 if (File.Exists(filepath)) {
                     switch  (rdfFormat) {
                         case RDFModelEnums.RDFFormats.NTriples:
