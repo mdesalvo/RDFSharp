@@ -675,35 +675,6 @@ namespace RDFSharp.Store
 
         #region Select
         /// <summary>
-        /// Gets a list containing the graphs saved in the store
-        /// </summary>
-        public override List<RDFGraph> ExtractGraphs() {
-            var graphs      = new Dictionary<Int64, RDFGraph>();
-            foreach (var q in this.SelectAllQuadruples()) {
-
-                // Step 1: Cache-Update
-                if (!graphs.ContainsKey(q.Context.PatternMemberID)) {
-                     graphs.Add(q.Context.PatternMemberID, new RDFGraph());
-                     graphs[q.Context.PatternMemberID].SetContext(((RDFContext)q.Context).Context);
-                }
-
-                // Step 2: Result-Update
-                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
-                                                                              (RDFResource)q.Predicate,
-                                                                              (RDFResource)q.Object));
-                }
-                else {
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
-                                                                              (RDFResource)q.Predicate,
-                                                                              (RDFLiteral)q.Object));
-                }
-
-            }
-            return graphs.Values.ToList();
-        }
-
-        /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
         public override Boolean ContainsQuadruple(RDFQuadruple quadruple) {
@@ -1141,7 +1112,7 @@ namespace RDFSharp.Store
                     this.Connection.Open();
 
                     //Create command
-                    var command = new SqlCommand("CREATE TABLE [dbo].[Quadruples] ([QuadrupleID] BIGINT PRIMARY KEY NOT NULL, [TripleFlavor] INTEGER NOT NULL, [Context] VARCHAR(1000) NOT NULL, [ContextID] BIGINT NOT NULL, [Subject] VARCHAR(1000) NOT NULL, [SubjectID] BIGINT NOT NULL, [Predicate] VARCHAR(1000) NOT NULL, [PredicateID] BIGINT NOT NULL, [Object] VARCHAR(5000) NOT NULL, [ObjectID] BIGINT NOT NULL); CREATE NONCLUSTERED INDEX [IDX_ContextID] ON [dbo].[Quadruples]([ContextID]);CREATE NONCLUSTERED INDEX [IDX_SubjectID] ON [dbo].[Quadruples]([SubjectID]);CREATE NONCLUSTERED INDEX [IDX_PredicateID] ON [dbo].[Quadruples]([PredicateID]);CREATE NONCLUSTERED INDEX [IDX_ObjectID] ON [dbo].[Quadruples]([ObjectID],[TripleFlavor]);CREATE NONCLUSTERED INDEX [IDX_SubjectID_PredicateID] ON [dbo].[Quadruples]([SubjectID],[PredicateID]);CREATE NONCLUSTERED INDEX [IDX_SubjectID_ObjectID] ON [dbo].[Quadruples]([SubjectID],[ObjectID],[TripleFlavor]);CREATE NONCLUSTERED INDEX [IDX_PredicateID_ObjectID] ON [dbo].[Quadruples]([PredicateID],[ObjectID],[TripleFlavor]);", this.Connection);
+                    var command = new SqlCommand("CREATE TABLE [dbo].[Quadruples] ([QuadrupleID] BIGINT PRIMARY KEY NOT NULL, [TripleFlavor] INTEGER NOT NULL, [Context] VARCHAR(1000) NOT NULL, [ContextID] BIGINT NOT NULL, [Subject] VARCHAR(1000) NOT NULL, [SubjectID] BIGINT NOT NULL, [Predicate] VARCHAR(1000) NOT NULL, [PredicateID] BIGINT NOT NULL, [Object] VARCHAR(1000) NOT NULL, [ObjectID] BIGINT NOT NULL); CREATE NONCLUSTERED INDEX [IDX_ContextID] ON [dbo].[Quadruples]([ContextID]);CREATE NONCLUSTERED INDEX [IDX_SubjectID] ON [dbo].[Quadruples]([SubjectID]);CREATE NONCLUSTERED INDEX [IDX_PredicateID] ON [dbo].[Quadruples]([PredicateID]);CREATE NONCLUSTERED INDEX [IDX_ObjectID] ON [dbo].[Quadruples]([ObjectID],[TripleFlavor]);CREATE NONCLUSTERED INDEX [IDX_SubjectID_PredicateID] ON [dbo].[Quadruples]([SubjectID],[PredicateID]);CREATE NONCLUSTERED INDEX [IDX_SubjectID_ObjectID] ON [dbo].[Quadruples]([SubjectID],[ObjectID],[TripleFlavor]);CREATE NONCLUSTERED INDEX [IDX_PredicateID_ObjectID] ON [dbo].[Quadruples]([PredicateID],[ObjectID],[TripleFlavor]);", this.Connection);
 
                     //Execute command
                     command.ExecuteNonQuery();
