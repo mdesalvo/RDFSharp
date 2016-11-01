@@ -521,7 +521,7 @@ namespace RDFSharp.Store
                                             }
                                         }
                                         else {
-                                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"PREDICATE\" column.");
+                                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL or empty value in the \"PREDICATE\" column.");
                                         }
                                         #endregion
 
@@ -531,17 +531,17 @@ namespace RDFSharp.Store
                                     }
                                 }
                                 else {
-                                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"SUBJECT\" column.");
+                                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL or empty value in the \"SUBJECT\" column.");
                                 }
                                 #endregion
 
                             }
                             else {
-                                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a blank resource or a literal in the \"CONTEXT\" column.");
+                                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"CONTEXT\" column.");
                             }
                         }
                         else {
-                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"CONTEXT\" column.");
+                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL or empty value in the \"CONTEXT\" column.");
                         }
                         #endregion
 
