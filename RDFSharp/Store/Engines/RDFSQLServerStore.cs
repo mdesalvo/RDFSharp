@@ -45,19 +45,19 @@ namespace RDFSharp.Store
                                  String sqlServerDatabase,
                                  String sqlServerUserName,
                                  String sqlServerUserPwd) {
-            if(sqlServerInstance            != null) {
-                if(sqlServerDatabase        != null) {
-                    if(sqlServerUserName    != null) {
-                        if(sqlServerUserPwd != null) {
+            if (sqlServerInstance            != null) {
+                if (sqlServerDatabase        != null) {
+                    if (sqlServerUserName    != null) {
+                        if (sqlServerUserPwd != null) {
 
                             //Initialize store structures
-                            this.StoreType   = "SQLSERVER";
-                            this.Connection  = new SqlConnection(@"Server="    + sqlServerInstance +
-                                                                  ";Database=" + sqlServerDatabase +
-                                                                  ";User Id="  + sqlServerUserName +
-                                                                  ";Password=" + sqlServerUserPwd  +
-                                                                  ";Persist Security Info=false;");
-                            this.StoreID     = RDFModelUtilities.CreateHash(this.ToString());
+                            this.StoreType    = "SQLSERVER";
+                            this.Connection   = new SqlConnection(@"Server="    + sqlServerInstance +
+                                                                   ";Database=" + sqlServerDatabase +
+                                                                   ";User Id="  + sqlServerUserName +
+                                                                   ";Password=" + sqlServerUserPwd  +
+                                                                   ";Persist Security Info=false;");
+                            this.StoreID      = RDFModelUtilities.CreateHash(this.ToString());
 
                             //Perform initial diagnostics
                             this.PrepareStore();
@@ -85,15 +85,15 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFSQLServerStore(String sqlServerInstance,
                                  String sqlServerDatabase) {
-            if(sqlServerInstance     != null) {
-                if(sqlServerDatabase != null) {
+            if (sqlServerInstance     != null) {
+                if (sqlServerDatabase != null) {
 
                     //Initialize store structures
-                    this.StoreType    = "SQLSERVER";
-                    this.Connection   = new SqlConnection(@"Server="    + sqlServerInstance +
-                                                           ";Database=" + sqlServerDatabase +
-                                                           ";Integrated Security=true;Persist Security Info=false;");
-                    this.StoreID      = RDFModelUtilities.CreateHash(this.ToString());
+                    this.StoreType     = "SQLSERVER";
+                    this.Connection    = new SqlConnection(@"Server="    + sqlServerInstance +
+                                                            ";Database=" + sqlServerDatabase +
+                                                            ";Integrated Security=true;Persist Security Info=false;");
+                    this.StoreID       = RDFModelUtilities.CreateHash(this.ToString());
 
                     //Perform initial diagnostics
                     this.PrepareStore();
@@ -138,7 +138,7 @@ namespace RDFSharp.Store
                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                 command.Parameters.Add(new SqlParameter("PRED",   SqlDbType.VarChar, 1000));
                 command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
-                command.Parameters.Add(new SqlParameter("OBJ",    SqlDbType.VarChar, 5000));
+                command.Parameters.Add(new SqlParameter("OBJ",    SqlDbType.VarChar, 1000));
                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
 
                 try {
@@ -213,7 +213,7 @@ namespace RDFSharp.Store
                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                 command.Parameters.Add(new SqlParameter("PRED",   SqlDbType.VarChar, 1000));
                 command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
-                command.Parameters.Add(new SqlParameter("OBJ",    SqlDbType.VarChar, 5000));
+                command.Parameters.Add(new SqlParameter("OBJ",    SqlDbType.VarChar, 1000));
                 command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
 
                 //Valorize parameters
@@ -824,7 +824,7 @@ namespace RDFSharp.Store
                             else {
                                 //C->S->->
                                 command = new SqlCommand("SELECT [TripleFlavor], [Context], [Subject], [Predicate], [Object] FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [SubjectID] = @SUBJID", this.Connection);
-                                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                                command.Parameters.Add(new SqlParameter("CTXID",  SqlDbType.BigInt));
                                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                                 command.Parameters["CTXID"].Value  = ctx.PatternMemberID;
                                 command.Parameters["SUBJID"].Value = subj.PatternMemberID;
@@ -942,7 +942,7 @@ namespace RDFSharp.Store
                     else {
                         if (obj     != null) {
                             //->S->->O
-                            command = new SqlCommand("SELECT [TripleFlavor], [Context], [Subject], [Predicate], [Object] FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                            command  = new SqlCommand("SELECT [TripleFlavor], [Context], [Subject], [Predicate], [Object] FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
                             command.Parameters.Add(new SqlParameter("TFV",    SqlDbType.Int));
                             command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
                             command.Parameters.Add(new SqlParameter("OBJID",  SqlDbType.BigInt));
@@ -1038,8 +1038,8 @@ namespace RDFSharp.Store
                 command.Prepare();
                 
                 //Execute command
-                using (var quadruples = command.ExecuteReader()) {
-                    if(quadruples.HasRows) {
+                using  (var quadruples = command.ExecuteReader()) {
+                    if (quadruples.HasRows) {
                         while(quadruples.Read()) {
                             result.AddQuadruple(RDFStoreUtilities.ParseQuadruple(quadruples));
                         }
