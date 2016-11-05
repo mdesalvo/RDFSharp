@@ -73,7 +73,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty named pattern group
         /// </summary>
         public RDFPatternGroup(String patternGroupName) {
-            if(patternGroupName != null && patternGroupName.Trim() != String.Empty) {
+            if (patternGroupName     != null && patternGroupName.Trim() != String.Empty) {
                 this.PatternGroupName = patternGroupName.Trim().ToUpperInvariant();
                 this.IsOptional       = false;
                 this.JoinAsUnion      = false;
@@ -127,7 +127,7 @@ namespace RDFSharp.Query
             this.Patterns.ForEach(p    => {
 
                 //Current pattern is set as UNION with the next one
-                if(p.JoinAsUnion) {
+                if (p.JoinAsUnion) {
 
                     //Current pattern IS NOT the last of the query (so UNION keyword must be appended at last)
                     if (!p.Equals(this.Patterns.Last())) {
@@ -164,9 +164,7 @@ namespace RDFSharp.Query
             });
 
             //FILTERS
-            if (this.Filters.Any()) {
-                this.Filters.ForEach(f => patternGroup.Append(spaces + "    " + f + " .\n"));
-            }
+            this.Filters.ForEach(f => patternGroup.Append(spaces + "    " + f + " .\n"));
 
             patternGroup.Append(spaces + "  }\n");
             if (this.IsOptional) {
@@ -197,28 +195,28 @@ namespace RDFSharp.Query
                     //Context
                     if (pattern.Context != null && pattern.Context is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(pattern.Context))) {
-                            this.Variables.Add((RDFVariable)pattern.Context);
+                             this.Variables.Add((RDFVariable)pattern.Context);
                         }
                     }
 
                     //Subject
                     if (pattern.Subject is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(pattern.Subject))) {
-                            this.Variables.Add((RDFVariable)pattern.Subject);
+                             this.Variables.Add((RDFVariable)pattern.Subject);
                         }
                     }
 
                     //Predicate
                     if (pattern.Predicate is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(pattern.Predicate))) {
-                            this.Variables.Add((RDFVariable)pattern.Predicate);
+                             this.Variables.Add((RDFVariable)pattern.Predicate);
                         }
                     }
 
                     //Object
                     if (pattern.Object is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(pattern.Object))) {
-                            this.Variables.Add((RDFVariable)pattern.Object);
+                             this.Variables.Add((RDFVariable)pattern.Object);
                         }
                     }
 

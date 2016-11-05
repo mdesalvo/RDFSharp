@@ -42,7 +42,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a named SPARQL variable
         /// </summary>
         public RDFVariable(String variableName, Boolean isResult) {
-            if(variableName != null && variableName.Trim() != String.Empty) { 
+            if (variableName        != null && variableName.Trim() != String.Empty) { 
                 this.VariableName    = "?" + variableName.Trim().ToUpperInvariant();
                 this.IsResult        = isResult;
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());   

@@ -47,7 +47,7 @@ namespace RDFSharp.Query
         internal static void AddRow(DataTable table, Dictionary<String, String> bindings) {
             Boolean rowAdded     = false;
             DataRow resultRow    = table.NewRow();
-            bindings.Keys.ToList<String>().ForEach(k => {
+            bindings.Keys.ToList().ForEach(k => {
                 if (table.Columns.Contains(k)) {
                     resultRow[k] = bindings[k];
                     rowAdded     = true;

@@ -25,7 +25,7 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFQueryEngine is the MIRELLA SPARQL engine for construction and execution of SPARQL queries.
+    /// RDFQueryEngine is the engine for construction and execution of SPARQL queries (MIRELLA).
     /// </summary>
     internal static class RDFQueryEngine {
 
@@ -527,7 +527,7 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same P and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Predicate.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
@@ -566,7 +566,7 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same S and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
@@ -593,7 +593,7 @@ namespace RDFSharp.Query
                                 }
                                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
@@ -608,15 +608,15 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                                 }
                                 //In case of same S and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                                 }
                                 //In case of same P and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Predicate.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
@@ -658,7 +658,7 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same C and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
@@ -685,7 +685,7 @@ namespace RDFSharp.Query
                                 }
                                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
@@ -700,15 +700,15 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
                                 }
                                 //In case of same C and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
                                 }
                                 //In case of same P and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Predicate.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
@@ -738,7 +738,7 @@ namespace RDFSharp.Query
                                 }
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
@@ -753,15 +753,15 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
                                 }
                                 //In case of same C and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
                                 }
                                 //In case of same S and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
@@ -789,15 +789,15 @@ namespace RDFSharp.Query
                                 }
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
                                 }
                                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
                                 }
                                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
@@ -813,27 +813,27 @@ namespace RDFSharp.Query
                                                                              null);
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
                                 }
                                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
                                 }
                                 //In case of same C and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
                                 }
                                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Predicate)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                                 }
                                 //In case of same S and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                                 }
                                 //In case of same P and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Predicate.Equals(pattern.Object)) {
-                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                    result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
                                 RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
@@ -889,7 +889,7 @@ namespace RDFSharp.Query
                                                                              null);
                             //In case of same P and O variable, must refine matching quadruples with a further value comparison
                             if (pattern.Predicate.Equals(pattern.Object)) {
-                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                             }
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
@@ -928,7 +928,7 @@ namespace RDFSharp.Query
                                                                              null);
                             //In case of same S and O variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Object)) {
-                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                             }
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
@@ -955,7 +955,7 @@ namespace RDFSharp.Query
                             }
                             //In case of same S and P variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Predicate)) {
-                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                             }
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
@@ -970,15 +970,15 @@ namespace RDFSharp.Query
                                                                              null);
                             //In case of same S and P variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Predicate)) {
-                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList<RDFQuadruple>());
+                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                             }
                             //In case of same S and O variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Object)) {
-                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                             }
                             //In case of same P and O variable, must refine matching quadruples with a further value comparison
                             if (pattern.Predicate.Equals(pattern.Object)) {
-                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList<RDFQuadruple>());
+                                result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                             }
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
                             RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
@@ -995,12 +995,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Builds the table results of the pattern with values from the given graph
         /// </summary>
-        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles variableFlavor, DataTable resultTable) {
+        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable) {
             var bindings    = new Dictionary<String, String>();
 
             //Iterate result graph's triples
             foreach (var t in triples)  {
-                switch (variableFlavor) {
+                switch (patternHole) {
                     //->P->O
                     case RDFQueryEnums.RDFPatternHoles.S:
                         bindings.Add(pattern.Subject.ToString(),   t.Subject.ToString());
@@ -1043,12 +1043,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Builds the table results of the pattern with values from the given store
         /// </summary>
-        internal static void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles variableFlavor, DataTable resultTable) {
+        internal static void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable) {
             var bindings    = new Dictionary<String, String>();
 
             //Iterate result store's quadruples
             foreach (var q in store) {
-                switch (variableFlavor) {
+                switch (patternHole) {
                     //->S->P->O
                     case RDFQueryEnums.RDFPatternHoles.C:
                         bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
