@@ -87,7 +87,7 @@ namespace RDFSharp.Query
                     this.Subject = subject;
                     if (subject is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(subject))) {
-                            this.Variables.Add((RDFVariable)subject);
+                             this.Variables.Add((RDFVariable)subject);
                         }
                     }
                 }
@@ -108,7 +108,7 @@ namespace RDFSharp.Query
                     this.Predicate = predicate;
                     if (predicate is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(predicate))) {
-                            this.Variables.Add((RDFVariable)predicate);
+                             this.Variables.Add((RDFVariable)predicate);
                         }
                     }
                 }
@@ -126,7 +126,7 @@ namespace RDFSharp.Query
                     this.Object    = objLit;
                     if (objLit is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(objLit))) {
-                            this.Variables.Add((RDFVariable)objLit);
+                             this.Variables.Add((RDFVariable)objLit);
                         }
                     }
                 }
@@ -152,7 +152,7 @@ namespace RDFSharp.Query
                     this.Context = context;
                     if (context is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(context))) {
-                            this.Variables.Add((RDFVariable)context);
+                             this.Variables.Add((RDFVariable)context);
                         }
                     }
                 }
@@ -174,13 +174,13 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override String ToString() {
-            String subj      = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
-            String pred      = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
-            String obj       = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
+            String subj       = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
+            String pred       = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
+            String obj        = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
 
             //CSPO pattern
-            if(this.Context != null) {
-                String ctx   = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
+            if (this.Context != null) {
+                String ctx    = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
                 if (this.IsOptional) {
                     return "OPTIONAL { GRAPH " + ctx + " {" + subj + " " + pred + " " + obj + "} }";
                 }

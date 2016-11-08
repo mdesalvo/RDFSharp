@@ -42,13 +42,13 @@ namespace RDFSharp.Query
         /// Default-ctor to build a named SPARQL variable
         /// </summary>
         public RDFVariable(String variableName, Boolean isResult) {
-            if (variableName        != null && variableName.Trim() != String.Empty) { 
-                this.VariableName    = "?" + variableName.Trim().ToUpperInvariant();
-                this.IsResult        = isResult;
-                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());   
+            if (variableName != null && variableName.Trim() != String.Empty) {
+                this.VariableName     = "?" + variableName.Trim().ToUpperInvariant();
+                this.IsResult         = isResult;
+                this.PatternMemberID  = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {
-                throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty");
+                throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty.");
             }
         }
         #endregion

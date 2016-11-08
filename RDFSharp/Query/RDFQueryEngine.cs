@@ -49,7 +49,7 @@ namespace RDFSharp.Query
             IEnumerable<DataColumn> dt2Columns = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
 
             //Determine common columns
-            DataColumn[] commonColumns         = dt1Columns.Intersect(dt2Columns, RDFQueryEngine.dtComparer)
+            DataColumn[] commonColumns         = dt1Columns.Intersect(dt2Columns, dtComparer)
                                                            .Select(c => new DataColumn(c.Caption, c.DataType))
                                                            .ToArray();
 
@@ -57,7 +57,7 @@ namespace RDFSharp.Query
             if (commonColumns.Length  == 0) {
 
                 //Create the structure of the product table
-                result.Columns.AddRange(dt1Columns.Union(dt2Columns, RDFQueryEngine.dtComparer)
+                result.Columns.AddRange(dt1Columns.Union(dt2Columns, dtComparer)
                               .Select(c => new DataColumn(c.Caption, c.DataType))
                               .ToArray());
 
@@ -115,7 +115,7 @@ namespace RDFSharp.Query
                             result.Columns.Add(ds.Tables[1].Columns[i].ColumnName, ds.Tables[1].Columns[i].DataType);
                         }
                         else {
-                            //Manage duplicated columns by appending a know identificator to their name
+                            //Manage duplicated columns by appending a known identificator to their name
                             result.Columns.Add(ds.Tables[1].Columns[i].ColumnName + "_DUPLICATE_", ds.Tables[1].Columns[i].DataType);
                             duplicatedCols.Add(ds.Tables[1].Columns[i].ColumnName + "_DUPLICATE_");
                         }
@@ -169,12 +169,12 @@ namespace RDFSharp.Query
             
 
             //Step 1: Determine common columns
-            DataColumn[] commonColumns      = dt1Columns.Intersect(dt2Columns, RDFQueryEngine.dtComparer)
+            DataColumn[] commonColumns      = dt1Columns.Intersect(dt2Columns, dtComparer)
                                                         .Select(c => new DataColumn(c.Caption, c.DataType))
                                                         .ToArray();
 
             //Step 2: Create structure of finalResult table
-            finalResult.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), RDFQueryEngine.dtComparer)
+            finalResult.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)
                                .Select(c => new DataColumn(c.Caption, c.DataType))
                                .ToArray());
 

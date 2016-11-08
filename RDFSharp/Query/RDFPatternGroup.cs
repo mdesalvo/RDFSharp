@@ -131,9 +131,9 @@ namespace RDFSharp.Query
 
                     //Current pattern IS NOT the last of the query (so UNION keyword must be appended at last)
                     if (!p.Equals(this.Patterns.Last())) {
-                        //Begin a new Union block
-                        printingUnion  = true;
-                        patternGroup.Append(spaces + "    { " + p + " }\n" + spaces + "    UNION\n");
+                         //Begin a new Union block
+                         printingUnion  = true;
+                         patternGroup.Append(spaces + "    { " + p + " }\n" + spaces + "    UNION\n");
                     }
 
                     //Current pattern IS the last of the query (so UNION keyword must not be appended at last)
@@ -189,36 +189,36 @@ namespace RDFSharp.Query
             //Accept the pattern if it carries at least one variable
             if (pattern != null && pattern.Variables.Count > 0) {
                 if (!this.Patterns.Exists(p => p.Equals(pattern))) {
-                    this.Patterns.Add(pattern);
-                    this.PatternGroupID  = RDFModelUtilities.CreateHash(this.ToString());
-
-                    //Context
-                    if (pattern.Context != null && pattern.Context is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(pattern.Context))) {
-                             this.Variables.Add((RDFVariable)pattern.Context);
-                        }
-                    }
-
-                    //Subject
-                    if (pattern.Subject is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(pattern.Subject))) {
-                             this.Variables.Add((RDFVariable)pattern.Subject);
-                        }
-                    }
-
-                    //Predicate
-                    if (pattern.Predicate is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(pattern.Predicate))) {
-                             this.Variables.Add((RDFVariable)pattern.Predicate);
-                        }
-                    }
-
-                    //Object
-                    if (pattern.Object is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(pattern.Object))) {
-                             this.Variables.Add((RDFVariable)pattern.Object);
-                        }
-                    }
+                     this.Patterns.Add(pattern);
+                     this.PatternGroupID  = RDFModelUtilities.CreateHash(this.ToString());
+                     
+                     //Context
+                     if (pattern.Context != null && pattern.Context is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(pattern.Context))) {
+                              this.Variables.Add((RDFVariable)pattern.Context);
+                         }
+                     }
+                     
+                     //Subject
+                     if (pattern.Subject is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(pattern.Subject))) {
+                              this.Variables.Add((RDFVariable)pattern.Subject);
+                         }
+                     }
+                     
+                     //Predicate
+                     if (pattern.Predicate is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(pattern.Predicate))) {
+                              this.Variables.Add((RDFVariable)pattern.Predicate);
+                         }
+                     }
+                     
+                     //Object
+                     if (pattern.Object is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(pattern.Object))) {
+                              this.Variables.Add((RDFVariable)pattern.Object);
+                         }
+                     }
 
                 }
             }
@@ -231,8 +231,8 @@ namespace RDFSharp.Query
         public RDFPatternGroup AddFilter(RDFFilter filter) {
             if (filter != null) {
                 if (!this.Filters.Exists(f => f.Equals(filter))) {
-                    this.Filters.Add(filter);
-                    this.PatternGroupID  = RDFModelUtilities.CreateHash(this.ToString());
+                     this.Filters.Add(filter);
+                     this.PatternGroupID  = RDFModelUtilities.CreateHash(this.ToString());
                 }
             }
             return this;
