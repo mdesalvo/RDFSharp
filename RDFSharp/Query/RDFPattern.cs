@@ -182,9 +182,9 @@ namespace RDFSharp.Query
             if (this.Context != null) {
                 String ctx    = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
                 if (this.IsOptional) {
-                    return "OPTIONAL { GRAPH " + ctx + " {" + subj + " " + pred + " " + obj + "} }";
+                    return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
                 }
-                return "GRAPH " + ctx + " {" + subj + " " + pred + " " + obj + "}";
+                return "GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " }";
             }
 
             //SPO pattern
