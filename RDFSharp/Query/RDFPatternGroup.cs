@@ -82,10 +82,13 @@ namespace RDFSharp.Query
                 this.Variables        = new List<RDFVariable>();
                 this.PatternGroupID   = RDFModelUtilities.CreateHash(this.ToString());
             }
+            else {
+                throw new RDFQueryException("Cannot create RDFPatternGroup because given \"patternGroupName\" parameter is null or empty.");
+            }
         }
 
         /// <summary>
-        /// List-ctor to build a named pattern group from a list of patterns 
+        /// List-ctor to build a named pattern group with the given list of patterns 
         /// </summary>
         public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns): this(patternGroupName) {
             if (patterns != null) {
@@ -94,7 +97,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// List-ctor to build a named pattern group from a list of patterns and a list of filters
+        /// List-ctor to build a named pattern group with the given list of patterns and filters
         /// </summary>
         public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters): this(patternGroupName, patterns) {
             if (filters != null) {
@@ -164,7 +167,7 @@ namespace RDFSharp.Query
             });
 
             //FILTERS
-            this.Filters.ForEach(f => patternGroup.Append(spaces + "    " + f + " .\n"));
+            this.Filters.ForEach(f     => patternGroup.Append(spaces + "    " + f + " .\n"));
 
             patternGroup.Append(spaces + "  }\n");
             if (this.IsOptional) {
