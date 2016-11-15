@@ -43,8 +43,8 @@ namespace RDFSharp.Query
         /// Default-ctor to build an equality filter between the given variable and the given RDF term 
         /// </summary>
         public RDFSameTermFilter(RDFVariable variable, RDFPatternMember rdfTerm) {
-            if (variable != null) {
-                if (rdfTerm != null) {
+            if (variable         != null) {
+                if (rdfTerm      != null) {
                     this.Variable = variable;
                     this.RDFTerm  = rdfTerm;
                     this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
@@ -77,22 +77,22 @@ namespace RDFSharp.Query
 
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString())) {
-                String variableValue   = row[this.Variable.ToString()].ToString();
+                String varValue     = row[this.Variable.ToString()].ToString();
 
                 //Equality comparison with a RDFTerm being RDFVariable
                 if (this.RDFTerm is RDFVariable) {
 
                     //Check is performed only if the row contains a column named like the filter's RDFTerm
                     if (row.Table.Columns.Contains(this.RDFTerm.ToString())) {
-                        String rdfTerm = row[this.RDFTerm.ToString()].ToString();
-                        keepRow        = variableValue.Equals(rdfTerm, StringComparison.Ordinal);
+                        var rdfTerm = row[this.RDFTerm.ToString()].ToString();
+                        keepRow     = varValue.Equals(rdfTerm, StringComparison.Ordinal);
                     }
 
                 }
 
                 //Equality comparison with a RDFTerm being RDFResource/RDFLiteral
                 else {
-                    keepRow = variableValue.Equals(this.RDFTerm.ToString(), StringComparison.Ordinal);
+                    keepRow         = varValue.Equals(this.RDFTerm.ToString(), StringComparison.Ordinal);
                 }
 
                 //Apply the eventual negation

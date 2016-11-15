@@ -45,8 +45,8 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable for the given regular expression 
         /// </summary>
         public RDFRegexFilter(RDFVariable variable, Regex regex) {
-            if (variable != null) {
-                if(regex != null) {
+            if (variable         != null) {
+                if (regex        != null) {
                     this.Variable = variable;
                     this.RegEx    = regex;
                     this.FilterID = RDFModelUtilities.CreateHash(this.ToString());   
@@ -67,16 +67,16 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString() {
             StringBuilder regexFlags = new StringBuilder();
-            if (this.RegEx.Options.ToString().Contains(RegexOptions.IgnoreCase.ToString())) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase)) {
                 regexFlags.Append("i");
             }
-            if (this.RegEx.Options.ToString().Contains(RegexOptions.Singleline.ToString())) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.Singleline)) {
                 regexFlags.Append("s");
             }
-            if (this.RegEx.Options.ToString().Contains(RegexOptions.Multiline.ToString())) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.Multiline)) {
                 regexFlags.Append("m");
             }
-            if (this.RegEx.Options.ToString().Contains(RegexOptions.IgnorePatternWhitespace.ToString())) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace)) {
                 regexFlags.Append("x");
             }
             if (regexFlags.ToString() != String.Empty) {
@@ -91,18 +91,18 @@ namespace RDFSharp.Query
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
         internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
-            Boolean keepRow = true;
+            Boolean keepRow  = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString())) {
-                String variableValue = row[this.Variable.ToString()].ToString();
+                var varValue = row[this.Variable.ToString()].ToString();
             
                 //Successfull match if the regular expression is satisfied by the variable
-                keepRow     = this.RegEx.IsMatch(variableValue);
+                keepRow      = this.RegEx.IsMatch(varValue);
 
                 //Apply the eventual negation
                 if (applyNegation) {
-                    keepRow = !keepRow;
+                    keepRow  = !keepRow;
                 }
             }
 

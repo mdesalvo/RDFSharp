@@ -25,7 +25,7 @@ using RDFSharp.Store;
 namespace RDFSharp.Query {
 
     /// <summary>
-    /// RDFSelectQueryEngine is the MIRELLA SPARQL query subengine for construction and execution of "SELECT" queries
+    /// RDFSelectQueryEngine is the subengine for construction and execution of SPARQL SELECT queries (MIRELLA)
     /// </summary>
     internal static class RDFSelectQueryEngine {
 
@@ -103,9 +103,9 @@ namespace RDFSharp.Query {
             query.PatternGroups.ForEach(pg => 
                 pg.Variables.ForEach(v => {
                     if (!query.IsStar && !v.IsResult) {
-                        if (!nonProjCols.Exists(npc => npc.Equals(v.VariableName, StringComparison.Ordinal))) {
-                            nonProjCols.Add(v.VariableName);
-                        }
+                         if (!nonProjCols.Exists(npc => npc.Equals(v.VariableName, StringComparison.Ordinal))) {
+                              nonProjCols.Add(v.VariableName);
+                         }
                     }
                 })
             );
@@ -146,16 +146,16 @@ namespace RDFSharp.Query {
                 //Populate its metadata
                 query.PatternGroupResultTables[patternGroup].TableName = patternGroup.ToString();
                 if (!query.PatternGroupResultTables[patternGroup].ExtendedProperties.ContainsKey("IsOptional")) {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
                 }
                 else {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties["IsOptional"]  = patternGroup.IsOptional;
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties["IsOptional"]  = patternGroup.IsOptional;
                 }
                 if (!query.PatternGroupResultTables[patternGroup].ExtendedProperties.ContainsKey("JoinAsUnion")) {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
                 }
                 else {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
                 }                
 
             }

@@ -43,7 +43,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an OrderBy modifier of the given flavor on the given variable 
         /// </summary>
         public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor) {
-            if (variable != null) {
+            if (variable          != null) {
                 this.OrderByFlavor = orderbyFlavor;
                 this.Variable      = variable;
                 this.ModifierID    = RDFModelUtilities.CreateHash(this.ToString());   

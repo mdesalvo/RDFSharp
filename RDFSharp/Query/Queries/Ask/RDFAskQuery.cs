@@ -239,14 +239,14 @@ namespace RDFSharp.Query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         #region TrueFederations
-                        foreach (RDFStore store in federation.Stores.Values) {
+                        foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
                             RDFAskQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
                                 fedPatternResultTables[patternGroup].ForEach(fprt => 

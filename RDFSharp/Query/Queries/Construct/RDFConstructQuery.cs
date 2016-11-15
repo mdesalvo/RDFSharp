@@ -187,28 +187,28 @@ namespace RDFSharp.Query {
                     //Context
                     if (template.Context != null && template.Context is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(template.Context))) {
-                            this.Variables.Add((RDFVariable)template.Context);
+                             this.Variables.Add((RDFVariable)template.Context);
                         }
                     }
 
                     //Subject
                     if (template.Subject is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(template.Subject))) {
-                            this.Variables.Add((RDFVariable)template.Subject);
+                             this.Variables.Add((RDFVariable)template.Subject);
                         }
                     }
 
                     //Predicate
                     if (template.Predicate is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(template.Predicate))) {
-                            this.Variables.Add((RDFVariable)template.Predicate);
+                             this.Variables.Add((RDFVariable)template.Predicate);
                         }
                     }
 
                     //Object
                     if (template.Object is RDFVariable) {
                         if (!this.Variables.Exists(v => v.Equals(template.Object))) {
-                            this.Variables.Add((RDFVariable)template.Object);
+                             this.Variables.Add((RDFVariable)template.Object);
                         }
                     }
 
@@ -223,7 +223,7 @@ namespace RDFSharp.Query {
         public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup) {
             if (patternGroup != null) {
                 if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
-                    this.PatternGroups.Add(patternGroup);
+                     this.PatternGroups.Add(patternGroup);
                 }
             }
             return this;
@@ -233,9 +233,9 @@ namespace RDFSharp.Query {
         /// Adds the given modifier to the query
         /// </summary>
         public RDFConstructQuery AddModifier(RDFLimitModifier modifier) {
-            if(modifier != null) {
+            if (modifier != null) {
                 if (!this.Modifiers.Any(m => m is RDFLimitModifier)) {
-                    this.Modifiers.Add(modifier);
+                     this.Modifiers.Add(modifier);
                 }
             }
             return this;
@@ -245,9 +245,9 @@ namespace RDFSharp.Query {
         /// Adds the given modifier to the query
         /// </summary>
         public RDFConstructQuery AddModifier(RDFOffsetModifier modifier) {
-            if(modifier != null) {
+            if (modifier != null) {
                 if (!this.Modifiers.Any(m => m is RDFOffsetModifier)) {
-                    this.Modifiers.Add(modifier);
+                     this.Modifiers.Add(modifier);
                 }
             }
             return this;
@@ -351,14 +351,14 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         #region TrueFederations
-                        foreach (RDFStore store in federation.Stores.Values) {
+                        foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
                             RDFConstructQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
                                 fedPatternResultTables[patternGroup].ForEach(fprt => 

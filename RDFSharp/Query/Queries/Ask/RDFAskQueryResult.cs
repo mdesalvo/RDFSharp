@@ -48,7 +48,7 @@ namespace RDFSharp.Query
         /// Gives the "SPARQL Query Results XML Format" representation of the RDF query result into the given XML file
         /// </summary>
         public void ToSparqlXmlResult(String filepath) {
-            if (filepath != null && filepath.Trim() != String.Empty) {
+            if (filepath != null) {
 
                 #region serialize
                 using (XmlTextWriter sparqlWriter = new XmlTextWriter(filepath, Encoding.UTF8)) {
@@ -56,7 +56,7 @@ namespace RDFSharp.Query
                     sparqlWriter.Formatting       = Formatting.Indented;
 
                     #region xmlDecl
-                    XmlDeclaration sparqlDecl     = sparqlDoc.CreateXmlDeclaration("1.0", null, null);
+                    XmlDeclaration sparqlDecl     = sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
                     sparqlDoc.AppendChild(sparqlDecl);
                     #endregion
 
@@ -96,59 +96,59 @@ namespace RDFSharp.Query
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs         = new XmlReaderSettings();
-                xrs.IgnoreComments            = true;
-                xrs.DtdProcessing             = DtdProcessing.Ignore;
+                RDFAskQueryResult result          = new RDFAskQueryResult();
+                using(StreamReader streamReader   = new StreamReader(filepath, Encoding.UTF8)) {
+                    using(XmlTextReader xmlReader = new XmlTextReader(streamReader)) {
+                        xmlReader.DtdProcessing   = DtdProcessing.Ignore;
+                        xmlReader.Normalization   = false;
 
-                RDFAskQueryResult result      = new RDFAskQueryResult();
-                using (XmlReader xr           = XmlReader.Create(new StreamReader(filepath), xrs)) {
-
-                    #region load
-                    XmlDocument srxDoc     = new XmlDocument();
-                    srxDoc.Load(xr);
-                    #endregion
-
-                    #region parse
-                    Boolean foundHead         = false;
-                    Boolean foundBoolean      = false;
-                    var nodesEnum             = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
-                    while (nodesEnum != null && nodesEnum.MoveNext()) {
-                        XmlNode node          = (XmlNode)nodesEnum.Current;
-
-                        #region HEAD
-                        if (node.Name.ToUpperInvariant().Equals("HEAD", StringComparison.Ordinal)) {
-                            foundHead         = true;
-                        }
+                        #region load
+                        XmlDocument srxDoc        = new XmlDocument();
+                        srxDoc.Load(xmlReader);
                         #endregion
 
-                        #region BOOLEAN
-                        else if (node.Name.ToUpperInvariant().Equals("BOOLEAN", StringComparison.Ordinal)) {
-                            foundBoolean      = true;
-                            if(foundHead) {
-                                Boolean bRes  = false;
-                                if (Boolean.TryParse(node.InnerText, out bRes)) {
-                                    result.AskResult = bRes;
+                        #region parse
+                        Boolean foundHead         = false;
+                        Boolean foundBoolean      = false;
+                        var nodesEnum             = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
+                        while (nodesEnum         != null && nodesEnum.MoveNext()) {
+                            XmlNode node          = (XmlNode)nodesEnum.Current;
+
+                            #region HEAD
+                            if (node.Name.ToUpperInvariant().Equals("HEAD", StringComparison.Ordinal)) {
+                                foundHead         = true;
+                            }
+                            #endregion
+
+                            #region BOOLEAN
+                            else if (node.Name.ToUpperInvariant().Equals("BOOLEAN", StringComparison.Ordinal)) {
+                                foundBoolean      = true;
+                                if(foundHead) {
+                                    Boolean bRes  = false;
+                                    if (Boolean.TryParse(node.InnerText, out bRes)) {
+                                        result.AskResult = bRes;
+                                    }
+                                    else {
+                                        throw new Exception("\"boolean\" node contained data not corresponding to a valid Boolean.");
+                                    }
                                 }
                                 else {
-                                    throw new Exception("\"boolean\" node contained data not corresponding to a valid Boolean.");
+                                    throw new Exception("\"head\" node was not found, or was after \"boolean\" node.");
                                 }
                             }
-                            else {
-                                throw new Exception("\"head\" node was not found, or was after \"boolean\" node.");
-                            }
+                            #endregion
+
                         }
+
+                        if (!foundHead) {
+                             throw new Exception("mandatory \"head\" node was not found");
+                        }
+                        if (!foundBoolean) {
+                             throw new Exception("mandatory \"boolean\" node was not found");
+                        }                        
                         #endregion
 
                     }
-
-                    if (!foundHead) {
-                        throw new Exception("mandatory \"head\" node was not found");
-                    }
-                    if (!foundBoolean) {
-                        throw new Exception("mandatory \"boolean\" node was not found");
-                    }                        
-                    #endregion
-
                 }
                 return result;
                 #endregion

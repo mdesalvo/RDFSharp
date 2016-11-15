@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a negation filter on the given filter
         /// </summary>
         public RDFBooleanNotFilter(RDFFilter filter) {
-            if (filter != null) {
+            if (filter       != null) {
                 this.Filter   = filter;
                 this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
             }

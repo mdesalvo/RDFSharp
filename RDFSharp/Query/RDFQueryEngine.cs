@@ -25,7 +25,7 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFQueryEngine is the engine for construction and execution of SPARQL queries (MIRELLA).
+    /// RDFQueryEngine is the engine for construction and execution of SPARQL queries (MIRELLA)
     /// </summary>
     internal static class RDFQueryEngine {
 
@@ -195,16 +195,16 @@ namespace RDFSharp.Query
                             strResCol       = resCol.ToString();
 
                             //Step 6a: NON-COMMON column
-                            if (!commonColumns.Any(col     => col.ToString().Equals(strResCol, StringComparison.Ordinal))) {
+                            if (!commonColumns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal))) {
 
                                 //Take value from left
-                                if (dt1Columns.Any(col     => col.ToString().Equals(strResCol,  StringComparison.Ordinal))) {
-                                    joinRow[strResCol]     = leftRow[strResCol];
+                                if (dt1Columns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal))) {
+                                    joinRow[strResCol] = leftRow[strResCol];
                                 }
 
                                 //Take value from right
                                 else {
-                                    joinRow[strResCol]     = rightRow[strResCol];
+                                    joinRow[strResCol] = rightRow[strResCol];
                                 }
 
                             }
@@ -218,13 +218,13 @@ namespace RDFSharp.Query
                                     //Right value is NULL
                                     if (rightRow.IsNull(strResCol)) {
                                         //Take NULL value
-                                        joinRow[strResCol]          = DBNull.Value;
+                                        joinRow[strResCol]       = DBNull.Value;
                                     }
 
                                     //Right value is NOT NULL
                                     else {
                                         //Take value from right
-                                        joinRow[strResCol]          = rightRow[strResCol];
+                                        joinRow[strResCol]       = rightRow[strResCol];
                                     }
 
                                 }
@@ -235,7 +235,7 @@ namespace RDFSharp.Query
                                     //Right value is NULL
                                     if (rightRow.IsNull(strResCol)) {
                                         //Take value from left
-                                        joinRow[strResCol]          = leftRow[strResCol];
+                                        joinRow[strResCol]       = leftRow[strResCol];
                                     }
 
                                     //Right value is NOT NULL
@@ -244,13 +244,13 @@ namespace RDFSharp.Query
                                         //Left value is EQUAL TO right value
                                         if (leftRow[strResCol].ToString().Equals(rightRow[strResCol].ToString(), StringComparison.Ordinal)) {
                                             //Take value from left (it's the same)
-                                            joinRow[strResCol]      = leftRow[strResCol];
+                                            joinRow[strResCol]   = leftRow[strResCol];
                                         }
 
                                         //Left value is NOT EQUAL TO right value
                                         else {
                                             //Raise the join invalidation flag
-                                            joinInvalidationFlag    = true;
+                                            joinInvalidationFlag = true;
                                             //Reject changes on the join row
                                             joinRow.RejectChanges();
                                         }
@@ -265,20 +265,20 @@ namespace RDFSharp.Query
 
                     //Step 7: Add join row to finalResults table
                     if (!joinInvalidationFlag) {
-                        joinRow.AcceptChanges();
-                        finalResult.Rows.Add(joinRow);
-                        foundAnyResult        = true;
+                         joinRow.AcceptChanges();
+                         finalResult.Rows.Add(joinRow);
+                         foundAnyResult       = true;
                     }
 
                 }
 
                 //Step 8: Manage presence of "OPTIONAL" pattern to the right
                 if (!foundAnyResult && dt2IsOptionalTable) {
-                    //In this case, the left row must be kept anyway and other columns from right are NULL
-                    DataRow optionalRow       = finalResult.NewRow();
-                    optionalRow.ItemArray     = leftRow.ItemArray;
-                    optionalRow.AcceptChanges();
-                    finalResult.Rows.Add(optionalRow);
+                     //In this case, the left row must be kept anyway and other columns from right are NULL
+                     DataRow optionalRow      = finalResult.NewRow();
+                     optionalRow.ItemArray    = leftRow.ItemArray;
+                     optionalRow.AcceptChanges();
+                     finalResult.Rows.Add(optionalRow);
                 }
 
             }

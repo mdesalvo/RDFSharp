@@ -25,7 +25,7 @@ using RDFSharp.Store;
 namespace RDFSharp.Query {
 
     /// <summary>
-    /// RDFDescribeQueryEngine is the MIRELLA SPARQL query subengine for construction and execution of "DESCRIBE" queries
+    /// RDFDescribeQueryEngine is the subengine for construction and execution of SPARQL DESCRIBE queries (MIRELLA)
     /// </summary>
     internal static class RDFDescribeQueryEngine {
 
@@ -123,16 +123,16 @@ namespace RDFSharp.Query {
                 //Populate its metadata
                 query.PatternGroupResultTables[patternGroup].TableName = patternGroup.ToString();
                 if (!query.PatternGroupResultTables[patternGroup].ExtendedProperties.ContainsKey("IsOptional")) {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
                 }
                 else {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties["IsOptional"]  = patternGroup.IsOptional;
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties["IsOptional"]  = patternGroup.IsOptional;
                 }
                 if (!query.PatternGroupResultTables[patternGroup].ExtendedProperties.ContainsKey("JoinAsUnion")) {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
                 }
                 else {
-                    query.PatternGroupResultTables[patternGroup].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
+                     query.PatternGroupResultTables[patternGroup].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
                 }
 
             }
@@ -169,9 +169,9 @@ namespace RDFSharp.Query {
                     //Search on STORE
                     else {
                         //Search as RESOURCE (S-P-O)
-                        RDFMemoryStore desc  = ((RDFMemoryStore)((RDFMemoryStore)((RDFMemoryStore)((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt))
-                                                    .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt)))
-                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt)));
+                        RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt)
+                                                    .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt))
+                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt));
                         result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                     }
 
@@ -196,7 +196,7 @@ namespace RDFSharp.Query {
                     if (dt is RDFVariable) {
 
                         //Process the variable
-                        if(resultTable.Columns.Contains(dt.ToString())) {
+                        if (resultTable.Columns.Contains(dt.ToString())) {
 
                             //Iterate the results datatable's rows to retrieve terms to be described
                             IEnumerator rowsEnum           = resultTable.Rows.GetEnumerator();
@@ -228,14 +228,14 @@ namespace RDFSharp.Query {
                                     else {
                                         //Search as RESOURCE (S-P-O)
                                         if (term is RDFResource) {
-                                            RDFMemoryStore desc  = ((RDFMemoryStore)((RDFMemoryStore)((RDFMemoryStore)((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)term))
-                                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)term)))
-                                                                            .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)term)));
+                                            RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)term)
+                                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)term))
+                                                                            .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)term));
                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                                         }
                                         //Search as LITERAL (L)
                                         else {
-                                            RDFMemoryStore desc  = ((RDFMemoryStore)((RDFStore)graphOrStore).SelectQuadruplesByLiteral((RDFLiteral)term));
+                                            RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesByLiteral((RDFLiteral)term);
                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                                         }
                                     }
@@ -263,9 +263,9 @@ namespace RDFSharp.Query {
                         //Search on STORE
                         else {
                             //Search as RESOURCE (S-P-O)
-                            RDFMemoryStore desc  = ((RDFMemoryStore)((RDFMemoryStore)((RDFMemoryStore)((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt))
-                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt)))
-                                                            .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt)));
+                            RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt)
+                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt))
+                                                            .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt));
                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                         }
 

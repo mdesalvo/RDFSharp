@@ -181,10 +181,10 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Adds the given resource to the describe terms of the query
         /// </summary>
-        public RDFDescribeQuery AddDescribeTerm(RDFResource describeRes) {
-            if (describeRes != null) {
-                if (!this.DescribeTerms.Exists(dt => dt.Equals(describeRes))) {
-                    this.DescribeTerms.Add(describeRes);
+        public RDFDescribeQuery AddDescribeTerm(RDFResource describeTerm) {
+            if (describeTerm != null) {
+                if (!this.DescribeTerms.Exists(dt => dt.Equals(describeTerm))) {
+                     this.DescribeTerms.Add(describeTerm);
                 }
             }
             return this;
@@ -196,12 +196,12 @@ namespace RDFSharp.Query {
         public RDFDescribeQuery AddDescribeTerm(RDFVariable describeVar) {
             if (describeVar != null) {
                 if (!this.DescribeTerms.Exists(dt => dt.Equals(describeVar))) {
-                    this.DescribeTerms.Add(describeVar);
+                     this.DescribeTerms.Add(describeVar);
 
-                    //Variable
-                    if (!this.Variables.Exists(v => v.Equals(describeVar))) {
-                        this.Variables.Add(describeVar);
-                    }
+                     //Variable
+                     if (!this.Variables.Exists(v => v.Equals(describeVar))) {
+                          this.Variables.Add(describeVar);
+                     }
 
                 }
             }
@@ -214,7 +214,7 @@ namespace RDFSharp.Query {
         public RDFDescribeQuery AddPatternGroup(RDFPatternGroup patternGroup) {
             if (patternGroup != null) {
                 if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
-                    this.PatternGroups.Add(patternGroup);
+                     this.PatternGroups.Add(patternGroup);
                 }
             }
             return this;
@@ -224,9 +224,9 @@ namespace RDFSharp.Query {
         /// Adds the given modifier to the query
         /// </summary>
         public RDFDescribeQuery AddModifier(RDFLimitModifier modifier) {
-            if(modifier != null) {
+            if (modifier != null) {
                 if (!this.Modifiers.Any(m => m is RDFLimitModifier)) {
-                    this.Modifiers.Add(modifier);
+                     this.Modifiers.Add(modifier);
                 }
             }
             return this;
@@ -236,9 +236,9 @@ namespace RDFSharp.Query {
         /// Adds the given modifier to the query
         /// </summary>
         public RDFDescribeQuery AddModifier(RDFOffsetModifier modifier) {
-            if(modifier != null) {
+            if (modifier != null) {
                 if (!this.Modifiers.Any(m => m is RDFOffsetModifier)) {
-                    this.Modifiers.Add(modifier);
+                     this.Modifiers.Add(modifier);
                 }
             }
             return this;
@@ -372,14 +372,14 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         #region TrueFederations
-                        foreach (RDFStore store in federation.Stores.Values) {
+                        foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
                             RDFDescribeQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
                                 fedPatternResultTables[patternGroup].ForEach(fprt => 

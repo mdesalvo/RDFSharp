@@ -47,8 +47,8 @@ namespace RDFSharp.Query {
         /// Default-ctor to build a comparison filter of the given type on the given filters
         /// </summary>
         public RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember leftMember, RDFPatternMember rightMember) {
-            if (leftMember != null) {
-                if (rightMember != null) {
+            if (leftMember               != null) {
+                if (rightMember          != null) {
                     this.ComparisonFlavor = comparisonFlavor;
                     this.LeftMember       = leftMember;
                     this.RightMember      = rightMember;
@@ -72,22 +72,22 @@ namespace RDFSharp.Query {
             String leftValue  = RDFQueryUtilities.PrintRDFPatternMember(this.LeftMember);
             String rightValue = RDFQueryUtilities.PrintRDFPatternMember(this.RightMember);
 
-            if (this.ComparisonFlavor == RDFQueryEnums.RDFComparisonFlavors.LessThan) {
-                return "FILTER ( " + leftValue + " < "   + rightValue + " )";
+            switch (this.ComparisonFlavor) {
+                case RDFQueryEnums.RDFComparisonFlavors.LessThan:
+                    return "FILTER ( " + leftValue + " < "  + rightValue + " )";
+                case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
+                    return "FILTER ( " + leftValue + " <= " + rightValue + " )";
+                case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
+                    return "FILTER ( " + leftValue + " = "  + rightValue + " )";
+                case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
+                    return "FILTER ( " + leftValue + " != " + rightValue + " )";
+                case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
+                    return "FILTER ( " + leftValue + " >= " + rightValue + " )";
+                case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
+                    return "FILTER ( " + leftValue + " > "  + rightValue + " )";
+                default:
+                    throw new RDFQueryException("Cannot get string representation of unknown '" + this.ComparisonFlavor  + "' RDFComparisonFilter.");
             }
-            if (this.ComparisonFlavor == RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan) {
-                return "FILTER ( " + leftValue + " <= "  + rightValue + " )";
-            }
-            if (this.ComparisonFlavor == RDFQueryEnums.RDFComparisonFlavors.EqualTo)  {
-                return "FILTER ( " + leftValue + " = "   + rightValue + " )";
-            }
-            if (this.ComparisonFlavor == RDFQueryEnums.RDFComparisonFlavors.NotEqualTo) {
-                return "FILTER ( " + leftValue + " != "  + rightValue + " )";
-            }
-            if (this.ComparisonFlavor == RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan) {
-                return "FILTER ( " + leftValue + " >= "  + rightValue + " )";
-            }
-            return "FILTER ( " + leftValue + " > "   + rightValue + " )";
         }
         #endregion
 

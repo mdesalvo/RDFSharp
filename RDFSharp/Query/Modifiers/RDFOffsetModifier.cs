@@ -39,7 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an Offset modifier on a query 
         /// </summary>
         public RDFOffsetModifier(Int32 offset) {
-            if (offset >= 0) {
+            if (offset         >= 0) {
                 this.Offset     = offset;
                 this.ModifierID = RDFModelUtilities.CreateHash(this.ToString());   
             }

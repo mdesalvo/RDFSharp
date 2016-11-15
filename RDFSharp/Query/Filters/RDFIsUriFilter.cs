@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable
         /// </summary>
         public RDFIsUriFilter(RDFVariable variable) {
-            if (variable != null) {
+            if (variable     != null) {
                 this.Variable = variable;
                 this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
             }

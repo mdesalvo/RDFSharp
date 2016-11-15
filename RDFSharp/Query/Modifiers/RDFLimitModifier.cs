@@ -39,7 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a Limit modifier on a query 
         /// </summary>
         public RDFLimitModifier(Int32 limit) {
-            if (limit >= 0) {
+            if (limit          >= 0) {
                 this.Limit      = limit;
                 this.ModifierID = RDFModelUtilities.CreateHash(this.ToString());   
             }

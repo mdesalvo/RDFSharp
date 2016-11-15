@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the query result
         /// </summary>
         public void ToSparqlXmlResult(String filepath) {
-            if (filepath != null && filepath.Trim() != String.Empty) {
+            if (filepath != null) {
 
                 #region serialize
                 using (XmlTextWriter sparqlWriter       = new XmlTextWriter(filepath, Encoding.UTF8)) {
@@ -68,7 +68,7 @@ namespace RDFSharp.Query
                     sparqlWriter.Formatting             = Formatting.Indented;
 
                     #region xmlDecl
-                    XmlDeclaration sparqlDecl           = sparqlDoc.CreateXmlDeclaration("1.0", null, null);
+                    XmlDeclaration sparqlDecl           = sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
                     sparqlDoc.AppendChild(sparqlDecl);
                     #endregion
 
@@ -132,7 +132,7 @@ namespace RDFSharp.Query
                                             xmlLang.AppendChild(xmlLangText);
                                             litElement.Attributes.Append(xmlLang);
                                         }
-                                        XmlText plainLiteralText = sparqlDoc.CreateTextNode(HttpUtility.HtmlDecode(((RDFLiteral)rdfTerm).Value));
+                                        XmlText plainLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)rdfTerm).Value)));
                                         litElement.AppendChild(plainLiteralText);
                                     }
                                     else {
@@ -140,7 +140,7 @@ namespace RDFSharp.Query
                                         XmlText datatypeText     = sparqlDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)rdfTerm).Datatype));
                                         datatype.AppendChild(datatypeText);
                                         litElement.Attributes.Append(datatype);
-                                        XmlText typedLiteralText = sparqlDoc.CreateTextNode(HttpUtility.HtmlDecode(((RDFLiteral)rdfTerm).Value));
+                                        XmlText typedLiteralText = sparqlDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)rdfTerm).Value)));
                                         litElement.AppendChild(typedLiteralText);
                                     }
                                     bindingElement.AppendChild(litElement);
@@ -172,163 +172,163 @@ namespace RDFSharp.Query
             try {
 
                 #region deserialize
-                XmlReaderSettings xrs           = new XmlReaderSettings();
-                xrs.IgnoreComments              = true;
-                xrs.DtdProcessing               = DtdProcessing.Ignore;
+                RDFSelectQueryResult result       = new RDFSelectQueryResult(filepath);
+                using(StreamReader streamReader   = new StreamReader(filepath, Encoding.UTF8)) {
+                    using(XmlTextReader xmlReader = new XmlTextReader(streamReader)) {
+                        xmlReader.DtdProcessing   = DtdProcessing.Ignore;
+                        xmlReader.Normalization   = false;
 
-                RDFSelectQueryResult result     = new RDFSelectQueryResult(filepath);
-                using(XmlReader xr              = XmlReader.Create(new StreamReader(filepath), xrs)) {
-
-                    #region load
-                    XmlDocument srxDoc          = new XmlDocument();
-                    srxDoc.Load(xr);
-                    #endregion
-
-                    #region parse
-                    Boolean foundHead           = false;
-                    Boolean foundResults        = false;
-                    var nodesEnum               = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
-                    while (nodesEnum != null   && nodesEnum.MoveNext()) {
-                        XmlNode node            = (XmlNode)nodesEnum.Current;
-
-                        #region HEAD
-                        if (node.Name.ToUpperInvariant().Equals("HEAD", StringComparison.Ordinal)) {
-                            foundHead           = true;
-                            if(node.HasChildNodes) {
-                                var variablesEnum   = node.ChildNodes.GetEnumerator();
-                                while (variablesEnum != null && variablesEnum.MoveNext()) {
-
-                                    #region VARIABLE
-                                    XmlNode varNode = (XmlNode)variablesEnum.Current;
-                                    if(varNode.Name.ToUpperInvariant().Equals("VARIABLE", StringComparison.Ordinal)) {
-                                        if (varNode.Attributes.Count > 0) {
-                                            XmlAttribute varAttr = varNode.Attributes["name"];
-                                            if (varAttr != null && varAttr.Value != String.Empty) {
-                                                RDFQueryUtilities.AddColumn(result.SelectResults, varAttr.Value);
-                                            }
-                                            else {
-                                                throw new Exception("one \"variable\" node was found without, or with empty, \"name\" attribute.");
-                                            }
-                                        }
-                                        else {
-                                            throw new Exception("one \"variable\" node was found without attributes.");
-                                        }
-                                    }
-                                    #endregion
-
-                                }
-                            }
-                            else {
-                                throw new Exception("\"head\" node was found without childrens.");
-                            }
-                        }
+                        #region load
+                        XmlDocument srxDoc        = new XmlDocument();
+                        srxDoc.Load(xmlReader);
                         #endregion
 
-                        #region RESULTS
-                        else if (node.Name.ToUpperInvariant().Equals("RESULTS", StringComparison.Ordinal)) {
-                            foundResults        = true;
-                            if(foundHead) {
-                                var resultsEnum = node.ChildNodes.GetEnumerator();
-                                while (resultsEnum != null && resultsEnum.MoveNext()) {
-                                    XmlNode resNode = (XmlNode)resultsEnum.Current;
+                        #region parse
+                        Boolean foundHead         = false;
+                        Boolean foundResults      = false;
+                        var nodesEnum             = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
+                        while (nodesEnum != null && nodesEnum.MoveNext()) {
+                            XmlNode node          = (XmlNode)nodesEnum.Current;
 
-                                    #region RESULT
-                                    if (resNode.Name.ToUpperInvariant().Equals("RESULT", StringComparison.Ordinal)) {
-                                        if (resNode.HasChildNodes) {
-                                            Dictionary<String, String> results = new Dictionary<String, String>();
-                                            var bdgEnum = resNode.ChildNodes.GetEnumerator();
-                                            while (bdgEnum != null && bdgEnum.MoveNext()) {
-                                                XmlNode bdgNode  = (XmlNode)bdgEnum.Current;
-                                                Boolean foundUri = false;
-                                                Boolean foundLit = false;
+                            #region HEAD
+                            if (node.Name.ToUpperInvariant().Equals("HEAD", StringComparison.Ordinal)) {
+                                foundHead         = true;
+                                if (node.HasChildNodes) {
+                                    var variablesEnum     = node.ChildNodes.GetEnumerator();
+                                    while (variablesEnum != null && variablesEnum.MoveNext()) {
 
-                                                #region BINDING
-                                                if (bdgNode.Name.ToUpperInvariant().Equals("BINDING", StringComparison.Ordinal)) {
-                                                    if (bdgNode.Attributes != null && bdgNode.Attributes.Count > 0)  {
-                                                        XmlAttribute varAttr = bdgNode.Attributes["name"];
-                                                        if (varAttr != null && varAttr.Value != String.Empty) {
-                                                            if(bdgNode.HasChildNodes) {
+                                        #region VARIABLE
+                                        XmlNode varNode = (XmlNode)variablesEnum.Current;
+                                        if (varNode.Name.ToUpperInvariant().Equals("VARIABLE", StringComparison.Ordinal)) {
+                                            if (varNode.Attributes.Count > 0) {
+                                                XmlAttribute varAttr = varNode.Attributes["name"];
+                                                if (varAttr != null && varAttr.Value != String.Empty) {
+                                                    RDFQueryUtilities.AddColumn(result.SelectResults, varAttr.Value);
+                                                }
+                                                else {
+                                                    throw new Exception("one \"variable\" node was found without, or with empty, \"name\" attribute.");
+                                                }
+                                            }
+                                            else {
+                                                throw new Exception("one \"variable\" node was found without attributes.");
+                                            }
+                                        }
+                                        #endregion
 
-                                                                #region URI / BNODE
-                                                                if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("URI", StringComparison.Ordinal) || 
-																	bdgNode.FirstChild.Name.ToUpperInvariant().Equals("BNODE", StringComparison.Ordinal)) {
-                                                                    foundUri = true;
-                                                                    if(RDFModelUtilities.GetUriFromString(bdgNode.InnerText) != null) {
-                                                                        results.Add(varAttr.Value, bdgNode.InnerText);
-                                                                    }
-                                                                    else {
-                                                                        throw new Exception("one \"uri\" node contained data not corresponding to a valid Uri.");
-                                                                    }
-                                                                }
-                                                                #endregion
+                                    }
+                                }
+                                else {
+                                    throw new Exception("\"head\" node was found without childrens.");
+                                }
+                            }
+                            #endregion
 
-                                                                #region LITERAL
-                                                                else if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("LITERAL", StringComparison.Ordinal)) {
-                                                                    foundLit = true;
-                                                                    if (bdgNode.FirstChild.Attributes != null && bdgNode.FirstChild.Attributes.Count > 0) { 
-                                                                        XmlAttribute litAttr = bdgNode.FirstChild.Attributes["datatype"];
-                                                                        if (litAttr != null && litAttr.Value != String.Empty) {
-                                                                            results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "^^" + litAttr.Value);
+                            #region RESULTS
+                            else if (node.Name.ToUpperInvariant().Equals("RESULTS", StringComparison.Ordinal)) {
+                                foundResults      = true;
+                                if (foundHead) {
+                                    var resultsEnum     = node.ChildNodes.GetEnumerator();
+                                    while (resultsEnum != null && resultsEnum.MoveNext()) {
+                                        XmlNode resNode = (XmlNode)resultsEnum.Current;
+
+                                        #region RESULT
+                                        if (resNode.Name.ToUpperInvariant().Equals("RESULT", StringComparison.Ordinal)) {
+                                            if (resNode.HasChildNodes) {
+                                                Dictionary<String, String> results = new Dictionary<String, String>();
+                                                IEnumerator bdgEnum  = resNode.ChildNodes.GetEnumerator();
+                                                while (bdgEnum      != null && bdgEnum.MoveNext()) {
+                                                    XmlNode bdgNode  = (XmlNode)bdgEnum.Current;
+                                                    Boolean foundUri = false;
+                                                    Boolean foundLit = false;
+
+                                                    #region BINDING
+                                                    if (bdgNode.Name.ToUpperInvariant().Equals("BINDING", StringComparison.Ordinal)) {
+                                                        if (bdgNode.Attributes != null && bdgNode.Attributes.Count > 0)  {
+                                                            XmlAttribute varAttr = bdgNode.Attributes["name"];
+                                                            if (varAttr != null && varAttr.Value != String.Empty) {
+                                                                if(bdgNode.HasChildNodes) {
+
+                                                                    #region URI / BNODE
+                                                                    if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("URI", StringComparison.Ordinal) || 
+																	    bdgNode.FirstChild.Name.ToUpperInvariant().Equals("BNODE", StringComparison.Ordinal)) {
+                                                                        foundUri = true;
+                                                                        if(RDFModelUtilities.GetUriFromString(bdgNode.InnerText) != null) {
+                                                                            results.Add(varAttr.Value, bdgNode.InnerText);
                                                                         }
                                                                         else {
-                                                                            litAttr          = bdgNode.FirstChild.Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
-                                                                            if (litAttr != null && litAttr.Value != String.Empty) {
-                                                                                results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "@" + litAttr.Value);
-                                                                            }
-                                                                            else {
-                                                                                throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
-                                                                            }
+                                                                            throw new Exception("one \"uri\" node contained data not corresponding to a valid Uri.");
                                                                         }
                                                                     }
-                                                                    else {
-                                                                        results.Add(varAttr.Value, bdgNode.InnerText);
-                                                                    }
-                                                                }
-                                                                #endregion
+                                                                    #endregion
 
+                                                                    #region LITERAL
+                                                                    else if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("LITERAL", StringComparison.Ordinal)) {
+                                                                        foundLit = true;
+                                                                        if (bdgNode.FirstChild.Attributes != null && bdgNode.FirstChild.Attributes.Count > 0) { 
+                                                                            XmlAttribute litAttr = bdgNode.FirstChild.Attributes["datatype"];
+                                                                            if (litAttr         != null && litAttr.Value != String.Empty) {
+                                                                                results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "^^" + litAttr.Value);
+                                                                            }
+                                                                            else {
+                                                                                litAttr          = bdgNode.FirstChild.Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
+                                                                                if (litAttr     != null && litAttr.Value != String.Empty) {
+                                                                                    results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "@" + litAttr.Value);
+                                                                                }
+                                                                                else {
+                                                                                    throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            results.Add(varAttr.Value, bdgNode.InnerText);
+                                                                        }
+                                                                    }
+                                                                    #endregion
+
+                                                                }
+                                                                else {
+                                                                    throw new Exception("one \"binding\" node was found without childrens.");
+                                                                }
                                                             }
                                                             else {
-                                                                throw new Exception("one \"binding\" node was found without childrens.");
+                                                                throw new Exception("one \"binding\" node was found without, or with empty, \"name\" attribute.");
                                                             }
                                                         }
                                                         else {
-                                                            throw new Exception("one \"binding\" node was found without, or with empty, \"name\" attribute.");
+                                                            throw new Exception("one \"binding\" node was found without attributes.");
                                                         }
                                                     }
-                                                    else {
-                                                        throw new Exception("one \"binding\" node was found without attributes.");
+                                                    #endregion
+
+                                                    if (!foundUri && !foundLit) {
+                                                         throw new Exception("one \"binding\" node was found without mandatory child \"uri\" or \"literal\".");
                                                     }
-                                                }
-                                                #endregion
 
-                                                if (!foundUri && !foundLit) {
-                                                    throw new Exception("one \"binding\" node was found without mandatory child \"uri\" or \"literal\".");
                                                 }
-
+                                                RDFQueryUtilities.AddRow(result.SelectResults, results);
                                             }
-                                            RDFQueryUtilities.AddRow(result.SelectResults, results);
                                         }
-                                    }
-                                    #endregion
+                                        #endregion
 
+                                    }
+                                }
+                                else {
+                                    throw new Exception("\"head\" node was not found, or was after \"results\" node.");
                                 }
                             }
-                            else {
-                                throw new Exception("\"head\" node was not found, or was after \"results\" node.");
-                            }
+                            #endregion
+
+                        }
+
+                        if (!foundHead) {
+                            throw new Exception("mandatory \"head\" node was not found");
+                        }
+                        if (!foundResults) {
+                            throw new Exception("mandatory \"results\" node was not found");
                         }
                         #endregion
 
                     }
-
-                    if (!foundHead) {
-                        throw new Exception("mandatory \"head\" node was not found");
-                    }
-                    if (!foundResults) {
-                        throw new Exception("mandatory \"results\" node was not found");
-                    }
-                    #endregion
-
                 }
                 return result;
                 #endregion

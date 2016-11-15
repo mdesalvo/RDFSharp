@@ -43,8 +43,8 @@ namespace RDFSharp.Query
         /// Default-ctor to build an "AND" filter on the given filters
         /// </summary>
         public RDFBooleanAndFilter(RDFFilter leftFilter, RDFFilter rightFilter) {
-            if (leftFilter != null) {
-                if(rightFilter != null) {
+            if (leftFilter          != null) {
+                if (rightFilter     != null) {
                     this.LeftFilter  = leftFilter;
                     this.RightFilter = rightFilter;
                     this.FilterID    = RDFModelUtilities.CreateHash(this.ToString());

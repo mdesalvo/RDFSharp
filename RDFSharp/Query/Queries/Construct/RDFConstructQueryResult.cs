@@ -67,7 +67,7 @@ namespace RDFSharp.Query {
                 subj               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
                 pred               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
                 obj                = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
-                if(obj is RDFResource) {
+                if (obj is RDFResource) {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
                 }
                 else {
@@ -83,7 +83,7 @@ namespace RDFSharp.Query {
         /// </summary>
         public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph) {
             RDFConstructQueryResult result = new RDFConstructQueryResult(String.Empty);
-            if(graph != null) {
+            if (graph != null) {
 
                 //Transform the graph into a datatable and assign it to the query result
                 result.ConstructResults    = graph.ToDataTable();

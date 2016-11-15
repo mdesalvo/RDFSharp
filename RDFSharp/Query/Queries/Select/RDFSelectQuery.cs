@@ -191,7 +191,7 @@ namespace RDFSharp.Query {
         public RDFSelectQuery AddPatternGroup(RDFPatternGroup patternGroup) {
             if (patternGroup != null) {
                 if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
-                    this.PatternGroups.Add(patternGroup);
+                     this.PatternGroups.Add(patternGroup);
                 }
             }
             return this;
@@ -218,7 +218,7 @@ namespace RDFSharp.Query {
 
                 //Add the modifier, avoiding duplicates
                 if (!this.Modifiers.Exists(m => m.Equals(modifier))) {
-                    this.Modifiers.Add(modifier);
+                     this.Modifiers.Add(modifier);
                 }
 
             }
@@ -317,14 +317,14 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         #region TrueFederations
-                        foreach (RDFStore store in federation.Stores.Values) {
+                        foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
                             RDFSelectQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
                                 fedPatternResultTables[patternGroup].ForEach(fprt => 
