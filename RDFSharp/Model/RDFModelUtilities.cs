@@ -440,7 +440,7 @@ namespace RDFSharp.Model
                     return RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT;
                 }
                 else {
-                    return RDFModelEnums.RDFDatatypes.RDFS_LITERAL; //Default unsupported datatypes to rdfs:Literal
+                    return RDFModelEnums.RDFDatatypes.RDFS_LITERAL; //Unknown datatypes default to instances of "rdfs:Literal"
                 }
 
             }
