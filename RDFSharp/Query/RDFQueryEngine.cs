@@ -1003,7 +1003,7 @@ namespace RDFSharp.Query
                 switch (patternHole) {
                     //->P->O
                     case RDFQueryEnums.RDFPatternHoles.S:
-                        bindings.Add(pattern.Subject.ToString(),   t.Subject.ToString());
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
                         break;
                     //S->->O
                     case RDFQueryEnums.RDFPatternHoles.P:
@@ -1011,28 +1011,38 @@ namespace RDFSharp.Query
                         break;
                     //S->P->
                     case RDFQueryEnums.RDFPatternHoles.O:
-                        bindings.Add(pattern.Object.ToString(),    t.Object.ToString());
+                        bindings.Add(pattern.Object.ToString(), t.Object.ToString());
                         break;
                     //->->O
                     case RDFQueryEnums.RDFPatternHoles.SP:
-                        bindings.Add(pattern.Subject.ToString(),   t.Subject.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        }
                         break;
                     //->P->
                     case RDFQueryEnums.RDFPatternHoles.SO:
-                        bindings.Add(pattern.Subject.ToString(),   t.Subject.ToString());
-                        bindings.Add(pattern.Object.ToString(),    t.Object.ToString());
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        }
                         break;
                     //S->->
                     case RDFQueryEnums.RDFPatternHoles.PO:
                         bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
-                        bindings.Add(pattern.Object.ToString(),    t.Object.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        }
                         break;
                     //->->
                     case RDFQueryEnums.RDFPatternHoles.SPO:
-                        bindings.Add(pattern.Subject.ToString(),   t.Subject.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
-                        bindings.Add(pattern.Object.ToString(),    t.Object.ToString());
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        }
                         break;
                 }
                 RDFQueryUtilities.AddRow(resultTable, bindings);
@@ -1051,21 +1061,25 @@ namespace RDFSharp.Query
                 switch (patternHole) {
                     //->S->P->O
                     case RDFQueryEnums.RDFPatternHoles.C:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         break;
                     //->->P->O
                     case RDFQueryEnums.RDFPatternHoles.CS:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
                         break;
                     //C->->P->O
                     case RDFQueryEnums.RDFPatternHoles.S:
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
                         break;
                     //->S->->O
                     case RDFQueryEnums.RDFPatternHoles.CP:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
                         break;
                     //C->S->->O
                     case RDFQueryEnums.RDFPatternHoles.P:
@@ -1073,58 +1087,88 @@ namespace RDFSharp.Query
                         break;
                     //->S->P->
                     case RDFQueryEnums.RDFPatternHoles.CO:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                     //C->S->P->
                     case RDFQueryEnums.RDFPatternHoles.O:
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Object.ToString(), q.Object.ToString());
                         break;
                     //->->->O
                     case RDFQueryEnums.RDFPatternHoles.CSP:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
                         break;
                     //C->->->O
                     case RDFQueryEnums.RDFPatternHoles.SP:
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
                         break;
                     //->->P->
                     case RDFQueryEnums.RDFPatternHoles.CSO:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                     //C->->P->
                     case RDFQueryEnums.RDFPatternHoles.SO:
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                     //->S->->
                     case RDFQueryEnums.RDFPatternHoles.CPO:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                     //C->S->->
                     case RDFQueryEnums.RDFPatternHoles.PO:
                         bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                     //->->->
                     case RDFQueryEnums.RDFPatternHoles.CSPO:
-                        bindings.Add(pattern.Context.ToString(),   q.Context.ToString());
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                     //C->->->
                     case RDFQueryEnums.RDFPatternHoles.SPO:
-                        bindings.Add(pattern.Subject.ToString(),   q.Subject.ToString());
-                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        bindings.Add(pattern.Object.ToString(),    q.Object.ToString());
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
                         break;
                 }
                 RDFQueryUtilities.AddRow(resultTable, bindings);
