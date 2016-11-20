@@ -74,6 +74,7 @@
     <Compile Include="Query\RDFPattern.cs" />
     <Compile Include="Query\RDFPatternGroup.cs" />
     <Compile Include="Query\RDFPatternMember.cs" />
+    <Compile Include="Query\RDFQuery.cs" />
     <Compile Include="Query\RDFQueryEngine.cs" />
     <Compile Include="Query\RDFQueryEnums.cs" />
     <Compile Include="Query\RDFQueryException.cs" />
@@ -97,16 +98,12 @@
     <Compile Include="Query\Modifiers\RDFOffsetModifier.cs" />
     <Compile Include="Query\Modifiers\RDFOrderByModifier.cs" />
     <Compile Include="Query\Queries\Ask\RDFAskQuery.cs" />
-    <Compile Include="Query\Queries\Ask\RDFAskQueryEngine.cs" />
     <Compile Include="Query\Queries\Ask\RDFAskQueryResult.cs" />
     <Compile Include="Query\Queries\Construct\RDFConstructQuery.cs" />
-    <Compile Include="Query\Queries\Construct\RDFConstructQueryEngine.cs" />
     <Compile Include="Query\Queries\Construct\RDFConstructQueryResult.cs" />
     <Compile Include="Query\Queries\Describe\RDFDescribeQuery.cs" />
-    <Compile Include="Query\Queries\Describe\RDFDescribeQueryEngine.cs" />
     <Compile Include="Query\Queries\Describe\RDFDescribeQueryResult.cs" />
     <Compile Include="Query\Queries\Select\RDFSelectQuery.cs" />
-    <Compile Include="Query\Queries\Select\RDFSelectQueryEngine.cs" />
     <Compile Include="Query\Queries\Select\RDFSelectQueryResult.cs" />
     <!-- Store -->
     <Compile Include="Store\RDFContext.cs" />

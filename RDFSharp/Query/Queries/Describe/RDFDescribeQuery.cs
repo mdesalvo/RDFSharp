@@ -27,7 +27,7 @@ namespace RDFSharp.Query {
     /// <summary>
     /// RDFDescribeQuery is the SPARQL "DESCRIBE" query implementation.
     /// </summary>
-    public class RDFDescribeQuery {
+    public class RDFDescribeQuery: RDFQuery {
 
         #region Properties
         /// <summary>
@@ -36,46 +36,22 @@ namespace RDFSharp.Query {
         internal List<RDFPatternMember> DescribeTerms { get; set; }
 
         /// <summary>
-        /// List of body pattern groups carried by the query
-        /// </summary>
-        internal List<RDFPatternGroup> PatternGroups { get; set; }
-
-        /// <summary>
-        /// Dictionary of pattern result tables
-        /// </summary>
-        internal Dictionary<RDFPatternGroup, List<DataTable>> PatternResultTables { get; set; }
-
-        /// <summary>
-        /// Dictionary of pattern group result tables
-        /// </summary>
-        internal Dictionary<RDFPatternGroup, DataTable> PatternGroupResultTables { get; set; }
-
-        /// <summary>
         /// List of variables carried by the template patterns of the query
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
 
         /// <summary>
-        /// List of modifiers carried by the query
-        /// </summary>
-        internal List<RDFModifier> Modifiers { get; set; }
-
-        /// <summary>
-        /// Checks if the query is a "DESCRIBE *" query
+        /// Checks if the query is a "DESCRIBE *" query, so contains no describe terms
         /// </summary>
         public Boolean IsStar {
-            get {
-                return (this.DescribeTerms.Count == 0);
-            }
+            get { return this.DescribeTerms.Count == 0; }
         }
 
         /// <summary>
         /// Checks if the query is empty, so contains no pattern groups
         /// </summary>
-        public Boolean IsEmpty {
-            get {
-                return (this.PatternGroups.Count == 0);
-            }
+        public override Boolean IsEmpty {
+            get { return this.PatternGroups.Count == 0; }
         }
         #endregion
 
@@ -84,12 +60,8 @@ namespace RDFSharp.Query {
         /// Default-ctor to build an empty DESCRIBE query
         /// </summary>
         public RDFDescribeQuery() {
-            this.DescribeTerms            = new List<RDFPatternMember>();
-            this.PatternGroups            = new List<RDFPatternGroup>();
-            this.PatternResultTables      = new Dictionary<RDFPatternGroup, List<DataTable>>();
-            this.PatternGroupResultTables = new Dictionary<RDFPatternGroup, DataTable>();
-            this.Variables                = new List<RDFVariable>();
-            this.Modifiers                = new List<RDFModifier>();
+            this.DescribeTerms = new List<RDFPatternMember>();
+            this.Variables     = new List<RDFVariable>();
         }
         #endregion
 
@@ -114,7 +86,7 @@ namespace RDFSharp.Query {
                 }
 
                 // PATTERN GROUPS
-                if(!this.IsEmpty) {
+                if (!this.IsEmpty) {
                     query.Append("\nWHERE{\n");                
                     Boolean printingUnion         = false;
                     this.PatternGroups.ForEach(pg => {
@@ -259,24 +231,24 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFDescribeQueryEngine.EvaluatePatterns(this, patternGroup, graph);
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, graph);
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFDescribeQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFDescribeQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 4: Get the result table of the query
-                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 5: Describe the terms from the result table
-                    DataTable describeResultTable      = RDFDescribeQueryEngine.DescribeTerms(this, graph, queryResultTable);
+                    DataTable describeResultTable      = RDFQueryEngine.DescribeTerms(this, graph, queryResultTable);
 
                     //Step 6: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults     = RDFDescribeQueryEngine.ApplyModifiers(this, describeResultTable);
+                    describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                 }
                 else {
@@ -286,10 +258,10 @@ namespace RDFSharp.Query {
                     if (this.DescribeTerms.Any(dt => dt is RDFResource)) {
 
                         //Step 1: Describe the terms from the result table
-                        DataTable describeResultTable  = RDFDescribeQueryEngine.DescribeTerms(this, graph, new DataTable());
+                        DataTable describeResultTable  = RDFQueryEngine.DescribeTerms(this, graph, new DataTable());
 
                         //Step 2: Apply the modifiers of the query to the result table
-                        describeResult.DescribeResults = RDFDescribeQueryEngine.ApplyModifiers(this, describeResultTable);
+                        describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                     }
 
@@ -315,24 +287,24 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFDescribeQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFDescribeQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFDescribeQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 4: Get the result table of the query
-                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 5: Describe the terms from the result table
-                    DataTable describeResultTable      = RDFDescribeQueryEngine.DescribeTerms(this, store, queryResultTable);
+                    DataTable describeResultTable      = RDFQueryEngine.DescribeTerms(this, store, queryResultTable);
 
                     //Step 6: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults     = RDFDescribeQueryEngine.ApplyModifiers(this, describeResultTable);
+                    describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                 }
                 else {
@@ -342,10 +314,10 @@ namespace RDFSharp.Query {
                     if (this.DescribeTerms.Any(dt => dt is RDFResource)) {
 
                         //Step 1: Describe the terms from the result table
-                        DataTable describeResultTable  = RDFDescribeQueryEngine.DescribeTerms(this, store, new DataTable());
+                        DataTable describeResultTable  = RDFQueryEngine.DescribeTerms(this, store, new DataTable());
 
                         //Step 2: Apply the modifiers of the query to the result table
-                        describeResult.DescribeResults = RDFDescribeQueryEngine.ApplyModifiers(this, describeResultTable);
+                        describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                     }
 
@@ -375,7 +347,7 @@ namespace RDFSharp.Query {
                         foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
-                            RDFDescribeQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                            RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
@@ -391,24 +363,24 @@ namespace RDFSharp.Query {
                         #endregion
 
                         //Step 3: Get the result table of the current pattern group
-                        RDFDescribeQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 4: Apply the filters of the current pattern group to its result table
-                        RDFDescribeQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 5: Get the result table of the query
-                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 6: Describe the terms on each store and merge them in the federated result table
                     DataTable describeResultTable      = new DataTable(this.ToString());
                     foreach (RDFStore store in federation.Stores.Values) {
-                        describeResultTable.Merge(RDFDescribeQueryEngine.DescribeTerms(this, store, queryResultTable), true, MissingSchemaAction.Add);
+                        describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, queryResultTable), true, MissingSchemaAction.Add);
                     }
 
                     //Step 7: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults     = RDFDescribeQueryEngine.ApplyModifiers(this, describeResultTable);
+                    describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                 }
                 else {
@@ -420,11 +392,11 @@ namespace RDFSharp.Query {
                         //Step 1: Describe the terms on each store and merge them in the federated result table
                         DataTable describeResultTable  = new DataTable(this.ToString());
                         foreach (RDFStore store in federation.Stores.Values) {
-                            describeResultTable.Merge(RDFDescribeQueryEngine.DescribeTerms(this, store, new DataTable()), true, MissingSchemaAction.Add);
+                            describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, new DataTable()), true, MissingSchemaAction.Add);
                         }
 
                         //Step 2: Apply the modifiers of the query to the result table
-                        describeResult.DescribeResults = RDFDescribeQueryEngine.ApplyModifiers(this, describeResultTable);
+                        describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                     }
 

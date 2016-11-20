@@ -28,31 +28,14 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAskQuery is the SPARQL "ASK" query implementation.
     /// </summary>
-    public class RDFAskQuery {
+    public class RDFAskQuery: RDFQuery {
 
         #region Properties
         /// <summary>
-        /// List of pattern groups carried by the query
-        /// </summary>
-        internal List<RDFPatternGroup> PatternGroups { get; set; }
-
-        /// <summary>
-        /// Dictionary of pattern result tables
-        /// </summary>
-        internal Dictionary<RDFPatternGroup, List<DataTable>> PatternResultTables { get; set; }
-
-        /// <summary>
-        /// Dictionary of pattern group result tables
-        /// </summary>
-        internal Dictionary<RDFPatternGroup, DataTable> PatternGroupResultTables { get; set; }
-
-        /// <summary>
         /// Checks if the query is empty, so contains no pattern groups
         /// </summary>
-        public Boolean IsEmpty {
-            get {
-                return this.PatternGroups.Count == 0;
-            }
+        public override Boolean IsEmpty {
+            get { return this.PatternGroups.Count == 0; }
         }
         #endregion
 
@@ -60,11 +43,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty ASK query
         /// </summary>
-        public RDFAskQuery() {
-            this.PatternGroups            = new List<RDFPatternGroup>();
-            this.PatternResultTables      = new Dictionary<RDFPatternGroup, List<DataTable>>();
-            this.PatternGroupResultTables = new Dictionary<RDFPatternGroup, DataTable>();
-        }
+        public RDFAskQuery() { }
         #endregion
 
         #region Interfaces
@@ -141,7 +120,7 @@ namespace RDFSharp.Query
         public RDFAskQuery AddPatternGroup(RDFPatternGroup patternGroup) {
             if (patternGroup != null) {
                 if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
-                    this.PatternGroups.Add(patternGroup);
+                     this.PatternGroups.Add(patternGroup);
                 }
             }
             return this;
@@ -162,18 +141,18 @@ namespace RDFSharp.Query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFAskQueryEngine.EvaluatePatterns(this, patternGroup, graph);
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, graph);
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFAskQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFAskQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 4: Get the result table of the query
-                    DataTable queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 5: Transform the result into a boolean response 
                     askResult.AskResult        = (queryResultTable.Rows.Count > 0);
@@ -200,18 +179,18 @@ namespace RDFSharp.Query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFAskQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFAskQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFAskQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 4: Get the result table of the query
-                    DataTable queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 5: Transform the result into a boolean response 
                     askResult.AskResult        = (queryResultTable.Rows.Count > 0);
@@ -242,7 +221,7 @@ namespace RDFSharp.Query
                         foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
-                            RDFAskQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                            RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
@@ -258,15 +237,15 @@ namespace RDFSharp.Query
                         #endregion
 
                         //Step 3: Get the result table of the current pattern group
-                        RDFAskQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 4: Apply the filters of the current pattern group to its result table
-                        RDFAskQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 5: Get the result table of the query
-                    DataTable queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 6: Transform the result into a boolean response
                     askResult.AskResult        = (queryResultTable.Rows.Count > 0);

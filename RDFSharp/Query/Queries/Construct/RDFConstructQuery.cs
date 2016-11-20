@@ -27,7 +27,7 @@ namespace RDFSharp.Query {
     /// <summary>
     /// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
     /// </summary>
-    public class RDFConstructQuery {
+    public class RDFConstructQuery: RDFQuery {
 
         #region Properties
         /// <summary>
@@ -36,37 +36,15 @@ namespace RDFSharp.Query {
         internal List<RDFPattern> Templates { get; set; }
 
         /// <summary>
-        /// List of body pattern groups carried by the query
-        /// </summary>
-        internal List<RDFPatternGroup> PatternGroups { get; set; }
-
-        /// <summary>
-        /// Dictionary of pattern result tables
-        /// </summary>
-        internal Dictionary<RDFPatternGroup, List<DataTable>> PatternResultTables { get; set; }
-
-        /// <summary>
-        /// Dictionary of pattern group result tables
-        /// </summary>
-        internal Dictionary<RDFPatternGroup, DataTable> PatternGroupResultTables { get; set; }
-
-        /// <summary>
         /// List of variables carried by the template patterns of the query
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
 
         /// <summary>
-        /// List of modifiers carried by the query
-        /// </summary>
-        internal List<RDFModifier> Modifiers { get; set; }
-
-        /// <summary>
         /// Checks if the query is empty, so contains no template patterns
         /// </summary>
-        public Boolean IsEmpty {
-            get {
-                return this.Templates.Count == 0;
-            }
+        public override Boolean IsEmpty {
+            get { return this.Templates.Count == 0; }
         }
         #endregion
 
@@ -75,12 +53,8 @@ namespace RDFSharp.Query {
         /// Default-ctor to build an empty CONSTRUCT query
         /// </summary>
         public RDFConstructQuery() {
-            this.Templates                = new List<RDFPattern>();
-            this.PatternGroups            = new List<RDFPatternGroup>();
-            this.PatternResultTables      = new Dictionary<RDFPatternGroup, List<DataTable>>();
-            this.PatternGroupResultTables = new Dictionary<RDFPatternGroup, DataTable>();
-            this.Variables                = new List<RDFVariable>();
-            this.Modifiers                = new List<RDFModifier>();
+            this.Templates = new List<RDFPattern>();
+            this.Variables = new List<RDFVariable>();
         }
         #endregion
 
@@ -182,35 +156,35 @@ namespace RDFSharp.Query {
         public RDFConstructQuery AddTemplate(RDFPattern template) {
             if (template != null) {
                 if (!this.Templates.Exists(tp => tp.Equals(template))) {
-                    this.Templates.Add(template);
-
-                    //Context
-                    if (template.Context != null && template.Context is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(template.Context))) {
-                             this.Variables.Add((RDFVariable)template.Context);
-                        }
-                    }
-
-                    //Subject
-                    if (template.Subject is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(template.Subject))) {
-                             this.Variables.Add((RDFVariable)template.Subject);
-                        }
-                    }
-
-                    //Predicate
-                    if (template.Predicate is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(template.Predicate))) {
-                             this.Variables.Add((RDFVariable)template.Predicate);
-                        }
-                    }
-
-                    //Object
-                    if (template.Object is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(template.Object))) {
-                             this.Variables.Add((RDFVariable)template.Object);
-                        }
-                    }
+                     this.Templates.Add(template);
+                     
+                     //Context
+                     if (template.Context != null && template.Context is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(template.Context))) {
+                              this.Variables.Add((RDFVariable)template.Context);
+                         }
+                     }
+                     
+                     //Subject
+                     if (template.Subject is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(template.Subject))) {
+                              this.Variables.Add((RDFVariable)template.Subject);
+                         }
+                     }
+                     
+                     //Predicate
+                     if (template.Predicate is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(template.Predicate))) {
+                              this.Variables.Add((RDFVariable)template.Predicate);
+                         }
+                     }
+                     
+                     //Object
+                     if (template.Object is RDFVariable) {
+                         if (!this.Variables.Exists(v => v.Equals(template.Object))) {
+                              this.Variables.Add((RDFVariable)template.Object);
+                         }
+                     }
 
                 }
             }
@@ -268,24 +242,24 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFConstructQueryEngine.EvaluatePatterns(this, patternGroup, graph);
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, graph);
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFConstructQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFConstructQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 4: Get the result table of the query
-                    DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                     //Step 5: Fill the templates from the result table
-                    DataTable filledResultTable         = RDFConstructQueryEngine.FillTemplates(this, queryResultTable);
+                    DataTable filledResultTable         = RDFQueryEngine.FillTemplates(this, queryResultTable);
 
                     //Step 6: Apply the modifiers of the query to the result table
-                    constructResult.ConstructResults    = RDFConstructQueryEngine.ApplyModifiers(this, filledResultTable);
+                    constructResult.ConstructResults    = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
 
                 }
 
@@ -309,24 +283,24 @@ namespace RDFSharp.Query {
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
 
                         //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFConstructQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFConstructQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFConstructQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 4: Get the result table of the query
-                    DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
                     
                     //Step 5: Fill the templates from the result table
-                    DataTable filledResultTable         = RDFConstructQueryEngine.FillTemplates(this, queryResultTable);
+                    DataTable filledResultTable         = RDFQueryEngine.FillTemplates(this, queryResultTable);
 
                     //Step 6: Apply the modifiers of the query to the result table
-                    constructResult.ConstructResults    = RDFConstructQueryEngine.ApplyModifiers(this, filledResultTable);
+                    constructResult.ConstructResults    = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
 
                 }
 
@@ -354,7 +328,7 @@ namespace RDFSharp.Query {
                         foreach (RDFStore store in federation) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
-                            RDFConstructQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                            RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step 2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
@@ -370,21 +344,21 @@ namespace RDFSharp.Query {
                         #endregion
 
                         //Step 3: Get the result table of the current pattern group
-                        RDFConstructQueryEngine.CombinePatterns(this, patternGroup);
+                        RDFQueryEngine.CombinePatterns(this, patternGroup);
 
                         //Step 4: Apply the filters of the current pattern group to its result table
-                        RDFConstructQueryEngine.ApplyFilters(this, patternGroup);
+                        RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                     }
 
                     //Step 5: Get the result table of the query
-                    DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList<DataTable>(), false);
+                    DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
 				    //Step 6: Fill the templates from the result table
-                    DataTable filledResultTable         = RDFConstructQueryEngine.FillTemplates(this, queryResultTable);
+                    DataTable filledResultTable         = RDFQueryEngine.FillTemplates(this, queryResultTable);
 
                     //Step 7: Apply the modifiers of the query to the result table
-                    constructResult.ConstructResults    = RDFConstructQueryEngine.ApplyModifiers(this, filledResultTable);
+                    constructResult.ConstructResults    = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
 
                 }
 
