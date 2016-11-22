@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Checks if the query is empty, so contains no pattern groups
         /// </summary>
-        public override Boolean IsEmpty {
+        internal override Boolean IsEmpty {
             get { return this.PatternGroups.Count == 0; }
         }
         #endregion
@@ -53,62 +53,57 @@ namespace RDFSharp.Query
         public override String ToString() {
             StringBuilder query = new StringBuilder();
 
-            if (this.PatternGroups.Any()) {
-                
-                // ASK
-                query.Append("ASK");
+            // ASK
+            query.Append("ASK\nWHERE {\n");
 
-                // PATTERN GROUPS (pretty-printing of Unions)
-                query.Append("\nWHERE\n{\n");
-                Boolean printingUnion         = false;
-                this.PatternGroups.ForEach(pg => {
+            // PATTERN GROUPS
+            Boolean printingUnion         = false;
+            this.PatternGroups.ForEach(pg => {
 
-                    //Current pattern group is set as UNION with the next one
-                    if (pg.JoinAsUnion) {
+                //Current pattern group is set as UNION with the next one
+                if (pg.JoinAsUnion) {
 
-                        //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
-                        if (!pg.Equals(this.PatternGroups.Last())) {
-                            //Begin a new Union block
-                            if (!printingUnion) {
-                                printingUnion = true;
-                                query.Append("\n  {");
-                            }
-                            query.Append(pg.ToString(2) + "    UNION");
-                        }
-
-                        //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
-                        else {
-                            //End the Union block
-                            if (printingUnion) {
-                                printingUnion = false;
-                                query.Append(pg.ToString(2));
-                                query.Append("  }\n");
-                            }
-                            else {
-                                query.Append(pg.ToString());
-                            }
-                        }
-
+                    //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
+                    if (!pg.Equals(this.PatternGroups.Last())) {
+                         //Begin a new Union block
+                         if (!printingUnion) {
+                              printingUnion = true;
+                              query.Append("\n  {");
+                         }
+                         query.Append(pg.ToString(2) + "    UNION");
                     }
 
-                    //Current pattern group is set as INTERSECT with the next one
+                    //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
                     else {
                         //End the Union block
-                        if (printingUnion) {
-                            printingUnion     = false;
-                            query.Append(pg.ToString(2));
-                            query.Append("  }\n");
-                        }
-                        else {
-                            query.Append(pg.ToString());
-                        }
+                         if (printingUnion) {
+                             printingUnion = false;
+                             query.Append(pg.ToString(2));
+                             query.Append("  }\n");
+                         }
+                         else {
+                             query.Append(pg.ToString());
+                         }
                     }
 
-                });
-                query.Append("\n}");
+                }
 
-            }
+                //Current pattern group is set as INTERSECT with the next one
+                else {
+                    //End the Union block
+                    if (printingUnion) {
+                        printingUnion     = false;
+                        query.Append(pg.ToString(2));
+                        query.Append("  }\n");
+                    }
+                    else {
+                        query.Append(pg.ToString());
+                    }
+                }
 
+            });
+
+            query.Append("\n}");
             return query.ToString();
         }
         #endregion

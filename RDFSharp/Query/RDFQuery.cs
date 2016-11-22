@@ -49,7 +49,7 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Checks if the query is empty (it depends on the type of query)
         /// </summary>
-        public virtual Boolean IsEmpty { get; }
+        internal virtual Boolean IsEmpty { get; }
         #endregion
 
         #region Ctors

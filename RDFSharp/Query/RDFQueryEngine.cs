@@ -100,16 +100,23 @@ namespace RDFSharp.Query
         internal static DataTable ApplyModifiers(RDFQuery query, DataTable table) {
             String tablenameBak = table.TableName;
 
-            //Apply the PROJECTION operator
-            //(available only on SELECT query)
+            //SELECT query has OrderBy modifiers and Projection operator
             if (query is RDFSelectQuery) {
-                var nonProjCols = new List<String>();
+
+                //Apply the ORDERBY modifiers
+                var ordModifiers  = query.Modifiers.Where(m => m is RDFOrderByModifier);
+                if (ordModifiers.Any()) {
+                    table         = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current))
+                                                .DefaultView
+                                                .ToTable();
+                }
+
+                //Apply the PROJECTION operator
+                var nonProjCols   = new List<String>();
                 query.PatternGroups.ForEach(pg =>
-                    pg.Variables.ForEach(v => {
-                        if (!((RDFSelectQuery)query).IsStar && !v.IsResult) {
-                             if (!nonProjCols.Exists(npc => npc.Equals(v.VariableName, StringComparison.Ordinal))) {
-                                  nonProjCols.Add(v.VariableName);
-                             }
+                    pg.Variables.Where(v => !((RDFSelectQuery)query).IsStar && !v.IsResult).ToList().ForEach(v => {
+                        if (!nonProjCols.Exists(npc => npc.Equals(v.VariableName, StringComparison.Ordinal))) {
+                             nonProjCols.Add(v.VariableName);
                         }
                     })
                 );
@@ -121,17 +128,24 @@ namespace RDFSharp.Query
             }
 
             //Apply the DISTINCT modifier
-            table               = new RDFDistinctModifier().ApplyModifier(table);
+            var distinctModifier  = query.Modifiers.SingleOrDefault(m => m is RDFDistinctModifier);
+            if (distinctModifier != null) {
+                table             = distinctModifier.ApplyModifier(table);
+            }
 
             //Apply the OFFSET modifier
-            table               = query.Modifiers.Where(m => m is RDFOffsetModifier)
-                                                 .Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+            var offsetModifier    = query.Modifiers.SingleOrDefault(m => m is RDFOffsetModifier);
+            if (offsetModifier   != null) {
+                table             = offsetModifier.ApplyModifier(table);
+            }            
 
             //Apply the LIMIT modifier
-            table               = query.Modifiers.Where(m => m is RDFLimitModifier)
-                                                 .Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+            var limitModifier     = query.Modifiers.SingleOrDefault(m => m is RDFLimitModifier);
+            if (limitModifier    != null) {
+                table             = offsetModifier.ApplyModifier(table);
+            }
 
-            table.TableName     = tablenameBak;
+            table.TableName       = tablenameBak;
             return table;
         }
 

@@ -33,7 +33,7 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Checks if the query is a "SELECT *" query, so contains all/none projection variables
         /// </summary>
-        public Boolean IsStar {
+        internal Boolean IsStar {
             get {
                 return (this.PatternGroups.TrueForAll(pg => pg.Variables.TrueForAll(v => !v.IsResult) ||
                                                             pg.Variables.TrueForAll(v =>  v.IsResult)));
@@ -43,7 +43,7 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Checks if the query is empty, so contains no pattern groups
         /// </summary>
-        public override Boolean IsEmpty {
+        internal override Boolean IsEmpty {
             get { return this.PatternGroups.Count == 0; }
         }
         #endregion
@@ -62,95 +62,87 @@ namespace RDFSharp.Query {
         public override String ToString() {
             StringBuilder query = new StringBuilder();
 
-            if (this.PatternGroups.Any()) {
-                
-                // SELECT
-                query.Append("SELECT");
+            // SELECT
+            query.Append("SELECT");
 
-                // DISTINCT
-                this.Modifiers.FindAll(mod => mod is RDFDistinctModifier).ForEach(dm => query.Append(" " + dm));
+            // DISTINCT
+            this.Modifiers.FindAll(mod => mod is RDFDistinctModifier).ForEach(dm => query.Append(" " + dm));
 
-                // VARIABLES
-                if (this.IsStar) {
-                    query.Append(" *");
-                }
-                else {
-                    List<RDFVariable> projVars = new List<RDFVariable>();
-                    this.PatternGroups.ForEach(pg => 
-                        pg.Variables.ForEach(v => {
-                            if (v.IsResult) {
-                                if (!projVars.Exists(pvar => pvar.Equals(v))) {
-                                     projVars.Add(v);
-                                }
-                            }
-                        })
-                    );
-                    projVars.ForEach(variable => query.Append(" " + variable));
-                }
-
-                // PATTERN GROUPS (pretty-printing of Unions)
-                query.Append("\nWHERE\n{\n");
-                Boolean printingUnion         = false;
-                this.PatternGroups.ForEach(pg => {
-
-                    //Current pattern group is set as UNION with the next one
-                    if (pg.JoinAsUnion) {
-
-                        //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
-                        if (!pg.Equals(this.PatternGroups.Last())) {
-                            //Begin a new Union block
-                            if (!printingUnion) {
-                                printingUnion = true;
-                                query.Append("\n  {");
-                            }
-                            query.Append(pg.ToString(2) + "    UNION");
+            // VARIABLES
+            if (this.IsStar) {
+                query.Append(" *");
+            }
+            else {
+                var projVars = new List<RDFVariable>();
+                this.PatternGroups.ForEach(pg => 
+                    pg.Variables.Where(v => v.IsResult).ToList().ForEach(v => {
+                        if (!projVars.Exists(pvar => pvar.Equals(v))) {
+                                projVars.Add(v);
                         }
+                    })
+                );
+                projVars.ForEach(variable => query.Append(" " + variable));
+            }
 
-                        //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
-                        else {
-                            //End the Union block
-                            if (printingUnion) {
-                                printingUnion = false;
-                                query.Append(pg.ToString(2));
-                                query.Append("  }\n");
-                            }
-                            else {
-                                query.Append(pg.ToString());
-                            }
-                        }
+            // PATTERN GROUPS
+            query.Append("\nWHERE {\n");
+            Boolean printingUnion         = false;
+            this.PatternGroups.ForEach(pg => {
 
+                //Current pattern group is set as UNION with the next one
+                if (pg.JoinAsUnion) {
+
+                    //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
+                    if (!pg.Equals(this.PatternGroups.Last())) {
+                         //Begin a new Union block
+                         if (!printingUnion) {
+                              printingUnion = true;
+                              query.Append("\n  {");
+                         }
+                         query.Append(pg.ToString(2) + "    UNION");
                     }
 
-                    //Current pattern group is set as INTERSECT with the next one
+                    //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
                     else {
-                        //End the Union block
-                        if (printingUnion) {
-                            printingUnion = false;
-                            query.Append(pg.ToString(2));
-                            query.Append("  }\n");
-                        }
-                        else {
-                            query.Append(pg.ToString());
-                        }
+                         //End the Union block
+                         if (printingUnion) {
+                             printingUnion = false;
+                             query.Append(pg.ToString(2));
+                             query.Append("  }\n");
+                         }
+                         else {
+                             query.Append(pg.ToString());
+                         }
                     }
 
-                });
-                query.Append("\n}");
-
-                // MODIFIERS
-
-                // ORDER BY
-                if (this.Modifiers.Any(mod => mod is RDFOrderByModifier)) {
-                    query.Append("\nORDER BY");
-                    this.Modifiers.FindAll(mod => mod is RDFOrderByModifier).ForEach(om => query.Append(" " + om));
                 }
 
-                // LIMIT/OFFSET
-                if (this.Modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier)) {
-                    this.Modifiers.FindAll(mod => mod is RDFLimitModifier).ForEach(lim  => query.Append("\n" + lim));
-                    this.Modifiers.FindAll(mod => mod is RDFOffsetModifier).ForEach(off => query.Append("\n" + off));
+                //Current pattern group is set as INTERSECT with the next one
+                else {
+                    //End the Union block
+                    if (printingUnion) {
+                        printingUnion = false;
+                        query.Append(pg.ToString(2));
+                        query.Append("  }\n");
+                    }
+                    else {
+                        query.Append(pg.ToString());
+                    }
                 }
 
+            });
+            query.Append("\n}");
+
+            // ORDER BY
+            if (this.Modifiers.Any(mod => mod is RDFOrderByModifier)) {
+                query.Append("\nORDER BY");
+                this.Modifiers.FindAll(mod => mod is RDFOrderByModifier).ForEach(om => query.Append(" " + om));
+            }
+
+            // LIMIT/OFFSET
+            if (this.Modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier)) {
+                this.Modifiers.FindAll(mod => mod is RDFLimitModifier).ForEach(lim  => query.Append("\n" + lim));
+                this.Modifiers.FindAll(mod => mod is RDFOffsetModifier).ForEach(off => query.Append("\n" + off));
             }
 
             return query.ToString();
