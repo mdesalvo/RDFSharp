@@ -142,7 +142,7 @@ namespace RDFSharp.Query
             //Apply the LIMIT modifier
             var limitModifier     = query.Modifiers.SingleOrDefault(m => m is RDFLimitModifier);
             if (limitModifier    != null) {
-                table             = offsetModifier.ApplyModifier(table);
+                table             = limitModifier.ApplyModifier(table);
             }
 
             table.TableName       = tablenameBak;
