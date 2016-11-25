@@ -46,13 +46,20 @@ namespace RDFSharp.Query {
         internal override Boolean IsEmpty {
             get { return this.PatternGroups.Count == 0; }
         }
+
+        /// <summary>
+        /// Hashset of projection variables
+        /// </summary>
+        internal HashSet<RDFVariable> ProjVars { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty SELECT query
         /// </summary>
-        public RDFSelectQuery() { }
+        public RDFSelectQuery() {
+            this.ProjVars = new HashSet<RDFVariable>();
+        }
         #endregion
 
         #region Interfaces
@@ -73,15 +80,7 @@ namespace RDFSharp.Query {
                 query.Append(" *");
             }
             else {
-                var projVars = new List<RDFVariable>();
-                this.PatternGroups.ForEach(pg => 
-                    pg.Variables.Where(v => v.IsResult).ToList().ForEach(v => {
-                        if (!projVars.Exists(pvar => pvar.Equals(v))) {
-                             projVars.Add(v);
-                        }
-                    })
-                );
-                projVars.ForEach(variable => query.Append(" " + variable));
+                this.ProjVars.ToList().ForEach(variable => query.Append(" " + variable));
             }
 
             // PATTERN GROUPS
@@ -157,6 +156,13 @@ namespace RDFSharp.Query {
             if (patternGroup != null) {
                 if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
                      this.PatternGroups.Add(patternGroup);
+
+                     //Also collect the projection variables of the pattern group
+                     patternGroup.Variables.Where(v => v.IsResult).ToList().ForEach(v => {
+                         if (!this.ProjVars.Contains(v)) {
+                              this.ProjVars.Add(v);
+                         }
+                     });
                 }
             }
             return this;
@@ -197,6 +203,7 @@ namespace RDFSharp.Query {
             if (graph != null) {
                 this.PatternGroupResultTables.Clear();
                 this.PatternResultTables.Clear();
+                Int32 ordinalIndex                   = 0;
 
                 RDFSelectQueryResult selectResult    = new RDFSelectQueryResult(this.ToString());
                 if (!this.IsEmpty) {
@@ -221,6 +228,9 @@ namespace RDFSharp.Query {
                     //Step 5: Apply the modifiers of the query to the result table
                     selectResult.SelectResults       = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
 
+                    //Step 6: Rearrange columns of the result table in respect of the projection operator
+                    this.ProjVars.ToList().ForEach(v => selectResult.SelectResults.Columns[v.ToString()].SetOrdinal(ordinalIndex++));
+
                 }
 
                 return selectResult;
@@ -235,6 +245,7 @@ namespace RDFSharp.Query {
             if (store != null) {
                 this.PatternGroupResultTables.Clear();
                 this.PatternResultTables.Clear();
+                Int32 ordinalIndex                   = 0;
 
                 RDFSelectQueryResult selectResult    = new RDFSelectQueryResult(this.ToString());
                 if (!this.IsEmpty) {
@@ -259,6 +270,9 @@ namespace RDFSharp.Query {
                     //Step 5: Apply the modifiers of the query to the result table
                     selectResult.SelectResults       = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
 
+                    //Step 6: Rearrange columns of the result table in respect of the projection operator
+                    this.ProjVars.ToList().ForEach(v => selectResult.SelectResults.Columns[v.ToString()].SetOrdinal(ordinalIndex++));
+
                 }
 
                 return selectResult;
@@ -273,6 +287,7 @@ namespace RDFSharp.Query {
             if (federation != null) {
                 this.PatternGroupResultTables.Clear();
                 this.PatternResultTables.Clear();
+                Int32 ordinalIndex                = 0;
 
                 RDFSelectQueryResult selectResult = new RDFSelectQueryResult(this.ToString());
                 if (!this.IsEmpty) {
@@ -313,6 +328,9 @@ namespace RDFSharp.Query {
 
                     //Step 6: Apply the modifiers of the query to the result table
                     selectResult.SelectResults    = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
+
+                    //Step 6: Rearrange columns of the result table in respect of the projection operator
+                    this.ProjVars.ToList().ForEach(v => selectResult.SelectResults.Columns[v.ToString()].SetOrdinal(ordinalIndex++));
 
                 }
 
