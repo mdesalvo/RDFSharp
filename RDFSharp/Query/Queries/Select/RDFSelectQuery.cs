@@ -77,7 +77,7 @@ namespace RDFSharp.Query {
                 this.PatternGroups.ForEach(pg => 
                     pg.Variables.Where(v => v.IsResult).ToList().ForEach(v => {
                         if (!projVars.Exists(pvar => pvar.Equals(v))) {
-                                projVars.Add(v);
+                             projVars.Add(v);
                         }
                     })
                 );
