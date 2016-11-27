@@ -98,7 +98,7 @@ namespace RDFSharp.Query
         /// Apply the query modifiers to the query result table
         /// </summary>
         internal static DataTable ApplyModifiers(RDFQuery query, DataTable table) {
-            String tablenameBak = table.TableName;
+            String tablenameBak   = table.TableName;
 
             //SELECT query has OrderBy modifiers and Projection operator
             if (query is RDFSelectQuery) {
@@ -112,19 +112,17 @@ namespace RDFSharp.Query
                 }
 
                 //Apply the PROJECTION operator
-                var nonProjCols   = new List<String>();
-                query.PatternGroups.ForEach(pg =>
-                    pg.Variables.Where(v => !((RDFSelectQuery)query).IsStar && !v.IsResult).ToList().ForEach(v => {
-                        if (!nonProjCols.Exists(npc => npc.Equals(v.VariableName, StringComparison.Ordinal))) {
-                             nonProjCols.Add(v.VariableName);
-                        }
-                    })
-                );
-                nonProjCols.ForEach(c => {
-                    if (table.Columns.Contains(c)) {
-                        table.Columns.Remove(c);
-                    }
-                });
+                if (!((RDFSelectQuery)query).IsStar) {
+                     query.PatternGroups.ForEach(pg =>
+                         pg.Variables.Where(v => !v.IsResult).ToList().ForEach(v => {
+                             if (table.Columns.Contains(v.ToString())) {
+                                 table.Columns.Remove(v.ToString());
+                             }
+                         })
+                     );
+                }
+                ((RDFSelectQuery)query).ProjVars.OrderBy(x => x.Value).ToList().ForEach(v => table.Columns[v.Key.ToString()].SetOrdinal(v.Value));
+
             }
 
             //Apply the DISTINCT modifier

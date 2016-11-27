@@ -74,7 +74,7 @@ namespace RDFSharp.Query {
 
                 //Remove the Context from the template print (since it is not supported by CONSTRUCT query)
                 if (tp.Context    != null) {
-                    tpString       = tpString.Replace("GRAPH " + tp.Context + " {", String.Empty).TrimEnd(new Char[] { ' ', '}' });
+                    tpString       = tpString.Replace("GRAPH " + tp.Context + " { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
                 }
 
                 //Remove the Optional indicator from the template print (since it is not supported by CONSTRUCT query)
@@ -82,7 +82,7 @@ namespace RDFSharp.Query {
                     tpString       = tpString.Replace("OPTIONAL { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
                 }
 
-                query.Append("  " + tpString + " .\n");
+                query.Append("  "  + tpString + " .\n");
             });
             query.Append("}\nWHERE {\n");
 
