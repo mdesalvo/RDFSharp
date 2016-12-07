@@ -88,7 +88,6 @@
     <Compile Include="Query\Filters\RDFDatatypeFilter.cs" />
     <Compile Include="Query\Filters\RDFIsBlankFilter.cs" />
     <Compile Include="Query\Filters\RDFIsLiteralFilter.cs" />
-    <Compile Include="Query\Filters\RDFIsNumericFilter.cs" />
     <Compile Include="Query\Filters\RDFIsUriFilter.cs" />
     <Compile Include="Query\Filters\RDFLangMatchesFilter.cs" />
     <Compile Include="Query\Filters\RDFRegexFilter.cs" />
