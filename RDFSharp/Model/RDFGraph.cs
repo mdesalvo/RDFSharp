@@ -277,10 +277,10 @@ namespace RDFSharp.Model
         public void UnreifyTriples() {
 
             //Create SPARQL SELECT query for detecting reified triples
-            var T = new RDFVariable("T", true);
-            var S = new RDFVariable("S", true);
-            var P = new RDFVariable("P", true);
-            var O = new RDFVariable("O", true);
+            var T = new RDFVariable("T");
+            var S = new RDFVariable("S");
+            var P = new RDFVariable("P");
+            var O = new RDFVariable("O");
             var Q = new RDFSelectQuery()
                             .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
                                 .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))

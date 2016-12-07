@@ -31,23 +31,9 @@ namespace RDFSharp.Query {
 
         #region Properties
         /// <summary>
-        /// Checks if the query is a "SELECT *" query, so contains all/none projection variables
-        /// </summary>
-        internal Boolean IsStar {
-            get { return (this.PatternGroups.TrueForAll(pg => pg.Variables.TrueForAll(v => !v.IsResult) || pg.Variables.TrueForAll(v =>  v.IsResult))); }
-        }
-
-        /// <summary>
-        /// Checks if the query is empty, so contains no pattern groups
-        /// </summary>
-        internal override Boolean IsEmpty {
-            get { return this.PatternGroups.Count == 0; }
-        }
-
-        /// <summary>
         /// Dictionary of projection variables and associated ordinals
         /// </summary>
-        internal Dictionary<RDFVariable, Int32> ProjVars { get; set; }
+        internal Dictionary<RDFVariable, Int32> ProjectionVars { get; set; }
         #endregion
 
         #region Ctors
@@ -55,7 +41,7 @@ namespace RDFSharp.Query {
         /// Default-ctor to build an empty SELECT query
         /// </summary>
         public RDFSelectQuery() {
-            this.ProjVars = new Dictionary<RDFVariable, Int32>();
+            this.ProjectionVars = new Dictionary<RDFVariable, Int32>();
         }
         #endregion
 
@@ -73,11 +59,11 @@ namespace RDFSharp.Query {
             this.Modifiers.FindAll(mod => mod is RDFDistinctModifier).ForEach(dm => query.Append(" " + dm));
 
             // VARIABLES
-            if (this.IsStar) {
-                query.Append(" *");
+            if (this.ProjectionVars.Any()) {
+                this.ProjectionVars.OrderBy(x => x.Value).ToList().ForEach(variable => query.Append(" " + variable.Key));
             }
             else {
-                this.ProjVars.OrderBy(x => x.Value).ToList().ForEach(variable => query.Append(" " + variable.Key));
+                query.Append(" *");
             }
 
             // PATTERN GROUPS
@@ -153,13 +139,18 @@ namespace RDFSharp.Query {
             if (patternGroup != null) {
                 if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
                      this.PatternGroups.Add(patternGroup);
+                }
+            }
+            return this;
+        }
 
-                     //Also collect the projection variables of the pattern group
-                     patternGroup.Variables.Where(v => v.IsResult).ToList().ForEach(v => {
-                         if (!this.ProjVars.ContainsKey(v)) {
-                              this.ProjVars.Add(v, this.ProjVars.Count);
-                         }
-                     });
+        /// <summary>
+        /// Adds the given variable to the results of the query
+        /// </summary>
+        public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable) {
+            if (projectionVariable != null) {
+                if (!this.ProjectionVars.Any(pv => pv.Key.ToString().Equals(projectionVariable.ToString(), StringComparison.OrdinalIgnoreCase))) {
+                     this.ProjectionVars.Add(projectionVariable, this.ProjectionVars.Count);
                 }
             }
             return this;
@@ -206,7 +197,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFSelectQueryResult selectResult    = new RDFSelectQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -244,7 +235,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFSelectQueryResult selectResult    = new RDFSelectQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -282,7 +273,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFSelectQueryResult selectResult = new RDFSelectQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     var fedPatternResultTables    = new Dictionary<RDFPatternGroup, List<DataTable>>();

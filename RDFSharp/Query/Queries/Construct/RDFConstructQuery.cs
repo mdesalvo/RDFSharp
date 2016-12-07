@@ -39,13 +39,6 @@ namespace RDFSharp.Query {
         /// List of variables carried by the template patterns of the query
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
-
-        /// <summary>
-        /// Checks if the query is empty, so contains no template patterns
-        /// </summary>
-        internal override Boolean IsEmpty {
-            get { return this.Templates.Count == 0; }
-        }
         #endregion
 
         #region Ctors
@@ -231,7 +224,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -272,7 +265,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -313,7 +306,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
-                if(!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     var fedPatternResultTables          = new Dictionary<RDFPatternGroup, List<DataTable>>();

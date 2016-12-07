@@ -106,22 +106,31 @@ namespace RDFSharp.Query
                 //Apply the ORDERBY modifiers
                 var ordModifiers  = query.Modifiers.Where(m => m is RDFOrderByModifier);
                 if (ordModifiers.Any()) {
-                    table         = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current))
-                                                .DefaultView
-                                                .ToTable();
+                    table         = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+                    table         = table.DefaultView.ToTable();
                 }
 
                 //Apply the PROJECTION operator
-                if (!((RDFSelectQuery)query).IsStar) {
-                     query.PatternGroups.ForEach(pg =>
-                         pg.Variables.Where(v => !v.IsResult).ToList().ForEach(v => {
-                             if (table.Columns.Contains(v.ToString())) {
-                                 table.Columns.Remove(v.ToString());
-                             }
-                         })
-                     );
+                if (((RDFSelectQuery)query).ProjectionVars.Any()) {
+
+                    //Remove non-projection variables
+                    var nonProjCols    = new List<DataColumn>();
+                    foreach(DataColumn dtCol in table.Columns) {
+                        if (!((RDFSelectQuery)query).ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase))) {
+                             nonProjCols.Add(dtCol);
+                        }
+                    }
+                    nonProjCols.ForEach(npc => {
+                        table.Columns.Remove(npc.ColumnName);
+                    });
+
+                    //Adjust ordinals
+                    foreach (var pVar in ((RDFSelectQuery)query).ProjectionVars) {
+                        RDFQueryUtilities.AddColumn(table, pVar.Key.ToString());
+                        table.Columns[pVar.Key.ToString()].SetOrdinal(pVar.Value);
+                    }
+
                 }
-                ((RDFSelectQuery)query).ProjVars.OrderBy(x => x.Value).ToList().ForEach(v => table.Columns[v.Key.ToString()].SetOrdinal(v.Value));
 
             }
 
@@ -301,134 +310,132 @@ namespace RDFSharp.Query
         internal static DataTable DescribeTerms(RDFDescribeQuery describeQuery, Object graphOrStore, DataTable resultTable) {
 
             //Create the structure of the result datatable
-            DataTable result                 = new DataTable("DESCRIBE_RESULTS");
-            result.Columns.Add("SUBJECT",    Type.GetType("System.String"));
-            result.Columns.Add("PREDICATE",  Type.GetType("System.String"));
-            result.Columns.Add("OBJECT",     Type.GetType("System.String"));
+            DataTable result                  = new DataTable("DESCRIBE_RESULTS");
+            result.Columns.Add("SUBJECT",     Type.GetType("System.String"));
+            result.Columns.Add("PREDICATE",   Type.GetType("System.String"));
+            result.Columns.Add("OBJECT",      Type.GetType("System.String"));
             result.AcceptChanges();
 
             //Query IS empty, so does not have pattern groups to fetch data from 
             //(we can only proceed by searching for resources in the describe terms)
-            if (describeQuery.IsEmpty) {
+            if (!describeQuery.PatternGroups.Any()) {
 
-                //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
-                foreach(RDFPatternMember dt in describeQuery.DescribeTerms.Where(dterm => dterm is RDFResource)) {
+                 //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
+                 foreach(RDFPatternMember dt in describeQuery.DescribeTerms.Where(dterm => dterm is RDFResource)) {
+                 
+                     //Search on GRAPH
+                     if (graphOrStore is RDFGraph) {
+                         //Search as RESOURCE (S-P-O)
+                         RDFGraph desc        = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)dt)
+                                                     .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByPredicate((RDFResource)dt))
+                                                         .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByObject((RDFResource)dt));
+                         result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                     }
+                 
+                     //Search on STORE
+                     else {
+                         //Search as RESOURCE (S-P-O)
+                         RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt)
+                                                     .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt))
+                                                         .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt));
+                         result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                     }
 
-                    //Search on GRAPH
-                    if (graphOrStore is RDFGraph) {
-                        //Search as RESOURCE (S-P-O)
-                        RDFGraph desc        = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)dt)
-                                                    .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByPredicate((RDFResource)dt))
-                                                        .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByObject((RDFResource)dt));
-                        result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                    }
-
-                    //Search on STORE
-                    else {
-                        //Search as RESOURCE (S-P-O)
-                        RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt)
-                                                    .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt))
-                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt));
-                        result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                    }
-
-                }
+                 }
 
             }
 
             //Query IS NOT empty, so does have pattern groups to fetch data from
             else {
 
-                //In case of a "Star" query, all the variables must be considered describe terms
-                if (describeQuery.IsStar) {
-                    describeQuery.PatternGroups.ForEach(pg =>
-                        pg.Variables.ForEach(v => describeQuery.AddDescribeTerm(v))
-                    );
-                }
+                 //In case of a "Star" query, all the variables must be considered describe terms
+                 if (!describeQuery.DescribeTerms.Any()) {
+                      describeQuery.PatternGroups.ForEach(pg => pg.Variables.ForEach(v => describeQuery.AddDescribeTerm(v)));
+                 }
 
-                //Iterate the describe terms of the query
-                foreach(RDFPatternMember dt in describeQuery.DescribeTerms) {
+                 //Iterate the describe terms of the query
+                 foreach(RDFPatternMember dt in describeQuery.DescribeTerms) {
 
-                    //The describe term is a variable
-                    if (dt is RDFVariable) {
+                     //The describe term is a variable
+                     if (dt is RDFVariable) {
 
-                        //Process the variable
-                        if (resultTable.Columns.Contains(dt.ToString())) {
+                         //Process the variable
+                         if (resultTable.Columns.Contains(dt.ToString())) {
 
-                            //Iterate the results datatable's rows to retrieve terms to be described
-                            IEnumerator rowsEnum           = resultTable.Rows.GetEnumerator();
-                            while(rowsEnum.MoveNext()) {
+                             //Iterate the results datatable's rows to retrieve terms to be described
+                             IEnumerator rowsEnum           = resultTable.Rows.GetEnumerator();
+                             while(rowsEnum.MoveNext()) {
 
-                                //Row contains a value in position of the variable corresponding to the describe term
-                                if(!((DataRow)rowsEnum.Current).IsNull(dt.ToString())) {
+                                 //Row contains a value in position of the variable corresponding to the describe term
+                                 if(!((DataRow)rowsEnum.Current).IsNull(dt.ToString())) {
 
-                                    //Retrieve the term to be described
-                                    RDFPatternMember term  = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[dt.ToString()].ToString());
+                                     //Retrieve the term to be described
+                                     RDFPatternMember term  = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[dt.ToString()].ToString());
 
-                                    //Search on GRAPH
-                                    if (graphOrStore is RDFGraph) {
-                                        //Search as RESOURCE (S-P-O)
-                                        if (term is RDFResource) {
-                                            RDFGraph desc  = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)term)
-                                                                    .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByPredicate((RDFResource)term))
-                                                                        .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByObject((RDFResource)term));
-                                            result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                                        }
-                                        //Search as LITERAL (L)
-                                        else {
-                                            RDFGraph desc  = ((RDFGraph)graphOrStore).SelectTriplesByLiteral((RDFLiteral)term);
-                                            result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                                        }
-                                    }
+                                     //Search on GRAPH
+                                     if (graphOrStore is RDFGraph) {
+                                         //Search as RESOURCE (S-P-O)
+                                         if (term is RDFResource) {
+                                             RDFGraph desc  = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)term)
+                                                                     .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByPredicate((RDFResource)term))
+                                                                         .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByObject((RDFResource)term));
+                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                                         }
+                                         //Search as LITERAL (L)
+                                         else {
+                                             RDFGraph desc  = ((RDFGraph)graphOrStore).SelectTriplesByLiteral((RDFLiteral)term);
+                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                                         }
+                                     }
 
-                                    //Search on STORE
-                                    else {
-                                        //Search as RESOURCE (S-P-O)
-                                        if (term is RDFResource) {
-                                            RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)term)
-                                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)term))
-                                                                            .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)term));
-                                            result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                                        }
-                                        //Search as LITERAL (L)
-                                        else {
-                                            RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesByLiteral((RDFLiteral)term);
-                                            result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                                        }
-                                    }
+                                     //Search on STORE
+                                     else {
+                                         //Search as RESOURCE (S-P-O)
+                                         if (term is RDFResource) {
+                                             RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)term)
+                                                                         .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)term))
+                                                                             .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)term));
+                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                                         }
+                                         //Search as LITERAL (L)
+                                         else {
+                                             RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesByLiteral((RDFLiteral)term);
+                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                                         }
+                                     }
 
-                                }
+                                 }
 
-                            }
+                             }
 
-                        }
+                         }
 
-                    }
+                     }
 
-                    //The describe term is a resource
-                    else {
+                     //The describe term is a resource
+                     else {
+                 
+                         //Search on GRAPH
+                         if (graphOrStore is RDFGraph) {
+                             //Search as RESOURCE (S-P-O)
+                             RDFGraph desc        = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)dt)
+                                                         .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByPredicate((RDFResource)dt))
+                                                             .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByObject((RDFResource)dt));
+                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                         }
+                 
+                         //Search on STORE
+                         else {
+                             //Search as RESOURCE (S-P-O)
+                             RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt)
+                                                         .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt))
+                                                             .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt));
+                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
+                         }
 
-                        //Search on GRAPH
-                        if (graphOrStore is RDFGraph) {
-                            //Search as RESOURCE (S-P-O)
-                            RDFGraph desc        = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)dt)
-                                                        .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByPredicate((RDFResource)dt))
-                                                            .UnionWith(((RDFGraph)graphOrStore).SelectTriplesByObject((RDFResource)dt));
-                            result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-
-                        //Search on STORE
-                        else {
-                            //Search as RESOURCE (S-P-O)
-                            RDFMemoryStore desc  = ((RDFStore)graphOrStore).SelectQuadruplesBySubject((RDFResource)dt)
-                                                        .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByPredicate((RDFResource)dt))
-                                                            .UnionWith(((RDFStore)graphOrStore).SelectQuadruplesByObject((RDFResource)dt));
-                            result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-                        }
-
-                    }
-
-                }
+                     }
+                 
+                 }
 
             }
 

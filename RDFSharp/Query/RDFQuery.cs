@@ -45,11 +45,6 @@ namespace RDFSharp.Query {
         /// List of modifiers carried by the query
         /// </summary>
         internal List<RDFModifier> Modifiers { get; set; }
-
-        /// <summary>
-        /// Checks if the query is empty (it depends on the type of query)
-        /// </summary>
-        internal virtual Boolean IsEmpty { get; }
         #endregion
 
         #region Ctors

@@ -248,11 +248,11 @@ namespace RDFSharp.Store
         public override void UnreifyQuadruples() {
 
             //Create SPARQL SELECT query for detecting reified quadruples
-            var T = new RDFVariable("T", true);
-            var C = new RDFVariable("C", true);
-            var S = new RDFVariable("S", true);
-            var P = new RDFVariable("P", true);
-            var O = new RDFVariable("O", true);
+            var T = new RDFVariable("T");
+            var C = new RDFVariable("C");
+            var S = new RDFVariable("S");
+            var P = new RDFVariable("P");
+            var O = new RDFVariable("O");
             var Q = new RDFSelectQuery()
                             .AddPatternGroup(new RDFPatternGroup("UnreifyQuadruples")
                                 .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))

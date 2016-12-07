@@ -39,20 +39,6 @@ namespace RDFSharp.Query {
         /// List of variables carried by the template patterns of the query
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
-
-        /// <summary>
-        /// Checks if the query is a "DESCRIBE *" query, so contains no describe terms
-        /// </summary>
-        internal Boolean IsStar {
-            get { return this.DescribeTerms.Count == 0; }
-        }
-
-        /// <summary>
-        /// Checks if the query is empty, so contains no pattern groups
-        /// </summary>
-        internal override Boolean IsEmpty {
-            get { return this.PatternGroups.Count == 0; }
-        }
         #endregion
 
         #region Ctors
@@ -76,11 +62,11 @@ namespace RDFSharp.Query {
             query.Append("DESCRIBE");
 
             // TERMS
-            if (this.IsStar) {
-                query.Append(" *");                    
+            if (this.DescribeTerms.Any()) {
+                this.DescribeTerms.ForEach(t => query.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(t)));                   
             }
             else {
-                this.DescribeTerms.ForEach(t => query.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(t)));
+                query.Append(" *"); 
             }
 
             // PATTERN GROUPS
@@ -218,7 +204,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -274,7 +260,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -330,7 +316,7 @@ namespace RDFSharp.Query {
                 this.PatternResultTables.Clear();
 
                 RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     var fedPatternResultTables         = new Dictionary<RDFPatternGroup, List<DataTable>>();

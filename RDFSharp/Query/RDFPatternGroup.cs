@@ -167,7 +167,7 @@ namespace RDFSharp.Query
             });
 
             //FILTERS
-            this.Filters.ForEach(f     => patternGroup.Append(spaces + "    " + f + " .\n"));
+            this.Filters.ForEach(f     => patternGroup.Append(spaces + "    " + f + " \n"));
 
             patternGroup.Append(spaces + "  }\n");
             if (this.IsOptional) {

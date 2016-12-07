@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
-            return "FILTER !( " + this.Filter.ToString().Replace("FILTER ", String.Empty).Trim() + " )";
+            return "FILTER ( !" + this.Filter.ToString().Replace("FILTER ", String.Empty).Trim() + " )";
         }
         #endregion
 

@@ -30,15 +30,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFAskQuery: RDFQuery {
 
-        #region Properties
-        /// <summary>
-        /// Checks if the query is empty, so contains no pattern groups
-        /// </summary>
-        internal override Boolean IsEmpty {
-            get { return this.PatternGroups.Count == 0; }
-        }
-        #endregion
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty ASK query
@@ -130,7 +121,7 @@ namespace RDFSharp.Query
                 this.PatternResultTables.Clear();
 
                 RDFAskQueryResult askResult    = new RDFAskQueryResult();
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -168,7 +159,7 @@ namespace RDFSharp.Query
                 this.PatternResultTables.Clear();
 
                 RDFAskQueryResult askResult    = new RDFAskQueryResult();
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
@@ -206,7 +197,7 @@ namespace RDFSharp.Query
                 this.PatternResultTables.Clear();
 
                 RDFAskQueryResult askResult    = new RDFAskQueryResult();
-                if (!this.IsEmpty) {
+                if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
                     var fedPatternResultTables = new Dictionary<RDFPatternGroup, List<DataTable>>();
