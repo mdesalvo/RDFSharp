@@ -57,6 +57,79 @@ namespace RDFSharp.Model
         }
         #endregion
 
+        #region Methods
+        /// <summary>
+        /// Checks if the datatype of this typed literal is compatible with boolean
+        /// </summary>
+        internal Boolean HasBooleanDatatype() {
+            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+        }
+
+        /// <summary>
+        /// Checks if the datatype of this typed literal is compatible with datetime
+        /// </summary>
+        internal Boolean HasDatetimeDatatype() {
+            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE)       ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME)   ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GDAY)       ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTH)     ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY)  ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEAR)      ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH) ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TIME));
+        }
+
+        /// <summary>
+        /// Checks if the datatype of this typed literal is compatible with timespan
+        /// </summary>
+        internal Boolean HasTimespanDatatype() {
+            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION));
+        }
+
+        /// <summary>
+        /// Checks if the datatype of this typed literal is compatible with string
+        /// </summary>
+        internal Boolean HasStringDatatype() {
+            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL)         ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)       ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI)           ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID)               ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)         ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NAME)             ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME)           ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NMTOKEN)          ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING) ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NOTATION)         ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_QNAME)            ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)           ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TOKEN)            ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)     ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_HEXBINARY));
+        }
+
+        /// <summary>
+        /// Checks if the datatype of this typed literal is compatible with decimal
+        /// </summary>
+        internal Boolean HasDecimalDatatype() {
+            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE)               ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL)            ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE)             ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT)              ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INT)                ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER)            ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG)               ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)    ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER) ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER) ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)    ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT)              ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE)       ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT)        ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG)       ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT));
+        }
+        #endregion
+
     }
 
 }
