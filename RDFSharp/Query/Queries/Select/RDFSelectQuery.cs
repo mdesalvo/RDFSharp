@@ -196,7 +196,7 @@ namespace RDFSharp.Query {
                 this.PatternGroupResultTables.Clear();
                 this.PatternResultTables.Clear();
 
-                RDFSelectQueryResult selectResult    = new RDFSelectQueryResult(this.ToString());
+                RDFSelectQueryResult selectResult    = new RDFSelectQueryResult();
                 if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
@@ -234,7 +234,7 @@ namespace RDFSharp.Query {
                 this.PatternGroupResultTables.Clear();
                 this.PatternResultTables.Clear();
 
-                RDFSelectQueryResult selectResult    = new RDFSelectQueryResult(this.ToString());
+                RDFSelectQueryResult selectResult    = new RDFSelectQueryResult();
                 if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query
@@ -272,7 +272,7 @@ namespace RDFSharp.Query {
                 this.PatternGroupResultTables.Clear();
                 this.PatternResultTables.Clear();
 
-                RDFSelectQueryResult selectResult = new RDFSelectQueryResult(this.ToString());
+                RDFSelectQueryResult selectResult = new RDFSelectQueryResult();
                 if (this.PatternGroups.Any()) {
 
                     //Iterate the pattern groups of the query

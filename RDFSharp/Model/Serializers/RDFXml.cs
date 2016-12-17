@@ -283,7 +283,7 @@ namespace RDFSharp.Model
 
             }
             catch (Exception ex) {
-                throw new RDFModelException("Cannot serialize Xml because: " + ex.Message, ex);
+                throw new RDFModelException("Cannot serialize RDF/Xml because: " + ex.Message, ex);
             }
         }
         #endregion
@@ -476,7 +476,7 @@ namespace RDFSharp.Model
 
             }
             catch(Exception ex) {
-                throw new RDFModelException("Cannot deserialize Xml because: " + ex.Message, ex);
+                throw new RDFModelException("Cannot deserialize RDF/Xml because: " + ex.Message, ex);
             }
         }
         #endregion

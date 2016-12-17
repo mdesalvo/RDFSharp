@@ -44,14 +44,16 @@ namespace RDFSharp.Query
         #endregion
 
         #region Methods
+
+        #region Write
         /// <summary>
-        /// Gives the "SPARQL Query Results XML Format" representation of the RDF query result into the given XML file
+        /// Writes the "SPARQL Query Results XML Format" stream corresponding to the ASK query result
         /// </summary>
-        public void ToSparqlXmlResult(String filepath) {
-            if (filepath != null) {
+        public void ToSparqlXmlResult(Stream outputStream) {
+            try {
 
                 #region serialize
-                using (XmlTextWriter sparqlWriter = new XmlTextWriter(filepath, Encoding.UTF8)) {
+                using(XmlTextWriter sparqlWriter  = new XmlTextWriter(outputStream, Encoding.UTF8)) {
                     XmlDocument sparqlDoc         = new XmlDocument();
                     sparqlWriter.Formatting       = Formatting.Indented;
 
@@ -87,17 +89,29 @@ namespace RDFSharp.Query
                 #endregion
 
             }
+            catch(Exception ex) {
+                throw new RDFQueryException("Cannot serialize SPARQL XML RESULT because: " + ex.Message, ex);
+            }
         }
 
         /// <summary>
-        /// Reads the given "SPARQL Query Results XML Format" file into a query result
+        /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
         /// </summary>
-        public static RDFAskQueryResult FromSparqlXmlResult(String filepath) {
+        public void ToSparqlXmlResult(String filepath) {
+            ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
+        }
+        #endregion
+
+        #region Read
+        /// <summary>
+        /// Reads the given "SPARQL Query Results XML Format" stream into an ASK query result
+        /// </summary>
+        public static RDFAskQueryResult FromSparqlXmlResult(Stream inputStream) {
             try {
 
                 #region deserialize
                 RDFAskQueryResult result          = new RDFAskQueryResult();
-                using(StreamReader streamReader   = new StreamReader(filepath, Encoding.UTF8)) {
+                using(StreamReader streamReader   = new StreamReader(inputStream, Encoding.UTF8)) {
                     using(XmlTextReader xmlReader = new XmlTextReader(streamReader)) {
                         xmlReader.DtdProcessing   = DtdProcessing.Ignore;
                         xmlReader.Normalization   = false;
@@ -123,7 +137,7 @@ namespace RDFSharp.Query
                             #region BOOLEAN
                             else if (node.Name.ToUpperInvariant().Equals("BOOLEAN", StringComparison.Ordinal)) {
                                 foundBoolean      = true;
-                                if(foundHead) {
+                                if (foundHead) {
                                     Boolean bRes  = false;
                                     if (Boolean.TryParse(node.InnerText, out bRes)) {
                                         result.AskResult = bRes;
@@ -145,7 +159,7 @@ namespace RDFSharp.Query
                         }
                         if (!foundBoolean) {
                              throw new Exception("mandatory \"boolean\" node was not found");
-                        }                        
+                        }
                         #endregion
 
                     }
@@ -154,10 +168,19 @@ namespace RDFSharp.Query
                 #endregion
 
             }
-            catch (Exception ex) {
-                throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" file because: " + ex.Message, ex);
+            catch(Exception ex) {
+                throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
+        /// </summary>
+        public static RDFAskQueryResult FromSparqlXmlResult(String filepath) {
+            return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
+        }
+        #endregion
+
         #endregion
 
     }

@@ -50,20 +50,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty SELECT result
         /// </summary>
-        internal RDFSelectQueryResult(String tableName) {
-            this.SelectResults = new DataTable(tableName);
+        internal RDFSelectQueryResult() {
+            this.SelectResults = new DataTable();
         }
         #endregion
 
         #region Methods
+
+        #region Write
         /// <summary>
-        /// Writes the "SPARQL Query Results XML Format" file corresponding to the query result
+        /// Writes the "SPARQL Query Results XML Format" stream corresponding to the SELECT query result
         /// </summary>
-        public void ToSparqlXmlResult(String filepath) {
-            if (filepath != null) {
+        public void ToSparqlXmlResult(Stream outputStream) {
+            try {
 
                 #region serialize
-                using (XmlTextWriter sparqlWriter       = new XmlTextWriter(filepath, Encoding.UTF8)) {
+                using (XmlTextWriter sparqlWriter       = new XmlTextWriter(outputStream, Encoding.UTF8)) {
                     XmlDocument sparqlDoc               = new XmlDocument();
                     sparqlWriter.Formatting             = Formatting.Indented;
 
@@ -123,7 +125,7 @@ namespace RDFSharp.Query
                                         bindingElement.AppendChild(uriElement);
                                     }
                                 }
-                                else if (rdfTerm is RDFLiteral) {
+                                else if(rdfTerm is RDFLiteral) {
                                     XmlNode litElement           = sparqlDoc.CreateNode(XmlNodeType.Element, "literal", null);
                                     if (rdfTerm is RDFPlainLiteral) {
                                         if (((RDFPlainLiteral)rdfTerm).Language != String.Empty) {
@@ -163,31 +165,50 @@ namespace RDFSharp.Query
                 #endregion
 
             }
+            catch (Exception ex) {
+                throw new RDFQueryException("Cannot serialize SPARQL XML RESULT because: " + ex.Message, ex);
+            }
+        }
+        
+        /// <summary>
+        /// Writes the "SPARQL Query Results XML Format" file corresponding to the SELECT query result
+        /// </summary>
+        public void ToSparqlXmlResult(String filepath) {
+            ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
+        }
+        #endregion
+
+        #region Read
+        /// <summary>
+        /// Reads the given "SPARQL Query Results XML Format" file into a SELECT query result
+        /// </summary>
+        public static RDFSelectQueryResult FromSparqlXmlResult(String filepath) {
+            return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
         }
 
         /// <summary>
-        /// Reads the given "SPARQL Query Results XML Format" file into a query result
+        /// Reads the given "SPARQL Query Results XML Format" stream into a SELECT query result
         /// </summary>
-        public static RDFSelectQueryResult FromSparqlXmlResult(String filepath) {
+        public static RDFSelectQueryResult FromSparqlXmlResult(Stream inputStream) {
             try {
 
                 #region deserialize
-                RDFSelectQueryResult result       = new RDFSelectQueryResult(filepath);
-                using(StreamReader streamReader   = new StreamReader(filepath, Encoding.UTF8)) {
+                RDFSelectQueryResult result       = new RDFSelectQueryResult();
+                using(StreamReader streamReader   = new StreamReader(inputStream, Encoding.UTF8)) {
                     using(XmlTextReader xmlReader = new XmlTextReader(streamReader)) {
                         xmlReader.DtdProcessing   = DtdProcessing.Ignore;
                         xmlReader.Normalization   = false;
 
-                        #region load
+                        #region document
                         XmlDocument srxDoc        = new XmlDocument();
                         srxDoc.Load(xmlReader);
                         #endregion
 
-                        #region parse
+                        #region results
                         Boolean foundHead         = false;
                         Boolean foundResults      = false;
                         var nodesEnum             = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
-                        while (nodesEnum != null && nodesEnum.MoveNext()) {
+                        while (nodesEnum         != null && nodesEnum.MoveNext()) {
                             XmlNode node          = (XmlNode)nodesEnum.Current;
 
                             #region HEAD
@@ -198,11 +219,11 @@ namespace RDFSharp.Query
                                     while (variablesEnum != null && variablesEnum.MoveNext()) {
 
                                         #region VARIABLE
-                                        XmlNode varNode = (XmlNode)variablesEnum.Current;
+                                        XmlNode varNode   = (XmlNode)variablesEnum.Current;
                                         if (varNode.Name.ToUpperInvariant().Equals("VARIABLE", StringComparison.Ordinal)) {
                                             if (varNode.Attributes.Count > 0) {
                                                 XmlAttribute varAttr = varNode.Attributes["name"];
-                                                if (varAttr != null && varAttr.Value != String.Empty) {
+                                                if (varAttr         != null && varAttr.Value != String.Empty) {
                                                     RDFQueryUtilities.AddColumn(result.SelectResults, varAttr.Value);
                                                 }
                                                 else {
@@ -218,14 +239,14 @@ namespace RDFSharp.Query
                                     }
                                 }
                                 else {
-                                    throw new Exception("\"head\" node was found without childrens.");
+                                    throw new Exception("\"head\" node was found without children.");
                                 }
                             }
                             #endregion
 
                             #region RESULTS
                             else if (node.Name.ToUpperInvariant().Equals("RESULTS", StringComparison.Ordinal)) {
-                                foundResults      = true;
+                                foundResults            = true;
                                 if (foundHead) {
                                     var resultsEnum     = node.ChildNodes.GetEnumerator();
                                     while (resultsEnum != null && resultsEnum.MoveNext()) {
@@ -234,8 +255,8 @@ namespace RDFSharp.Query
                                         #region RESULT
                                         if (resNode.Name.ToUpperInvariant().Equals("RESULT", StringComparison.Ordinal)) {
                                             if (resNode.HasChildNodes) {
-                                                Dictionary<String, String> results = new Dictionary<String, String>();
-                                                IEnumerator bdgEnum  = resNode.ChildNodes.GetEnumerator();
+                                                var results          = new Dictionary<String, String>();
+                                                var bdgEnum          = resNode.ChildNodes.GetEnumerator();
                                                 while (bdgEnum      != null && bdgEnum.MoveNext()) {
                                                     XmlNode bdgNode  = (XmlNode)bdgEnum.Current;
                                                     Boolean foundUri = false;
@@ -243,16 +264,16 @@ namespace RDFSharp.Query
 
                                                     #region BINDING
                                                     if (bdgNode.Name.ToUpperInvariant().Equals("BINDING", StringComparison.Ordinal)) {
-                                                        if (bdgNode.Attributes != null && bdgNode.Attributes.Count > 0)  {
+                                                        if (bdgNode.Attributes  != null && bdgNode.Attributes.Count > 0) {
                                                             XmlAttribute varAttr = bdgNode.Attributes["name"];
-                                                            if (varAttr != null && varAttr.Value != String.Empty) {
-                                                                if(bdgNode.HasChildNodes) {
+                                                            if (varAttr         != null && varAttr.Value != String.Empty) {
+                                                                if (bdgNode.HasChildNodes) {
 
                                                                     #region URI / BNODE
-                                                                    if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("URI", StringComparison.Ordinal) || 
-																	    bdgNode.FirstChild.Name.ToUpperInvariant().Equals("BNODE", StringComparison.Ordinal)) {
+                                                                    if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("URI",   StringComparison.Ordinal) ||
+                                                                        bdgNode.FirstChild.Name.ToUpperInvariant().Equals("BNODE", StringComparison.Ordinal)) {
                                                                         foundUri = true;
-                                                                        if(RDFModelUtilities.GetUriFromString(bdgNode.InnerText) != null) {
+                                                                        if (RDFModelUtilities.GetUriFromString(bdgNode.InnerText) != null) {
                                                                             results.Add(varAttr.Value, bdgNode.InnerText);
                                                                         }
                                                                         else {
@@ -264,14 +285,14 @@ namespace RDFSharp.Query
                                                                     #region LITERAL
                                                                     else if (bdgNode.FirstChild.Name.ToUpperInvariant().Equals("LITERAL", StringComparison.Ordinal)) {
                                                                         foundLit = true;
-                                                                        if (bdgNode.FirstChild.Attributes != null && bdgNode.FirstChild.Attributes.Count > 0) { 
+                                                                        if (bdgNode.FirstChild.Attributes != null && bdgNode.FirstChild.Attributes.Count > 0) {
                                                                             XmlAttribute litAttr = bdgNode.FirstChild.Attributes["datatype"];
-                                                                            if (litAttr         != null && litAttr.Value != String.Empty) {
+                                                                            if (litAttr     != null && litAttr.Value != String.Empty) {
                                                                                 results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "^^" + litAttr.Value);
                                                                             }
                                                                             else {
-                                                                                litAttr          = bdgNode.FirstChild.Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
-                                                                                if (litAttr     != null && litAttr.Value != String.Empty) {
+                                                                                litAttr      = bdgNode.FirstChild.Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
+                                                                                if (litAttr != null && litAttr.Value != String.Empty) {
                                                                                     results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "@" + litAttr.Value);
                                                                                 }
                                                                                 else {
@@ -287,7 +308,7 @@ namespace RDFSharp.Query
 
                                                                 }
                                                                 else {
-                                                                    throw new Exception("one \"binding\" node was found without childrens.");
+                                                                    throw new Exception("one \"binding\" node was found without children.");
                                                                 }
                                                             }
                                                             else {
@@ -321,10 +342,10 @@ namespace RDFSharp.Query
                         }
 
                         if (!foundHead) {
-                            throw new Exception("mandatory \"head\" node was not found");
+                             throw new Exception("mandatory \"head\" node was not found");
                         }
                         if (!foundResults) {
-                            throw new Exception("mandatory \"results\" node was not found");
+                             throw new Exception("mandatory \"results\" node was not found");
                         }
                         #endregion
 
@@ -334,10 +355,12 @@ namespace RDFSharp.Query
                 #endregion
 
             }
-            catch (Exception ex) {
-                throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" file because: " + ex.Message, ex);
+            catch(Exception ex) {
+                throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
             }
         }
+        #endregion
+
         #endregion
 
     }
