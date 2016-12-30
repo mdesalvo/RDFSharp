@@ -15,12 +15,9 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using RDFSharp.Model;
-using RDFSharp.Query;
 
 namespace RDFSharp.Store
 {
@@ -145,7 +142,7 @@ namespace RDFSharp.Store
 
                     //Open connection
                     this.Connection.Open();
-                    
+
                     //Prepare command
                     command.Prepare();
 
@@ -154,7 +151,7 @@ namespace RDFSharp.Store
 
                     //Iterate triples
                     foreach(var triple in graph) {
-                        
+
                         //Valorize parameters
                         command.Parameters["QID"].Value    = RDFModelUtilities.CreateHash(graphCtx         + " " +
                                                                                           triple.Subject   + " " +
@@ -169,7 +166,7 @@ namespace RDFSharp.Store
                         command.Parameters["PREDID"].Value = triple.Predicate.PatternMemberID;
                         command.Parameters["OBJ"].Value    = triple.Object.ToString();
                         command.Parameters["OBJID"].Value  = triple.Object.PatternMemberID;
-                        
+
                         //Execute command
                         command.ExecuteNonQuery();
                     }
@@ -193,6 +190,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot insert data into SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -261,6 +259,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot insert data into SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -276,7 +275,7 @@ namespace RDFSharp.Store
                 //Create command
                 var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [QuadrupleID] = @QID", this.Connection);
                 command.Parameters.Add(new SqlParameter("QID", SqlDbType.BigInt));
-                
+
                 //Valorize parameters
                 command.Parameters["QID"].Value = quadruple.QuadrupleID;
 
@@ -289,7 +288,7 @@ namespace RDFSharp.Store
                     command.Prepare();
 
                     //Open transaction
-                    command.Transaction = this.Connection.BeginTransaction();                    
+                    command.Transaction = this.Connection.BeginTransaction();
 
                     //Execute command
                     command.ExecuteNonQuery();
@@ -313,6 +312,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -321,10 +321,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given context
         /// </summary>
         public override RDFStore RemoveQuadruplesByContext(RDFContext contextResource) {
-            if (contextResource != null) {
+            if (contextResource  != null) {
 
                 //Create command
-                var command      = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID", this.Connection);
+                var command       = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID", this.Connection);
                 command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
 
                 //Valorize parameters
@@ -363,6 +363,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -371,10 +372,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given subject
         /// </summary>
         public override RDFStore RemoveQuadruplesBySubject(RDFResource subjectResource) {
-            if (subjectResource != null) {
+            if (subjectResource  != null) {
 
                 //Create command
-                var command      = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID", this.Connection);
+                var command       = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID", this.Connection);
                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
 
                 //Valorize parameters
@@ -413,6 +414,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -463,6 +465,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -471,10 +474,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given resource as object
         /// </summary>
         public override RDFStore RemoveQuadruplesByObject(RDFResource objectResource) {
-            if (objectResource   != null) {
+            if (objectResource != null) {
 
                 //Create command
-                var command       = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                var command     = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
                 command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
                 command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
 
@@ -515,6 +518,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -523,10 +527,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given literal as object
         /// </summary>
         public override RDFStore RemoveQuadruplesByLiteral(RDFLiteral literalObject) {
-            if (literalObject    != null) {
+            if (literalObject  != null) {
 
                 //Create command
-                var command       = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                var command     = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
                 command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
                 command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
 
@@ -567,6 +571,7 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
 
                 }
+
             }
             return this;
         }
@@ -578,7 +583,7 @@ namespace RDFSharp.Store
 
             //Create command
             var command = new SqlCommand("DELETE FROM [dbo].[Quadruples]", this.Connection);
-            
+
             try {
 
                 //Open connection
@@ -614,131 +619,9 @@ namespace RDFSharp.Store
             }
 
         }
-
-        /// <summary>
-        /// Compacts the reified quadruples by removing their 4 standard statements 
-        /// </summary>
-        public override void UnreifyQuadruples() {
-
-            //Create SPARQL SELECT query for detecting reified quadruples
-            var T = new RDFVariable("T");
-            var C = new RDFVariable("C");
-            var S = new RDFVariable("S");
-            var P = new RDFVariable("P");
-            var O = new RDFVariable("O");
-            var Q = new RDFSelectQuery()
-                            .AddPatternGroup(new RDFPatternGroup("UnreifyQuadruples")
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.SUBJECT, S))
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.PREDICATE, P))
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.OBJECT, O))
-                                .AddFilter(new RDFIsUriFilter(C))
-                                .AddFilter(new RDFIsUriFilter(T))
-                                .AddFilter(new RDFIsUriFilter(S))
-                                .AddFilter(new RDFIsUriFilter(P))
-                            );
-
-            //Apply it to the store
-            var R = Q.ApplyToStore(this);
-
-            //Iterate results
-            var reifiedQuadruples = R.SelectResults.Rows.GetEnumerator();
-            while (reifiedQuadruples.MoveNext()) {
-
-                //Get reification data (T, C, S, P, O)
-                var tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?T"].ToString());
-                var tContext   = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?C"].ToString());
-                var tSubject   = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?S"].ToString());
-                var tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?P"].ToString());
-                var tObject    = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?O"].ToString());
-
-                //Cleanup store from detected reifications
-                if (tObject is RDFResource) {
-                    this.AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
-                }
-                else {
-                    this.AddQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
-                }
-
-            }
-
-        }
         #endregion
 
         #region Select
-        /// <summary>
-        /// Checks if the store contains the given quadruple
-        /// </summary>
-        public override Boolean ContainsQuadruple(RDFQuadruple quadruple) {
-            if (quadruple   != null) {
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                    return (this.SelectQuadruples((RDFContext)quadruple.Context,
-                                                  (RDFResource)quadruple.Subject,
-                                                  (RDFResource)quadruple.Predicate,
-                                                  (RDFResource)quadruple.Object,
-                                                  null)).QuadruplesCount > 0;
-                }
-                else {
-                    return (this.SelectQuadruples((RDFContext)quadruple.Context,
-                                                  (RDFResource)quadruple.Subject,
-                                                  (RDFResource)quadruple.Predicate,
-                                                  null,
-                                                  (RDFLiteral)quadruple.Object)).QuadruplesCount > 0;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Gets a store containing all quadruples
-        /// </summary>
-        public override RDFMemoryStore SelectAllQuadruples() {
-            return this.SelectQuadruples(null, null, null, null, null);
-        }
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified context
-        /// </summary>
-        public override RDFMemoryStore SelectQuadruplesByContext(RDFContext contextResource) {
-            return this.SelectQuadruples(contextResource, null, null, null, null);
-        }
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified subject
-        /// </summary>
-        public override RDFMemoryStore SelectQuadruplesBySubject(RDFResource subjectResource) {
-            return this.SelectQuadruples(null, subjectResource, null, null, null);
-        }
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified predicate
-        /// </summary>
-        public override RDFMemoryStore SelectQuadruplesByPredicate(RDFResource predicateResource) {
-            return this.SelectQuadruples(null, null, predicateResource, null, null);
-        }
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified object
-        /// </summary>
-        public override RDFMemoryStore SelectQuadruplesByObject(RDFResource objectResource) {
-            return this.SelectQuadruples(null, null, null, objectResource, null);
-        }
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified literal
-        /// </summary>
-        public override RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral objectLiteral) {
-            return this.SelectQuadruples(null, null, null, null, objectLiteral);
-        }
-
         /// <summary>
         /// Gets a memory store containing quadruples satisfying the given pattern
         /// </summary>
@@ -1033,14 +916,14 @@ namespace RDFSharp.Store
 
                 //Open connection
                 this.Connection.Open();
-                
+
                 //Prepare command
                 command.Prepare();
-                
+
                 //Execute command
                 using  (var quadruples = command.ExecuteReader()) {
                     if (quadruples.HasRows) {
-                        while(quadruples.Read()) {
+                        while (quadruples.Read()) {
                             result.AddQuadruple(RDFStoreUtilities.ParseQuadruple(quadruples));
                         }
                     }
@@ -1048,13 +931,13 @@ namespace RDFSharp.Store
 
                 //Close connection
                 this.Connection.Close();
-                
+
             }
             catch (Exception ex) {
 
                 //Close connection
                 this.Connection.Close();
-                
+
                 //Propagate exception
                 throw new RDFStoreException("Cannot read data from SQL Server store because: " + ex.Message, ex);
 
@@ -1070,18 +953,18 @@ namespace RDFSharp.Store
         /// </summary>
         private RDFStoreEnums.RDFStoreSQLErrors Diagnostics() {
             try {
-                
+
                 //Open connection
                 this.Connection.Open();
-                
+
                 //Create command
                 var command     = new SqlCommand("SELECT COUNT(*) FROM sys.tables WHERE name='Quadruples' AND type_desc='USER_TABLE'", this.Connection);
-                
+
                 //Execute command
                 var result      = Int32.Parse(command.ExecuteScalar().ToString());
-                
+
                 //Close connection
-                this.Connection.Close();                
+                this.Connection.Close();
 
                 //Return the diagnostics state
                 return (result == 0 ? RDFStoreEnums.RDFStoreSQLErrors.QuadruplesTableNotFound : RDFStoreEnums.RDFStoreSQLErrors.NoErrors);
@@ -1111,10 +994,8 @@ namespace RDFSharp.Store
                     //Open connection
                     this.Connection.Open();
 
-                    //Create command
+                    //Create & Execute command
                     var command = new SqlCommand("CREATE TABLE [dbo].[Quadruples] ([QuadrupleID] BIGINT PRIMARY KEY NOT NULL, [TripleFlavor] INTEGER NOT NULL, [Context] VARCHAR(1000) NOT NULL, [ContextID] BIGINT NOT NULL, [Subject] VARCHAR(1000) NOT NULL, [SubjectID] BIGINT NOT NULL, [Predicate] VARCHAR(1000) NOT NULL, [PredicateID] BIGINT NOT NULL, [Object] VARCHAR(1000) NOT NULL, [ObjectID] BIGINT NOT NULL); CREATE NONCLUSTERED INDEX [IDX_ContextID] ON [dbo].[Quadruples]([ContextID]);CREATE NONCLUSTERED INDEX [IDX_SubjectID] ON [dbo].[Quadruples]([SubjectID]);CREATE NONCLUSTERED INDEX [IDX_PredicateID] ON [dbo].[Quadruples]([PredicateID]);CREATE NONCLUSTERED INDEX [IDX_ObjectID] ON [dbo].[Quadruples]([ObjectID],[TripleFlavor]);CREATE NONCLUSTERED INDEX [IDX_SubjectID_PredicateID] ON [dbo].[Quadruples]([SubjectID],[PredicateID]);CREATE NONCLUSTERED INDEX [IDX_SubjectID_ObjectID] ON [dbo].[Quadruples]([SubjectID],[ObjectID],[TripleFlavor]);CREATE NONCLUSTERED INDEX [IDX_PredicateID_ObjectID] ON [dbo].[Quadruples]([PredicateID],[ObjectID],[TripleFlavor]);", this.Connection);
-
-                    //Execute command
                     command.ExecuteNonQuery();
 
                     //Close connection
@@ -1122,10 +1003,10 @@ namespace RDFSharp.Store
 
                 }
                 catch (Exception ex) {
-                    
+
                     //Close connection
                     this.Connection.Close();
-                    
+
                     //Propagate exception
                     throw new RDFStoreException("Cannot prepare SQL Server store because: " + ex.Message, ex);
 
