@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2016 Marco De Salvo
+   Copyright 2012-2017 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -199,10 +199,10 @@ namespace RDFSharp.Store
         /// Adds the given quadruple to the store, avoiding duplicate insertions
         /// </summary>
         public override RDFStore AddQuadruple(RDFQuadruple quadruple) {
-            if (quadruple   != null) {
+            if (quadruple  != null) {
 
                 //Create command
-                var command  = new SqlCommand("IF NOT EXISTS(SELECT 1 FROM [dbo].[Quadruples] WHERE [QuadrupleID] = @QID) BEGIN INSERT INTO [dbo].[Quadruples]([QuadrupleID], [TripleFlavor], [Context], [ContextID], [Subject], [SubjectID], [Predicate], [PredicateID], [Object], [ObjectID]) VALUES (@QID, @TFV, @CTX, @CTXID, @SUBJ, @SUBJID, @PRED, @PREDID, @OBJ, @OBJID) END", this.Connection);
+                var command = new SqlCommand("IF NOT EXISTS(SELECT 1 FROM [dbo].[Quadruples] WHERE [QuadrupleID] = @QID) BEGIN INSERT INTO [dbo].[Quadruples]([QuadrupleID], [TripleFlavor], [Context], [ContextID], [Subject], [SubjectID], [Predicate], [PredicateID], [Object], [ObjectID]) VALUES (@QID, @TFV, @CTX, @CTXID, @SUBJ, @SUBJID, @PRED, @PREDID, @OBJ, @OBJID) END", this.Connection);
                 command.Parameters.Add(new SqlParameter("QID",    SqlDbType.BigInt));
                 command.Parameters.Add(new SqlParameter("TFV",    SqlDbType.Int));
                 command.Parameters.Add(new SqlParameter("CTX",    SqlDbType.VarChar, 1000));
@@ -321,10 +321,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given context
         /// </summary>
         public override RDFStore RemoveQuadruplesByContext(RDFContext contextResource) {
-            if (contextResource  != null) {
+            if (contextResource != null) {
 
                 //Create command
-                var command       = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID", this.Connection);
+                var command      = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID", this.Connection);
                 command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
 
                 //Valorize parameters
@@ -372,10 +372,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given subject
         /// </summary>
         public override RDFStore RemoveQuadruplesBySubject(RDFResource subjectResource) {
-            if (subjectResource  != null) {
+            if (subjectResource != null) {
 
                 //Create command
-                var command       = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID", this.Connection);
+                var command      = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID", this.Connection);
                 command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
 
                 //Valorize parameters
@@ -527,10 +527,10 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given literal as object
         /// </summary>
         public override RDFStore RemoveQuadruplesByLiteral(RDFLiteral literalObject) {
-            if (literalObject  != null) {
+            if (literalObject != null) {
 
                 //Create command
-                var command     = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                var command    = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
                 command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
                 command.Parameters.Add(new SqlParameter("TFV",   SqlDbType.Int));
 
