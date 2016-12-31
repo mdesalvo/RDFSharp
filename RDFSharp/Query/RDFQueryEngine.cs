@@ -100,7 +100,7 @@ namespace RDFSharp.Query
         internal static DataTable ApplyModifiers(RDFQuery query, DataTable table) {
             String tablenameBak   = table.TableName;
 
-            //SELECT query has OrderBy modifiers and Projection operator
+            //SELECT query has ORDERBY modifiers and PROJECTION operator
             if (query is RDFSelectQuery) {
 
                 //Apply the ORDERBY modifiers
