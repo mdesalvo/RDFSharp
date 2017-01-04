@@ -28,7 +28,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStore represents an abstract RDF store, baseline for Memory or SQL-based implementations.
     /// </summary>
-    public abstract class RDFStore: IEquatable<RDFStore> {
+    public abstract class RDFStore: RDFDataSource, IEquatable<RDFStore> {
 
         #region Properties
         /// <summary>

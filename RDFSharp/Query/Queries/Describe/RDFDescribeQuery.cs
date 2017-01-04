@@ -354,7 +354,7 @@ namespace RDFSharp.Query {
 
                     //Step 6: Describe the terms on each store and merge them in the federated result table
                     DataTable describeResultTable      = new DataTable(this.ToString());
-                    foreach (RDFStore store in federation.Stores.Values) {
+                    foreach (RDFStore store in federation) {
                         describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, queryResultTable), true, MissingSchemaAction.Add);
                     }
 
@@ -370,7 +370,7 @@ namespace RDFSharp.Query {
 
                         //Step 1: Describe the terms on each store and merge them in the federated result table
                         DataTable describeResultTable  = new DataTable(this.ToString());
-                        foreach (RDFStore store in federation.Stores.Values) {
+                        foreach (RDFStore store in federation) {
                             describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, new DataTable()), true, MissingSchemaAction.Add);
                         }
 

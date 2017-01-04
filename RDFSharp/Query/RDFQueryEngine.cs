@@ -41,14 +41,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
-        internal static void EvaluatePatterns(RDFQuery query, RDFPatternGroup patternGroup, Object graphOrStore) {
+        internal static void EvaluatePatterns(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
             query.PatternResultTables[patternGroup] = new List<DataTable>();
 
             //Iterate over the patterns of the pattern group
             foreach(RDFPattern pattern in patternGroup.Patterns) {
 
                 //Apply the pattern to the graph/store
-                DataTable patternResultsTable       = graphOrStore is RDFGraph ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : ApplyPattern(pattern, (RDFStore)graphOrStore);
+                DataTable patternResultsTable       = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : ApplyPattern(pattern, (RDFStore)graphOrStore);
 
                 //Set the name and the optionality metadata of the result datatable
                 patternResultsTable.TableName = pattern.ToString();
@@ -307,11 +307,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Describes the terms of the given DESCRIBE query with data from the given result table
         /// </summary>
-        internal static DataTable DescribeTerms(RDFDescribeQuery describeQuery, Object graphOrStore, DataTable resultTable) {
+        internal static DataTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource graphOrStore, DataTable resultTable) {
 
             //Create the structure of the result datatable
             DataTable result                  = new DataTable("DESCRIBE_RESULTS");
-            if (graphOrStore is RDFStore) {
+            if (graphOrStore.IsStore()) {
                 result.Columns.Add("CONTEXT", Type.GetType("System.String"));
             }
             result.Columns.Add("SUBJECT",     Type.GetType("System.String"));
@@ -327,7 +327,7 @@ namespace RDFSharp.Query
                  foreach(RDFPatternMember dt in describeQuery.DescribeTerms.Where(dterm => dterm is RDFResource)) {
                  
                      //Search on GRAPH
-                     if (graphOrStore is RDFGraph) {
+                     if (graphOrStore.IsGraph()) {
 
                          //Search as RESOURCE (S-P-O)
                          RDFGraph desc        = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)dt)
@@ -391,7 +391,7 @@ namespace RDFSharp.Query
                                      RDFPatternMember term  = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[dt.ToString()].ToString());
 
                                      //Search on GRAPH
-                                     if (graphOrStore is RDFGraph) {
+                                     if (graphOrStore.IsGraph()) {
 
                                          //Search as RESOURCE (S-P-O)
                                          if (term is RDFResource) {
@@ -456,7 +456,7 @@ namespace RDFSharp.Query
                      else {
                  
                          //Search on GRAPH
-                         if (graphOrStore is RDFGraph) {
+                         if (graphOrStore.IsGraph()) {
 
                              //Search as RESOURCE (S-P-O)
                              RDFGraph desc        = ((RDFGraph)graphOrStore).SelectTriplesBySubject((RDFResource)dt)
