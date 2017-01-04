@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Data;
 using RDFSharp.Model;
+using RDFSharp.Store;
 
 namespace RDFSharp.Query {
 
@@ -67,11 +68,41 @@ namespace RDFSharp.Query {
                 subj               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
                 pred               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
                 obj                = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
-                if (obj is RDFResource) {
+                if (obj           is RDFResource) {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
                 }
                 else {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Builds a memory store corresponding to the query result
+        /// </summary>
+        public RDFMemoryStore ToRDFMemoryStore() {
+            RDFMemoryStore result  = new RDFMemoryStore();
+            RDFPatternMember ctx   = null;
+            RDFPatternMember subj  = null;
+            RDFPatternMember pred  = null;
+            RDFPatternMember obj   = null;
+
+            //Iterate the datatable rows and generate the corresponding triples to be added to the result memory store
+            IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
+            while (resultRows.MoveNext()) {
+                ctx                = (this.DescribeResults.Columns.Contains("CONTEXT") ?
+                                        new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["CONTEXT"].ToString()).ToString()) :
+                                        new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+                subj               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
+                pred               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
+                obj                = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
+                if (obj           is RDFResource) {
+                    result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
+                }
+                else {
+                    result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
                 }
             }
 
@@ -87,6 +118,20 @@ namespace RDFSharp.Query {
 
                 //Transform the graph into a datatable and assign it to the query result
                 result.DescribeResults    = graph.ToDataTable();
+
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Builds a query result corresponding to the given memory store
+        /// </summary>
+        public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store) {
+            RDFDescribeQueryResult result = new RDFDescribeQueryResult(String.Empty);
+            if (store != null) {
+
+                //Transform the memory store into a datatable and assign it to the query result
+                result.DescribeResults = store.ToDataTable();
 
             }
             return result;
