@@ -200,53 +200,7 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQueryResult ApplyToGraph(RDFGraph graph) {
             if (graph != null) {
-                this.PatternGroupResultTables.Clear();
-                this.PatternResultTables.Clear();
-
-                RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-                if (this.PatternGroups.Any()) {
-
-                    //Iterate the pattern groups of the query
-                    foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, graph);
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.CombinePatterns(this, patternGroup);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, patternGroup);
-
-                    }
-
-                    //Step 4: Get the result table of the query
-                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
-
-                    //Step 5: Describe the terms from the result table
-                    DataTable describeResultTable      = RDFQueryEngine.DescribeTerms(this, graph, queryResultTable);
-
-                    //Step 6: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
-
-                }
-                else {
-
-                    //In this case the only chance to proceed is to have resources in the describe terms,
-                    //which will be used to search for S-P-O data. Variables are omitted in this scenario.
-                    if (this.DescribeTerms.Any(dt => dt is RDFResource)) {
-
-                        //Step 1: Describe the terms from the result table
-                        DataTable describeResultTable  = RDFQueryEngine.DescribeTerms(this, graph, new DataTable());
-
-                        //Step 2: Apply the modifiers of the query to the result table
-                        describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
-
-                    }
-
-                }
-
-                return describeResult;
+                return this.ApplyToDataSource(graph);
             }
             throw new RDFQueryException("Cannot execute DESCRIBE query because given \"graph\" parameter is null.");
         }
@@ -256,53 +210,7 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQueryResult ApplyToStore(RDFStore store) {
             if (store != null) {
-                this.PatternGroupResultTables.Clear();
-                this.PatternResultTables.Clear();
-
-                RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-                if (this.PatternGroups.Any()) {
-
-                    //Iterate the pattern groups of the query
-                    foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.CombinePatterns(this, patternGroup);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, patternGroup);
-
-                    }
-
-                    //Step 4: Get the result table of the query
-                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
-
-                    //Step 5: Describe the terms from the result table
-                    DataTable describeResultTable      = RDFQueryEngine.DescribeTerms(this, store, queryResultTable);
-
-                    //Step 6: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
-
-                }
-                else {
-
-                    //In this case the only chance to proceed is to have resources in the describe terms,
-                    //which will be used to search for S-P-O data. Variables are omitted in this scenario.
-                    if (this.DescribeTerms.Any(dt => dt is RDFResource)) {
-
-                        //Step 1: Describe the terms from the result table
-                        DataTable describeResultTable  = RDFQueryEngine.DescribeTerms(this, store, new DataTable());
-
-                        //Step 2: Apply the modifiers of the query to the result table
-                        describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
-
-                    }
-
-                }
-
-                return describeResult;
+                return this.ApplyToDataSource(store);
             }
             throw new RDFQueryException("Cannot execute DESCRIBE query because given \"store\" parameter is null.");
         }
@@ -312,18 +220,30 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQueryResult ApplyToFederation(RDFFederation federation) {
             if (federation != null) {
-                this.PatternGroupResultTables.Clear();
-                this.PatternResultTables.Clear();
+                return this.ApplyToDataSource(federation);
+            }
+            throw new RDFQueryException("Cannot execute DESCRIBE query because given \"federation\" parameter is null.");
+        }
 
-                RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-                if (this.PatternGroups.Any()) {
+        /// <summary>
+        /// Applies the query to the given datasource
+        /// </summary>
+        internal RDFDescribeQueryResult ApplyToDataSource(RDFDataSource datasource) {
+            this.PatternGroupResultTables.Clear();
+            this.PatternResultTables.Clear();
 
-                    //Iterate the pattern groups of the query
-                    var fedPatternResultTables         = new Dictionary<RDFPatternGroup, List<DataTable>>();
-                    foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
+            RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
+            if (this.PatternGroups.Any()) {
+
+                //Iterate the pattern groups of the query
+                var fedPatternResultTables         = new Dictionary<RDFPatternGroup, List<DataTable>>();
+                foreach (var patternGroup         in this.PatternGroups) {
+
+                    //Step 1: Get the intermediate result tables of the current pattern group
+                    if (datasource.IsFederation()) {
 
                         #region TrueFederations
-                        foreach (RDFStore store in federation) {
+                        foreach (var store        in (RDFFederation)datasource) {
 
                             //Step 1: Evaluate the patterns of the current pattern group on the current store
                             RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
@@ -333,7 +253,7 @@ namespace RDFSharp.Query {
                                  fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
-                                fedPatternResultTables[patternGroup].ForEach(fprt => 
+                                 fedPatternResultTables[patternGroup].ForEach(fprt =>
                                     fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                             }
 
@@ -341,49 +261,70 @@ namespace RDFSharp.Query {
                         this.PatternResultTables[patternGroup] = fedPatternResultTables[patternGroup];
                         #endregion
 
-                        //Step 3: Get the result table of the current pattern group
-                        RDFQueryEngine.CombinePatterns(this, patternGroup);
-
-                        //Step 4: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, patternGroup);
-
+                    }
+                    else {
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, datasource);
                     }
 
-                    //Step 5: Get the result table of the query
-                    DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                    //Step 2: Get the result table of the current pattern group
+                    RDFQueryEngine.CombinePatterns(this, patternGroup);
 
-                    //Step 6: Describe the terms on each store and merge them in the federated result table
-                    DataTable describeResultTable      = new DataTable(this.ToString());
-                    foreach (RDFStore store in federation) {
+                    //Step 3: Apply the filters of the current pattern group to its result table
+                    RDFQueryEngine.ApplyFilters(this, patternGroup);
+
+                }
+
+                //Step 4: Get the result table of the query
+                DataTable queryResultTable         = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+
+                //Step 5: Describe the terms from the result table
+                DataTable describeResultTable      = new DataTable(this.ToString());
+                if (datasource.IsFederation()) {
+
+                    #region TrueFederations
+                    foreach (var store            in (RDFFederation)datasource) {
                         describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, queryResultTable), true, MissingSchemaAction.Add);
                     }
-
-                    //Step 7: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
+                    #endregion
 
                 }
                 else {
+                    describeResultTable            = RDFQueryEngine.DescribeTerms(this, datasource, queryResultTable);
+                }
 
-                    //In this case the only chance to proceed is to have resources in the describe terms,
-                    //which will be used to search for S-P-O data. Variables are ignored in this scenario.
-                    if (this.DescribeTerms.Any(dt => dt is RDFResource)) {
+                //Step 6: Apply the modifiers of the query to the result table
+                describeResult.DescribeResults     = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
-                        //Step 1: Describe the terms on each store and merge them in the federated result table
-                        DataTable describeResultTable  = new DataTable(this.ToString());
-                        foreach (RDFStore store in federation) {
+            }
+            else {
+
+                //In this case the only chance to proceed is to have resources in the describe terms,
+                //which will be used to search for S-P-O data. Variables are ignored in this scenario.
+                if (this.DescribeTerms.Any(dt =>  dt is RDFResource)) {
+
+                    //Step 1: Describe the terms from the result table
+                    DataTable describeResultTable  = new DataTable(this.ToString());
+                    if (datasource.IsFederation()) {
+
+                        #region TrueFederations
+                        foreach (var store        in (RDFFederation)datasource) {
                             describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, new DataTable()), true, MissingSchemaAction.Add);
                         }
-
-                        //Step 2: Apply the modifiers of the query to the result table
-                        describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
+                        #endregion
 
                     }
+                    else {
+                        describeResultTable        = RDFQueryEngine.DescribeTerms(this, datasource, new DataTable());
+                    }
+
+                    //Step 2: Apply the modifiers of the query to the result table
+                    describeResult.DescribeResults = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
 
                 }
 
-                return describeResult;
             }
-            throw new RDFQueryException("Cannot execute DESCRIBE query because given \"federation\" parameter is null.");
+
+            return describeResult;
         }
         #endregion
 

@@ -193,35 +193,7 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFSelectQueryResult ApplyToGraph(RDFGraph graph) {
             if (graph != null) {
-                this.PatternGroupResultTables.Clear();
-                this.PatternResultTables.Clear();
-
-                RDFSelectQueryResult selectResult    = new RDFSelectQueryResult();
-                if (this.PatternGroups.Any()) {
-
-                    //Iterate the pattern groups of the query
-                    foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, graph);
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.CombinePatterns(this, patternGroup);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, patternGroup);
-
-                    }
-
-                    //Step 4: Get the result table of the query
-                    DataTable queryResultTable       = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
-
-                    //Step 5: Apply the modifiers of the query to the result table
-                    selectResult.SelectResults       = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
-
-                }
-
-                return selectResult;
+                return this.ApplyToDataSource(graph);
             }
             throw new RDFQueryException("Cannot execute SELECT query because given \"graph\" parameter is null.");
         }
@@ -231,35 +203,7 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFSelectQueryResult ApplyToStore(RDFStore store) {
             if (store != null) {
-                this.PatternGroupResultTables.Clear();
-                this.PatternResultTables.Clear();
-
-                RDFSelectQueryResult selectResult    = new RDFSelectQueryResult();
-                if (this.PatternGroups.Any()) {
-
-                    //Iterate the pattern groups of the query
-                    foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.CombinePatterns(this, patternGroup);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, patternGroup);
-
-                    }
-
-                    //Step 4: Get the result table of the query
-                    DataTable queryResultTable       = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
-
-                    //Step 5: Apply the modifiers of the query to the result table
-                    selectResult.SelectResults       = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
-
-                }
-
-                return selectResult;
+                return this.ApplyToDataSource(store);
             }
             throw new RDFQueryException("Cannot execute SELECT query because given \"store\" parameter is null.");
         }
@@ -269,54 +213,69 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFSelectQueryResult ApplyToFederation(RDFFederation federation) {
             if (federation != null) {
-                this.PatternGroupResultTables.Clear();
-                this.PatternResultTables.Clear();
+                return this.ApplyToDataSource(federation);
+            }
+            throw new RDFQueryException("Cannot execute SELECT query because given \"federation\" parameter is null.");
+        }
 
-                RDFSelectQueryResult selectResult = new RDFSelectQueryResult();
-                if (this.PatternGroups.Any()) {
+        /// <summary>
+        /// Applies the query to the given datasource
+        /// </summary>
+        internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource datasource) {
+            this.PatternGroupResultTables.Clear();
+            this.PatternResultTables.Clear();
 
-                    //Iterate the pattern groups of the query
-                    var fedPatternResultTables    = new Dictionary<RDFPatternGroup, List<DataTable>>();
-                    foreach (RDFPatternGroup patternGroup in this.PatternGroups) {
+            RDFSelectQueryResult selResult = new RDFSelectQueryResult();
+            if (this.PatternGroups.Any())  {
+
+                //Iterate the pattern groups of the query
+                var fedPatternResultTables = new Dictionary<RDFPatternGroup, List<DataTable>>();
+                foreach (var patternGroup in this.PatternGroups) {
+
+                    //Step 1: Get the intermediate result tables of the current pattern group
+                    if (datasource.IsFederation()) {
 
                         #region TrueFederations
-                        foreach (RDFStore store in federation) {
+                        foreach(var store in (RDFFederation)datasource) {
 
-                            //Step 1: Evaluate the patterns of the current pattern group on the current store
+                            //Step FED.1: Evaluate the patterns of the current pattern group on the current store
                             RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
-                            //Step 2: Federate the patterns of the current pattern group on the current store
-                            if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                            //Step FED.2: Federate the patterns of the current pattern group on the current store
+                            if(!fedPatternResultTables.ContainsKey(patternGroup)) {
+                                fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
-                                fedPatternResultTables[patternGroup].ForEach(fprt => 
-                                    fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                fedPatternResultTables[patternGroup].ForEach(fprt =>
+                                   fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                             }
 
                         }
                         this.PatternResultTables[patternGroup] = fedPatternResultTables[patternGroup];
                         #endregion
 
-                        //Step 3: Get the result table of the current pattern group
-                        RDFQueryEngine.CombinePatterns(this, patternGroup);
-
-                        //Step 4: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, patternGroup);
-
+                    }
+                    else {
+                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, datasource);
                     }
 
-                    //Step 5: Get the result table of the query
-                    DataTable queryResultTable    = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                    //Step 2: Get the result table of the current pattern group
+                    RDFQueryEngine.CombinePatterns(this, patternGroup);
 
-                    //Step 6: Apply the modifiers of the query to the result table
-                    selectResult.SelectResults    = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
+                    //Step 3: Apply the filters of the current pattern group to its result table
+                    RDFQueryEngine.ApplyFilters(this, patternGroup);
 
                 }
 
-                return selectResult;
+                //Step 4: Get the result table of the query
+                var queryResultTable    = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+
+                //Step 5: Apply the modifiers of the query to the result table
+                selResult.SelectResults = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
+
             }
-            throw new RDFQueryException("Cannot execute SELECT query because given \"federation\" parameter is null.");
+
+            return selResult;
         }
         #endregion
 
