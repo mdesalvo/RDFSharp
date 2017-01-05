@@ -245,10 +245,10 @@ namespace RDFSharp.Query {
                         #region TrueFederations
                         foreach (var store        in (RDFFederation)datasource) {
 
-                            //Step 1: Evaluate the patterns of the current pattern group on the current store
+                            //Step FED.1: Evaluate the patterns of the current pattern group on the current store
                             RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
-                            //Step 2: Federate the patterns of the current pattern group on the current store
+                            //Step FED.2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
                                  fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
