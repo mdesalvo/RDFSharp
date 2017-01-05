@@ -40,7 +40,7 @@ namespace RDFSharp.Store
                 RDFResource qPredicate    = new RDFResource(fetchedQuadruples["Predicate"].ToString());
 
                 //SPO-flavour quadruple
-                if (fetchedQuadruples["TripleFlavor"].Equals(1)) {
+                if (fetchedQuadruples["TripleFlavor"].ToString().Equals("1")) {
                     RDFResource qObject   = new RDFResource(fetchedQuadruples["Object"].ToString());
                     return new RDFQuadruple(qContext, qSubject, qPredicate, qObject);
                 }
