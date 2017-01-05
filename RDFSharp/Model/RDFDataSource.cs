@@ -29,21 +29,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if this data source is a graph
         /// </summary>
-        public Boolean IsGraph() {
+        internal Boolean IsGraph() {
             return this is RDFGraph;
         }
 
         /// <summary>
         /// Checks if this data source is a store
         /// </summary>
-        public Boolean IsStore() {
+        internal Boolean IsStore() {
             return this is RDFStore;
         }
 
         /// <summary>
         /// Checks if this data source is a federation
         /// </summary>
-        public Boolean IsFederation() {
+        internal Boolean IsFederation() {
             return this is RDFFederation;
         }
         #endregion
