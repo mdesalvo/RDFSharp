@@ -45,13 +45,14 @@ namespace RDFSharp.Query
             query.PatternResultTables[patternGroup] = new List<DataTable>();
 
             //Iterate over the patterns of the pattern group
-            foreach(RDFPattern pattern in patternGroup.Patterns) {
+            foreach (var pattern in patternGroup.Patterns) {
 
                 //Apply the pattern to the graph/store
-                DataTable patternResultsTable       = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : ApplyPattern(pattern, (RDFStore)graphOrStore);
+                var patternResultsTable             = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : 
+                                                                               ApplyPattern(pattern, (RDFStore)graphOrStore);
 
                 //Set the name and the optionality metadata of the result datatable
-                patternResultsTable.TableName = pattern.ToString();
+                patternResultsTable.TableName       = pattern.ToString();
                 patternResultsTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
                 patternResultsTable.ExtendedProperties.Add("JoinAsUnion", pattern.JoinAsUnion);
 
@@ -163,7 +164,7 @@ namespace RDFSharp.Query
             if (patternGroup.Patterns.Any()) {
 
                 //Populate pattern group result table
-                DataTable patternGroupResultTable = CombineTables(query.PatternResultTables[patternGroup], false);
+                var patternGroupResultTable = CombineTables(query.PatternResultTables[patternGroup], false);
 
                 //Add it to the list of pattern group result tables
                 query.PatternGroupResultTables.Add(patternGroup, patternGroupResultTable);
