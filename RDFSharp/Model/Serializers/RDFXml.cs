@@ -306,7 +306,7 @@ namespace RDFSharp.Model
                 RDFGraph result = new RDFGraph();
                 using(StreamReader streamReader   = new StreamReader(inputStream, Encoding.UTF8)) {
                     using(XmlTextReader xmlReader = new XmlTextReader(streamReader)) {
-                        xmlReader.DtdProcessing   = DtdProcessing.Ignore;
+                        xmlReader.DtdProcessing   = DtdProcessing.Parse;
                         xmlReader.Normalization   = false;
 
                         #region document

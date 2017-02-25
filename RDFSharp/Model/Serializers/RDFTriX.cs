@@ -170,7 +170,7 @@ namespace RDFSharp.Model
                 RDFGraph result = new RDFGraph();
                 using(StreamReader streamReader      = new StreamReader(inputStream, Encoding.UTF8)) {
                     using(XmlTextReader trixReader   = new XmlTextReader(streamReader)) {
-                        trixReader.DtdProcessing     = DtdProcessing.Ignore;
+                        trixReader.DtdProcessing     = DtdProcessing.Parse;
                         trixReader.Normalization     = false;
 
                         #region document

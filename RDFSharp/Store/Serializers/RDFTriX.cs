@@ -175,7 +175,7 @@ namespace RDFSharp.Store
                 Dictionary<Int64, RDFGraph> graphs = new Dictionary<Int64, RDFGraph>();
                 using(StreamReader streamReader    = new StreamReader(inputStream, Encoding.UTF8)) {
                     using(XmlTextReader trixReader = new XmlTextReader(streamReader)) {
-                        trixReader.DtdProcessing   = DtdProcessing.Ignore;
+                        trixReader.DtdProcessing   = DtdProcessing.Parse;
                         trixReader.Normalization   = false;
 
                         #region document

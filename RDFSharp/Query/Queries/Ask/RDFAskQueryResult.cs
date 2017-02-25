@@ -113,7 +113,7 @@ namespace RDFSharp.Query
                 RDFAskQueryResult result          = new RDFAskQueryResult();
                 using(StreamReader streamReader   = new StreamReader(inputStream, Encoding.UTF8)) {
                     using(XmlTextReader xmlReader = new XmlTextReader(streamReader)) {
-                        xmlReader.DtdProcessing   = DtdProcessing.Ignore;
+                        xmlReader.DtdProcessing   = DtdProcessing.Parse;
                         xmlReader.Normalization   = false;
 
                         #region load
