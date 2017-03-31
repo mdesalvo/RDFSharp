@@ -37,5 +37,5 @@ There are many ways that you can contribute to the RDFSharp project:
     <li>Tell others about the RDFSharp project :)</li>
 </ul>
 <hr>
-RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b> and <b><a href="https://rdfsharp.codeplex.com/">Codeplex</a></b>!
+RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b>!
 <hr>
