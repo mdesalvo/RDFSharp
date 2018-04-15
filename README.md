@@ -37,9 +37,10 @@ There are many ways that you can contribute to the RDFSharp project:
     <li>Tell others about the RDFSharp project :)</li>
 </ul>
 <hr>
-RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b>!
-
-RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">extension</a></b> for <b>OWL-DL</b> ontology modeling, validation and reasoning!
-
-RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.RDFStore">extension</a></b> for backing RDF data on common <b>SQL</b> relational databases!
+Did you know that...
+<ul>
+    <li>RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b>!</li> 
+    <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">extension</a></b> for <b>OWL-DL</b> ontology modeling, validation and reasoning!</li>  
+    <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.RDFStore">extension</a></b> for <b>SQL</b> database backing of RDF data!</li>
+</ul>
 <hr>
