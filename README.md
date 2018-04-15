@@ -41,6 +41,6 @@ Did you know that...
 <ul>
     <li>RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b>!</li> 
     <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">extension</a></b> for <b>OWL-DL</b> ontology modeling, validation and reasoning!</li>  
-    <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.RDFStore">extension</a></b> for <b>SQL</b> database backing of RDF data!</li>
+    <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.Stores">extension</a></b> for <b>SQL</b> storage of RDF data!</li>
 </ul>
 <hr>
