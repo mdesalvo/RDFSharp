@@ -28,7 +28,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
-    public class RDFMemoryStore: RDFStore, IEnumerable<RDFQuadruple> {
+    public sealed class RDFMemoryStore: RDFStore, IEnumerable<RDFQuadruple> {
 
         #region Properties
         /// <summary>

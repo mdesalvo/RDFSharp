@@ -27,7 +27,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFGraph represents a graph in the RDF model.
     /// </summary>
-    public class RDFGraph: RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple> {
+    public sealed class RDFGraph: RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple> {
 
         #region Properties
         /// <summary>

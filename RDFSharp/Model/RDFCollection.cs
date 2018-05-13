@@ -24,7 +24,7 @@ namespace RDFSharp.Model
     /// RDFCollection represents a generic collection in the RDF model.
     /// It is made up of items, which must be all resources or all literals.
     /// </summary>
-    public class RDFCollection: IEnumerable {
+    public sealed class RDFCollection: IEnumerable {
 
         #region Properties
         /// <summary>

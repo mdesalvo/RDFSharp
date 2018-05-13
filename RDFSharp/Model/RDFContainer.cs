@@ -24,7 +24,7 @@ namespace RDFSharp.Model
     /// RDFContainer represents a generic container in the RDF model.
     /// It is made up of items, which must be all resources or all literals.
     /// </summary>
-    public class RDFContainer: IEnumerable {
+    public sealed class RDFContainer: IEnumerable {
 
         #region Properties
         /// <summary>

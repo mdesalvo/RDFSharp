@@ -25,7 +25,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFFederation represents a virtual store giving logically integrated query access to multiple stores.
     /// </summary>
-    public class RDFFederation: RDFDataSource, IEquatable<RDFFederation>, IEnumerable<RDFStore>   {
+    public sealed class RDFFederation: RDFDataSource, IEquatable<RDFFederation>, IEnumerable<RDFStore>   {
 
         #region Properties
         /// <summary>
