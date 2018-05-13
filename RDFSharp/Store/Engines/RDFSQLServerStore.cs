@@ -25,7 +25,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFSQLServerStore represents a RDFStore backed on SQL Server engine
     /// </summary>
-    public class RDFSQLServerStore: RDFStore {
+    public sealed class RDFSQLServerStore: RDFStore {
 
         #region Properties
         /// <summary>
