@@ -65,12 +65,12 @@ namespace RDFSharp.Model
             Uri tempUri       = null;
             if (uriString    != null) {
 
-                // blanks detection
-                if (uriString.StartsWith("_:")) {
+                // blank detection
+                if (uriString.StartsWith("_:"))
                     uriString = "bnode:" + uriString.Substring(2);
-                }
 
 				Uri.TryCreate(uriString, UriKind.Absolute, out tempUri);
+
             }
             return tempUri;
         }
