@@ -100,7 +100,7 @@ namespace RDFSharp.Model
         internal static String Unicode_To_ASCII(String unicodeString) {
             if (unicodeString   != null) {
                 StringBuilder b  = new StringBuilder();
-                foreach (Char c in unicodeString.ToCharArray()) {
+                foreach (Char c in unicodeString) {
                     if (c       <= 127) {
                         b.Append(c);
                     }
@@ -124,7 +124,7 @@ namespace RDFSharp.Model
         internal static String EscapeControlCharsForXML(String data) {
             if (data            != null) {
                 StringBuilder b  = new StringBuilder();
-                foreach (Char c in data.ToCharArray()) {
+                foreach (Char c in data) {
                     if  (Char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D') {
                          b.Append("\\u" + ((Int32)c).ToString("X4"));
                     }
