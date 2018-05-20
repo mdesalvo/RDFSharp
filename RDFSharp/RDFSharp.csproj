@@ -49,9 +49,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
 
-  <!-- RDFSharp sources -->
+  <!-- RDFSharp -->
   <ItemGroup>
-    <!-- Assembly -->
+    <!-- AssemblyInfo -->
     <Compile Include="Properties\AssemblyInfo.cs" />
     <!-- Model -->
     <Compile Include="Model\RDFCollection.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="Model\RDFGraphMetadata.cs" />
     <Compile Include="Model\RDFLiteral.cs" />
     <Compile Include="Model\RDFModelEnums.cs" />
+    <Compile Include="Model\RDFModelEvents.cs" />
     <Compile Include="Model\RDFModelException.cs" />
     <Compile Include="Model\RDFModelUtilities.cs" />
     <Compile Include="Model\RDFNamespace.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Query\RDFQuery.cs" />
     <Compile Include="Query\RDFQueryEngine.cs" />
     <Compile Include="Query\RDFQueryEnums.cs" />
+    <Compile Include="Query\RDFQueryEvents.cs" />
     <Compile Include="Query\RDFQueryException.cs" />
     <Compile Include="Query\RDFQueryUtilities.cs" />
     <Compile Include="Query\RDFVariable.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Store\RDFQuadruple.cs" />
     <Compile Include="Store\RDFStore.cs" />
     <Compile Include="Store\RDFStoreEnums.cs" />
+    <Compile Include="Store\RDFStoreEvents.cs" />
     <Compile Include="Store\RDFStoreException.cs" />
     <Compile Include="Store\RDFStoreIndex.cs" />
     <Compile Include="Store\RDFStoreUtilities.cs" />
@@ -126,5 +129,6 @@
     <Compile Include="Store\Serializers\RDFTriX.cs" />
   </ItemGroup>
 
+  <!-- MSBuild -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
