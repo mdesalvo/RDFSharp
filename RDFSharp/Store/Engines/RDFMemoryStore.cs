@@ -149,6 +149,8 @@ namespace RDFSharp.Store
             if (quadruple != null) {
                 if (!this.Quadruples.ContainsKey(quadruple.QuadrupleID)) {
                      this.Quadruples.Add(quadruple.QuadrupleID, quadruple);
+                     RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been added to the Store '{1}'.", quadruple, this));
+
                      this.StoreIndex.AddIndex(quadruple);
                 }
             }
@@ -163,6 +165,8 @@ namespace RDFSharp.Store
         public override RDFStore RemoveQuadruple(RDFQuadruple quadruple) {
             if (this.ContainsQuadruple(quadruple)) {
                 this.Quadruples.Remove(quadruple.QuadrupleID);
+                RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been removed from the Store '{1}'.", quadruple, this));
+
                 this.StoreIndex.RemoveIndex(quadruple);
             }
             return this;
@@ -175,6 +179,8 @@ namespace RDFSharp.Store
             if (contextResource        != null) {
                 foreach (var quadruple in this.SelectQuadruplesByContext(contextResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
+                    RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been removed from the Store '{1}'.", quadruple, this));
+
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
             }
@@ -188,6 +194,8 @@ namespace RDFSharp.Store
             if (subjectResource        != null) {
                 foreach (var quadruple in this.SelectQuadruplesBySubject(subjectResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
+                    RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been removed from the Store '{1}'.", quadruple, this));
+
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
             }
@@ -201,6 +209,8 @@ namespace RDFSharp.Store
             if (predicateResource      != null && !predicateResource.IsBlank) {
                 foreach (var quadruple in this.SelectQuadruplesByPredicate(predicateResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
+                    RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been removed from the Store '{1}'.", quadruple, this));
+
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
             }
@@ -214,6 +224,8 @@ namespace RDFSharp.Store
             if (objectResource         != null) {
                 foreach (var quadruple in this.SelectQuadruplesByObject(objectResource)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
+                    RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been removed from the Store '{1}'.", quadruple, this));
+
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
             }
@@ -227,6 +239,8 @@ namespace RDFSharp.Store
             if (literalObject          != null) {
                 foreach (var quadruple in this.SelectQuadruplesByLiteral(literalObject)) {
                     this.Quadruples.Remove(quadruple.QuadrupleID);
+                    RDFStoreEvents.RaiseStoreInfo(String.Format("Quadruple '{0]' has been removed from the Store '{1}'.", quadruple, this));
+
                     this.StoreIndex.RemoveIndex(quadruple);
                 }
             }
@@ -238,6 +252,8 @@ namespace RDFSharp.Store
         /// </summary>
         public override void ClearQuadruples() {
             this.Quadruples.Clear();
+            RDFStoreEvents.RaiseStoreInfo(String.Format("Store '{0]' has been cleared.", this));
+
             this.StoreIndex.ClearIndex();
         }
         #endregion
