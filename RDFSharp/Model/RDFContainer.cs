@@ -91,7 +91,7 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to add a resource
-                if (item is RDFResource     && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+                if (item is RDFResource      && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
                     //In case this is an "Alt" container, we do not allow duplicates
                     if (this.ContainerType   == RDFModelEnums.RDFContainerTypes.Alt) {
                         Boolean itemFound    = false;
@@ -112,13 +112,13 @@ namespace RDFSharp.Model
                 }
 
                 //Try to add a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+                else if (item is RDFLiteral  && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
                     //In case this is an "Alt" container, we do not allow duplicates
-                    if (this.ContainerType  == RDFModelEnums.RDFContainerTypes.Alt) {
-                        Boolean itemFound    = false;
+                    if (this.ContainerType   == RDFModelEnums.RDFContainerTypes.Alt) {
+                        Boolean itemFound     = false;
                         foreach(var itemEnum in this) {
                             if (((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
-                                itemFound    = true;
+                                itemFound     = true;
                                 break;
                             }
                         }
@@ -143,9 +143,9 @@ namespace RDFSharp.Model
             if (item != null) {
 
                 //Try to remove a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                    ArrayList resultList = new ArrayList();
-                    foreach(var itemEnum in this) {
+                if (item is RDFResource      && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+                    ArrayList resultList      = new ArrayList();
+                    foreach(var itemEnum     in this) {
                         if (!((RDFResource)itemEnum).Equals((RDFResource)item)) {
                             resultList.Add(itemEnum);
                         }
@@ -154,9 +154,9 @@ namespace RDFSharp.Model
                 }
 
                 //Try to remove a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                    ArrayList resultList = new ArrayList();
-                    foreach(var itemEnum in this) {
+                else if (item is RDFLiteral   && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+                    ArrayList resultList       = new ArrayList();
+                    foreach(var itemEnum      in this) {
                         if (!((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
                             resultList.Add(itemEnum);
                         }
