@@ -198,13 +198,13 @@ namespace RDFSharp.Model
         /// Removes the triples with the given subject
         /// </summary>
         public RDFGraph RemoveTriplesBySubject(RDFResource subjectResource) {
-            if (subjectResource != null) {
-                var tripleFound  = false;
+            if (subjectResource     != null) {
+                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesBySubject(subjectResource)) {
                     this.Triples.Remove(triple.TripleID);
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    tripleFound      = true;
 
-                    tripleFound  = true;
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -217,13 +217,13 @@ namespace RDFSharp.Model
         /// Removes the triples with the given (non-blank) predicate
         /// </summary>
         public RDFGraph RemoveTriplesByPredicate(RDFResource predicateResource) {
-            if (predicateResource  != null && !predicateResource.IsBlank) {
-                var tripleFound     = false;
+            if (predicateResource   != null && !predicateResource.IsBlank) {
+                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByPredicate(predicateResource)) {
                     this.Triples.Remove(triple.TripleID);
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    tripleFound      = true;
 
-                    tripleFound     = true;
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -236,13 +236,13 @@ namespace RDFSharp.Model
         /// Removes the triples with the given resource as object
         /// </summary>
         public RDFGraph RemoveTriplesByObject(RDFResource objectResource) {
-            if (objectResource  != null) {
-                var tripleFound  = false;
+            if (objectResource      != null) {
+                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByObject(objectResource)) {
                     this.Triples.Remove(triple.TripleID);
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    tripleFound      = true;
 
-                    tripleFound  = true;
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -259,9 +259,9 @@ namespace RDFSharp.Model
                 var tripleFound  = false;
                 foreach (var triple in this.SelectTriplesByLiteral(objectLiteral)) {
                     this.Triples.Remove(triple.TripleID);
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    tripleFound = true;
 
-                    tripleFound  = true;
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -317,18 +317,18 @@ namespace RDFSharp.Model
 
                 //Cleanup graph from detected reifications
                 if (tObject   is RDFResource) {
-                    this.AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFResource)tObject));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    this.AddTriple(new RDFTriple((RDFResource)tSubject,     (RDFResource)tPredicate,      (RDFResource)tObject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE,      RDFVocabulary.RDF.STATEMENT));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT,   (RDFResource)tSubject));
                     this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFResource)tObject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT,    (RDFResource)tObject));
                 }
                 else {
-                    this.AddTriple(new RDFTriple((RDFResource)tSubject, (RDFResource)tPredicate, (RDFLiteral)tObject));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT, (RDFResource)tSubject));
+                    this.AddTriple(new RDFTriple((RDFResource)tSubject,     (RDFResource)tPredicate,      (RDFLiteral)tObject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.TYPE,      RDFVocabulary.RDF.STATEMENT));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.SUBJECT,   (RDFResource)tSubject));
                     this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
-                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
+                    this.RemoveTriple(new RDFTriple((RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT,    (RDFLiteral)tObject));
                 }
 
             }
