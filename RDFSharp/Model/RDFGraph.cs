@@ -144,7 +144,7 @@ namespace RDFSharp.Model
             if (triple != null) {
                 if (!this.Triples.ContainsKey(triple.TripleID)) {
                      this.Triples.Add(triple.TripleID, triple);
-                     RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been added to the Graph '{1}'.", triple, this));
+                     RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0}' has been added to the Graph '{1}'.", triple, this));
 
                      this.GraphIndex.AddIndex(triple);
                      this.GraphMetadata.UpdateMetadata(triple);
@@ -187,7 +187,7 @@ namespace RDFSharp.Model
         public RDFGraph RemoveTriple(RDFTriple triple) {
             if (this.ContainsTriple(triple)) {
                 this.Triples.Remove(triple.TripleID);
-                RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
 
                 RDFModelUtilities.RebuildGraph(this);                
             }
@@ -204,7 +204,7 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     tripleFound      = true;
 
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -223,7 +223,7 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     tripleFound      = true;
 
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -242,7 +242,7 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     tripleFound      = true;
 
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -261,7 +261,7 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     tripleFound = true;
 
-                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0]' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseModelInfo(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
                 if (tripleFound) {
                     RDFModelUtilities.RebuildGraph(this);
@@ -275,7 +275,7 @@ namespace RDFSharp.Model
         /// </summary>
         public void ClearTriples() {
             this.Triples.Clear();
-            RDFModelEvents.RaiseModelInfo(String.Format("Graph '{0]' has been cleared.", this));
+            RDFModelEvents.RaiseModelInfo(String.Format("Graph '{0}' has been cleared.", this));
 
             this.GraphIndex.ClearIndex();
             this.GraphMetadata.ClearMetadata();
