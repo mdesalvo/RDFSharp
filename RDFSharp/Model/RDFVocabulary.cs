@@ -602,6 +602,16 @@ namespace RDFSharp.Model
             public static readonly RDFResource DIFFERENT_FROM = new RDFResource(OWL.BASE_URI + "differentFrom");
 
             /// <summary>
+            /// owl:AllDifferent
+            /// </summary>
+            public static readonly RDFResource ALL_DIFFERENT = new RDFResource(OWL.BASE_URI + "AllDifferent");
+
+            /// <summary>
+            /// owl:distinctMembers
+            /// </summary>
+            public static readonly RDFResource DISTINCT_MEMBERS = new RDFResource(OWL.BASE_URI + "distinctMembers");
+
+            /// <summary>
             /// owl:intersectionOf
             /// </summary>
             public static readonly RDFResource INTERSECTION_OF = new RDFResource(OWL.BASE_URI + "intersectionOf");
