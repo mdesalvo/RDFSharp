@@ -306,6 +306,7 @@ namespace RDFSharp.Query {
                 constructResult.ConstructResults    = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
 
             }
+            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluated CONSTRUCTQuery on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
 
             return constructResult;
         }

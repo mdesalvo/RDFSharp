@@ -200,7 +200,8 @@ namespace RDFSharp.Query
                 askResult.AskResult  = (queryResultTable.Rows.Count > 0);
 
             }
-
+            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluated ASKQuery on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));
+  
             return askResult;
         }
         #endregion

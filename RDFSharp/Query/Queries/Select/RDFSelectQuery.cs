@@ -276,6 +276,7 @@ namespace RDFSharp.Query {
                 selResult.SelectResults = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
 
             }
+            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluated SELECTQuery on DataSource '{0}': Found '{1}' results.", datasource, selResult.SelectResultsCount));
 
             return selResult;
         }

@@ -325,6 +325,7 @@ namespace RDFSharp.Query {
                 }
 
             }
+            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluated DESCRIBEQuery on DataSource '{0}': Found '{1}' results.", datasource, describeResult.DescribeResultsCount));
 
             return describeResult;
         }
