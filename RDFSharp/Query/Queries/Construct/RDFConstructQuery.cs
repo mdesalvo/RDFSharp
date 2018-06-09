@@ -251,6 +251,7 @@ namespace RDFSharp.Query {
         internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
+            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluating CONSTRUCTQuery on DataSource '{0}'...", datasource));
 
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
             if (this.PatternGroups.Any()) {
@@ -258,6 +259,7 @@ namespace RDFSharp.Query {
                 //Iterate the pattern groups of the query
                 var fedPatternResultTables          = new Dictionary<RDFPatternGroup, List<DataTable>>();
                 foreach (var patternGroup          in this.PatternGroups) {
+                    RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
