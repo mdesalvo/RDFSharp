@@ -48,8 +48,8 @@ namespace RDFSharp.Query
             foreach (var pattern in patternGroup.Patterns) {
 
                 //Apply the pattern to the graph/store
-                var patternResultsTable             = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : 
-                                                                               ApplyPattern(pattern, (RDFStore)graphOrStore);
+                DataTable patternResultsTable       = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : ApplyPattern(pattern, (RDFStore)graphOrStore);
+                RDFQueryEvents.RaiseQueryInfo(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
 
                 //Set the name and the optionality metadata of the result datatable
                 patternResultsTable.TableName       = pattern.ToString();
