@@ -54,28 +54,6 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerConnString\" parameter is null.");
             }
         }
-            if (sqlServerInstance     != null) {
-                if (sqlServerDatabase != null) {
-
-                    //Initialize store structures
-                    this.StoreType     = "SQLSERVER";
-                    this.Connection    = new SqlConnection(@"Server="    + sqlServerInstance +
-                                                            ";Database=" + sqlServerDatabase +
-                                                            ";Integrated Security=true;Persist Security Info=false;");
-                    this.StoreID       = RDFModelUtilities.CreateHash(this.ToString());
-
-                    //Perform initial diagnostics
-                    this.PrepareStore();
-
-                }
-                else {
-                    throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerDatabase\" parameter is null.");
-                }
-            }
-            else {
-                throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerInstance\" parameter is null.");
-            }
-        }
         #endregion
 
         #region Interfaces
