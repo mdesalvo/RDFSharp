@@ -36,8 +36,29 @@ namespace RDFSharp.Store
 
         #region Ctors
         /// <summary>
+        /// Default-ctor to build a SQL Server store instance with given connection string
+        /// </summary>
+        public RDFSQLServerStore(String sqlServerConnString) {
+            if (sqlServerConnString != null) {
+
+                //Initialize store structures
+                this.StoreType       = "SQLSERVER";
+                this.Connection      = new SqlConnection(sqlServerConnString);
+                this.StoreID         = RDFModelUtilities.CreateHash(this.ToString());
+
+                //Perform initial diagnostics
+                this.PrepareStore();
+
+            }
+            else {
+                throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerConnString\" parameter is null.");
+            }
+        }
+
+        /// <summary>
         /// Default-ctor to build a SQL Server store instance with SQL Server authentication
         /// </summary>
+        [Obsolete]
         public RDFSQLServerStore(String sqlServerInstance,
                                  String sqlServerDatabase,
                                  String sqlServerUserName,
@@ -80,6 +101,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build a SQL Server store instance with Windows Integrated Security authentication
         /// </summary>
+        [Obsolete]
         public RDFSQLServerStore(String sqlServerInstance,
                                  String sqlServerDatabase) {
             if (sqlServerInstance     != null) {
