@@ -146,7 +146,7 @@ namespace RDFSharp.Model
             var triples  = new Dictionary<Int64, RDFTriple>(graph.Triples);
             graph.ClearTriples();
             foreach (var t in triples) {
-                graph.AddTriple(t.Value);
+                graph.AddTripleInternal(t.Value);
             }
         }
 

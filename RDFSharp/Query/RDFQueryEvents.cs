@@ -25,42 +25,84 @@ namespace RDFSharp.Query
     /// </summary>
     public static class RDFQueryEvents {
 
-        #region OnQueryInfo
+        #region Query
+
+        #region OnASKQueryEvaluation
         /// <summary>
-        /// Event representing an information message generated within the "RDFSharp.Query" namespace
+        /// Event representing an information message generated during SPARQL ASK query evaluation
         /// </summary>
-        public static event RDFQueryInfoEventHandler OnQueryInfo = delegate { };
+        public static event RDFASKQueryEvaluationEventHandler OnASKQueryEvaluation = delegate { };
 
         /// <summary>
-        /// Delegate to handle information events generated within the "RDFSharp.Query" namespace
+        /// Delegate to handle information events generated during SPARQL ASK query evaluation
         /// </summary>
-        public delegate void RDFQueryInfoEventHandler(String eventMessage);
+        public delegate void RDFASKQueryEvaluationEventHandler(String eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseQueryInfo(String eventMessage) {
-            Parallel.Invoke(() => OnQueryInfo(DateTime.Now.ToString() + ";QUERY_INFO;" + eventMessage));
+        internal static void RaiseASKQueryEvaluation(String eventMessage) {
+            Parallel.Invoke(() => OnASKQueryEvaluation(DateTime.Now.ToString() + ";ASK_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 
-        #region OnQueryWarning
+        #region OnCONSTRUCTQueryEvaluation
         /// <summary>
-        /// Event representing a warning message generated within the "RDFSharp.Query" namespace
+        /// Event representing an information message generated during SPARQL CONSTRUCT query evaluation
         /// </summary>
-        public static event RDFQueryWarningEventHandler OnQueryWarning = delegate { };
+        public static event RDFCONSTRUCTQueryEvaluationEventHandler OnCONSTRUCTQueryEvaluation = delegate { };
 
         /// <summary>
-        /// Delegate to handle warning events generated within the "RDFSharp.Query" namespace
+        /// Delegate to handle information events generated during SPARQL CONSTRUCT query evaluation
         /// </summary>
-        public delegate void RDFQueryWarningEventHandler(String eventMessage);
+        public delegate void RDFCONSTRUCTQueryEvaluationEventHandler(String eventMessage);
 
         /// <summary>
-        /// Internal invoker of the subscribed warning event handler
+        /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseQueryWarning(String eventMessage) {
-            Parallel.Invoke(() => OnQueryWarning(DateTime.Now.ToString() + ";QUERY_WARNING;" + eventMessage));
+        internal static void RaiseCONSTRUCTQueryEvaluation(String eventMessage) {
+            Parallel.Invoke(() => OnCONSTRUCTQueryEvaluation(DateTime.Now.ToString() + ";CONSTRUCT_QUERY_EVALUATION;" + eventMessage));
         }
+        #endregion
+
+        #region OnDESCRIBEQueryEvaluation
+        /// <summary>
+        /// Event representing an information message generated during SPARQL DESCRIBE query evaluation
+        /// </summary>
+        public static event RDFDESCRIBEQueryEvaluationEventHandler OnDESCRIBEQueryEvaluation = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated during SPARQL DESCRIBE query evaluation
+        /// </summary>
+        public delegate void RDFDESCRIBEQueryEvaluationEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseDESCRIBEQueryEvaluation(String eventMessage) {
+            Parallel.Invoke(() => OnDESCRIBEQueryEvaluation(DateTime.Now.ToString() + ";DESCRIBE_QUERY_EVALUATION;" + eventMessage));
+        }
+        #endregion
+
+        #region OnSELECTQueryEvaluation
+        /// <summary>
+        /// Event representing an information message generated during SPARQL SELECT query evaluation
+        /// </summary>
+        public static event RDFSELECTQueryEvaluationEventHandler OnSELECTQueryEvaluation = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated during SPARQL SELECT query evaluation
+        /// </summary>
+        public delegate void RDFSELECTQueryEvaluationEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseSELECTQueryEvaluation(String eventMessage) {
+            Parallel.Invoke(() => OnSELECTQueryEvaluation(DateTime.Now.ToString() + ";SELECT_QUERY_EVALUATION;" + eventMessage));
+        }
+        #endregion
+
         #endregion
 
     }

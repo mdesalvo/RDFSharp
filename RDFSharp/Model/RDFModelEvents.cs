@@ -25,42 +25,65 @@ namespace RDFSharp.Model
     /// </summary>
     public static class RDFModelEvents {
 
-        #region OnModelInfo
+        #region Graph
+
+        #region OnTripleAdded
         /// <summary>
-        /// Event representing an information message generated within the "RDFSharp.Model" namespace
+        /// Event representing an information message generated when a triple has been added to a graph
         /// </summary>
-        public static event RDFModelInfoEventHandler OnModelInfo = delegate { };
+        public static event RDFOnTripleAddedEventHandler OnTripleAdded = delegate { };
 
         /// <summary>
-        /// Delegate to handle information events generated within the "RDFSharp.Model" namespace
+        /// Delegate to handle information events generated when a triple has been added to a graph
         /// </summary>
-        public delegate void RDFModelInfoEventHandler(String eventMessage);
+        public delegate void RDFOnTripleAddedEventHandler(String eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseModelInfo(String eventMessage) {
-            Parallel.Invoke(() => OnModelInfo(DateTime.Now.ToString() + ";MODEL_INFO;" + eventMessage));
+        internal static void RaiseOnTripleAdded(String eventMessage) {
+            Parallel.Invoke(() => OnTripleAdded(DateTime.Now.ToString() + ";TRIPLE_ADDED;" + eventMessage));
         }
         #endregion
 
-        #region OnModelWarning
+        #region OnTripleRemoved
         /// <summary>
-        /// Event representing a warning message generated within the "RDFSharp.Model" namespace
+        /// Event representing an information message generated when a triple has been removed from a graph
         /// </summary>
-        public static event RDFModelWarningEventHandler OnModelWarning = delegate { };
+        public static event RDFOnTripleRemovedEventHandler OnTripleRemoved = delegate { };
 
         /// <summary>
-        /// Delegate to handle warning events generated within the "RDFSharp.Model" namespace
+        /// Delegate to handle information events generated when a triple has been removed from a graph
         /// </summary>
-        public delegate void RDFModelWarningEventHandler(String eventMessage);
+        public delegate void RDFOnTripleRemovedEventHandler(String eventMessage);
 
         /// <summary>
-        /// Internal invoker of the subscribed warning event handler
+        /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseModelWarning(String eventMessage) {
-            Parallel.Invoke(() => OnModelWarning(DateTime.Now.ToString() + ";MODEL_WARNING;" + eventMessage));
+        internal static void RaiseOnTripleRemoved(String eventMessage) {
+            Parallel.Invoke(() => OnTripleRemoved(DateTime.Now.ToString() + ";TRIPLE_REMOVED;" + eventMessage));
         }
+        #endregion
+
+        #region OnGraphCleared
+        /// <summary>
+        /// Event representing an information message generated when a graph has been cleared
+        /// </summary>
+        public static event RDFOnGraphClearedEventHandler OnGraphCleared = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated when a graph has been cleared
+        /// </summary>
+        public delegate void RDFOnGraphClearedEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseOnGraphCleared(String eventMessage) {
+            Parallel.Invoke(() => OnGraphCleared(DateTime.Now.ToString() + ";GRAPH_CLEARED;" + eventMessage));
+        }
+        #endregion
+
         #endregion
 
     }

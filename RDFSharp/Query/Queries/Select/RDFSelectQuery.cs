@@ -224,7 +224,7 @@ namespace RDFSharp.Query {
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
-            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluating SELECTQuery on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SELECT query on DataSource '{0}'...", datasource));
 
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
             if (this.PatternGroups.Any())  {
@@ -232,7 +232,7 @@ namespace RDFSharp.Query {
                 //Iterate the pattern groups of the query
                 var fedPatternResultTables = new Dictionary<RDFPatternGroup, List<DataTable>>();
                 foreach (var patternGroup in this.PatternGroups) {
-                    RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
+                    RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
@@ -276,7 +276,7 @@ namespace RDFSharp.Query {
                 selResult.SelectResults = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
 
             }
-            RDFQueryEvents.RaiseQueryInfo(String.Format("Evaluated SELECTQuery on DataSource '{0}': Found '{1}' results.", datasource, selResult.SelectResultsCount));
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECTQuery on DataSource '{0}': Found '{1}' results.", datasource, selResult.SelectResultsCount));
 
             return selResult;
         }

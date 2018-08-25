@@ -111,7 +111,7 @@ namespace RDFSharp.Store
             if (store != null) {
                 if (!this.Stores.ContainsKey(store.StoreID)) {
                      this.Stores.Add(store.StoreID, store);
-                     RDFStoreEvents.RaiseStoreInfo(String.Format("Store '{0}' has been added to the Federation '{1}'.", store, this));
+                     RDFStoreEvents.RaiseOnStoreAdded(String.Format("Store '{0}' has been added to the Federation '{1}'.", store, this));
                 }
             }
             return this;
@@ -126,7 +126,7 @@ namespace RDFSharp.Store
             if (store != null) {
                 if (this.Stores.ContainsKey(store.StoreID)) {
                     this.Stores.Remove(store.StoreID);
-                    RDFStoreEvents.RaiseStoreInfo(String.Format("Store '{0}' has been removed from the Federation '{1}'.", store, this));
+                    RDFStoreEvents.RaiseOnStoreRemoved(String.Format("Store '{0}' has been removed from the Federation '{1}'.", store, this));
                 }
             }
             return this;
@@ -137,7 +137,7 @@ namespace RDFSharp.Store
         /// </summary>
         public void ClearStores() {
             this.Stores.Clear();
-            RDFStoreEvents.RaiseStoreInfo(String.Format("Federation '{0}' has been cleared.", this));
+            RDFStoreEvents.RaiseOnFederationCleared(String.Format("Federation '{0}' has been cleared.", this));
         }
         #endregion
 

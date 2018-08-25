@@ -49,7 +49,14 @@ namespace RDFSharp.Query
 
                 //Apply the pattern to the graph/store
                 DataTable patternResultsTable       = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : ApplyPattern(pattern, (RDFStore)graphOrStore);
-                RDFQueryEvents.RaiseQueryInfo(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
+                if (query      is RDFAskQuery)
+                    RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
+                else if (query is RDFConstructQuery)
+                    RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
+                else if (query is RDFDescribeQuery)
+                    RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
+                else if (query is RDFSelectQuery)
+                    RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
 
                 //Set the name and the optionality metadata of the result datatable
                 patternResultsTable.TableName       = pattern.ToString();
