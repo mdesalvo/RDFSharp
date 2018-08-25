@@ -54,56 +54,6 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerConnString\" parameter is null.");
             }
         }
-
-        /// <summary>
-        /// Default-ctor to build a SQL Server store instance with SQL Server authentication
-        /// </summary>
-        [Obsolete]
-        public RDFSQLServerStore(String sqlServerInstance,
-                                 String sqlServerDatabase,
-                                 String sqlServerUserName,
-                                 String sqlServerUserPwd) {
-            if (sqlServerInstance            != null) {
-                if (sqlServerDatabase        != null) {
-                    if (sqlServerUserName    != null) {
-                        if (sqlServerUserPwd != null) {
-
-                            //Initialize store structures
-                            this.StoreType    = "SQLSERVER";
-                            this.Connection   = new SqlConnection(@"Server="    + sqlServerInstance +
-                                                                   ";Database=" + sqlServerDatabase +
-                                                                   ";User Id="  + sqlServerUserName +
-                                                                   ";Password=" + sqlServerUserPwd  +
-                                                                   ";Persist Security Info=false;");
-                            this.StoreID      = RDFModelUtilities.CreateHash(this.ToString());
-
-                            //Perform initial diagnostics
-                            this.PrepareStore();
-
-                        }
-                        else {
-                            throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerUserPwd\" parameter is null.");
-                        }
-                    }
-                    else {
-                        throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerUserName\" parameter is null.");
-                    }
-                }
-                else {
-                    throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerDatabase\" parameter is null.");
-                }
-            }
-            else {
-                throw new RDFStoreException("Cannot connect to SQL Server store because: given \"sqlServerInstance\" parameter is null.");
-            }
-        }
-
-        /// <summary>
-        /// Default-ctor to build a SQL Server store instance with Windows Integrated Security authentication
-        /// </summary>
-        [Obsolete]
-        public RDFSQLServerStore(String sqlServerInstance,
-                                 String sqlServerDatabase) {
             if (sqlServerInstance     != null) {
                 if (sqlServerDatabase != null) {
 
