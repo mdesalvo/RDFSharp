@@ -94,62 +94,62 @@ namespace RDFSharp.Model
                     #endregion
 
                     #region graph
-                    //Iterate over the calculated groups
-                    Dictionary<RDFResource, XmlNode> containers = new Dictionary<RDFResource, XmlNode>();
+                    Dictionary<Int64, XmlNode> containers = new Dictionary<Int64, XmlNode>();
                     
                     //Floating containers have reification subject which is never object of any graph's triple
-                    Boolean floatingContainers        = graph.GraphMetadata.Containers.Keys.Any(k =>
-                                                            graph.Triples.Values.Count(v => v.Object.Equals(k)) == 0);
+                    Boolean floatingContainers  = graph.GraphMetadata.Containers.Any(k  => !graph.Triples.Any(v => v.Value.Object.PatternMemberID == k.Key));
                     //Floating collections have reification subject which is never object of any graph's triple
-                    Boolean floatingCollections       = graph.GraphMetadata.Collections.Keys.Any(k => 
-                                                            graph.Triples.Values.Count(v => v.Object.Equals(k)) == 0);
+                    Boolean floatingCollections = graph.GraphMetadata.Collections.Any(k => !graph.Triples.Any(v => v.Value.Object.PatternMemberID == k.Key));
 
+                    //Iterate over the calculated groups
                     foreach (var group in groupedList) {
 
                         #region subj
                         //Check if the current subj is a container or a collection subj: if so it must be
                         //serialized in the canonical RDF/XML way instead of the "rdf:Description" way
-                        XmlNode subjNode              = null;
-                        String subj                   = group.Key.subj;
+                        XmlNode subjNode        = null;
+                        String subj             = group.Key.subj;
+                        Int64 subjHash          = RDFModelUtilities.CreateHash(subj);
 
                         //It is a container subj, so add it to the containers pool
-                        if (graph.GraphMetadata.Containers.Keys.Any(k => k.ToString().Equals(subj, StringComparison.Ordinal)) && !floatingContainers) {
-                            switch  (graph.GraphMetadata.Containers.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value) {
+                        if (graph.GraphMetadata.Containers.ContainsKey(subjHash) 
+                                && !floatingContainers) {
+                            switch  (graph.GraphMetadata.Containers[subjHash]) {
                                 case RDFModelEnums.RDFContainerTypes.Bag:
-                                     subjNode         = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Bag", RDFVocabulary.RDF.BASE_URI);
-                                     containers.Add(new RDFResource(subj), subjNode);
+                                     subjNode   = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Bag", RDFVocabulary.RDF.BASE_URI);
+                                     containers.Add(subjHash, subjNode);
                                      break;
                                 case RDFModelEnums.RDFContainerTypes.Seq:
-                                     subjNode         = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Seq", RDFVocabulary.RDF.BASE_URI);
-                                     containers.Add(new RDFResource(subj), subjNode);
+                                     subjNode   = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Seq", RDFVocabulary.RDF.BASE_URI);
+                                     containers.Add(subjHash, subjNode);
                                      break;
                                 case RDFModelEnums.RDFContainerTypes.Alt:
-                                     subjNode         = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Alt", RDFVocabulary.RDF.BASE_URI);
-                                     containers.Add(new RDFResource(subj), subjNode);
+                                     subjNode   = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Alt", RDFVocabulary.RDF.BASE_URI);
+                                     containers.Add(subjHash, subjNode);
                                      break;
                             }
                         }
 
                         //It is a subj of a collection of resources, so do not append triples having it as a subject
                         //because we will reconstruct the collection and append it as a whole
-                        else if (graph.GraphMetadata.Collections.Keys.Any(k => k.ToString().Equals(subj, StringComparison.Ordinal))                                                         &&
-                                 graph.GraphMetadata.Collections.Single(c => c.Key.ToString().Equals(subj, StringComparison.Ordinal)).Value.ItemType == RDFModelEnums.RDFItemTypes.Resource &&
-                                 !floatingCollections) {
+                        else if (graph.GraphMetadata.Collections.ContainsKey(subjHash)
+                                    && graph.GraphMetadata.Collections[subjHash].ItemType == RDFModelEnums.RDFItemTypes.Resource
+                                        && !floatingCollections) {
                             continue;
                         }
 
                         //It is neither a container or a collection subj
                         else {
-                            subjNode                       = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
+                            subjNode                  = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
                             //<rdf:Description rdf:nodeID="blankID">
-                            XmlAttribute subjNodeDesc      = null;
-                            XmlText subjNodeDescText       = rdfDoc.CreateTextNode(group.Key.subj);
+                            XmlAttribute subjNodeDesc = null;
+                            XmlText subjNodeDescText  = rdfDoc.CreateTextNode(group.Key.subj);
                             if (group.Key.subj.StartsWith("bnode:")) {
-                                subjNodeDesc               = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
+                                subjNodeDesc          = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
                             }
                             //<rdf:Description rdf:about="subjURI">
                             else {
-                                subjNodeDesc               = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":about", RDFVocabulary.RDF.BASE_URI);
+                                subjNodeDesc          = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":about", RDFVocabulary.RDF.BASE_URI);
                             }
                             subjNodeDesc.AppendChild(subjNodeDescText);
                             subjNode.Attributes.Append(subjNodeDesc);
@@ -188,14 +188,15 @@ namespace RDFSharp.Model
                                 if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
 
                                     //If the object is a container subj, we must append its entire node saved in the containers dictionary
-                                    if (containers.Keys.Any(k => k.Equals(triple.Object)) && !floatingContainers) {
-                                        predNode.AppendChild(containers.Single(c => c.Key.Equals(triple.Object)).Value);
+                                    if (containers.ContainsKey(triple.Object.PatternMemberID) 
+                                            && !floatingContainers) {
+                                        predNode.AppendChild(containers[triple.Object.PatternMemberID]);
                                     }
 
                                     //Else, if the object is a subject of a collection of resources, we must append the "rdf:parseType=Collection" attribute to the predicate node
-                                    else if (graph.GraphMetadata.Collections.Keys.Any(k => k.Equals(triple.Object))                                                                                     &&
-                                             graph.GraphMetadata.Collections.Single(c => c.Key.Equals(triple.Object)).Value.ItemType == RDFModelEnums.RDFItemTypes.Resource &&
-                                             !floatingCollections) {
+                                    else if (graph.GraphMetadata.Collections.ContainsKey(triple.Object.PatternMemberID)
+                                                && graph.GraphMetadata.Collections[triple.Object.PatternMemberID].ItemType == RDFModelEnums.RDFItemTypes.Resource
+                                                    && !floatingCollections) {
                                         XmlAttribute rdfParseType  = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":parseType", RDFVocabulary.RDF.BASE_URI);
                                         XmlText rdfParseTypeText   = rdfDoc.CreateTextNode("Collection");
                                         rdfParseType.AppendChild(rdfParseTypeText);
@@ -810,7 +811,7 @@ namespace RDFSharp.Model
 
             //Iterate the elements of the collection until the last one (pointing to next="rdf:nil")
             while (!nilFound) {
-                var collElement           = rdfGraphMetadata.Collections[tripleObject];
+                var collElement           = rdfGraphMetadata.Collections[tripleObject.PatternMemberID];
                 collElementToAppend       = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
                 collElementAttr           = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":about", RDFVocabulary.RDF.BASE_URI);
                 collElementAttrText       = rdfDoc.CreateTextNode(collElement.ItemValue.ToString());

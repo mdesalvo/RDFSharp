@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
@@ -29,12 +30,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Dictionary of resources acting as container subjects in the graph
         /// </summary>
-        internal Dictionary<RDFResource, RDFModelEnums.RDFContainerTypes> Containers { get; set; }
+        internal Dictionary<Int64, RDFModelEnums.RDFContainerTypes> Containers { get; set; }
 
         /// <summary>
         /// Dictionary of resources acting as collection subjects in the graph
         /// </summary>
-        internal Dictionary<RDFResource, RDFCollectionItem> Collections { get; set; }
+        internal Dictionary<Int64, RDFCollectionItem> Collections { get; set; }
         #endregion
 
         #region Ctors
@@ -42,8 +43,8 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty metadata
         /// </summary>
         internal RDFGraphMetadata() {
-            this.Containers  = new Dictionary<RDFResource, RDFModelEnums.RDFContainerTypes>();
-            this.Collections = new Dictionary<RDFResource, RDFCollectionItem>();
+            this.Containers  = new Dictionary<Int64, RDFModelEnums.RDFContainerTypes>();
+            this.Collections = new Dictionary<Int64, RDFCollectionItem>();
         }
         #endregion
 
@@ -53,27 +54,29 @@ namespace RDFSharp.Model
         /// </summary>
         private void CollectContainers(RDFTriple triple) {
             if (triple != null && triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+
                 //SUBJECT -> rdf:type -> rdf:[Bag|Seq|Alt]
                 if (triple.Predicate.Equals(RDFVocabulary.RDF.TYPE)) {
                     //rdf:Bag
                     if (triple.Object.Equals(RDFVocabulary.RDF.BAG)) {
-                        if (!this.Containers.ContainsKey((RDFResource)triple.Subject)) {
-                             this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerTypes.Bag);
+                        if (!this.Containers.ContainsKey(triple.Subject.PatternMemberID)) {
+                             this.Containers.Add(triple.Subject.PatternMemberID, RDFModelEnums.RDFContainerTypes.Bag);
                         }
                     }
                     //rdf:Seq
                     else if (triple.Object.Equals(RDFVocabulary.RDF.SEQ)) {
-                        if (!this.Containers.ContainsKey((RDFResource)triple.Subject)) {
-                             this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerTypes.Seq);
+                        if (!this.Containers.ContainsKey(triple.Subject.PatternMemberID)) {
+                             this.Containers.Add(triple.Subject.PatternMemberID, RDFModelEnums.RDFContainerTypes.Seq);
                         }
                     }
                     //rdf:Alt
                     else if (triple.Object.Equals(RDFVocabulary.RDF.ALT)) {
-                        if (!this.Containers.ContainsKey((RDFResource)triple.Subject)) {
-                             this.Containers.Add((RDFResource)triple.Subject, RDFModelEnums.RDFContainerTypes.Alt);
+                        if (!this.Containers.ContainsKey(triple.Subject.PatternMemberID)) {
+                             this.Containers.Add(triple.Subject.PatternMemberID, RDFModelEnums.RDFContainerTypes.Alt);
                         }
                     }
                 }
+
             }
         }
 
@@ -82,33 +85,42 @@ namespace RDFSharp.Model
         /// </summary>
         private void CollectCollections(RDFTriple triple) {
             if (triple != null) {
+
                 //SUBJECT -> rdf:type -> rdf:list
-                if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO && triple.Predicate.Equals(RDFVocabulary.RDF.TYPE)) {
-                    if (triple.Object.Equals(RDFVocabulary.RDF.LIST)) {
-                        if (!this.Collections.ContainsKey((RDFResource)triple.Subject)) {
-                             this.Collections.Add((RDFResource)triple.Subject, new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, null, null));
+                if (triple.Predicate.Equals(RDFVocabulary.RDF.TYPE)) {
+                    if (triple.Object.Equals(RDFVocabulary.RDF.LIST) && triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        if (!this.Collections.ContainsKey(triple.Subject.PatternMemberID)) {
+                             this.Collections.Add(triple.Subject.PatternMemberID, new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, RDFVocabulary.RDF.NIL, RDFVocabulary.RDF.NIL));
                         }
                     }
                 }
+
                 //SUBJECT -> rdf:first -> [OBJECT|LITERAL]
                 else if (triple.Predicate.Equals(RDFVocabulary.RDF.FIRST)) {
-                    if (this.Collections.ContainsKey((RDFResource)triple.Subject)) {
-                        if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, (RDFResource)triple.Object, null);
+                    if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        if (!this.Collections.ContainsKey(triple.Subject.PatternMemberID)) {
+                             this.Collections.Add(triple.Subject.PatternMemberID, new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, RDFVocabulary.RDF.NIL, RDFVocabulary.RDF.NIL));
                         }
-                        else {
-                            this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Literal,  (RDFLiteral)triple.Object,  null);
+                        this.Collections[triple.Subject.PatternMemberID].ItemType  = RDFModelEnums.RDFItemTypes.Resource;
+                        this.Collections[triple.Subject.PatternMemberID].ItemValue = (RDFResource)triple.Object;
+                    }
+                    else {
+                        if (!this.Collections.ContainsKey(triple.Subject.PatternMemberID)) {
+                             this.Collections.Add(triple.Subject.PatternMemberID, new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Literal, String.Empty, RDFVocabulary.RDF.NIL));
                         }
+                        this.Collections[triple.Subject.PatternMemberID].ItemType  = RDFModelEnums.RDFItemTypes.Literal;
+                        this.Collections[triple.Subject.PatternMemberID].ItemValue = (RDFLiteral)triple.Object;
                     }
                 }
+
                 //SUBJECT -> rdf:rest -> [BNODE|RDF:NIL]
-                else if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO && triple.Predicate.Equals(RDFVocabulary.RDF.REST)) {
-                    if (this.Collections.ContainsKey((RDFResource)triple.Subject)) {
-                        this.Collections[(RDFResource)triple.Subject] = new RDFCollectionItem(this.Collections[(RDFResource)triple.Subject].ItemType,
-                                                                                              this.Collections[(RDFResource)triple.Subject].ItemValue, 
-                                                                                              triple.Object);
+                else if (triple.Predicate.Equals(RDFVocabulary.RDF.REST) && triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                    if (!this.Collections.ContainsKey(triple.Subject.PatternMemberID)) {
+                         this.Collections.Add(triple.Subject.PatternMemberID, new RDFCollectionItem(RDFModelEnums.RDFItemTypes.Resource, RDFVocabulary.RDF.NIL, RDFVocabulary.RDF.NIL));
                     }
+                    this.Collections[triple.Subject.PatternMemberID].ItemNext = (RDFResource)triple.Object;
                 }
+
             }
         }
 
