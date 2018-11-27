@@ -461,7 +461,7 @@ namespace RDFSharp.Model
         /// Writes the graph into a file in the given RDF format. 
         /// </summary>
         public void ToFile(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
-            if (filepath != null && filepath.Trim() != String.Empty) {
+            if(!String.IsNullOrEmpty(filepath)) {
                 switch  (rdfFormat) {
                     case RDFModelEnums.RDFFormats.NTriples:
                          RDFNTriples.Serialize(this, filepath);
@@ -540,7 +540,7 @@ namespace RDFSharp.Model
         /// Creates a graph from a file of the given RDF format. 
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, String filepath) {
-            if (filepath != null) {
+            if(!String.IsNullOrEmpty(filepath)) {
                 if (File.Exists(filepath)) {
                     switch  (rdfFormat) {
                         case RDFModelEnums.RDFFormats.NTriples:
@@ -550,7 +550,7 @@ namespace RDFSharp.Model
                         case RDFModelEnums.RDFFormats.TriX:
                              return RDFTriX.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.Turtle:
-                             throw new RDFModelException("Cannot read RDF graph from file because Turtle format is not supported. What about joining the project to contribute it?");
+                             return RDFTurtle.Deserialize(filepath);
                     }
                 }
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
@@ -571,10 +571,10 @@ namespace RDFSharp.Model
                     case RDFModelEnums.RDFFormats.TriX:
                          return RDFTriX.Deserialize(inputStream);
                     case RDFModelEnums.RDFFormats.Turtle:
-                         throw new RDFModelException("Cannot read RDF graph from stream because Turtle format is not supported. What about joining the project to contribute it?");
+                         return RDFTurtle.Deserialize(inputStream);
                 }
             }
-            throw new RDFModelException("Cannot read RDF graph from stream because given \"filepath\" parameter is null.");
+            throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
         }
 
         /// <summary>

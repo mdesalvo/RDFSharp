@@ -218,6 +218,13 @@ namespace RDFSharp.Model
                 }
             }
         }
+
+        /// <summary>
+        /// Removes namespaces marked as temporary
+        /// </summary>
+        internal static void RemoveTemporaryNamespaces() {
+            Instance.Register.RemoveAll(x => x.IsTemporary);
+        }
         #endregion
 
     }
