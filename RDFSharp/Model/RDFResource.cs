@@ -42,7 +42,7 @@ namespace RDFSharp.Model
         /// Builds a blank resource
         /// </summary>
         public RDFResource() {
-            this.URI                 = RDFModelUtilities.GenerateAnonUri();
+            this.URI                 = new Uri("bnode:" + Guid.NewGuid());
             this.IsBlank             = true;
             this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());
         }

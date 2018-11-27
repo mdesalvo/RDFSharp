@@ -76,17 +76,9 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Generates a new Uri for a blank resource.
-        /// It starts with "bnode:" and is a Guid.
-        /// </summary>
-        internal static Uri GenerateAnonUri() {
-            return new Uri("bnode:" + Guid.NewGuid());
-        }
-
-        /// <summary>
         /// Turns back ASCII-encoded Unicodes into Unicodes. 
         /// </summary>
-        internal static String ASCII_To_Unicode(String asciiString) {
+        public static String ASCII_To_Unicode(String asciiString) {
             if (asciiString != null) {
                 asciiString  = regexU8.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
                 asciiString  = regexU4.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
@@ -97,7 +89,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Turns Unicodes into ASCII-encoded Unicodes. 
         /// </summary>
-        internal static String Unicode_To_ASCII(String unicodeString) {
+        public static String Unicode_To_ASCII(String unicodeString) {
             if (unicodeString   != null) {
                 StringBuilder b  = new StringBuilder();
                 foreach (Char c in unicodeString) {
