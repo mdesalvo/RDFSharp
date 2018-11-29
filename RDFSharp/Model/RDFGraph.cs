@@ -143,10 +143,13 @@ namespace RDFSharp.Model
         public RDFGraph AddTriple(RDFTriple triple) {
             if (triple != null) {
                 if (!this.Triples.ContainsKey(triple.TripleID)) {
+                     //Add triple
                      this.Triples.Add(triple.TripleID, triple);
+                     //Raise event
                      RDFModelEvents.RaiseOnTripleAdded(String.Format("Triple '{0}' has been added to the Graph '{1}'.", triple, this));
-                     //Index and Metadata updates
+                     //Update index
                      this.GraphIndex.AddIndex(triple);
+                     //Update metadata
                      this.GraphMetadata.UpdateMetadata(triple);
                 }
             }
@@ -159,9 +162,11 @@ namespace RDFSharp.Model
         internal RDFGraph AddTripleInternal(RDFTriple triple) {
             if (triple != null) {
                 if (!this.Triples.ContainsKey(triple.TripleID)) {
+                     //Add triple
                      this.Triples.Add(triple.TripleID, triple);
-                     //Index and Metadata updates
+                     //Update index
                      this.GraphIndex.AddIndex(triple);
+                     //Update metadata
                      this.GraphMetadata.UpdateMetadata(triple);
                 }
             }
@@ -176,7 +181,8 @@ namespace RDFSharp.Model
                 //Reify the container to get its graph representation
                 var reifCont   = container.ReifyContainer();
                 //Iterate on the constructed triples
-                foreach(var t in reifCont) { this.AddTriple(t); }                
+                foreach(var t in reifCont)
+                    this.AddTriple(t);
             }
             return this;
         }
@@ -189,7 +195,8 @@ namespace RDFSharp.Model
                 //Reify the collection to get its graph representation
                 var reifColl   = collection.ReifyCollection();
                 //Iterate on the constructed triples
-                foreach(var t in reifColl) { this.AddTriple(t); }
+                foreach(var t in reifColl)
+                    this.AddTriple(t);
             }
             return this;
         }
@@ -201,9 +208,11 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriple(RDFTriple triple) {
             if (this.ContainsTriple(triple)) {
+                //Remove triple
                 this.Triples.Remove(triple.TripleID);
+                //Raise event
                 RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-                //Index and Metadata updates
+                //Rebuild index and metadata
                 RDFModelUtilities.RebuildGraph(this);                
             }
             return this;
@@ -216,11 +225,15 @@ namespace RDFSharp.Model
             if (subjectResource     != null) {
                 var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesBySubject(subjectResource)) {
+                    //Remove triple
                     this.Triples.Remove(triple.TripleID);
-                    tripleFound      = true;
+                    //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    //Set deletion flag
+                    tripleFound      = true;
                 }
                 if (tripleFound) {
+                    //Rebuild index and metadata
                     RDFModelUtilities.RebuildGraph(this);
                 }
             }
@@ -234,11 +247,15 @@ namespace RDFSharp.Model
             if (predicateResource   != null && !predicateResource.IsBlank) {
                 var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByPredicate(predicateResource)) {
+                    //Remove triple
                     this.Triples.Remove(triple.TripleID);
-                    tripleFound      = true;
+                    //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    //Set deletion flag
+                    tripleFound      = true;
                 }
                 if (tripleFound) {
+                    //Rebuild index and metadata
                     RDFModelUtilities.RebuildGraph(this);
                 }
             }
@@ -252,11 +269,15 @@ namespace RDFSharp.Model
             if (objectResource      != null) {
                 var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByObject(objectResource)) {
+                    //Remove triple
                     this.Triples.Remove(triple.TripleID);
-                    tripleFound      = true;
+                    //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    //Set deletion flag
+                    tripleFound      = true;
                 }
                 if (tripleFound) {
+                    //Rebuild index and metadata
                     RDFModelUtilities.RebuildGraph(this);
                 }
             }
@@ -270,11 +291,15 @@ namespace RDFSharp.Model
             if (objectLiteral       != null) {
                 var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByLiteral(objectLiteral)) {
+                    //Remove triple
                     this.Triples.Remove(triple.TripleID);
-                    tripleFound      = true;
+                    //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    //Set deletion flag
+                    tripleFound      = true;
                 }
                 if (tripleFound) {
+                    //Rebuild index and metadata
                     RDFModelUtilities.RebuildGraph(this);
                 }
             }
@@ -285,10 +310,13 @@ namespace RDFSharp.Model
         /// Clears the triples and metadata of the graph
         /// </summary>
         public void ClearTriples() {
+            //Clear triples
             this.Triples.Clear();
+            //Raise event
             RDFModelEvents.RaiseOnGraphCleared(String.Format("Graph '{0}' has been cleared.", this));
-            //Index and Metadata update
+            //Clear index
             this.GraphIndex.ClearIndex();
+            //Clear metadata
             this.GraphMetadata.ClearMetadata();
         }
 
@@ -303,15 +331,15 @@ namespace RDFSharp.Model
             var P = new RDFVariable("P");
             var O = new RDFVariable("O");
             var Q = new RDFSelectQuery()
-                            .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
-                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
-                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
-                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))
-                                .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O))
-                                .AddFilter(new RDFIsUriFilter(T))
-                                .AddFilter(new RDFIsUriFilter(S))
-                                .AddFilter(new RDFIsUriFilter(P))
-                             );
+                        .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
+                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
+                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
+                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))
+                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O))
+                            .AddFilter(new RDFIsUriFilter(T))
+                            .AddFilter(new RDFIsUriFilter(S))
+                            .AddFilter(new RDFIsUriFilter(P))
+                        );
 
             //Apply it to the graph
             var R = Q.ApplyToGraph(this);
@@ -456,7 +484,7 @@ namespace RDFSharp.Model
 
         #region Convert
 
-        #region Exporters
+        #region Export
         /// <summary>
         /// Writes the graph into a file in the given RDF format. 
         /// </summary>
@@ -535,7 +563,7 @@ namespace RDFSharp.Model
         }
         #endregion
 
-        #region Importers
+        #region Import
         /// <summary>
         /// Creates a graph from a file of the given RDF format. 
         /// </summary>
