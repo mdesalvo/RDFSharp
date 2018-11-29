@@ -113,14 +113,14 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
         IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() {
-            return this.Triples.Values.GetEnumerator();
+            return this.TriplesEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.Triples.Values.GetEnumerator();
+            return this.TriplesEnumerator;
         }
         #endregion
 

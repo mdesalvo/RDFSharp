@@ -104,14 +104,14 @@ namespace RDFSharp.Model
         /// Exposes a typed enumerator on the register's namespaces
         /// </summary>
         IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator() {
-            return Instance.Register.GetEnumerator();
+            return NamespacesEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the register's namespaces
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return Instance.Register.GetEnumerator();
+            return NamespacesEnumerator;
         }
         #endregion
 

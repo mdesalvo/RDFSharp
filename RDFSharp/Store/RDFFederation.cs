@@ -90,14 +90,14 @@ namespace RDFSharp.Store
         /// Exposes a typed enumerator on the federation'stores
         /// </summary>
         IEnumerator<RDFStore> IEnumerable<RDFStore>.GetEnumerator() {
-            return this.Stores.Values.GetEnumerator();
+            return this.StoresEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the federation'stores
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.Stores.Values.GetEnumerator();
+            return this.StoresEnumerator;
         }
         #endregion
 

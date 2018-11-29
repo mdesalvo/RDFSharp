@@ -73,7 +73,7 @@ namespace RDFSharp.Model
         /// Exposes an untyped enumerator on the collection's items
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.Items.GetEnumerator();
+            return this.ItemsEnumerator;
         }
         #endregion
 

@@ -110,14 +110,14 @@ namespace RDFSharp.Store
         /// Exposes a typed enumerator on the store's quadruples
         /// </summary>
         IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator() {
-            return this.Quadruples.Values.GetEnumerator();
+            return this.QuadruplesEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the store's quadruples
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.Quadruples.Values.GetEnumerator();
+            return this.QuadruplesEnumerator;
         }
         #endregion
 
