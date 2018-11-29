@@ -810,8 +810,10 @@ namespace RDFSharp.Model
             XmlText collElementAttrText   = null;
 
             //Iterate the elements of the collection until the last one (pointing to next="rdf:nil")
-            while (!nilFound) {
-                var collElement           = rdfGraphMetadata.Collections[tripleObject.PatternMemberID];
+            while  (!nilFound) {
+                if (!rdfGraphMetadata.Collections.TryGetValue(tripleObject.PatternMemberID, out var collElement)) {
+                     throw new RDFModelException(String.Format("Collection having '{0}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' descriptions.", tripleObject));
+                }
                 collElementToAppend       = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
                 collElementAttr           = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":about", RDFVocabulary.RDF.BASE_URI);
                 collElementAttrText       = rdfDoc.CreateTextNode(collElement.ItemValue.ToString());
