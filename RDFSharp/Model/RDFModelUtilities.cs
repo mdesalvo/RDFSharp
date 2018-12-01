@@ -132,17 +132,6 @@ namespace RDFSharp.Model
 
         #region Graph
         /// <summary>
-        /// Rebuild the metadata of the given graph
-        /// </summary>
-        internal static void RebuildGraph(RDFGraph graph) {
-            var triples  = new Dictionary<Int64, RDFTriple>(graph.Triples);
-            graph.ClearTriples();
-            foreach (var t in triples) {
-                graph.AddTripleInternal(t.Value);
-            }
-        }
-
-        /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph
         /// </summary>
         internal static List<RDFTriple> SelectTriples(RDFGraph graph,  RDFResource subj, 

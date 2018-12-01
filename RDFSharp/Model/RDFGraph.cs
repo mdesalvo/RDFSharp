@@ -50,11 +50,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Metadata of the graph
-        /// </summary>
-        internal RDFGraphMetadata GraphMetadata { get; set; }
-
-        /// <summary>
         /// Index on the triples of the graph
         /// </summary>
         internal RDFGraphIndex GraphIndex { get; set; }
@@ -70,19 +65,17 @@ namespace RDFSharp.Model
         /// Builds an empty graph
         /// </summary>
         public RDFGraph() {
-            this.Context       = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-            this.GraphMetadata = new RDFGraphMetadata();
-            this.GraphIndex    = new RDFGraphIndex();
-            this.Triples       = new Dictionary<Int64, RDFTriple>();
+            this.Context    = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
+            this.GraphIndex = new RDFGraphIndex();
+            this.Triples    = new Dictionary<Int64, RDFTriple>();
         }
 
         /// <summary>
         /// Builds a graph with the given list of triples
         /// </summary>
         public RDFGraph(List<RDFTriple> triples): this() {
-            if (triples != null) {
+            if (triples != null)
                 triples.ForEach(t => this.AddTriple(t));
-            }
         }
         #endregion
         
@@ -145,12 +138,10 @@ namespace RDFSharp.Model
                 if (!this.Triples.ContainsKey(triple.TripleID)) {
                      //Add triple
                      this.Triples.Add(triple.TripleID, triple);
+                     //Add index
+                     this.GraphIndex.AddIndex(triple);
                      //Raise event
                      RDFModelEvents.RaiseOnTripleAdded(String.Format("Triple '{0}' has been added to the Graph '{1}'.", triple, this));
-                     //Update index
-                     this.GraphIndex.AddIndex(triple);
-                     //Update metadata
-                     this.GraphMetadata.UpdateMetadata(triple);
                 }
             }
             return this;
@@ -164,10 +155,8 @@ namespace RDFSharp.Model
                 if (!this.Triples.ContainsKey(triple.TripleID)) {
                      //Add triple
                      this.Triples.Add(triple.TripleID, triple);
-                     //Update index
+                     //Add index
                      this.GraphIndex.AddIndex(triple);
-                     //Update metadata
-                     this.GraphMetadata.UpdateMetadata(triple);
                 }
             }
             return this;
@@ -210,10 +199,10 @@ namespace RDFSharp.Model
             if (this.ContainsTriple(triple)) {
                 //Remove triple
                 this.Triples.Remove(triple.TripleID);
+                //Remove index
+                this.GraphIndex.RemoveIndex(triple);
                 //Raise event
                 RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-                //Rebuild index and metadata
-                RDFModelUtilities.RebuildGraph(this);                
             }
             return this;
         }
@@ -223,18 +212,13 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriplesBySubject(RDFResource subjectResource) {
             if (subjectResource     != null) {
-                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesBySubject(subjectResource)) {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
                     //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-                    //Set deletion flag
-                    tripleFound      = true;
-                }
-                if (tripleFound) {
-                    //Rebuild index and metadata
-                    RDFModelUtilities.RebuildGraph(this);
                 }
             }
             return this;
@@ -245,18 +229,13 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriplesByPredicate(RDFResource predicateResource) {
             if (predicateResource   != null && !predicateResource.IsBlank) {
-                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByPredicate(predicateResource)) {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
                     //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-                    //Set deletion flag
-                    tripleFound      = true;
-                }
-                if (tripleFound) {
-                    //Rebuild index and metadata
-                    RDFModelUtilities.RebuildGraph(this);
                 }
             }
             return this;
@@ -267,18 +246,13 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriplesByObject(RDFResource objectResource) {
             if (objectResource      != null) {
-                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByObject(objectResource)) {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
                     //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-                    //Set deletion flag
-                    tripleFound      = true;
-                }
-                if (tripleFound) {
-                    //Rebuild index and metadata
-                    RDFModelUtilities.RebuildGraph(this);
                 }
             }
             return this;
@@ -289,18 +263,13 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriplesByLiteral(RDFLiteral objectLiteral) {
             if (objectLiteral       != null) {
-                var tripleFound      = false;
                 foreach (var triple in this.SelectTriplesByLiteral(objectLiteral)) {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
                     //Raise event
                     RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-                    //Set deletion flag
-                    tripleFound      = true;
-                }
-                if (tripleFound) {
-                    //Rebuild index and metadata
-                    RDFModelUtilities.RebuildGraph(this);
                 }
             }
             return this;
@@ -312,12 +281,10 @@ namespace RDFSharp.Model
         public void ClearTriples() {
             //Clear triples
             this.Triples.Clear();
-            //Raise event
-            RDFModelEvents.RaiseOnGraphCleared(String.Format("Graph '{0}' has been cleared.", this));
             //Clear index
             this.GraphIndex.ClearIndex();
-            //Clear metadata
-            this.GraphMetadata.ClearMetadata();
+            //Raise event
+            RDFModelEvents.RaiseOnGraphCleared(String.Format("Graph '{0}' has been cleared.", this));
         }
 
         /// <summary>
