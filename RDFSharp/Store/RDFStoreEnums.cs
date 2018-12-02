@@ -25,7 +25,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// RDFStoreSQLErrors represents an enumeration for situations which can be found on a SQL-backing store
         /// </summary>
-        public enum RDFStoreSQLErrors {
+        internal enum RDFStoreSQLErrors {
             /// <summary>
             /// Indicates that diagnostics on the selected database has passed
             /// </summary>
