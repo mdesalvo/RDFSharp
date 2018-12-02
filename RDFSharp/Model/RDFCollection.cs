@@ -16,15 +16,17 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
 
     /// <summary>
     /// RDFCollection represents a generic collection in the RDF model.
-    /// It is made up of items, which must be all resources or all literals.
     /// </summary>
-    public sealed class RDFCollection: IEnumerable {
+    public sealed class RDFCollection: IEnumerable<RDFPatternMember> {
 
         #region Properties
         /// <summary>
@@ -38,6 +40,11 @@ namespace RDFSharp.Model
         public RDFResource ReificationSubject { get; internal set; }
 
         /// <summary>
+        /// Internal subject of the collection's reification
+        /// </summary>
+        internal RDFResource InternalReificationSubject { get; set; }
+
+        /// <summary>
         /// Count of the collection's items
         /// </summary>
         public Int32 ItemsCount {
@@ -47,28 +54,37 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the enumerator on the collection's items for iteration
         /// </summary>
-        public IEnumerator ItemsEnumerator {
+        public IEnumerator<RDFPatternMember> ItemsEnumerator {
             get { return this.Items.GetEnumerator(); }
         }
 
         /// <summary>
         /// List of the items collected by the collection
         /// </summary>
-        internal ArrayList Items { get; set; }
+        internal List<RDFPatternMember> Items { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default ctor to build an empty collection of the given type
+        /// (initial configuration of the collection is "rdf:Nil")
         /// </summary>
         public RDFCollection(RDFModelEnums.RDFItemTypes itemType) {
-           this.ItemType           = itemType;
-           this.ReificationSubject = new RDFResource();
-           this.Items              = new ArrayList();        
+            this.ItemType                   = itemType;
+            this.ReificationSubject         = RDFVocabulary.RDF.NIL;
+            this.InternalReificationSubject = new RDFResource();
+            this.Items                      = new List<RDFPatternMember>();        
         }
         #endregion
 
         #region Interfaces
+        /// <summary>
+        /// Exposes a typed enumerator on the collection's items
+        /// </summary>
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() {
+            return this.ItemsEnumerator;
+        }
+
         /// <summary>
         /// Exposes an untyped enumerator on the collection's items
         /// </summary>
@@ -78,40 +94,54 @@ namespace RDFSharp.Model
         #endregion
 
         #region Methods
+
+        #region Add
         /// <summary>
-        /// Adds the given item to the collection, avoiding duplicate insertions
+        /// Adds the given item to the collection
         /// </summary>
-        public RDFCollection AddItem(Object item) {
-            if (item != null) {
-
-                //Try to add a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                    Boolean itemFound    = false;
-                    foreach(var itemEnum in this) {
-                        if(((RDFResource)itemEnum).Equals((RDFResource)item)){
-                            itemFound    = true;
-                            break;
-                        }    
-                    }
-                    if (!itemFound) {
-                         this.Items.Add(item);
-                    }
+        public RDFCollection AddItem(RDFResource item) {
+            if (item != null && this.ItemType  == RDFModelEnums.RDFItemTypes.Resource) {
+                //Avoid duplicates
+                if (this.Items.Find(x => x.Equals(item)) == null) {
+                    //Add item to collection
+                    this.Items.Add(item);
+                    //Update ReificationSubject (if collection has left "rdf:Nil" configuration)
+                    if (this.ItemsCount == 1)
+                        this.ReificationSubject = this.InternalReificationSubject;
                 }
+            }
+            return this;
+        }
 
-                //Try to add a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                    Boolean itemFound    = false;
-                    foreach(var itemEnum in this) {
-                        if (((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
-                            itemFound    = true;
-                            break;
-                        }
-                    }
-                    if (!itemFound) {
-                         this.Items.Add(item);
-                    }
+        /// <summary>
+        /// Adds the given item to the collection
+        /// </summary>
+        public RDFCollection AddItem(RDFLiteral item) {
+            if (item != null && this.ItemType  == RDFModelEnums.RDFItemTypes.Literal) {
+                //Avoid duplicates
+                if (this.Items.Find(x => x.Equals(item)) == null) {
+                    //Add item to collection
+                    this.Items.Add(item);
+                    //Update ReificationSubject (if collection has left "rdf:Nil" configuration)
+                    if (this.ItemsCount == 1)
+                        this.ReificationSubject = this.InternalReificationSubject;
                 }
+            }
+            return this;
+        }
+        #endregion
 
+        #region Remove
+        /// <summary>
+        /// Removes the given item from the collection
+        /// </summary>
+        public RDFCollection RemoveItem(RDFResource item) {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+                //Remove item from collection
+                this.Items.RemoveAll(x => x.Equals(item));
+                //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
+                if (this.ItemsCount == 0)
+                    this.ReificationSubject = RDFVocabulary.RDF.NIL;
             }
             return this;
         }
@@ -119,31 +149,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given item from the collection
         /// </summary>
-        public RDFCollection RemoveItem(Object item) {
-            if (item != null) {
-
-                //Try to remove a resource
-                if (item is RDFResource && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                    ArrayList resultList = new ArrayList();
-                    foreach(var itemEnum in this) {
-                        if (!((RDFResource)itemEnum).Equals((RDFResource)item)) {
-                            resultList.Add(itemEnum);
-                        }
-                    }
-                    this.Items = resultList;
-                }
-
-                //Try to remove a literal
-                else if (item is RDFLiteral && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                    ArrayList resultList = new ArrayList();
-                    foreach(var itemEnum in this) {
-                        if (!((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
-                            resultList.Add(itemEnum);
-                        }
-                    }
-                    this.Items = resultList;
-                }
-
+        public RDFCollection RemoveItem(RDFLiteral item) {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+                //Remove item from collection
+                this.Items.RemoveAll(x => x.Equals(item));
+                //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
+                if (this.ItemsCount == 0)
+                    this.ReificationSubject = RDFVocabulary.RDF.NIL;
             }
             return this;
         }
@@ -152,35 +164,25 @@ namespace RDFSharp.Model
         /// Removes all the items from the collection
         /// </summary>
         public void ClearItems() {
+            //Clear items of collection
             this.Items.Clear();
+            //Turn back the collection into "rdf:Nil" configuration
+            this.ReificationSubject = RDFVocabulary.RDF.NIL;
         }
+        #endregion
 
+        #region Reify
         /// <summary>
         /// Builds the reification graph of the collection
         /// </summary>
         public RDFGraph ReifyCollection() {
-            RDFGraph reifColl          = new RDFGraph();
-            RDFResource reifSubj       = this.ReificationSubject;
-            Int32 itemCount            = 0;
+            RDFGraph reifColl    = new RDFGraph();
+            RDFResource reifSubj = this.ReificationSubject;
+            Int32 itemCount      = 0;
 
-            //Manage the empty collection
-            if (this.ItemsCount       == 0) {
-
-                //  Subject -> rdf:type  -> rdf:List
-                reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE,  RDFVocabulary.RDF.LIST));
-
-                // Subject  -> rdf:first -> rdf:nil
-                reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, RDFVocabulary.RDF.NIL));
-
-                // Subject  -> rdf:rest  -> rdf:nil
-                reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST,  RDFVocabulary.RDF.NIL));
-
-            }
-
-            //Manage the non-empty collection
-            else {
-
-                foreach (Object listEnum in this) {
+            //Collection can be reified only if it has at least one item
+            if (this.ItemsCount  > 0) { 
+                foreach (Object  listEnum in this) {
 
                     //Count the items to keep track of the last one, which will be connected to rdf:nil
                     itemCount++;
@@ -208,48 +210,14 @@ namespace RDFSharp.Model
                     }
 
                 }
-
             }
 
             return reifColl;
         }
         #endregion
 
-    }
-
-    /// <summary>
-    /// RDFCollectionItem represents an item of a collection
-    /// </summary>
-    internal class RDFCollectionItem {
-
-        #region Properties
-        /// <summary>
-        /// Type of the collection item
-        /// </summary>
-        internal RDFModelEnums.RDFItemTypes ItemType { get; set; }
-
-        /// <summary>
-        /// Value of the collection item
-        /// </summary>
-        internal Object ItemValue { get; set; }
-
-        /// <summary>
-        /// Pointer to the next item of the collection
-        /// </summary>
-        internal Object ItemNext { get; set; }
         #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to build a RDFCollectionItem with the given parameters
-        /// </summary>
-        internal RDFCollectionItem(RDFModelEnums.RDFItemTypes itemType, Object itemValue, Object itemNext) {
-            this.ItemType  = itemType;
-            this.ItemValue = itemValue;
-            this.ItemNext  = itemNext;
-        }
-        #endregion
-
+ 
     }
 
 }

@@ -95,8 +95,7 @@ namespace RDFSharp.Model
                                                              ContainerType   = (x.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
                                                                                 x.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
                                                                                                                          RDFModelEnums.RDFContainerTypes.Seq)
-                                                         })
-                                                         .ToList();
+                                                         }).ToList();
                     //Fetch data describing collections of the graph
                     var collections               = graph.SelectTriplesByObject(RDFVocabulary.RDF.LIST)
                                                          .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
@@ -108,8 +107,7 @@ namespace RDFSharp.Model
                                                              CollectionNext  = graph.SelectTriplesBySubject((RDFResource)x.Subject)
                                                                                     .SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
                                                                                     .FirstOrDefault()?.Object,
-                                                         })
-                                                         .ToList();
+                                                         }).ToList();
                     #endregion
 
                     #region linq

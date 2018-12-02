@@ -16,15 +16,17 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
 
     /// <summary>
     /// RDFContainer represents a generic container in the RDF model.
-    /// It is made up of items, which must be all resources or all literals.
     /// </summary>
-    public sealed class RDFContainer: IEnumerable {
+    public sealed class RDFContainer: IEnumerable<RDFPatternMember> {
 
         #region Properties
         /// <summary>
@@ -52,14 +54,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the enumerator on the container's items for iteration
         /// </summary>
-        public IEnumerator ItemsEnumerator {
+        public IEnumerator<RDFPatternMember> ItemsEnumerator {
             get { return this.Items.GetEnumerator(); }
         }
 
         /// <summary>
         /// List of the items contained in the container
         /// </summary>
-        internal ArrayList Items { get; set; }
+        internal List<RDFPatternMember> Items { get; set; }
         #endregion
 
         #region Ctors
@@ -70,11 +72,18 @@ namespace RDFSharp.Model
             this.ContainerType      = containerType;
             this.ItemType           = itemType;
             this.ReificationSubject = new RDFResource();
-            this.Items              = new ArrayList();
+            this.Items              = new List<RDFPatternMember>();
         }
         #endregion
 
         #region Interfaces
+        /// <summary>
+        /// Exposes a typed enumerator on the container's items
+        /// </summary>
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() {
+            return this.ItemsEnumerator;
+        }
+
         /// <summary>
         /// Exposes an untyped enumerator on the container's items
         /// </summary>
@@ -84,54 +93,60 @@ namespace RDFSharp.Model
         #endregion
 
         #region Methods
+
+        #region Add
         /// <summary>
         /// Adds the given item to the container
         /// </summary>
-        public RDFContainer AddItem(Object item) {
-            if (item != null) {
-
-                //Try to add a resource
-                if (item is RDFResource      && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                    //In case this is an "Alt" container, we do not allow duplicates
-                    if (this.ContainerType   == RDFModelEnums.RDFContainerTypes.Alt) {
-                        Boolean itemFound    = false;
-                        foreach(var itemEnum in this) {
-                            if (((RDFResource)itemEnum).Equals((RDFResource)item)) {
-                                itemFound    = true;
-                                break;
-                            }
-                        }
-                        if (!itemFound) {
-                             this.Items.Add(item);
-                        }
-                    }
-                    //Else, we allow duplicates
-                    else {
+        public RDFContainer AddItem(RDFResource item) {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+                switch (this.ContainerType) {
+                    case RDFModelEnums.RDFContainerTypes.Alt:
+                        //Avoid duplicates in case of "rdf:Alt" container
+                        if (this.Items.Find(x => x.Equals(item)) == null)
+                            this.Items.Add(item);
+                        break;
+                    case RDFModelEnums.RDFContainerTypes.Bag:
                         this.Items.Add(item);
-                    }
-                }
-
-                //Try to add a literal
-                else if (item is RDFLiteral  && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                    //In case this is an "Alt" container, we do not allow duplicates
-                    if (this.ContainerType   == RDFModelEnums.RDFContainerTypes.Alt) {
-                        Boolean itemFound     = false;
-                        foreach(var itemEnum in this) {
-                            if (((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
-                                itemFound     = true;
-                                break;
-                            }
-                        }
-                        if (!itemFound) {
-                             this.Items.Add(item);
-                        }
-                    }
-                    //Else, we allow duplicates
-                    else {
+                        break;
+                    case RDFModelEnums.RDFContainerTypes.Seq:
                         this.Items.Add(item);
-                    }
+                        break;
                 }
+            }
+            return this;
+        }
 
+        /// <summary>
+        /// Adds the given item to the container
+        /// </summary>
+        public RDFContainer AddItem(RDFLiteral item) {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+                switch (this.ContainerType) {
+                    case RDFModelEnums.RDFContainerTypes.Alt:
+                        //Avoid duplicates in case of "rdf:Alt" container
+                        if (this.Items.Find(x => x.Equals(item)) == null)
+                            this.Items.Add(item);
+                        break;
+                    case RDFModelEnums.RDFContainerTypes.Bag:
+                        this.Items.Add(item);
+                        break;
+                    case RDFModelEnums.RDFContainerTypes.Seq:
+                        this.Items.Add(item);
+                        break;
+                }
+            }
+            return this;
+        }
+        #endregion
+
+        #region Remove
+        /// <summary>
+        /// Removes the given item from the container
+        /// </summary>
+        public RDFContainer RemoveItem(RDFResource item) {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+                this.Items.RemoveAll(x => x.Equals(item));
             }
             return this;
         }
@@ -139,31 +154,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given item from the container
         /// </summary>
-        public RDFContainer RemoveItem(Object item) {
-            if (item != null) {
-
-                //Try to remove a resource
-                if (item is RDFResource      && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                    ArrayList resultList      = new ArrayList();
-                    foreach(var itemEnum     in this) {
-                        if (!((RDFResource)itemEnum).Equals((RDFResource)item)) {
-                            resultList.Add(itemEnum);
-                        }
-                    }
-                    this.Items = resultList;
-                }
-
-                //Try to remove a literal
-                else if (item is RDFLiteral   && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                    ArrayList resultList       = new ArrayList();
-                    foreach(var itemEnum      in this) {
-                        if (!((RDFLiteral)itemEnum).Equals((RDFLiteral)item)) {
-                            resultList.Add(itemEnum);
-                        }
-                    }
-                    this.Items = resultList;
-                }
-
+        public RDFContainer RemoveItem(RDFLiteral item) {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+                this.Items.RemoveAll(x => x.Equals(item));
             }
             return this;
         }
@@ -174,7 +167,9 @@ namespace RDFSharp.Model
         public void ClearItems() {
             this.Items.Clear();
         }
+        #endregion
 
+        #region Reify
         /// <summary>
         /// Builds the reification graph of the container:
         /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt] 
@@ -210,6 +205,8 @@ namespace RDFSharp.Model
 
             return reifCont;
         }
+        #endregion
+
         #endregion
 
     }
