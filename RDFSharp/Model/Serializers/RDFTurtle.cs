@@ -73,7 +73,7 @@ namespace RDFSharp.Model
                                                         subj = triple.Subject.ToString(),
                                                         pred = triple.Predicate.ToString()
                                                   });
-                    var groupedListLast         = groupedList.Last();
+                    var groupedListLast         = groupedList.LastOrDefault();
                     #endregion
 												   
 					#region triples
