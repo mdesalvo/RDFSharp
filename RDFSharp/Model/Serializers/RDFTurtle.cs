@@ -1415,7 +1415,7 @@ namespace RDFSharp.Model
                     String uValue = s.Substring(backSlashIdx + 2, 4/*backSlashIdx + 6*/);
                     try
                     {
-                        Int32.TryParse(uValue, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture.NumberFormat, out Int32 cp);
+                        Int32 cp  = Int32.Parse(uValue, NumberStyles.AllowHexSpecifier);
                         sb.Append(Char.ConvertFromUtf32(cp));
                         startIdx  = backSlashIdx + 6;
                     }
@@ -1431,7 +1431,7 @@ namespace RDFSharp.Model
 
                     String UValue = s.Substring(backSlashIdx + 2, 8/*backSlashIdx + 10*/);
                     try {
-                        Int32.TryParse(UValue, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture.NumberFormat, out Int32 cp);
+                        Int32 cp  = Int32.Parse(UValue, NumberStyles.AllowHexSpecifier);
                         sb.Append(Char.ConvertFromUtf32(cp));
                         startIdx  = backSlashIdx + 10;
                     }
