@@ -408,9 +408,15 @@ namespace RDFSharp.Model
                 || directive.Equals("base",   StringComparison.InvariantCultureIgnoreCase)) {
                 ParseDirective(turtleData, turtleContext, result, directive);
                 SkipWhitespace(turtleData, turtleContext, result);
-                // SPARQL BASE and PREFIX lines do not end in .
+                // Turtle @base and @prefix directives MUST end with "."
                 if (directive.StartsWith("@")) {
                     VerifyCharacterOrFail(turtleData, turtleContext, ReadCodePoint(turtleData, turtleContext), ".");
+                }
+                // SPARQL BASE and PREFIX directives MUST NOT end with "."
+                else {
+                    if (PeekCodePoint(turtleData, turtleContext) == '.') {
+                        throw new RDFModelException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(turtleContext));
+                    }
                 }
             }
             else {
@@ -428,26 +434,25 @@ namespace RDFSharp.Model
                                             Dictionary<String, Object> turtleContext,
                                             RDFGraph result,
                                             String directive) {
-            if (directive.Length >= 7 && directive.Substring(0, 7).Equals("@prefix", StringComparison.InvariantCultureIgnoreCase)) {
+            if (directive.Length >= 7 && directive.Substring(0, 7).Equals("@prefix", StringComparison.Ordinal)) {
                 if (directive.Length > 7) {
                     UnreadCodePoint(turtleData, turtleContext, directive.Substring(7));
                 }
                 ParsePrefixID(turtleData, turtleContext, result);
             }
-            else if (directive.Length >= 5 && directive.Substring(0, 5).Equals("@base", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (directive.Length >= 5 && directive.Substring(0, 5).Equals("@base", StringComparison.Ordinal)) {
                 if (directive.Length > 5) {
                     UnreadCodePoint(turtleData, turtleContext, directive.Substring(5));
                 }
                 ParseBase(turtleData, turtleContext, result);
             }
-            else if (directive.Length >= 6 && directive.Substring(0, 6).Equals("prefix", StringComparison.InvariantCultureIgnoreCase)) {
-                // SPARQL doesn't require whitespace after directive, so must unread if we found part of the prefixID
+            else if (directive.Length >= 6 && directive.Substring(0, 6).Equals("PREFIX", StringComparison.Ordinal)) {
                 if (directive.Length > 6) {
                     UnreadCodePoint(turtleData, turtleContext, directive.Substring(6));
                 }
                 ParsePrefixID(turtleData, turtleContext, result);
             }
-            else if (directive.Length >= 4 && directive.Substring(0, 4).Equals("base", StringComparison.InvariantCultureIgnoreCase)) {
+            else if (directive.Length >= 4 && directive.Substring(0, 4).Equals("BASE", StringComparison.Ordinal)) {
                 if (directive.Length > 4) {
                     UnreadCodePoint(turtleData, turtleContext, directive.Substring(4));
                 }
