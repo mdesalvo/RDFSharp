@@ -540,7 +540,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the "rdf:RDF" root node of the document
         /// </summary>
-        internal static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr) {
+        private static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr) {
             XmlNode rdf =
                 (xmlDoc.SelectSingleNode(RDFVocabulary.RDF.PREFIX + ":RDF", nsMgr) ??
                     xmlDoc.SelectSingleNode("RDF", nsMgr));
@@ -556,7 +556,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the collection of "xmlns" attributes of the "rdf:RDF" root node
         /// </summary>
-        internal static XmlAttributeCollection GetXmlnsNamespaces(XmlNode rdfRDF, XmlNamespaceManager nsMgr) {
+        private static XmlAttributeCollection GetXmlnsNamespaces(XmlNode rdfRDF, XmlNamespaceManager nsMgr) {
             XmlAttributeCollection xmlns = rdfRDF.Attributes;
             if (xmlns != null && xmlns.Count > 0) {
 
@@ -584,7 +584,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Generates an automatic prefix for a namespace
         /// </summary>
-        internal static RDFNamespace GenerateNamespace(String namespaceString, Boolean isDatatypeNamespace) {
+        private static RDFNamespace GenerateNamespace(String namespaceString, Boolean isDatatypeNamespace) {
             if (namespaceString    != null && namespaceString.Trim() != String.Empty) {
 
                 //Extract the prefixable part from the Uri
@@ -621,7 +621,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the list of automatic namespaces used within the predicates of the triples of the given graph
         /// </summary>
-        internal static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph) {
+        private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph) {
             var result       = new List<RDFNamespace>();
             foreach (var p  in graph.Triples.Select(x => x.Value.Predicate.ToString()).Distinct()) {
                 var  nspace  = GenerateNamespace(p, false);
@@ -645,7 +645,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the subj node extracted from the attribute list of the current element 
         /// </summary>
-        internal static RDFResource GetSubjectNode(XmlNode subjNode, Uri xmlBase, RDFGraph result) {
+        private static RDFResource GetSubjectNode(XmlNode subjNode, Uri xmlBase, RDFGraph result) {
             RDFResource subj             = null;
 
             //If there are attributes, search them for the one representing the subj
@@ -690,7 +690,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the given attribute is absolute Uri, relative Uri, "rdf:ID" relative Uri, "rdf:nodeID" blank node Uri
         /// </summary>
-        internal static String ResolveRelativeNode(XmlAttribute attr, Uri xmlBase) {
+        private static String ResolveRelativeNode(XmlAttribute attr, Uri xmlBase) {
             if (attr               != null && xmlBase != null) {
                 String attrValue   = attr.Value;
 
@@ -719,7 +719,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Verify if we are on a standard rdf:Description element
         /// </summary>
-        internal static Boolean CheckIfRdfDescriptionNode(XmlNode subjNode) {
+        private static Boolean CheckIfRdfDescriptionNode(XmlNode subjNode) {
             Boolean result = (subjNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.Ordinal) ||
                               subjNode.LocalName.Equals("Description", StringComparison.Ordinal));
 
@@ -729,7 +729,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF subj
         /// </summary>
-        internal static XmlAttribute GetRdfAboutAttribute(XmlNode subjNode) {
+        private static XmlAttribute GetRdfAboutAttribute(XmlNode subjNode) {
             //rdf:about
             XmlAttribute rdfAbout =
                 (subjNode.Attributes[RDFVocabulary.RDF.PREFIX + ":about"] ??
@@ -745,7 +745,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF object
         /// </summary>
-        internal static XmlAttribute GetRdfResourceAttribute(XmlNode predNode) {
+        private static XmlAttribute GetRdfResourceAttribute(XmlNode predNode) {
             //rdf:Resource
             XmlAttribute rdfResource =
                 (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":resource"] ??
@@ -759,7 +759,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF typed literal datatype
         /// </summary>
-        internal static XmlAttribute GetRdfDatatypeAttribute(XmlNode predNode) {
+        private static XmlAttribute GetRdfDatatypeAttribute(XmlNode predNode) {
             //rdf:datatype
             XmlAttribute rdfDatatype =
                 (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":datatype"] ??
@@ -771,7 +771,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF plain literal language
         /// </summary>
-        internal static XmlAttribute GetXmlLangAttribute(XmlNode predNode) {
+        private static XmlAttribute GetXmlLangAttribute(XmlNode predNode) {
             //xml:lang
             XmlAttribute xmlLang =
                 (predNode.Attributes[RDFVocabulary.XML.PREFIX + ":lang"] ??
@@ -783,7 +783,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF parseType "Collection"
         /// </summary>
-        internal static XmlAttribute GetParseTypeCollectionAttribute(XmlNode predNode) {
+        private static XmlAttribute GetParseTypeCollectionAttribute(XmlNode predNode) {
             XmlAttribute rdfCollection =
                 (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
                     predNode.Attributes["parseType"]);
@@ -794,7 +794,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF parseType "Literal"
         /// </summary>
-        internal static XmlAttribute GetParseTypeLiteralAttribute(XmlNode predNode) {
+        private static XmlAttribute GetParseTypeLiteralAttribute(XmlNode predNode) {
             XmlAttribute rdfLiteral =
                 (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
                     predNode.Attributes["parseType"]);
@@ -806,7 +806,7 @@ namespace RDFSharp.Model
         /// Given an attribute representing a RDF collection, iterates on its constituent elements
         /// to build its standard reification triples. 
         /// </summary>
-        internal static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj,
+        private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj,
                                                      RDFResource pred, RDFGraph result) {
 
             //Attach the collection as the blank object of the current pred
@@ -855,7 +855,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Verify if we are on a standard rdf:[Bag|Seq|Alt] element
         /// </summary>
-        internal static Boolean CheckIfRdfContainerNode(XmlNode containerNode) {
+        private static Boolean CheckIfRdfContainerNode(XmlNode containerNode) {
             Boolean result = (containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.Ordinal) || containerNode.LocalName.Equals("Bag", StringComparison.Ordinal) ||
                               containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.Ordinal) || containerNode.LocalName.Equals("Seq", StringComparison.Ordinal) ||
                               containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.Ordinal) || containerNode.LocalName.Equals("Alt", StringComparison.Ordinal));
@@ -866,7 +866,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Given an element, return the child element which can correspond to the RDF container
         /// </summary>
-        internal static XmlNode GetContainerNode(XmlNode predNode) {
+        private static XmlNode GetContainerNode(XmlNode predNode) {
             //A container is the first child of the given node and it has no attributes.
             //Its localname must be the canonical "rdf:[Bag|Seq|Alt]", so we check for this.
             if (predNode.HasChildNodes) {
@@ -884,7 +884,7 @@ namespace RDFSharp.Model
         /// Given an element representing a RDF container, iterates on its constituent elements
         /// to build its standard reification triples. 
         /// </summary>
-        internal static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container,
+        private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container,
                                                     RDFResource subj, RDFResource pred, RDFGraph result) {
 
             //Attach the container as the blank object of the current pred

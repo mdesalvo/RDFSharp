@@ -345,7 +345,7 @@ namespace RDFSharp.Store {
         /// <summary>
         /// Tries to tokenize the given N-Quad
         /// </summary>
-        internal static String[] TokenizeNQuad(String nquad) {
+        private static String[] TokenizeNQuad(String nquad) {
             String[] tokens        = new String[4];
 
             //A legal N-Quad starts with "_:" of blanks or "<" of non-blanks

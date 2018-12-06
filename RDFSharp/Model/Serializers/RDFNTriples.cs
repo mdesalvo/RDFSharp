@@ -339,7 +339,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Tries to tokenize the given N-Triple
         /// </summary>
-        internal static String[] TokenizeNTriple(String ntriple) {
+        private static String[] TokenizeNTriple(String ntriple) {
             String[] tokens        = new String[3];
 
             //A legal N-Triple starts with "_:" of blanks or "<" of non-blanks
