@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
@@ -217,28 +216,31 @@ namespace RDFSharp.Model
             try {
 
                 #region deserialize
-                RDFGraph result         = new RDFGraph();
+                RDFGraph result     = new RDFGraph();
 
                 //Initialize Turtle context
-                var turtleContext       = new Dictionary<String, Object>() {
-                    { "SUBJECT",        null },
-                    { "PREDICATE",      null },
-                    { "OBJECT",         null },
-                    { "POSITION",       0    },
-                    { "LINENUMBER",     1    }
+                var turtleContext   = new Dictionary<String, Object>() {
+                    { "SUBJECT",    null },
+                    { "PREDICATE",  null },
+                    { "OBJECT",     null },
+                    { "POSITION",   0    },
+                    { "LINENUMBER", 1    }
                 };
 
                 //Fetch Turtle data
-                var turtleData          = String.Empty;
-                using (var streamReader = new StreamReader(inputStream, Encoding.UTF8)) {
-                    turtleData          = streamReader.ReadToEnd();
+                var turtleData      = String.Empty;
+                using (var sReader  = new StreamReader(inputStream, Encoding.UTF8)) {
+                    turtleData      = sReader.ReadToEnd();
                 }
 
                 //Parse Turtle data
-                Int32 bufferChar        = SkipWhitespace(turtleData, turtleContext, result);
-                while (bufferChar      != -1) {
+                Int32 bufferChar    = SkipWhitespace(turtleData, turtleContext, result);
+                while (bufferChar  != -1) {
                     ParseStatement(turtleData, turtleContext, result);
-                    bufferChar          = ((Int32)turtleContext["POSITION"] < turtleData.Length ? SkipWhitespace(turtleData, turtleContext, result) : -1);
+                    if ((Int32)turtleContext["POSITION"] < turtleData.Length)
+                        bufferChar  = SkipWhitespace(turtleData, turtleContext, result);
+                    else
+                        bufferChar  = -1;
                 }
                 RDFNamespaceRegister.RemoveTemporaryNamespaces();
 
@@ -482,7 +484,7 @@ namespace RDFSharp.Model
                 bufChar      = PeekCodePoint(turtleData, turtleContext);
                 if (bufChar == ']') {
                     bufChar  = ReadCodePoint(turtleData, turtleContext);
-                    turtleContext["SUBJECT"] = new RDFResource(); //createBNode()
+                    turtleContext["SUBJECT"] = new RDFResource();
                     SkipWhitespace(turtleData, turtleContext, result);
                     ParsePredicateObjectList(turtleData, turtleContext, result);
                 }
@@ -664,21 +666,17 @@ namespace RDFSharp.Model
                                                     RDFGraph result) {
             VerifyCharacterOrFail(turtleData, turtleContext, ReadCodePoint(turtleData, turtleContext), "(");
 
-            RDFResource listRoot             = new RDFResource(); //createBNode()
-
-            //report statement
-            result.AddTriple(new RDFTriple(listRoot, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
-
             Int32 bufChar                    = SkipWhitespace(turtleData, turtleContext, result);
             if (bufChar                     == ')') {
-                //report statement
-                result.AddTriple(new RDFTriple(listRoot, RDFVocabulary.RDF.FIRST, RDFVocabulary.RDF.NIL));
-                result.AddTriple(new RDFTriple(listRoot, RDFVocabulary.RDF.REST,  RDFVocabulary.RDF.NIL));
-
-                // Empty list
+                // Empty list (rdf:Nil)
                 ReadCodePoint(turtleData, turtleContext);
+                return RDFVocabulary.RDF.NIL;
             }
             else {
+
+                //report statement
+                RDFResource listRoot         = new RDFResource();
+                result.AddTriple(new RDFTriple(listRoot, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
                 // Remember current subject and predicate
                 RDFResource oldSubject       = (RDFResource)turtleContext["SUBJECT"];
@@ -693,7 +691,7 @@ namespace RDFSharp.Model
                 RDFResource bNode            = listRoot;
                 while (SkipWhitespace(turtleData, turtleContext, result) != ')') {
                     // Create another list node and link it to the previous
-                    RDFResource newNode      = new RDFResource(); //createBNode()
+                    RDFResource newNode      = new RDFResource();
 
                     //report statement
                     result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
@@ -715,9 +713,9 @@ namespace RDFSharp.Model
                 // Restore previous subject and predicate
                 turtleContext["SUBJECT"]     = oldSubject;
                 turtleContext["PREDICATE"]   = oldPredicate;
-            }
 
-            return listRoot;
+                return listRoot;
+            }            
         }
 
         /// <summary>
