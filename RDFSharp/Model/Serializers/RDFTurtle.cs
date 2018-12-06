@@ -1069,7 +1069,7 @@ namespace RDFSharp.Model
             String nspace             = null;
 		    if (bufChar              == ':') {
                 // qname using default namespace
-                nspace                = result.Context.ToString(); //nspace = getNamespace("");
+                nspace                = result.Context.ToString();
             }
 		    else {
 			    // c is the first letter of the prefix
@@ -1110,7 +1110,7 @@ namespace RDFSharp.Model
 
 			    VerifyCharacterOrFail(turtleData, turtleContext, bufChar, ":");
 
-                nspace               = RDFNamespaceRegister.GetByPrefix(prefix.ToString()).ToString(); //nspace = getNamespace(prefix.ToString());
+                nspace               = RDFNamespaceRegister.GetByPrefix(prefix.ToString())?.ToString();
             }
 
             // c == ':', read optional local name
@@ -1164,7 +1164,7 @@ namespace RDFSharp.Model
 		    }
 
             // Note: namespace has already been resolved
-            return new Uri(nspace + localNameString); //return createURI(nspace + localNameString);
+            return new Uri((nspace ?? result.Context.ToString()) + localNameString);
         }
 
         /// <summary>
