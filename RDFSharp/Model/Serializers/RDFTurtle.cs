@@ -223,8 +223,7 @@ namespace RDFSharp.Model
                     { "SUBJECT",    null },
                     { "PREDICATE",  null },
                     { "OBJECT",     null },
-                    { "POSITION",   0    },
-                    { "LINENUMBER", 1    }
+                    { "POSITION",   0    }
                 };
 
                 //Fetch Turtle data
@@ -1045,7 +1044,7 @@ namespace RDFSharp.Model
             UnreadCodePoint(turtleData, turtleContext, bufChar);
 
             // Return result as a typed literal
-            return new RDFTypedLiteral(value.ToString(), dt); //return createLiteral(value.toString(), null, datatype, getLineNumber(), -1);
+            return new RDFTypedLiteral(value.ToString(), dt);
         }
 
         /// <summary>
@@ -1087,7 +1086,7 @@ namespace RDFSharp.Model
                     UnreadCodePoint(turtleData, turtleContext, bufChar);
                     bufChar           = previousChar;
                     prefix.Remove(prefix.Length - 1, 1);
-                    previousChar      = prefix.ToString().Last(); //.codePointAt(prefix.codePointCount(0, prefix.length()) - 1);
+                    previousChar      = prefix.ToString().Last();
                 }
 
                 if (bufChar          != ':') {
@@ -1096,7 +1095,7 @@ namespace RDFSharp.Model
                     if (value.Equals("true", StringComparison.InvariantCultureIgnoreCase) 
                             || value.Equals("false", StringComparison.InvariantCultureIgnoreCase)) {
                         UnreadCodePoint(turtleData, turtleContext, bufChar);
-                        return new RDFTypedLiteral(value, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN); //return createLiteral(value, null, XMLSchema.BOOLEAN, getLineNumber(), -1);
+                        return new RDFTypedLiteral(value, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
                     }
 			    }
 			    else {
@@ -1209,7 +1208,7 @@ namespace RDFSharp.Model
 
                 UnreadCodePoint(turtleData, turtleContext, bufChar);
 
-                return new RDFPlainLiteral(label, lang.ToString()); //return createLiteral(label, lang.toString(), null, getLineNumber(), -1);
+                return new RDFPlainLiteral(label, lang.ToString());
             }
             else if (bufChar       == '^') {
                 ReadCodePoint(turtleData, turtleContext);
@@ -1451,15 +1450,12 @@ namespace RDFSharp.Model
         internal static Int32 SkipWhitespace(String turtleData,
                                              Dictionary<String, Object> turtleContext,
                                              RDFGraph result) {
-            Int32 bufChar         = ReadCodePoint(turtleData, turtleContext);
+            Int32 bufChar    = ReadCodePoint(turtleData, turtleContext);
             while (IsWhitespace(bufChar) || bufChar == '#') {
-                if (bufChar      == '#') {
+                if (bufChar == '#') {
                     SkipComment(turtleData, turtleContext);
                 }
-                else if (bufChar == '\n') {
-                    turtleContext["LINENUMBER"] = (Int32)turtleContext["LINENUMBER"] + 1;
-                }
-                bufChar           = ReadCodePoint(turtleData, turtleContext);
+                bufChar      = ReadCodePoint(turtleData, turtleContext);
             }
             UnreadCodePoint(turtleData, turtleContext, bufChar);
             return bufChar;
@@ -1534,7 +1530,7 @@ namespace RDFSharp.Model
         /// Gets the actual coordinates inside the Turtle context
         /// </summary>
         internal static String GetTurtleContextCoordinates(Dictionary<String, Object> turtleContext) {
-            return " [Position:" + turtleContext["POSITION"] + "][LineNumber:" + turtleContext["LINENUMBER"] + "]";
+            return " [POSITION:" + turtleContext["POSITION"] + "]";
         }
         #endregion
 
