@@ -1070,7 +1070,7 @@ namespace RDFSharp.Model
                 nspace                = result.Context.ToString();
             }
 		    else {
-			    // c is the first letter of the prefix
+			    // bufChar is the first letter of the prefix
 			    StringBuilder prefix  = new StringBuilder();
                 prefix.Append(Char.ConvertFromUtf32(bufChar));
 
@@ -1111,7 +1111,7 @@ namespace RDFSharp.Model
                 nspace               = RDFNamespaceRegister.GetByPrefix(prefix.ToString())?.ToString();
             }
 
-            // c == ':', read optional local name
+            // bufChar == ':', read optional local name
             StringBuilder localName  = new StringBuilder();
             bufChar                  = ReadCodePoint(turtleData, turtleContext);
 		    if (IsNameStartChar(bufChar)) {
@@ -1139,10 +1139,9 @@ namespace RDFSharp.Model
                 UnreadCodePoint(turtleData, turtleContext, bufChar);
 
 			    if (previousChar    == '.') {
-                    // '.' is a legal name char, but can not appear at the end, so is
-                    // not actually part of the name
+                    // '.' is a legal name char, but can not appear at the end, so is not actually part of the name
                     UnreadCodePoint(turtleData, turtleContext, previousChar);
-                    localName.Remove(localName.Length - 1, 1); //localName.deleteCharAt(localName.Length - 1);
+                    localName.Remove(localName.Length - 1, 1);
                 }
 		    }
 		    else {
@@ -1223,16 +1222,14 @@ namespace RDFSharp.Model
                 // Read datatype
                 var datatype        = ParseValue(turtleData, turtleContext, result);
                 if (datatype       is Uri) {
-                    return new RDFTypedLiteral(label, RDFModelUtilities.GetDatatypeFromString(datatype.ToString())); 
-                    //return createLiteral(label, null, (IRI)datatype, getLineNumber(), -1);
+                    return new RDFTypedLiteral(label, RDFModelUtilities.GetDatatypeFromString(datatype.ToString()));
                 }
 			    else {
                     throw new RDFModelException("Illegal datatype value: " + datatype + GetTurtleContextCoordinates(turtleContext));
                 }
             }
             else {
-                return new RDFPlainLiteral(label); 
-                //return createLiteral(label, null, null, getLineNumber(), -1);
+                return new RDFPlainLiteral(label);
             }
         }
 
@@ -1271,8 +1268,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Parses a "normal string". This method requires that the opening character
-        /// has already been parsed.
+        /// Parses a "normal string". This method requires that the opening character has already been parsed.
         /// </summary>
         internal static String ParseString(String turtleData, 
                                            Dictionary<String, Object> turtleContext, 
@@ -1304,8 +1300,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Parses a """long string""". This method requires that the first three 
-        /// characters have already been parsed.
+        /// Parses a """long string""". This method requires that the first three characters have already been parsed.
         /// </summary>
         internal static String ParseLongString(String turtleData, 
                                                Dictionary<String, Object> turtleContext, 
@@ -1343,8 +1338,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Decodes an encoded Turtle string. Any \-escape sequences are substituted
-        /// with their decoded value.
+        /// Decodes an encoded Turtle string. Any \-escape sequences are substituted with their decoded value.
         /// </summary>
         internal static String DecodeString(String turtleData, 
                                             Dictionary<String, Object> turtleContext, 
