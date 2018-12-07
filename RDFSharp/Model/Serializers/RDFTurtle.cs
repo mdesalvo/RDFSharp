@@ -332,11 +332,11 @@ namespace RDFSharp.Model
                                            Dictionary<String, Object> turtleContext) {
             if ((Int32)turtleContext["POSITION"]  < turtleData.Length) {
                 Int32 highSurrogate               = turtleData.ElementAt((Int32)turtleContext["POSITION"]);
-                turtleContext["POSITION"]         = (Int32)turtleContext["POSITION"] + 1;
+                UpdateTurtleContextPosition(turtleContext, 1);
                 if (Char.IsHighSurrogate((Char)highSurrogate)) {
                     if ((Int32)turtleContext["POSITION"] < turtleData.Length) {
                         Int32 lowSurrogate        = turtleData.ElementAt((Int32)turtleContext["POSITION"]);
-                        turtleContext["POSITION"] = (Int32)turtleContext["POSITION"] + 1;
+                        UpdateTurtleContextPosition(turtleContext, 1);
                         if (Char.IsLowSurrogate((Char)lowSurrogate)) {
                             highSurrogate         = Char.ConvertToUtf32((Char)highSurrogate, (Char)lowSurrogate);
                         }
@@ -358,14 +358,12 @@ namespace RDFSharp.Model
             if (codePoint                    != -1) {
                 if (Char.IsSurrogate((Char)codePoint)) {
                     String surrogatePair      = Char.ConvertFromUtf32(codePoint);
-                    turtleContext["POSITION"] = ((Int32)turtleContext["POSITION"]) - surrogatePair.Length;
+                    UpdateTurtleContextPosition(turtleContext, -surrogatePair.Length);
                 }
                 else {
-                    turtleContext["POSITION"] = ((Int32)turtleContext["POSITION"]) - 1;
+                    UpdateTurtleContextPosition(turtleContext, -1);
                 }
-
-                if ((Int32)turtleContext["POSITION"] < 0)
-                    turtleContext["POSITION"] = 0;
+                SafetyCheckTurtleContextPosition(turtleContext);
             }
         }
 
@@ -379,6 +377,31 @@ namespace RDFSharp.Model
                  foreach (var cp in codePoints) { 
                     UnreadCodePoint(turtleData, turtleContext, cp);
                  }
+            }
+        }
+        #endregion
+
+        #region Parse.TurtleContext
+        /// <summary>
+        /// Gets the actual coordinates within Turtle context
+        /// </summary>
+        private static String GetTurtleContextCoordinates(Dictionary<String, Object> turtleContext) {
+            return "[POSITION:" + turtleContext["POSITION"] + "]";
+        }
+
+        /// <summary>
+        /// Updates the position of the cursor within Turtle context
+        /// </summary>
+        private static void UpdateTurtleContextPosition(Dictionary<String, Object> turtleContext, Int32 move) {
+            turtleContext["POSITION"] = (Int32)turtleContext["POSITION"] + move;
+        }
+
+        /// <summary>
+        /// Safety checks the position of the cursor within Turtle context
+        /// </summary>
+        private static void SafetyCheckTurtleContextPosition(Dictionary<String, Object> turtleContext) {
+            if ((Int32)turtleContext["POSITION"] < 0) { 
+                turtleContext["POSITION"] = 0;
             }
         }
         #endregion
@@ -1524,13 +1547,6 @@ namespace RDFSharp.Model
 
             }
 	    }
-
-        /// <summary>
-        /// Gets the actual coordinates inside the Turtle context
-        /// </summary>
-        private static String GetTurtleContextCoordinates(Dictionary<String, Object> turtleContext) {
-            return " [POSITION:" + turtleContext["POSITION"] + "]";
-        }
         #endregion
 
         #region Parse.Check
