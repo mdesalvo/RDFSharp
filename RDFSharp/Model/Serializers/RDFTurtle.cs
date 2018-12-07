@@ -894,6 +894,9 @@ namespace RDFSharp.Model
             //Relative: append to graph context
             else if (Uri.IsWellFormedUriString(uriString, UriKind.Relative))
                 return new Uri(result.ToString() + uriString);
+            //PureFragment: append to graph context
+            else if (uriString.Equals("#"))
+                return new Uri(result.ToString().TrimEnd(new Char[] { '#' }) + uriString);
             //Error: not well-formed, so throw exception
             else
                 throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
