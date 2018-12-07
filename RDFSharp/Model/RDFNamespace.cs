@@ -57,7 +57,7 @@ namespace RDFSharp.Model
             if (prefix != null && prefix.Trim() != String.Empty) {
                 prefix  = prefix.Trim();
 
-                if (Regex.IsMatch(prefix, @"^[a-zA-Z0-9_]+$")) {
+                if (Regex.IsMatch(prefix, @"^[a-zA-Z0-9_\-]+$")) {
                     if (prefix.ToUpperInvariant() == "BNODE" || prefix.ToUpperInvariant() == "XMLNS") {
                         throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
                     }
