@@ -355,9 +355,9 @@ namespace RDFSharp.Model
         private static void UnreadCodePoint(String turtleData,
                                             Dictionary<String, Object> turtleContext,
                                             Int32 codePoint) {
-            if (codePoint                    != -1) {
-                if (Char.IsSurrogate((Char)codePoint)) {
-                    String surrogatePair      = Char.ConvertFromUtf32(codePoint);
+            if (codePoint               != -1) {
+                if (IsSupplementaryCodePoint(codePoint)) {
+                    String surrogatePair = Char.ConvertFromUtf32(codePoint);
                     UpdateTurtleContextPosition(turtleContext, -surrogatePair.Length);
                 }
                 else {
@@ -1563,6 +1563,14 @@ namespace RDFSharp.Model
         /// </summary>
         private static Boolean IsNumber(Int32 codePoint) {
             return Char.IsNumber((char)codePoint);
+        }
+
+        /// <summary>
+        /// Determines whether the given scalar value is in the supplementary plane and thus
+        /// requires 2 characters to be represented in UTF-16 (as a surrogate pair).
+        /// </summary>
+        private static Boolean IsSupplementaryCodePoint(Int32 codePoint) {
+            return (codePoint & ~((Int32)Char.MaxValue)) != 0;
         }
 
         /// <summary>
