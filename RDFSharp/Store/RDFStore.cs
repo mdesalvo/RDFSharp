@@ -273,12 +273,12 @@ namespace RDFSharp.Store
 
         #region Convert
 
-        #region Exporters
+        #region Export
         /// <summary>
         /// Writes the store into a file in the given RDF format. 
         /// </summary>
         public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath) {
-            if (filepath != null) {
+            if(!String.IsNullOrEmpty(filepath)) {
                 switch  (rdfFormat) {
                     case RDFStoreEnums.RDFFormats.NQuads:
                          RDFNQuads.Serialize(this, filepath);

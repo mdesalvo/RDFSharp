@@ -148,10 +148,12 @@ namespace RDFSharp.Store
         public override RDFStore AddQuadruple(RDFQuadruple quadruple) {
             if (quadruple != null) {
                 if (!this.Quadruples.ContainsKey(quadruple.QuadrupleID)) {
+                     //Add quadruple
                      this.Quadruples.Add(quadruple.QuadrupleID, quadruple);
-                     RDFStoreEvents.RaiseOnQuadrupleAdded(String.Format("Quadruple '{0}' has been added to the Store '{1}'.", quadruple, this));
-                     //Index update
+                     //Add index
                      this.StoreIndex.AddIndex(quadruple);
+                     //Raise event
+                     RDFStoreEvents.RaiseOnQuadrupleAdded(String.Format("Quadruple '{0}' has been added to the Store '{1}'.", quadruple, this));
                 }
             }
             return this;
@@ -164,10 +166,12 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore RemoveQuadruple(RDFQuadruple quadruple) {
             if (this.ContainsQuadruple(quadruple)) {
+                //Remove quadruple
                 this.Quadruples.Remove(quadruple.QuadrupleID);
-                RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
-                //Index update
+                //Remove index
                 this.StoreIndex.RemoveIndex(quadruple);
+                //Raise event
+                RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
             }
             return this;
         }
@@ -176,12 +180,14 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given context
         /// </summary>
         public override RDFStore RemoveQuadruplesByContext(RDFContext contextResource) {
-            if (contextResource        != null) {
-                foreach (var quadruple in this.SelectQuadruplesByContext(contextResource)) {
-                    this.Quadruples.Remove(quadruple.QuadrupleID);
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
-                    //Index update
-                    this.StoreIndex.RemoveIndex(quadruple);
+            if (contextResource   != null) {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)) {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -191,12 +197,14 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given subject
         /// </summary>
         public override RDFStore RemoveQuadruplesBySubject(RDFResource subjectResource) {
-            if (subjectResource        != null) {
-                foreach (var quadruple in this.SelectQuadruplesBySubject(subjectResource)) {
-                    this.Quadruples.Remove(quadruple.QuadrupleID);
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
-                    //Index update
-                    this.StoreIndex.RemoveIndex(quadruple);
+            if (subjectResource   != null) {
+                foreach (var quad in this.SelectQuadruplesBySubject(subjectResource)) {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -206,12 +214,14 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given (non-blank) predicate
         /// </summary>
         public override RDFStore RemoveQuadruplesByPredicate(RDFResource predicateResource) {
-            if (predicateResource      != null && !predicateResource.IsBlank) {
-                foreach (var quadruple in this.SelectQuadruplesByPredicate(predicateResource)) {
-                    this.Quadruples.Remove(quadruple.QuadrupleID);
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
-                    //Index update
-                    this.StoreIndex.RemoveIndex(quadruple);
+            if (predicateResource != null && !predicateResource.IsBlank) {
+                foreach (var quad in this.SelectQuadruplesByPredicate(predicateResource)) {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -221,12 +231,14 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given resource as object
         /// </summary>
         public override RDFStore RemoveQuadruplesByObject(RDFResource objectResource) {
-            if (objectResource         != null) {
-                foreach (var quadruple in this.SelectQuadruplesByObject(objectResource)) {
-                    this.Quadruples.Remove(quadruple.QuadrupleID);
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
-                    //Index update
-                    this.StoreIndex.RemoveIndex(quadruple);
+            if (objectResource    != null) {
+                foreach (var quad in this.SelectQuadruplesByObject(objectResource)) {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -236,12 +248,14 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given literal as object
         /// </summary>
         public override RDFStore RemoveQuadruplesByLiteral(RDFLiteral literalObject) {
-            if (literalObject          != null) {
-                foreach (var quadruple in this.SelectQuadruplesByLiteral(literalObject)) {
-                    this.Quadruples.Remove(quadruple.QuadrupleID);
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
-                    //Index update
-                    this.StoreIndex.RemoveIndex(quadruple);
+            if (literalObject     != null) {
+                foreach (var quad in this.SelectQuadruplesByLiteral(literalObject)) {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -251,10 +265,12 @@ namespace RDFSharp.Store
         /// Clears the quadruples of the store
         /// </summary>
         public override void ClearQuadruples() {
+            //Clear quadruples
             this.Quadruples.Clear();
-            RDFStoreEvents.RaiseOnStoreCleared(String.Format("Store '{0}' has been cleared.", this));
-            //Index update
+            //Clear index
             this.StoreIndex.ClearIndex();
+            //Raise event
+            RDFStoreEvents.RaiseOnStoreCleared(String.Format("Store '{0}' has been cleared.", this));
         }
         #endregion
 
@@ -350,12 +366,12 @@ namespace RDFSharp.Store
 
         #region Convert
 
-        #region Importers
+        #region Import
         /// <summary>
         /// Creates a memory store from a file of the given RDF format. 
         /// </summary>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath) {
-            if (filepath != null) {
+            if(!String.IsNullOrEmpty(filepath)) {
                 if (File.Exists(filepath)) {
                     switch  (rdfFormat) {
                         case RDFStoreEnums.RDFFormats.TriX:

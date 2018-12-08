@@ -146,21 +146,6 @@ namespace RDFSharp.Model
             }
             return this;
         }
-        /// <summary>
-        /// Adds the given triple to the graph, avoiding duplicate insertions
-        /// (this is internal version which does not raise events)
-        /// </summary>
-        internal RDFGraph AddTripleInternal(RDFTriple triple) {
-            if (triple != null) {
-                if (!this.Triples.ContainsKey(triple.TripleID)) {
-                     //Add triple
-                     this.Triples.Add(triple.TripleID, triple);
-                     //Add index
-                     this.GraphIndex.AddIndex(triple);
-                }
-            }
-            return this;
-        }
 
         /// <summary>
         /// Adds the given container to the graph
