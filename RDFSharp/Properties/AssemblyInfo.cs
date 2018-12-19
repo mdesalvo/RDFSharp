@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCompany("Marco De Salvo")]
 [assembly: AssemblyProduct("RDFSharp")]
 [assembly: AssemblyCopyright("Marco De Salvo")]
-[assembly: AssemblyVersion("1.5.0")]
+[assembly: AssemblyVersion("1.0.4")]
 [assembly: ComVisible(false)]
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 //Internals
