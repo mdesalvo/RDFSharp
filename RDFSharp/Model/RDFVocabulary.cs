@@ -801,6 +801,9 @@ namespace RDFSharp.Model
             #region Extended Properties
 
             #region DCAM
+            /// <summary>
+            /// DCAM extensions
+            /// </summary>
             public static class DCAM {
 
                 #region Properties
@@ -829,6 +832,9 @@ namespace RDFSharp.Model
             #endregion
 
             #region DCTERMS
+            /// <summary>
+            /// DCTERMS extensions
+            /// </summary>
             public static class DCTERMS {
 
                 #region Properties
@@ -1342,6 +1348,9 @@ namespace RDFSharp.Model
             #endregion
 
             #region DCTYPE
+            /// <summary>
+            /// DCTYPE extensions
+            /// </summary>
             public static class DCTYPE {
 
                 #region Properties
@@ -2040,6 +2049,9 @@ namespace RDFSharp.Model
             #endregion
 
             #region Extended Properties
+            /// <summary>
+            /// SKOS-XL extensions
+            /// </summary>
             public static class SKOSXL {
 
                 #region Properties

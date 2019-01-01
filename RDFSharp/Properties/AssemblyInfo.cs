@@ -14,20 +14,11 @@
    limitations under the License.
 */
 
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-[assembly: AssemblyTitle("RDFSharp")]
-[assembly: AssemblyDescription("Start playing with RDF!")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Marco De Salvo")]
-[assembly: AssemblyProduct("RDFSharp")]
-[assembly: AssemblyCopyright("Marco De Salvo")]
-[assembly: AssemblyVersion("1.0.4")]
 [assembly: ComVisible(false)]
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 //Internals
-[assembly: InternalsVisibleTo("RDFSharp.Test")]
 [assembly: InternalsVisibleTo("RDFSharp.Semantics")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFFirebirdStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFSQLiteStore")]
