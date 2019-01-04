@@ -24,3 +24,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("RDFSharp.RDFSQLiteStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFMySQLStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFPostgreSQLStore")]
+[assembly: InternalsVisibleTo("RDFSharp.RDFOracleStore")]
