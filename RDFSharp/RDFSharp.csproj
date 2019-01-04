@@ -4,11 +4,11 @@
     <AssemblyTitle>RDFSharp</AssemblyTitle>
     <AssemblyName>RDFSharp</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>2.0.0.0</Version>
+    <Version>2.0.1.0</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
-	<Description>Start playing with RDF!</Description>
-	<TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Start playing with RDF!</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
   </PropertyGroup>
@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
-	<DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>bin\Release\netstandard2.0\RDFSharp.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
