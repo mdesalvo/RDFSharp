@@ -26,7 +26,7 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFTurtle is responsible for managing serialization to Turtle data format.
+    /// RDFTurtle is responsible for managing serialization to and from Turtle data format.
     /// </summary>
     internal static class RDFTurtle {
 
@@ -654,23 +654,25 @@ namespace RDFSharp.Model
         private static void ParseObject(String turtleData, 
                                         Dictionary<String, Object> turtleContext, 
                                         RDFGraph result) {
-            Int32 bufChar                = PeekCodePoint(turtleData, turtleContext);
-            if (bufChar                 == '(') {
-                turtleContext["OBJECT"]  = ParseCollection(turtleData, turtleContext, result);
-            }
-            else if (bufChar            == '[') {
-                turtleContext["OBJECT"]  = ParseImplicitBlank(turtleData, turtleContext, result);
-            }
-            else {
-                turtleContext["OBJECT"]  = ParseValue(turtleData, turtleContext, result);
+            Int32 bufChar                   = PeekCodePoint(turtleData, turtleContext);
+            switch (bufChar) {
+                case '(':
+                    turtleContext["OBJECT"] = ParseCollection(turtleData, turtleContext, result);
+                    break;
+                case '[':
+                    turtleContext["OBJECT"] = ParseImplicitBlank(turtleData, turtleContext, result);
+                    break;
+                default:
+                    turtleContext["OBJECT"] = ParseValue(turtleData, turtleContext, result);
+                    break;
             }
 
             //If object in the context is a Uri, make it a resource for compatibility
-            if (turtleContext["OBJECT"] is Uri)
-                turtleContext["OBJECT"]  = new RDFResource(turtleContext["OBJECT"].ToString());
+            if (turtleContext["OBJECT"]    is Uri)
+                turtleContext["OBJECT"]     = new RDFResource(turtleContext["OBJECT"].ToString());
 
             //report statement
-            if (turtleContext["OBJECT"] is RDFLiteral)
+            if (turtleContext["OBJECT"]    is RDFLiteral)
                 result.AddTriple(new RDFTriple((RDFResource)turtleContext["SUBJECT"],
                                                (RDFResource)turtleContext["PREDICATE"],
                                                (RDFLiteral)turtleContext["OBJECT"]));
@@ -1307,6 +1309,11 @@ namespace RDFSharp.Model
                 }
                 else if (bufChar == -1) {
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+                }
+
+                //Unquoted literals cannot contain carriage return
+                if (bufChar      == '\r' || bufChar == '\n') {
+                    throw new RDFModelException("Illegal carriage return or new line in literal");
                 }
 
                 sb.Append(Char.ConvertFromUtf32(bufChar));
