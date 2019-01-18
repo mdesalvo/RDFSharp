@@ -27,16 +27,6 @@ RDFSharp has a modular API made up of three layers:
     </ul>
 </ul>
 <hr>
-There are many ways that you can contribute to the RDFSharp project: 
-
-<ul>
-    <li>Submit a bug</li> 
-    <li>Submit a code fix for a bug</li>  
-    <li>Submit a feature request</li>
-    <li>Submit code for a feature request</li>
-    <li>Tell others about the RDFSharp project :)</li>
-</ul>
-<hr>
 Did you know that...
 <ul>
     <li>RDFSharp is also available on <b><a href="http://www.nuget.org/packages?q=rdfsharp">NuGet</a></b>!</li> 
