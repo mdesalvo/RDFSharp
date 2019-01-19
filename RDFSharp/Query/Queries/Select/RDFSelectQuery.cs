@@ -228,6 +228,8 @@ namespace RDFSharp.Query {
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
             if (sparqlEndpoint            != null) {
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SELECT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+				
+				//Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient()) {
 
                     //Insert reserved "query" parameter
@@ -247,9 +249,11 @@ namespace RDFSharp.Query {
                         using (var sStream = new MemoryStream(sparqlResponse)) {
                             selResult      = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
                         }
+                        selResult.SelectResults.TableName = this.ToString();
                     }
 
                 }
+
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECTQuery on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
             return selResult;

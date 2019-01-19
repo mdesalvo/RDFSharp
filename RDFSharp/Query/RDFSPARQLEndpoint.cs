@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         public Uri BaseAddress { get; internal set; }
 
         /// <summary>
-        /// Collection of query params to be sent to the SPARQL endpoint (does not include reserved "query")
+        /// Collection of query params sent to the SPARQL endpoint
         /// </summary>
         internal NameValueCollection QueryParams { get; set; }
         #endregion
@@ -65,7 +65,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds a parameter to the query params
+        /// Adds a parameter to the query params ("query" is reserved)
         /// </summary>
         public RDFSPARQLEndpoint AddQueryParam(String paramName, String paramValue) {
             if (!String.IsNullOrEmpty(paramName) && !paramName.Equals("query", StringComparison.OrdinalIgnoreCase)) {

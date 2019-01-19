@@ -152,6 +152,8 @@ namespace RDFSharp.Query
             RDFAskQueryResult askResult    = new RDFAskQueryResult();
             if (sparqlEndpoint            != null) {
                 RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating ASK query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+
+                //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient()) {
 
                     //Insert reserved "query" parameter
@@ -174,6 +176,7 @@ namespace RDFSharp.Query
                     }
 
                 }
+
                 RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated ASKQuery on SPARQL endpoint '{0}': Result is '{1}'.", sparqlEndpoint, askResult.AskResult));
             }
             return askResult;
