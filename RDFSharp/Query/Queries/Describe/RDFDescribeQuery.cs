@@ -17,8 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Web;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
@@ -223,6 +226,41 @@ namespace RDFSharp.Query {
                 return this.ApplyToDataSource(federation);
             }
             throw new RDFQueryException("Cannot execute DESCRIBE query because given \"federation\" parameter is null.");
+        }
+
+        /// <summary>
+        /// Applies the query to the given SPARQL endpoint
+        /// </summary>
+        public RDFDescribeQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint) {
+            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(this.ToString());
+            if (sparqlEndpoint                   != null) {
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                using (WebClient webClient        = new WebClient()) {
+
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+
+                    //Send querystring to SPARQL endpoint
+                    var sparqlResponse            = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse           != null) {
+                        using (var sStream        = new MemoryStream(sparqlResponse)) {
+                            describeResult        = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                        }
+                    }
+
+                }
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
+            }
+            return describeResult;
         }
 
         /// <summary>

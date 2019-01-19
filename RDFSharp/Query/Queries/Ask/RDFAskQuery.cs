@@ -17,8 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Web;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
@@ -141,7 +144,41 @@ namespace RDFSharp.Query
             }
             throw new RDFQueryException("Cannot execute ASK query because given \"federation\" parameter is null.");
         }
-        
+
+        /// <summary>
+        /// Applies the query to the given SPARQL endpoint
+        /// </summary>
+        public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint) {
+            RDFAskQueryResult askResult    = new RDFAskQueryResult();
+            if (sparqlEndpoint            != null) {
+                RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating ASK query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                using (WebClient webClient = new WebClient()) {
+
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
+
+                    //Send querystring to SPARQL endpoint
+                    var sparqlResponse     = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse    != null) {
+                        using (var sStream = new MemoryStream(sparqlResponse)) {
+                            askResult      = RDFAskQueryResult.FromSparqlXmlResult(sStream);
+                        }
+                    }
+
+                }
+                RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated ASKQuery on SPARQL endpoint '{0}': Result is '{1}'.", sparqlEndpoint, askResult.AskResult));
+            }
+            return askResult;
+        }
+
         /// <summary>
         /// Applies the query to the given datasource
         /// </summary>

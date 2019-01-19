@@ -17,8 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Web;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
@@ -219,6 +222,40 @@ namespace RDFSharp.Query {
         }
 
         /// <summary>
+        /// Applies the query to the given SPARQL endpoint
+        /// </summary>
+        public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint) {
+            RDFSelectQueryResult selResult = new RDFSelectQueryResult();
+            if (sparqlEndpoint            != null) {
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SELECT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                using (WebClient webClient = new WebClient()) {
+
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
+
+                    //Send querystring to SPARQL endpoint
+                    var sparqlResponse     = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse    != null) {
+                        using (var sStream = new MemoryStream(sparqlResponse)) {
+                            selResult      = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
+                        }
+                    }
+
+                }
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECTQuery on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
+            }
+            return selResult;
+        }
+
+        /// <summary>
         /// Applies the query to the given datasource
         /// </summary>
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource datasource) {
@@ -230,26 +267,26 @@ namespace RDFSharp.Query {
             if (this.PatternGroups.Any())  {
 
                 //Iterate the pattern groups of the query
-                var fedPatternResultTables = new Dictionary<RDFPatternGroup, List<DataTable>>();
-                foreach (var patternGroup in this.PatternGroups) {
+                var fedPatternResultTables  = new Dictionary<RDFPatternGroup, List<DataTable>>();
+                foreach (var patternGroup  in this.PatternGroups) {
                     RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
 
                         #region TrueFederations
-                        foreach(var store in (RDFFederation)datasource) {
+                        foreach (var store in (RDFFederation)datasource) {
 
                             //Step FED.1: Evaluate the patterns of the current pattern group on the current store
                             RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
 
                             //Step FED.2: Federate the patterns of the current pattern group on the current store
-                            if(!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                            if (!fedPatternResultTables.ContainsKey(patternGroup)) {
+                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
                             }
                             else {
-                                fedPatternResultTables[patternGroup].ForEach(fprt =>
-                                   fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                 fedPatternResultTables[patternGroup].ForEach(fprt =>
+                                    fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                             }
 
                         }
@@ -270,10 +307,10 @@ namespace RDFSharp.Query {
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable    = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                var queryResultTable        = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                 //Step 5: Apply the modifiers of the query to the result table
-                selResult.SelectResults = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
+                selResult.SelectResults     = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
 
             }
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECTQuery on DataSource '{0}': Found '{1}' results.", datasource, selResult.SelectResultsCount));
