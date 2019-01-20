@@ -23,7 +23,7 @@ RDFSharp has a modular API made up of three layers:
 <ul>
     <li><b>RDFSharp.Query</b></li> 
     <ul>
-        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and SPARQL endpoints to fluently query RDF data</li>
+        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and SPARQL endpoints</li>
     </ul>
 </ul>
 <hr>
