@@ -65,12 +65,18 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds a parameter to the query params ("query" is reserved)
+        /// Adds a "default-graph-uri" parameter to be sent to the SPARQL endpoint
         /// </summary>
-        public RDFSPARQLEndpoint AddQueryParam(String paramName, String paramValue) {
-            if (!String.IsNullOrEmpty(paramName) && !paramName.Equals("query", StringComparison.OrdinalIgnoreCase)) {
-                 this.QueryParams.Set(paramName, paramValue);
-            }
+        public RDFSPARQLEndpoint AddDefaultGraphUri(String defaultGraphUri) {
+            this.QueryParams.Add("default-graph-uri", defaultGraphUri ?? String.Empty);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a "named-graph-uri" parameter to be sent to the SPARQL endpoint
+        /// </summary>
+        public RDFSPARQLEndpoint AddNamedGraphUri(String namedGraphUri) {
+            this.QueryParams.Add("named-graph-uri", namedGraphUri ?? String.Empty);
             return this;
         }
         #endregion
