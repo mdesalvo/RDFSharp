@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using RDFSharp.Model;
 using RDFSharp.Store;
@@ -251,6 +252,45 @@ namespace RDFSharp.Query {
 
                     //Send querystring to SPARQL endpoint
                     var sparqlResponse            = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse           != null) {
+                        using (var sStream        = new MemoryStream(sparqlResponse)) {
+                            describeResult        = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                        }
+                        describeResult.DescribeResults.TableName = this.ToString();
+                    }
+
+                }
+
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
+            }
+            return describeResult;
+        }
+
+        /// <summary>
+        /// Applies the query to the given SPARQL endpoint (asynchronously with task)
+        /// </summary>
+        public async Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointTaskAsync(RDFSPARQLEndpoint sparqlEndpoint) {
+            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(this.ToString());
+            if (sparqlEndpoint                   != null) {
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+
+                //Establish a connection to the given SPARQL endpoint
+                using (WebClient webClient        = new WebClient()) {
+
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+
+                    //Send querystring to SPARQL endpoint
+                    var sparqlResponse            = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
 
                     //Parse response from SPARQL endpoint
                     if (sparqlResponse           != null) {
