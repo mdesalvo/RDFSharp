@@ -55,7 +55,7 @@ namespace RDFSharp.Query
 
         #region Internals
         /// <summary>
-        /// Flag indicating the pattern as Optional
+        /// Flag indicating the pattern as optional
         /// </summary>
         internal Boolean IsOptional { get; set; }
 
@@ -63,6 +63,11 @@ namespace RDFSharp.Query
         /// Flag indicating the pattern to be joined as union
         /// </summary>
         internal Boolean JoinAsUnion { get; set; }
+
+        /// <summary>
+        /// Flag indicating the pattern as part of a property path
+        /// </summary>
+        internal Boolean IsPropertyPath { get; set; }
 
         /// <summary>
         /// List of variables carried by the pattern
@@ -77,9 +82,10 @@ namespace RDFSharp.Query
         /// Default ctor for SPO pattern
         /// </summary>
         public RDFPattern(RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit) {
-            this.Variables   = new List<RDFVariable>();
-            this.IsOptional  = false;
-            this.JoinAsUnion = false;
+            this.Variables       = new List<RDFVariable>();
+            this.IsOptional      = false;
+            this.JoinAsUnion     = false;
+            this.IsPropertyPath  = false;
 
             //Subject
             if (subject != null) {
@@ -174,6 +180,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override String ToString() {
+            if (this.IsPropertyPath)
+                return String.Empty;
+
             String subj       = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
             String pred       = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
             String obj        = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
@@ -204,7 +213,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Sets the pattern as Optional
+        /// Sets the pattern as optional
         /// </summary>
         public RDFPattern Optional() {
             this.IsOptional  = true;
@@ -213,11 +222,20 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern to be joined as Union with the next pattern
+        /// Sets the pattern to be joined as union with the next pattern
         /// </summary>
         public RDFPattern UnionWithNext() {
             this.JoinAsUnion = true;
             this.PatternID   = RDFModelUtilities.CreateHash(this.ToString());
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the pattern as part of a property path
+        /// </summary>
+        internal RDFPattern PropertyPath() {
+            this.IsPropertyPath = true;
+            this.PatternID      = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
         #endregion

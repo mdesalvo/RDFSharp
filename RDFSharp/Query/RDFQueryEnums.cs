@@ -71,6 +71,20 @@ namespace RDFSharp.Query
             GreaterOrEqualThan = 6
         };
 
+        /// <summary>
+        /// RDFPropertyPathFlavors represents an enumeration for possible connection types within a property path.
+        /// </summary>
+        public enum RDFPropertyPathFlavors {
+            /// <summary>
+            /// Relations within a property path are connected with an OR semantic
+            /// </summary>
+            Alternative = '|',
+            /// <summary>
+            /// Relations within a property path are connected with an AND semantic
+            /// </summary>
+            Sequence = '/'
+        }
+
     }
 
 }
