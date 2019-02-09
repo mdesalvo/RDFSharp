@@ -109,7 +109,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given alternative properties to the path 
+        /// Adds the given alternatives to the path 
         /// (if only one is given, it is considered sequence)
         /// </summary>
         public RDFPropertyPath AddAlternatives(List<RDFResource> props) {
@@ -128,7 +128,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds the given sequence property to the path
+        /// Adds the given sequence to the path
         /// </summary>
         public RDFPropertyPath AddSequence(RDFResource prop) {
             if (prop != null) {
