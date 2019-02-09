@@ -323,6 +323,15 @@ namespace RDFSharp.Query {
                 foreach (var patternGroup         in this.PatternGroups) {
                     RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
+                    //Step 0: Activate property paths of the current pattern group
+                    //        by injecting their pattern-equivalent representation
+                    foreach (var propertyPath     in patternGroup.PropertyPaths) {
+                        var patternList            = propertyPath.GetPatternList();
+                        foreach (var pattern      in patternList) {
+                            patternGroup.AddPattern(pattern);
+                        }
+                    }
+
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
 

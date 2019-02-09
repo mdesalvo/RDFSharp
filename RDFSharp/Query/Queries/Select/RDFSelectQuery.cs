@@ -310,9 +310,18 @@ namespace RDFSharp.Query {
             if (this.PatternGroups.Any())  {
 
                 //Iterate the pattern groups of the query
-                var fedPatternResultTables  = new Dictionary<RDFPatternGroup, List<DataTable>>();
-                foreach (var patternGroup  in this.PatternGroups) {
+                var fedPatternResultTables     = new Dictionary<RDFPatternGroup, List<DataTable>>();
+                foreach (var patternGroup     in this.PatternGroups) {
                     RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
+
+                    //Step 0: Activate property paths of the current pattern group
+                    //        by injecting their pattern-equivalent representation
+                    foreach (var propertyPath in patternGroup.PropertyPaths) {
+                        var patternList        = propertyPath.GetPatternList();
+                        foreach (var pattern  in patternList) {
+                            patternGroup.AddPattern(pattern);
+                        }
+                    }
 
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
