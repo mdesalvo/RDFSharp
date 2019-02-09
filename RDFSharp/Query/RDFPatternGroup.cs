@@ -138,14 +138,14 @@ namespace RDFSharp.Query
                 //Current pattern is set as UNION with the next one
                 if (p.JoinAsUnion) {
 
-                    //Current pattern IS NOT the last of the query (so UNION keyword must be appended at last)
+                    //Current pattern IS NOT the last of the pattern group (UNION keyword must be appended at last)
                     if (!p.Equals(this.Patterns.Last())) {
                          //Begin a new Union block
                          printingUnion  = true;
                          patternGroup.Append(spaces + "    { " + p + " }\n" + spaces + "    UNION\n");
                     }
 
-                    //Current pattern IS the last of the query (so UNION keyword must not be appended at last)
+                    //Current pattern IS the last of the pattern group (UNION keyword must not be appended at last)
                     else {
                         //End the Union block
                         if (printingUnion) {
