@@ -30,16 +30,16 @@ namespace RDFSharp.Query
 
         #region Properties
         /// <summary>
-        /// Unique representation of the pattern group
-        /// </summary>
-        internal Int64 PatternGroupID { get; set; }
-
-        /// <summary>
         /// Name of the pattern group, which must be unique in a query
         /// </summary>
         public String PatternGroupName { get; internal set; }
 
         #region Internals
+        /// <summary>
+        /// Unique representation of the pattern group
+        /// </summary>
+        internal Int64 PatternGroupID { get; set; }
+
         /// <summary>
         /// Flag indicating the pattern group to be joined as Optional
         /// </summary>
