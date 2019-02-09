@@ -313,6 +313,7 @@ namespace RDFSharp.Query {
         internal RDFDescribeQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
+            this.PatternGroups.ForEach(pg => pg.Patterns.RemoveAll(p => p.IsPropertyPath));
             RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on DataSource '{0}'...", datasource));
 
             RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());

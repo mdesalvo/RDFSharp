@@ -304,6 +304,7 @@ namespace RDFSharp.Query {
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
+            this.PatternGroups.ForEach(pg => pg.Patterns.RemoveAll(p => p.IsPropertyPath));
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SELECT query on DataSource '{0}'...", datasource));
 
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();

@@ -333,6 +333,7 @@ namespace RDFSharp.Query {
         internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
+            this.PatternGroups.ForEach(pg => pg.Patterns.RemoveAll(p => p.IsPropertyPath));
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());

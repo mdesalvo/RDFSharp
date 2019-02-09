@@ -226,6 +226,7 @@ namespace RDFSharp.Query
         internal RDFAskQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
+            this.PatternGroups.ForEach(pg => pg.Patterns.RemoveAll(p => p.IsPropertyPath));
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating ASK query on DataSource '{0}'...", datasource));
 
             RDFAskQueryResult askResult    = new RDFAskQueryResult();
