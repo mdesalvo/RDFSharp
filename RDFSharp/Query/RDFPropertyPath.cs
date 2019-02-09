@@ -141,7 +141,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the path
         /// </summary>
-        public String GetPathString() {
+        internal String GetPathString() {
             var result = new StringBuilder();
 
             //Single-property path
@@ -198,7 +198,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the list of patterns corresponding to the path
         /// </summary>
-        public List<RDFPattern> ToPatternList() {
+        internal List<RDFPattern> GetPatternList() {
             var patterns = new List<RDFPattern>();
 
             #region Single Property
