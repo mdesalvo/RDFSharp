@@ -56,6 +56,11 @@ namespace RDFSharp.Query
         internal List<RDFPattern> Patterns { get; set; }
 
         /// <summary>
+        /// List of property paths carried by the pattern group
+        /// </summary>
+        internal List<RDFPropertyPath> PropertyPaths { get; set; }
+
+        /// <summary>
         /// List of filters carried by the pattern group
         /// </summary>
         internal List<RDFFilter> Filters { get; set; }
@@ -78,6 +83,7 @@ namespace RDFSharp.Query
                 this.IsOptional       = false;
                 this.JoinAsUnion      = false;
                 this.Patterns         = new List<RDFPattern>();
+                this.PropertyPaths    = new List<RDFPropertyPath>();
                 this.Filters          = new List<RDFFilter>();
                 this.Variables        = new List<RDFVariable>();
                 this.PatternGroupID   = RDFModelUtilities.CreateHash(this.ToString());
@@ -166,6 +172,9 @@ namespace RDFSharp.Query
                 }
             });
 
+            //PROPERTY PATHS
+            this.PropertyPaths.ForEach(p => patternGroup.Append(spaces + "    " + p + " \n"));
+
             //FILTERS
             this.Filters.ForEach(f     => patternGroup.Append(spaces + "    " + f + " \n"));
 
@@ -229,6 +238,19 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given property path to the pattern group
+        /// </summary>
+        public RDFPatternGroup AddPropertyPath(RDFPropertyPath propertyPath) {
+            if (propertyPath != null) {
+                if (!this.PropertyPaths.Exists(p => p.Equals(propertyPath))) {
+                     this.PropertyPaths.Add(propertyPath);
+                     this.PatternGroupID = RDFModelUtilities.CreateHash(this.ToString());
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Adds the given filter to the pattern group
         /// </summary>
         public RDFPatternGroup AddFilter(RDFFilter filter) {
@@ -242,7 +264,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group as Optional
+        /// Sets the pattern group as optional
         /// </summary>
         public RDFPatternGroup Optional() {
             this.IsOptional     = true;
