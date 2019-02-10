@@ -133,7 +133,9 @@ namespace RDFSharp.Query
 
             //PATTERNS (pretty-printing of Unions)
             Boolean printingUnion      = false;
-            this.Patterns.ForEach(p    => {
+            this.Patterns.Where(p      => !p.IsPropertyPath)
+                         .ToList()
+                         .ForEach(p    => {
 
                 //Current pattern is set as UNION with the next one
                 if (p.JoinAsUnion) {

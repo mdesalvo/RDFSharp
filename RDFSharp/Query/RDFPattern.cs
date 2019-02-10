@@ -180,9 +180,6 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override String ToString() {
-            if (this.IsPropertyPath)
-                return String.Empty;
-
             String subj       = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
             String pred       = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
             String obj        = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
