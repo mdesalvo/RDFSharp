@@ -23,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFFilter represents a filter to be applied on a query results table.
     /// </summary>
-    public abstract class RDFFilter: IEquatable<RDFFilter> {
+    public abstract class RDFFilter: RDFPatternGroupMember, IEquatable<RDFFilter> {
 
         #region Properties
         /// <summary>

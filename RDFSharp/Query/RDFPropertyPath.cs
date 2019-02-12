@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPropertyPath represents a chain of properties connecting two terms in a RDF datasource.
     /// </summary>
-    public class RDFPropertyPath: IEquatable<RDFPropertyPath> {
+    public class RDFPropertyPath: RDFPatternGroupMember, IEquatable<RDFPropertyPath> {
 
         #region Properties
         /// <summary>
@@ -109,8 +109,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given alternatives to the path 
-        /// (if only one is given, it is considered sequence)
+        /// Adds the given alternatives to the path (if only one is given, it is considered sequence)
         /// </summary>
         public RDFPropertyPath AddAlternatives(List<RDFResource> props) {
             if (props != null && props.Any()) {
@@ -203,7 +202,7 @@ namespace RDFSharp.Query
 
             #region Single Property
             if (this.Properties.Count == 1) {
-                patterns.Add(new RDFPattern(this.Start, this.Properties[0].Item1, this.End).PropertyPath());
+                patterns.Add(new RDFPattern(this.Start, this.Properties[0].Item1, this.End));
             }
             #endregion
 
@@ -221,12 +220,12 @@ namespace RDFSharp.Query
                             if (!this.Properties.Any(p => p.Item2 == RDFQueryEnums.RDFPropertyPathFlavors.Sequence && p.Item3 > i)) {
                                  currEnd    = this.End;
                             }
-                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd).UnionWithNext().PropertyPath());
+                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd).UnionWithNext());
                         }
 
                         //Translate to pattern (item is the last alternative)
                         else {
-                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd).PropertyPath());
+                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd));
                             //Adjust start/end
                             if (i           < this.Properties.Count - 1) {
                                 currStart   = currEnd;
@@ -244,7 +243,7 @@ namespace RDFSharp.Query
 
                     #region Sequence
                     else {
-                        patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd).PropertyPath());
+                        patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd));
                         //Adjust start/end
                         if (i               < this.Properties.Count - 1) {
                             currStart       = currEnd;
@@ -263,6 +262,13 @@ namespace RDFSharp.Query
             #endregion
 
             return patterns;
+        }
+        
+        /// <summary>
+        /// Checks if the path is empty (has no properties)
+        /// </summary>
+        internal Boolean IsEmpty() {
+            return this.Properties.Count == 0;
         }
         #endregion
 

@@ -304,7 +304,6 @@ namespace RDFSharp.Query {
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.PatternGroupResultTables.Clear();
             this.PatternResultTables.Clear();
-            this.PatternGroups.ForEach(pg => pg.Patterns.RemoveAll(p => p.IsPropertyPath));
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SELECT query on DataSource '{0}'...", datasource));
 
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
@@ -315,15 +314,6 @@ namespace RDFSharp.Query {
                 foreach (var patternGroup     in this.PatternGroups) {
                     RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
-                    //Step 0: Activate property paths of the current pattern group
-                    //        by injecting their pattern-equivalent representation
-                    foreach (var propertyPath in patternGroup.PropertyPaths) {
-                        var patternList        = propertyPath.GetPatternList();
-                        foreach (var pattern  in patternList) {
-                            patternGroup.AddPattern(pattern);
-                        }
-                    }
-
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
 
@@ -331,7 +321,7 @@ namespace RDFSharp.Query {
                         foreach (var store in (RDFFederation)datasource) {
 
                             //Step FED.1: Evaluate the patterns of the current pattern group on the current store
-                            RDFQueryEngine.EvaluatePatterns(this, patternGroup, store);
+                            RDFQueryEngine.EvaluatePatternsAndPropertyPaths(this, patternGroup, store);
 
                             //Step FED.2: Federate the patterns of the current pattern group on the current store
                             if (!fedPatternResultTables.ContainsKey(patternGroup)) {
@@ -348,7 +338,7 @@ namespace RDFSharp.Query {
 
                     }
                     else {
-                        RDFQueryEngine.EvaluatePatterns(this, patternGroup, datasource);
+                        RDFQueryEngine.EvaluatePatternsAndPropertyPaths(this, patternGroup, datasource);
                     }
 
                     //Step 2: Get the result table of the current pattern group

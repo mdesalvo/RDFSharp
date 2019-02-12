@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPattern represents a search pattern over a collection of RDF data.
     /// </summary>
-    public class RDFPattern: IEquatable<RDFPattern> {
+    public class RDFPattern: RDFPatternGroupMember, IEquatable<RDFPattern> {
 
         #region Properties
         /// <summary>
@@ -65,11 +65,6 @@ namespace RDFSharp.Query
         internal Boolean JoinAsUnion { get; set; }
 
         /// <summary>
-        /// Flag indicating the pattern as part of a property path
-        /// </summary>
-        internal Boolean IsPropertyPath { get; set; }
-
-        /// <summary>
         /// List of variables carried by the pattern
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
@@ -85,7 +80,6 @@ namespace RDFSharp.Query
             this.Variables       = new List<RDFVariable>();
             this.IsOptional      = false;
             this.JoinAsUnion     = false;
-            this.IsPropertyPath  = false;
 
             //Subject
             if (subject != null) {
@@ -224,15 +218,6 @@ namespace RDFSharp.Query
         public RDFPattern UnionWithNext() {
             this.JoinAsUnion = true;
             this.PatternID   = RDFModelUtilities.CreateHash(this.ToString());
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the pattern as part of a property path
-        /// </summary>
-        internal RDFPattern PropertyPath() {
-            this.IsPropertyPath = true;
-            this.PatternID      = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
         #endregion

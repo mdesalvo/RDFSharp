@@ -41,30 +41,63 @@ namespace RDFSharp.Query
         /// <summary>
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
-        internal static void EvaluatePatterns(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
+        internal static void EvaluatePatternsAndPropertyPaths(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
             query.PatternResultTables[patternGroup] = new List<DataTable>();
 
-            //Iterate over the patterns of the pattern group
-            foreach (var pattern in patternGroup.Patterns) {
+            //Iterate over the patterns/property paths of the pattern group
+            foreach (var patternOrPropPath in patternGroup.GroupMembers.Where(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()))) {
 
-                //Apply the pattern to the graph/store
-                DataTable patternResultsTable       = graphOrStore.IsGraph() ? ApplyPattern(pattern, (RDFGraph)graphOrStore) : ApplyPattern(pattern, (RDFStore)graphOrStore);
-                if (query      is RDFAskQuery)
-                    RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
-                else if (query is RDFConstructQuery)
-                    RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
-                else if (query is RDFDescribeQuery)
-                    RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
-                else if (query is RDFSelectQuery)
-                    RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", pattern, graphOrStore, patternResultsTable.Rows.Count));
+                //Apply the pattern/property path to the graph/store
+                DataTable patternOrPropPathResultsTable;
 
-                //Set the name and the optionality metadata of the result datatable
-                patternResultsTable.TableName       = pattern.ToString();
-                patternResultsTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
-                patternResultsTable.ExtendedProperties.Add("JoinAsUnion", pattern.JoinAsUnion);
+                #region Pattern
+                if (patternOrPropPath is RDFPattern) {
+                    patternOrPropPathResultsTable   = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)patternOrPropPath, (RDFGraph)graphOrStore) :
+                                                                               ApplyPattern((RDFPattern)patternOrPropPath, (RDFStore)graphOrStore);
+
+                    #region Events
+                    if (query      is RDFAskQuery)
+                        RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    else if (query is RDFConstructQuery)
+                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    else if (query is RDFDescribeQuery)
+                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    else if (query is RDFSelectQuery)
+                        RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    #endregion
+
+                    //Set the name and the optionality metadata of the result datatable
+                    patternOrPropPathResultsTable.TableName = ((RDFPattern)patternOrPropPath).ToString();
+                    patternOrPropPathResultsTable.ExtendedProperties.Add("IsOptional",  ((RDFPattern)patternOrPropPath).IsOptional);
+                    patternOrPropPathResultsTable.ExtendedProperties.Add("JoinAsUnion", ((RDFPattern)patternOrPropPath).JoinAsUnion);
+                }
+                #endregion
+
+                #region PropertyPath
+                else {
+                    patternOrPropPathResultsTable   = graphOrStore.IsGraph() ? ApplyPropertyPath((RDFPropertyPath)patternOrPropPath, (RDFGraph)graphOrStore) :
+                                                                               ApplyPropertyPath((RDFPropertyPath)patternOrPropPath, (RDFStore)graphOrStore);
+
+                    #region Events
+                    if (query      is RDFAskQuery)
+                        RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    else if (query is RDFConstructQuery)
+                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    else if (query is RDFDescribeQuery)
+                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    else if (query is RDFSelectQuery)
+                        RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)patternOrPropPath, graphOrStore, patternOrPropPathResultsTable.Rows.Count));
+                    #endregion
+
+                    //Set the name and the optionality metadata of the result datatable
+                    patternOrPropPathResultsTable.TableName = ((RDFPropertyPath)patternOrPropPath).ToString();
+                    patternOrPropPathResultsTable.ExtendedProperties.Add("IsOptional",  false);
+                    patternOrPropPathResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
+                }
+                #endregion
 
                 //Save the result datatable
-                query.PatternResultTables[patternGroup].Add(patternResultsTable);
+                query.PatternResultTables[patternGroup].Add(patternOrPropPathResultsTable);
 
             }
         }
@@ -73,7 +106,8 @@ namespace RDFSharp.Query
         /// Apply the filters of the given pattern group to its result table
         /// </summary>
         internal static void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.Patterns.Any() && patternGroup.Filters.Any()) {
+            if (patternGroup.GroupMembers.Any(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty())) 
+                    && patternGroup.GroupMembers.Any(g => g is RDFFilter)) {
                 DataTable filteredTable  = query.PatternGroupResultTables[patternGroup].Clone();
                 IEnumerator rowsEnum     = query.PatternGroupResultTables[patternGroup].Rows.GetEnumerator();
 
@@ -83,9 +117,9 @@ namespace RDFSharp.Query
 
                     //Apply the pattern group's filters on the row
                     keepRow              = true;
-                    IEnumerator<RDFFilter> filtersEnum = patternGroup.Filters.GetEnumerator();
+                    var filtersEnum      = patternGroup.GroupMembers.Where(g => g is RDFFilter).GetEnumerator();
                     while (keepRow      && filtersEnum.MoveNext()) {
-                        keepRow          = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
+                        keepRow          = ((RDFFilter)filtersEnum.Current).ApplyFilter((DataRow)rowsEnum.Current, false);
                     }
 
                     //If the row has passed all the filters, keep it in the filtered result table
@@ -139,6 +173,16 @@ namespace RDFSharp.Query
                     }
 
                 }
+                //Remove property path variables
+                var propPathCols       = new List<DataColumn>();
+                foreach (DataColumn dtCol in table.Columns) {
+                    if (dtCol.ColumnName.StartsWith("?__PP")) {
+                        propPathCols.Add(dtCol);
+                    }
+                }
+                propPathCols.ForEach(ppc => {
+                    table.Columns.Remove(ppc.ColumnName);
+                });
 
             }
 
@@ -168,7 +212,7 @@ namespace RDFSharp.Query
         /// Get the result table of the given pattern group
         /// </summary>
         internal static void CombinePatterns(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.Patterns.Any()) {
+            if (patternGroup.GroupMembers.Any(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()))) {
 
                 //Populate pattern group result table
                 var patternGroupResultTable = CombineTables(query.PatternResultTables[patternGroup], false);
@@ -945,6 +989,26 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Applies the given property path to the given graph
+        /// </summary>
+        internal static DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFGraph graph) {
+            var resultTable       = new DataTable();
+
+            //Translate property path into equivalent list of patterns
+            var patternList       = propertyPath.GetPatternList();
+
+            //Evaluate produced list of patterns
+            var patternTables     = new List<DataTable>();
+            patternList.ForEach(p => patternTables.Add(ApplyPattern(p, graph)));
+
+            //Merge produced list of tables
+            resultTable           = CombineTables(patternTables, false);
+            resultTable.TableName = propertyPath.ToString();
+
+            return resultTable;
+        }
+
+        /// <summary>
         /// Applies the given pattern to the given store
         /// </summary>
         internal static DataTable ApplyPattern(RDFPattern pattern, RDFStore store) {
@@ -1456,6 +1520,26 @@ namespace RDFSharp.Query
                     }
                 }
             }
+
+            return resultTable;
+        }
+
+        /// <summary>
+        /// Applies the given property path to the given store
+        /// </summary>
+        internal static DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFStore store) {
+            var resultTable       = new DataTable();
+
+            //Translate property path into equivalent list of patterns
+            var patternList       = propertyPath.GetPatternList();
+
+            //Evaluate produced list of patterns
+            var patternTables     = new List<DataTable>();
+            patternList.ForEach(p => patternTables.Add(ApplyPattern(p, store)));
+
+            //Merge produced list of tables
+            resultTable           = CombineTables(patternTables, false);
+            resultTable.TableName = propertyPath.ToString();
 
             return resultTable;
         }
