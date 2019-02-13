@@ -999,7 +999,19 @@ namespace RDFSharp.Query
 
             //Evaluate produced list of patterns
             var patternTables     = new List<DataTable>();
-            patternList.ForEach(p => patternTables.Add(ApplyPattern(p, graph)));
+            patternList.ForEach(p => {
+
+                //Apply pattern to graph
+                var patternTable  = ApplyPattern(p, graph);
+
+                //Set extended properties
+                patternTable.ExtendedProperties.Add("IsOptional",  p.IsOptional);
+                patternTable.ExtendedProperties.Add("JoinAsUnion", p.JoinAsUnion);
+
+                //Add produced table
+                patternTables.Add(patternTable);
+
+            });
 
             //Merge produced list of tables
             resultTable           = CombineTables(patternTables, false);
@@ -1535,7 +1547,19 @@ namespace RDFSharp.Query
 
             //Evaluate produced list of patterns
             var patternTables     = new List<DataTable>();
-            patternList.ForEach(p => patternTables.Add(ApplyPattern(p, store)));
+            patternList.ForEach(p => {
+
+                //Apply pattern to store
+                var patternTable  = ApplyPattern(p, store);
+
+                //Set extended properties
+                patternTable.ExtendedProperties.Add("IsOptional",  p.IsOptional);
+                patternTable.ExtendedProperties.Add("JoinAsUnion", p.JoinAsUnion);
+
+                //Add produced table
+                patternTables.Add(patternTable);
+
+            });
 
             //Merge produced list of tables
             resultTable           = CombineTables(patternTables, false);
