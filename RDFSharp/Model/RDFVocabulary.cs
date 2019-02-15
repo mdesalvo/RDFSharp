@@ -683,19 +683,19 @@ namespace RDFSharp.Model
             public static readonly String PREFIX = "xml";
 
             /// <summary>
-            /// http://www.w3.org/XML/1998/namespace#
+            /// http://www.w3.org/XML/1998/namespace
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/XML/1998/namespace#";
+            public static readonly String BASE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// xml:lang
             /// </summary>
-            public static readonly RDFResource LANG = new RDFResource(XML.BASE_URI + "lang");
+            public static readonly RDFResource LANG = new RDFResource(XML.BASE_URI + "#lang");
 
             /// <summary>
             /// xml:base
             /// </summary>
-            public static readonly RDFResource BASE = new RDFResource(XML.BASE_URI + "base");
+            public static readonly RDFResource BASE = new RDFResource(XML.BASE_URI + "#base");
             #endregion
 
         }
