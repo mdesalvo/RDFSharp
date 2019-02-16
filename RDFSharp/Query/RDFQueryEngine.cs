@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
-        internal static void EvaluatePatternsAndPropertyPaths(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
+        internal static void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
             query.PatternResultTables[patternGroup] = new List<DataTable>();
 
             //Iterate over the patterns/property paths of the pattern group
