@@ -20,30 +20,30 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFPatternGroupMember defines an object which can be member of a pattern group
+    /// RDFPatternMember defines an object which can be member of a pattern
     /// </summary>
-    public abstract class RDFPatternGroupMember: IEquatable<RDFPatternGroupMember> {
+    public abstract class RDFPatternMember: IEquatable<RDFPatternMember> {
 
         #region Properties
         /// <summary>
-        /// Unique representation of the pattern group member
+        /// Unique representation of the pattern member
         /// </summary>
-        internal Int64 PatternGroupMemberID { get; set; }
+        public Int64 PatternMemberID { get; internal set; }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the pattern group member
+        /// Gives the string representation of the pattern member
         /// </summary>
         public override String ToString() {
             return base.ToString();
         }
 
         /// <summary>
-        /// Performs the equality comparison between two pattern group members
+        /// Performs the equality comparison between two pattern members
         /// </summary>
-        public Boolean Equals(RDFPatternGroupMember other) {
-            return (other != null && this.PatternGroupMemberID.Equals(other.PatternGroupMemberID));
+        public Boolean Equals(RDFPatternMember other) {
+            return (other != null && this.PatternMemberID.Equals(other.PatternMemberID));
         }
         #endregion
 
