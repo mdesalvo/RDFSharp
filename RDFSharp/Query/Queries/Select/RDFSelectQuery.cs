@@ -323,7 +323,7 @@ namespace RDFSharp.Query {
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable        = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                var queryResultTable        = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                 //Step 5: Apply the modifiers of the query to the result table
                 selResult.SelectResults     = RDFQueryEngine.ApplyModifiers(this, queryResultTable);

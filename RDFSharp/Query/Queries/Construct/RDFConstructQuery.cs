@@ -347,7 +347,7 @@ namespace RDFSharp.Query {
                 }
 
                 //Step 4: Get the result table of the query
-                DataTable queryResultTable          = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                DataTable queryResultTable          = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                 //Step 5: Fill the templates from the result table
                 DataTable filledResultTable         = RDFQueryEngine.FillTemplates(this, queryResultTable);

@@ -237,7 +237,7 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable = RDFQueryEngine.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                var queryResultTable = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                 //Step 5: Transform the result into a boolean response 
                 askResult.AskResult  = (queryResultTable.Rows.Count > 0);
