@@ -44,8 +44,8 @@ namespace RDFSharp.Query
         internal static void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
             query.PatternResultTables[patternGroup] = new List<DataTable>();
 
-            //Iterate over the patterns/property paths of the pattern group
-            foreach (var groupMember in patternGroup.GroupMembers.Where(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()))) {
+            //Iterate the evaluable members of the pattern group
+            foreach (var groupMember in patternGroup.GetEvaluableMembers()) {
 
                 #region Pattern
                 if (groupMember is RDFPattern) {
@@ -76,7 +76,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PropertyPath
-                else {
+                else if (groupMember is RDFPropertyPath) {
                     var propPathResultsTable        = graphOrStore.IsGraph() ? ApplyPropertyPath((RDFPropertyPath)groupMember, (RDFGraph)graphOrStore) :
                                                                                ApplyPropertyPath((RDFPropertyPath)groupMember, (RDFStore)graphOrStore);
 
@@ -108,8 +108,7 @@ namespace RDFSharp.Query
         /// Apply the filters of the given pattern group to its result table
         /// </summary>
         internal static void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.GroupMembers.Any(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty())) 
-                    && patternGroup.GroupMembers.Any(g => g is RDFFilter)) {
+            if (patternGroup.GetEvaluableMembers().Any() && patternGroup.GetFilters().Any()) {
                 DataTable filteredTable  = query.PatternGroupResultTables[patternGroup].Clone();
                 IEnumerator rowsEnum     = query.PatternGroupResultTables[patternGroup].Rows.GetEnumerator();
 
@@ -148,9 +147,9 @@ namespace RDFSharp.Query
             if (query is RDFSelectQuery) {
 
                 //Apply the ORDERBY modifiers
-                var ordModifiers  = query.QueryMembers.Where(m => m is RDFOrderByModifier);
+                var ordModifiers  = query.GetModifiers().Where(m => m is RDFOrderByModifier);
                 if (ordModifiers.Any()) {
-                    table         = ordModifiers.Aggregate(table, (current, modifier) => ((RDFOrderByModifier)modifier).ApplyModifier(current));
+                    table         = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
                     table         = table.DefaultView.ToTable();
                 }
 
@@ -189,21 +188,21 @@ namespace RDFSharp.Query
             }
 
             //Apply the DISTINCT modifier
-            var distinctModifier  = query.QueryMembers.SingleOrDefault(m => m is RDFDistinctModifier);
+            var distinctModifier  = query.GetModifiers().SingleOrDefault(m => m is RDFDistinctModifier);
             if (distinctModifier != null) {
-                table             = ((RDFDistinctModifier)distinctModifier).ApplyModifier(table);
+                table             = distinctModifier.ApplyModifier(table);
             }
 
             //Apply the OFFSET modifier
-            var offsetModifier    = query.QueryMembers.SingleOrDefault(m => m is RDFOffsetModifier);
+            var offsetModifier    = query.GetModifiers().SingleOrDefault(m => m is RDFOffsetModifier);
             if (offsetModifier   != null) {
-                table             = ((RDFOffsetModifier)offsetModifier).ApplyModifier(table);
+                table             = offsetModifier.ApplyModifier(table);
             }            
 
             //Apply the LIMIT modifier
-            var limitModifier     = query.QueryMembers.SingleOrDefault(m => m is RDFLimitModifier);
+            var limitModifier     = query.GetModifiers().SingleOrDefault(m => m is RDFLimitModifier);
             if (limitModifier    != null) {
-                table             = ((RDFLimitModifier)limitModifier).ApplyModifier(table);
+                table             = limitModifier.ApplyModifier(table);
             }
 
             table.TableName       = tablenameBak;
@@ -214,7 +213,7 @@ namespace RDFSharp.Query
         /// Get the result table of the given pattern group
         /// </summary>
         internal static void CombinePatterns(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.GroupMembers.Any(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()))) {
+            if (patternGroup.GetEvaluableMembers().Any()) {
 
                 //Populate pattern group result table
                 var patternGroupResultTable = CombineTables(query.PatternResultTables[patternGroup], false);
@@ -375,7 +374,7 @@ namespace RDFSharp.Query
 
             //Query IS empty, so does not have pattern groups to fetch data from 
             //(we can only proceed by searching for resources in the describe terms)
-            if (!describeQuery.QueryMembers.Any(q => q is RDFPatternGroup)) {
+            if (!describeQuery.GetPatternGroups().Any()) {
 
                  //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
                  foreach(RDFPatternMember dt in describeQuery.DescribeTerms.Where(dterm => dterm is RDFResource)) {
@@ -422,8 +421,9 @@ namespace RDFSharp.Query
 
                  //In case of a "Star" query, all the variables must be considered describe terms
                  if (!describeQuery.DescribeTerms.Any()) {
-                      describeQuery.QueryMembers.FindAll(q => q is RDFPatternGroup)
-                                                .ForEach(q => ((RDFPatternGroup)q).Variables.ForEach(v => describeQuery.AddDescribeTerm(v)));
+                      describeQuery.GetPatternGroups()
+                                   .ToList()
+                                   .ForEach(q => q.Variables.ForEach(v => describeQuery.AddDescribeTerm(v)));
                  }
 
                  //Iterate the describe terms of the query

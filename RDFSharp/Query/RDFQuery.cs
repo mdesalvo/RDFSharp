@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace RDFSharp.Query {
 
@@ -50,6 +51,24 @@ namespace RDFSharp.Query {
             this.QueryMembers             = new List<RDFQueryMember>();
             this.PatternResultTables      = new Dictionary<RDFPatternGroup, List<DataTable>>();
             this.PatternGroupResultTables = new Dictionary<RDFPatternGroup, DataTable>();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Gets the query members of type: pattern group
+        /// </summary>
+        internal IEnumerable<RDFPatternGroup> GetPatternGroups() {
+            return this.QueryMembers.Where(q => q is RDFPatternGroup)
+                                    .OfType<RDFPatternGroup>();
+        }
+
+        /// <summary>
+        /// Gets the query members of type: modifier
+        /// </summary>
+        internal IEnumerable<RDFModifier> GetModifiers() {
+            return this.QueryMembers.Where(q => q is RDFModifier)
+                                    .OfType<RDFModifier>();
         }
         #endregion
 

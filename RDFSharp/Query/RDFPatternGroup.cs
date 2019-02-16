@@ -266,6 +266,40 @@ namespace RDFSharp.Query
             this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
+
+        #region Internals
+        /// <summary>
+        /// Gets the group members of type: pattern
+        /// </summary>
+        internal IEnumerable<RDFPattern> GetPatterns() {
+            return this.GroupMembers.Where(g => g is RDFPattern)
+                                    .OfType<RDFPattern>();
+        }
+
+        /// <summary>
+        /// Gets the group members of type: property path
+        /// </summary>
+        internal IEnumerable<RDFPropertyPath> GetPropertyPaths() {
+            return this.GroupMembers.Where(g => g is RDFPropertyPath)
+                                    .OfType<RDFPropertyPath>();
+        }
+
+        /// <summary>
+        /// Gets the group members which can be evaluated
+        /// </summary>
+        internal IEnumerable<RDFPatternGroupMember> GetEvaluableMembers() {
+            return this.GroupMembers.Where(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()));
+        }
+
+        /// <summary>
+        /// Gets the group members of type: filter
+        /// </summary>
+        internal IEnumerable<RDFFilter> GetFilters() {
+            return this.GroupMembers.Where(g => g is RDFFilter)
+                                    .OfType<RDFFilter>();
+        }
+        #endregion
+
         #endregion
 
     }
