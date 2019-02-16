@@ -26,14 +26,9 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPropertyPath represents a chain of properties connecting two terms in a RDF datasource.
     /// </summary>
-    public class RDFPropertyPath: RDFPatternGroupMember, IEquatable<RDFPropertyPath> {
+    public class RDFPropertyPath: RDFPatternGroupMember {
 
         #region Properties
-        /// <summary>
-        /// Unique representation of the path
-        /// </summary>
-        public Int64 PropertyPathID { get; internal set; }
-
         /// <summary>
         /// Start of the path
         /// </summary>
@@ -85,8 +80,8 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
             }
 
-            //PropertyPathID
-            this.PropertyPathID = RDFModelUtilities.CreateHash(this.ToString());
+            //PatternGroupMemberID
+            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
 
         }
         #endregion
@@ -97,13 +92,6 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString() {
             return this.Start + " " + this.GetPathString() + " " + this.End;
-        }
-
-        /// <summary>
-        /// Performs the equality comparison between two paths
-        /// </summary>
-        public Boolean Equals(RDFPropertyPath other) {
-            return (other != null && this.PropertyPathID.Equals(other.PropertyPathID));
         }
         #endregion
 
@@ -121,7 +109,7 @@ namespace RDFSharp.Query
                         this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(prop, RDFQueryEnums.RDFPropertyPathFlavors.Alternative, this.Properties.Count));
                     });
                 }
-                this.PropertyPathID = RDFModelUtilities.CreateHash(this.ToString());
+                this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             return this;
         }
@@ -132,7 +120,7 @@ namespace RDFSharp.Query
         public RDFPropertyPath AddSequence(RDFResource prop) {
             if (prop != null) {
                 this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(prop, RDFQueryEnums.RDFPropertyPathFlavors.Sequence, this.Properties.Count));
-                this.PropertyPathID = RDFModelUtilities.CreateHash(this.ToString());
+                this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             return this;
         }

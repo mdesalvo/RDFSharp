@@ -38,9 +38,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build a negation filter on the given filter
         /// </summary>
         public RDFBooleanNotFilter(RDFFilter filter) {
-            if (filter       != null) {
-                this.Filter   = filter;
-                this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
+            if (filter != null) {
+                this.Filter = filter;
+                this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");

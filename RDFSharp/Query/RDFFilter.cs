@@ -23,14 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFFilter represents a filter to be applied on a query results table.
     /// </summary>
-    public abstract class RDFFilter: RDFPatternGroupMember, IEquatable<RDFFilter> {
-
-        #region Properties
-        /// <summary>
-        /// Unique representation of the filter
-        /// </summary>
-        protected Int64 FilterID { get; set; }
-        #endregion
+    public abstract class RDFFilter: RDFPatternGroupMember {
 
         #region Interfaces
         /// <summary>
@@ -38,13 +31,6 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString() {
             return base.ToString();
-        }
-
-        /// <summary>
-        /// Performs the equality comparison between two filters
-        /// </summary>
-        public Boolean Equals(RDFFilter other) {
-            return (other != null && this.FilterID.Equals(other.FilterID));
         }
         #endregion
 

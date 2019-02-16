@@ -25,14 +25,9 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPattern represents a search pattern over a collection of RDF data.
     /// </summary>
-    public class RDFPattern: RDFPatternGroupMember, IEquatable<RDFPattern> {
+    public class RDFPattern: RDFPatternGroupMember {
 
         #region Properties
-        /// <summary>
-        /// Unique representation of the pattern
-        /// </summary>
-        internal Int64 PatternID { get; set; }
-
         /// <summary>
         /// Member acting as context token of the pattern
         /// </summary>
@@ -138,8 +133,8 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
             }
 
-            //PatternID
-            this.PatternID  = RDFModelUtilities.CreateHash(this.ToString());
+            //PatternGroupMemberID
+            this.PatternGroupMemberID  = RDFModelUtilities.CreateHash(this.ToString());
         }
 
         /// <summary>
@@ -164,8 +159,8 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter is null");
             }
 
-            //PatternID
-            this.PatternID = RDFModelUtilities.CreateHash(this.ToString());
+            //PatternGroupMemberID
+            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
         #endregion
 
@@ -193,13 +188,6 @@ namespace RDFSharp.Query
             }
             return subj + " " + pred + " " + obj;
         }
-
-        /// <summary>
-        /// Performs the equality comparison between two patterns
-        /// </summary>
-        public Boolean Equals(RDFPattern other) {
-            return (other != null && this.PatternID.Equals(other.PatternID));
-        }
         #endregion
 
         #region Methods
@@ -207,8 +195,8 @@ namespace RDFSharp.Query
         /// Sets the pattern as optional
         /// </summary>
         public RDFPattern Optional() {
-            this.IsOptional  = true;
-            this.PatternID   = RDFModelUtilities.CreateHash(this.ToString());
+            this.IsOptional = true;
+            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
 
@@ -217,7 +205,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern UnionWithNext() {
             this.JoinAsUnion = true;
-            this.PatternID   = RDFModelUtilities.CreateHash(this.ToString());
+            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
         #endregion

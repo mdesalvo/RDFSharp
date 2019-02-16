@@ -40,7 +40,7 @@ namespace RDFSharp.Query
         public RDFIsUriFilter(RDFVariable variable) {
             if (variable     != null) {
                 this.Variable = variable;
-                this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
+                this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {
                 throw new RDFQueryException("Cannot create RDFIsUriFilter because given \"variable\" parameter is null.");

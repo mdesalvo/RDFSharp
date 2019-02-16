@@ -52,7 +52,7 @@ namespace RDFSharp.Query {
                     this.ComparisonFlavor = comparisonFlavor;
                     this.LeftMember       = leftMember;
                     this.RightMember      = rightMember;
-                    this.FilterID         = RDFModelUtilities.CreateHash(this.ToString());
+                    this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
                 else {
                     throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"rightMember\" parameter is null.");

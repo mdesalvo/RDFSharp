@@ -28,12 +28,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern group member
         /// </summary>
-        public Int64 PatternGroupMemberID { get; internal set; }
-
-        /// <summary>
-        /// Ordinal of the pattern group member
-        /// </summary>
-        internal Int32 Ordinal { get; set; }
+        internal Int64 PatternGroupMemberID { get; set; }
         #endregion
 
         #region Interfaces

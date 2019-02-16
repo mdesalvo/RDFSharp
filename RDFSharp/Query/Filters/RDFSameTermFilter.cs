@@ -47,7 +47,7 @@ namespace RDFSharp.Query
                 if (rdfTerm      != null) {
                     this.Variable = variable;
                     this.RDFTerm  = rdfTerm;
-                    this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
+                    this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
                 else {
                     throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"rdfTerm\" parameter is null.");

@@ -49,7 +49,7 @@ namespace RDFSharp.Query
                 if (regex        != null) {
                     this.Variable = variable;
                     this.RegEx    = regex;
-                    this.FilterID = RDFModelUtilities.CreateHash(this.ToString());   
+                    this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());   
                 }
                 else {
                     throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");

@@ -47,7 +47,7 @@ namespace RDFSharp.Query
                 if (rightFilter     != null) {
                     this.LeftFilter  = leftFilter;
                     this.RightFilter = rightFilter;
-                    this.FilterID    = RDFModelUtilities.CreateHash(this.ToString());
+                    this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
                 else {
                     throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");

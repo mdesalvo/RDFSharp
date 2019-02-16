@@ -47,7 +47,7 @@ namespace RDFSharp.Query
             if (variable     != null) {
                 this.Variable = variable;
                 this.Datatype = datatype;
-                this.FilterID = RDFModelUtilities.CreateHash(this.ToString());
+                this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {
                 throw new RDFQueryException("Cannot create RDFDatatypeFilter because given \"variable\" parameter is null.");
