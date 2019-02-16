@@ -148,9 +148,9 @@ namespace RDFSharp.Query
             if (query is RDFSelectQuery) {
 
                 //Apply the ORDERBY modifiers
-                var ordModifiers  = query.Modifiers.Where(m => m is RDFOrderByModifier);
+                var ordModifiers  = query.QueryMembers.Where(m => m is RDFOrderByModifier);
                 if (ordModifiers.Any()) {
-                    table         = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+                    table         = ordModifiers.Aggregate(table, (current, modifier) => ((RDFOrderByModifier)modifier).ApplyModifier(current));
                     table         = table.DefaultView.ToTable();
                 }
 
@@ -189,21 +189,21 @@ namespace RDFSharp.Query
             }
 
             //Apply the DISTINCT modifier
-            var distinctModifier  = query.Modifiers.SingleOrDefault(m => m is RDFDistinctModifier);
+            var distinctModifier  = query.QueryMembers.SingleOrDefault(m => m is RDFDistinctModifier);
             if (distinctModifier != null) {
-                table             = distinctModifier.ApplyModifier(table);
+                table             = ((RDFDistinctModifier)distinctModifier).ApplyModifier(table);
             }
 
             //Apply the OFFSET modifier
-            var offsetModifier    = query.Modifiers.SingleOrDefault(m => m is RDFOffsetModifier);
+            var offsetModifier    = query.QueryMembers.SingleOrDefault(m => m is RDFOffsetModifier);
             if (offsetModifier   != null) {
-                table             = offsetModifier.ApplyModifier(table);
+                table             = ((RDFOffsetModifier)offsetModifier).ApplyModifier(table);
             }            
 
             //Apply the LIMIT modifier
-            var limitModifier     = query.Modifiers.SingleOrDefault(m => m is RDFLimitModifier);
+            var limitModifier     = query.QueryMembers.SingleOrDefault(m => m is RDFLimitModifier);
             if (limitModifier    != null) {
-                table             = limitModifier.ApplyModifier(table);
+                table             = ((RDFLimitModifier)limitModifier).ApplyModifier(table);
             }
 
             table.TableName       = tablenameBak;
@@ -375,7 +375,7 @@ namespace RDFSharp.Query
 
             //Query IS empty, so does not have pattern groups to fetch data from 
             //(we can only proceed by searching for resources in the describe terms)
-            if (!describeQuery.PatternGroups.Any()) {
+            if (!describeQuery.QueryMembers.Any(q => q is RDFPatternGroup)) {
 
                  //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
                  foreach(RDFPatternMember dt in describeQuery.DescribeTerms.Where(dterm => dterm is RDFResource)) {
@@ -422,7 +422,8 @@ namespace RDFSharp.Query
 
                  //In case of a "Star" query, all the variables must be considered describe terms
                  if (!describeQuery.DescribeTerms.Any()) {
-                      describeQuery.PatternGroups.ForEach(pg => pg.Variables.ForEach(v => describeQuery.AddDescribeTerm(v)));
+                      describeQuery.QueryMembers.FindAll(q => q is RDFPatternGroup)
+                                                .ForEach(q => ((RDFPatternGroup)q).Variables.ForEach(v => describeQuery.AddDescribeTerm(v)));
                  }
 
                  //Iterate the describe terms of the query

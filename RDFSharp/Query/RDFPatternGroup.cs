@@ -26,18 +26,13 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPatternGroup represents a named group of patterns having its own filters.
     /// </summary>
-    public class RDFPatternGroup: IEquatable<RDFPatternGroup> {
+    public class RDFPatternGroup: RDFQueryMember {
 
         #region Properties
         /// <summary>
         /// Name of the pattern group, which must be unique in a query
         /// </summary>
         public String PatternGroupName { get; internal set; }
-
-        /// <summary>
-        /// Unique representation of the pattern group
-        /// </summary>
-        internal Int64 PatternGroupID { get; set; }
 
         /// <summary>
         /// Flag indicating the pattern group to be joined as Optional
@@ -71,7 +66,7 @@ namespace RDFSharp.Query
                 this.JoinAsUnion      = false;
                 this.GroupMembers     = new List<RDFPatternGroupMember>();
                 this.Variables        = new List<RDFVariable>();
-                this.PatternGroupID   = RDFModelUtilities.CreateHash(this.ToString());
+                this.QueryMemberID    = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {
                 throw new RDFQueryException("Cannot create RDFPatternGroup because given \"patternGroupName\" parameter is null or empty.");
@@ -120,7 +115,7 @@ namespace RDFSharp.Query
             Boolean printingUnion       = false;
             this.GroupMembers.ForEach(m => {
 
-                //PATTERN
+                #region PATTERNS
                 if (m is RDFPattern) {
 
                     //Union pattern
@@ -154,8 +149,9 @@ namespace RDFSharp.Query
                         }
                     }
                 }
+                #endregion
 
-                //PROPERTY PATH
+                #region PROPERTY PATHS
                 else if (m is RDFPropertyPath && !((RDFPropertyPath)m).IsEmpty()) {
                     //End the Union block
                     if (printingUnion) {
@@ -166,6 +162,7 @@ namespace RDFSharp.Query
                         patternGroup.Append(spaces + "    " + m + " .\n");
                     }
                 }
+                #endregion
 
             });
 
@@ -180,13 +177,6 @@ namespace RDFSharp.Query
             }
             return patternGroup.ToString();
         }
-
-        /// <summary>
-        /// Performs the equality comparison between two pattern groups
-        /// </summary>
-        public Boolean Equals(RDFPatternGroup other) {
-            return (other != null && this.PatternGroupID.Equals(other.PatternGroupID));
-        }
         #endregion
 
         #region Methods
@@ -196,9 +186,9 @@ namespace RDFSharp.Query
         public RDFPatternGroup AddPattern(RDFPattern pattern) {
             //Accept the pattern if it carries at least one variable
             if (pattern != null && pattern.Variables.Count > 0) {
-                if (!this.GroupMembers.Exists(p => p is RDFPattern && p.Equals(pattern))) {
+                if (!this.GroupMembers.Any(p => p is RDFPattern && p.Equals(pattern))) {
                      this.GroupMembers.Add(pattern);
-                     this.PatternGroupID  = RDFModelUtilities.CreateHash(this.ToString());
+                     this.QueryMemberID   = RDFModelUtilities.CreateHash(this.ToString());
                      
                      //Context
                      if (pattern.Context != null && pattern.Context is RDFVariable) {
@@ -240,7 +230,7 @@ namespace RDFSharp.Query
             if (propertyPath != null) {
                 if (!this.GroupMembers.Exists(p => p is RDFPropertyPath && p.Equals(propertyPath))) {
                      this.GroupMembers.Add(propertyPath);
-                     this.PatternGroupID = RDFModelUtilities.CreateHash(this.ToString());
+                     this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
             }
             return this;
@@ -253,7 +243,7 @@ namespace RDFSharp.Query
             if (filter != null) {
                 if (!this.GroupMembers.Exists(f => f is RDFFilter && f.Equals(filter))) {
                      this.GroupMembers.Add(filter);
-                     this.PatternGroupID  = RDFModelUtilities.CreateHash(this.ToString());
+                     this.QueryMemberID  = RDFModelUtilities.CreateHash(this.ToString());
                 }
             }
             return this;
@@ -263,8 +253,8 @@ namespace RDFSharp.Query
         /// Sets the pattern group as optional
         /// </summary>
         public RDFPatternGroup Optional() {
-            this.IsOptional     = true;
-            this.PatternGroupID = RDFModelUtilities.CreateHash(this.ToString());
+            this.IsOptional    = true;
+            this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
 
@@ -272,8 +262,8 @@ namespace RDFSharp.Query
         /// Sets the pattern group to be joined as union with the next pattern group encountered in the query
         /// </summary>
         public RDFPatternGroup UnionWithNext() {
-            this.JoinAsUnion    = true;
-            this.PatternGroupID = RDFModelUtilities.CreateHash(this.ToString());
+            this.JoinAsUnion   = true;
+            this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
         #endregion

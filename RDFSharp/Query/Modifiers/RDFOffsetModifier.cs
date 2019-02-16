@@ -39,9 +39,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build an Offset modifier on a query 
         /// </summary>
         public RDFOffsetModifier(Int32 offset) {
-            if (offset         >= 0) {
-                this.Offset     = offset;
-                this.ModifierID = RDFModelUtilities.CreateHash(this.ToString());   
+            if (offset            >= 0) {
+                this.Offset        = offset;
+                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());   
             }
             else {
                 throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");

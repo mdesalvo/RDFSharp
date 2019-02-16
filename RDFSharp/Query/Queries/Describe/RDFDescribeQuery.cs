@@ -60,7 +60,7 @@ namespace RDFSharp.Query {
         /// Gives the string representation of the DESCRIBE query
         /// </summary>
         public override String ToString() {
-            StringBuilder query    = new StringBuilder();
+            StringBuilder query = new StringBuilder();
 
             // DESCRIBE
             query.Append("DESCRIBE");
@@ -70,19 +70,23 @@ namespace RDFSharp.Query {
                 this.DescribeTerms.ForEach(t => query.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(t)));                   
             }
             else {
-                query.Append(" *"); 
+                query.Append(" *");
             }
 
-            // PATTERN GROUPS
-            query.Append("\nWHERE {\n");                
-            Boolean printingUnion         = false;
-            this.PatternGroups.ForEach(pg => {
+            #region PATTERN GROUPS
+            query.Append("\nWHERE {\n");
+            Boolean printingUnion        = false;
+            RDFPatternGroup lastQueryPG  = this.QueryMembers.LastOrDefault(q => q is RDFPatternGroup) as RDFPatternGroup;
+            this.QueryMembers.FindAll(q  => q is RDFPatternGroup)
+                             .OfType<RDFPatternGroup>()
+                             .ToList()
+                             .ForEach(pg => {
 
                 //Current pattern group is set as UNION with the next one
                 if (pg.JoinAsUnion) {
 
                     //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
-                    if (!pg.Equals(this.PatternGroups.Last())) {
+                    if (!pg.Equals(lastQueryPG)) {
                          //Begin a new Union block
                          if (!printingUnion) {
                               printingUnion = true;
@@ -110,7 +114,7 @@ namespace RDFSharp.Query {
                 else {
                     //End the Union block
                     if (printingUnion) {
-                        printingUnion     = false;
+                        printingUnion = false;
                         query.Append(pg.ToString(2));
                         query.Append("  }\n");
                     }
@@ -121,12 +125,17 @@ namespace RDFSharp.Query {
 
             });
             query.Append("\n}");
+            #endregion
 
-            // MODIFIERS
-            if (this.Modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier)) {
-                this.Modifiers.FindAll(mod => mod is RDFLimitModifier).ForEach(lim  => query.Append("\n" + lim));
-                this.Modifiers.FindAll(mod => mod is RDFOffsetModifier).ForEach(off => query.Append("\n" + off));
+            #region MODIFIERS
+            // LIMIT/OFFSET
+            if (this.QueryMembers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier)) {
+                this.QueryMembers.FindAll(mod => mod is RDFLimitModifier)
+                                 .ForEach(lim => query.Append("\n" + lim));
+                this.QueryMembers.FindAll(mod => mod is RDFOffsetModifier)
+                                 .ForEach(off => query.Append("\n" + off));
             }
+            #endregion
 
             return query.ToString();
         }
@@ -152,24 +161,22 @@ namespace RDFSharp.Query {
             if (describeVar != null) {
                 if (!this.DescribeTerms.Exists(dt => dt.Equals(describeVar))) {
                      this.DescribeTerms.Add(describeVar);
-
                      //Variable
                      if (!this.Variables.Exists(v => v.Equals(describeVar))) {
                           this.Variables.Add(describeVar);
                      }
-
                 }
             }
             return this;
         }
 
         /// <summary>
-        /// Adds the given pattern group to the body of the query
+        /// Adds the given pattern group to the query
         /// </summary>
         public RDFDescribeQuery AddPatternGroup(RDFPatternGroup patternGroup) {
             if (patternGroup != null) {
-                if (!this.PatternGroups.Exists(pg => pg.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
-                     this.PatternGroups.Add(patternGroup);
+                if (!this.QueryMembers.Any(q => q is RDFPatternGroup && ((RDFPatternGroup)q).PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.Ordinal))) {
+                     this.QueryMembers.Add(patternGroup);
                 }
             }
             return this;
@@ -180,8 +187,8 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQuery AddModifier(RDFLimitModifier modifier) {
             if (modifier != null) {
-                if (!this.Modifiers.Any(m => m is RDFLimitModifier)) {
-                     this.Modifiers.Add(modifier);
+                if (!this.QueryMembers.Any(m => m is RDFLimitModifier)) {
+                     this.QueryMembers.Add(modifier);
                 }
             }
             return this;
@@ -192,8 +199,8 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQuery AddModifier(RDFOffsetModifier modifier) {
             if (modifier != null) {
-                if (!this.Modifiers.Any(m => m is RDFOffsetModifier)) {
-                     this.Modifiers.Add(modifier);
+                if (!this.QueryMembers.Any(m => m is RDFOffsetModifier)) {
+                     this.QueryMembers.Add(modifier);
                 }
             }
             return this;
@@ -269,45 +276,6 @@ namespace RDFSharp.Query {
         }
 
         /// <summary>
-        /// Applies the query to the given SPARQL endpoint (asynchronously with task)
-        /// </summary>
-        public async Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointTaskAsync(RDFSPARQLEndpoint sparqlEndpoint) {
-            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(this.ToString());
-            if (sparqlEndpoint                   != null) {
-                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on SPARQL endpoint '{0}'...", sparqlEndpoint));
-
-                //Establish a connection to the given SPARQL endpoint
-                using (WebClient webClient        = new WebClient()) {
-
-                    //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
-
-                    //Insert user-provided parameters
-                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
-
-                    //Insert request headers
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-
-                    //Send querystring to SPARQL endpoint
-                    var sparqlResponse            = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
-
-                    //Parse response from SPARQL endpoint
-                    if (sparqlResponse           != null) {
-                        using (var sStream        = new MemoryStream(sparqlResponse)) {
-                            describeResult        = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                        }
-                        describeResult.DescribeResults.TableName = this.ToString();
-                    }
-
-                }
-
-                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
-            }
-            return describeResult;
-        }
-
-        /// <summary>
         /// Applies the query to the given datasource
         /// </summary>
         internal RDFDescribeQueryResult ApplyToDataSource(RDFDataSource datasource) {
@@ -316,11 +284,11 @@ namespace RDFSharp.Query {
             RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on DataSource '{0}'...", datasource));
 
             RDFDescribeQueryResult describeResult  = new RDFDescribeQueryResult(this.ToString());
-            if (this.PatternGroups.Any()) {
+            if (this.QueryMembers.Any(q            => q is RDFPatternGroup)) {
 
                 //Iterate the pattern groups of the query
                 var fedPatternResultTables         = new Dictionary<RDFPatternGroup, List<DataTable>>();
-                foreach (var patternGroup         in this.PatternGroups) {
+                foreach (var patternGroup         in this.QueryMembers.Where(q => q is RDFPatternGroup)) {
                     RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
                     //Step 1: Get the intermediate result tables of the current pattern group
@@ -330,31 +298,31 @@ namespace RDFSharp.Query {
                         foreach (var store        in (RDFFederation)datasource) {
 
                             //Step FED.1: Evaluate the patterns of the current pattern group on the current store
-                            RDFQueryEngine.EvaluatePatternGroup(this, patternGroup, store);
+                            RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)patternGroup, store);
 
                             //Step FED.2: Federate the patterns of the current pattern group on the current store
-                            if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                            if (!fedPatternResultTables.ContainsKey((RDFPatternGroup)patternGroup)) {
+                                 fedPatternResultTables.Add((RDFPatternGroup)patternGroup, this.PatternResultTables[(RDFPatternGroup)patternGroup]);
                             }
                             else {
-                                 fedPatternResultTables[patternGroup].ForEach(fprt =>
-                                    fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                 fedPatternResultTables[(RDFPatternGroup)patternGroup].ForEach(fprt =>
+                                    fprt.Merge(this.PatternResultTables[(RDFPatternGroup)patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                             }
 
                         }
-                        this.PatternResultTables[patternGroup] = fedPatternResultTables[patternGroup];
+                        this.PatternResultTables[(RDFPatternGroup)patternGroup] = fedPatternResultTables[(RDFPatternGroup)patternGroup];
                         #endregion
 
                     }
                     else {
-                        RDFQueryEngine.EvaluatePatternGroup(this, patternGroup, datasource);
+                        RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)patternGroup, datasource);
                     }
 
                     //Step 2: Get the result table of the current pattern group
-                    RDFQueryEngine.CombinePatterns(this, patternGroup);
+                    RDFQueryEngine.CombinePatterns(this, (RDFPatternGroup)patternGroup);
 
                     //Step 3: Apply the filters of the current pattern group to its result table
-                    RDFQueryEngine.ApplyFilters(this, patternGroup);
+                    RDFQueryEngine.ApplyFilters(this, (RDFPatternGroup)patternGroup);
 
                 }
 

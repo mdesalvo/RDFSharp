@@ -39,9 +39,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build a Limit modifier on a query 
         /// </summary>
         public RDFLimitModifier(Int32 limit) {
-            if (limit          >= 0) {
-                this.Limit      = limit;
-                this.ModifierID = RDFModelUtilities.CreateHash(this.ToString());   
+            if (limit             >= 0) {
+                this.Limit         = limit;
+                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());   
             }
             else {
                 throw new RDFQueryException("Cannot create RDFLimitModifier because given \"limit\" parameter (" + limit + ") is negative.");

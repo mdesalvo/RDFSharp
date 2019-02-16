@@ -27,9 +27,9 @@ namespace RDFSharp.Query {
 
         #region Properties
         /// <summary>
-        /// List of pattern groups carried by the query
+        /// List of members carried by the query
         /// </summary>
-        internal List<RDFPatternGroup> PatternGroups { get; set; }
+        internal List<RDFQueryMember> QueryMembers { get; set; }
 
         /// <summary>
         /// Dictionary of pattern result tables
@@ -40,11 +40,6 @@ namespace RDFSharp.Query {
         /// Dictionary of pattern-group result tables
         /// </summary>
         internal Dictionary<RDFPatternGroup, DataTable> PatternGroupResultTables { get; set; }
-
-        /// <summary>
-        /// List of modifiers carried by the query
-        /// </summary>
-        internal List<RDFModifier> Modifiers { get; set; }
         #endregion
 
         #region Ctors
@@ -52,10 +47,9 @@ namespace RDFSharp.Query {
         /// Default-ctor to build an empty query
         /// </summary>
         internal RDFQuery() {
-            this.PatternGroups            = new List<RDFPatternGroup>();
+            this.QueryMembers             = new List<RDFQueryMember>();
             this.PatternResultTables      = new Dictionary<RDFPatternGroup, List<DataTable>>();
             this.PatternGroupResultTables = new Dictionary<RDFPatternGroup, DataTable>();
-            this.Modifiers                = new List<RDFModifier>();
         }
         #endregion
 

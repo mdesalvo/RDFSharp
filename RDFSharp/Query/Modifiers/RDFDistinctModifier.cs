@@ -33,7 +33,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a Distinct modifier on a query 
         /// </summary>
         public RDFDistinctModifier() {
-            this.ModifierID = RDFModelUtilities.CreateHash(this.ToString());
+            this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
         #endregion
 

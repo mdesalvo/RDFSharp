@@ -23,14 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFModifier represents a modifier to be applied on a query results table.
     /// </summary>
-    public abstract class RDFModifier: IEquatable<RDFModifier> {
-
-        #region Properties
-        /// <summary>
-        /// Unique representation of the modifier
-        /// </summary>
-        protected Int64 ModifierID { get; set; }
-        #endregion
+    public abstract class RDFModifier: RDFQueryMember {
 
         #region Interfaces
         /// <summary>
@@ -38,13 +31,6 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString() {
             return base.ToString();
-        }
-
-        /// <summary>
-        /// Performs the equality comparison between two modifiers
-        /// </summary>
-        public Boolean Equals(RDFModifier other) {
-            return (other != null && this.ModifierID.Equals(other.ModifierID));
         }
         #endregion
 

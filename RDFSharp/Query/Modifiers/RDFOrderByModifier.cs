@@ -46,7 +46,7 @@ namespace RDFSharp.Query
             if (variable          != null) {
                 this.OrderByFlavor = orderbyFlavor;
                 this.Variable      = variable;
-                this.ModifierID    = RDFModelUtilities.CreateHash(this.ToString());   
+                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());   
             }
             else {
                 throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
