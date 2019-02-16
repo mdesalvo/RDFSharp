@@ -131,12 +131,13 @@ namespace RDFSharp.Query
         internal String GetPathString() {
             var result = new StringBuilder();
 
-            //Single-property path
+            #region Single Property
             if (this.Properties.Count == 1) {
                 result.Append(this.Properties[0].Item1.ToString());
             }
+            #endregion
 
-            //Multi-property path
+            #region Multiple Properties
             else {
 
                 //Initialize printing
@@ -178,6 +179,7 @@ namespace RDFSharp.Query
                 }
 
             }
+            #endregion
 
             return result.ToString();
         }
@@ -253,7 +255,7 @@ namespace RDFSharp.Query
         }
         
         /// <summary>
-        /// Checks if the path is empty (has no properties)
+        /// Checks if the property path is empty (has no properties)
         /// </summary>
         internal Boolean IsEmpty() {
             return this.Properties.Count == 0;
