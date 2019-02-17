@@ -186,34 +186,34 @@ namespace RDFSharp.Query
         public RDFPatternGroup AddPattern(RDFPattern pattern) {
             //Accept the pattern if it carries at least one variable
             if (pattern != null && pattern.Variables.Count > 0) {
-                if (!this.GroupMembers.Any(p => p is RDFPattern && p.Equals(pattern))) {
+                if (!this.GetPatterns().Any(p => p.Equals(pattern))) {
                      this.GroupMembers.Add(pattern);
                      this.QueryMemberID   = RDFModelUtilities.CreateHash(this.ToString());
                      
                      //Context
                      if (pattern.Context != null && pattern.Context is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(pattern.Context))) {
+                         if (!this.Variables.Any(v => v.Equals(pattern.Context))) {
                               this.Variables.Add((RDFVariable)pattern.Context);
                          }
                      }
                      
                      //Subject
                      if (pattern.Subject is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(pattern.Subject))) {
+                         if (!this.Variables.Any(v => v.Equals(pattern.Subject))) {
                               this.Variables.Add((RDFVariable)pattern.Subject);
                          }
                      }
                      
                      //Predicate
                      if (pattern.Predicate is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(pattern.Predicate))) {
+                         if (!this.Variables.Any(v => v.Equals(pattern.Predicate))) {
                               this.Variables.Add((RDFVariable)pattern.Predicate);
                          }
                      }
                      
                      //Object
                      if (pattern.Object is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(pattern.Object))) {
+                         if (!this.Variables.Any(v => v.Equals(pattern.Object))) {
                               this.Variables.Add((RDFVariable)pattern.Object);
                          }
                      }
@@ -228,7 +228,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddPropertyPath(RDFPropertyPath propertyPath) {
             if (propertyPath != null) {
-                if (!this.GroupMembers.Exists(p => p is RDFPropertyPath && p.Equals(propertyPath))) {
+                if (!this.GetPropertyPaths().Any(p => p.Equals(propertyPath))) {
                      this.GroupMembers.Add(propertyPath);
                      this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
@@ -241,7 +241,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup AddFilter(RDFFilter filter) {
             if (filter != null) {
-                if (!this.GroupMembers.Exists(f => f is RDFFilter && f.Equals(filter))) {
+                if (!this.GetFilters().Any(f => f.Equals(filter))) {
                      this.GroupMembers.Add(filter);
                      this.QueryMemberID  = RDFModelUtilities.CreateHash(this.ToString());
                 }
@@ -285,19 +285,20 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Gets the group members which can be evaluated
-        /// </summary>
-        internal IEnumerable<RDFPatternGroupMember> GetEvaluableMembers() {
-            return this.GroupMembers.Where(g => g is RDFPattern || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()));
-        }
-
-        /// <summary>
         /// Gets the group members of type: filter
         /// </summary>
         internal IEnumerable<RDFFilter> GetFilters() {
             return this.GroupMembers.Where(g => g is RDFFilter)
                                     .OfType<RDFFilter>();
         }
+
+        /// <summary>
+        /// Gets the group members which can be evaluated
+        /// </summary>
+        internal IEnumerable<RDFPatternGroupMember> GetEvaluableMembers() {
+            return this.GroupMembers.Where(g => g is RDFPattern 
+                                                    || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()));
+        }        
         #endregion
 
         #endregion

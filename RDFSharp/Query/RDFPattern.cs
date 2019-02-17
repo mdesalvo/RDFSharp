@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
@@ -81,7 +82,7 @@ namespace RDFSharp.Query
                 if (subject is RDFResource || subject is RDFVariable) {
                     this.Subject = subject;
                     if (subject is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(subject))) {
+                        if (!this.Variables.Any(v => v.Equals(subject))) {
                              this.Variables.Add((RDFVariable)subject);
                         }
                     }
@@ -102,7 +103,7 @@ namespace RDFSharp.Query
                     }
                     this.Predicate = predicate;
                     if (predicate is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(predicate))) {
+                        if (!this.Variables.Any(v => v.Equals(predicate))) {
                              this.Variables.Add((RDFVariable)predicate);
                         }
                     }
@@ -120,7 +121,7 @@ namespace RDFSharp.Query
                 if (objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable) {
                     this.Object    = objLit;
                     if (objLit is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(objLit))) {
+                        if (!this.Variables.Any(v => v.Equals(objLit))) {
                              this.Variables.Add((RDFVariable)objLit);
                         }
                     }
@@ -146,7 +147,7 @@ namespace RDFSharp.Query
                 if (context is RDFContext || context is RDFVariable) {
                     this.Context = context;
                     if (context is RDFVariable) {
-                        if (!this.Variables.Exists(v => v.Equals(context))) {
+                        if (!this.Variables.Any(v => v.Equals(context))) {
                              this.Variables.Add((RDFVariable)context);
                         }
                     }

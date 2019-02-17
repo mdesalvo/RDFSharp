@@ -154,33 +154,33 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFConstructQuery AddTemplate(RDFPattern template) {
             if (template != null) {
-                if (!this.Templates.Exists(tp => tp.Equals(template))) {
+                if (!this.Templates.Any(tp => tp.Equals(template))) {
                      this.Templates.Add(template);
                      
                      //Context
                      if (template.Context != null && template.Context is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(template.Context))) {
+                         if (!this.Variables.Any(v => v.Equals(template.Context))) {
                               this.Variables.Add((RDFVariable)template.Context);
                          }
                      }
                      
                      //Subject
                      if (template.Subject is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(template.Subject))) {
+                         if (!this.Variables.Any(v => v.Equals(template.Subject))) {
                               this.Variables.Add((RDFVariable)template.Subject);
                          }
                      }
                      
                      //Predicate
                      if (template.Predicate is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(template.Predicate))) {
+                         if (!this.Variables.Any(v => v.Equals(template.Predicate))) {
                               this.Variables.Add((RDFVariable)template.Predicate);
                          }
                      }
                      
                      //Object
                      if (template.Object is RDFVariable) {
-                         if (!this.Variables.Exists(v => v.Equals(template.Object))) {
+                         if (!this.Variables.Any(v => v.Equals(template.Object))) {
                               this.Variables.Add((RDFVariable)template.Object);
                          }
                      }
@@ -303,34 +303,34 @@ namespace RDFSharp.Query {
             this.PatternResultTables.Clear();
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
+            RDFConstructQueryResult constructResult    = new RDFConstructQueryResult(this.ToString());
             if (this.GetPatternGroups().Any()) {
 
                 //Iterate the pattern groups of the query
-                var fedPatternResultTables          = new Dictionary<RDFPatternGroup, List<DataTable>>();
-                foreach (var patternGroup          in this.GetPatternGroups()) {
+                var fedPatternResultTables             = new Dictionary<Int64, List<DataTable>>();
+                foreach (var patternGroup             in this.GetPatternGroups()) {
                     RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", patternGroup, datasource));
 
                     //Step 1: Get the intermediate result tables of the current pattern group
                     if (datasource.IsFederation()) {
 
                         #region TrueFederations
-                        foreach (var store         in (RDFFederation)datasource) {
+                        foreach (var store            in (RDFFederation)datasource) {
 
                             //Step FED.1: Evaluate the patterns of the current pattern group on the current store
                             RDFQueryEngine.EvaluatePatternGroup(this, patternGroup, store);
 
                             //Step FED.2: Federate the patterns of the current pattern group on the current store
-                            if (!fedPatternResultTables.ContainsKey(patternGroup)) {
-                                 fedPatternResultTables.Add(patternGroup, this.PatternResultTables[patternGroup]);
+                            if (!fedPatternResultTables.ContainsKey(patternGroup.QueryMemberID)) {
+                                 fedPatternResultTables.Add(patternGroup.QueryMemberID, this.PatternResultTables[patternGroup.QueryMemberID]);
                             }
                             else {
-                                 fedPatternResultTables[patternGroup].ForEach(fprt =>
-                                   fprt.Merge(this.PatternResultTables[patternGroup].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                 fedPatternResultTables[patternGroup.QueryMemberID].ForEach(fprt =>
+                                   fprt.Merge(this.PatternResultTables[patternGroup.QueryMemberID].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                             }
 
                         }
-                        this.PatternResultTables[patternGroup] = fedPatternResultTables[patternGroup];
+                        this.PatternResultTables[patternGroup.QueryMemberID] = fedPatternResultTables[patternGroup.QueryMemberID];
                         #endregion
 
                     }
@@ -347,17 +347,18 @@ namespace RDFSharp.Query {
                 }
 
                 //Step 4: Get the result table of the query
-                DataTable queryResultTable          = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                DataTable queryResultTable             = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
 
                 //Step 5: Fill the templates from the result table
-                DataTable filledResultTable         = RDFQueryEngine.FillTemplates(this, queryResultTable);
+                DataTable filledResultTable            = RDFQueryEngine.FillTemplates(this, queryResultTable);
 
                 //Step 6: Apply the modifiers of the query to the result table
-                constructResult.ConstructResults    = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
+                constructResult.ConstructResults       = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
 
             }
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated CONSTRUCTQuery on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
 
+            constructResult.ConstructResults.TableName = this.ToString();
             return constructResult;
         }
         #endregion

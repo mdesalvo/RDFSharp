@@ -35,12 +35,12 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Dictionary of pattern result tables
         /// </summary>
-        internal Dictionary<RDFPatternGroup, List<DataTable>> PatternResultTables { get; set; }
+        internal Dictionary<Int64, List<DataTable>> PatternResultTables { get; set; }
 
         /// <summary>
         /// Dictionary of pattern-group result tables
         /// </summary>
-        internal Dictionary<RDFPatternGroup, DataTable> PatternGroupResultTables { get; set; }
+        internal Dictionary<Int64, DataTable> PatternGroupResultTables { get; set; }
         #endregion
 
         #region Ctors
@@ -49,8 +49,8 @@ namespace RDFSharp.Query {
         /// </summary>
         internal RDFQuery() {
             this.QueryMembers             = new List<RDFQueryMember>();
-            this.PatternResultTables      = new Dictionary<RDFPatternGroup, List<DataTable>>();
-            this.PatternGroupResultTables = new Dictionary<RDFPatternGroup, DataTable>();
+            this.PatternResultTables      = new Dictionary<Int64, List<DataTable>>();
+            this.PatternGroupResultTables = new Dictionary<Int64, DataTable>();
         }
         #endregion
 
