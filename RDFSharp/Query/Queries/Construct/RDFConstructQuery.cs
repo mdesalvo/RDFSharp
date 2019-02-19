@@ -339,7 +339,7 @@ namespace RDFSharp.Query {
                     }
 
                     //Step 2: Get the result table of the current pattern group
-                    RDFQueryEngine.CombinePatterns(this, patternGroup);
+                    RDFQueryEngine.FinalizePatternGroup(this, patternGroup);
 
                     //Step 3: Apply the filters of the current pattern group to its result table
                     RDFQueryEngine.ApplyFilters(this, patternGroup);

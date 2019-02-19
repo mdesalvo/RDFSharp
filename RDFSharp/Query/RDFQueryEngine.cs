@@ -41,7 +41,7 @@ namespace RDFSharp.Query
             foreach (var groupMember in patternGroup.GetEvaluableMembers()) {
 
                 #region Pattern
-                if (groupMember is RDFPattern) {
+                if (groupMember      is RDFPattern) {
                     var patternResultsTable         = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)groupMember, (RDFGraph)graphOrStore) :
                                                                                ApplyPattern((RDFPattern)groupMember, (RDFStore)graphOrStore);
 
@@ -93,6 +93,36 @@ namespace RDFSharp.Query
                     query.PatternResultTables[patternGroup.QueryMemberID].Add(propPathResultsTable);
                 }
                 #endregion
+
+            }
+        }
+
+        /// <summary>
+        /// Get the comprehensive result table of the given pattern group
+        /// </summary>
+        internal static void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup) {
+            if (patternGroup.GetEvaluableMembers().Any()) {
+
+                //Populate pattern group result table
+                var patternGroupResultTable = RDFQueryUtilities.CombineTables(query.PatternResultTables[patternGroup.QueryMemberID], false);
+
+                //Add it to the list of pattern group result tables
+                query.PatternGroupResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
+
+                //Populate its name and metadata
+                query.PatternGroupResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
+                if (!query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional")) {
+                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
+                }
+                else {
+                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
+                }
+                if (!query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion")) {
+                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
+                }
+                else {
+                    query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
+                }
 
             }
         }
@@ -198,36 +228,6 @@ namespace RDFSharp.Query
             }
 
             return table;
-        }
-
-        /// <summary>
-        /// Get the result table of the given pattern group
-        /// </summary>
-        internal static void CombinePatterns(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.GetEvaluableMembers().Any()) {
-
-                //Populate pattern group result table
-                var patternGroupResultTable = RDFQueryUtilities.CombineTables(query.PatternResultTables[patternGroup.QueryMemberID], false);
-
-                //Add it to the list of pattern group result tables
-                query.PatternGroupResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
-
-                //Populate its name and metadata
-                query.PatternGroupResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
-                if (!query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional")) {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
-                }
-                else {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"]  = patternGroup.IsOptional;
-                }
-                if (!query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion")) {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
-                }
-                else {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
-                }
-
-            }
         }
 
         /// <summary>
