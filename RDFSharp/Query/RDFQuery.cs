@@ -70,6 +70,13 @@ namespace RDFSharp.Query {
             return this.QueryMembers.Where(q => q is RDFModifier)
                                     .OfType<RDFModifier>();
         }
+
+        /// <summary>
+        /// Gets the query members which can be evaluated
+        /// </summary>
+        internal IEnumerable<RDFQueryMember> GetEvaluableMembers() {
+            return this.QueryMembers.Where(q => q is RDFPatternGroup);
+        }
         #endregion
 
     }
