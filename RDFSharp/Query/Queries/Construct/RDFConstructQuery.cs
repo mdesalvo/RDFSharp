@@ -299,7 +299,7 @@ namespace RDFSharp.Query {
         /// Applies the query to the given datasource
         /// </summary>
         internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource datasource) {
-            this.PatternGroupResultTables.Clear();
+            this.QueryMemberResultTables.Clear();
             this.PatternResultTables.Clear();
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
@@ -352,7 +352,7 @@ namespace RDFSharp.Query {
                 }
 
                 //Step 4: Get the result table of the query
-                DataTable queryResultTable             = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                DataTable queryResultTable             = RDFQueryUtilities.CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
 
                 //Step 5: Fill the templates from the result table
                 DataTable filledResultTable            = RDFQueryEngine.FillTemplates(this, queryResultTable);

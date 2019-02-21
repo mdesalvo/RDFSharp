@@ -189,7 +189,7 @@ namespace RDFSharp.Query
         /// Applies the query to the given datasource
         /// </summary>
         internal RDFAskQueryResult ApplyToDataSource(RDFDataSource datasource) {
-            this.PatternGroupResultTables.Clear();
+            this.QueryMemberResultTables.Clear();
             this.PatternResultTables.Clear();
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
@@ -242,7 +242,7 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable            = RDFQueryUtilities.CombineTables(this.PatternGroupResultTables.Values.ToList(), false);
+                var queryResultTable            = RDFQueryUtilities.CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
 
                 //Step 5: Transform the result into a boolean response 
                 askResult.AskResult             = (queryResultTable.Rows.Count > 0);

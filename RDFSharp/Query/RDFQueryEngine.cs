@@ -106,22 +106,22 @@ namespace RDFSharp.Query
                 //Populate pattern group result table
                 var patternGroupResultTable = RDFQueryUtilities.CombineTables(query.PatternResultTables[patternGroup.QueryMemberID], false);
 
-                //Add it to the list of pattern group result tables
-                query.PatternGroupResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
+                //Add it to the list of query member result tables
+                query.QueryMemberResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
 
                 //Populate its name and metadata
-                query.PatternGroupResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
-                if (!query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional")) {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
+                query.QueryMemberResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
+                if (!query.QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional")) {
+                     query.QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
                 }
                 else {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
+                     query.QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
                 }
-                if (!query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion")) {
-                     query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
+                if (!query.QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion")) {
+                     query.QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
                 }
                 else {
-                    query.PatternGroupResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
+                    query.QueryMemberResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
                 }
 
             }
@@ -132,8 +132,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup) {
             if (patternGroup.GetEvaluableMembers().Any() && patternGroup.GetFilters().Any()) {
-                DataTable filteredTable  = query.PatternGroupResultTables[patternGroup.QueryMemberID].Clone();
-                IEnumerator rowsEnum     = query.PatternGroupResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
+                DataTable filteredTable  = query.QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
+                IEnumerator rowsEnum     = query.QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
                 Boolean keepRow          = false;
@@ -156,7 +156,7 @@ namespace RDFSharp.Query
                 }
 
                 //Save the result datatable
-                query.PatternGroupResultTables[patternGroup.QueryMemberID] = filteredTable;
+                query.QueryMemberResultTables[patternGroup.QueryMemberID] = filteredTable;
             }
         }
 

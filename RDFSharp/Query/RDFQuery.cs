@@ -38,9 +38,9 @@ namespace RDFSharp.Query {
         internal Dictionary<Int64, List<DataTable>> PatternResultTables { get; set; }
 
         /// <summary>
-        /// Dictionary of pattern-group result tables
+        /// Dictionary of result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<Int64, DataTable> PatternGroupResultTables { get; set; }
+        internal Dictionary<Int64, DataTable> QueryMemberResultTables { get; set; }
         #endregion
 
         #region Ctors
@@ -48,9 +48,9 @@ namespace RDFSharp.Query {
         /// Default-ctor to build an empty query
         /// </summary>
         internal RDFQuery() {
-            this.QueryMembers             = new List<RDFQueryMember>();
-            this.PatternResultTables      = new Dictionary<Int64, List<DataTable>>();
-            this.PatternGroupResultTables = new Dictionary<Int64, DataTable>();
+            this.QueryMembers            = new List<RDFQueryMember>();
+            this.PatternResultTables     = new Dictionary<Int64, List<DataTable>>();
+            this.QueryMemberResultTables = new Dictionary<Int64, DataTable>();
         }
         #endregion
 
