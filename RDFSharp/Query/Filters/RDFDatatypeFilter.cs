@@ -44,9 +44,10 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable for the given datatype 
         /// </summary>
         public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype) {
-            if (variable     != null) {
-                this.Variable = variable;
-                this.Datatype = datatype;
+            if (variable                 != null) {
+                this.Variable             = variable;
+                this.Datatype             = datatype;
+                this.IsEvaluable          = false;
                 this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {

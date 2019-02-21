@@ -38,8 +38,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable
         /// </summary>
         public RDFIsUriFilter(RDFVariable variable) {
-            if (variable     != null) {
-                this.Variable = variable;
+            if (variable                 != null) {
+                this.Variable             = variable;
+                this.IsEvaluable          = false;
                 this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {

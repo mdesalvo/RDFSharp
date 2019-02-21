@@ -74,6 +74,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern(RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit) {
             this.Variables       = new List<RDFVariable>();
+            this.IsEvaluable     = true;
             this.IsOptional      = false;
             this.JoinAsUnion     = false;
 

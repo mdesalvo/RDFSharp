@@ -38,8 +38,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build a negation filter on the given filter
         /// </summary>
         public RDFBooleanNotFilter(RDFFilter filter) {
-            if (filter != null) {
-                this.Filter = filter;
+            if (filter                   != null) {
+                this.Filter               = filter;
+                this.IsEvaluable          = false;
                 this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else {

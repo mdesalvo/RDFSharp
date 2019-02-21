@@ -45,10 +45,11 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable for the given regular expression 
         /// </summary>
         public RDFRegexFilter(RDFVariable variable, Regex regex) {
-            if (variable         != null) {
-                if (regex        != null) {
-                    this.Variable = variable;
-                    this.RegEx    = regex;
+            if (variable                     != null) {
+                if (regex                    != null) {
+                    this.Variable             = variable;
+                    this.RegEx                = regex;
+                    this.IsEvaluable          = false;
                     this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());   
                 }
                 else {

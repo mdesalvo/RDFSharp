@@ -62,6 +62,7 @@ namespace RDFSharp.Query
         public RDFPatternGroup(String patternGroupName) {
             if (patternGroupName     != null && patternGroupName.Trim() != String.Empty) {
                 this.PatternGroupName = patternGroupName.Trim().ToUpperInvariant();
+                this.IsEvaluable      = true;
                 this.IsOptional       = false;
                 this.JoinAsUnion      = false;
                 this.GroupMembers     = new List<RDFPatternGroupMember>();
@@ -113,14 +114,15 @@ namespace RDFSharp.Query
 
             //MEMBERS (PATTERNS, PROPERTY PATHS)
             Boolean printingUnion       = false;
-            this.GroupMembers.ForEach(m => {
+            RDFPatternGroupMember last  = this.GroupMembers.LastOrDefault(g => g is RDFPattern);
+            this.GetEvaluableMembers().ToList().ForEach(m => {
 
                 #region PATTERNS
                 if (m is RDFPattern) {
 
                     //Union pattern
                     if (((RDFPattern)m).JoinAsUnion) {
-                        if (!m.Equals(this.GroupMembers.Last(gm => gm.Equals(m)))) {
+                        if (!m.Equals(last)) {
                              //Begin a new Union block
                              printingUnion    = true;
                              patternGroup.Append(spaces + "    { " + m + " }\n" + spaces + "    UNION\n");
@@ -152,7 +154,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROPERTY PATHS
-                else if (m is RDFPropertyPath && !((RDFPropertyPath)m).IsEmpty()) {
+                else if (m is RDFPropertyPath && m.IsEvaluable) {
                     //End the Union block
                     if (printingUnion) {
                         printingUnion         = false;
@@ -296,8 +298,7 @@ namespace RDFSharp.Query
         /// Gets the group members which can be evaluated
         /// </summary>
         internal IEnumerable<RDFPatternGroupMember> GetEvaluableMembers() {
-            return this.GroupMembers.Where(g => g is RDFPattern 
-                                                    || (g is RDFPropertyPath && !((RDFPropertyPath)g).IsEmpty()));
+            return this.GroupMembers.Where(g => g.IsEvaluable);
         }        
         #endregion
 

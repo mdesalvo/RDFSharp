@@ -29,6 +29,11 @@ namespace RDFSharp.Query
         /// Unique representation of the query member
         /// </summary>
         public Int64 QueryMemberID { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the query member is evaluable by the engine
+        /// </summary>
+        public Boolean IsEvaluable { get; internal set; }
         #endregion
 
         #region Interfaces

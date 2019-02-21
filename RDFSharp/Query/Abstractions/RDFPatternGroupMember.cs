@@ -29,6 +29,11 @@ namespace RDFSharp.Query
         /// Unique representation of the pattern group member
         /// </summary>
         public Int64 PatternGroupMemberID { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the pattern group member is evaluable by the engine
+        /// </summary>
+        public Boolean IsEvaluable { get; internal set; }
         #endregion
 
         #region Interfaces

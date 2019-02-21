@@ -80,6 +80,9 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
             }
 
+            //IsEvaluable
+            this.IsEvaluable          = false;
+
             //PatternGroupMemberID
             this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
 
@@ -109,6 +112,7 @@ namespace RDFSharp.Query
                         this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(prop, RDFQueryEnums.RDFPropertyPathFlavors.Alternative, this.Properties.Count));
                     });
                 }
+                this.IsEvaluable          = true;
                 this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             return this;
@@ -120,6 +124,7 @@ namespace RDFSharp.Query
         public RDFPropertyPath AddSequence(RDFResource prop) {
             if (prop != null) {
                 this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(prop, RDFQueryEnums.RDFPropertyPathFlavors.Sequence, this.Properties.Count));
+                this.IsEvaluable          = true;
                 this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             return this;
@@ -252,13 +257,6 @@ namespace RDFSharp.Query
             #endregion
 
             return patterns;
-        }
-        
-        /// <summary>
-        /// Checks if the property path is empty (has no properties)
-        /// </summary>
-        internal Boolean IsEmpty() {
-            return this.Properties.Count == 0;
         }
         #endregion
 

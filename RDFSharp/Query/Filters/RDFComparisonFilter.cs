@@ -47,11 +47,12 @@ namespace RDFSharp.Query {
         /// Default-ctor to build a comparison filter of the given type on the given filters
         /// </summary>
         public RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember leftMember, RDFPatternMember rightMember) {
-            if (leftMember               != null) {
-                if (rightMember          != null) {
-                    this.ComparisonFlavor = comparisonFlavor;
-                    this.LeftMember       = leftMember;
-                    this.RightMember      = rightMember;
+            if (leftMember                   != null) {
+                if (rightMember              != null) {
+                    this.ComparisonFlavor     = comparisonFlavor;
+                    this.LeftMember           = leftMember;
+                    this.RightMember          = rightMember;
+                    this.IsEvaluable          = false;
                     this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
                 else {

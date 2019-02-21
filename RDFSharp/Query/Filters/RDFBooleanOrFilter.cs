@@ -43,10 +43,11 @@ namespace RDFSharp.Query
         /// Default-ctor to build an "OR" filter on the given filters
         /// </summary>
         public RDFBooleanOrFilter(RDFFilter leftFilter, RDFFilter rightFilter) {
-            if (leftFilter          != null) {
-                if (rightFilter     != null) {
-                    this.LeftFilter  = leftFilter;
-                    this.RightFilter = rightFilter;
+            if (leftFilter                   != null) {
+                if (rightFilter              != null) {
+                    this.LeftFilter           = leftFilter;
+                    this.RightFilter          = rightFilter;
+                    this.IsEvaluable          = false;
                     this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
                 }
                 else {
