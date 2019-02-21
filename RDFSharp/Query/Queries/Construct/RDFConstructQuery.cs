@@ -300,14 +300,14 @@ namespace RDFSharp.Query {
         /// </summary>
         internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.QueryMemberResultTables.Clear();
-            this.PatternResultTables.Clear();
+            this.PatternGroupMemberResultTables.Clear();
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
             RDFConstructQueryResult constructResult    = new RDFConstructQueryResult(this.ToString());
             if (this.GetEvaluableMembers().Any()) {
 
                 //Iterate the evaluable members of the query
-                var fedPatternResultTables             = new Dictionary<Int64, List<DataTable>>();
+                var fedPatternGroupMemberResultTables  = new Dictionary<Int64, List<DataTable>>();
                 foreach (var evaluableMember          in this.GetEvaluableMembers()) {
 
                     #region PATTERN GROUP
@@ -324,16 +324,16 @@ namespace RDFSharp.Query {
                                 RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableMember, store);
 
                                 //Step FED.2: Federate the patterns of the current pattern group on the current store
-                                if (!fedPatternResultTables.ContainsKey(evaluableMember.QueryMemberID)) {
-                                     fedPatternResultTables.Add(evaluableMember.QueryMemberID, this.PatternResultTables[evaluableMember.QueryMemberID]);
+                                if (!fedPatternGroupMemberResultTables.ContainsKey(evaluableMember.QueryMemberID)) {
+                                     fedPatternGroupMemberResultTables.Add(evaluableMember.QueryMemberID, this.PatternGroupMemberResultTables[evaluableMember.QueryMemberID]);
                                 }
                                 else {
-                                     fedPatternResultTables[evaluableMember.QueryMemberID].ForEach(fprt =>
-                                       fprt.Merge(this.PatternResultTables[evaluableMember.QueryMemberID].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                     fedPatternGroupMemberResultTables[evaluableMember.QueryMemberID].ForEach(fprt =>
+                                       fprt.Merge(this.PatternGroupMemberResultTables[evaluableMember.QueryMemberID].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                                 }
 
                             }
-                            this.PatternResultTables[evaluableMember.QueryMemberID] = fedPatternResultTables[evaluableMember.QueryMemberID];
+                            this.PatternGroupMemberResultTables[evaluableMember.QueryMemberID] = fedPatternGroupMemberResultTables[evaluableMember.QueryMemberID];
                             #endregion
 
                         }

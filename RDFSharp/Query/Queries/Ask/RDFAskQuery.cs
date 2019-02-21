@@ -190,40 +190,40 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult ApplyToDataSource(RDFDataSource datasource) {
             this.QueryMemberResultTables.Clear();
-            this.PatternResultTables.Clear();
+            this.PatternGroupMemberResultTables.Clear();
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
-            RDFAskQueryResult askResult         = new RDFAskQueryResult();
+            RDFAskQueryResult askResult               = new RDFAskQueryResult();
             if (this.GetEvaluableMembers().Any()) {
 
                 //Iterate the evaluable members of the query
-                var fedPatternResultTables      = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableMember   in this.GetEvaluableMembers()) {
+                var fedPatternGroupMemberResultTables = new Dictionary<Int64, List<DataTable>>();
+                foreach (var evaluableMember         in this.GetEvaluableMembers()) {
 
                     #region PATTERN GROUP
-                    if (evaluableMember        is RDFPatternGroup) {
+                    if (evaluableMember              is RDFPatternGroup) {
                         RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableMember, datasource));
 
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation()) {
 
                             #region TrueFederations
-                            foreach (var store in (RDFFederation)datasource) {
+                            foreach (var store       in (RDFFederation)datasource) {
 
                                 //Step FED.1: Evaluate the patterns of the current pattern group on the current store
                                 RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableMember, store);
 
                                 //Step FED.2: Federate the patterns of the current pattern group on the current store
-                                if (!fedPatternResultTables.ContainsKey(evaluableMember.QueryMemberID)) {
-                                     fedPatternResultTables.Add(evaluableMember.QueryMemberID, this.PatternResultTables[evaluableMember.QueryMemberID]);
+                                if (!fedPatternGroupMemberResultTables.ContainsKey(evaluableMember.QueryMemberID)) {
+                                     fedPatternGroupMemberResultTables.Add(evaluableMember.QueryMemberID, this.PatternGroupMemberResultTables[evaluableMember.QueryMemberID]);
                                 }
                                 else {
-                                     fedPatternResultTables[evaluableMember.QueryMemberID].ForEach(fprt =>
-                                        fprt.Merge(this.PatternResultTables[evaluableMember.QueryMemberID].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                     fedPatternGroupMemberResultTables[evaluableMember.QueryMemberID].ForEach(fprt =>
+                                        fprt.Merge(this.PatternGroupMemberResultTables[evaluableMember.QueryMemberID].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                                 }
 
                             }
-                            this.PatternResultTables[evaluableMember.QueryMemberID] = fedPatternResultTables[evaluableMember.QueryMemberID];
+                            this.PatternGroupMemberResultTables[evaluableMember.QueryMemberID] = fedPatternGroupMemberResultTables[evaluableMember.QueryMemberID];
                             #endregion
 
                         }
@@ -242,10 +242,10 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable            = RDFQueryUtilities.CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
+                var queryResultTable                  = RDFQueryUtilities.CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
 
                 //Step 5: Transform the result into a boolean response 
-                askResult.AskResult             = (queryResultTable.Rows.Count > 0);
+                askResult.AskResult                   = (queryResultTable.Rows.Count > 0);
 
             }
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated SPARQL ASK query on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));

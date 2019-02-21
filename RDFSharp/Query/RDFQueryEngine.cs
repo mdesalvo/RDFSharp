@@ -35,7 +35,7 @@ namespace RDFSharp.Query
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
         internal static void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
-            query.PatternResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
+            query.PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
             foreach (var groupMember in patternGroup.GetEvaluableMembers()) {
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
                     patternResultsTable.ExtendedProperties.Add("JoinAsUnion", ((RDFPattern)groupMember).JoinAsUnion);
 
                     //Save result datatable
-                    query.PatternResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                    query.PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                 }
                 #endregion
 
@@ -90,7 +90,7 @@ namespace RDFSharp.Query
                     propPathResultsTable.TableName  = ((RDFPropertyPath)groupMember).ToString();
 
                     //Save result datatable
-                    query.PatternResultTables[patternGroup.QueryMemberID].Add(propPathResultsTable);
+                    query.PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(propPathResultsTable);
                 }
                 #endregion
 
@@ -104,7 +104,7 @@ namespace RDFSharp.Query
             if (patternGroup.GetEvaluableMembers().Any()) {
 
                 //Populate pattern group result table
-                var patternGroupResultTable = RDFQueryUtilities.CombineTables(query.PatternResultTables[patternGroup.QueryMemberID], false);
+                var patternGroupResultTable = RDFQueryUtilities.CombineTables(query.PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
 
                 //Add it to the list of query member result tables
                 query.QueryMemberResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
