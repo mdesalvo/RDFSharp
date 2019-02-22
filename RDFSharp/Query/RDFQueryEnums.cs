@@ -72,17 +72,17 @@ namespace RDFSharp.Query
         };
 
         /// <summary>
-        /// RDFPropertyPathFlavors represents an enumeration for possible connection types within a property path.
+        /// RDFPropertyPathStepFlavors represents an enumeration for possible connection types within a property path.
         /// </summary>
-        public enum RDFPropertyPathFlavors {
+        public enum RDFPropertyPathStepFlavors {
             /// <summary>
-            /// Relations within a property path are connected with an OR semantic
+            /// Steps within a property path are connected with AND semantic
             /// </summary>
-            Alternative = '|',
+            Sequence = '/',
             /// <summary>
-            /// Relations within a property path are connected with an AND semantic
+            /// Steps within a property path are connected with OR semantic
             /// </summary>
-            Sequence = '/'
+            Alternative = '|'
         }
 
     }
