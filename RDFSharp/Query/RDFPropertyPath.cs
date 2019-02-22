@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Properties of the path
         /// </summary>
-        internal List<Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>> Properties { get; set; }
+        internal List<Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32, Boolean>> Properties { get; set; }
 
         /// <summary>
         /// End of the path
@@ -65,7 +65,7 @@ namespace RDFSharp.Query
             }
 
             //Properties
-            this.Properties  = new List<Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>>();
+            this.Properties  = new List<Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32, Boolean>>();
 
             //End
             if (end != null) {
@@ -100,16 +100,16 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given alternatives to the path (if only one is given, it is considered sequence)
+        /// Adds the given alternatives to the path. If only one is given, it is considered sequence.
         /// </summary>
-        public RDFPropertyPath AddAlternatives(List<RDFResource> props) {
+        public RDFPropertyPath AddAlternatives(List<Tuple<RDFResource, Boolean>> props) {
             if (props != null && props.Any()) {
                 if (props.Count == 1) {
-                    this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(props[0], RDFQueryEnums.RDFPropertyPathFlavors.Sequence, this.Properties.Count));
+                    this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32, Boolean>(props[0].Item1, RDFQueryEnums.RDFPropertyPathFlavors.Sequence, this.Properties.Count, props[0].Item2));
                 }
                 else {
                     props.ForEach(prop => {
-                        this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(prop, RDFQueryEnums.RDFPropertyPathFlavors.Alternative, this.Properties.Count));
+                        this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32, Boolean>(prop.Item1, RDFQueryEnums.RDFPropertyPathFlavors.Alternative, this.Properties.Count, prop.Item2));
                     });
                 }
                 this.IsEvaluable          = true;
@@ -121,9 +121,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given sequence to the path
         /// </summary>
-        public RDFPropertyPath AddSequence(RDFResource prop) {
+        public RDFPropertyPath AddSequence(Tuple<RDFResource, Boolean> prop) {
             if (prop != null) {
-                this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32>(prop, RDFQueryEnums.RDFPropertyPathFlavors.Sequence, this.Properties.Count));
+                this.Properties.Add(new Tuple<RDFResource, RDFQueryEnums.RDFPropertyPathFlavors, Int32, Boolean>(prop.Item1, RDFQueryEnums.RDFPropertyPathFlavors.Sequence, this.Properties.Count, prop.Item2));
                 this.IsEvaluable          = true;
                 this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
@@ -138,7 +138,14 @@ namespace RDFSharp.Query
 
             #region Single Property
             if (this.Properties.Count == 1) {
+
+                //InversePath (will swap start/end)
+                if (this.Properties[0].Item4) {
+                    result.Append("^");
+                }
+
                 result.Append(this.Properties[0].Item1.ToString());
+
             }
             #endregion
 
@@ -151,12 +158,18 @@ namespace RDFSharp.Query
                 //Iterate properties
                 for (int i = 0; i < this.Properties.Count; i++) {
 
-                    //Alternative: generate a union pattern
+                    //Alternative: generate union pattern
                     if (this.Properties[i].Item2 == RDFQueryEnums.RDFPropertyPathFlavors.Alternative) {
                         if (!openedParenthesis) { 
                              openedParenthesis = true;
                              result.Append("(");
                         }
+
+                        //InversePath (will swap start/end)
+                        if (this.Properties[i].Item4) {
+                            result.Append("^");
+                        }
+
                         if (i < this.Properties.Count - 1) {
                             result.Append(this.Properties[i].Item1.ToString() + (Char)this.Properties[i].Item2);
                         }
@@ -166,13 +179,19 @@ namespace RDFSharp.Query
                         }
                     }
 
-                    //Sequence: generate a pattern
+                    //Sequence: generate pattern
                     else {
                         if (openedParenthesis) {
                             result.Remove(result.Length - 1, 1);
                             openedParenthesis = false;
                             result.Append(")/");
                         }
+
+                        //InversePath (will swap start/end)
+                        if (this.Properties[i].Item4) {
+                            result.Append("^");
+                        }
+
                         if (i < this.Properties.Count - 1) {
                             result.Append(this.Properties[i].Item1.ToString() + (Char)this.Properties[i].Item2);
                         }
@@ -197,7 +216,17 @@ namespace RDFSharp.Query
 
             #region Single Property
             if (this.Properties.Count == 1) {
-                patterns.Add(new RDFPattern(this.Start, this.Properties[0].Item1, this.End));
+
+                //InversePath (swap start/end)
+                if (this.Properties[0].Item4) {
+                    patterns.Add(new RDFPattern(this.End, this.Properties[0].Item1, this.Start));
+                }
+
+                //Path
+                else {
+                    patterns.Add(new RDFPattern(this.Start, this.Properties[0].Item1, this.End));
+                }
+
             }
             #endregion
 
@@ -212,15 +241,37 @@ namespace RDFSharp.Query
 
                         //Translate to union (item is not the last alternative)
                         if (i < this.Properties.Count - 1 && this.Properties[i + 1].Item2 == RDFQueryEnums.RDFPropertyPathFlavors.Alternative) {
+
+                            //Adjust start/end
                             if (!this.Properties.Any(p => p.Item2 == RDFQueryEnums.RDFPropertyPathFlavors.Sequence && p.Item3 > i)) {
                                  currEnd    = this.End;
                             }
-                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd).UnionWithNext());
+
+                            //InversePath (swap start/end)
+                            if (this.Properties[i].Item4) {
+                                patterns.Add(new RDFPattern(currEnd, this.Properties[i].Item1, currStart).UnionWithNext());
+                            }
+
+                            //Path
+                            else {
+                                patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd).UnionWithNext());
+                            }
+
                         }
 
                         //Translate to pattern (item is the last alternative)
                         else {
-                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd));
+
+                            //InversePath (swap start/end)
+                            if (this.Properties[i].Item4) {
+                                patterns.Add(new RDFPattern(currEnd, this.Properties[i].Item1, currStart));
+                            }
+
+                            //Path
+                            else {
+                                patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd));
+                            }
+
                             //Adjust start/end
                             if (i           < this.Properties.Count - 1) {
                                 currStart   = currEnd;
@@ -230,7 +281,8 @@ namespace RDFSharp.Query
                                 else {
                                     currEnd = new RDFVariable("__PP" + (i + 1));
                                 }
-                            }                            
+                            }
+
                         }
 
                     }
@@ -238,7 +290,17 @@ namespace RDFSharp.Query
 
                     #region Sequence
                     else {
-                        patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd));
+
+                        //InversePath (swap start/end)
+                        if (this.Properties[i].Item4) {
+                            patterns.Add(new RDFPattern(currEnd, this.Properties[i].Item1, currStart));
+                        }
+
+                        //Path
+                        else {
+                            patterns.Add(new RDFPattern(currStart, this.Properties[i].Item1, currEnd));
+                        }
+
                         //Adjust start/end
                         if (i               < this.Properties.Count - 1) {
                             currStart       = currEnd;
@@ -249,6 +311,7 @@ namespace RDFSharp.Query
                                 currEnd     = new RDFVariable("__PP" + (i + 1));
                             }
                         }
+
                     }
                     #endregion
 
