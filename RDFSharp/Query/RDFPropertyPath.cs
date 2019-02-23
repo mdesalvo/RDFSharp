@@ -345,24 +345,23 @@ namespace RDFSharp.Query
         public RDFQueryEnums.RDFPropertyPathStepFlavors StepFlavor { get; internal set; }
 
         /// <summary>
-        /// Ordinal of the step
-        /// </summary>
-        public Int32 StepOrdinal { get; internal set; }
-        
-        /// <summary>
-        /// Flag indicating that the step must be considered inverse
+        /// Flag indicating that the step has inverse evaluation
         /// </summary>
         public Boolean IsInverseStep { get; internal set; }
+
+        /// <summary>
+        /// Ordinal of the step
+        /// </summary>
+        internal Int32 StepOrdinal { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a step of a property path
         /// </summary>
-        public RDFPropertyPathStep(RDFResource stepProperty, Boolean isInverseStep) {
-            if (stepProperty      != null) {
-                this.StepProperty  = stepProperty;
-                this.IsInverseStep = isInverseStep;
+        public RDFPropertyPathStep(RDFResource stepProperty) {
+            if (stepProperty     != null) {
+                this.StepProperty = stepProperty;
             }
             else {
                 throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
@@ -375,7 +374,7 @@ namespace RDFSharp.Query
         /// Sets the flavor of the step
         /// </summary>
         internal RDFPropertyPathStep SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors stepFlavor) {
-            this.StepFlavor  = stepFlavor;
+            this.StepFlavor    = stepFlavor;
             return this;
         }
 
@@ -383,7 +382,15 @@ namespace RDFSharp.Query
         /// Sets the ordinal of the step
         /// </summary>
         internal RDFPropertyPathStep SetOrdinal(Int32 stepOrdinal) {
-            this.StepOrdinal = stepOrdinal;
+            this.StepOrdinal   = stepOrdinal;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the step as inverse
+        /// </summary>
+        public RDFPropertyPathStep Inverse() {
+            this.IsInverseStep = true;
             return this;
         }
         #endregion
