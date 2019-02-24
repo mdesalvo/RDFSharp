@@ -197,7 +197,7 @@ namespace RDFSharp.Query
         /// Sets the pattern as optional
         /// </summary>
         public RDFPattern Optional() {
-            this.IsOptional = true;
+            this.IsOptional           = true;
             this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
@@ -206,7 +206,7 @@ namespace RDFSharp.Query
         /// Sets the pattern to be joined as union with the next pattern
         /// </summary>
         public RDFPattern UnionWithNext() {
-            this.JoinAsUnion = true;
+            this.JoinAsUnion          = true;
             this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
             return this;
         }
