@@ -147,7 +147,7 @@ namespace RDFSharp.Query
                     result.Append("^");
                 }
 
-                result.Append(this.Steps[0].StepProperty.ToString());
+                result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[0].StepProperty));
 
             }
             #endregion
@@ -174,10 +174,10 @@ namespace RDFSharp.Query
                         }
 
                         if (i < this.Steps.Count - 1) {
-                            result.Append(this.Steps[i].StepProperty.ToString() + (Char)this.Steps[i].StepFlavor);
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty) + (Char)this.Steps[i].StepFlavor);
                         }
                         else {
-                            result.Append(this.Steps[i].StepProperty.ToString());
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty));
                             result.Append(")");
                         }
                     }
@@ -196,10 +196,10 @@ namespace RDFSharp.Query
                         }
 
                         if (i < this.Steps.Count - 1) {
-                            result.Append(this.Steps[i].StepProperty.ToString() + (Char)this.Steps[i].StepFlavor);
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty) + (Char)this.Steps[i].StepFlavor);
                         }
                         else {
-                            result.Append(this.Steps[i].StepProperty.ToString());
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty));
                         }
                     }
 
