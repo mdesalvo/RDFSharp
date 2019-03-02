@@ -72,52 +72,58 @@ namespace RDFSharp.Query {
                 query.Append(" *");
             }
 
-            #region PATTERN GROUPS
+            #region QUERY MEMBERS
             query.Append("\nWHERE {\n");
             Boolean printingUnion        = false;
-            RDFPatternGroup lastQueryPG  = this.GetPatternGroups().LastOrDefault();
-            foreach(var pg              in this.GetPatternGroups()) {
+            RDFQueryMember lastQueryMbr  = this.GetEvaluableMembers().LastOrDefault();
+            foreach(var queryMember     in this.GetEvaluableMembers()) {
 
-                //Current pattern group is set as UNION with the next one
-                if (pg.JoinAsUnion) {
+                #region PATTERN GROUP
+                if (queryMember         is RDFPatternGroup) {
 
-                    //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
-                    if (!pg.Equals(lastQueryPG)) {
-                         //Begin a new Union block
-                         if (!printingUnion) {
-                              printingUnion = true;
-                              query.Append("\n  {");
-                         }
-                         query.Append(pg.ToString(2) + "    UNION");
+                    //Current pattern group is set as UNION with the next one
+                    if (((RDFPatternGroup)queryMember).JoinAsUnion) {
+
+                        //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
+                        if (!queryMember.Equals(lastQueryMbr)) {
+                            //Begin a new Union block
+                            if (!printingUnion) {
+                                printingUnion  = true;
+                                query.Append("\n  {");
+                            }
+                            query.Append(((RDFPatternGroup)queryMember).ToString(2) + "    UNION");
+                        }
+
+                        //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
+                        else {
+                            //End the Union block
+                            if (printingUnion) {
+                                printingUnion  = false;
+                                query.Append(((RDFPatternGroup)queryMember).ToString(2));
+                                query.Append("  }\n");
+                            }
+                            else {
+                                query.Append(((RDFPatternGroup)queryMember).ToString());
+                            }
+                        }
+
                     }
 
-                    //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
+                    //Current pattern group is set as INTERSECT with the next one
                     else {
-                         //End the Union block
-                         if (printingUnion) {
-                             printingUnion = false;
-                             query.Append(pg.ToString(2));
-                             query.Append("  }\n");
-                         }
-                         else {
-                             query.Append(pg.ToString());
-                         }
+                        //End the Union block
+                        if (printingUnion) {
+                            printingUnion      = false;
+                            query.Append(((RDFPatternGroup)queryMember).ToString(2));
+                            query.Append("  }\n");
+                        }
+                        else {
+                            query.Append(queryMember.ToString());
+                        }
                     }
 
                 }
-
-                //Current pattern group is set as INTERSECT with the next one
-                else {
-                    //End the Union block
-                    if (printingUnion) {
-                        printingUnion = false;
-                        query.Append(pg.ToString(2));
-                        query.Append("  }\n");
-                    }
-                    else {
-                        query.Append(pg.ToString());
-                    }
-                }
+                #endregion
 
             }
             query.Append("\n}");

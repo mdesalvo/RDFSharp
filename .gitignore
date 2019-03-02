@@ -1,0 +1,7 @@
+﻿################################################################################
+# Il file gitignore è stato creato automaticamente da Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/RDFSharp/bin
+/RDFSharp/obj
