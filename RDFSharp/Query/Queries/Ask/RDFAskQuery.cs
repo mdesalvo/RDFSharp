@@ -117,7 +117,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFAskQuery AddPatternGroup(RDFPatternGroup patternGroup) {
             if (patternGroup != null) {
-                if (!this.GetPatternGroups().Any(q => q.PatternGroupName.Equals(patternGroup.PatternGroupName, StringComparison.OrdinalIgnoreCase))) {
+                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup))) {
                      this.QueryMembers.Add(patternGroup);
                 }
             }
