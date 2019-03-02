@@ -55,29 +55,34 @@ namespace RDFSharp.Query {
         public override String ToString() {
             StringBuilder query = new StringBuilder();
 
-            // SELECT
+            #region SELECT
             query.Append("SELECT");
+            #endregion
 
-            // DISTINCT
+            #region DISTINCT
             this.GetModifiers().Where(mod => mod is RDFDistinctModifier)
                                .ToList()
                                .ForEach(dm => query.Append(" " + dm));
+            #endregion
 
-            // VARIABLES
+            #region VARIABLES
             if (this.ProjectionVars.Any()) {
                 this.ProjectionVars.OrderBy(x => x.Value).ToList().ForEach(variable => query.Append(" " + variable.Key));
             }
             else {
                 query.Append(" *");
             }
+            #endregion
 
-            #region QUERY MEMBERS
+            #region WHERE
             query.Append("\nWHERE {\n");
+
+            #region EVALUABLEMEMBERS
             Boolean printingUnion        = false;
             RDFQueryMember lastQueryMbr  = this.GetEvaluableMembers().LastOrDefault();
             foreach(var queryMember     in this.GetEvaluableMembers()) {
 
-                #region PATTERN GROUP
+                #region PATTERNGROUPS
                 if (queryMember         is RDFPatternGroup) {
 
                     //Current pattern group is set as UNION with the next one
@@ -112,7 +117,7 @@ namespace RDFSharp.Query {
                     else {
                         //End the Union block
                         if (printingUnion) {
-                            printingUnion = false;
+                            printingUnion      = false;
                             query.Append(((RDFPatternGroup)queryMember).ToString(2));
                             query.Append("  }\n");
                         }
@@ -125,6 +130,8 @@ namespace RDFSharp.Query {
                 #endregion
 
             }
+            #endregion
+
             query.Append("\n}");
             #endregion
 

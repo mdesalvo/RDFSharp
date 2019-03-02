@@ -48,15 +48,19 @@ namespace RDFSharp.Query
         public override String ToString() {
             StringBuilder query = new StringBuilder();
 
-            // ASK
-            query.Append("ASK\nWHERE {\n");
+            #region ASK
+            query.Append("ASK");
+            #endregion
 
-            #region QUERY MEMBERS
+            #region WHERE
+            query.Append("\nWHERE {\n");
+
+            #region EVALUABLEMEMBERS
             Boolean printingUnion        = false;
             RDFQueryMember lastQueryMbr  = this.GetEvaluableMembers().LastOrDefault();
             foreach(var queryMember     in this.GetEvaluableMembers()) {
 
-                #region PATTERN GROUP
+                #region PATTERNGROUPS
                 if (queryMember         is RDFPatternGroup) {
 
                     //Current pattern group is set as UNION with the next one
@@ -107,6 +111,8 @@ namespace RDFSharp.Query
             #endregion
 
             query.Append("\n}");
+            #endregion
+
             return query.ToString();
         }
         #endregion

@@ -61,24 +61,28 @@ namespace RDFSharp.Query {
         public override String ToString() {
             StringBuilder query = new StringBuilder();
 
-            // DESCRIBE
+            #region DESCRIBE
             query.Append("DESCRIBE");
+            #endregion
 
-            // TERMS
+            #region TERMS
             if (this.DescribeTerms.Any()) {
                 this.DescribeTerms.ForEach(t => query.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(t)));                   
             }
             else {
                 query.Append(" *");
             }
+            #endregion
 
-            #region QUERY MEMBERS
+            #region WHERE
             query.Append("\nWHERE {\n");
+
+            #region EVALUABLEMEMBERS
             Boolean printingUnion        = false;
             RDFQueryMember lastQueryMbr  = this.GetEvaluableMembers().LastOrDefault();
             foreach(var queryMember     in this.GetEvaluableMembers()) {
 
-                #region PATTERN GROUP
+                #region PATTERNGROUPS
                 if (queryMember         is RDFPatternGroup) {
 
                     //Current pattern group is set as UNION with the next one
@@ -86,19 +90,19 @@ namespace RDFSharp.Query {
 
                         //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
                         if (!queryMember.Equals(lastQueryMbr)) {
-                            //Begin a new Union block
-                            if (!printingUnion) {
-                                printingUnion  = true;
-                                query.Append("\n  {");
-                            }
-                            query.Append(((RDFPatternGroup)queryMember).ToString(2) + "    UNION");
+                             //Begin a new Union block
+                             if (!printingUnion) {
+                                  printingUnion  = true;
+                                  query.Append("\n  {");
+                             }
+                             query.Append(((RDFPatternGroup)queryMember).ToString(2) + "    UNION");
                         }
 
                         //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
                         else {
                             //End the Union block
                             if (printingUnion) {
-                                printingUnion  = false;
+                                printingUnion    = false;
                                 query.Append(((RDFPatternGroup)queryMember).ToString(2));
                                 query.Append("  }\n");
                             }
@@ -113,12 +117,12 @@ namespace RDFSharp.Query {
                     else {
                         //End the Union block
                         if (printingUnion) {
-                            printingUnion      = false;
+                            printingUnion        = false;
                             query.Append(((RDFPatternGroup)queryMember).ToString(2));
                             query.Append("  }\n");
                         }
                         else {
-                            query.Append(queryMember.ToString());
+                            query.Append(((RDFPatternGroup)queryMember).ToString());
                         }
                     }
 
@@ -126,6 +130,8 @@ namespace RDFSharp.Query {
                 #endregion
 
             }
+            #endregion
+
             query.Append("\n}");
             #endregion
 
