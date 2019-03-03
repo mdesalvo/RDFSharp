@@ -115,7 +115,7 @@ namespace RDFSharp.Query
             //MEMBERS (PATTERNS, PROPERTY PATHS)
             Boolean printingUnion       = false;
             RDFPatternGroupMember last  = this.GroupMembers.LastOrDefault(g => g is RDFPattern);
-            this.GetEvaluableMembers().ToList().ForEach(m => {
+            this.GetEvaluablePatternGroupMembers().ToList().ForEach(m => {
 
                 #region PATTERNS
                 if (m is RDFPattern) {
@@ -292,7 +292,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the group members which can be evaluated
         /// </summary>
-        internal IEnumerable<RDFPatternGroupMember> GetEvaluableMembers() {
+        internal IEnumerable<RDFPatternGroupMember> GetEvaluablePatternGroupMembers() {
             return this.GroupMembers.Where(g => g.IsEvaluable);
         }        
         #endregion

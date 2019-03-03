@@ -38,30 +38,30 @@ namespace RDFSharp.Query
             query.PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
-            foreach (var groupMember in patternGroup.GetEvaluableMembers()) {
+            foreach (var evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers()) {
 
                 #region Pattern
-                if (groupMember      is RDFPattern) {
-                    var patternResultsTable         = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)groupMember, (RDFGraph)graphOrStore) :
-                                                                               ApplyPattern((RDFPattern)groupMember, (RDFStore)graphOrStore);
+                if (evaluablePGMember      is RDFPattern) {
+                    var patternResultsTable = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)evaluablePGMember, (RDFGraph)graphOrStore) :
+                                                                       ApplyPattern((RDFPattern)evaluablePGMember, (RDFStore)graphOrStore);
 
                     #region Events
                     //Raise query event messages
-                    var eventMsg    = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)groupMember, graphOrStore, patternResultsTable.Rows.Count);
-                    if (query      is RDFAskQuery)
+                    var eventMsg            = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, graphOrStore, patternResultsTable.Rows.Count);
+                    if (query              is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
-                    else if (query is RDFConstructQuery)
+                    else if (query         is RDFConstructQuery)
                         RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(eventMsg);
-                    else if (query is RDFDescribeQuery)
+                    else if (query         is RDFDescribeQuery)
                         RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(eventMsg);
-                    else if (query is RDFSelectQuery)
+                    else if (query         is RDFSelectQuery)
                         RDFQueryEvents.RaiseSELECTQueryEvaluation(eventMsg);
                     #endregion
 
                     //Set name and metadata of result datatable
-                    patternResultsTable.TableName   = ((RDFPattern)groupMember).ToString();
-                    patternResultsTable.ExtendedProperties.Add("IsOptional",  ((RDFPattern)groupMember).IsOptional);
-                    patternResultsTable.ExtendedProperties.Add("JoinAsUnion", ((RDFPattern)groupMember).JoinAsUnion);
+                    patternResultsTable.TableName = ((RDFPattern)evaluablePGMember).ToString();
+                    patternResultsTable.ExtendedProperties.Add("IsOptional",  ((RDFPattern)evaluablePGMember).IsOptional);
+                    patternResultsTable.ExtendedProperties.Add("JoinAsUnion", ((RDFPattern)evaluablePGMember).JoinAsUnion);
 
                     //Save result datatable
                     query.PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
@@ -69,28 +69,28 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PropertyPath
-                else if (groupMember is RDFPropertyPath) {
-                    var propPathResultsTable        = graphOrStore.IsGraph() ? ApplyPropertyPath((RDFPropertyPath)groupMember, (RDFGraph)graphOrStore) :
-                                                                               ApplyPropertyPath((RDFPropertyPath)groupMember, (RDFStore)graphOrStore);
+                else if (evaluablePGMember is RDFPropertyPath) {
+                    var pPathResultsTable   = graphOrStore.IsGraph() ? ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, (RDFGraph)graphOrStore) :
+                                                                       ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, (RDFStore)graphOrStore);
 
                     #region Events
                     //Raise query event messages
-                    var eventMsg    = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)groupMember, graphOrStore, propPathResultsTable.Rows.Count));
-                    if (query      is RDFAskQuery)
+                    var eventMsg            = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, graphOrStore, pPathResultsTable.Rows.Count));
+                    if (query              is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
-                    else if (query is RDFConstructQuery)
+                    else if (query         is RDFConstructQuery)
                         RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(eventMsg);
-                    else if (query is RDFDescribeQuery)
+                    else if (query         is RDFDescribeQuery)
                         RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(eventMsg);
-                    else if (query is RDFSelectQuery)
+                    else if (query         is RDFSelectQuery)
                         RDFQueryEvents.RaiseSELECTQueryEvaluation(eventMsg);
                     #endregion
 
                     //Set name of result datatable
-                    propPathResultsTable.TableName  = ((RDFPropertyPath)groupMember).ToString();
+                    pPathResultsTable.TableName = ((RDFPropertyPath)evaluablePGMember).ToString();
 
                     //Save result datatable
-                    query.PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(propPathResultsTable);
+                    query.PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                 }
                 #endregion
 
@@ -101,7 +101,7 @@ namespace RDFSharp.Query
         /// Get the comprehensive result table of the given pattern group
         /// </summary>
         internal static void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.GetEvaluableMembers().Any()) {
+            if (patternGroup.GetEvaluablePatternGroupMembers().Any()) {
 
                 //Populate pattern group result table
                 var patternGroupResultTable = RDFQueryUtilities.CombineTables(query.PatternGroupMemberResultTables[patternGroup.QueryMemberID], false);
@@ -131,7 +131,7 @@ namespace RDFSharp.Query
         /// Apply the filters of the given pattern group to its result table
         /// </summary>
         internal static void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup) {
-            if (patternGroup.GetEvaluableMembers().Any() && patternGroup.GetFilters().Any()) {
+            if (patternGroup.GetEvaluablePatternGroupMembers().Any() && patternGroup.GetFilters().Any()) {
                 DataTable filteredTable  = query.QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
                 IEnumerator rowsEnum     = query.QueryMemberResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 

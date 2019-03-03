@@ -134,9 +134,6 @@ namespace RDFSharp.Query
             else {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
             }
-
-            //PatternGroupMemberID
-            this.PatternGroupMemberID  = RDFModelUtilities.CreateHash(this.ToString());
         }
 
         /// <summary>
@@ -160,9 +157,6 @@ namespace RDFSharp.Query
             else {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter is null");
             }
-
-            //PatternGroupMemberID
-            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
         #endregion
 
@@ -197,8 +191,7 @@ namespace RDFSharp.Query
         /// Sets the pattern as optional
         /// </summary>
         public RDFPattern Optional() {
-            this.IsOptional           = true;
-            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            this.IsOptional  = true;
             return this;
         }
 
@@ -206,8 +199,7 @@ namespace RDFSharp.Query
         /// Sets the pattern to be joined as union with the next pattern
         /// </summary>
         public RDFPattern UnionWithNext() {
-            this.JoinAsUnion          = true;
-            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            this.JoinAsUnion = true;
             return this;
         }
         #endregion

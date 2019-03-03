@@ -15,6 +15,7 @@
 */
 
 using System;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -28,7 +29,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern group member
         /// </summary>
-        public Int64 PatternGroupMemberID { get; internal set; }
+        public Int64 PatternGroupMemberID {
+            get { return RDFModelUtilities.CreateHash(this.ToString()); }
+        }
 
         /// <summary>
         /// Flag indicating that the pattern group member is evaluable by the engine

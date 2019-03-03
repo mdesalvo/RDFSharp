@@ -52,8 +52,8 @@ namespace RDFSharp.Query
         public RDFPropertyPath(RDFPatternMember start, RDFPatternMember end) {
 
             //Start
-            if (start  != null) {
-                if (start is RDFResource || start is RDFVariable) {
+            if (start         != null) {
+                if (start     is RDFResource || start is RDFVariable) {
                     this.Start = start;
                 }
                 else {
@@ -65,12 +65,12 @@ namespace RDFSharp.Query
             }
 
             //Steps
-            this.Steps  = new List<RDFPropertyPathStep>();
+            this.Steps         = new List<RDFPropertyPathStep>();
 
             //End
-            if (end    != null) {
-                if (end is RDFResource || end is RDFVariable) {
-                    this.End = end;
+            if (end           != null) {
+                if (end       is RDFResource || end is RDFVariable) {
+                    this.End   = end;
                 }
                 else {
                     throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
@@ -81,10 +81,7 @@ namespace RDFSharp.Query
             }
 
             //IsEvaluable
-            this.IsEvaluable          = false;
-
-            //PatternGroupMemberID
-            this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            this.IsEvaluable   = false;
 
         }
         #endregion
@@ -114,8 +111,7 @@ namespace RDFSharp.Query
                                                       .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
                     });
                 }
-                this.IsEvaluable           = true;
-                this.PatternGroupMemberID  = RDFModelUtilities.CreateHash(this.ToString());
+                this.IsEvaluable            = true;
             }
             return this;
         }
@@ -124,11 +120,10 @@ namespace RDFSharp.Query
         /// Adds the given sequence step to the path
         /// </summary>
         public RDFPropertyPath AddSequenceStep(RDFPropertyPathStep sequenceStep) {
-            if (sequenceStep != null) {
+            if (sequenceStep              != null) {
                 this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
                                            .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
                 this.IsEvaluable           = true;
-                this.PatternGroupMemberID  = RDFModelUtilities.CreateHash(this.ToString());
             }
             return this;
         }

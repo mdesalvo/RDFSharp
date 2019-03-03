@@ -74,7 +74,7 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Gets the query members which can be evaluated
         /// </summary>
-        internal IEnumerable<RDFQueryMember> GetEvaluableMembers() {
+        internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers() {
             return this.QueryMembers.Where(q => q.IsEvaluable);
         }
         #endregion

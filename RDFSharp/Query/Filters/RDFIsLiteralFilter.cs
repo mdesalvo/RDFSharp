@@ -38,10 +38,9 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable
         /// </summary>
         public RDFIsLiteralFilter(RDFVariable variable) {
-            if (variable                 != null) {
-                this.Variable             = variable;
-                this.IsEvaluable          = false;
-                this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            if (variable        != null) {
+                this.Variable    = variable;
+                this.IsEvaluable = false;
             }
             else {
                 throw new RDFQueryException("Cannot create RDFIsLiteralFilter because given \"variable\" parameter is null.");

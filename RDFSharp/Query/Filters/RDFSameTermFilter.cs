@@ -43,12 +43,11 @@ namespace RDFSharp.Query
         /// Default-ctor to build an equality filter between the given variable and the given RDF term 
         /// </summary>
         public RDFSameTermFilter(RDFVariable variable, RDFPatternMember rdfTerm) {
-            if (variable                     != null) {
-                if (rdfTerm                  != null) {
-                    this.Variable             = variable;
-                    this.RDFTerm              = rdfTerm;
-                    this.IsEvaluable          = false;
-                    this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            if (variable            != null) {
+                if (rdfTerm         != null) {
+                    this.Variable    = variable;
+                    this.RDFTerm     = rdfTerm;
+                    this.IsEvaluable = false;
                 }
                 else {
                     throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"rdfTerm\" parameter is null.");

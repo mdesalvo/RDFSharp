@@ -44,13 +44,12 @@ namespace RDFSharp.Query
         /// Default-ctor to build a filter on the given variable for the given language 
         /// </summary>
         public RDFLangMatchesFilter(RDFVariable variable, String language) {
-            if (variable                         != null) {
-                if (language                     != null) {
-                    if (language                 == String.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
-                        this.Variable             = variable;
-                        this.Language             = language.ToUpperInvariant();
-                        this.IsEvaluable          = false;
-                        this.PatternGroupMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            if (variable                != null) {
+                if (language            != null) {
+                    if (language        == String.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
+                        this.Variable    = variable;
+                        this.Language    = language.ToUpperInvariant();
+                        this.IsEvaluable = false;
                     }
                     else {
                         throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent a valid language.");
