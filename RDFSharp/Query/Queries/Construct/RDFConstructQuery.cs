@@ -313,20 +313,20 @@ namespace RDFSharp.Query {
         /// Applies the query to the given datasource
         /// </summary>
         internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource datasource) {
-            this.QueryMemberResultTables.Clear();
-            this.PatternGroupMemberResultTables.Clear();
+            this.QueryMemberFinalResultTables.Clear();
+            this.QueryMemberTemporaryResultTables.Clear();
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
             RDFConstructQueryResult constructResult     = new RDFConstructQueryResult(this.ToString());
             if (this.GetEvaluableQueryMembers().Any())  {
 
                 //Iterate the evaluable members of the query
-                var fedPatternGroupMemberResultTables   = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQMember          in this.GetEvaluableQueryMembers()) {
+                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                foreach (var evaluableQueryMember      in this.GetEvaluableQueryMembers()) {
 
                     #region PATTERN GROUP
-                    if (evaluableQMember               is RDFPatternGroup) {
-                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQMember, datasource));
+                    if (evaluableQueryMember               is RDFPatternGroup) {
+                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())  {
@@ -334,39 +334,39 @@ namespace RDFSharp.Query {
                             #region TrueFederations
                             foreach (var store         in (RDFFederation)datasource) {
 
-                                //Step FED.1: Evaluate the patterns of the current pattern group on the current store
-                                RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQMember, store);
+                                //Step FED.1: Evaluate the current pattern group on the current store
+                                RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, store);
 
-                                //Step FED.2: Federate the patterns of the current pattern group on the current store
-                                if (!fedPatternGroupMemberResultTables.ContainsKey(evaluableQMember.QueryMemberID)) {
-                                     fedPatternGroupMemberResultTables.Add(evaluableQMember.QueryMemberID, this.PatternGroupMemberResultTables[evaluableQMember.QueryMemberID]);
+                                //Step FED.2: Federate the results of the current pattern group on the current store
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
+                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
                                 }
                                 else {
-                                     fedPatternGroupMemberResultTables[evaluableQMember.QueryMemberID].ForEach(fprt =>
-                                       fprt.Merge(this.PatternGroupMemberResultTables[evaluableQMember.QueryMemberID].Single(prt => prt.TableName.Equals(fprt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                       fqmtrt.Merge(this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
                                 }
 
                             }
-                            this.PatternGroupMemberResultTables[evaluableQMember.QueryMemberID] = fedPatternGroupMemberResultTables[evaluableQMember.QueryMemberID];
+                            this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
                             #endregion
 
                         }
                         else {
-                            RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQMember, datasource);
+                            RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, datasource);
                         }
 
                         //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.FinalizePatternGroup(this, (RDFPatternGroup)evaluableQMember);
+                        RDFQueryEngine.FinalizePatternGroup(this, (RDFPatternGroup)evaluableQueryMember);
 
                         //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, (RDFPatternGroup)evaluableQMember);
+                        RDFQueryEngine.ApplyFilters(this, (RDFPatternGroup)evaluableQueryMember);
                     }
                     #endregion
 
                 }
 
                 //Step 4: Get the result table of the query
-                DataTable queryResultTable              = RDFQueryUtilities.CombineTables(this.QueryMemberResultTables.Values.ToList(), false);
+                DataTable queryResultTable              = RDFQueryUtilities.CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
 
                 //Step 5: Fill the templates from the result table
                 DataTable filledResultTable             = RDFQueryEngine.FillTemplates(this, queryResultTable);
