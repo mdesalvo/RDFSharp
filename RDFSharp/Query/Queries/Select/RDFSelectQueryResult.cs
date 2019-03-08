@@ -30,7 +30,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSelectQueryResult is a container for SPARQL "SELECT" query results.
     /// </summary>
-    public class RDFSelectQueryResult {
+    public class RDFSelectQueryResult: RDFQueryResult {
 
         #region Properties
         /// <summary>
@@ -51,7 +51,8 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT result
         /// </summary>
         internal RDFSelectQueryResult() {
-            this.SelectResults = new DataTable();
+            this.SelectResults  = new DataTable();
+            this.HasTabularData = true;
         }
         #endregion
 
@@ -224,7 +225,7 @@ namespace RDFSharp.Query
                                             if (varNode.Attributes.Count > 0) {
                                                 XmlAttribute varAttr = varNode.Attributes["name"];
                                                 if (varAttr         != null && varAttr.Value != String.Empty) {
-                                                    RDFQueryUtilities.AddColumn(result.SelectResults, varAttr.Value);
+                                                    RDFQueryEngine.AddColumn(result.SelectResults, varAttr.Value);
                                                 }
                                                 else {
                                                     throw new Exception("one \"variable\" node was found without, or with empty, \"name\" attribute.");
@@ -326,7 +327,7 @@ namespace RDFSharp.Query
                                                     }
 
                                                 }
-                                                RDFQueryUtilities.AddRow(result.SelectResults, results);
+                                                RDFQueryEngine.AddRow(result.SelectResults, results);
                                             }
                                         }
                                         #endregion

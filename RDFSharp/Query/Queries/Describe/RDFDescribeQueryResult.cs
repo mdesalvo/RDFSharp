@@ -25,7 +25,7 @@ namespace RDFSharp.Query {
     /// <summary>
     /// RDFDescribeQueryResult is a container for SPARQL "DESCRIBE" query results.
     /// </summary>
-    public class RDFDescribeQueryResult {
+    public class RDFDescribeQueryResult: RDFQueryResult {
 
         #region Properties
         /// <summary>
@@ -49,6 +49,7 @@ namespace RDFSharp.Query {
         /// </summary>
         internal RDFDescribeQueryResult(String tableName) {
             this.DescribeResults = new DataTable(tableName);
+            this.HasGraphData    = true;
         }
         #endregion
 

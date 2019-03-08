@@ -245,9 +245,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFConstructQueryResult ApplyToGraph(RDFGraph graph) {
             if (graph != null) {
-                return this.ApplyToDataSource(graph);
+                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, graph);
             }
-            return new RDFConstructQueryResult(this.ToString());
+            else {
+                return new RDFConstructQueryResult(this.ToString());
+            }
         }
 
         /// <summary>
@@ -255,9 +257,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFConstructQueryResult ApplyToStore(RDFStore store) {
             if (store != null) {
-                return this.ApplyToDataSource(store);
+                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, store);
             }
-            return new RDFConstructQueryResult(this.ToString());
+            else {
+                return new RDFConstructQueryResult(this.ToString());
+            }
         }
 
         /// <summary>
@@ -265,9 +269,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFConstructQueryResult ApplyToFederation(RDFFederation federation) {
             if (federation != null) {
-                return this.ApplyToDataSource(federation);
+                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, federation);
             }
-            return new RDFConstructQueryResult(this.ToString());
+            else {
+                return new RDFConstructQueryResult(this.ToString());
+            }
         }
 
         /// <summary>
@@ -304,80 +310,8 @@ namespace RDFSharp.Query {
 
                 }
 
-                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated CONSTRUCTQuery on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));
+                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated CONSTRUCT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));
             }
-            return constructResult;
-        }
-
-        /// <summary>
-        /// Applies the query to the given datasource
-        /// </summary>
-        internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource datasource) {
-            this.QueryMemberFinalResultTables.Clear();
-            this.QueryMemberTemporaryResultTables.Clear();
-            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
-
-            RDFConstructQueryResult constructResult     = new RDFConstructQueryResult(this.ToString());
-            if (this.GetEvaluableQueryMembers().Any())  {
-
-                //Iterate the evaluable members of the query
-                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember      in this.GetEvaluableQueryMembers()) {
-
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember               is RDFPatternGroup) {
-                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        if (datasource.IsFederation())  {
-
-                            #region TrueFederations
-                            foreach (var store         in (RDFFederation)datasource) {
-
-                                //Step FED.1: Evaluate the current pattern group on the current store
-                                RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, store);
-
-                                //Step FED.2: Federate the results of the current pattern group on the current store
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
-                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                }
-                                else {
-                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                       fqmtrt.Merge(this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                                }
-
-                            }
-                            this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-
-                        }
-                        else {
-                            RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, datasource);
-                        }
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.FinalizePatternGroup(this, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                }
-
-                //Step 4: Get the result table of the query
-                DataTable queryResultTable              = RDFQueryUtilities.CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
-
-                //Step 5: Fill the templates from the result table
-                DataTable filledResultTable             = RDFQueryEngine.FillTemplates(this, queryResultTable);
-
-                //Step 6: Apply the modifiers of the query to the result table
-                constructResult.ConstructResults        = RDFQueryEngine.ApplyModifiers(this, filledResultTable);
-
-            }
-            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated SPARQL CONSTRUCT query on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
-
-            constructResult.ConstructResults.TableName  = this.ToString();
             return constructResult;
         }
         #endregion

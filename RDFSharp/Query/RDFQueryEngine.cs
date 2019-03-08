@@ -26,16 +26,355 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFQueryEngine is the engine for construction and execution of SPARQL queries (MIRELLA)
+    /// RDFQueryEngine is the engine for execution of SPARQL queries (MIRELLA)
     /// </summary>
-    internal static class RDFQueryEngine {
+    internal class RDFQueryEngine {
+
+        #region Properties
+        /// <summary>
+        /// Dictionary of temporary result tables produced by evaluation of query members
+        /// </summary>
+        internal Dictionary<Int64, List<DataTable>> QueryMemberTemporaryResultTables { get; set; }
+
+        /// <summary>
+        /// Dictionary of final result tables produced by evaluation of query members
+        /// </summary>
+        internal Dictionary<Int64, DataTable> QueryMemberFinalResultTables { get; set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to initialize a query engine instance
+        /// </summary>
+        private RDFQueryEngine() {
+            this.QueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+            this.QueryMemberFinalResultTables     = new Dictionary<Int64, DataTable>();
+        }
+        internal static RDFQueryEngine CreateNew() {
+            return new RDFQueryEngine();
+        }
+        #endregion
+
+        #region Methods
 
         #region MIRELLA SPARQL
         /// <summary>
+        /// Evaluates the given SPARQL SELECT query on the given RDF datasource
+        /// </summary>
+        internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource) {
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
+
+            RDFSelectQueryResult queryResult            = new RDFSelectQueryResult();
+            if (selectQuery.GetEvaluableQueryMembers().Any()) {
+
+                //Iterate the evaluable members of the query
+                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                foreach (var evaluableQueryMember      in selectQuery.GetEvaluableQueryMembers()) {
+
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember           is RDFPatternGroup) {
+                        RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 1: Get the intermediate result tables of the current pattern group
+                        if (datasource.IsFederation())  {
+
+                            #region TrueFederations
+                            foreach (var store         in (RDFFederation)datasource) {
+
+                                //Step FED.1: Evaluate the current pattern group on the current store
+                                EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, store);
+
+                                //Step FED.2: Federate the results of the current pattern group on the current store
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
+                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                                }
+                                else {
+                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                }
+
+                            }
+                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                            #endregion
+
+                        }
+                        else {
+                            EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                        }
+
+                        //Step 2: Get the result table of the current pattern group
+                        FinalizePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Step 3: Apply the filters of the current pattern group to its result table
+                        ApplyFilters(selectQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                }
+
+                //Step 4: Get the result table of the query
+                var queryResultTable                    = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+
+                //Step 5: Apply the modifiers of the query to the result table
+                queryResult.SelectResults               = ApplyModifiers(selectQuery, queryResultTable);
+
+            }
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
+
+            queryResult.SelectResults.TableName         = selectQuery.ToString();
+            return queryResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL DESCRIBE query on the given RDF datasource
+        /// </summary>
+        internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource) {
+            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
+
+            RDFDescribeQueryResult queryResult          = new RDFDescribeQueryResult(this.ToString());
+            if (describeQuery.GetEvaluableQueryMembers().Any()) {
+
+                //Iterate the evaluable members of the query
+                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                foreach (var evaluableQueryMember      in describeQuery.GetEvaluableQueryMembers()) {
+
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember           is RDFPatternGroup) {
+                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 1: Get the intermediate result tables of the current pattern group
+                        if (datasource.IsFederation())  {
+
+                            #region TrueFederations
+                            foreach (var store         in (RDFFederation)datasource) {
+
+                                //Step FED.1: Evaluate the current pattern group on the current store
+                                EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, store);
+
+                                //Step FED.2: Federate the results of the current pattern group on the current store
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
+                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                                }
+                                else {
+                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                        fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                }
+
+                            }
+                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                            #endregion
+
+                        }
+                        else {
+                            EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                        }
+
+                        //Step 2: Get the result table of the current pattern group
+                        FinalizePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Step 3: Apply the filters of the current pattern group to its result table
+                        ApplyFilters(describeQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                }
+
+                //Step 4: Get the result table of the query
+                DataTable queryResultTable              = CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
+
+                //Step 5: Describe the terms from the result table
+                DataTable describeResultTable           = new DataTable(this.ToString());
+                if (datasource.IsFederation()) {
+
+                    #region TrueFederations
+                    foreach (var store                 in (RDFFederation)datasource) {
+                        describeResultTable.Merge(DescribeTerms(describeQuery, store, queryResultTable), true, MissingSchemaAction.Add);
+                    }
+                    #endregion
+
+                }
+                else {
+                    describeResultTable                 = DescribeTerms(describeQuery, datasource, queryResultTable);
+                }
+
+                //Step 6: Apply the modifiers of the query to the result table
+                queryResult.DescribeResults             = ApplyModifiers(describeQuery, describeResultTable);
+
+            }
+            else {
+
+                //In this case the only chance to proceed is to have resources in the describe terms,
+                //which will be used to search for S-P-O data. Variables are ignored in this scenario.
+                if (describeQuery.DescribeTerms.Any(dt  => dt is RDFResource)) {
+
+                    //Step 1: Describe the terms from the result table
+                    DataTable describeResultTable       = new DataTable(this.ToString());
+                    if (datasource.IsFederation()) {
+
+                        #region TrueFederations
+                        foreach (var store             in (RDFFederation)datasource) {
+                            describeResultTable.Merge(DescribeTerms(describeQuery, store, new DataTable()), true, MissingSchemaAction.Add);
+                        }
+                        #endregion
+
+                    }
+                    else {
+                        describeResultTable             = DescribeTerms(describeQuery, datasource, new DataTable());
+                    }
+
+                    //Step 2: Apply the modifiers of the query to the result table
+                    queryResult.DescribeResults         = ApplyModifiers(describeQuery, describeResultTable);
+
+                }
+
+            }
+            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated SPARQL DESCRIBE query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.DescribeResultsCount));
+
+            queryResult.DescribeResults.TableName       = describeQuery.ToString();
+            return queryResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL CONSTRUCT query on the given RDF datasource
+        /// </summary>
+        internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource) {
+            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
+
+            RDFConstructQueryResult constructResult     = new RDFConstructQueryResult(this.ToString());
+            if (constructQuery.GetEvaluableQueryMembers().Any()) {
+
+                //Iterate the evaluable members of the query
+                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                foreach (var evaluableQueryMember      in constructQuery.GetEvaluableQueryMembers()) {
+
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember           is RDFPatternGroup) {
+                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 1: Get the intermediate result tables of the current pattern group
+                        if (datasource.IsFederation())  {
+
+                            #region TrueFederations
+                            foreach (var store         in (RDFFederation)datasource) {
+
+                                //Step FED.1: Evaluate the current pattern group on the current store
+                                EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, store);
+
+                                //Step FED.2: Federate the results of the current pattern group on the current store
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
+                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                                }
+                                else {
+                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                }
+
+                            }
+                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                            #endregion
+
+                        }
+                        else {
+                            EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                        }
+
+                        //Step 2: Get the result table of the current pattern group
+                        FinalizePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Step 3: Apply the filters of the current pattern group to its result table
+                        ApplyFilters(constructQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                }
+
+                //Step 4: Get the result table of the query
+                DataTable queryResultTable              = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+
+                //Step 5: Fill the templates from the result table
+                DataTable filledResultTable             = FillTemplates(constructQuery, queryResultTable);
+
+                //Step 6: Apply the modifiers of the query to the result table
+                constructResult.ConstructResults        = ApplyModifiers(constructQuery, filledResultTable);
+
+            }
+            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated SPARQL CONSTRUCT query on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
+
+            constructResult.ConstructResults.TableName  = constructQuery.ToString();
+            return constructResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL ASK query on the given RDF datasource
+        /// </summary>
+        internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource) {
+            RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
+
+            RDFAskQueryResult askResult                 = new RDFAskQueryResult();
+            if (askQuery.GetEvaluableQueryMembers().Any()) {
+
+                //Iterate the evaluable members of the query
+                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                foreach (var evaluableQueryMember      in askQuery.GetEvaluableQueryMembers()) {
+
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember           is RDFPatternGroup) {
+                        RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 1: Get the intermediate result tables of the current pattern group
+                        if (datasource.IsFederation()) {
+
+                            #region TrueFederations
+                            foreach (var store        in (RDFFederation)datasource) {
+
+                                //Step FED.1: Evaluate the current pattern group on the current store
+                                EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, store);
+
+                                //Step FED.2: Federate the results of the current pattern group on the current store
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
+                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                                }
+                                else {
+                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                        fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                }
+
+                            }
+                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                            #endregion
+
+                        }
+                        else {
+                            EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                        }
+
+                        //Step 2: Get the result table of the current pattern group
+                        FinalizePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Step 3: Apply the filters of the current pattern group to its result table
+                        ApplyFilters(askQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                }
+
+                //Step 4: Get the result table of the query
+                var queryResultTable                    = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+
+                //Step 5: Transform the result into a boolean response 
+                askResult.AskResult                     = (queryResultTable.Rows.Count > 0);
+
+            }
+            RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated SPARQL ASK query on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));
+
+            return askResult;
+        }
+
+        /// <summary>
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
-        internal static void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
-            query.QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
+        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore) {
+            QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
             foreach (var evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers()) {
@@ -64,7 +403,7 @@ namespace RDFSharp.Query
                     patternResultsTable.ExtendedProperties.Add("JoinAsUnion", ((RDFPattern)evaluablePGMember).JoinAsUnion);
 
                     //Save result datatable
-                    query.QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                 }
                 #endregion
 
@@ -90,7 +429,7 @@ namespace RDFSharp.Query
                     pPathResultsTable.TableName = ((RDFPropertyPath)evaluablePGMember).ToString();
 
                     //Save result datatable
-                    query.QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
+                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                 }
                 #endregion
 
@@ -100,28 +439,28 @@ namespace RDFSharp.Query
         /// <summary>
         /// Get the final result table of the given pattern group
         /// </summary>
-        internal static void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup) {
+        internal void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup) {
             if (patternGroup.GetEvaluablePatternGroupMembers().Any()) {
 
                 //Populate query member result table
-                var queryMemberFinalResultTable = RDFQueryUtilities.CombineTables(query.QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
+                var queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
 
                 //Add it to the list of query member result tables
-                query.QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
+                QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
 
                 //Populate its name and metadata
-                query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
-                if (!query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional")) {
-                     query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
+                QueryMemberFinalResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
+                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional")) {
+                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
                 }
                 else {
-                     query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
+                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
                 }
-                if (!query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion")) {
-                     query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
+                if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion")) {
+                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
                 }
                 else {
-                    query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["JoinAsUnion"] = patternGroup.JoinAsUnion;
                 }
 
             }
@@ -130,10 +469,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Apply the filters of the given pattern group to its result table
         /// </summary>
-        internal static void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup) {
+        internal void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup) {
             if (patternGroup.GetEvaluablePatternGroupMembers().Any() && patternGroup.GetFilters().Any()) {
-                DataTable filteredTable  = query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].Clone();
-                IEnumerator rowsEnum     = query.QueryMemberFinalResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
+                DataTable filteredTable  = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Clone();
+                IEnumerator rowsEnum     = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
                 Boolean keepRow          = false;
@@ -156,30 +495,30 @@ namespace RDFSharp.Query
                 }
 
                 //Save the result datatable
-                query.QueryMemberFinalResultTables[patternGroup.QueryMemberID] = filteredTable;
+                QueryMemberFinalResultTables[patternGroup.QueryMemberID] = filteredTable;
             }
         }
 
         /// <summary>
         /// Apply the query modifiers to the query result table
         /// </summary>
-        internal static DataTable ApplyModifiers(RDFQuery query, DataTable table) {
+        internal DataTable ApplyModifiers(RDFQuery query, DataTable table) {
 
             //SELECT query has ORDERBY modifiers and PROJECTION operator
-            if (query is RDFSelectQuery) {
+            if (query                  is RDFSelectQuery) {
 
                 //Apply the ORDERBY modifiers
-                var ordModifiers  = query.GetModifiers().Where(m => m is RDFOrderByModifier);
+                var ordModifiers        = query.GetModifiers().Where(m => m is RDFOrderByModifier);
                 if (ordModifiers.Any()) {
-                    table         = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
-                    table         = table.DefaultView.ToTable();
+                    table               = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+                    table               = table.DefaultView.ToTable();
                 }
 
                 //Apply the PROJECTION operator
                 if (((RDFSelectQuery)query).ProjectionVars.Any()) {
 
                     //Remove non-projection variables
-                    var nonProjCols    = new List<DataColumn>();
+                    var nonProjCols     = new List<DataColumn>();
                     foreach(DataColumn dtCol in table.Columns) {
                         if (!((RDFSelectQuery)query).ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase))) {
                              nonProjCols.Add(dtCol);
@@ -190,14 +529,14 @@ namespace RDFSharp.Query
                     });
 
                     //Adjust ordinals
-                    foreach (var pVar in ((RDFSelectQuery)query).ProjectionVars) {
-                        RDFQueryUtilities.AddColumn(table, pVar.Key.ToString());
+                    foreach (var pVar  in ((RDFSelectQuery)query).ProjectionVars) {
+                        AddColumn(table, pVar.Key.ToString());
                         table.Columns[pVar.Key.ToString()].SetOrdinal(pVar.Value);
                     }
 
                 }
                 //Remove property path variables
-                var propPathCols       = new List<DataColumn>();
+                var propPathCols        = new List<DataColumn>();
                 foreach (DataColumn dtCol in table.Columns) {
                     if (dtCol.ColumnName.StartsWith("?__PP")) {
                         propPathCols.Add(dtCol);
@@ -210,21 +549,21 @@ namespace RDFSharp.Query
             }
 
             //Apply the DISTINCT modifier
-            var distinctModifier  = query.GetModifiers().SingleOrDefault(m => m is RDFDistinctModifier);
-            if (distinctModifier != null) {
-                table             = distinctModifier.ApplyModifier(table);
+            var distinctModifier        = query.GetModifiers().SingleOrDefault(m => m is RDFDistinctModifier);
+            if (distinctModifier       != null) {
+                table                   = distinctModifier.ApplyModifier(table);
             }
 
             //Apply the OFFSET modifier
-            var offsetModifier    = query.GetModifiers().SingleOrDefault(m => m is RDFOffsetModifier);
-            if (offsetModifier   != null) {
-                table             = offsetModifier.ApplyModifier(table);
+            var offsetModifier          = query.GetModifiers().SingleOrDefault(m => m is RDFOffsetModifier);
+            if (offsetModifier         != null) {
+                table                   = offsetModifier.ApplyModifier(table);
             }            
 
             //Apply the LIMIT modifier
-            var limitModifier     = query.GetModifiers().SingleOrDefault(m => m is RDFLimitModifier);
-            if (limitModifier    != null) {
-                table             = limitModifier.ApplyModifier(table);
+            var limitModifier           = query.GetModifiers().SingleOrDefault(m => m is RDFLimitModifier);
+            if (limitModifier          != null) {
+                table                   = limitModifier.ApplyModifier(table);
             }
 
             return table;
@@ -233,17 +572,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Fills the templates of the given CONSTRUCT query with data from the given result table
         /// </summary>
-        internal static DataTable FillTemplates(RDFConstructQuery constructQuery, DataTable resultTable) {
+        internal DataTable FillTemplates(RDFConstructQuery constructQuery, DataTable resultTable) {
 
             //Create the structure of the result datatable
-            DataTable result = new DataTable("CONSTRUCT_RESULTS");
+            DataTable result       = new DataTable("CONSTRUCT_RESULTS");
             result.Columns.Add("SUBJECT",   Type.GetType("System.String"));
             result.Columns.Add("PREDICATE", Type.GetType("System.String"));
             result.Columns.Add("OBJECT",    Type.GetType("System.String"));
             result.AcceptChanges();
 
             //Initialize working variables
-            var constructRow = new Dictionary<String, String>();
+            var constructRow       = new Dictionary<String, String>();
             constructRow.Add("SUBJECT",   null);
             constructRow.Add("PREDICATE", null);
             constructRow.Add("OBJECT",    null);
@@ -258,7 +597,7 @@ namespace RDFSharp.Query
                     constructRow["SUBJECT"]       = tp.Subject.ToString();
                     constructRow["PREDICATE"]     = tp.Predicate.ToString();
                     constructRow["OBJECT"]        = tp.Object.ToString();
-                    RDFQueryUtilities.AddRow(result, constructRow);
+                    AddRow(result, constructRow);
                     continue;
                 }
                 #endregion
@@ -270,7 +609,7 @@ namespace RDFSharp.Query
 
                     #region SUBJECT
                     //Subject of the template is a variable
-                    if (tp.Subject is RDFVariable) {
+                    if (tp.Subject               is RDFVariable) {
 
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template subject
@@ -295,7 +634,7 @@ namespace RDFSharp.Query
 
                     #region PREDICATE
                     //Predicate of the template is a variable
-                    if (tp.Predicate is RDFVariable) {
+                    if (tp.Predicate             is RDFVariable) {
 
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template predicate
@@ -319,7 +658,7 @@ namespace RDFSharp.Query
 
                     #region OBJECT
                     //Object of the template is a variable
-                    if (tp.Object is RDFVariable) {
+                    if (tp.Object                is RDFVariable) {
 
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template object
@@ -338,7 +677,7 @@ namespace RDFSharp.Query
                     #endregion
 
                     //Insert the triple into the final table
-                    RDFQueryUtilities.AddRow(result, constructRow);
+                    AddRow(result, constructRow);
 
                 }
                 #endregion
@@ -351,7 +690,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Describes the terms of the given DESCRIBE query with data from the given result table
         /// </summary>
-        internal static DataTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource graphOrStore, DataTable resultTable) {
+        internal DataTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource graphOrStore, DataTable resultTable) {
 
             //Create the structure of the result datatable
             DataTable result                  = new DataTable("DESCRIBE_RESULTS");
@@ -546,9 +885,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given graph
         /// </summary>
-        internal static DataTable ApplyPattern(RDFPattern pattern, RDFGraph graph) {
-            var matchingTriples  = new List<RDFTriple>();
-            var resultTable      = new DataTable();
+        internal DataTable ApplyPattern(RDFPattern pattern, RDFGraph graph) {
+            var matchingTriples             = new List<RDFTriple>();
+            var resultTable                 = new DataTable();
 
             //Apply the right pattern to the graph
             if (pattern.Subject            is RDFResource) {
@@ -558,8 +897,8 @@ namespace RDFSharp.Query
                                                                                      (RDFResource)pattern.Predicate,
                                                                                      null,
                                                                                      null);
-                    RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                    RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, resultTable);
+                    AddColumn(resultTable, pattern.Object.ToString());
+                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, resultTable);
                 }
                 else {
                     if (pattern.Object     is RDFResource || pattern.Object is RDFLiteral) {
@@ -577,8 +916,8 @@ namespace RDFSharp.Query
                                                                                      null,
                                                                                      (RDFLiteral)pattern.Object);
                         }
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, resultTable);
+                        AddColumn(resultTable, pattern.Predicate.ToString());
+                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, resultTable);
                     }
                     else {
                         //S->->
@@ -590,9 +929,9 @@ namespace RDFSharp.Query
                         if (pattern.Predicate.Equals(pattern.Object)) {
                             matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
                         }
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
+                        AddColumn(resultTable, pattern.Predicate.ToString());
+                        AddColumn(resultTable, pattern.Object.ToString());
+                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
                     }
                 }
             }
@@ -613,8 +952,8 @@ namespace RDFSharp.Query
                                                                                      null,
                                                                                      (RDFLiteral)pattern.Object);
                         }
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, resultTable);
+                        AddColumn(resultTable, pattern.Subject.ToString());
+                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, resultTable);
                     }
                     else {
                         //->P->
@@ -626,9 +965,9 @@ namespace RDFSharp.Query
                         if (pattern.Subject.Equals(pattern.Object)) {
                             matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
                         }
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
+                        AddColumn(resultTable, pattern.Subject.ToString());
+                        AddColumn(resultTable, pattern.Object.ToString());
+                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
                     }
                 }
                 else {
@@ -650,9 +989,9 @@ namespace RDFSharp.Query
                         if (pattern.Subject.Equals(pattern.Predicate)) {
                             matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
                         }
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
+                        AddColumn(resultTable, pattern.Subject.ToString());
+                        AddColumn(resultTable, pattern.Predicate.ToString());
+                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
                     }
                     else {
                         //->->
@@ -672,10 +1011,10 @@ namespace RDFSharp.Query
                         if (pattern.Predicate.Equals(pattern.Object)) {
                             matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
                         }
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
+                        AddColumn(resultTable, pattern.Subject.ToString());
+                        AddColumn(resultTable, pattern.Predicate.ToString());
+                        AddColumn(resultTable, pattern.Object.ToString());
+                        PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
                     }
                 }
             }
@@ -683,41 +1022,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the given property path to the given graph
-        /// </summary>
-        internal static DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFGraph graph) {
-            var resultTable       = new DataTable();
-
-            //Translate property path into equivalent list of patterns
-            var patternList       = propertyPath.GetPatternList();
-
-            //Evaluate produced list of patterns
-            var patternTables     = new List<DataTable>();
-            patternList.ForEach(p => {
-
-                //Apply pattern to graph
-                var patternTable  = ApplyPattern(p, graph);
-
-                //Set extended properties
-                patternTable.ExtendedProperties.Add("IsOptional",  p.IsOptional);
-                patternTable.ExtendedProperties.Add("JoinAsUnion", p.JoinAsUnion);
-
-                //Add produced table
-                patternTables.Add(patternTable);
-
-            });
-
-            //Merge produced list of tables
-            resultTable           = RDFQueryUtilities.CombineTables(patternTables, false);
-            resultTable.TableName = propertyPath.ToString();
-
-            return resultTable;
-        }
-
-        /// <summary>
         /// Applies the given pattern to the given store
         /// </summary>
-        internal static DataTable ApplyPattern(RDFPattern pattern, RDFStore store) {
+        internal DataTable ApplyPattern(RDFPattern pattern, RDFStore store) {
             RDFMemoryStore result = new RDFMemoryStore();
             DataTable resultTable = new DataTable();
 
@@ -732,8 +1039,8 @@ namespace RDFSharp.Query
                                                                              (RDFResource)pattern.Predicate,
                                                                              null,
                                                                              null);
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.O, resultTable);
+                            AddColumn(resultTable, pattern.Object.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.O, resultTable);
                         }
                         else {
                             if (pattern.Object     is RDFResource || pattern.Object is RDFLiteral) {
@@ -753,8 +1060,8 @@ namespace RDFSharp.Query
                                                                              null,
                                                                              (RDFLiteral)pattern.Object);
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.P, resultTable);
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.P, resultTable);
                             }
                             else {
                                 //C->S->->
@@ -767,9 +1074,9 @@ namespace RDFSharp.Query
                                 if (pattern.Predicate.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
                             }
                         }
                     }
@@ -792,8 +1099,8 @@ namespace RDFSharp.Query
                                                                              null,
                                                                              (RDFLiteral)pattern.Object);
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.S, resultTable);
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.S, resultTable);
                             }
                             else {
                                 //C->->P->
@@ -806,9 +1113,9 @@ namespace RDFSharp.Query
                                 if (pattern.Subject.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
                             }
                         }
                         else {
@@ -833,9 +1140,9 @@ namespace RDFSharp.Query
                                 if (pattern.Subject.Equals(pattern.Predicate)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
                             }
                             else {
                                 //C->->->
@@ -856,10 +1163,10 @@ namespace RDFSharp.Query
                                 if (pattern.Predicate.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
                             }
                         }
                     }
@@ -884,8 +1191,8 @@ namespace RDFSharp.Query
                                                                              null,
                                                                              (RDFLiteral)pattern.Object);
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.C, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.C, resultTable);
                             }
                             else {
                                 //->S->P->
@@ -898,9 +1205,9 @@ namespace RDFSharp.Query
                                 if (pattern.Context.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CO, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CO, resultTable);
                             }
                         }
                         else {
@@ -925,9 +1232,9 @@ namespace RDFSharp.Query
                                 if (pattern.Context.Equals(pattern.Predicate)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Predicate)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CP, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CP, resultTable);
                             }
                             else {
                                 //->S->->
@@ -948,10 +1255,10 @@ namespace RDFSharp.Query
                                 if (pattern.Predicate.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CPO, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CPO, resultTable);
                             }
                         }
                     }
@@ -978,9 +1285,9 @@ namespace RDFSharp.Query
                                 if (pattern.Context.Equals(pattern.Subject)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Context.Equals(mt.Subject)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CS, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CS, resultTable);
                             }
                             else {
                                 //->->P->
@@ -1001,10 +1308,10 @@ namespace RDFSharp.Query
                                 if (pattern.Subject.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CSO, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CSO, resultTable);
                             }
                         }
                         else {
@@ -1037,10 +1344,10 @@ namespace RDFSharp.Query
                                 if (pattern.Subject.Equals(pattern.Predicate)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CSP, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CSP, resultTable);
                             }
                             else {
                                 //->->->
@@ -1073,11 +1380,11 @@ namespace RDFSharp.Query
                                 if (pattern.Predicate.Equals(pattern.Object)) {
                                     result          = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                                 }
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Context.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                                RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                                RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CSPO, resultTable);
+                                AddColumn(resultTable, pattern.Context.ToString());
+                                AddColumn(resultTable, pattern.Subject.ToString());
+                                AddColumn(resultTable, pattern.Predicate.ToString());
+                                AddColumn(resultTable, pattern.Object.ToString());
+                                PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.CSPO, resultTable);
                             }
                         }
                     }
@@ -1094,8 +1401,8 @@ namespace RDFSharp.Query
                                                                              (RDFResource)pattern.Predicate,
                                                                              null,
                                                                              null);
-                        RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                        RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.O, resultTable);
+                        AddColumn(resultTable, pattern.Object.ToString());
+                        PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.O, resultTable);
                     }
                     else {
                         if (pattern.Object         is RDFResource || pattern.Object is RDFLiteral) {
@@ -1115,8 +1422,8 @@ namespace RDFSharp.Query
                                                                              null,
                                                                              (RDFLiteral)pattern.Object);
                             }
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.P, resultTable);
+                            AddColumn(resultTable, pattern.Predicate.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.P, resultTable);
                         }
                         else {
                             //S->->
@@ -1129,9 +1436,9 @@ namespace RDFSharp.Query
                             if (pattern.Predicate.Equals(pattern.Object)) {
                                 result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                             }
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
+                            AddColumn(resultTable, pattern.Predicate.ToString());
+                            AddColumn(resultTable, pattern.Object.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.PO, resultTable);
                         }
                     }
                 }
@@ -1154,8 +1461,8 @@ namespace RDFSharp.Query
                                                                              null,
                                                                              (RDFLiteral)pattern.Object);
                             }
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.S, resultTable);
+                            AddColumn(resultTable, pattern.Subject.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.S, resultTable);
                         }
                         else {
                             //->P->
@@ -1168,9 +1475,9 @@ namespace RDFSharp.Query
                             if (pattern.Subject.Equals(pattern.Object)) {
                                 result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Object)).ToList());
                             }
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
+                            AddColumn(resultTable, pattern.Subject.ToString());
+                            AddColumn(resultTable, pattern.Object.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SO, resultTable);
                         }
                     }
                     else {
@@ -1195,9 +1502,9 @@ namespace RDFSharp.Query
                             if (pattern.Subject.Equals(pattern.Predicate)) {
                                 result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Subject.Equals(mt.Predicate)).ToList());
                             }
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
+                            AddColumn(resultTable, pattern.Subject.ToString());
+                            AddColumn(resultTable, pattern.Predicate.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SP, resultTable);
                         }
                         else {
                             //->->
@@ -1218,10 +1525,10 @@ namespace RDFSharp.Query
                             if (pattern.Predicate.Equals(pattern.Object)) {
                                 result              = new RDFMemoryStore(result.Quadruples.Values.Where(mt => mt.Predicate.Equals(mt.Object)).ToList());
                             }
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Subject.ToString());
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Predicate.ToString());
-                            RDFQueryUtilities.AddColumn(resultTable, pattern.Object.ToString());
-                            RDFQueryUtilities.PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
+                            AddColumn(resultTable, pattern.Subject.ToString());
+                            AddColumn(resultTable, pattern.Predicate.ToString());
+                            AddColumn(resultTable, pattern.Object.ToString());
+                            PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.SPO, resultTable);
                         }
                     }
                 }
@@ -1231,9 +1538,41 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Applies the given property path to the given graph
+        /// </summary>
+        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFGraph graph) {
+            var resultTable       = new DataTable();
+
+            //Translate property path into equivalent list of patterns
+            var patternList       = propertyPath.GetPatternList();
+
+            //Evaluate produced list of patterns
+            var patternTables     = new List<DataTable>();
+            patternList.ForEach(p => {
+
+                //Apply pattern to graph
+                var patternTable  = ApplyPattern(p, graph);
+
+                //Set extended properties
+                patternTable.ExtendedProperties.Add("IsOptional", p.IsOptional);
+                patternTable.ExtendedProperties.Add("JoinAsUnion", p.JoinAsUnion);
+
+                //Add produced table
+                patternTables.Add(patternTable);
+
+            });
+
+            //Merge produced list of tables
+            resultTable           = CombineTables(patternTables, false);
+            resultTable.TableName = propertyPath.ToString();
+
+            return resultTable;
+        }
+
+        /// <summary>
         /// Applies the given property path to the given store
         /// </summary>
-        internal static DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFStore store) {
+        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFStore store) {
             var resultTable       = new DataTable();
 
             //Translate property path into equivalent list of patterns
@@ -1256,13 +1595,553 @@ namespace RDFSharp.Query
             });
 
             //Merge produced list of tables
-            resultTable           = RDFQueryUtilities.CombineTables(patternTables, false);
+            resultTable           = CombineTables(patternTables, false);
             resultTable.TableName = propertyPath.ToString();
 
             return resultTable;
         }
         #endregion
 
+        #region MIRELLA TABLES
+        /// <summary>
+        /// Static instance of the comparer used by the engine to compare data columns
+        /// </summary>
+        internal static readonly DataColumnComparer dtComparer = new DataColumnComparer();
+
+        /// <summary>
+        /// Adds a new column to the given table, avoiding duplicates 
+        /// </summary>
+        internal static void AddColumn(DataTable table, String columnName) {
+            if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant())) {
+                 table.Columns.Add(columnName.Trim().ToUpperInvariant(), Type.GetType("System.String"));
+            }
+        }
+
+        /// <summary>
+        /// Adds a new row to the given table 
+        /// </summary>
+        internal static void AddRow(DataTable table, Dictionary<String, String> bindings) {
+            Boolean rowAdded     = false;
+            DataRow resultRow    = table.NewRow();
+            bindings.Keys.ToList().ForEach(k => {
+                if (table.Columns.Contains(k))  {
+                    resultRow[k] = bindings[k];
+                    rowAdded     = true;
+                }
+            });
+            if (rowAdded) {
+                table.Rows.Add(resultRow);
+            }
+        }
+
+        /// <summary>
+        /// Builds the table results of the pattern with values from the given graph
+        /// </summary>
+        internal void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable) {
+            var bindings    = new Dictionary<String, String>();
+
+            //Iterate result graph's triples
+            foreach (var t in triples) {
+                switch (patternHole)   {
+                    //->P->O
+                    case RDFQueryEnums.RDFPatternHoles.S:
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        break;
+                    //S->->O
+                    case RDFQueryEnums.RDFPatternHoles.P:
+                        bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        break;
+                    //S->P->
+                    case RDFQueryEnums.RDFPatternHoles.O:
+                        bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        break;
+                    //->->O
+                    case RDFQueryEnums.RDFPatternHoles.SP:
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        }
+                        break;
+                    //->P->
+                    case RDFQueryEnums.RDFPatternHoles.SO:
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        }
+                        break;
+                    //S->->
+                    case RDFQueryEnums.RDFPatternHoles.PO:
+                        bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        }
+                        break;
+                    //->->
+                    case RDFQueryEnums.RDFPatternHoles.SPO:
+                        bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
+                        }
+                        break;
+                }
+                AddRow(resultTable, bindings);
+                bindings.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Builds the table results of the pattern with values from the given store
+        /// </summary>
+        internal void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable) {
+            var bindings    = new Dictionary<String, String>();
+
+            //Iterate result store's quadruples
+            foreach (var q in store) {
+                switch (patternHole) {
+                    //->S->P->O
+                    case RDFQueryEnums.RDFPatternHoles.C:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        break;
+                    //->->P->O
+                    case RDFQueryEnums.RDFPatternHoles.CS:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        break;
+                    //C->->P->O
+                    case RDFQueryEnums.RDFPatternHoles.S:
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        break;
+                    //->S->->O
+                    case RDFQueryEnums.RDFPatternHoles.CP:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        break;
+                    //C->S->->O
+                    case RDFQueryEnums.RDFPatternHoles.P:
+                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        break;
+                    //->S->P->
+                    case RDFQueryEnums.RDFPatternHoles.CO:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                    //C->S->P->
+                    case RDFQueryEnums.RDFPatternHoles.O:
+                        bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        break;
+                    //->->->O
+                    case RDFQueryEnums.RDFPatternHoles.CSP:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        break;
+                    //C->->->O
+                    case RDFQueryEnums.RDFPatternHoles.SP:
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        break;
+                    //->->P->
+                    case RDFQueryEnums.RDFPatternHoles.CSO:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString()))  {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                    //C->->P->
+                    case RDFQueryEnums.RDFPatternHoles.SO:
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                    //->S->->
+                    case RDFQueryEnums.RDFPatternHoles.CPO:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                    //C->S->->
+                    case RDFQueryEnums.RDFPatternHoles.PO:
+                        bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                    //->->->
+                    case RDFQueryEnums.RDFPatternHoles.CSPO:
+                        bindings.Add(pattern.Context.ToString(), q.Context.ToString());
+                        if (!bindings.ContainsKey(pattern.Subject.ToString())) {
+                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                    //C->->->
+                    case RDFQueryEnums.RDFPatternHoles.SPO:
+                        bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
+                        if (!bindings.ContainsKey(pattern.Predicate.ToString())) {
+                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
+                        }
+                        if (!bindings.ContainsKey(pattern.Object.ToString())) {
+                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
+                        }
+                        break;
+                }
+                AddRow(resultTable, bindings);
+                bindings.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Joins two datatables WITHOUT support for OPTIONAL data
+        /// </summary>
+        internal DataTable InnerJoinTables(DataTable dt1, DataTable dt2) {
+            DataTable result                    = new DataTable();
+            IEnumerable<DataColumn> dt1Cols     = dt1.Columns.OfType<DataColumn>();
+            IEnumerable<DataColumn> dt2Cols     = dt2.Columns.OfType<DataColumn>();
+            IEnumerable<DataColumn> dt1Columns  = (dt1Cols as IList<DataColumn> ?? dt1Cols.ToList<DataColumn>());
+            IEnumerable<DataColumn> dt2Columns  = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
+
+            //Determine common columns
+            DataColumn[] commonColumns          = dt1Columns.Intersect(dt2Columns, dtComparer)
+                                                            .Select(c => new DataColumn(c.Caption, c.DataType))
+                                                            .ToArray();
+
+            //PRODUCT-JOIN
+            if (commonColumns.Length           == 0) {
+
+                //Create the structure of the product table
+                result.Columns.AddRange(dt1Columns.Union(dt2Columns, dtComparer)
+                              .Select(c => new DataColumn(c.Caption, c.DataType))
+                              .ToArray());
+
+                //Loop through dt1 table
+                result.AcceptChanges();
+                result.BeginLoadData();
+                foreach (DataRow parentRow     in dt1.Rows) {
+                    Object[] firstArray         = parentRow.ItemArray;
+
+                    //Loop through dt2 table
+                    foreach (DataRow childRow  in dt2.Rows) {
+                        Object[] secondArray    = childRow.ItemArray;
+                        Object[] productArray   = new Object[firstArray.Length + secondArray.Length];
+                        Array.Copy(firstArray,  0, productArray, 0, firstArray.Length);
+                        Array.Copy(secondArray, 0, productArray, firstArray.Length, secondArray.Length);
+                        result.LoadDataRow(productArray, true);
+                    }
+
+                }
+                result.EndLoadData();
+
+            }
+
+            //INNER-JOIN
+            else {
+
+                //Use a DataSet to leverage a relation linking the common columns
+                using (DataSet ds               = new DataSet()) {
+
+                    //Add copy of the tables to the dataset
+                    ds.Tables.AddRange(new DataTable[] { dt1, dt2 });
+
+                    //Identify join columns from dt1
+                    DataColumn[] parentColumns  = new DataColumn[commonColumns.Length];
+                    for (Int32 i = 0; i < parentColumns.Length; i++) {
+                        parentColumns[i]        = ds.Tables[0].Columns[commonColumns[i].ColumnName];
+                    }
+                    //Identify join columns from dt2
+                    DataColumn[] childColumns   = new DataColumn[commonColumns.Length];
+                    for (Int32 i = 0; i < childColumns.Length; i++) {
+                        childColumns[i]         = ds.Tables[1].Columns[commonColumns[i].ColumnName];
+                    }
+
+                    //Create the relation linking the common columns
+                    DataRelation r              = new DataRelation("JoinRelation", parentColumns, childColumns, false);
+                    ds.Relations.Add(r);
+
+                    //Create the structure of the join table
+                    List<String> duplicateCols  = new List<String>();
+                    for (Int32 i = 0; i < ds.Tables[0].Columns.Count; i++) {
+                        result.Columns.Add(ds.Tables[0].Columns[i].ColumnName, ds.Tables[0].Columns[i].DataType);
+                    }
+                    for (Int32 i = 0; i < ds.Tables[1].Columns.Count; i++) {
+                        if (!result.Columns.Contains(ds.Tables[1].Columns[i].ColumnName)) {
+                             result.Columns.Add(ds.Tables[1].Columns[i].ColumnName, ds.Tables[1].Columns[i].DataType);
+                        }
+                        else {
+                            //Manage duplicate columns by appending a known identificator to their name
+                            result.Columns.Add(ds.Tables[1].Columns[i].ColumnName + "_DUPLICATE_", ds.Tables[1].Columns[i].DataType);
+                            duplicateCols.Add(ds.Tables[1].Columns[i].ColumnName  + "_DUPLICATE_");
+                        }
+                    }
+
+                    //Loop through dt1 table
+                    result.AcceptChanges();
+                    result.BeginLoadData();
+                    foreach (DataRow firstRow   in ds.Tables[0].Rows) {
+
+                        //Get "joined" dt2 rows by exploiting the leveraged relation
+                        DataRow[] childRows      = firstRow.GetChildRows(r);
+                        if (childRows.Length     > 0) {
+                            Object[] parentArray = firstRow.ItemArray;
+                            foreach (DataRow secondRow in childRows) {
+                                Object[] secondArray    = secondRow.ItemArray;
+                                Object[] joinArray      = new Object[parentArray.Length + secondArray.Length];
+                                Array.Copy(parentArray, 0, joinArray, 0, parentArray.Length);
+                                Array.Copy(secondArray, 0, joinArray, parentArray.Length, secondArray.Length);
+                                result.LoadDataRow(joinArray, true);
+                            }
+                        }
+
+                    }
+                    //Eliminate the duplicated columns from the result table
+                    duplicateCols.ForEach(c => result.Columns.Remove(c));
+                    result.EndLoadData();
+
+                }
+
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Joins two datatables WITH support for OPTIONAL data
+        /// </summary>
+        internal DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
+        {
+            DataTable finalResult               = new DataTable();
+            IEnumerable<DataColumn> dt1Cols     = dt1.Columns.OfType<DataColumn>();
+            IEnumerable<DataColumn> dt2Cols     = dt2.Columns.OfType<DataColumn>();
+            IEnumerable<DataColumn> dt1Columns  = (dt1Cols as IList<DataColumn> ?? dt1Cols.ToList<DataColumn>());
+            IEnumerable<DataColumn> dt2Columns  = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
+
+            Boolean dt2IsOptionalTable          = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
+            Boolean joinInvalidationFlag        = false;
+            Boolean foundAnyResult              = false;
+            String strResCol                    = String.Empty;
+
+
+            //Step 1: Determine common columns
+            DataColumn[] commonColumns          = dt1Columns.Intersect(dt2Columns, dtComparer)
+                                                            .Select(c => new DataColumn(c.Caption, c.DataType))
+                                                            .ToArray();
+
+            //Step 2: Create structure of finalResult table
+            finalResult.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)
+                               .Select(c => new DataColumn(c.Caption, c.DataType))
+                               .ToArray());
+
+            //Step 3: Loop through dt1 table
+            finalResult.AcceptChanges();
+            finalResult.BeginLoadData();
+            foreach (DataRow leftRow           in dt1.Rows) {
+                foundAnyResult                  = false;
+
+                //Step 4: Loop through dt2 table
+                foreach (DataRow rightRow      in dt2.Rows) {
+                    joinInvalidationFlag        = false;
+
+                    //Step 5: Create a temporary join row
+                    DataRow joinRow             = finalResult.NewRow();
+                    foreach (DataColumn resCol in finalResult.Columns)
+                    {
+                        if (!joinInvalidationFlag) {
+                            strResCol           = resCol.ToString();
+
+                            //Step 6a: NON-COMMON column
+                            if (!commonColumns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal))) {
+
+                                //Take value from left
+                                if (dt1Columns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal))) {
+                                    joinRow[strResCol] = leftRow[strResCol];
+                                }
+
+                                //Take value from right
+                                else {
+                                    joinRow[strResCol] = rightRow[strResCol];
+                                }
+
+                            }
+
+                            //Step 6b: COMMON column
+                            else {
+
+                                //Left value is NULL
+                                if (leftRow.IsNull(strResCol)) {
+
+                                    //Right value is NULL
+                                    if (rightRow.IsNull(strResCol)) {
+                                        //Take NULL value
+                                        joinRow[strResCol] = DBNull.Value;
+                                    }
+
+                                    //Right value is NOT NULL
+                                    else {
+                                        //Take value from right
+                                        joinRow[strResCol] = rightRow[strResCol];
+                                    }
+
+                                }
+
+                                //Left value is NOT NULL
+                                else {
+
+                                    //Right value is NULL
+                                    if (rightRow.IsNull(strResCol)) {
+                                        //Take value from left
+                                        joinRow[strResCol] = leftRow[strResCol];
+                                    }
+
+                                    //Right value is NOT NULL
+                                    else {
+
+                                        //Left value is EQUAL TO right value
+                                        if (leftRow[strResCol].ToString().Equals(rightRow[strResCol].ToString(), StringComparison.Ordinal)) {
+                                            //Take value from left (it's the same)
+                                            joinRow[strResCol]   = leftRow[strResCol];
+                                        }
+
+                                        //Left value is NOT EQUAL TO right value
+                                        else {
+                                            //Raise the join invalidation flag
+                                            joinInvalidationFlag = true;
+                                            //Reject changes on the join row
+                                            joinRow.RejectChanges();
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+
+                    //Step 7: Add join row to finalResults table
+                    if (!joinInvalidationFlag) {
+                         joinRow.AcceptChanges();
+                         finalResult.Rows.Add(joinRow);
+                         foundAnyResult    = true;
+                    }
+
+                }
+
+                //Step 8: Manage presence of "OPTIONAL" pattern to the right
+                if (!foundAnyResult && dt2IsOptionalTable) {
+                     //In this case, the left row must be kept anyway and other columns from right are NULL
+                     DataRow optionalRow   = finalResult.NewRow();
+                     optionalRow.ItemArray = leftRow.ItemArray;
+                     optionalRow.AcceptChanges();
+                     finalResult.Rows.Add(optionalRow);
+                }
+
+            }
+            finalResult.EndLoadData();
+
+            return finalResult;
+        }
+
+        /// <summary>
+        /// Merges / Joins / Products the given list of data tables, based on presence of common columns and dynamic detection of Optional / Union operators
+        /// </summary>
+        internal DataTable CombineTables(List<DataTable> dataTables, Boolean isMerge) {
+            DataTable finalTable      = new DataTable();
+            Boolean switchToOuterJoin = false;
+
+            if (dataTables.Count      > 0) {
+
+                //Process Unions
+                for (Int32 i = 1;   i < dataTables.Count; i++) {
+                    if (isMerge || (dataTables[i - 1].ExtendedProperties.ContainsKey("JoinAsUnion") && dataTables[i - 1].ExtendedProperties["JoinAsUnion"].Equals(true))) {
+
+                        //Merge the previous table into the current one
+                        dataTables[i].Merge(dataTables[i - 1], true, MissingSchemaAction.Add);
+
+                        //Clear the previous table and flag it as logically deleted
+                        dataTables[i - 1].Rows.Clear();
+                        dataTables[i - 1].ExtendedProperties.Add("LogicallyDeleted", true);
+
+                        //Set automatic switch to OuterJoin (because we have done Unions, so null values must be preserved)
+                        switchToOuterJoin = true;
+
+                    }
+                }
+                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey("LogicallyDeleted") && dt.ExtendedProperties["LogicallyDeleted"].Equals(true));
+
+                //Process Joins
+                finalTable            = dataTables[0];
+                for (Int32 i = 1;   i < dataTables.Count; i++) {
+
+                    //Set automatic switch to OuterJoin in case of relevant "Optional" detected
+                    switchToOuterJoin = (switchToOuterJoin || (dataTables[i].ExtendedProperties.ContainsKey("IsOptional") && dataTables[i].ExtendedProperties["IsOptional"].Equals(true)));
+
+                    //Support OPTIONAL data
+                    if (switchToOuterJoin) {
+                        finalTable    = OuterJoinTables(finalTable, dataTables[i]);
+                    }
+
+                    //Do not support OPTIONAL data
+                    else {
+                        finalTable    = InnerJoinTables(finalTable, dataTables[i]);
+                    }
+
+                }
+
+            }
+            return finalTable;
+        }
+        #endregion
+
+        #endregion
     }
+
+    #region MIRELLA TABLES
+    /// <summary>
+    /// Utility class for comparison between datacolumns
+    /// </summary>
+    internal class DataColumnComparer : IEqualityComparer<DataColumn> {
+
+        #region Methods
+        public Boolean Equals(DataColumn column1, DataColumn column2) {
+            if (column1        != null) {
+                return column2 != null && column1.Caption.Equals(column2.Caption, StringComparison.Ordinal);
+            }
+            return column2     == null;
+        }
+
+        public Int32 GetHashCode(DataColumn column) {
+            return column.Caption.GetHashCode();
+        }
+        #endregion
+
+    }
+    #endregion
 
 }

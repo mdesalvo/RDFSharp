@@ -221,9 +221,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQueryResult ApplyToGraph(RDFGraph graph) {
             if (graph != null) {
-                return this.ApplyToDataSource(graph);
+                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, graph);
             }
-            return new RDFDescribeQueryResult(this.ToString());
+            else {
+                return new RDFDescribeQueryResult(this.ToString());
+            }
         }
 
         /// <summary>
@@ -231,9 +233,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQueryResult ApplyToStore(RDFStore store) {
             if (store != null) {
-                return this.ApplyToDataSource(store);
+                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, store);
             }
-            return new RDFDescribeQueryResult(this.ToString());
+            else {
+                return new RDFDescribeQueryResult(this.ToString());
+            }
         }
 
         /// <summary>
@@ -241,9 +245,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFDescribeQueryResult ApplyToFederation(RDFFederation federation) {
             if (federation != null) {
-                return this.ApplyToDataSource(federation);
+                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, federation);
             }
-            return new RDFDescribeQueryResult(this.ToString());
+            else {
+                return new RDFDescribeQueryResult(this.ToString());
+            }
         }
 
         /// <summary>
@@ -282,117 +288,6 @@ namespace RDFSharp.Query {
 
                 RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
             }
-            return describeResult;
-        }
-
-        /// <summary>
-        /// Applies the query to the given datasource
-        /// </summary>
-        internal RDFDescribeQueryResult ApplyToDataSource(RDFDataSource datasource) {
-            this.QueryMemberFinalResultTables.Clear();
-            this.QueryMemberTemporaryResultTables.Clear();
-            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
-
-            RDFDescribeQueryResult describeResult       = new RDFDescribeQueryResult(this.ToString());
-            if (this.GetEvaluableQueryMembers().Any())  {
-
-                //Iterate the evaluable members of the query
-                var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember      in this.GetEvaluableQueryMembers()) {
-
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember           is RDFPatternGroup) {
-                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        if (datasource.IsFederation())  {
-
-                            #region TrueFederations
-                            foreach (var store         in (RDFFederation)datasource) {
-
-                                //Step FED.1: Evaluate the current pattern group on the current store
-                                RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, store);
-
-                                //Step FED.2: Federate the results of the current pattern group on the current store
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
-                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                }
-                                else {
-                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                        fqmtrt.Merge(this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                                }
-
-                            }
-                            this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-
-                        }
-                        else {
-                            RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, datasource);
-                        }
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.FinalizePatternGroup(this, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                }
-
-                //Step 4: Get the result table of the query
-                DataTable queryResultTable              = RDFQueryUtilities.CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
-
-                //Step 5: Describe the terms from the result table
-                DataTable describeResultTable           = new DataTable(this.ToString());
-                if (datasource.IsFederation()) {
-
-                    #region TrueFederations
-                    foreach (var store                 in (RDFFederation)datasource) {
-                        describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, queryResultTable), true, MissingSchemaAction.Add);
-                    }
-                    #endregion
-
-                }
-                else {
-                    describeResultTable                 = RDFQueryEngine.DescribeTerms(this, datasource, queryResultTable);
-                }
-
-                //Step 6: Apply the modifiers of the query to the result table
-                describeResult.DescribeResults          = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
-
-            }
-            else {
-
-                //In this case the only chance to proceed is to have resources in the describe terms,
-                //which will be used to search for S-P-O data. Variables are ignored in this scenario.
-                if (this.DescribeTerms.Any(dt           =>  dt is RDFResource)) {
-
-                    //Step 1: Describe the terms from the result table
-                    DataTable describeResultTable       = new DataTable(this.ToString());
-                    if (datasource.IsFederation()) {
-
-                        #region TrueFederations
-                        foreach (var store             in (RDFFederation)datasource) {
-                            describeResultTable.Merge(RDFQueryEngine.DescribeTerms(this, store, new DataTable()), true, MissingSchemaAction.Add);
-                        }
-                        #endregion
-
-                    }
-                    else {
-                        describeResultTable             = RDFQueryEngine.DescribeTerms(this, datasource, new DataTable());
-                    }
-
-                    //Step 2: Apply the modifiers of the query to the result table
-                    describeResult.DescribeResults      = RDFQueryEngine.ApplyModifiers(this, describeResultTable);
-
-                }
-
-            }
-            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated SPARQL DESCRIBE query on DataSource '{0}': Found '{1}' results.", datasource, describeResult.DescribeResultsCount));
-
-            describeResult.DescribeResults.TableName    = this.ToString();
             return describeResult;
         }
         #endregion

@@ -221,9 +221,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFSelectQueryResult ApplyToGraph(RDFGraph graph) {
             if (graph != null) {
-                return this.ApplyToDataSource(graph);
+                return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, graph);
             }
-            return new RDFSelectQueryResult();
+            else {
+                return new RDFSelectQueryResult();
+            }
         }
 
         /// <summary>
@@ -231,9 +233,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFSelectQueryResult ApplyToStore(RDFStore store) {
             if (store != null) {
-                return this.ApplyToDataSource(store);
+                return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, store);
             }
-            return new RDFSelectQueryResult();
+            else {
+                return new RDFSelectQueryResult();
+            }
         }
 
         /// <summary>
@@ -241,9 +245,11 @@ namespace RDFSharp.Query {
         /// </summary>
         public RDFSelectQueryResult ApplyToFederation(RDFFederation federation) {
             if (federation != null) {
-                return this.ApplyToDataSource(federation);
+                return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, federation);
             }
-            return new RDFSelectQueryResult();
+            else {
+                return new RDFSelectQueryResult();
+            }
         }
 
         /// <summary>
@@ -279,77 +285,8 @@ namespace RDFSharp.Query {
 
                 }
 
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECTQuery on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
-            return selResult;
-        }
-
-        /// <summary>
-        /// Applies the query to the given datasource
-        /// </summary>
-        internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource datasource) {
-            this.QueryMemberFinalResultTables.Clear();
-            this.QueryMemberTemporaryResultTables.Clear();
-            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
-
-            RDFSelectQueryResult selResult             = new RDFSelectQueryResult();
-            if (this.GetEvaluableQueryMembers().Any()) {
-
-                //Iterate the evaluable members of the query
-                var fedQueryMemberTemporaryResultTables= new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember     in this.GetEvaluableQueryMembers()) {
-
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember          is RDFPatternGroup) {
-                        RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
-
-                        //Step 1: Get the intermediate result tables of the current pattern group
-                        if (datasource.IsFederation()) {
-                    
-                            #region TrueFederations
-                            foreach (var store        in (RDFFederation)datasource) {
-
-                                //Step FED.1: Evaluate the current pattern group on the current store
-                                RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, store);
-
-                                //Step FED.2: Federate the results of the current pattern group on the current store
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID)) {
-                                     fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                }
-                                else {
-                                     fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                        fqmtrt.Merge(this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                                }
-
-                            }
-                            this.QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-
-                        }
-                        else {
-                            RDFQueryEngine.EvaluatePatternGroup(this, (RDFPatternGroup)evaluableQueryMember, datasource);
-                        }
-
-                        //Step 2: Get the result table of the current pattern group
-                        RDFQueryEngine.FinalizePatternGroup(this, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Step 3: Apply the filters of the current pattern group to its result table
-                        RDFQueryEngine.ApplyFilters(this, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                }
-
-                //Step 4: Get the result table of the query
-                var queryResultTable                   = RDFQueryUtilities.CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
-
-                //Step 5: Apply the modifiers of the query to the result table
-                selResult.SelectResults                = RDFQueryEngine.ApplyModifiers(this, queryResultTable);
-
-            }
-            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, selResult.SelectResultsCount));
-
-            selResult.SelectResults.TableName          = this.ToString();
             return selResult;
         }
         #endregion
