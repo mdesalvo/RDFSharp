@@ -535,16 +535,6 @@ namespace RDFSharp.Query
                     }
 
                 }
-                //Remove property path variables
-                var propPathCols        = new List<DataColumn>();
-                foreach (DataColumn dtCol in table.Columns) {
-                    if (dtCol.ColumnName.StartsWith("?__PP")) {
-                        propPathCols.Add(dtCol);
-                    }
-                }
-                propPathCols.ForEach(ppc => {
-                    table.Columns.Remove(ppc.ColumnName);
-                });
 
             }
 
@@ -1564,8 +1554,19 @@ namespace RDFSharp.Query
 
             //Merge produced list of tables
             resultTable           = CombineTables(patternTables, false);
-            resultTable.TableName = propertyPath.ToString();
 
+            //Remove property path variables
+            var propPathCols      = new List<DataColumn>();
+            foreach (DataColumn dtCol in resultTable.Columns) {
+                if (dtCol.ColumnName.StartsWith("?__PP")) {
+                    propPathCols.Add(dtCol);
+                }
+            }
+            propPathCols.ForEach(ppc => {
+                resultTable.Columns.Remove(ppc.ColumnName);
+            });
+
+            resultTable.TableName = propertyPath.ToString();
             return resultTable;
         }
 
@@ -1596,8 +1597,19 @@ namespace RDFSharp.Query
 
             //Merge produced list of tables
             resultTable           = CombineTables(patternTables, false);
-            resultTable.TableName = propertyPath.ToString();
 
+            //Remove property path variables
+            var propPathCols      = new List<DataColumn>();
+            foreach (DataColumn dtCol in resultTable.Columns) {
+                if (dtCol.ColumnName.StartsWith("?__PP")) {
+                    propPathCols.Add(dtCol);
+                }
+            }
+            propPathCols.ForEach(ppc => {
+                resultTable.Columns.Remove(ppc.ColumnName);
+            });
+
+            resultTable.TableName = propertyPath.ToString();
             return resultTable;
         }
         #endregion
