@@ -102,8 +102,8 @@ namespace RDFSharp.Query
         }
         internal String ToString(Int32 spaceIndent, List<RDFNamespace> prefixes) {
             String spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
-            
-            //HEADER
+
+            #region HEADER
             StringBuilder patternGroup  = new StringBuilder();
             if (this.IsOptional) {
                 patternGroup.Append("\n  " + spaces + "OPTIONAL {");
@@ -111,8 +111,9 @@ namespace RDFSharp.Query
             }
             patternGroup.Append("\n  "  + spaces + "#" + this.PatternGroupName + "\n");
             patternGroup.Append(spaces  + "  {\n");
+            #endregion
 
-            //MEMBERS (PATTERNS, PROPERTY PATHS)
+            #region EVALUABLEMEMBERS
             Boolean printingUnion       = false;
             RDFPatternGroupMember last  = this.GroupMembers.LastOrDefault(g => g is RDFPattern);
             this.GetEvaluablePatternGroupMembers().ToList().ForEach(m => {
@@ -167,16 +168,21 @@ namespace RDFSharp.Query
                 #endregion
 
             });
+            #endregion
 
-            //MEMBERS (FILTERS)
+            #region FILTERS
             this.GroupMembers.Where(m   => m is RDFFilter)
                              .ToList()
                              .ForEach(f => patternGroup.Append(spaces + "    " + f + " \n"));
+            #endregion
 
+            #region FOOTER
             patternGroup.Append(spaces  + "  }\n");
             if (this.IsOptional) {
                 patternGroup.Append(spaces + "}\n");
             }
+            #endregion
+
             return patternGroup.ToString();
         }
         #endregion
