@@ -98,9 +98,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the patternGroup
         /// </summary>
         public override String ToString() {
-            return this.ToString(0);
+            return this.ToString(0, new List<RDFNamespace>());
         }
-        internal String ToString(Int32 spaceIndent) {
+        internal String ToString(Int32 spaceIndent, List<RDFNamespace> prefixes) {
             String spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
             
             //HEADER

@@ -115,7 +115,7 @@ namespace RDFSharp.Query {
                                   printingUnion = true;
                                   query.Append("\n  {");
                              }
-                             query.Append(((RDFPatternGroup)queryMember).ToString(2) + "    UNION");
+                             query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes) + "    UNION");
                         }
 
                         //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
@@ -123,11 +123,11 @@ namespace RDFSharp.Query {
                             //End the Union block
                             if (printingUnion) {
                                 printingUnion   = false;
-                                query.Append(((RDFPatternGroup)queryMember).ToString(2));
+                                query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
                                 query.Append("  }\n");
                             }
                             else {
-                                query.Append(((RDFPatternGroup)queryMember).ToString(0));
+                                query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
                             }
                         }
 
@@ -138,11 +138,11 @@ namespace RDFSharp.Query {
                         //End the Union block
                         if (printingUnion) {
                             printingUnion       = false;
-                            query.Append(((RDFPatternGroup)queryMember).ToString(2));
+                            query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
                             query.Append("  }\n");
                         }
                         else {
-                            query.Append(((RDFPatternGroup)queryMember).ToString(0));
+                            query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
                         }
                     }
 
