@@ -1946,8 +1946,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Joins two datatables WITH support for OPTIONAL data
         /// </summary>
-        internal DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
-        {
+        internal DataTable OuterJoinTables(DataTable dt1, DataTable dt2) {
             DataTable finalResult               = new DataTable();
             IEnumerable<DataColumn> dt1Cols     = dt1.Columns.OfType<DataColumn>();
             IEnumerable<DataColumn> dt2Cols     = dt2.Columns.OfType<DataColumn>();
