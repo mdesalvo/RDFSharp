@@ -127,7 +127,7 @@ namespace RDFSharp.Query {
                                 query.Append("  }\n");
                             }
                             else {
-                                query.Append(((RDFPatternGroup)queryMember).ToString());
+                                query.Append(((RDFPatternGroup)queryMember).ToString(0));
                             }
                         }
 
@@ -142,7 +142,7 @@ namespace RDFSharp.Query {
                             query.Append("  }\n");
                         }
                         else {
-                            query.Append(((RDFPatternGroup)queryMember).ToString());
+                            query.Append(((RDFPatternGroup)queryMember).ToString(0));
                         }
                     }
 
