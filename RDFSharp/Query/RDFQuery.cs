@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query {
 
@@ -31,6 +32,11 @@ namespace RDFSharp.Query {
         /// List of members carried by the query
         /// </summary>
         internal List<RDFQueryMember> QueryMembers { get; set; }
+
+        /// <summary>
+        /// List of prefixes registered for the query
+        /// </summary>
+        internal List<RDFNamespace> Prefixes { get; set; }
         #endregion
 
         #region Ctors
@@ -39,11 +45,26 @@ namespace RDFSharp.Query {
         /// </summary>
         internal RDFQuery() {
             this.QueryMembers = new List<RDFQueryMember>();
-            
+            this.Prefixes     = new List<RDFNamespace>();
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Declares the given prefixes within the query
+        /// </summary>
+        public RDFQuery DeclarePrefixes(List<RDFNamespace> prefixes) {
+            if (prefixes != null) {
+                this.Prefixes.Clear();
+                prefixes.ForEach(pf => {
+                    if (!this.Prefixes.Any(p => p.Equals(pf))) {
+                         this.Prefixes.Add(pf);
+                    }
+                });
+            }
+            return this;
+        }
+
         /// <summary>
         /// Gets the query members of type: pattern group
         /// </summary>

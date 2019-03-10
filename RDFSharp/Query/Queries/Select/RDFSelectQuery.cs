@@ -55,6 +55,15 @@ namespace RDFSharp.Query {
         public override String ToString() {
             StringBuilder query = new StringBuilder();
 
+            #region PREFIXES
+            if (this.Prefixes.Any()) {
+                this.Prefixes.ForEach(pf => {
+                    query.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
+                });
+                query.Append("\n");
+            }
+            #endregion
+
             #region SELECT
             query.Append("SELECT");
             #endregion
