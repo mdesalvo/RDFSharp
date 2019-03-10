@@ -24,7 +24,7 @@ namespace RDFSharp.Query {
     /// <summary>
     /// RDFConstructQueryResult is a container for SPARQL "CONSTRUCT" query results.
     /// </summary>
-    public class RDFConstructQueryResult: RDFQueryResult {
+    public class RDFConstructQueryResult {
 
         #region Properties
         /// <summary>
@@ -48,7 +48,6 @@ namespace RDFSharp.Query {
         /// </summary>
         internal RDFConstructQueryResult(String tableName) {
             this.ConstructResults = new DataTable(tableName);
-            this.HasGraphData     = true;
         }
         #endregion
 

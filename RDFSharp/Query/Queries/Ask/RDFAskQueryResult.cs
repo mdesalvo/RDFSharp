@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAskResult is a container for SPARQL "ASK" query results.
     /// </summary>
-    public class RDFAskQueryResult: RDFQueryResult {
+    public class RDFAskQueryResult {
 
         #region Properties
         /// <summary>
@@ -39,8 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty ASK result
         /// </summary>
         internal RDFAskQueryResult() {
-            this.AskResult      = false;
-            this.HasTabularData = true;
+            this.AskResult = false;
         }
         #endregion
 

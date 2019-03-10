@@ -30,7 +30,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSelectQueryResult is a container for SPARQL "SELECT" query results.
     /// </summary>
-    public class RDFSelectQueryResult: RDFQueryResult {
+    public class RDFSelectQueryResult {
 
         #region Properties
         /// <summary>
@@ -51,8 +51,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT result
         /// </summary>
         internal RDFSelectQueryResult() {
-            this.SelectResults  = new DataTable();
-            this.HasTabularData = true;
+            this.SelectResults = new DataTable();
         }
         #endregion
 

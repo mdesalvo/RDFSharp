@@ -70,42 +70,4 @@ namespace RDFSharp.Query {
 
     }
 
-    /// <summary>
-    /// RDFQueryResult represents resultset of a SPARQL query
-    /// </summary>
-    public class RDFQueryResult {
-
-        #region Properties
-        /// <summary>
-        /// Flag indicating that the query result contains tabular data
-        /// </summary>
-        public Boolean HasTabularData { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that the query result contains graph data
-        /// </summary>
-        public Boolean HasGraphData { get; internal set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to initialize an empty query result
-        /// </summary>
-        internal RDFQueryResult()  {
-            this.HasTabularData = false;
-            this.HasGraphData   = false;
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the query result
-        /// </summary>
-        public override String ToString() {
-            return base.ToString();
-        }
-        #endregion
-
-    }
-
 }
