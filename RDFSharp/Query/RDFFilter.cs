@@ -15,7 +15,9 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -30,8 +32,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override String ToString() {
-            return base.ToString();
+            return this.ToString(new List<RDFNamespace>());
         }
+        internal abstract String ToString(List<RDFNamespace> prefixes);
         #endregion
 
         #region Methods

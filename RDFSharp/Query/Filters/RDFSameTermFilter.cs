@@ -15,7 +15,9 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -64,7 +66,15 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
-            return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFQueryUtilities.PrintRDFPatternMember(this.RDFTerm) + ") )";
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal override String ToString(List<RDFNamespace> prefixes) {
+            if (prefixes != null && prefixes.Any()) {
+                return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFModelUtilities.AbbreviateUri(this.RDFTerm.ToString(), prefixes) + ") )";
+            }
+            else {
+                return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFQueryUtilities.PrintRDFPatternMember(this.RDFTerm) + ") )";
+            }
         }
         #endregion
 

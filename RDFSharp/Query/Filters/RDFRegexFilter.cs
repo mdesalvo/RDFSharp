@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -66,6 +67,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal override String ToString(List<RDFNamespace> prefixes) {
             StringBuilder regexFlags = new StringBuilder();
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase)) {
                 regexFlags.Append("i");

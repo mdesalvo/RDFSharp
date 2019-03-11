@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
@@ -53,7 +54,10 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
-            return "FILTER ( !" + this.Filter.ToString().Replace("FILTER ", String.Empty).Trim() + " )";
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal override String ToString(List<RDFNamespace> prefixes) {
+            return "FILTER ( !" + this.Filter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " )";
         }
         #endregion
 

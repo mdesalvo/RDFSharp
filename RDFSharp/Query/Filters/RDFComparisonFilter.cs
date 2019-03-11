@@ -15,7 +15,9 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query {
@@ -69,9 +71,13 @@ namespace RDFSharp.Query {
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
-            String leftValue  = RDFQueryUtilities.PrintRDFPatternMember(this.LeftMember);
-            String rightValue = RDFQueryUtilities.PrintRDFPatternMember(this.RightMember);
-
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal override String ToString(List<RDFNamespace> prefixes) {
+            String leftValue  = (prefixes != null && prefixes.Any() ? RDFModelUtilities.AbbreviateUri(this.LeftMember.ToString(), prefixes)  :
+                                                                      RDFQueryUtilities.PrintRDFPatternMember(this.LeftMember));
+            String rightValue = (prefixes != null && prefixes.Any() ? RDFModelUtilities.AbbreviateUri(this.RightMember.ToString(), prefixes) :
+                                                                      RDFQueryUtilities.PrintRDFPatternMember(this.RightMember));
             switch (this.ComparisonFlavor) {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:
                     return "FILTER ( " + leftValue + " < "  + rightValue + " )";
@@ -86,7 +92,7 @@ namespace RDFSharp.Query {
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
                     return "FILTER ( " + leftValue + " > "  + rightValue + " )";
                 default:
-                    throw new RDFQueryException("Cannot get string representation of unknown '" + this.ComparisonFlavor  + "' RDFComparisonFilter.");
+                    throw new RDFQueryException("Cannot get string representation of unknown '" + this.ComparisonFlavor + "' RDFComparisonFilter.");
             }
         }
         #endregion

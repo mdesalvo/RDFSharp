@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
@@ -70,6 +71,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter 
         /// </summary>
         public override String ToString() {
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal override String ToString(List<RDFNamespace> prefixes) {
             return "FILTER ( LANGMATCHES(LANG(" + this.Variable + "), \"" + this.Language + "\") )";
         }
         #endregion
