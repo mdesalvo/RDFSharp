@@ -165,7 +165,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override String ToString() {
-            return this.ToString(null);
+            return this.ToString(new List<RDFNamespace>());
         }        
         internal String ToString(List<RDFNamespace> prefixes) {
             String subj       = null;

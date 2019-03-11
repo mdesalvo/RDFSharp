@@ -91,7 +91,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the path
         /// </summary>
         public override String ToString() {
-            return this.ToString(null);
+            return this.ToString(new List<RDFNamespace>());
         }
         internal String ToString(List<RDFNamespace> prefixes) {
             if (prefixes != null && prefixes.Any()) {
@@ -104,7 +104,7 @@ namespace RDFSharp.Query
             else {
                 return this.Start + 
                        " " + 
-                       this.GetStepString(null) + 
+                       this.GetStepString(new List<RDFNamespace>()) + 
                        " " + 
                        this.End;
             }

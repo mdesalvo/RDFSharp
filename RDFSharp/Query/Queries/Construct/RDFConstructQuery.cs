@@ -77,7 +77,7 @@ namespace RDFSharp.Query {
             #region TEMPLATES
             query.Append(" {\n");
             this.Templates.ForEach(tp => {
-                String tpString    = tp.ToString();
+                String tpString    = tp.ToString(this.Prefixes);
 
                 //Remove the Context from the template print (since it is not supported by CONSTRUCT query)
                 if (tp.Context    != null) {
