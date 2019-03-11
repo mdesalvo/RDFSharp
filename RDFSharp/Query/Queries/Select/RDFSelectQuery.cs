@@ -194,7 +194,7 @@ namespace RDFSharp.Query {
         }
 
         /// <summary>
-        /// Adds the given modifier to the SELECT query
+        /// Adds the given modifier to the query
         /// </summary>
         public RDFSelectQuery AddModifier(RDFModifier modifier) {
             if (modifier != null) {
@@ -221,6 +221,18 @@ namespace RDFSharp.Query {
                      this.QueryMembers.Add(modifier);
                 }
 
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given prefix declaration to the query
+        /// </summary>
+        public RDFSelectQuery AddPrefix(RDFNamespace prefix) {
+            if (prefix != null) {
+                if (!this.Prefixes.Any(p => p.Equals(prefix))) {
+                     this.Prefixes.Add(prefix);
+                }
             }
             return this;
         }

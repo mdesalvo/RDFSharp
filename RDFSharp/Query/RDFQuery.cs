@@ -51,21 +51,6 @@ namespace RDFSharp.Query {
 
         #region Methods
         /// <summary>
-        /// Declares the given prefixes within the query
-        /// </summary>
-        public RDFQuery DeclarePrefixes(List<RDFNamespace> prefixes) {
-            if (prefixes != null) {
-                this.Prefixes.Clear();
-                prefixes.ForEach(pf => {
-                    if (!this.Prefixes.Any(p => p.Equals(pf))) {
-                         this.Prefixes.Add(pf);
-                    }
-                });
-            }
-            return this;
-        }
-
-        /// <summary>
         /// Gets the query members of type: pattern group
         /// </summary>
         internal IEnumerable<RDFPatternGroup> GetPatternGroups() {

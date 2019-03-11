@@ -91,7 +91,23 @@ namespace RDFSharp.Query
         /// Gives the string representation of the path
         /// </summary>
         public override String ToString() {
-            return this.Start + " " + this.GetStepString() + " " + this.End;
+            return this.ToString(null);
+        }
+        internal String ToString(List<RDFNamespace> prefixes) {
+            if (prefixes != null && prefixes.Any()) {
+                return RDFModelUtilities.AbbreviateUri(this.Start.ToString(), prefixes) + 
+                       " " + 
+                       this.GetStepString(prefixes) + 
+                       " " + 
+                       RDFModelUtilities.AbbreviateUri(this.End.ToString(), prefixes);
+            }
+            else {
+                return this.Start + 
+                       " " + 
+                       this.GetStepString(null) + 
+                       " " + 
+                       this.End;
+            }
         }
         #endregion
 
@@ -131,7 +147,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the path
         /// </summary>
-        internal String GetStepString() {
+        internal String GetStepString(List<RDFNamespace> prefixes) {
             var result = new StringBuilder();
 
             #region Single Property
@@ -142,7 +158,13 @@ namespace RDFSharp.Query
                     result.Append("^");
                 }
 
-                result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[0].StepProperty));
+                var propPath  = this.Steps[0].StepProperty;
+                if (prefixes != null && prefixes.Any()) {
+                    result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
+                }
+                else {
+                    result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
+                }
 
             }
             #endregion
@@ -168,11 +190,23 @@ namespace RDFSharp.Query
                             result.Append("^");
                         }
 
+                        var propPath = this.Steps[i].StepProperty;
                         if (i < this.Steps.Count - 1) {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty) + (Char)this.Steps[i].StepFlavor);
+                            if (prefixes != null && prefixes.Any()) {
+                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
+                            }
+                            else {
+                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
+                            }
+                            result.Append((Char)this.Steps[i].StepFlavor);
                         }
                         else {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty));
+                            if (prefixes != null && prefixes.Any()) {
+                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
+                            }
+                            else {
+                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
+                            }
                             result.Append(")");
                         }
                     }
@@ -190,11 +224,23 @@ namespace RDFSharp.Query
                             result.Append("^");
                         }
 
+                        var propPath = this.Steps[i].StepProperty;
                         if (i < this.Steps.Count - 1) {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty) + (Char)this.Steps[i].StepFlavor);
+                            if (prefixes != null && prefixes.Any()) {
+                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
+                            }
+                            else {
+                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
+                            }
+                            result.Append((Char)this.Steps[i].StepFlavor);
                         }
                         else {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(this.Steps[i].StepProperty));
+                            if (prefixes != null && prefixes.Any()) {
+                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
+                            }
+                            else {
+                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
+                            }
                         }
                     }
 

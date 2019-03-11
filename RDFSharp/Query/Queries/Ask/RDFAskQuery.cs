@@ -139,6 +139,18 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given prefix declaration to the query
+        /// </summary>
+        public RDFAskQuery AddPrefix(RDFNamespace prefix) {
+            if (prefix != null) {
+                if (!this.Prefixes.Any(p => p.Equals(prefix))) {
+                     this.Prefixes.Add(prefix);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Applies the query to the given graph 
         /// </summary>
         public RDFAskQueryResult ApplyToGraph(RDFGraph graph) {

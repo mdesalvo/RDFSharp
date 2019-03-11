@@ -115,27 +115,27 @@ namespace RDFSharp.Query
 
             #region EVALUABLEMEMBERS
             Boolean printingUnion       = false;
-            RDFPatternGroupMember last  = this.GroupMembers.LastOrDefault(g => g is RDFPattern);
-            this.GetEvaluablePatternGroupMembers().ToList().ForEach(m => {
+            RDFPatternGroupMember last  = this.GetEvaluablePatternGroupMembers().LastOrDefault();
+            this.GetEvaluablePatternGroupMembers().ToList().ForEach(pgm => {
 
                 #region PATTERNS
-                if (m is RDFPattern) {
+                if (pgm                is RDFPattern) {
 
                     //Union pattern
-                    if (((RDFPattern)m).JoinAsUnion) {
-                        if (!m.Equals(last)) {
+                    if (((RDFPattern)pgm).JoinAsUnion) {
+                        if (!pgm.Equals(last)) {
                              //Begin a new Union block
                              printingUnion    = true;
-                             patternGroup.Append(spaces + "    { " + m + " }\n" + spaces + "    UNION\n");
+                             patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n" + spaces + "    UNION\n");
                         }
                         else {
                             //End the Union block
                             if (printingUnion) {
                                 printingUnion = false;
-                                patternGroup.Append(spaces + "    { " + m + " }\n");
+                                patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n");
                             }
                             else {
-                                patternGroup.Append(spaces + "    " + m + " .\n");
+                                patternGroup.Append(spaces + "    " + ((RDFPattern)pgm).ToString(prefixes) + " .\n");
                             }
                         }
                     }
@@ -145,24 +145,24 @@ namespace RDFSharp.Query
                         //End the Union block
                         if (printingUnion) {
                             printingUnion     = false;
-                            patternGroup.Append(spaces + "    { " + m + " }\n");
+                            patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n");
                         }
                         else {
-                            patternGroup.Append(spaces + "    " + m + " .\n");
+                            patternGroup.Append(spaces + "    " + ((RDFPattern)pgm).ToString(prefixes) + " .\n");
                         }
                     }
                 }
                 #endregion
 
                 #region PROPERTY PATHS
-                else if (m is RDFPropertyPath && m.IsEvaluable) {
+                else if (pgm           is RDFPropertyPath && pgm.IsEvaluable) {
                     //End the Union block
                     if (printingUnion) {
                         printingUnion         = false;
-                        patternGroup.Append(spaces + "    { " + m + " }\n");
+                        patternGroup.Append(spaces + "    { " + ((RDFPropertyPath)pgm).ToString(prefixes) + " }\n");
                     }
                     else {
-                        patternGroup.Append(spaces + "    " + m + " .\n");
+                        patternGroup.Append(spaces + "    " + ((RDFPropertyPath)pgm).ToString(prefixes) + " .\n");
                     }
                 }
                 #endregion

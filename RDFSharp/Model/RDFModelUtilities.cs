@@ -284,6 +284,78 @@ namespace RDFSharp.Model
             }
             return result.Distinct().ToList();
         }
+
+        /// <summary>
+        /// Finds if the given token contains a recognizable namespace and, if so, abbreviates it with its prefix.
+        /// It also prepares the result in a format useful for serialization.
+        /// </summary>
+        internal static String AbbreviateUri(String token, List<RDFNamespace> prefixes = null) {
+
+            //Null/Space token: give empty result
+            if (token == null || token.Trim() == String.Empty) {
+                return String.Empty;
+            }
+
+            //Blank token: abbreviate it with "_"
+            if (token.StartsWith("bnode:")) {
+                return token.Replace("bnode:", "_:");
+            }
+
+            //Variable token: do not modify
+            if (token.StartsWith("?")) {
+                return token;
+            }
+
+            //Prefixed token: check if it starts with a known prefix, if so just return it
+            var prefixToSearch           = token.Split(':')[0];
+            if (prefixes                == null) {
+                if (RDFNamespaceRegister.GetByPrefix(prefixToSearch) != null) {
+                    return token;
+                }
+            }
+            else {
+                var searchedPrefix       = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
+                if (searchedPrefix      != null) {
+                    return token;
+                }
+            }
+
+            //Uri token: search a known namespace, if found replace it with its prefix
+            String tokenBackup          = token;
+            Boolean abbrev              = false;
+            List<RDFNamespace> namespacesToSearch = (prefixes == null ? RDFNamespaceRegister.Instance.Register : prefixes);
+            namespacesToSearch.ForEach(ns => {
+                if (!abbrev) {
+                    String nS           = ns.ToString();
+                    if (!token.Equals(nS, StringComparison.OrdinalIgnoreCase)) {
+                         if (token.StartsWith(nS)) {
+                             token      = token.Replace(nS, ns.NamespacePrefix + ":").TrimEnd(new Char[] { '/' });
+                         
+                             //Accept the abbreviation only if it has generated a valid XSD QName
+                             try {
+                                 var qn = new RDFTypedLiteral(token, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                                 abbrev = true;
+                             }
+                             catch {
+                                 token  = tokenBackup;
+                                 abbrev = false;
+                             }
+                         
+                         }
+                    }
+                }
+            });
+
+            //Search done, let's analyze results:
+            if (abbrev) {
+                return token; //token is a relative or a blank uri
+            }
+            if (token.Contains("^^")) { //token is a typedLiteral absolute uri
+                return token.Replace("^^", "^^<") + ">";
+            }
+            return "<" + token + ">"; //token is an absolute uri
+
+        }
         #endregion
 
         #region Datatypes

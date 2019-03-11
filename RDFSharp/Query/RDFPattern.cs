@@ -165,13 +165,35 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override String ToString() {
-            String subj       = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
-            String pred       = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
-            String obj        = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
+            return this.ToString(null);
+        }        
+        internal String ToString(List<RDFNamespace> prefixes) {
+            String subj       = null;
+            String pred       = null;
+            String obj        = null;
+
+            //If prefixes are given, try to use them for abbreviating pattern terms
+            if (prefixes     != null && prefixes.Any()) {
+                subj          = RDFModelUtilities.AbbreviateUri(this.Subject.ToString(), prefixes);
+                pred          = RDFModelUtilities.AbbreviateUri(this.Predicate.ToString(), prefixes);
+                obj           = RDFModelUtilities.AbbreviateUri(this.Object.ToString(),  prefixes);
+            }
+            //Otherwise pretty-print pattern terms
+            else {
+                subj          = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
+                pred          = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
+                obj           = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
+            }
 
             //CSPO pattern
             if (this.Context != null) {
-                String ctx    = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
+                String ctx    = null;
+                if (prefixes != null && prefixes.Any()) {
+                    ctx       = RDFModelUtilities.AbbreviateUri(this.Context.ToString(), prefixes);
+                }
+                else {
+                    ctx       = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
+                }
                 if (this.IsOptional) {
                     return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
                 }
