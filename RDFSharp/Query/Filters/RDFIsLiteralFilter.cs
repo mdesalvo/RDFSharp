@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsLiteralFilter represents a filter for literal values of a variable.
     /// </summary>
-    public class RDFIsLiteralFilter: RDFFilter {
+    public class RDFIsLiteralFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -38,12 +39,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a filter on the given variable
         /// </summary>
-        public RDFIsLiteralFilter(RDFVariable variable) {
-            if (variable        != null) {
-                this.Variable    = variable;
+        public RDFIsLiteralFilter(RDFVariable variable)
+        {
+            if (variable != null)
+            {
+                this.Variable = variable;
                 this.IsEvaluable = false;
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFIsLiteralFilter because given \"variable\" parameter is null.");
             }
         }
@@ -53,10 +57,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
             return "FILTER ( ISLITERAL(" + this.Variable + ") )";
         }
         #endregion
@@ -65,19 +71,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
-            Boolean keepRow  = true;
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
+            Boolean keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString())) {
- 
+            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            {
+
                 //Apply a negation logic on result of an "IsUri" filter
                 RDFIsUriFilter isUriFilter = new RDFIsUriFilter(this.Variable);
-                keepRow      = isUriFilter.ApplyFilter(row, true);
+                keepRow = isUriFilter.ApplyFilter(row, true);
 
                 //Apply the eventual negation
-                if (applyNegation) {
-                    keepRow  = !keepRow;
+                if (applyNegation)
+                {
+                    keepRow = !keepRow;
                 }
             }
 

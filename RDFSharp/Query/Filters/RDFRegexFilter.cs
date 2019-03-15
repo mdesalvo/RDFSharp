@@ -23,11 +23,12 @@ using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
-    
+
     /// <summary>
     /// RDFRegexFilter represents a filter applying a regular expression on the values of a variable.
     /// </summary>
-    public class RDFRegexFilter: RDFFilter {
+    public class RDFRegexFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -45,18 +46,23 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a filter on the given variable for the given regular expression 
         /// </summary>
-        public RDFRegexFilter(RDFVariable variable, Regex regex) {
-            if (variable            != null) {
-                if (regex           != null) {
-                    this.Variable    = variable;
-                    this.RegEx       = regex;
+        public RDFRegexFilter(RDFVariable variable, Regex regex)
+        {
+            if (variable != null)
+            {
+                if (regex != null)
+                {
+                    this.Variable = variable;
+                    this.RegEx = regex;
                     this.IsEvaluable = false;
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFRegexFilter because given \"variable\" parameter is null.");
             }
         }
@@ -66,24 +72,31 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
             StringBuilder regexFlags = new StringBuilder();
-            if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase)) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+            {
                 regexFlags.Append("i");
             }
-            if (this.RegEx.Options.HasFlag(RegexOptions.Singleline)) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
+            {
                 regexFlags.Append("s");
             }
-            if (this.RegEx.Options.HasFlag(RegexOptions.Multiline)) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
+            {
                 regexFlags.Append("m");
             }
-            if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace)) {
+            if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+            {
                 regexFlags.Append("x");
             }
-            if (regexFlags.ToString() != String.Empty) {
+            if (regexFlags.ToString() != String.Empty)
+            {
                 return "FILTER ( REGEX(STR(" + this.Variable + "), \"" + this.RegEx + "\", \"" + regexFlags + "\") )";
             }
             return "FILTER ( REGEX(STR(" + this.Variable + "), \"" + this.RegEx + "\") )";
@@ -94,19 +107,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
-            Boolean keepRow  = true;
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
+            Boolean keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString())) {
+            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            {
                 var varValue = row[this.Variable.ToString()].ToString();
-            
+
                 //Successfull match if the regular expression is satisfied by the variable
-                keepRow      = this.RegEx.IsMatch(varValue);
+                keepRow = this.RegEx.IsMatch(varValue);
 
                 //Apply the eventual negation
-                if (applyNegation) {
-                    keepRow  = !keepRow;
+                if (applyNegation)
+                {
+                    keepRow = !keepRow;
                 }
             }
 

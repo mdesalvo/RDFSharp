@@ -26,7 +26,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFCollection represents a generic collection in the RDF model.
     /// </summary>
-    public sealed class RDFCollection: IEnumerable<RDFPatternMember> {
+    public sealed class RDFCollection : IEnumerable<RDFPatternMember>
+    {
 
         #region Properties
         /// <summary>
@@ -47,14 +48,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the collection's items
         /// </summary>
-        public Int32 ItemsCount {
+        public Int32 ItemsCount
+        {
             get { return this.Items.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the collection's items for iteration
         /// </summary>
-        public IEnumerator<RDFPatternMember> ItemsEnumerator {
+        public IEnumerator<RDFPatternMember> ItemsEnumerator
+        {
             get { return this.Items.GetEnumerator(); }
         }
 
@@ -69,11 +72,12 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty collection of the given type
         /// (initial configuration of the collection is "rdf:Nil")
         /// </summary>
-        public RDFCollection(RDFModelEnums.RDFItemTypes itemType) {
-            this.ItemType                   = itemType;
-            this.ReificationSubject         = RDFVocabulary.RDF.NIL;
+        public RDFCollection(RDFModelEnums.RDFItemTypes itemType)
+        {
+            this.ItemType = itemType;
+            this.ReificationSubject = RDFVocabulary.RDF.NIL;
             this.InternalReificationSubject = new RDFResource();
-            this.Items                      = new List<RDFPatternMember>();        
+            this.Items = new List<RDFPatternMember>();
         }
         #endregion
 
@@ -81,14 +85,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the collection's items
         /// </summary>
-        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() {
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
+        {
             return this.ItemsEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the collection's items
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return this.ItemsEnumerator;
         }
         #endregion
@@ -99,10 +105,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given item to the collection
         /// </summary>
-        public RDFCollection AddItem(RDFResource item) {
-            if (item != null && this.ItemType  == RDFModelEnums.RDFItemTypes.Resource) {
+        public RDFCollection AddItem(RDFResource item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+            {
                 //Avoid duplicates
-                if (this.Items.Find(x => x.Equals(item)) == null) {
+                if (this.Items.Find(x => x.Equals(item)) == null)
+                {
                     //Add item to collection
                     this.Items.Add(item);
                     //Update ReificationSubject (if collection has left "rdf:Nil" configuration)
@@ -116,10 +125,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given item to the collection
         /// </summary>
-        public RDFCollection AddItem(RDFLiteral item) {
-            if (item != null && this.ItemType  == RDFModelEnums.RDFItemTypes.Literal) {
+        public RDFCollection AddItem(RDFLiteral item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
                 //Avoid duplicates
-                if (this.Items.Find(x => x.Equals(item)) == null) {
+                if (this.Items.Find(x => x.Equals(item)) == null)
+                {
                     //Add item to collection
                     this.Items.Add(item);
                     //Update ReificationSubject (if collection has left "rdf:Nil" configuration)
@@ -135,8 +147,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given item from the collection
         /// </summary>
-        public RDFCollection RemoveItem(RDFResource item) {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+        public RDFCollection RemoveItem(RDFResource item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+            {
                 //Remove item from collection
                 this.Items.RemoveAll(x => x.Equals(item));
                 //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
@@ -149,8 +163,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given item from the collection
         /// </summary>
-        public RDFCollection RemoveItem(RDFLiteral item) {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+        public RDFCollection RemoveItem(RDFLiteral item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
                 //Remove item from collection
                 this.Items.RemoveAll(x => x.Equals(item));
                 //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
@@ -163,7 +179,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes all the items from the collection
         /// </summary>
-        public void ClearItems() {
+        public void ClearItems()
+        {
             //Clear items of collection
             this.Items.Clear();
             //Turn back the collection into "rdf:Nil" configuration
@@ -175,14 +192,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds the reification graph of the collection
         /// </summary>
-        public RDFGraph ReifyCollection() {
-            RDFGraph reifColl    = new RDFGraph();
+        public RDFGraph ReifyCollection()
+        {
+            RDFGraph reifColl = new RDFGraph();
             RDFResource reifSubj = this.ReificationSubject;
-            Int32 itemCount      = 0;
+            Int32 itemCount = 0;
 
             //Collection can be reified only if it has at least one item
-            if (this.ItemsCount  > 0) { 
-                foreach (Object  listEnum in this) {
+            if (this.ItemsCount > 0)
+            {
+                foreach (Object listEnum in this)
+                {
 
                     //Count the items to keep track of the last one, which will be connected to rdf:nil
                     itemCount++;
@@ -191,21 +211,25 @@ namespace RDFSharp.Model
                     reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
                     //  Subject -> rdf:first -> RDFCollection.ITEM[i]
-                    if (this.ItemType     == RDFModelEnums.RDFItemTypes.Resource) {
+                    if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
                     }
-                    else {
+                    else
+                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)listEnum));
                     }
 
                     //Not the last one: Subject -> rdf:rest  -> NEWBLANK
-                    if (itemCount          < this.ItemsCount) {
+                    if (itemCount < this.ItemsCount)
+                    {
                         RDFResource newSub = new RDFResource();
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, newSub));
-                        reifSubj           = newSub;
+                        reifSubj = newSub;
                     }
                     //The last one:     Subject -> rdf:rest  -> rdf:nil
-                    else {
+                    else
+                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
                     }
 
@@ -217,7 +241,7 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
- 
+
     }
 
 }

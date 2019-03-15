@@ -25,13 +25,15 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFFilter represents a filter to be applied on a query results table.
     /// </summary>
-    public abstract class RDFFilter: RDFPatternGroupMember {
+    public abstract class RDFFilter : RDFPatternGroupMember
+    {
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
         internal abstract String ToString(List<RDFNamespace> prefixes);

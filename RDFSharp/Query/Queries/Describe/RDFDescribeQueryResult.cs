@@ -20,12 +20,14 @@ using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query {
+namespace RDFSharp.Query
+{
 
     /// <summary>
     /// RDFDescribeQueryResult is a container for SPARQL "DESCRIBE" query results.
     /// </summary>
-    public class RDFDescribeQueryResult {
+    public class RDFDescribeQueryResult
+    {
 
         #region Properties
         /// <summary>
@@ -36,8 +38,10 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Gets the number of results produced by the query
         /// </summary>
-        public Int64 DescribeResultsCount {
-            get {
+        public Int64 DescribeResultsCount
+        {
+            get
+            {
                 return this.DescribeResults.Rows.Count;
             }
         }
@@ -47,7 +51,8 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Default-ctor to build an empty DESCRIBE result
         /// </summary>
-        internal RDFDescribeQueryResult(String tableName) {
+        internal RDFDescribeQueryResult(String tableName)
+        {
             this.DescribeResults = new DataTable(tableName);
         }
         #endregion
@@ -56,22 +61,26 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Builds a graph corresponding to the query result
         /// </summary>
-        public RDFGraph ToRDFGraph() {
-            RDFGraph result        = new RDFGraph();
-            RDFPatternMember subj  = null;
-            RDFPatternMember pred  = null;
-            RDFPatternMember obj   = null;
+        public RDFGraph ToRDFGraph()
+        {
+            RDFGraph result = new RDFGraph();
+            RDFPatternMember subj = null;
+            RDFPatternMember pred = null;
+            RDFPatternMember obj = null;
 
             //Iterate the datatable rows and generate the corresponding triples to be added to the result graph
             IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
-            while (resultRows.MoveNext()) {
-                subj               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
-                pred               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
-                obj                = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
-                if (obj           is RDFResource) {
+            while (resultRows.MoveNext())
+            {
+                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
+                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
+                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
+                if (obj is RDFResource)
+                {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
                 }
-                else {
+                else
+                {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
                 }
             }
@@ -82,26 +91,30 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Builds a memory store corresponding to the query result
         /// </summary>
-        public RDFMemoryStore ToRDFMemoryStore() {
-            RDFMemoryStore result  = new RDFMemoryStore();
-            RDFPatternMember ctx   = null;
-            RDFPatternMember subj  = null;
-            RDFPatternMember pred  = null;
-            RDFPatternMember obj   = null;
+        public RDFMemoryStore ToRDFMemoryStore()
+        {
+            RDFMemoryStore result = new RDFMemoryStore();
+            RDFPatternMember ctx = null;
+            RDFPatternMember subj = null;
+            RDFPatternMember pred = null;
+            RDFPatternMember obj = null;
 
             //Iterate the datatable rows and generate the corresponding triples to be added to the result memory store
             IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
-            while (resultRows.MoveNext()) {
-                ctx                = (this.DescribeResults.Columns.Contains("CONTEXT") ?
+            while (resultRows.MoveNext())
+            {
+                ctx = (this.DescribeResults.Columns.Contains("CONTEXT") ?
                                         new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["CONTEXT"].ToString()).ToString()) :
                                         new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-                subj               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
-                pred               = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
-                obj                = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
-                if (obj           is RDFResource) {
+                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
+                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
+                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
+                if (obj is RDFResource)
+                {
                     result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
                 }
-                else {
+                else
+                {
                     result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
                 }
             }
@@ -112,12 +125,14 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Builds a query result corresponding to the given graph
         /// </summary>
-        public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph) {
+        public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph)
+        {
             RDFDescribeQueryResult result = new RDFDescribeQueryResult(String.Empty);
-            if (graph != null) {
+            if (graph != null)
+            {
 
                 //Transform the graph into a datatable and assign it to the query result
-                result.DescribeResults    = graph.ToDataTable();
+                result.DescribeResults = graph.ToDataTable();
 
             }
             return result;
@@ -126,9 +141,11 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Builds a query result corresponding to the given memory store
         /// </summary>
-        public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store) {
+        public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store)
+        {
             RDFDescribeQueryResult result = new RDFDescribeQueryResult(String.Empty);
-            if (store != null) {
+            if (store != null)
+            {
 
                 //Transform the memory store into a datatable and assign it to the query result
                 result.DescribeResults = store.ToDataTable();

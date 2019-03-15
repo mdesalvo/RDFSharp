@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOffsetModifier is a modifier which makes the first N query results to be not considered.
     /// </summary>
-    public class RDFOffsetModifier: RDFModifier {
+    public class RDFOffsetModifier : RDFModifier
+    {
 
         #region Properties
         /// <summary>
@@ -38,13 +39,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an Offset modifier on a query 
         /// </summary>
-        public RDFOffsetModifier(Int32 offset) {
-            if (offset            >= 0) {
-                this.Offset        = offset;
-                this.IsEvaluable   = false;
-                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());   
+        public RDFOffsetModifier(Int32 offset)
+        {
+            if (offset >= 0)
+            {
+                this.Offset = offset;
+                this.IsEvaluable = false;
+                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");
             }
         }
@@ -54,7 +58,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return "OFFSET " + this.Offset;
         }
         #endregion
@@ -63,16 +68,19 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the modifier on the given datatable 
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table) {
-            String tableName       = table.TableName;
-            String tableSort       = table.DefaultView.Sort;
-            if(table.Rows.Count   == 0 || this.Offset >= table.Rows.Count) {
-                table              = table.Clone();
+        internal override DataTable ApplyModifier(DataTable table)
+        {
+            String tableName = table.TableName;
+            String tableSort = table.DefaultView.Sort;
+            if (table.Rows.Count == 0 || this.Offset >= table.Rows.Count)
+            {
+                table = table.Clone();
             }
-            else {
-                table              = table.AsEnumerable().Skip(this.Offset).CopyToDataTable();
+            else
+            {
+                table = table.AsEnumerable().Skip(this.Offset).CopyToDataTable();
             }
-            table.TableName        = tableName;
+            table.TableName = tableName;
             table.DefaultView.Sort = tableSort;
             return table;
         }

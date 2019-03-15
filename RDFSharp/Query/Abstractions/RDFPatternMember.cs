@@ -22,7 +22,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPatternMember defines an object which can be member of a pattern
     /// </summary>
-    public abstract class RDFPatternMember: IEquatable<RDFPatternMember> {
+    public abstract class RDFPatternMember : IEquatable<RDFPatternMember>
+    {
 
         #region Properties
         /// <summary>
@@ -35,14 +36,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the pattern member
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return base.ToString();
         }
 
         /// <summary>
         /// Performs the equality comparison between two pattern members
         /// </summary>
-        public Boolean Equals(RDFPatternMember other) {
+        public Boolean Equals(RDFPatternMember other)
+        {
             return (other != null && this.PatternMemberID.Equals(other.PatternMemberID));
         }
         #endregion

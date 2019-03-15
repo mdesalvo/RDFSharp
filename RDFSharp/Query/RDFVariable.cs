@@ -23,7 +23,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
     /// </summary>
-    public class RDFVariable: RDFPatternMember {
+    public class RDFVariable : RDFPatternMember
+    {
 
         #region Properties
         /// <summary>
@@ -36,12 +37,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a named SPARQL variable
         /// </summary>
-        public RDFVariable(String variableName) {
-            if (variableName         != null && variableName.Trim(new Char[] { ' ', '?', '$' }) != String.Empty) {
-                this.VariableName     = "?"   + variableName.Trim(new Char[] { ' ', '?', '$' }).ToUpperInvariant();
-                this.PatternMemberID  = RDFModelUtilities.CreateHash(this.ToString());
+        public RDFVariable(String variableName)
+        {
+            if (variableName != null && variableName.Trim(new Char[] { ' ', '?', '$' }) != String.Empty)
+            {
+                this.VariableName = "?" + variableName.Trim(new Char[] { ' ', '?', '$' }).ToUpperInvariant();
+                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty.");
             }
         }
@@ -51,7 +55,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the variable
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.VariableName;
         }
         #endregion

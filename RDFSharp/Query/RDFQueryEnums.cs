@@ -20,7 +20,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryEnums represents a collector for all the enumerations used by the "RDFSharp.Query" namespace
     /// </summary>
-    public static class RDFQueryEnums {
+    public static class RDFQueryEnums
+    {
 
         /// <summary>
         /// RDFPatternHoles represents an enumeration for possible positions of holes in a pattern.
@@ -30,7 +31,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFOrderByFlavors represents an enumeration for possible directions of query results ordering on a given variable.
         /// </summary>
-        public enum RDFOrderByFlavors {
+        public enum RDFOrderByFlavors
+        {
             /// <summary>
             /// Orders SPARQL results in ascending mode on the selected variable
             /// </summary>
@@ -44,7 +46,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFComparisonFlavors represents an enumeration for possible comparison modes between two patten members.
         /// </summary>
-        public enum RDFComparisonFlavors {
+        public enum RDFComparisonFlavors
+        {
             /// <summary>
             /// Represents the less-or-equal comparison operator
             /// </summary>
@@ -74,7 +77,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFPropertyPathStepFlavors represents an enumeration for possible connection types within a property path.
         /// </summary>
-        public enum RDFPropertyPathStepFlavors {
+        public enum RDFPropertyPathStepFlavors
+        {
             /// <summary>
             /// Steps within a property path are connected with AND semantic
             /// </summary>

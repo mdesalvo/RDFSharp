@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSPARQLEndpoint represents a SPARQL endpoint
     /// </summary>
-    public class RDFSPARQLEndpoint {
+    public class RDFSPARQLEndpoint
+    {
 
         #region Properties
         /// <summary>
@@ -43,12 +44,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a SPARQL enpoint with given base address
         /// </summary>
-        public RDFSPARQLEndpoint(Uri baseAddress) {
-            if (baseAddress      != null)   {
-                this.BaseAddress  = baseAddress;
-                this.QueryParams  = new NameValueCollection();
+        public RDFSPARQLEndpoint(Uri baseAddress)
+        {
+            if (baseAddress != null)
+            {
+                this.BaseAddress = baseAddress;
+                this.QueryParams = new NameValueCollection();
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
             }
         }
@@ -58,7 +62,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the variable
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.BaseAddress.ToString();
         }
         #endregion
@@ -67,7 +72,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a "default-graph-uri" parameter to be sent to the SPARQL endpoint
         /// </summary>
-        public RDFSPARQLEndpoint AddDefaultGraphUri(String defaultGraphUri) {
+        public RDFSPARQLEndpoint AddDefaultGraphUri(String defaultGraphUri)
+        {
             this.QueryParams.Add("default-graph-uri", defaultGraphUri ?? String.Empty);
             return this;
         }
@@ -75,7 +81,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a "named-graph-uri" parameter to be sent to the SPARQL endpoint
         /// </summary>
-        public RDFSPARQLEndpoint AddNamedGraphUri(String namedGraphUri) {
+        public RDFSPARQLEndpoint AddNamedGraphUri(String namedGraphUri)
+        {
             this.QueryParams.Add("named-graph-uri", namedGraphUri ?? String.Empty);
             return this;
         }

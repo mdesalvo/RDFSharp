@@ -17,33 +17,37 @@
 using System;
 using RDFSharp.Store;
 
-namespace RDFSharp.Model 
+namespace RDFSharp.Model
 {
 
     /// <summary>
     /// RDFDataSource is the foundation class for modeling RDF data sources
     /// </summary>
-    public abstract class RDFDataSource {
+    public abstract class RDFDataSource
+    {
 
         #region Methods
         /// <summary>
         /// Checks if this data source is a graph
         /// </summary>
-        internal Boolean IsGraph() {
+        internal Boolean IsGraph()
+        {
             return this is RDFGraph;
         }
 
         /// <summary>
         /// Checks if this data source is a store
         /// </summary>
-        internal Boolean IsStore() {
+        internal Boolean IsStore()
+        {
             return this is RDFStore;
         }
 
         /// <summary>
         /// Checks if this data source is a federation
         /// </summary>
-        internal Boolean IsFederation() {
+        internal Boolean IsFederation()
+        {
             return this is RDFFederation;
         }
         #endregion

@@ -26,14 +26,16 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query. 
     /// </summary>
-    public class RDFDistinctModifier: RDFModifier {
+    public class RDFDistinctModifier : RDFModifier
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a Distinct modifier on a query 
         /// </summary>
-        public RDFDistinctModifier() {
-            this.IsEvaluable   = false;
+        public RDFDistinctModifier()
+        {
+            this.IsEvaluable = false;
             this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
         #endregion
@@ -42,7 +44,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return "DISTINCT";
         }
         #endregion
@@ -51,13 +54,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the modifier on the given datatable 
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table) {
+        internal override DataTable ApplyModifier(DataTable table)
+        {
             List<String> colNames = new List<String>();
-            Int32 columnsCount    = table.Columns.Count;
-            for (Int32 i = 0; i < columnsCount; i++) {
+            Int32 columnsCount = table.Columns.Count;
+            for (Int32 i = 0; i < columnsCount; i++)
+            {
                 colNames.Add(table.Columns[i].ColumnName);
             }
-            table  = table.DefaultView.ToTable(true, colNames.ToArray<String>());
+            table = table.DefaultView.ToTable(true, colNames.ToArray<String>());
             return table;
         }
         #endregion

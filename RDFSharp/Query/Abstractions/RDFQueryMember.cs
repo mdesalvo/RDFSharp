@@ -22,7 +22,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryMember defines an object which can be member of a query
     /// </summary>
-    public abstract class RDFQueryMember: IEquatable<RDFQueryMember> {
+    public abstract class RDFQueryMember : IEquatable<RDFQueryMember>
+    {
 
         #region Properties
         /// <summary>
@@ -40,14 +41,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the query member
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return base.ToString();
         }
 
         /// <summary>
         /// Performs the equality comparison between two query members
         /// </summary>
-        public Boolean Equals(RDFQueryMember other) {
+        public Boolean Equals(RDFQueryMember other)
+        {
             return (other != null && this.QueryMemberID.Equals(other.QueryMemberID));
         }
         #endregion

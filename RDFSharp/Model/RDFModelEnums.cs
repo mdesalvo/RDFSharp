@@ -16,16 +16,18 @@
 
 namespace RDFSharp.Model
 {
-    
+
     /// <summary>
     /// RDFModelEnums represents a collector for all the enumerations used by the "RDFSharp.Model" namespace
     /// </summary>
-    public static class RDFModelEnums {
+    public static class RDFModelEnums
+    {
 
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF graph serialization data formats.
         /// </summary>
-        public enum RDFFormats {
+        public enum RDFFormats
+        {
             /// <summary>
             /// N-Triples serialization
             /// </summary>
@@ -47,7 +49,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// RDFTripleFlavors represents an enumeration for possible triple pattern flavors.
         /// </summary>
-        public enum RDFTripleFlavors  {
+        public enum RDFTripleFlavors
+        {
             /// <summary>
             /// Indicates that the object of the triple is a resource
             /// </summary>
@@ -61,11 +64,12 @@ namespace RDFSharp.Model
             /// </summary>
             SPV = 3
         };
-        
+
         /// <summary>
         /// RDFDatatypes represents an enumeration for supported datatypes (RDF/RDFS/XSD).
         /// </summary>
-        public enum RDFDatatypes {
+        public enum RDFDatatypes
+        {
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#Literal
             /// </summary>
@@ -235,7 +239,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// RDFContainerTypes represents an enumeration for supported container types.
         /// </summary>
-        public enum RDFContainerTypes {
+        public enum RDFContainerTypes
+        {
             /// <summary>
             /// Represents an unordered list which allows duplicates
             /// </summary>
@@ -253,7 +258,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// RDFItemTypes represents an enumeration for acceptable RDFContainer and RDFCollection item types.
         /// </summary>
-        public enum RDFItemTypes {
+        public enum RDFItemTypes
+        {
             /// <summary>
             /// Indicates that a container/collection accepts only resources
             /// </summary>

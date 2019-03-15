@@ -31,7 +31,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAskQuery is the SPARQL "ASK" query implementation.
     /// </summary>
-    public class RDFAskQuery: RDFQuery {
+    public class RDFAskQuery : RDFQuery
+    {
 
         #region Ctors
         /// <summary>
@@ -44,12 +45,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the ASK query
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             StringBuilder query = new StringBuilder();
 
             #region PREFIXES
-            if (this.Prefixes.Any()) {
-                this.Prefixes.ForEach(pf => {
+            if (this.Prefixes.Any())
+            {
+                this.Prefixes.ForEach(pf =>
+                {
                     query.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
                 });
                 query.Append("\n");
@@ -64,55 +68,66 @@ namespace RDFSharp.Query
             query.Append("\nWHERE {\n");
 
             #region EVALUABLEMEMBERS
-            Boolean printingUnion        = false;
-            RDFQueryMember lastQueryMbr  = this.GetEvaluableQueryMembers().LastOrDefault();
-            foreach(var queryMember     in this.GetEvaluableQueryMembers()) {
+            Boolean printingUnion = false;
+            RDFQueryMember lastQueryMbr = this.GetEvaluableQueryMembers().LastOrDefault();
+            foreach (var queryMember in this.GetEvaluableQueryMembers())
+            {
 
                 #region PATTERNGROUPS
-                if (queryMember         is RDFPatternGroup) {
+                if (queryMember is RDFPatternGroup)
+                {
 
                     //Current pattern group is set as UNION with the next one
-                    if (((RDFPatternGroup)queryMember).JoinAsUnion) {
+                    if (((RDFPatternGroup)queryMember).JoinAsUnion)
+                    {
 
                         //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr)) {
-                             //Begin a new Union block
-                             if (!printingUnion) {
-                                  printingUnion = true;
-                                  query.Append("\n  {");
-                             }
-                             query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes) + "    UNION");
+                        if (!queryMember.Equals(lastQueryMbr))
+                        {
+                            //Begin a new Union block
+                            if (!printingUnion)
+                            {
+                                printingUnion = true;
+                                query.Append("\n  {");
+                            }
+                            query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes) + "    UNION");
                         }
 
                         //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
-                        else {
+                        else
+                        {
                             //End the Union block
-                             if (printingUnion) {
-                                 printingUnion  = false;
-                                 query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
-                                 query.Append("  }\n");
-                             }
-                             else {
-                                 query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
-                             }
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
+                                query.Append("  }\n");
+                            }
+                            else
+                            {
+                                query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
+                            }
                         }
 
                     }
 
                     //Current pattern group is set as INTERSECT with the next one
-                    else {
+                    else
+                    {
                         //End the Union block
-                        if (printingUnion) {
-                            printingUnion       = false;
+                        if (printingUnion)
+                        {
+                            printingUnion = false;
                             query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
                             query.Append("  }\n");
                         }
-                        else {
+                        else
+                        {
                             query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
                         }
                     }
 
-                }                
+                }
                 #endregion
 
             }
@@ -129,10 +144,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given pattern group to the query
         /// </summary>
-        public RDFAskQuery AddPatternGroup(RDFPatternGroup patternGroup) {
-            if (patternGroup != null) {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup))) {
-                     this.QueryMembers.Add(patternGroup);
+        public RDFAskQuery AddPatternGroup(RDFPatternGroup patternGroup)
+        {
+            if (patternGroup != null)
+            {
+                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                {
+                    this.QueryMembers.Add(patternGroup);
                 }
             }
             return this;
@@ -141,10 +159,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given prefix declaration to the query
         /// </summary>
-        public RDFAskQuery AddPrefix(RDFNamespace prefix) {
-            if (prefix != null) {
-                if (!this.Prefixes.Any(p => p.Equals(prefix))) {
-                     this.Prefixes.Add(prefix);
+        public RDFAskQuery AddPrefix(RDFNamespace prefix)
+        {
+            if (prefix != null)
+            {
+                if (!this.Prefixes.Any(p => p.Equals(prefix)))
+                {
+                    this.Prefixes.Add(prefix);
                 }
             }
             return this;
@@ -153,11 +174,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given graph 
         /// </summary>
-        public RDFAskQueryResult ApplyToGraph(RDFGraph graph) {
-            if (graph != null) {
+        public RDFAskQueryResult ApplyToGraph(RDFGraph graph)
+        {
+            if (graph != null)
+            {
                 return RDFQueryEngine.CreateNew().EvaluateAskQuery(this, graph);
             }
-            else {
+            else
+            {
                 return new RDFAskQueryResult();
             }
         }
@@ -165,11 +189,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given store 
         /// </summary>
-        public RDFAskQueryResult ApplyToStore(RDFStore store) {
-            if (store != null) {
+        public RDFAskQueryResult ApplyToStore(RDFStore store)
+        {
+            if (store != null)
+            {
                 return RDFQueryEngine.CreateNew().EvaluateAskQuery(this, store);
             }
-            else {
+            else
+            {
                 return new RDFAskQueryResult();
             }
         }
@@ -177,11 +204,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
-        public RDFAskQueryResult ApplyToFederation(RDFFederation federation) {
-            if (federation != null) {
+        public RDFAskQueryResult ApplyToFederation(RDFFederation federation)
+        {
+            if (federation != null)
+            {
                 return RDFQueryEngine.CreateNew().EvaluateAskQuery(this, federation);
             }
-            else {
+            else
+            {
                 return new RDFAskQueryResult();
             }
         }
@@ -189,13 +219,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
-        public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint) {
-            RDFAskQueryResult askResult    = new RDFAskQueryResult();
-            if (sparqlEndpoint            != null) {
+        public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+        {
+            RDFAskQueryResult askResult = new RDFAskQueryResult();
+            if (sparqlEndpoint != null)
+            {
                 RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating ASK query on SPARQL endpoint '{0}'...", sparqlEndpoint));
 
                 //Establish a connection to the given SPARQL endpoint
-                using (WebClient webClient = new WebClient()) {
+                using (WebClient webClient = new WebClient())
+                {
 
                     //Insert reserved "query" parameter
                     webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
@@ -207,12 +240,14 @@ namespace RDFSharp.Query
                     webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
 
                     //Send querystring to SPARQL endpoint
-                    var sparqlResponse     = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+                    var sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
 
                     //Parse response from SPARQL endpoint
-                    if (sparqlResponse    != null) {
-                        using (var sStream = new MemoryStream(sparqlResponse)) {
-                            askResult      = RDFAskQueryResult.FromSparqlXmlResult(sStream);
+                    if (sparqlResponse != null)
+                    {
+                        using (var sStream = new MemoryStream(sparqlResponse))
+                        {
+                            askResult = RDFAskQueryResult.FromSparqlXmlResult(sStream);
                         }
                     }
 

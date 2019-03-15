@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFIsBlankFilter represents a filter for Blank Uri values of a variable.
     /// </summary>
-    public class RDFIsBlankFilter: RDFFilter {
+    public class RDFIsBlankFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -38,12 +39,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a filter on the given variable
         /// </summary>
-        public RDFIsBlankFilter(RDFVariable variable) {
-            if (variable        != null) {
-                this.Variable    = variable;
+        public RDFIsBlankFilter(RDFVariable variable)
+        {
+            if (variable != null)
+            {
+                this.Variable = variable;
                 this.IsEvaluable = false;
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFIsBlankFilter because given \"variable\" parameter is null.");
             }
         }
@@ -53,10 +57,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
             return "FILTER ( ISBLANK(" + this.Variable + ") )";
         }
         #endregion
@@ -65,19 +71,22 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
             Boolean keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString())) {
-                String variableValue       = row[this.Variable.ToString()].ToString();
+            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            {
+                String variableValue = row[this.Variable.ToString()].ToString();
 
                 //Apply a blank-checking logic on result of an "IsUri" filter
                 RDFIsUriFilter isUriFilter = new RDFIsUriFilter(this.Variable);
-                keepRow                    = (isUriFilter.ApplyFilter(row, false) && variableValue.StartsWith("bnode:"));
+                keepRow = (isUriFilter.ApplyFilter(row, false) && variableValue.StartsWith("bnode:"));
 
                 //Apply the eventual negation
-                if (applyNegation) {
+                if (applyNegation)
+                {
                     keepRow = !keepRow;
                 }
             }

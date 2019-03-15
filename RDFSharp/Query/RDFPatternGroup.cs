@@ -26,7 +26,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPatternGroup represents a named group of patterns having its own filters.
     /// </summary>
-    public class RDFPatternGroup: RDFQueryMember {
+    public class RDFPatternGroup : RDFQueryMember
+    {
 
         #region Properties
         /// <summary>
@@ -48,7 +49,7 @@ namespace RDFSharp.Query
         /// List of members carried by the pattern group
         /// </summary>
         internal List<RDFPatternGroupMember> GroupMembers { get; set; }
-    
+
         /// <summary>
         /// List of variables carried by the patterns of the pattern group
         /// </summary>
@@ -59,17 +60,20 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty named pattern group
         /// </summary>
-        public RDFPatternGroup(String patternGroupName) {
-            if (patternGroupName     != null && patternGroupName.Trim() != String.Empty) {
+        public RDFPatternGroup(String patternGroupName)
+        {
+            if (patternGroupName != null && patternGroupName.Trim() != String.Empty)
+            {
                 this.PatternGroupName = patternGroupName.Trim().ToUpperInvariant();
-                this.IsEvaluable      = true;
-                this.IsOptional       = false;
-                this.JoinAsUnion      = false;
-                this.GroupMembers     = new List<RDFPatternGroupMember>();
-                this.Variables        = new List<RDFVariable>();
-                this.QueryMemberID    = RDFModelUtilities.CreateHash(this.PatternGroupName);
+                this.IsEvaluable = true;
+                this.IsOptional = false;
+                this.JoinAsUnion = false;
+                this.GroupMembers = new List<RDFPatternGroupMember>();
+                this.Variables = new List<RDFVariable>();
+                this.QueryMemberID = RDFModelUtilities.CreateHash(this.PatternGroupName);
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPatternGroup because given \"patternGroupName\" parameter is null or empty.");
             }
         }
@@ -77,8 +81,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns 
         /// </summary>
-        public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns): this(patternGroupName) {
-            if (patterns != null) {
+        public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns) : this(patternGroupName)
+        {
+            if (patterns != null)
+            {
                 patterns.ForEach(p => this.AddPattern(p));
             }
         }
@@ -86,8 +92,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns and filters
         /// </summary>
-        public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters): this(patternGroupName, patterns) {
-            if (filters != null) {
+        public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters) : this(patternGroupName, patterns)
+        {
+            if (filters != null)
+            {
                 filters.ForEach(f => this.AddFilter(f));
             }
         }
@@ -97,57 +105,70 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the patternGroup
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(0, new List<RDFNamespace>());
         }
-        internal String ToString(Int32 spaceIndent, List<RDFNamespace> prefixes) {
+        internal String ToString(Int32 spaceIndent, List<RDFNamespace> prefixes)
+        {
             String spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
             #region HEADER
-            StringBuilder patternGroup  = new StringBuilder();
-            if (this.IsOptional) {
+            StringBuilder patternGroup = new StringBuilder();
+            if (this.IsOptional)
+            {
                 patternGroup.Append("\n  " + spaces + "OPTIONAL {");
-                spaces    = spaces + "  ";
+                spaces = spaces + "  ";
             }
-            patternGroup.Append("\n  "  + spaces + "#" + this.PatternGroupName + "\n");
-            patternGroup.Append(spaces  + "  {\n");
+            patternGroup.Append("\n  " + spaces + "#" + this.PatternGroupName + "\n");
+            patternGroup.Append(spaces + "  {\n");
             #endregion
 
             #region EVALUABLEMEMBERS
-            Boolean printingUnion       = false;
-            RDFPatternGroupMember last  = this.GetEvaluablePatternGroupMembers().LastOrDefault();
-            this.GetEvaluablePatternGroupMembers().ToList().ForEach(pgm => {
+            Boolean printingUnion = false;
+            RDFPatternGroupMember last = this.GetEvaluablePatternGroupMembers().LastOrDefault();
+            this.GetEvaluablePatternGroupMembers().ToList().ForEach(pgm =>
+            {
 
                 #region PATTERNS
-                if (pgm                is RDFPattern) {
+                if (pgm is RDFPattern)
+                {
 
                     //Union pattern
-                    if (((RDFPattern)pgm).JoinAsUnion) {
-                        if (!pgm.Equals(last)) {
-                             //Begin a new Union block
-                             printingUnion    = true;
-                             patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n" + spaces + "    UNION\n");
+                    if (((RDFPattern)pgm).JoinAsUnion)
+                    {
+                        if (!pgm.Equals(last))
+                        {
+                            //Begin a new Union block
+                            printingUnion = true;
+                            patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n" + spaces + "    UNION\n");
                         }
-                        else {
+                        else
+                        {
                             //End the Union block
-                            if (printingUnion) {
+                            if (printingUnion)
+                            {
                                 printingUnion = false;
                                 patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n");
                             }
-                            else {
+                            else
+                            {
                                 patternGroup.Append(spaces + "    " + ((RDFPattern)pgm).ToString(prefixes) + " .\n");
                             }
                         }
                     }
 
                     //Intersect pattern
-                    else {
+                    else
+                    {
                         //End the Union block
-                        if (printingUnion) {
-                            printingUnion     = false;
+                        if (printingUnion)
+                        {
+                            printingUnion = false;
                             patternGroup.Append(spaces + "    { " + ((RDFPattern)pgm).ToString(prefixes) + " }\n");
                         }
-                        else {
+                        else
+                        {
                             patternGroup.Append(spaces + "    " + ((RDFPattern)pgm).ToString(prefixes) + " .\n");
                         }
                     }
@@ -155,13 +176,16 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROPERTY PATHS
-                else if (pgm           is RDFPropertyPath && pgm.IsEvaluable) {
+                else if (pgm is RDFPropertyPath && pgm.IsEvaluable)
+                {
                     //End the Union block
-                    if (printingUnion) {
-                        printingUnion         = false;
+                    if (printingUnion)
+                    {
+                        printingUnion = false;
                         patternGroup.Append(spaces + "    { " + ((RDFPropertyPath)pgm).ToString(prefixes) + " }\n");
                     }
-                    else {
+                    else
+                    {
                         patternGroup.Append(spaces + "    " + ((RDFPropertyPath)pgm).ToString(prefixes) + " .\n");
                     }
                 }
@@ -171,14 +195,15 @@ namespace RDFSharp.Query
             #endregion
 
             #region FILTERS
-            this.GroupMembers.Where(m   => m is RDFFilter)
+            this.GroupMembers.Where(m => m is RDFFilter)
                              .ToList()
                              .ForEach(f => patternGroup.Append(spaces + "    " + ((RDFFilter)f).ToString(prefixes) + " \n"));
             #endregion
 
             #region FOOTER
-            patternGroup.Append(spaces  + "  }\n");
-            if (this.IsOptional) {
+            patternGroup.Append(spaces + "  }\n");
+            if (this.IsOptional)
+            {
                 patternGroup.Append(spaces + "}\n");
             }
             #endregion
@@ -191,39 +216,50 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given pattern to the pattern group
         /// </summary>
-        public RDFPatternGroup AddPattern(RDFPattern pattern) {
+        public RDFPatternGroup AddPattern(RDFPattern pattern)
+        {
             //Accept the pattern if it carries at least one variable
-            if (pattern != null && pattern.Variables.Count > 0) {
-                if (!this.GetPatterns().Any(p => p.Equals(pattern))) {
-                     this.GroupMembers.Add(pattern);
-                     
-                     //Context
-                     if (pattern.Context != null && pattern.Context is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(pattern.Context))) {
-                              this.Variables.Add((RDFVariable)pattern.Context);
-                         }
-                     }
-                     
-                     //Subject
-                     if (pattern.Subject is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(pattern.Subject))) {
-                              this.Variables.Add((RDFVariable)pattern.Subject);
-                         }
-                     }
-                     
-                     //Predicate
-                     if (pattern.Predicate is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(pattern.Predicate))) {
-                              this.Variables.Add((RDFVariable)pattern.Predicate);
-                         }
-                     }
-                     
-                     //Object
-                     if (pattern.Object is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(pattern.Object))) {
-                              this.Variables.Add((RDFVariable)pattern.Object);
-                         }
-                     }
+            if (pattern != null && pattern.Variables.Count > 0)
+            {
+                if (!this.GetPatterns().Any(p => p.Equals(pattern)))
+                {
+                    this.GroupMembers.Add(pattern);
+
+                    //Context
+                    if (pattern.Context != null && pattern.Context is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(pattern.Context)))
+                        {
+                            this.Variables.Add((RDFVariable)pattern.Context);
+                        }
+                    }
+
+                    //Subject
+                    if (pattern.Subject is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(pattern.Subject)))
+                        {
+                            this.Variables.Add((RDFVariable)pattern.Subject);
+                        }
+                    }
+
+                    //Predicate
+                    if (pattern.Predicate is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(pattern.Predicate)))
+                        {
+                            this.Variables.Add((RDFVariable)pattern.Predicate);
+                        }
+                    }
+
+                    //Object
+                    if (pattern.Object is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(pattern.Object)))
+                        {
+                            this.Variables.Add((RDFVariable)pattern.Object);
+                        }
+                    }
 
                 }
             }
@@ -233,10 +269,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given property path to the pattern group
         /// </summary>
-        public RDFPatternGroup AddPropertyPath(RDFPropertyPath propertyPath) {
-            if (propertyPath != null) {
-                if (!this.GetPropertyPaths().Any(p => p.Equals(propertyPath))) {
-                     this.GroupMembers.Add(propertyPath);
+        public RDFPatternGroup AddPropertyPath(RDFPropertyPath propertyPath)
+        {
+            if (propertyPath != null)
+            {
+                if (!this.GetPropertyPaths().Any(p => p.Equals(propertyPath)))
+                {
+                    this.GroupMembers.Add(propertyPath);
                 }
             }
             return this;
@@ -245,10 +284,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given filter to the pattern group
         /// </summary>
-        public RDFPatternGroup AddFilter(RDFFilter filter) {
-            if (filter != null) {
-                if (!this.GetFilters().Any(f => f.Equals(filter))) {
-                     this.GroupMembers.Add(filter);
+        public RDFPatternGroup AddFilter(RDFFilter filter)
+        {
+            if (filter != null)
+            {
+                if (!this.GetFilters().Any(f => f.Equals(filter)))
+                {
+                    this.GroupMembers.Add(filter);
                 }
             }
             return this;
@@ -257,15 +299,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the pattern group as optional
         /// </summary>
-        public RDFPatternGroup Optional() {
-            this.IsOptional  = true;
+        public RDFPatternGroup Optional()
+        {
+            this.IsOptional = true;
             return this;
         }
 
         /// <summary>
         /// Sets the pattern group to be joined as union with the next pattern group encountered in the query
         /// </summary>
-        public RDFPatternGroup UnionWithNext() {
+        public RDFPatternGroup UnionWithNext()
+        {
             this.JoinAsUnion = true;
             return this;
         }
@@ -274,7 +318,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the group members of type: pattern
         /// </summary>
-        internal IEnumerable<RDFPattern> GetPatterns() {
+        internal IEnumerable<RDFPattern> GetPatterns()
+        {
             return this.GroupMembers.Where(g => g is RDFPattern)
                                     .OfType<RDFPattern>();
         }
@@ -282,7 +327,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the group members of type: property path
         /// </summary>
-        internal IEnumerable<RDFPropertyPath> GetPropertyPaths() {
+        internal IEnumerable<RDFPropertyPath> GetPropertyPaths()
+        {
             return this.GroupMembers.Where(g => g is RDFPropertyPath)
                                     .OfType<RDFPropertyPath>();
         }
@@ -290,7 +336,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the group members of type: filter
         /// </summary>
-        internal IEnumerable<RDFFilter> GetFilters() {
+        internal IEnumerable<RDFFilter> GetFilters()
+        {
             return this.GroupMembers.Where(g => g is RDFFilter)
                                     .OfType<RDFFilter>();
         }
@@ -298,9 +345,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the group members which can be evaluated
         /// </summary>
-        internal IEnumerable<RDFPatternGroupMember> GetEvaluablePatternGroupMembers() {
+        internal IEnumerable<RDFPatternGroupMember> GetEvaluablePatternGroupMembers()
+        {
             return this.GroupMembers.Where(g => g.IsEvaluable);
-        }        
+        }
         #endregion
 
         #endregion

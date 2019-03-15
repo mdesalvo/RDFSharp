@@ -23,7 +23,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryEvents represents a collector for all the events generated within the "RDFSharp.Query" namespace
     /// </summary>
-    public static class RDFQueryEvents {
+    public static class RDFQueryEvents
+    {
 
         #region Query
 
@@ -41,7 +42,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseASKQueryEvaluation(String eventMessage) {
+        internal static void RaiseASKQueryEvaluation(String eventMessage)
+        {
             Parallel.Invoke(() => OnASKQueryEvaluation(DateTime.Now.ToString() + ";ASK_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
@@ -60,7 +62,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseCONSTRUCTQueryEvaluation(String eventMessage) {
+        internal static void RaiseCONSTRUCTQueryEvaluation(String eventMessage)
+        {
             Parallel.Invoke(() => OnCONSTRUCTQueryEvaluation(DateTime.Now.ToString() + ";CONSTRUCT_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
@@ -79,7 +82,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseDESCRIBEQueryEvaluation(String eventMessage) {
+        internal static void RaiseDESCRIBEQueryEvaluation(String eventMessage)
+        {
             Parallel.Invoke(() => OnDESCRIBEQueryEvaluation(DateTime.Now.ToString() + ";DESCRIBE_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
@@ -98,7 +102,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseSELECTQueryEvaluation(String eventMessage) {
+        internal static void RaiseSELECTQueryEvaluation(String eventMessage)
+        {
             Parallel.Invoke(() => OnSELECTQueryEvaluation(DateTime.Now.ToString() + ";SELECT_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion

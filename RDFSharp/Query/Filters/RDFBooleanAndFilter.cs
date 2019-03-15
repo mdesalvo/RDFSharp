@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBooleanAndFilter represents a filter applying an "AND" on the logics of the given filters.
     /// </summary>
-    public class RDFBooleanAndFilter: RDFFilter {
+    public class RDFBooleanAndFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -43,18 +44,23 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an "AND" filter on the given filters
         /// </summary>
-        public RDFBooleanAndFilter(RDFFilter leftFilter, RDFFilter rightFilter) {
-            if (leftFilter          != null) {
-                if (rightFilter     != null) {
-                    this.LeftFilter  = leftFilter;
+        public RDFBooleanAndFilter(RDFFilter leftFilter, RDFFilter rightFilter)
+        {
+            if (leftFilter != null)
+            {
+                if (rightFilter != null)
+                {
+                    this.LeftFilter = leftFilter;
                     this.RightFilter = rightFilter;
                     this.IsEvaluable = false;
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is null.");
             }
         }
@@ -64,10 +70,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
             return "FILTER ( " +
                 this.LeftFilter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " && " +
                 this.RightFilter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " )";
@@ -78,12 +86,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
             Boolean keepRow = this.LeftFilter.ApplyFilter(row, false) && this.RightFilter.ApplyFilter(row, false);
 
             //Apply the eventual negation
-            if (applyNegation) {
-                keepRow     = !keepRow;
+            if (applyNegation)
+            {
+                keepRow = !keepRow;
             }
 
             return keepRow;

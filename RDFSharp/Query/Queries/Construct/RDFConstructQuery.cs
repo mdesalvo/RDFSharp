@@ -25,12 +25,14 @@ using System.Web;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query {
+namespace RDFSharp.Query
+{
 
     /// <summary>
     /// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
     /// </summary>
-    public class RDFConstructQuery: RDFQuery {
+    public class RDFConstructQuery : RDFQuery
+    {
 
         #region Properties
         /// <summary>
@@ -48,7 +50,8 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Default-ctor to build an empty CONSTRUCT query
         /// </summary>
-        public RDFConstructQuery() {
+        public RDFConstructQuery()
+        {
             this.Templates = new List<RDFPattern>();
             this.Variables = new List<RDFVariable>();
         }
@@ -58,12 +61,15 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Gives the string representation of the CONSTRUCT query
         /// </summary>
-        public override String ToString() {
-            StringBuilder query    = new StringBuilder();
+        public override String ToString()
+        {
+            StringBuilder query = new StringBuilder();
 
             #region PREFIXES
-            if (this.Prefixes.Any()) {
-                this.Prefixes.ForEach(pf => {
+            if (this.Prefixes.Any())
+            {
+                this.Prefixes.ForEach(pf =>
+                {
                     query.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
                 });
                 query.Append("\n");
@@ -76,20 +82,23 @@ namespace RDFSharp.Query {
 
             #region TEMPLATES
             query.Append(" {\n");
-            this.Templates.ForEach(tp => {
-                String tpString    = tp.ToString(this.Prefixes);
+            this.Templates.ForEach(tp =>
+            {
+                String tpString = tp.ToString(this.Prefixes);
 
                 //Remove the Context from the template print (since it is not supported by CONSTRUCT query)
-                if (tp.Context    != null) {
-                    tpString       = tpString.Replace("GRAPH " + tp.Context + " { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
+                if (tp.Context != null)
+                {
+                    tpString = tpString.Replace("GRAPH " + tp.Context + " { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
                 }
 
                 //Remove the Optional indicator from the template print (since it is not supported by CONSTRUCT query)
-                if (tp.IsOptional) {
-                    tpString       = tpString.Replace("OPTIONAL { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
+                if (tp.IsOptional)
+                {
+                    tpString = tpString.Replace("OPTIONAL { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
                 }
 
-                query.Append("  "  + tpString + " .\n");
+                query.Append("  " + tpString + " .\n");
             });
             query.Append("}\n");
             #endregion
@@ -98,35 +107,43 @@ namespace RDFSharp.Query {
             query.Append("WHERE {\n");
 
             #region EVALUABLEMEMBERS
-            Boolean printingUnion       = false;
+            Boolean printingUnion = false;
             RDFQueryMember lastQueryMbr = this.GetEvaluableQueryMembers().LastOrDefault();
-            foreach(var queryMember    in this.GetEvaluableQueryMembers()) {
+            foreach (var queryMember in this.GetEvaluableQueryMembers())
+            {
 
                 #region PATTERNGROUPS
-                if (queryMember        is RDFPatternGroup) {
+                if (queryMember is RDFPatternGroup)
+                {
 
                     //Current pattern group is set as UNION with the next one
-                    if (((RDFPatternGroup)queryMember).JoinAsUnion) {
+                    if (((RDFPatternGroup)queryMember).JoinAsUnion)
+                    {
 
                         //Current pattern group IS NOT the last of the query (so UNION keyword must be appended at last)
-                        if (!queryMember.Equals(lastQueryMbr)) {
-                             //Begin a new Union block
-                             if (!printingUnion) {
-                                  printingUnion = true;
-                                  query.Append("\n  {");
-                             }
-                             query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes) + "    UNION");
+                        if (!queryMember.Equals(lastQueryMbr))
+                        {
+                            //Begin a new Union block
+                            if (!printingUnion)
+                            {
+                                printingUnion = true;
+                                query.Append("\n  {");
+                            }
+                            query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes) + "    UNION");
                         }
 
                         //Current pattern group IS the last of the query (so UNION keyword must not be appended at last)
-                        else {
+                        else
+                        {
                             //End the Union block
-                            if (printingUnion) {
-                                printingUnion   = false;
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
                                 query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
                                 query.Append("  }\n");
                             }
-                            else {
+                            else
+                            {
                                 query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
                             }
                         }
@@ -134,14 +151,17 @@ namespace RDFSharp.Query {
                     }
 
                     //Current pattern group is set as INTERSECT with the next one
-                    else {
+                    else
+                    {
                         //End the Union block
-                        if (printingUnion) {
-                            printingUnion       = false;
+                        if (printingUnion)
+                        {
+                            printingUnion = false;
                             query.Append(((RDFPatternGroup)queryMember).ToString(2, this.Prefixes));
                             query.Append("  }\n");
                         }
-                        else {
+                        else
+                        {
                             query.Append(((RDFPatternGroup)queryMember).ToString(0, this.Prefixes));
                         }
                     }
@@ -157,11 +177,12 @@ namespace RDFSharp.Query {
 
             #region MODIFIERS
             // LIMIT/OFFSET
-            if (this.GetModifiers().Any(mod     => mod is RDFLimitModifier || mod is RDFOffsetModifier)) {
-                this.GetModifiers().Where(mod   => mod is RDFLimitModifier)
+            if (this.GetModifiers().Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
+            {
+                this.GetModifiers().Where(mod => mod is RDFLimitModifier)
                                    .ToList()
                                    .ForEach(lim => query.Append("\n" + lim));
-                this.GetModifiers().Where(mod   => mod is RDFOffsetModifier)
+                this.GetModifiers().Where(mod => mod is RDFOffsetModifier)
                                    .ToList()
                                    .ForEach(off => query.Append("\n" + off));
             }
@@ -175,38 +196,49 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Adds the given pattern to the templates of the query
         /// </summary>
-        public RDFConstructQuery AddTemplate(RDFPattern template) {
-            if (template != null) {
-                if (!this.Templates.Any(tp => tp.Equals(template))) {
-                     this.Templates.Add(template);
-                     
-                     //Context
-                     if (template.Context != null && template.Context is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(template.Context))) {
-                              this.Variables.Add((RDFVariable)template.Context);
-                         }
-                     }
-                     
-                     //Subject
-                     if (template.Subject is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(template.Subject))) {
-                              this.Variables.Add((RDFVariable)template.Subject);
-                         }
-                     }
-                     
-                     //Predicate
-                     if (template.Predicate is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(template.Predicate))) {
-                              this.Variables.Add((RDFVariable)template.Predicate);
-                         }
-                     }
-                     
-                     //Object
-                     if (template.Object is RDFVariable) {
-                         if (!this.Variables.Any(v => v.Equals(template.Object))) {
-                              this.Variables.Add((RDFVariable)template.Object);
-                         }
-                     }
+        public RDFConstructQuery AddTemplate(RDFPattern template)
+        {
+            if (template != null)
+            {
+                if (!this.Templates.Any(tp => tp.Equals(template)))
+                {
+                    this.Templates.Add(template);
+
+                    //Context
+                    if (template.Context != null && template.Context is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(template.Context)))
+                        {
+                            this.Variables.Add((RDFVariable)template.Context);
+                        }
+                    }
+
+                    //Subject
+                    if (template.Subject is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(template.Subject)))
+                        {
+                            this.Variables.Add((RDFVariable)template.Subject);
+                        }
+                    }
+
+                    //Predicate
+                    if (template.Predicate is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(template.Predicate)))
+                        {
+                            this.Variables.Add((RDFVariable)template.Predicate);
+                        }
+                    }
+
+                    //Object
+                    if (template.Object is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(template.Object)))
+                        {
+                            this.Variables.Add((RDFVariable)template.Object);
+                        }
+                    }
 
                 }
             }
@@ -216,10 +248,13 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Adds the given pattern group to the body of the query
         /// </summary>
-        public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup) {
-            if (patternGroup != null) {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup))) {
-                     this.QueryMembers.Add(patternGroup);
+        public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup)
+        {
+            if (patternGroup != null)
+            {
+                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                {
+                    this.QueryMembers.Add(patternGroup);
                 }
             }
             return this;
@@ -228,10 +263,13 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFConstructQuery AddModifier(RDFLimitModifier modifier) {
-            if (modifier != null) {
-                if (!this.GetModifiers().Any(m => m is RDFLimitModifier)) {
-                     this.QueryMembers.Add(modifier);
+        public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFLimitModifier))
+                {
+                    this.QueryMembers.Add(modifier);
                 }
             }
             return this;
@@ -240,10 +278,13 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFConstructQuery AddModifier(RDFOffsetModifier modifier) {
-            if (modifier != null) {
-                if (!this.GetModifiers().Any(m => m is RDFOffsetModifier)) {
-                     this.QueryMembers.Add(modifier);
+        public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFOffsetModifier))
+                {
+                    this.QueryMembers.Add(modifier);
                 }
             }
             return this;
@@ -252,10 +293,13 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Adds the given prefix declaration to the query
         /// </summary>
-        public RDFConstructQuery AddPrefix(RDFNamespace prefix) {
-            if (prefix != null) {
-                if (!this.Prefixes.Any(p => p.Equals(prefix))) {
-                     this.Prefixes.Add(prefix);
+        public RDFConstructQuery AddPrefix(RDFNamespace prefix)
+        {
+            if (prefix != null)
+            {
+                if (!this.Prefixes.Any(p => p.Equals(prefix)))
+                {
+                    this.Prefixes.Add(prefix);
                 }
             }
             return this;
@@ -264,11 +308,14 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Applies the query to the given graph 
         /// </summary>
-        public RDFConstructQueryResult ApplyToGraph(RDFGraph graph) {
-            if (graph != null) {
+        public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
+        {
+            if (graph != null)
+            {
                 return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, graph);
             }
-            else {
+            else
+            {
                 return new RDFConstructQueryResult(this.ToString());
             }
         }
@@ -276,11 +323,14 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Applies the query to the given store 
         /// </summary>
-        public RDFConstructQueryResult ApplyToStore(RDFStore store) {
-            if (store != null) {
+        public RDFConstructQueryResult ApplyToStore(RDFStore store)
+        {
+            if (store != null)
+            {
                 return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, store);
             }
-            else {
+            else
+            {
                 return new RDFConstructQueryResult(this.ToString());
             }
         }
@@ -288,11 +338,14 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
-        public RDFConstructQueryResult ApplyToFederation(RDFFederation federation) {
-            if (federation != null) {
+        public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
+        {
+            if (federation != null)
+            {
                 return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, federation);
             }
-            else {
+            else
+            {
                 return new RDFConstructQueryResult(this.ToString());
             }
         }
@@ -300,13 +353,16 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
-        public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint) {
+        public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+        {
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
-            if (sparqlEndpoint                     != null) {
+            if (sparqlEndpoint != null)
+            {
                 RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
 
                 //Establish a connection to the given SPARQL endpoint
-                using (WebClient webClient          = new WebClient()) {
+                using (WebClient webClient = new WebClient())
+                {
 
                     //Insert reserved "query" parameter
                     webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
@@ -319,12 +375,14 @@ namespace RDFSharp.Query {
                     webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
 
                     //Send querystring to SPARQL endpoint
-                    var sparqlResponse              = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+                    var sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
 
                     //Parse response from SPARQL endpoint
-                    if (sparqlResponse             != null) {
-                        using (var sStream          = new MemoryStream(sparqlResponse)) {
-                            constructResult         = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                    if (sparqlResponse != null)
+                    {
+                        using (var sStream = new MemoryStream(sparqlResponse))
+                        {
+                            constructResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
                         }
                         constructResult.ConstructResults.TableName = this.ToString();
                     }

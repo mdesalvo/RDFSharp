@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFModelEvents represents a collector for all the events generated within the "RDFSharp.Model" namespace
     /// </summary>
-    public static class RDFModelEvents {
+    public static class RDFModelEvents
+    {
 
         #region Graph
 
@@ -41,7 +42,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnTripleAdded(String eventMessage) {
+        internal static void RaiseOnTripleAdded(String eventMessage)
+        {
             Parallel.Invoke(() => OnTripleAdded(DateTime.Now.ToString() + ";TRIPLE_ADDED;" + eventMessage));
         }
         #endregion
@@ -60,7 +62,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnTripleRemoved(String eventMessage) {
+        internal static void RaiseOnTripleRemoved(String eventMessage)
+        {
             Parallel.Invoke(() => OnTripleRemoved(DateTime.Now.ToString() + ";TRIPLE_REMOVED;" + eventMessage));
         }
         #endregion
@@ -79,7 +82,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnGraphCleared(String eventMessage) {
+        internal static void RaiseOnGraphCleared(String eventMessage)
+        {
             Parallel.Invoke(() => OnGraphCleared(DateTime.Now.ToString() + ";GRAPH_CLEARED;" + eventMessage));
         }
         #endregion

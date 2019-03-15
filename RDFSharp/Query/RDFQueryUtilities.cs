@@ -29,45 +29,52 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    internal static class RDFQueryUtilities {
+    internal static class RDFQueryUtilities
+    {
 
         #region MIRELLA RDF
         /// <summary>
         /// Parses the given string to return an instance of pattern member
         /// </summary>
-        internal static RDFPatternMember ParseRDFPatternMember(String pMember) {
+        internal static RDFPatternMember ParseRDFPatternMember(String pMember)
+        {
 
-            if (pMember != null) { 
+            if (pMember != null)
+            {
 
                 #region Uri
                 Uri testUri;
-                if (Uri.TryCreate(pMember, UriKind.Absolute, out testUri)) {
+                if (Uri.TryCreate(pMember, UriKind.Absolute, out testUri))
+                {
                     return new RDFResource(pMember);
                 }
                 #endregion
 
                 #region Plain Literal
-                if (!pMember.Contains("^^") || 
+                if (!pMember.Contains("^^") ||
                      pMember.EndsWith("^^") ||
-                     RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null) {
-                     RDFPlainLiteral pLit = null;
-                     if (RDFNTriples.regexLPL.Match(pMember).Success) {
-                         String pLitVal   = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
-                         String pLitLng   = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
-                         pLit             = new RDFPlainLiteral(pLitVal, pLitLng);
-                     }
-                     else {
-                        pLit              = new RDFPlainLiteral(pMember);
-                     }
-                     return pLit;
+                     RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null)
+                {
+                    RDFPlainLiteral pLit = null;
+                    if (RDFNTriples.regexLPL.Match(pMember).Success)
+                    {
+                        String pLitVal = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
+                        String pLitLng = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                        pLit = new RDFPlainLiteral(pLitVal, pLitLng);
+                    }
+                    else
+                    {
+                        pLit = new RDFPlainLiteral(pMember);
+                    }
+                    return pLit;
                 }
                 #endregion
 
                 #region Typed Literal
-                String tLitValue             = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
-                String tLitDatatype          = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                String tLitValue = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
+                String tLitDatatype = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                RDFTypedLiteral tLit         = new RDFTypedLiteral(tLitValue, dt);
+                RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
                 return tLit;
                 #endregion
 
@@ -79,31 +86,39 @@ namespace RDFSharp.Query
         /// <summary>
         /// Compares the given pattern members, throwing a "Type Error" whenever the comparison operator detects sematically incompatible members;
         /// </summary>
-        internal static Int32 CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right) {
+        internal static Int32 CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
+        {
 
             #region NULLS
-            if (left      == null) {
-                if (right == null) {
-                    return  0;
+            if (left == null)
+            {
+                if (right == null)
+                {
+                    return 0;
                 }
                 return -1;
             }
-            if (right     == null) {
+            if (right == null)
+            {
                 return 1;
             }
             #endregion
 
             #region RESOURCE/CONTEXT
-            if (left      is RDFResource || left is RDFContext) {
+            if (left is RDFResource || left is RDFContext)
+            {
 
                 //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral) {
+                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                {
                     return String.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
                 }
 
                 //RESOURCE/CONTEXT VS TYPEDLITERAL
-                else {
-                    if (((RDFTypedLiteral)right).HasStringDatatype()) {
+                else
+                {
+                    if (((RDFTypedLiteral)right).HasStringDatatype())
+                    {
                         return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                     }
                     return -99; //Type Error
@@ -113,16 +128,20 @@ namespace RDFSharp.Query
             #endregion
 
             #region PLAINLITERAL
-            else if (left is RDFPlainLiteral) {
+            else if (left is RDFPlainLiteral)
+            {
 
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral) {
+                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                {
                     return String.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
                 }
 
                 //PLAINLITERAL VS TYPEDLITERAL
-                else {
-                    if (((RDFTypedLiteral)right).HasStringDatatype()) {
+                else
+                {
+                    if (((RDFTypedLiteral)right).HasStringDatatype())
+                    {
                         return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                     }
                     return -99; //Type Error
@@ -132,44 +151,54 @@ namespace RDFSharp.Query
             #endregion
 
             #region TYPEDLITERAL
-           else {
+            else
+            {
 
                 //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral) {
-                    if (((RDFTypedLiteral)left).HasStringDatatype()) {
+                if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                {
+                    if (((RDFTypedLiteral)left).HasStringDatatype())
+                    {
                         return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                     }
                     return -99; //Type Error
                 }
 
                 //TYPEDLITERAL VS TYPEDLITERAL
-                else {
-                    if (((RDFTypedLiteral)left).HasBooleanDatatype()       && ((RDFTypedLiteral)right).HasBooleanDatatype()) {
-                        Boolean leftValueBoolean    = Boolean.Parse(((RDFTypedLiteral)left).Value);
-                        Boolean rightValueBoolean   = Boolean.Parse(((RDFTypedLiteral)right).Value);
+                else
+                {
+                    if (((RDFTypedLiteral)left).HasBooleanDatatype() && ((RDFTypedLiteral)right).HasBooleanDatatype())
+                    {
+                        Boolean leftValueBoolean = Boolean.Parse(((RDFTypedLiteral)left).Value);
+                        Boolean rightValueBoolean = Boolean.Parse(((RDFTypedLiteral)right).Value);
                         return leftValueBoolean.CompareTo(rightValueBoolean);
                     }
-                    else if (((RDFTypedLiteral)left).HasDatetimeDatatype() && ((RDFTypedLiteral)right).HasDatetimeDatatype()) {
-                        DateTime leftValueDateTime  = DateTime.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                    else if (((RDFTypedLiteral)left).HasDatetimeDatatype() && ((RDFTypedLiteral)right).HasDatetimeDatatype())
+                    {
+                        DateTime leftValueDateTime = DateTime.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                         DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                         return leftValueDateTime.CompareTo(rightValueDateTime);
                     }
-                    else if (((RDFTypedLiteral)left).HasDecimalDatatype()  && ((RDFTypedLiteral)right).HasDecimalDatatype()) {
-                        Decimal leftValueDecimal    = Decimal.Parse(((RDFTypedLiteral)left).Value,  CultureInfo.InvariantCulture);
-                        Decimal rightValueDecimal   = Decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                    else if (((RDFTypedLiteral)left).HasDecimalDatatype() && ((RDFTypedLiteral)right).HasDecimalDatatype())
+                    {
+                        Decimal leftValueDecimal = Decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
+                        Decimal rightValueDecimal = Decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                         return leftValueDecimal.CompareTo(rightValueDecimal);
                     }
-                    else if (((RDFTypedLiteral)left).HasStringDatatype()   && ((RDFTypedLiteral)right).HasStringDatatype()) {
-                        String leftValueString      = ((RDFTypedLiteral)left).Value;
-                        String rightValueString     = ((RDFTypedLiteral)right).Value;
+                    else if (((RDFTypedLiteral)left).HasStringDatatype() && ((RDFTypedLiteral)right).HasStringDatatype())
+                    {
+                        String leftValueString = ((RDFTypedLiteral)left).Value;
+                        String rightValueString = ((RDFTypedLiteral)right).Value;
                         return leftValueString.CompareTo(rightValueString);
                     }
-                    else if (((RDFTypedLiteral)left).HasTimespanDatatype() && ((RDFTypedLiteral)right).HasTimespanDatatype()) {
-                        TimeSpan leftValueDuration  = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
+                    else if (((RDFTypedLiteral)left).HasTimespanDatatype() && ((RDFTypedLiteral)right).HasTimespanDatatype())
+                    {
+                        TimeSpan leftValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
                         TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
                         return leftValueDuration.CompareTo(rightValueDuration);
                     }
-                    else {
+                    else
+                    {
                         return -99; //Type Error
                     }
                 }
@@ -182,12 +211,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives a formatted string representation of the given pattern member
         /// </summary>
-        internal static String PrintRDFPatternMember(RDFPatternMember patternMember) {
+        internal static String PrintRDFPatternMember(RDFPatternMember patternMember)
+        {
 
-            if (patternMember != null) { 
+            if (patternMember != null)
+            {
 
                 #region Variable
-                if (patternMember is RDFVariable) {
+                if (patternMember is RDFVariable)
+                {
                     return patternMember.ToString();
                 }
                 #endregion
@@ -195,8 +227,10 @@ namespace RDFSharp.Query
                 #region Non-Variable
 
                 #region Resource/Context
-                if (patternMember is RDFResource || patternMember is RDFContext) {
-                    if (patternMember is RDFResource && ((RDFResource)patternMember).IsBlank) {
+                if (patternMember is RDFResource || patternMember is RDFContext)
+                {
+                    if (patternMember is RDFResource && ((RDFResource)patternMember).IsBlank)
+                    {
                         return patternMember.ToString();
                     }
                     return "<" + patternMember + ">";
@@ -204,8 +238,10 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Literal
-                if (patternMember is RDFPlainLiteral) {
-                    if (((RDFPlainLiteral)patternMember).Language != String.Empty) {
+                if (patternMember is RDFPlainLiteral)
+                {
+                    if (((RDFPlainLiteral)patternMember).Language != String.Empty)
+                    {
                         return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"@" + ((RDFPlainLiteral)patternMember).Language;
                     }
                     return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"";

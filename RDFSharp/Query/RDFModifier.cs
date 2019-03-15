@@ -23,13 +23,15 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFModifier represents a modifier to be applied on a query results table.
     /// </summary>
-    public abstract class RDFModifier: RDFQueryMember {
+    public abstract class RDFModifier : RDFQueryMember
+    {
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return base.ToString();
         }
         #endregion

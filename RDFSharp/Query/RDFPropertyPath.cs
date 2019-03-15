@@ -26,7 +26,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPropertyPath represents a chain of properties connecting two terms in a RDF datasource.
     /// </summary>
-    public class RDFPropertyPath: RDFPatternGroupMember {
+    public class RDFPropertyPath : RDFPatternGroupMember
+    {
 
         #region Properties
         /// <summary>
@@ -49,39 +50,48 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a path between the given terms
         /// </summary>
-        public RDFPropertyPath(RDFPatternMember start, RDFPatternMember end) {
+        public RDFPropertyPath(RDFPatternMember start, RDFPatternMember end)
+        {
 
             //Start
-            if (start         != null) {
-                if (start     is RDFResource || start is RDFVariable) {
+            if (start != null)
+            {
+                if (start is RDFResource || start is RDFVariable)
+                {
                     this.Start = start;
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is neither a resource or a variable.");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is null.");
             }
 
             //Steps
-            this.Steps         = new List<RDFPropertyPathStep>();
+            this.Steps = new List<RDFPropertyPathStep>();
 
             //End
-            if (end           != null) {
-                if (end       is RDFResource || end is RDFVariable) {
-                    this.End   = end;
+            if (end != null)
+            {
+                if (end is RDFResource || end is RDFVariable)
+                {
+                    this.End = end;
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
             }
 
             //IsEvaluable
-            this.IsEvaluable   = false;
+            this.IsEvaluable = false;
 
         }
         #endregion
@@ -90,22 +100,26 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the path
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal String ToString(List<RDFNamespace> prefixes) {
-            if (prefixes != null && prefixes.Any()) {
-                return RDFModelUtilities.AbbreviateUri(this.Start.ToString(), prefixes) + 
-                       " " + 
-                       this.GetStepString(prefixes) + 
-                       " " + 
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            if (prefixes != null && prefixes.Any())
+            {
+                return RDFModelUtilities.AbbreviateUri(this.Start.ToString(), prefixes) +
+                       " " +
+                       this.GetStepString(prefixes) +
+                       " " +
                        RDFModelUtilities.AbbreviateUri(this.End.ToString(), prefixes);
             }
-            else {
-                return this.Start + 
-                       " " + 
-                       this.GetStepString(new List<RDFNamespace>()) + 
-                       " " + 
+            else
+            {
+                return this.Start +
+                       " " +
+                       this.GetStepString(new List<RDFNamespace>()) +
+                       " " +
                        this.End;
             }
         }
@@ -115,19 +129,24 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given alternative steps to the path. If only one is given, it is considered sequence.
         /// </summary>
-        public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathStep> alternativeSteps) {
-            if (alternativeSteps           != null && alternativeSteps.Any()) {
-                if (alternativeSteps.Count == 1) {
+        public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathStep> alternativeSteps)
+        {
+            if (alternativeSteps != null && alternativeSteps.Any())
+            {
+                if (alternativeSteps.Count == 1)
+                {
                     this.Steps.Add(alternativeSteps[0].SetOrdinal(this.Steps.Count)
                                                       .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
                 }
-                else {
-                    alternativeSteps.ForEach(alternativeStep => {
+                else
+                {
+                    alternativeSteps.ForEach(alternativeStep =>
+                    {
                         this.Steps.Add(alternativeStep.SetOrdinal(this.Steps.Count)
                                                       .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
                     });
                 }
-                this.IsEvaluable            = true;
+                this.IsEvaluable = true;
             }
             return this;
         }
@@ -135,11 +154,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given sequence step to the path
         /// </summary>
-        public RDFPropertyPath AddSequenceStep(RDFPropertyPathStep sequenceStep) {
-            if (sequenceStep              != null) {
+        public RDFPropertyPath AddSequenceStep(RDFPropertyPathStep sequenceStep)
+        {
+            if (sequenceStep != null)
+            {
                 this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
                                            .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
-                this.IsEvaluable           = true;
+                this.IsEvaluable = true;
             }
             return this;
         }
@@ -147,22 +168,27 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the path
         /// </summary>
-        internal String GetStepString(List<RDFNamespace> prefixes) {
+        internal String GetStepString(List<RDFNamespace> prefixes)
+        {
             var result = new StringBuilder();
 
             #region Single Property
-            if (this.Steps.Count == 1) {
+            if (this.Steps.Count == 1)
+            {
 
                 //InversePath (will swap start/end)
-                if (this.Steps[0].IsInverseStep) {
+                if (this.Steps[0].IsInverseStep)
+                {
                     result.Append("^");
                 }
 
-                var propPath  = this.Steps[0].StepProperty;
-                if (prefixes != null && prefixes.Any()) {
+                var propPath = this.Steps[0].StepProperty;
+                if (prefixes != null && prefixes.Any())
+                {
                     result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
                 }
-                else {
+                else
+                {
                     result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
                 }
 
@@ -170,41 +196,52 @@ namespace RDFSharp.Query
             #endregion
 
             #region Multiple Properties
-            else {
+            else
+            {
 
                 //Initialize printing
                 Boolean openedParenthesis = false;
 
                 //Iterate properties
-                for (int i = 0; i < this.Steps.Count; i++) {
+                for (int i = 0; i < this.Steps.Count; i++)
+                {
 
                     //Alternative: generate union pattern
-                    if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative) {
-                        if (!openedParenthesis) { 
-                             openedParenthesis = true;
-                             result.Append("(");
+                    if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                    {
+                        if (!openedParenthesis)
+                        {
+                            openedParenthesis = true;
+                            result.Append("(");
                         }
 
                         //InversePath (will swap start/end)
-                        if (this.Steps[i].IsInverseStep) {
+                        if (this.Steps[i].IsInverseStep)
+                        {
                             result.Append("^");
                         }
 
                         var propPath = this.Steps[i].StepProperty;
-                        if (i < this.Steps.Count - 1) {
-                            if (prefixes != null && prefixes.Any()) {
+                        if (i < this.Steps.Count - 1)
+                        {
+                            if (prefixes != null && prefixes.Any())
+                            {
                                 result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
                             }
-                            else {
+                            else
+                            {
                                 result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
                             }
                             result.Append((Char)this.Steps[i].StepFlavor);
                         }
-                        else {
-                            if (prefixes != null && prefixes.Any()) {
+                        else
+                        {
+                            if (prefixes != null && prefixes.Any())
+                            {
                                 result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
                             }
-                            else {
+                            else
+                            {
                                 result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
                             }
                             result.Append(")");
@@ -212,33 +249,42 @@ namespace RDFSharp.Query
                     }
 
                     //Sequence: generate pattern
-                    else {
-                        if (openedParenthesis) {
+                    else
+                    {
+                        if (openedParenthesis)
+                        {
                             result.Remove(result.Length - 1, 1);
                             openedParenthesis = false;
                             result.Append(")/");
                         }
 
                         //InversePath (will swap start/end)
-                        if (this.Steps[i].IsInverseStep) {
+                        if (this.Steps[i].IsInverseStep)
+                        {
                             result.Append("^");
                         }
 
                         var propPath = this.Steps[i].StepProperty;
-                        if (i < this.Steps.Count - 1) {
-                            if (prefixes != null && prefixes.Any()) {
+                        if (i < this.Steps.Count - 1)
+                        {
+                            if (prefixes != null && prefixes.Any())
+                            {
                                 result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
                             }
-                            else {
+                            else
+                            {
                                 result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
                             }
                             result.Append((Char)this.Steps[i].StepFlavor);
                         }
-                        else {
-                            if (prefixes != null && prefixes.Any()) {
+                        else
+                        {
+                            if (prefixes != null && prefixes.Any())
+                            {
                                 result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
                             }
-                            else {
+                            else
+                            {
                                 result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
                             }
                         }
@@ -255,19 +301,23 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the list of patterns corresponding to the path
         /// </summary>
-        internal List<RDFPattern> GetPatternList() {
+        internal List<RDFPattern> GetPatternList()
+        {
             var patterns = new List<RDFPattern>();
 
             #region Single Property
-            if (this.Steps.Count == 1) {
+            if (this.Steps.Count == 1)
+            {
 
                 //InversePath (swap start/end)
-                if (this.Steps[0].IsInverseStep) {
+                if (this.Steps[0].IsInverseStep)
+                {
                     patterns.Add(new RDFPattern(this.End, this.Steps[0].StepProperty, this.Start));
                 }
 
                 //Path
-                else {
+                else
+                {
                     patterns.Add(new RDFPattern(this.Start, this.Steps[0].StepProperty, this.End));
                 }
 
@@ -275,54 +325,67 @@ namespace RDFSharp.Query
             #endregion
 
             #region Multiple Properties
-            else {
-                RDFPatternMember currStart  = this.Start;
-                RDFPatternMember currEnd    = new RDFVariable("__PP0");
-                for (int i = 0; i < this.Steps.Count; i++) {
+            else
+            {
+                RDFPatternMember currStart = this.Start;
+                RDFPatternMember currEnd = new RDFVariable("__PP0");
+                for (int i = 0; i < this.Steps.Count; i++)
+                {
 
                     #region Alternative
-                    if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative) {
+                    if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                    {
 
                         //Translate to union (item is not the last alternative)
-                        if (i < this.Steps.Count - 1 && this.Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative) {
+                        if (i < this.Steps.Count - 1 && this.Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                        {
 
                             //Adjust start/end
-                            if (!this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i)) {
-                                 currEnd    = this.End;
+                            if (!this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                            {
+                                currEnd = this.End;
                             }
 
                             //InversePath (swap start/end)
-                            if (this.Steps[i].IsInverseStep) {
+                            if (this.Steps[i].IsInverseStep)
+                            {
                                 patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart).UnionWithNext());
                             }
 
                             //Path
-                            else {
+                            else
+                            {
                                 patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd).UnionWithNext());
                             }
 
                         }
 
                         //Translate to pattern (item is the last alternative)
-                        else {
+                        else
+                        {
 
                             //InversePath (swap start/end)
-                            if (this.Steps[i].IsInverseStep) {
+                            if (this.Steps[i].IsInverseStep)
+                            {
                                 patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart));
                             }
 
                             //Path
-                            else {
+                            else
+                            {
                                 patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
                             }
 
                             //Adjust start/end
-                            if (i           < this.Steps.Count - 1) {
-                                currStart   = currEnd;
-                                if (i      == this.Steps.Count - 2 || !this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i)) {
+                            if (i < this.Steps.Count - 1)
+                            {
+                                currStart = currEnd;
+                                if (i == this.Steps.Count - 2 || !this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                                {
                                     currEnd = this.End;
                                 }
-                                else {
+                                else
+                                {
                                     currEnd = new RDFVariable("__PP" + (i + 1));
                                 }
                             }
@@ -333,26 +396,32 @@ namespace RDFSharp.Query
                     #endregion
 
                     #region Sequence
-                    else {
+                    else
+                    {
 
                         //InversePath (swap start/end)
-                        if (this.Steps[i].IsInverseStep) {
+                        if (this.Steps[i].IsInverseStep)
+                        {
                             patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart));
                         }
 
                         //Path
-                        else {
+                        else
+                        {
                             patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
                         }
 
                         //Adjust start/end
-                        if (i               < this.Steps.Count - 1) {
-                            currStart       = currEnd;
-                            if (i          == this.Steps.Count - 2) {
-                                currEnd     = this.End;
+                        if (i < this.Steps.Count - 1)
+                        {
+                            currStart = currEnd;
+                            if (i == this.Steps.Count - 2)
+                            {
+                                currEnd = this.End;
                             }
-                            else {
-                                currEnd     = new RDFVariable("__PP" + (i + 1));
+                            else
+                            {
+                                currEnd = new RDFVariable("__PP" + (i + 1));
                             }
                         }
 
@@ -372,7 +441,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPropertyPathStep represents a step of a property path
     /// </summary>
-    public class RDFPropertyPathStep {
+    public class RDFPropertyPathStep
+    {
 
         #region Properties
         /// <summary>
@@ -400,11 +470,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a step of a property path
         /// </summary>
-        public RDFPropertyPathStep(RDFResource stepProperty) {
-            if (stepProperty     != null) {
+        public RDFPropertyPathStep(RDFResource stepProperty)
+        {
+            if (stepProperty != null)
+            {
                 this.StepProperty = stepProperty;
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
             }
         }
@@ -414,23 +487,26 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the flavor of the step
         /// </summary>
-        internal RDFPropertyPathStep SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors stepFlavor) {
-            this.StepFlavor    = stepFlavor;
+        internal RDFPropertyPathStep SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors stepFlavor)
+        {
+            this.StepFlavor = stepFlavor;
             return this;
         }
 
         /// <summary>
         /// Sets the ordinal of the step
         /// </summary>
-        internal RDFPropertyPathStep SetOrdinal(Int32 stepOrdinal) {
-            this.StepOrdinal   = stepOrdinal;
+        internal RDFPropertyPathStep SetOrdinal(Int32 stepOrdinal)
+        {
+            this.StepOrdinal = stepOrdinal;
             return this;
         }
 
         /// <summary>
         /// Sets the step as inverse
         /// </summary>
-        public RDFPropertyPathStep Inverse() {
+        public RDFPropertyPathStep Inverse()
+        {
             this.IsInverseStep = true;
             return this;
         }

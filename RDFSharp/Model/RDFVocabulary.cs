@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.
     /// </summary>
-    public static class RDFVocabulary {
+    public static class RDFVocabulary
+    {
 
         #region Basic
 
@@ -30,7 +31,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// RDF represents the RDF vocabulary.
         /// </summary>
-        public static class RDF {
+        public static class RDF
+        {
 
             #region Properties
             /// <summary>
@@ -41,7 +43,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#
             /// </summary>
-            public static readonly String  BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+            public static readonly String BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
             /// <summary>
             /// rdf:Bag
@@ -51,7 +53,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdf:Seq
             /// </summary>
-            public static readonly RDFResource SEQ  = new RDFResource(RDF.BASE_URI + "Seq");
+            public static readonly RDFResource SEQ = new RDFResource(RDF.BASE_URI + "Seq");
 
             /// <summary>
             /// rdf:Alt
@@ -101,7 +103,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdf:object
             /// </summary>
-            public static readonly RDFResource OBJECT= new RDFResource(RDF.BASE_URI + "object");
+            public static readonly RDFResource OBJECT = new RDFResource(RDF.BASE_URI + "object");
 
             /// <summary>
             /// rdf:type
@@ -131,18 +133,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// RDFS represents the RDFS vocabulary.
         /// </summary>
-        public static class RDFS  {
+        public static class RDFS
+        {
 
             #region Properties
             /// <summary>
             /// rdfs
             /// </summary>
-            public static readonly String  PREFIX = "rdfs";
+            public static readonly String PREFIX = "rdfs";
 
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
-            public static readonly String  BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
+            public static readonly String BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
             /// <summary>
             /// rdfs:Resource
@@ -227,7 +230,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// XSD represents the XSD vocabulary.
         /// </summary>
-        public static class XSD {
+        public static class XSD
+        {
 
             #region Properties
             /// <summary>
@@ -238,7 +242,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
-            public static readonly String  BASE_URI = "http://www.w3.org/2001/XMLSchema#";
+            public static readonly String BASE_URI = "http://www.w3.org/2001/XMLSchema#";
 
             /// <summary>
             /// xsd:string
@@ -443,7 +447,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// OWL represents the OWL vocabulary.
         /// </summary>
-        public static class OWL {
+        public static class OWL
+        {
 
             #region Properties
             /// <summary>
@@ -454,7 +459,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// http://www.w3.org/2002/07/owl#
             /// </summary>
-            public static readonly String  BASE_URI = "http://www.w3.org/2002/07/owl#";
+            public static readonly String BASE_URI = "http://www.w3.org/2002/07/owl#";
 
             /// <summary>
             /// owl:Ontology
@@ -620,8 +625,8 @@ namespace RDFSharp.Model
             /// owl:unionOf
             /// </summary>
             public static readonly RDFResource UNION_OF = new RDFResource(OWL.BASE_URI + "unionOf");
-			
-			/// <summary>
+
+            /// <summary>
             /// owl:complementOf
             /// </summary>
             public static readonly RDFResource COMPLEMENT_OF = new RDFResource(OWL.BASE_URI + "complementOf");
@@ -660,8 +665,8 @@ namespace RDFSharp.Model
             /// owl:versionInfo
             /// </summary>
             public static readonly RDFResource VERSION_INFO = new RDFResource(OWL.BASE_URI + "versionInfo");
-			
-			/// <summary>
+
+            /// <summary>
             /// owl:versionIRI
             /// </summary>
             public static readonly RDFResource VERSION_IRI = new RDFResource(OWL.BASE_URI + "versionIRI");
@@ -674,7 +679,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// XML represents the XML vocabulary.
         /// </summary>
-        public static class XML {
+        public static class XML
+        {
 
             #region Properties
             /// <summary>
@@ -709,7 +715,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// DC represents the Dublin Core vocabulary (with DCAM, DCTERMS and DCTYPE extensions).
         /// </summary>
-        public static class DC {
+        public static class DC
+        {
 
             #region Properties
             /// <summary>
@@ -804,7 +811,8 @@ namespace RDFSharp.Model
             /// <summary>
             /// DCAM extensions
             /// </summary>
-            public static class DCAM {
+            public static class DCAM
+            {
 
                 #region Properties
                 /// <summary>
@@ -835,7 +843,8 @@ namespace RDFSharp.Model
             /// <summary>
             /// DCTERMS extensions
             /// </summary>
-            public static class DCTERMS {
+            public static class DCTERMS
+            {
 
                 #region Properties
                 /// <summary>
@@ -1351,7 +1360,8 @@ namespace RDFSharp.Model
             /// <summary>
             /// DCTYPE extensions
             /// </summary>
-            public static class DCTYPE {
+            public static class DCTYPE
+            {
 
                 #region Properties
                 /// <summary>
@@ -1437,7 +1447,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// FOAF represents the Friend-of-a-Friend vocabulary.
         /// </summary>
-        public static class FOAF {
+        public static class FOAF
+        {
 
             #region Properties
             /// <summary>
@@ -1564,8 +1575,8 @@ namespace RDFSharp.Model
             /// foaf:member
             /// </summary>
             public static readonly RDFResource MEMBER = new RDFResource(FOAF.BASE_URI + "member");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:focus
             /// </summary>
             public static readonly RDFResource FOCUS = new RDFResource(FOAF.BASE_URI + "focus");
@@ -1589,28 +1600,28 @@ namespace RDFSharp.Model
             /// foaf:nick
             /// </summary>
             public static readonly RDFResource NICK = new RDFResource(FOAF.BASE_URI + "nick");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:mbox
             /// </summary>
             public static readonly RDFResource MBOX = new RDFResource(FOAF.BASE_URI + "mbox");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:homepage
             /// </summary>
             public static readonly RDFResource HOMEPAGE = new RDFResource(FOAF.BASE_URI + "homepage");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:weblog
             /// </summary>
             public static readonly RDFResource WEBLOG = new RDFResource(FOAF.BASE_URI + "weblog");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:openid
             /// </summary>
             public static readonly RDFResource OPEN_ID = new RDFResource(FOAF.BASE_URI + "openid");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:jabberID
             /// </summary>
             public static readonly RDFResource JABBER_ID = new RDFResource(FOAF.BASE_URI + "jabberID");
@@ -1674,63 +1685,63 @@ namespace RDFSharp.Model
             /// foaf:mbox_sha1sum
             /// </summary>
             public static readonly RDFResource MBOX_SHA1SUM = new RDFResource(FOAF.BASE_URI + "mbox_sha1sum");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:interest
             /// </summary>
             public static readonly RDFResource INTEREST = new RDFResource(FOAF.BASE_URI + "interest");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:topic_interest
             /// </summary>
             public static readonly RDFResource TOPIC_INTEREST = new RDFResource(FOAF.BASE_URI + "topic_interest");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:topic
             /// </summary>
             public static readonly RDFResource TOPIC = new RDFResource(FOAF.BASE_URI + "topic");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:page
             /// </summary>
             public static readonly RDFResource PAGE = new RDFResource(FOAF.BASE_URI + "page");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:workplaceHomepage
             /// </summary>
             public static readonly RDFResource WORKPLACE_HOMEPAGE = new RDFResource(FOAF.BASE_URI + "workplaceHomepage");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:workinfoHomepage
             /// </summary>
             public static readonly RDFResource WORKINFO_HOMEPAGE = new RDFResource(FOAF.BASE_URI + "workinfoHomepage");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:schoolHomepage
             /// </summary>
             public static readonly RDFResource SCHOOL_HOMEPAGE = new RDFResource(FOAF.BASE_URI + "schoolHomepage");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:publications
             /// </summary>
             public static readonly RDFResource PUBLICATIONS = new RDFResource(FOAF.BASE_URI + "publications");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:currentProject
             /// </summary>
             public static readonly RDFResource CURRENT_PROJECT = new RDFResource(FOAF.BASE_URI + "currentProject");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:pastProject
             /// </summary>
             public static readonly RDFResource PAST_PROJECT = new RDFResource(FOAF.BASE_URI + "pastProject");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:account
             /// </summary>
             public static readonly RDFResource ACCOUNT = new RDFResource(FOAF.BASE_URI + "account");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:OnlineAccount
             /// </summary>
             public static readonly RDFResource ONLINE_ACCOUNT = new RDFResource(FOAF.BASE_URI + "OnlineAccount");
@@ -1754,53 +1765,53 @@ namespace RDFSharp.Model
             /// foaf:accountName
             /// </summary>
             public static readonly RDFResource ACCOUNT_NAME = new RDFResource(FOAF.BASE_URI + "accountName");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:accountServiceHomepage
             /// </summary>
             public static readonly RDFResource ACCOUNT_SERVICE_HOMEPAGE = new RDFResource(FOAF.BASE_URI + "accountServiceHomepage");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:PersonalProfileDocument
             /// </summary>
             public static readonly RDFResource PERSONAL_PROFILE_DOCUMENT = new RDFResource(FOAF.BASE_URI + "PersonalProfileDocument");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:tipjar
             /// </summary>
             public static readonly RDFResource TIPJAR = new RDFResource(FOAF.BASE_URI + "tipjar");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:sha1
             /// </summary>
             public static readonly RDFResource SHA1 = new RDFResource(FOAF.BASE_URI + "sha1");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:thumbnail
             /// </summary>
             public static readonly RDFResource THUMBNAIL = new RDFResource(FOAF.BASE_URI + "thumbnail");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:logo
             /// </summary>
             public static readonly RDFResource LOGO = new RDFResource(FOAF.BASE_URI + "logo");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:phone
             /// </summary>
             public static readonly RDFResource PHONE = new RDFResource(FOAF.BASE_URI + "phone");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:status
             /// </summary>
             public static readonly RDFResource STATUS = new RDFResource(FOAF.BASE_URI + "status");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:gender
             /// </summary>
             public static readonly RDFResource GENDER = new RDFResource(FOAF.BASE_URI + "gender");
-			
-			/// <summary>
+
+            /// <summary>
             /// foaf:birthday
             /// </summary>
             public static readonly RDFResource BIRTHDAY = new RDFResource(FOAF.BASE_URI + "birthday");
@@ -1813,7 +1824,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// GEO represents the W3C GEO vocabulary.
         /// </summary>
-        public static class GEO {
+        public static class GEO
+        {
 
             #region Properties
             /// <summary>
@@ -1869,7 +1881,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// SKOS represents the W3C SKOS vocabulary.
         /// </summary>
-        public static class SKOS {
+        public static class SKOS
+        {
 
             #region Properties
             /// <summary>
@@ -2052,7 +2065,8 @@ namespace RDFSharp.Model
             /// <summary>
             /// SKOS-XL extensions
             /// </summary>
-            public static class SKOSXL {
+            public static class SKOSXL
+            {
 
                 #region Properties
                 /// <summary>
@@ -2106,7 +2120,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// SIOC represents the Semantically-Interlinked Online Communities vocabulary.
         /// </summary>
-        public static class SIOC {
+        public static class SIOC
+        {
 
             #region Properties
             /// <summary>

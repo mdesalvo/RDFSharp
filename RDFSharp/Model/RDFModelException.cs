@@ -19,33 +19,34 @@ using System.Runtime.Serialization;
 
 namespace RDFSharp.Model
 {
-    
+
     /// <summary>
     /// RDFModelException represents an exception thrown during manipulation of RDF data models.
     /// </summary>
     [Serializable]
-    public class RDFModelException: Exception {
+    public class RDFModelException : Exception
+    {
 
         #region Ctors
         /// <summary>
         /// Basic ctor to throw an empty RDFModelException
         /// </summary>
-        public RDFModelException(): base() { }
+        public RDFModelException() : base() { }
 
         /// <summary>
         /// Basic ctor to throw an RDFModelException with message
         /// </summary>
-        public RDFModelException(String message): base(message) { }
+        public RDFModelException(String message) : base(message) { }
 
         /// <summary>
         /// Basic ctor to throw an RDFModelException with message and inner exception
         /// </summary>
-        public RDFModelException(String message, Exception innerException): base(message, innerException) { }
+        public RDFModelException(String message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>
         /// Basic ctor to support serialization of a remotely thrown RDFModelException
         /// </summary>
-        protected RDFModelException(SerializationInfo info, StreamingContext context): base(info, context) { }
+        protected RDFModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
 
     }

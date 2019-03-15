@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBooleanNotFilter represents a filter applying a negation on the logics of the given filter.
     /// </summary>
-    public class RDFBooleanNotFilter: RDFFilter {
+    public class RDFBooleanNotFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -38,12 +39,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a negation filter on the given filter
         /// </summary>
-        public RDFBooleanNotFilter(RDFFilter filter) {
-            if (filter          != null) {
-                this.Filter      = filter;
+        public RDFBooleanNotFilter(RDFFilter filter)
+        {
+            if (filter != null)
+            {
+                this.Filter = filter;
                 this.IsEvaluable = false;
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
             }
         }
@@ -53,10 +57,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
             return "FILTER ( !" + this.Filter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " )";
         }
         #endregion
@@ -65,13 +71,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
             //Negation logic is applied on the given filter result
             Boolean keepRow = this.Filter.ApplyFilter(row, true);
 
             //Apply the eventual negation
-            if (applyNegation) {
-                keepRow     = !keepRow;
+            if (applyNegation)
+            {
+                keepRow = !keepRow;
             }
 
             return keepRow;

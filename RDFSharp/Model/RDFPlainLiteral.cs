@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPlainLiteral represents a RDFLiteral which can be denoted by a Language.
     /// </summary>
-    public class RDFPlainLiteral: RDFLiteral {
+    public class RDFPlainLiteral : RDFLiteral
+    {
 
         #region Properties
         /// <summary>
@@ -36,18 +37,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a plain literal without language
         /// </summary>
-        public RDFPlainLiteral(String value) {
-            this.Value               = (value ?? String.Empty);
-            this.Language            = String.Empty;
-            this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());   
+        public RDFPlainLiteral(String value)
+        {
+            this.Value = (value ?? String.Empty);
+            this.Language = String.Empty;
+            this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
 
         /// <summary>
         /// Default-ctor to build a plain literal with language
         /// </summary>
-        public RDFPlainLiteral(String value, String language): this(value)  {
-            if (language            != null && Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
-                this.Language        = language.ToUpperInvariant();
+        public RDFPlainLiteral(String value, String language) : this(value)
+        {
+            if (language != null && Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
+            {
+                this.Language = language.ToUpperInvariant();
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
         }
@@ -57,8 +61,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the plain literal
         /// </summary>
-        public override String ToString() {
-            if (this.Language != String.Empty) {
+        public override String ToString()
+        {
+            if (this.Language != String.Empty)
+            {
                 return base.ToString() + "@" + this.Language;
             }
             return base.ToString();

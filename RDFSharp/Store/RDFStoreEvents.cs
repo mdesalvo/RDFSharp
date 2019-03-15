@@ -23,7 +23,8 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreEvents represents a collector for all the events generated within the "RDFSharp.Store" namespace
     /// </summary>
-    public static class RDFStoreEvents {
+    public static class RDFStoreEvents
+    {
 
         #region Store
 
@@ -41,7 +42,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnQuadrupleAdded(String eventMessage) {
+        internal static void RaiseOnQuadrupleAdded(String eventMessage)
+        {
             Parallel.Invoke(() => OnQuadrupleAdded(DateTime.Now.ToString() + ";QUADRUPLE_ADDED;" + eventMessage));
         }
         #endregion
@@ -60,7 +62,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnQuadrupleRemoved(String eventMessage) {
+        internal static void RaiseOnQuadrupleRemoved(String eventMessage)
+        {
             Parallel.Invoke(() => OnQuadrupleRemoved(DateTime.Now.ToString() + ";QUADRUPLE_REMOVED;" + eventMessage));
         }
         #endregion
@@ -79,7 +82,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreCleared(String eventMessage) {
+        internal static void RaiseOnStoreCleared(String eventMessage)
+        {
             Parallel.Invoke(() => OnStoreCleared(DateTime.Now.ToString() + ";STORE_CLEARED;" + eventMessage));
         }
         #endregion
@@ -98,7 +102,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreInitialized(String eventMessage) {
+        internal static void RaiseOnStoreInitialized(String eventMessage)
+        {
             Parallel.Invoke(() => OnStoreInitialized(DateTime.Now.ToString() + ";STORE_INITIALIZED;" + eventMessage));
         }
         #endregion
@@ -117,7 +122,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreOptimized(String eventMessage) {
+        internal static void RaiseOnStoreOptimized(String eventMessage)
+        {
             Parallel.Invoke(() => OnStoreOptimized(DateTime.Now.ToString() + ";STORE_OPTIMIZED;" + eventMessage));
         }
         #endregion
@@ -140,7 +146,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreAdded(String eventMessage) {
+        internal static void RaiseOnStoreAdded(String eventMessage)
+        {
             Parallel.Invoke(() => OnStoreAdded(DateTime.Now.ToString() + ";STORE_ADDED;" + eventMessage));
         }
         #endregion
@@ -159,7 +166,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreRemoved(String eventMessage) {
+        internal static void RaiseOnStoreRemoved(String eventMessage)
+        {
             Parallel.Invoke(() => OnStoreRemoved(DateTime.Now.ToString() + ";STORE_REMOVED;" + eventMessage));
         }
         #endregion
@@ -178,7 +186,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnFederationCleared(String eventMessage) {
+        internal static void RaiseOnFederationCleared(String eventMessage)
+        {
             Parallel.Invoke(() => OnFederationCleared(DateTime.Now.ToString() + ";FEDERATION_CLEARED;" + eventMessage));
         }
         #endregion

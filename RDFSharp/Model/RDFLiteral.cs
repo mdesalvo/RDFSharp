@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFLiteral represents a generic literal in the RDF model.
     /// </summary>
-    public abstract class RDFLiteral: RDFPatternMember {
+    public abstract class RDFLiteral : RDFPatternMember
+    {
 
         #region Properties
         /// <summary>
@@ -36,7 +37,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the literal
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.Value;
         }
         #endregion

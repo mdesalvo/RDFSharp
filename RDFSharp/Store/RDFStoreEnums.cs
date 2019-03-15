@@ -20,12 +20,14 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreEnums represents a collector for all the enumerations used by the "RDFSharp.Store" namespace
     /// </summary>
-    public static class RDFStoreEnums {
+    public static class RDFStoreEnums
+    {
 
         /// <summary>
         /// RDFStoreSQLErrors represents an enumeration for situations which can be found on a SQL-backing store
         /// </summary>
-        public enum RDFStoreSQLErrors {
+        public enum RDFStoreSQLErrors
+        {
             /// <summary>
             /// Indicates that diagnostics on the selected database has passed
             /// </summary>
@@ -43,7 +45,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF store serialization data formats.
         /// </summary>
-        public enum RDFFormats {
+        public enum RDFFormats
+        {
             /// <summary>
             /// N-Quads serialization
             /// </summary>

@@ -26,7 +26,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPattern represents a search pattern over a collection of RDF data.
     /// </summary>
-    public class RDFPattern: RDFPatternGroupMember {
+    public class RDFPattern : RDFPatternGroupMember
+    {
 
         #region Properties
         /// <summary>
@@ -72,66 +73,86 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default ctor for SPO pattern
         /// </summary>
-        public RDFPattern(RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit) {
-            this.Variables       = new List<RDFVariable>();
-            this.IsEvaluable     = true;
-            this.IsOptional      = false;
-            this.JoinAsUnion     = false;
+        public RDFPattern(RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit)
+        {
+            this.Variables = new List<RDFVariable>();
+            this.IsEvaluable = true;
+            this.IsOptional = false;
+            this.JoinAsUnion = false;
 
             //Subject
-            if (subject != null) {
-                if (subject is RDFResource || subject is RDFVariable) {
+            if (subject != null)
+            {
+                if (subject is RDFResource || subject is RDFVariable)
+                {
                     this.Subject = subject;
-                    if (subject is RDFVariable) {
-                        if (!this.Variables.Any(v => v.Equals(subject))) {
-                             this.Variables.Add((RDFVariable)subject);
+                    if (subject is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(subject)))
+                        {
+                            this.Variables.Add((RDFVariable)subject);
                         }
                     }
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter (" + subject + ") is neither a resource or a variable");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter is null");
             }
 
             //Predicate
-            if (predicate != null) {
-                if (predicate is RDFResource || predicate is RDFVariable) {
-                    if (predicate is RDFResource && ((RDFResource)predicate).IsBlank) {
+            if (predicate != null)
+            {
+                if (predicate is RDFResource || predicate is RDFVariable)
+                {
+                    if (predicate is RDFResource && ((RDFResource)predicate).IsBlank)
+                    {
                         throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is a blank resource");
                     }
                     this.Predicate = predicate;
-                    if (predicate is RDFVariable) {
-                        if (!this.Variables.Any(v => v.Equals(predicate))) {
-                             this.Variables.Add((RDFVariable)predicate);
+                    if (predicate is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(predicate)))
+                        {
+                            this.Variables.Add((RDFVariable)predicate);
                         }
                     }
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter (" + predicate + ") is neither a resource or a variable");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is null");
             }
 
             //Object/Literal
-            if (objLit != null) {
-                if (objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable) {
-                    this.Object    = objLit;
-                    if (objLit is RDFVariable) {
-                        if (!this.Variables.Any(v => v.Equals(objLit))) {
-                             this.Variables.Add((RDFVariable)objLit);
+            if (objLit != null)
+            {
+                if (objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable)
+                {
+                    this.Object = objLit;
+                    if (objLit is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(objLit)))
+                        {
+                            this.Variables.Add((RDFVariable)objLit);
                         }
                     }
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
             }
         }
@@ -139,22 +160,29 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default ctor for CSPO pattern
         /// </summary>
-        public RDFPattern(RDFPatternMember context, RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit): this(subject, predicate, objLit) {
+        public RDFPattern(RDFPatternMember context, RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit) : this(subject, predicate, objLit)
+        {
             //Context
-            if (context != null) {
-                if (context is RDFContext || context is RDFVariable) {
+            if (context != null)
+            {
+                if (context is RDFContext || context is RDFVariable)
+                {
                     this.Context = context;
-                    if (context is RDFVariable) {
-                        if (!this.Variables.Any(v => v.Equals(context))) {
-                             this.Variables.Add((RDFVariable)context);
+                    if (context is RDFVariable)
+                    {
+                        if (!this.Variables.Any(v => v.Equals(context)))
+                        {
+                            this.Variables.Add((RDFVariable)context);
                         }
                     }
                 }
-                else {
+                else
+                {
                     throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter (" + context + ") is neither a context or a variable");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter is null");
             }
         }
@@ -164,44 +192,53 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the pattern
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
-        }        
-        internal String ToString(List<RDFNamespace> prefixes) {
-            String subj       = null;
-            String pred       = null;
-            String obj        = null;
+        }
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            String subj = null;
+            String pred = null;
+            String obj = null;
 
             //If prefixes are given, try to use them for abbreviating pattern terms
-            if (prefixes     != null && prefixes.Any()) {
-                subj          = RDFModelUtilities.AbbreviateUri(this.Subject.ToString(), prefixes);
-                pred          = RDFModelUtilities.AbbreviateUri(this.Predicate.ToString(), prefixes);
-                obj           = RDFModelUtilities.AbbreviateUri(this.Object.ToString(),  prefixes);
+            if (prefixes != null && prefixes.Any())
+            {
+                subj = RDFModelUtilities.AbbreviateUri(this.Subject.ToString(), prefixes);
+                pred = RDFModelUtilities.AbbreviateUri(this.Predicate.ToString(), prefixes);
+                obj = RDFModelUtilities.AbbreviateUri(this.Object.ToString(), prefixes);
             }
             //Otherwise pretty-print pattern terms
-            else {
-                subj          = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
-                pred          = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
-                obj           = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
+            else
+            {
+                subj = RDFQueryUtilities.PrintRDFPatternMember(this.Subject);
+                pred = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate);
+                obj = RDFQueryUtilities.PrintRDFPatternMember(this.Object);
             }
 
             //CSPO pattern
-            if (this.Context != null) {
-                String ctx    = null;
-                if (prefixes != null && prefixes.Any()) {
-                    ctx       = RDFModelUtilities.AbbreviateUri(this.Context.ToString(), prefixes);
+            if (this.Context != null)
+            {
+                String ctx = null;
+                if (prefixes != null && prefixes.Any())
+                {
+                    ctx = RDFModelUtilities.AbbreviateUri(this.Context.ToString(), prefixes);
                 }
-                else {
-                    ctx       = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
+                else
+                {
+                    ctx = RDFQueryUtilities.PrintRDFPatternMember(this.Context);
                 }
-                if (this.IsOptional) {
+                if (this.IsOptional)
+                {
                     return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
                 }
                 return "GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " }";
             }
 
             //SPO pattern
-            if (this.IsOptional) {
+            if (this.IsOptional)
+            {
                 return "OPTIONAL { " + subj + " " + pred + " " + obj + " }";
             }
             return subj + " " + pred + " " + obj;
@@ -212,15 +249,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the pattern as optional
         /// </summary>
-        public RDFPattern Optional() {
-            this.IsOptional  = true;
+        public RDFPattern Optional()
+        {
+            this.IsOptional = true;
             return this;
         }
 
         /// <summary>
         /// Sets the pattern to be joined as union with the next pattern
         /// </summary>
-        public RDFPattern UnionWithNext() {
+        public RDFPattern UnionWithNext()
+        {
             this.JoinAsUnion = true;
             return this;
         }

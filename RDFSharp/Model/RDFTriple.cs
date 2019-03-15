@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTriple represents a triple in the RDF model.
     /// </summary>
-    public class RDFTriple: IEquatable<RDFTriple> {
+    public class RDFTriple : IEquatable<RDFTriple>
+    {
 
         #region Properties
         /// <summary>
@@ -54,7 +55,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Subject of the triple's reification
         /// </summary>
-        public RDFResource ReificationSubject {
+        public RDFResource ReificationSubject
+        {
             get { return new RDFResource("bnode:" + this.TripleID); }
         }
         #endregion
@@ -63,60 +65,68 @@ namespace RDFSharp.Model
         /// <summary>
         /// SPO-flavor ctor
         /// </summary>
-        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) {
+        public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
+        {
 
             //TripleFlavor
-            this.TripleFlavor  = RDFModelEnums.RDFTripleFlavors.SPO;
+            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
 
             //Subject
-            this.Subject       = (subj ?? new RDFResource());
+            this.Subject = (subj ?? new RDFResource());
 
             //Predicate
-            if (pred != null) {
-                if (pred.IsBlank) {
+            if (pred != null)
+            {
+                if (pred.IsBlank)
+                {
                     throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
                 }
                 this.Predicate = pred;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
             }
 
             //Object
-            this.Object        = (obj ?? new RDFResource());
+            this.Object = (obj ?? new RDFResource());
 
             //TripleID
-            this.TripleID      = RDFModelUtilities.CreateHash(this.ToString());
+            this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
         }
 
         /// <summary>
         /// SPL-flavor ctor
         /// </summary>
-        public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) {
+        public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit)
+        {
 
             //TripleFlavor
-            this.TripleFlavor  = RDFModelEnums.RDFTripleFlavors.SPL;
+            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
 
             //Subject
-            this.Subject       = (subj ?? new RDFResource());
+            this.Subject = (subj ?? new RDFResource());
 
             //Predicate
-            if (pred != null) {
-                if (pred.IsBlank) {
+            if (pred != null)
+            {
+                if (pred.IsBlank)
+                {
                     throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
                 }
                 this.Predicate = pred;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
             }
 
             //Object
-            this.Object        = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object = (lit ?? new RDFPlainLiteral(String.Empty));
 
             //TripleID
-            this.TripleID      = RDFModelUtilities.CreateHash(this.ToString());
+            this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
         }
         #endregion
@@ -125,14 +135,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the triple
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.Subject + " " + this.Predicate + " " + this.Object;
         }
 
         /// <summary>
         /// Performs the equality comparison between two triples
         /// </summary>
-        public Boolean Equals(RDFTriple other) {
+        public Boolean Equals(RDFTriple other)
+        {
             return (other != null && this.TripleID.Equals(other.TripleID));
         }
         #endregion
@@ -141,17 +153,20 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds the reification graph of the triple
         /// </summary>
-        public RDFGraph ReifyTriple() {
+        public RDFGraph ReifyTriple()
+        {
             var reifGraph = new RDFGraph();
-            var reifSubj  = this.ReificationSubject;
+            var reifSubj = this.ReificationSubject;
 
             reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
             reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
             reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
-            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+            if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+            {
                 reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
             }
-            else {
+            else
+            {
                 reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
             }
 

@@ -25,7 +25,8 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFFederation represents a virtual store giving logically integrated query access to multiple stores.
     /// </summary>
-    public sealed class RDFFederation: RDFDataSource, IEquatable<RDFFederation>, IEnumerable<RDFStore>   {
+    public sealed class RDFFederation : RDFDataSource, IEquatable<RDFFederation>, IEnumerable<RDFStore>
+    {
 
         #region Properties
         /// <summary>
@@ -36,14 +37,16 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the federation' stores
         /// </summary>
-        public Int32 StoresCount {
+        public Int32 StoresCount
+        {
             get { return this.Stores.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the federation' stores for iteration
         /// </summary>
-        public IEnumerator<RDFStore> StoresEnumerator {
+        public IEnumerator<RDFStore> StoresEnumerator
+        {
             get { return this.Stores.Values.GetEnumerator(); }
         }
 
@@ -57,9 +60,10 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default ctor to build an empty federation
         /// </summary>
-        public RDFFederation() {
+        public RDFFederation()
+        {
             this.FederationName = "FEDERATION|ID=" + Guid.NewGuid();
-            this.Stores         = new Dictionary<Int64, RDFStore>();
+            this.Stores = new Dictionary<Int64, RDFStore>();
         }
         #endregion
 
@@ -67,20 +71,25 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the federation
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.FederationName;
         }
 
         /// <summary>
         /// Performs the equality comparison between two federations
         /// </summary>
-        public Boolean Equals(RDFFederation other) {
-            if (other == null || this.StoresCount != other.StoresCount) {
+        public Boolean Equals(RDFFederation other)
+        {
+            if (other == null || this.StoresCount != other.StoresCount)
+            {
                 return false;
             }
-            foreach(RDFStore store in this) {
-                if (!other.Stores.ContainsKey(store.StoreID)) {
-                     return false;
+            foreach (RDFStore store in this)
+            {
+                if (!other.Stores.ContainsKey(store.StoreID))
+                {
+                    return false;
                 }
             }
             return true;
@@ -89,14 +98,16 @@ namespace RDFSharp.Store
         /// <summary>
         /// Exposes a typed enumerator on the federation'stores
         /// </summary>
-        IEnumerator<RDFStore> IEnumerable<RDFStore>.GetEnumerator() {
+        IEnumerator<RDFStore> IEnumerable<RDFStore>.GetEnumerator()
+        {
             return this.StoresEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the federation'stores
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return this.StoresEnumerator;
         }
         #endregion
@@ -107,11 +118,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Adds the store to the federation, avoiding duplicate insertions
         /// </summary>
-        public RDFFederation AddStore(RDFStore store) {
-            if (store != null) {
-                if (!this.Stores.ContainsKey(store.StoreID)) {
-                     this.Stores.Add(store.StoreID, store);
-                     RDFStoreEvents.RaiseOnStoreAdded(String.Format("Store '{0}' has been added to the Federation '{1}'.", store, this));
+        public RDFFederation AddStore(RDFStore store)
+        {
+            if (store != null)
+            {
+                if (!this.Stores.ContainsKey(store.StoreID))
+                {
+                    this.Stores.Add(store.StoreID, store);
+                    RDFStoreEvents.RaiseOnStoreAdded(String.Format("Store '{0}' has been added to the Federation '{1}'.", store, this));
                 }
             }
             return this;
@@ -122,20 +136,24 @@ namespace RDFSharp.Store
         /// <summary>
         /// Removes the store from the federation 
         /// </summary>
-        public RDFFederation RemoveStore(RDFStore store) {
-            if (store != null) {
-                if (this.Stores.ContainsKey(store.StoreID)) {
+        public RDFFederation RemoveStore(RDFStore store)
+        {
+            if (store != null)
+            {
+                if (this.Stores.ContainsKey(store.StoreID))
+                {
                     this.Stores.Remove(store.StoreID);
                     RDFStoreEvents.RaiseOnStoreRemoved(String.Format("Store '{0}' has been removed from the Federation '{1}'.", store, this));
                 }
             }
             return this;
         }
-        
+
         /// <summary>
         /// Clears the stores of the federation.
         /// </summary>
-        public void ClearStores() {
+        public void ClearStores()
+        {
             this.Stores.Clear();
             RDFStoreEvents.RaiseOnFederationCleared(String.Format("Federation '{0}' has been cleared.", this));
         }

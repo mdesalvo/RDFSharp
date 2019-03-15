@@ -25,7 +25,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFBoundFilter represents a filter checking if a variable is bound to a value.
     /// </summary>
-    public class RDFBoundFilter: RDFFilter {
+    public class RDFBoundFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -38,12 +39,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a filter on the given variable
         /// </summary>
-        public RDFBoundFilter(RDFVariable variable) {
-            if (variable        != null) {
-                this.Variable    = variable;
+        public RDFBoundFilter(RDFVariable variable)
+        {
+            if (variable != null)
+            {
+                this.Variable = variable;
                 this.IsEvaluable = false;
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFBoundFilter because given \"variable\" parameter is null.");
             }
         }
@@ -53,10 +57,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
             return "FILTER ( BOUND(" + this.Variable + ") )";
         }
         #endregion
@@ -65,17 +71,20 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow 
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
             Boolean keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString())) {
+            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            {
 
                 //Successfull match if the variable is bound to a value
-                keepRow     = !row.IsNull(this.Variable.ToString());
+                keepRow = !row.IsNull(this.Variable.ToString());
 
                 //Apply the eventual negation
-                if (applyNegation) {
+                if (applyNegation)
+                {
                     keepRow = !keepRow;
                 }
             }

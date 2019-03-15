@@ -20,12 +20,14 @@ using System.Data;
 using System.Linq;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query {
+namespace RDFSharp.Query
+{
 
     /// <summary>
     /// RDFQuery is the foundation class for modeling SPARQL queries
     /// </summary>
-    public abstract class RDFQuery {
+    public abstract class RDFQuery
+    {
 
         #region Properties
         /// <summary>
@@ -43,9 +45,10 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Default-ctor to build an empty query
         /// </summary>
-        internal RDFQuery() {
+        internal RDFQuery()
+        {
             this.QueryMembers = new List<RDFQueryMember>();
-            this.Prefixes     = new List<RDFNamespace>();
+            this.Prefixes = new List<RDFNamespace>();
         }
         #endregion
 
@@ -53,7 +56,8 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Gets the query members of type: pattern group
         /// </summary>
-        internal IEnumerable<RDFPatternGroup> GetPatternGroups() {
+        internal IEnumerable<RDFPatternGroup> GetPatternGroups()
+        {
             return this.QueryMembers.Where(q => q is RDFPatternGroup)
                                     .OfType<RDFPatternGroup>();
         }
@@ -61,7 +65,8 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Gets the query members of type: modifier
         /// </summary>
-        internal IEnumerable<RDFModifier> GetModifiers() {
+        internal IEnumerable<RDFModifier> GetModifiers()
+        {
             return this.QueryMembers.Where(q => q is RDFModifier)
                                     .OfType<RDFModifier>();
         }
@@ -69,7 +74,8 @@ namespace RDFSharp.Query {
         /// <summary>
         /// Gets the query members which can be evaluated
         /// </summary>
-        internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers() {
+        internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
+        {
             return this.QueryMembers.Where(q => q.IsEvaluable);
         }
         #endregion

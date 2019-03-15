@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFResource represents a generic resource in the RDF model.
     /// </summary>
-    public class RDFResource: RDFPatternMember {
+    public class RDFResource : RDFPatternMember
+    {
 
         #region Properties
         /// <summary>
@@ -41,23 +42,27 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a blank resource
         /// </summary>
-        public RDFResource() {
-            this.URI                 = new Uri("bnode:" + Guid.NewGuid());
-            this.IsBlank             = true;
-            this.PatternMemberID     = RDFModelUtilities.CreateHash(this.ToString());
+        public RDFResource()
+        {
+            this.URI = new Uri("bnode:" + Guid.NewGuid());
+            this.IsBlank = true;
+            this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
 
         /// <summary>
         /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource) 
         /// </summary>
-        public RDFResource(String uriString) {
-            Uri tempUri              = RDFModelUtilities.GetUriFromString(uriString);
-            if (tempUri             != null){
-                this.URI             = tempUri;
-                this.IsBlank         = this.URI.ToString().StartsWith("bnode:");
-				this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+        public RDFResource(String uriString)
+        {
+            Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
+            if (tempUri != null)
+            {
+                this.URI = tempUri;
+                this.IsBlank = this.URI.ToString().StartsWith("bnode:");
+                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
             }
         }
@@ -67,7 +72,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the resource
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.URI.ToString();
         }
         #endregion

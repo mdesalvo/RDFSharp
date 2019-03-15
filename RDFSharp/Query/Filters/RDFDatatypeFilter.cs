@@ -27,7 +27,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFDatatypeFilter represents a filter on the datatype of a variable.
     /// </summary>
-    public class RDFDatatypeFilter: RDFFilter {
+    public class RDFDatatypeFilter : RDFFilter
+    {
 
         #region Properties
         /// <summary>
@@ -45,13 +46,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a filter on the given variable for the given datatype 
         /// </summary>
-        public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype) {
-            if (variable        != null) {
-                this.Variable    = variable;
-                this.Datatype    = datatype;
+        public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype)
+        {
+            if (variable != null)
+            {
+                this.Variable = variable;
+                this.Datatype = datatype;
                 this.IsEvaluable = false;
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFDatatypeFilter because given \"variable\" parameter is null.");
             }
         }
@@ -61,14 +65,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes) {
-            if (prefixes != null && prefixes.Any()) {
-                return "FILTER ( DATATYPE(" + this.Variable + ") = "  + RDFModelUtilities.AbbreviateUri(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype), prefixes) + " )";
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
+            if (prefixes != null && prefixes.Any())
+            {
+                return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFModelUtilities.AbbreviateUri(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype), prefixes) + " )";
             }
-            else {
+            else
+            {
                 return "FILTER ( DATATYPE(" + this.Variable + ") = <" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "> )";
             }
         }
@@ -78,18 +86,21 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow 
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation) {
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
             Boolean keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString())) {
+            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            {
                 String variableValue = row[this.Variable.ToString()].ToString();
 
                 //Successfull match if given datatype is found in the variable
-                keepRow     = Regex.IsMatch(variableValue, "\\^\\^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "$");
+                keepRow = Regex.IsMatch(variableValue, "\\^\\^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "$");
 
                 //Apply the eventual negation
-                if (applyNegation) {
+                if (applyNegation)
+                {
                     keepRow = !keepRow;
                 }
             }

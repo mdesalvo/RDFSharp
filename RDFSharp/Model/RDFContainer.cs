@@ -26,14 +26,15 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFContainer represents a generic container in the RDF model.
     /// </summary>
-    public sealed class RDFContainer: IEnumerable<RDFPatternMember> {
+    public sealed class RDFContainer : IEnumerable<RDFPatternMember>
+    {
 
         #region Properties
         /// <summary>
         /// Type of the container
         /// </summary>
         public RDFModelEnums.RDFContainerTypes ContainerType { get; internal set; }
-        
+
         /// <summary>
         /// Type of the items of the container
         /// </summary>
@@ -47,14 +48,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the container's items
         /// </summary>
-        public Int32 ItemsCount {
+        public Int32 ItemsCount
+        {
             get { return this.Items.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the container's items for iteration
         /// </summary>
-        public IEnumerator<RDFPatternMember> ItemsEnumerator {
+        public IEnumerator<RDFPatternMember> ItemsEnumerator
+        {
             get { return this.Items.GetEnumerator(); }
         }
 
@@ -68,11 +71,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default ctor to build an empty container of the given flavor and given type
         /// </summary>
-        public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType) {
-            this.ContainerType      = containerType;
-            this.ItemType           = itemType;
+        public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            this.ContainerType = containerType;
+            this.ItemType = itemType;
             this.ReificationSubject = new RDFResource();
-            this.Items              = new List<RDFPatternMember>();
+            this.Items = new List<RDFPatternMember>();
         }
         #endregion
 
@@ -80,14 +84,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the container's items
         /// </summary>
-        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() {
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
+        {
             return this.ItemsEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the container's items
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return this.ItemsEnumerator;
         }
         #endregion
@@ -98,9 +104,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given item to the container
         /// </summary>
-        public RDFContainer AddItem(RDFResource item) {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                switch (this.ContainerType) {
+        public RDFContainer AddItem(RDFResource item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+            {
+                switch (this.ContainerType)
+                {
                     case RDFModelEnums.RDFContainerTypes.Alt:
                         //Avoid duplicates in case of "rdf:Alt" container
                         if (this.Items.Find(x => x.Equals(item)) == null)
@@ -120,9 +129,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given item to the container
         /// </summary>
-        public RDFContainer AddItem(RDFLiteral item) {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                switch (this.ContainerType) {
+        public RDFContainer AddItem(RDFLiteral item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                switch (this.ContainerType)
+                {
                     case RDFModelEnums.RDFContainerTypes.Alt:
                         //Avoid duplicates in case of "rdf:Alt" container
                         if (this.Items.Find(x => x.Equals(item)) == null)
@@ -144,8 +156,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given item from the container
         /// </summary>
-        public RDFContainer RemoveItem(RDFResource item) {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
+        public RDFContainer RemoveItem(RDFResource item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+            {
                 this.Items.RemoveAll(x => x.Equals(item));
             }
             return this;
@@ -154,8 +168,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the given item from the container
         /// </summary>
-        public RDFContainer RemoveItem(RDFLiteral item) {
-            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
+        public RDFContainer RemoveItem(RDFLiteral item)
+        {
+            if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
                 this.Items.RemoveAll(x => x.Equals(item));
             }
             return this;
@@ -164,7 +180,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes all the items from the container
         /// </summary>
-        public void ClearItems() {
+        public void ClearItems()
+        {
             this.Items.Clear();
         }
         #endregion
@@ -175,30 +192,35 @@ namespace RDFSharp.Model
         /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt] 
         /// Subject -> rdf:_N   -> RDFContainer.ITEM(N)
         /// </summary>
-        public RDFGraph ReifyContainer() {
-		    RDFGraph reifCont = new RDFGraph();
+        public RDFGraph ReifyContainer()
+        {
+            RDFGraph reifCont = new RDFGraph();
 
             //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt] 
-            switch (this.ContainerType) {
+            switch (this.ContainerType)
+            {
                 case RDFModelEnums.RDFContainerTypes.Bag:
-                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
-                     break;
+                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
+                    break;
                 case RDFModelEnums.RDFContainerTypes.Seq:
-                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
-                     break;
+                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
+                    break;
                 case RDFModelEnums.RDFContainerTypes.Alt:
-                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
-                     break;
+                    reifCont.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
+                    break;
             }
 
             //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
             Int32 index = 0;
-            foreach (Object item in this) {
+            foreach (Object item in this)
+            {
                 RDFResource ordPred = new RDFResource(RDFVocabulary.RDF.BASE_URI + "_" + (++index));
-                if (this.ItemType  == RDFModelEnums.RDFItemTypes.Resource) {
+                if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                {
                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFResource)item));
                 }
-                else {
+                else
+                {
                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFLiteral)item));
                 }
             }

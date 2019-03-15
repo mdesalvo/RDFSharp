@@ -24,7 +24,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable. 
     /// </summary>
-    public class RDFOrderByModifier: RDFModifier {
+    public class RDFOrderByModifier : RDFModifier
+    {
 
         #region Properties
         /// <summary>
@@ -42,14 +43,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an OrderBy modifier of the given flavor on the given variable 
         /// </summary>
-        public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor) {
-            if (variable          != null) {
+        public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
+        {
+            if (variable != null)
+            {
                 this.OrderByFlavor = orderbyFlavor;
-                this.Variable      = variable;
-                this.IsEvaluable   = false;
-                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());   
+                this.Variable = variable;
+                this.IsEvaluable = false;
+                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
-            else {
+            else
+            {
                 throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
             }
         }
@@ -59,7 +63,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier 
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.OrderByFlavor + "(" + this.Variable + ")";
         }
         #endregion
@@ -68,13 +73,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the modifier on the column corresponding to the variable in the given datatable 
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table) {
-            if (table.Columns.Contains(this.Variable.ToString())) {
-                if (table.DefaultView.Sort != String.Empty) {
-                    table.DefaultView.Sort  = table.DefaultView.Sort + ", " + this.Variable + " " + this.OrderByFlavor;
+        internal override DataTable ApplyModifier(DataTable table)
+        {
+            if (table.Columns.Contains(this.Variable.ToString()))
+            {
+                if (table.DefaultView.Sort != String.Empty)
+                {
+                    table.DefaultView.Sort = table.DefaultView.Sort + ", " + this.Variable + " " + this.OrderByFlavor;
                 }
-                else {
-                    table.DefaultView.Sort  = this.Variable + " " + this.OrderByFlavor;
+                else
+                {
+                    table.DefaultView.Sort = this.Variable + " " + this.OrderByFlavor;
                 }
             }
             return table;
