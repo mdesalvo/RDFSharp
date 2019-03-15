@@ -210,7 +210,8 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Deserializes the given Turtle stream to a graph. 
+        /// Deserializes the given Turtle stream to a graph.
+        /// (This algorythm is based on Sesame Turtle parser)
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream) {
             try {
