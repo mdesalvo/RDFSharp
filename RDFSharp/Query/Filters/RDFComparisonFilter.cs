@@ -83,10 +83,8 @@ namespace RDFSharp.Query
         }
         internal override String ToString(List<RDFNamespace> prefixes)
         {
-            String leftValue = (prefixes != null && prefixes.Any() ? RDFModelUtilities.AbbreviateUri(this.LeftMember.ToString(), prefixes) :
-                                                                      RDFQueryUtilities.PrintRDFPatternMember(this.LeftMember));
-            String rightValue = (prefixes != null && prefixes.Any() ? RDFModelUtilities.AbbreviateUri(this.RightMember.ToString(), prefixes) :
-                                                                      RDFQueryUtilities.PrintRDFPatternMember(this.RightMember));
+            String leftValue = RDFQueryUtilities.PrintRDFPatternMember(this.LeftMember, prefixes);
+            String rightValue = RDFQueryUtilities.PrintRDFPatternMember(this.RightMember, prefixes);
             switch (this.ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:

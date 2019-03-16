@@ -71,14 +71,7 @@ namespace RDFSharp.Query
         }
         internal override String ToString(List<RDFNamespace> prefixes)
         {
-            if (prefixes != null && prefixes.Any())
-            {
-                return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFModelUtilities.AbbreviateUri(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype), prefixes) + " )";
-            }
-            else
-            {
-                return "FILTER ( DATATYPE(" + this.Variable + ") = <" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "> )";
-            }
+            return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFQueryUtilities.PrintRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes) + " )";
         }
         #endregion
 

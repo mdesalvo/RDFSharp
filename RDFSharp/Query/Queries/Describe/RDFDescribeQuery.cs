@@ -83,14 +83,7 @@ namespace RDFSharp.Query
             #region TERMS
             if (this.DescribeTerms.Any())
             {
-                if (this.Prefixes.Any())
-                {
-                    this.DescribeTerms.ForEach(t => query.Append(" " + RDFModelUtilities.AbbreviateUri(t.ToString(), this.Prefixes)));
-                }
-                else
-                {
-                    this.DescribeTerms.ForEach(t => query.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(t)));
-                }
+                this.DescribeTerms.ForEach(t => query.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(t, this.Prefixes)));
             }
             else
             {

@@ -211,7 +211,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives a formatted string representation of the given pattern member
         /// </summary>
-        internal static String PrintRDFPatternMember(RDFPatternMember patternMember)
+        internal static String PrintRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes=null)
         {
 
             if (patternMember != null)
@@ -224,36 +224,115 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                #region Non-Variable
-
                 #region Resource/Context
                 if (patternMember is RDFResource || patternMember is RDFContext)
                 {
+                    #region Blank
                     if (patternMember is RDFResource && ((RDFResource)patternMember).IsBlank)
                     {
                         return patternMember.ToString();
                     }
-                    return "<" + patternMember + ">";
+                    #endregion
+
+                    #region NonBlank
+                    var abbreviatedPM = AbbreviateRDFPatternMember(patternMember, prefixes);
+                    if (abbreviatedPM.Item1)
+                    {
+                        return abbreviatedPM.Item2;
+                    }
+                    else
+                    {
+                        return "<" + abbreviatedPM.Item2 + ">";
+                    }
+                    #endregion
                 }
                 #endregion
 
                 #region Literal
-                if (patternMember is RDFPlainLiteral)
+                if (patternMember is RDFLiteral)
                 {
-                    if (((RDFPlainLiteral)patternMember).Language != String.Empty)
+                    #region PlainLiteral
+                    if (patternMember is RDFPlainLiteral)
                     {
-                        return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"@" + ((RDFPlainLiteral)patternMember).Language;
+                        if (((RDFPlainLiteral)patternMember).Language != String.Empty)
+                        {
+                            return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"@" + ((RDFPlainLiteral)patternMember).Language;
+                        }
+                        return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"";
                     }
-                    return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"";
-                }
-                return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^<" + RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)patternMember).Datatype) + ">";
-                #endregion
+                    #endregion
 
+                    #region TypedLiteral
+                    else
+                    {
+                        var abbreviatedPM = AbbreviateRDFPatternMember(ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)patternMember).Datatype)), prefixes);
+                        if (abbreviatedPM.Item1)
+                        {
+                            return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^" + abbreviatedPM.Item2;
+                        }
+                        else
+                        {
+                            return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^<" + abbreviatedPM.Item2 + ">";
+                        }
+                    }
+                    #endregion
+                }
                 #endregion
 
             }
             throw new RDFQueryException("Cannot print pattern member because given \"patternMember\" parameter is null.");
 
+        }
+        
+        /// <summary>
+        /// Tries to abbreviate the string representation of the given pattern member
+        /// by searching for it in the given list of namespaces
+        /// </summary>
+        internal static (Boolean, String) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
+        {
+            #region Prefix Search
+            //Check if the pattern member starts with a known prefix, if so just return it
+            if (prefixes == null) prefixes = new List<RDFNamespace>();
+            var prefixToSearch = patternMember.ToString().Split(':')[0];
+            var searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
+            if (searchedPrefix != null)
+            {
+                return (true, patternMember.ToString());
+            }
+            #endregion
+
+            #region Namespace Search
+            //Check if the pattern member starts with a known namespace, if so replace it with its prefix
+            String pmString = patternMember.ToString();
+            Boolean abbrev = false;
+            prefixes.ForEach(ns =>
+            {
+                if (!abbrev)
+                {
+                    String nS = ns.ToString();
+                    if (!pmString.Equals(nS, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (pmString.StartsWith(nS))
+                        {
+                            pmString = pmString.Replace(nS, ns.NamespacePrefix + ":").TrimEnd(new Char[] { '/' });
+
+                            //Accept the abbreviation only if it has generated a valid XSD QName
+                            try
+                            {
+                                var qn = new RDFTypedLiteral(pmString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                                abbrev = true;
+                            }
+                            catch
+                            {
+                                pmString = patternMember.ToString();
+                                abbrev = false;
+                            }
+                        }
+                    }
+                }
+            });
+            return (abbrev, pmString);
+            #endregion
         }
         #endregion
 

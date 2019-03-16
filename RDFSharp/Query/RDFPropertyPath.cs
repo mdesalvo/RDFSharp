@@ -106,22 +106,11 @@ namespace RDFSharp.Query
         }
         internal String ToString(List<RDFNamespace> prefixes)
         {
-            if (prefixes != null && prefixes.Any())
-            {
-                return RDFModelUtilities.AbbreviateUri(this.Start.ToString(), prefixes) +
-                       " " +
-                       this.GetStepString(prefixes) +
-                       " " +
-                       RDFModelUtilities.AbbreviateUri(this.End.ToString(), prefixes);
-            }
-            else
-            {
-                return this.Start +
-                       " " +
-                       this.GetStepString(new List<RDFNamespace>()) +
-                       " " +
-                       this.End;
-            }
+            return RDFQueryUtilities.PrintRDFPatternMember(this.Start, prefixes) +
+                   " " +
+                   this.GetStepString(prefixes) +
+                   " " +
+                   RDFQueryUtilities.PrintRDFPatternMember(this.End, prefixes);
         }
         #endregion
 
@@ -183,14 +172,7 @@ namespace RDFSharp.Query
                 }
 
                 var propPath = this.Steps[0].StepProperty;
-                if (prefixes != null && prefixes.Any())
-                {
-                    result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
-                }
-                else
-                {
-                    result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
-                }
+                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
 
             }
             #endregion
@@ -224,26 +206,12 @@ namespace RDFSharp.Query
                         var propPath = this.Steps[i].StepProperty;
                         if (i < this.Steps.Count - 1)
                         {
-                            if (prefixes != null && prefixes.Any())
-                            {
-                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
-                            }
-                            else
-                            {
-                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
-                            }
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
                             result.Append((Char)this.Steps[i].StepFlavor);
                         }
                         else
                         {
-                            if (prefixes != null && prefixes.Any())
-                            {
-                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
-                            }
-                            else
-                            {
-                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
-                            }
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
                             result.Append(")");
                         }
                     }
@@ -267,26 +235,12 @@ namespace RDFSharp.Query
                         var propPath = this.Steps[i].StepProperty;
                         if (i < this.Steps.Count - 1)
                         {
-                            if (prefixes != null && prefixes.Any())
-                            {
-                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
-                            }
-                            else
-                            {
-                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
-                            }
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
                             result.Append((Char)this.Steps[i].StepFlavor);
                         }
                         else
                         {
-                            if (prefixes != null && prefixes.Any())
-                            {
-                                result.Append(RDFModelUtilities.AbbreviateUri(propPath.ToString(), prefixes));
-                            }
-                            else
-                            {
-                                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath));
-                            }
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
                         }
                     }
 
