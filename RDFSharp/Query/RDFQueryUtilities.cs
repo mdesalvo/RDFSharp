@@ -230,7 +230,7 @@ namespace RDFSharp.Query
                     #region Blank
                     if (patternMember is RDFResource && ((RDFResource)patternMember).IsBlank)
                     {
-                        return patternMember.ToString();
+                        return patternMember.ToString().Replace("bnode:", "_:");
                     }
                     #endregion
 
