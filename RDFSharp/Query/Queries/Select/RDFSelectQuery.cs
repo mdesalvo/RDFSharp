@@ -96,8 +96,9 @@ namespace RDFSharp.Query
 
             #region EVALUABLEMEMBERS
             Boolean printingUnion = false;
-            RDFQueryMember lastQueryMbr = this.GetEvaluableQueryMembers().LastOrDefault();
-            foreach (var queryMember in this.GetEvaluableQueryMembers())
+            List<RDFQueryMember> evaluableQueryMembers = this.GetEvaluableQueryMembers().ToList();
+            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
+            foreach (var queryMember in evaluableQueryMembers)
             {
 
                 #region PATTERNGROUPS
@@ -164,24 +165,26 @@ namespace RDFSharp.Query
             #endregion
 
             #region MODIFIERS
+            List<RDFModifier> modifiers = this.GetModifiers().ToList();
+
             // ORDER BY
-            if (this.GetModifiers().Any(mod => mod is RDFOrderByModifier))
+            if (modifiers.Any(mod => mod is RDFOrderByModifier))
             {
                 query.Append("\nORDER BY");
-                this.GetModifiers().Where(mod => mod is RDFOrderByModifier)
-                                   .ToList()
-                                   .ForEach(om => query.Append(" " + om));
+                modifiers.Where(mod => mod is RDFOrderByModifier)
+                         .ToList()
+                         .ForEach(om => query.Append(" " + om));
             }
 
             // LIMIT/OFFSET
-            if (this.GetModifiers().Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
+            if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
             {
-                this.GetModifiers().Where(mod => mod is RDFLimitModifier)
-                                   .ToList()
-                                   .ForEach(lim => query.Append("\n" + lim));
-                this.GetModifiers().Where(mod => mod is RDFOffsetModifier)
-                                   .ToList()
-                                   .ForEach(off => query.Append("\n" + off));
+                modifiers.Where(mod => mod is RDFLimitModifier)
+                         .ToList()
+                         .ForEach(lim => query.Append("\n" + lim));
+                modifiers.Where(mod => mod is RDFOffsetModifier)
+                         .ToList()
+                         .ForEach(off => query.Append("\n" + off));
             }
             #endregion
 

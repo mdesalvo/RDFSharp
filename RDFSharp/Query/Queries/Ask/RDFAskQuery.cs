@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -69,8 +68,9 @@ namespace RDFSharp.Query
 
             #region EVALUABLEMEMBERS
             Boolean printingUnion = false;
-            RDFQueryMember lastQueryMbr = this.GetEvaluableQueryMembers().LastOrDefault();
-            foreach (var queryMember in this.GetEvaluableQueryMembers())
+            List<RDFQueryMember> evaluableQueryMembers = this.GetEvaluableQueryMembers().ToList();
+            RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
+            foreach (var queryMember in evaluableQueryMembers)
             {
 
                 #region PATTERNGROUPS
