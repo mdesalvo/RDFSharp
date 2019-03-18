@@ -69,12 +69,13 @@ namespace RDFSharp.Query
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
 
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
-            if (selectQuery.GetEvaluableQueryMembers().Any())
+            List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
             {
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in selectQuery.GetEvaluableQueryMembers())
+                foreach (var evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -145,12 +146,13 @@ namespace RDFSharp.Query
             RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
 
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult(this.ToString());
-            if (describeQuery.GetEvaluableQueryMembers().Any())
+            List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
             {
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in describeQuery.GetEvaluableQueryMembers())
+                foreach (var evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -271,12 +273,13 @@ namespace RDFSharp.Query
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
-            if (constructQuery.GetEvaluableQueryMembers().Any())
+            List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
             {
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in constructQuery.GetEvaluableQueryMembers())
+                foreach (var evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -350,12 +353,13 @@ namespace RDFSharp.Query
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
             RDFAskQueryResult askResult = new RDFAskQueryResult();
-            if (askQuery.GetEvaluableQueryMembers().Any())
+            List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
             {
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in askQuery.GetEvaluableQueryMembers())
+                foreach (var evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -425,7 +429,8 @@ namespace RDFSharp.Query
             QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
-            foreach (var evaluablePGMember in patternGroup.GetEvaluablePatternGroupMembers())
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            foreach (var evaluablePGMember in evaluablePGMembers)
             {
 
                 #region Pattern
@@ -460,8 +465,7 @@ namespace RDFSharp.Query
                 #region PropertyPath
                 else if (evaluablePGMember is RDFPropertyPath)
                 {
-                    var pPathResultsTable = graphOrStore.IsGraph() ? ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, (RDFGraph)graphOrStore) :
-                                                                       ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, (RDFStore)graphOrStore);
+                    var pPathResultsTable = ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, graphOrStore);
 
                     #region Events
                     //Raise query event messages
@@ -492,7 +496,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup)
         {
-            if (patternGroup.GetEvaluablePatternGroupMembers().Any())
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            if (evaluablePGMembers.Any())
             {
 
                 //Populate query member result table
@@ -501,8 +506,9 @@ namespace RDFSharp.Query
                 //Add it to the list of query member result tables
                 QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
 
-                //Populate its name and metadata
+                //Populate its name
                 QueryMemberFinalResultTables[patternGroup.QueryMemberID].TableName = patternGroup.ToString();
+                //Populate its metadata (IsOptional)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
                 {
                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("IsOptional", patternGroup.IsOptional);
@@ -511,6 +517,7 @@ namespace RDFSharp.Query
                 {
                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
                 }
+                //Populate its metadata (JoinAsUnion)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
                 {
                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", patternGroup.JoinAsUnion);
@@ -528,7 +535,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup)
         {
-            if (patternGroup.GetEvaluablePatternGroupMembers().Any() && patternGroup.GetFilters().Any())
+            List<RDFPatternGroupMember> evaluablePatternGroupMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            List<RDFFilter> filters = patternGroup.GetFilters().ToList();
+            if (evaluablePatternGroupMembers.Any() && filters.Any())
             {
                 DataTable filteredTable = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Clone();
                 IEnumerator rowsEnum = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
@@ -540,7 +549,7 @@ namespace RDFSharp.Query
 
                     //Apply the pattern group's filters on the row
                     keepRow = true;
-                    var filtersEnum = patternGroup.GetFilters().GetEnumerator();
+                    var filtersEnum = filters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
                     {
                         keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
@@ -567,19 +576,21 @@ namespace RDFSharp.Query
         internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
         {
 
-            //SELECT query has ORDERBY modifiers and PROJECTION operator
+            #region ORDERBY/PROJECTION
+            List<RDFModifier> modifiers = query.GetModifiers().ToList();
             if (query is RDFSelectQuery)
             {
 
-                //Apply the ORDERBY modifiers
-                var ordModifiers = query.GetModifiers().Where(m => m is RDFOrderByModifier);
+                #region ORDERBY
+                var ordModifiers = modifiers.Where(m => m is RDFOrderByModifier);
                 if (ordModifiers.Any())
                 {
                     table = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
                     table = table.DefaultView.ToTable();
                 }
+                #endregion
 
-                //Apply the PROJECTION operator
+                #region PROJECTION
                 if (((RDFSelectQuery)query).ProjectionVars.Any())
                 {
 
@@ -605,29 +616,34 @@ namespace RDFSharp.Query
                     }
 
                 }
+                #endregion
 
             }
+            #endregion
 
-            //Apply the DISTINCT modifier
-            var distinctModifier = query.GetModifiers().SingleOrDefault(m => m is RDFDistinctModifier);
+            #region DISTINCT
+            var distinctModifier = modifiers.SingleOrDefault(m => m is RDFDistinctModifier);
             if (distinctModifier != null)
             {
                 table = distinctModifier.ApplyModifier(table);
             }
+            #endregion
 
-            //Apply the OFFSET modifier
-            var offsetModifier = query.GetModifiers().SingleOrDefault(m => m is RDFOffsetModifier);
+            #region OFFSET
+            var offsetModifier = modifiers.SingleOrDefault(m => m is RDFOffsetModifier);
             if (offsetModifier != null)
             {
                 table = offsetModifier.ApplyModifier(table);
             }
+            #endregion
 
-            //Apply the LIMIT modifier
-            var limitModifier = query.GetModifiers().SingleOrDefault(m => m is RDFLimitModifier);
+            #region  LIMIT
+            var limitModifier = modifiers.SingleOrDefault(m => m is RDFLimitModifier);
             if (limitModifier != null)
             {
                 table = limitModifier.ApplyModifier(table);
             }
+            #endregion
 
             return table;
         }
@@ -782,9 +798,10 @@ namespace RDFSharp.Query
             result.Columns.Add("OBJECT", Type.GetType("System.String"));
             result.AcceptChanges();
 
-            //Query IS empty, so does not have pattern groups to fetch data from 
-            //(we can only proceed by searching for resources in the describe terms)
-            if (!describeQuery.GetPatternGroups().Any())
+            //Query IS empty, so does not have evaluable members to fetch data from. 
+            //We can only proceed by searching for resources in the describe terms.
+            IEnumerable<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers();
+            if (!evaluableQueryMembers.Any())
             {
 
                 //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
@@ -832,16 +849,22 @@ namespace RDFSharp.Query
 
             }
 
-            //Query IS NOT empty, so does have pattern groups to fetch data from
+            //Query IS NOT empty, so does have query members to fetch data from.
             else
             {
 
                 //In case of a "Star" query, all the variables must be considered describe terms
                 if (!describeQuery.DescribeTerms.Any())
                 {
-                    describeQuery.GetPatternGroups()
-                                 .ToList()
-                                 .ForEach(q => q.Variables.ForEach(v => describeQuery.AddDescribeTerm(v)));
+                    foreach(var evaluableQueryMember in evaluableQueryMembers)
+                    {
+                        #region PATTERN GROUP
+                        if (evaluableQueryMember is RDFPatternGroup)
+                        {
+                            ((RDFPatternGroup)evaluableQueryMember).Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
+                        }
+                        #endregion
+                    }
                 }
 
                 //Iterate the describe terms of the query
@@ -1002,10 +1025,7 @@ namespace RDFSharp.Query
                 if (pattern.Predicate is RDFResource)
                 {
                     //S->P->
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject,
-                                                                                     (RDFResource)pattern.Predicate,
-                                                                                     null,
-                                                                                     null);
+                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                     AddColumn(resultTable, pattern.Object.ToString());
                     PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, resultTable);
                 }
@@ -1016,18 +1036,12 @@ namespace RDFSharp.Query
                         if (pattern.Object is RDFResource)
                         {
                             //S->->O
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject,
-                                                                                     null,
-                                                                                     (RDFResource)pattern.Object,
-                                                                                     null);
+                            matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, (RDFResource)pattern.Object, null);
                         }
                         else
                         {
                             //S->->L
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject,
-                                                                                     null,
-                                                                                     null,
-                                                                                     (RDFLiteral)pattern.Object);
+                            matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, null, (RDFLiteral)pattern.Object);
                         }
                         AddColumn(resultTable, pattern.Predicate.ToString());
                         PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, resultTable);
@@ -1035,10 +1049,7 @@ namespace RDFSharp.Query
                     else
                     {
                         //S->->
-                        matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject,
-                                                                                     null,
-                                                                                     null,
-                                                                                     null);
+                        matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, null, null);
                         //In case of same P and O variable, must refine matching triples with a further value comparison
                         if (pattern.Predicate.Equals(pattern.Object))
                         {
@@ -1059,18 +1070,12 @@ namespace RDFSharp.Query
                         if (pattern.Object is RDFResource)
                         {
                             //->P->O
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null,
-                                                                                     (RDFResource)pattern.Predicate,
-                                                                                     (RDFResource)pattern.Object,
-                                                                                     null);
+                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object, null);
                         }
                         else
                         {
                             //->P->L
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null,
-                                                                                     (RDFResource)pattern.Predicate,
-                                                                                     null,
-                                                                                     (RDFLiteral)pattern.Object);
+                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, null, (RDFLiteral)pattern.Object);
                         }
                         AddColumn(resultTable, pattern.Subject.ToString());
                         PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, resultTable);
@@ -1078,10 +1083,7 @@ namespace RDFSharp.Query
                     else
                     {
                         //->P->
-                        matchingTriples = RDFModelUtilities.SelectTriples(graph, null,
-                                                                                     (RDFResource)pattern.Predicate,
-                                                                                     null,
-                                                                                     null);
+                        matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, null, null);
                         //In case of same S and O variable, must refine matching triples with a further value comparison
                         if (pattern.Subject.Equals(pattern.Object))
                         {
@@ -1098,18 +1100,12 @@ namespace RDFSharp.Query
                     {
                         if (pattern.Object is RDFResource)
                         {
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null,
-                                                                                     null,
-                                                                                     (RDFResource)pattern.Object,
-                                                                                     null);
+                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, (RDFResource)pattern.Object, null);
                         }
                         else
                         {
                             //->->L
-                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null,
-                                                                                     null,
-                                                                                     null,
-                                                                                     (RDFLiteral)pattern.Object);
+                            matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, null, (RDFLiteral)pattern.Object);
                         }
                         //In case of same S and P variable, must refine matching triples with a further value comparison
                         if (pattern.Subject.Equals(pattern.Predicate))
@@ -1123,10 +1119,7 @@ namespace RDFSharp.Query
                     else
                     {
                         //->->
-                        matchingTriples = RDFModelUtilities.SelectTriples(graph, null,
-                                                                                     null,
-                                                                                     null,
-                                                                                     null);
+                        matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
                         //In case of same S and P variable, must refine matching triples with a further value comparison
                         if (pattern.Subject.Equals(pattern.Predicate))
                         {
@@ -1170,11 +1163,7 @@ namespace RDFSharp.Query
                         if (pattern.Predicate is RDFResource)
                         {
                             //C->S->P->
-                            result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             null);
+                            result = store.SelectQuadruples((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                             AddColumn(resultTable, pattern.Object.ToString());
                             PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.O, resultTable);
                         }
@@ -1185,20 +1174,12 @@ namespace RDFSharp.Query
                                 //C->S->->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples((RDFContext)pattern.Context, (RDFResource)pattern.Subject, null, (RDFResource)pattern.Object, null);
                                 }
                                 //C->S->->L
                                 else
                                 {
-                                    result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples((RDFContext)pattern.Context, (RDFResource)pattern.Subject, null, null, (RDFLiteral)pattern.Object);
                                 }
                                 AddColumn(resultTable, pattern.Predicate.ToString());
                                 PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.P, resultTable);
@@ -1206,11 +1187,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //C->S->->
-                                result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples((RDFContext)pattern.Context, (RDFResource)pattern.Subject, null, null, null);
                                 //In case of same P and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Predicate.Equals(pattern.Object))
                                 {
@@ -1231,20 +1208,12 @@ namespace RDFSharp.Query
                                 //C->->P->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples((RDFContext)pattern.Context, null, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object, null);
                                 }
                                 //C->->P->L
                                 else
                                 {
-                                    result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples((RDFContext)pattern.Context, null, (RDFResource)pattern.Predicate, null, (RDFLiteral)pattern.Object);
                                 }
                                 AddColumn(resultTable, pattern.Subject.ToString());
                                 PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.S, resultTable);
@@ -1252,11 +1221,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //C->->P->
-                                result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples((RDFContext)pattern.Context, null, (RDFResource)pattern.Predicate, null, null);
                                 //In case of same S and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Object))
                                 {
@@ -1274,20 +1239,12 @@ namespace RDFSharp.Query
                                 //C->->->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples((RDFContext)pattern.Context, null, null, (RDFResource)pattern.Object, null);
                                 }
                                 //C->->->L
                                 else
                                 {
-                                    result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples((RDFContext)pattern.Context, null, null, null, (RDFLiteral)pattern.Object);
                                 }
                                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Predicate))
@@ -1301,11 +1258,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //C->->->
-                                result = store.SelectQuadruples((RDFContext)pattern.Context,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples((RDFContext)pattern.Context, null, null, null, null);
                                 //In case of same S and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Subject.Equals(pattern.Predicate))
                                 {
@@ -1340,20 +1293,12 @@ namespace RDFSharp.Query
                                 //->S->P->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object, null);
                                 }
                                 //->S->P->L
                                 else
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, (RDFLiteral)pattern.Object);
                                 }
                                 AddColumn(resultTable, pattern.Context.ToString());
                                 PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.C, resultTable);
@@ -1361,11 +1306,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //->S->P->
-                                result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                                 //In case of same C and O variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Object))
                                 {
@@ -1383,20 +1324,12 @@ namespace RDFSharp.Query
                                 //->S->->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, (RDFResource)pattern.Object, null);
                                 }
                                 //->S->->L
                                 else
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, (RDFLiteral)pattern.Object);
                                 }
                                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Predicate))
@@ -1410,11 +1343,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //->S->->
-                                result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
                                 //In case of same C and P variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Predicate))
                                 {
@@ -1446,20 +1375,12 @@ namespace RDFSharp.Query
                                 //->->P->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object, null);
                                 }
                                 //->->P->L
                                 else
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, (RDFLiteral)pattern.Object);
                                 }
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject))
@@ -1473,11 +1394,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //->->P->
-                                result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, null);
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject))
                                 {
@@ -1506,20 +1423,12 @@ namespace RDFSharp.Query
                                 //->->->O
                                 if (pattern.Object is RDFResource)
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                    result = store.SelectQuadruples(null, null, null, (RDFResource)pattern.Object, null);
                                 }
                                 //->->->L
                                 else
                                 {
-                                    result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                    result = store.SelectQuadruples(null, null, null, null, (RDFLiteral)pattern.Object);
                                 }
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject))
@@ -1544,11 +1453,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 //->->->
-                                result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             null);
+                                result = store.SelectQuadruples(null, null, null, null, null);
                                 //In case of same C and S variable, must refine matching quadruples with a further value comparison
                                 if (pattern.Context.Equals(pattern.Subject))
                                 {
@@ -1598,11 +1503,7 @@ namespace RDFSharp.Query
                     if (pattern.Predicate is RDFResource)
                     {
                         //S->P->
-                        result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             null);
+                        result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                         AddColumn(resultTable, pattern.Object.ToString());
                         PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.O, resultTable);
                     }
@@ -1613,20 +1514,12 @@ namespace RDFSharp.Query
                             //S->->O
                             if (pattern.Object is RDFResource)
                             {
-                                result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, (RDFResource)pattern.Object, null);
                             }
                             //S->->L
                             else
                             {
-                                result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, (RDFLiteral)pattern.Object);
                             }
                             AddColumn(resultTable, pattern.Predicate.ToString());
                             PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.P, resultTable);
@@ -1634,11 +1527,7 @@ namespace RDFSharp.Query
                         else
                         {
                             //S->->
-                            result = store.SelectQuadruples(null,
-                                                                             (RDFResource)pattern.Subject,
-                                                                             null,
-                                                                             null,
-                                                                             null);
+                            result = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
                             //In case of same P and O variable, must refine matching quadruples with a further value comparison
                             if (pattern.Predicate.Equals(pattern.Object))
                             {
@@ -1659,20 +1548,12 @@ namespace RDFSharp.Query
                             //->P->O
                             if (pattern.Object is RDFResource)
                             {
-                                result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                result = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object, null);
                             }
                             //->P->L
                             else
                             {
-                                result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                result = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, (RDFLiteral)pattern.Object);
                             }
                             AddColumn(resultTable, pattern.Subject.ToString());
                             PopulateTable(pattern, result, RDFQueryEnums.RDFPatternHoles.S, resultTable);
@@ -1680,11 +1561,7 @@ namespace RDFSharp.Query
                         else
                         {
                             //->P->
-                            result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Predicate,
-                                                                             null,
-                                                                             null);
+                            result = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, null);
                             //In case of same S and O variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Object))
                             {
@@ -1702,20 +1579,12 @@ namespace RDFSharp.Query
                             //->->O
                             if (pattern.Object is RDFResource)
                             {
-                                result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFResource)pattern.Object,
-                                                                             null);
+                                result = store.SelectQuadruples(null, null, null, (RDFResource)pattern.Object, null);
                             }
                             //->->L
                             else
                             {
-                                result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             (RDFLiteral)pattern.Object);
+                                result = store.SelectQuadruples(null, null, null, null, (RDFLiteral)pattern.Object);
                             }
                             //In case of same S and P variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Predicate))
@@ -1729,11 +1598,7 @@ namespace RDFSharp.Query
                         else
                         {
                             //->->
-                            result = store.SelectQuadruples(null,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             null);
+                            result = store.SelectQuadruples(null, null, null, null, null);
                             //In case of same S and P variable, must refine matching quadruples with a further value comparison
                             if (pattern.Subject.Equals(pattern.Predicate))
                             {
@@ -1764,7 +1629,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given property path to the given graph
         /// </summary>
-        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFGraph graph)
+        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource graphOrStore)
         {
             var resultTable = new DataTable();
 
@@ -1773,63 +1638,16 @@ namespace RDFSharp.Query
 
             //Evaluate produced list of patterns
             var patternTables = new List<DataTable>();
-            patternList.ForEach(p =>
+            patternList.ForEach(pattern =>
             {
 
                 //Apply pattern to graph
-                var patternTable = ApplyPattern(p, graph);
+                var patternTable = graphOrStore is RDFGraph ? ApplyPattern(pattern, (RDFGraph)graphOrStore) :
+                                                              ApplyPattern(pattern, (RDFStore)graphOrStore);
 
                 //Set extended properties
-                patternTable.ExtendedProperties.Add("IsOptional", p.IsOptional);
-                patternTable.ExtendedProperties.Add("JoinAsUnion", p.JoinAsUnion);
-
-                //Add produced table
-                patternTables.Add(patternTable);
-
-            });
-
-            //Merge produced list of tables
-            resultTable = CombineTables(patternTables, false);
-
-            //Remove property path variables
-            var propPathCols = new List<DataColumn>();
-            foreach (DataColumn dtCol in resultTable.Columns)
-            {
-                if (dtCol.ColumnName.StartsWith("?__PP"))
-                {
-                    propPathCols.Add(dtCol);
-                }
-            }
-            propPathCols.ForEach(ppc =>
-            {
-                resultTable.Columns.Remove(ppc.ColumnName);
-            });
-
-            resultTable.TableName = propertyPath.ToString();
-            return resultTable;
-        }
-
-        /// <summary>
-        /// Applies the given property path to the given store
-        /// </summary>
-        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFStore store)
-        {
-            var resultTable = new DataTable();
-
-            //Translate property path into equivalent list of patterns
-            var patternList = propertyPath.GetPatternList();
-
-            //Evaluate produced list of patterns
-            var patternTables = new List<DataTable>();
-            patternList.ForEach(p =>
-            {
-
-                //Apply pattern to store
-                var patternTable = ApplyPattern(p, store);
-
-                //Set extended properties
-                patternTable.ExtendedProperties.Add("IsOptional", p.IsOptional);
-                patternTable.ExtendedProperties.Add("JoinAsUnion", p.JoinAsUnion);
+                patternTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
+                patternTable.ExtendedProperties.Add("JoinAsUnion", pattern.JoinAsUnion);
 
                 //Add produced table
                 patternTables.Add(patternTable);
