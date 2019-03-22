@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQuery is the foundation class for modeling SPARQL queries
     /// </summary>
-    public abstract class RDFQuery
+    public abstract class RDFQuery: RDFQueryMember
     {
 
         #region Properties

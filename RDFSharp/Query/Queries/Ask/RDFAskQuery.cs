@@ -37,7 +37,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty ASK query
         /// </summary>
-        public RDFAskQuery() { }
+        public RDFAskQuery()
+        {
+            this.IsEvaluable = true;
+        }
         #endregion
 
         #region Interfaces
