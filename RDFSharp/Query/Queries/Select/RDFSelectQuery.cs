@@ -57,9 +57,26 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
+            return this.ToString((this.IsSubQuery ? 4 : 0), this.Prefixes);
+        }
+        internal String ToString(Int32 spaces, List<RDFNamespace> prefixes)
+        {
             StringBuilder query = new StringBuilder();
 
             #region PREFIXES
+            //Merge prefixes
+            if (prefixes != null && prefixes.Any())
+            {
+                prefixes.ForEach(pf1 => 
+                {
+                    if (!this.Prefixes.Any(pf2 => pf2.Equals(pf1)))
+                    {
+                        this.Prefixes.Add(pf1);
+                    }
+                });
+            }
+
+            //Print prefixes
             if (!this.IsSubQuery)
             {
                 if (this.Prefixes.Any())
@@ -70,7 +87,7 @@ namespace RDFSharp.Query
                     });
                     query.Append("\n");
                 }
-            }            
+            }
             #endregion
 
             #region SELECT
