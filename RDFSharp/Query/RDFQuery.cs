@@ -39,6 +39,11 @@ namespace RDFSharp.Query
         /// List of prefixes registered for the query
         /// </summary>
         internal List<RDFNamespace> Prefixes { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the query is a subquery
+        /// </summary>
+        internal Boolean IsSubQuery { get; set; }
         #endregion
 
         #region Ctors
@@ -95,6 +100,15 @@ namespace RDFSharp.Query
         internal override String GetQueryMemberString()
         {
             return this.ToString();
+        }
+
+        /// <summary>
+        /// Sets the query as a subquery
+        /// </summary>
+        internal RDFQuery SubQuery()
+        {
+            this.IsSubQuery = true;
+            return this;
         }
         #endregion
 

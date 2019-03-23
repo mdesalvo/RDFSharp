@@ -66,13 +66,16 @@ namespace RDFSharp.Query
             StringBuilder query = new StringBuilder();
 
             #region PREFIXES
-            if (this.Prefixes.Any())
+            if (!this.IsSubQuery)
             {
-                this.Prefixes.ForEach(pf =>
+                if (this.Prefixes.Any())
                 {
-                    query.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
-                });
-                query.Append("\n");
+                    this.Prefixes.ForEach(pf =>
+                    {
+                        query.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
+                    });
+                    query.Append("\n");
+                }
             }
             #endregion
 
@@ -324,7 +327,7 @@ namespace RDFSharp.Query
             {
                 if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
                 {
-                    this.QueryMembers.Add(subQuery);
+                    this.QueryMembers.Add(subQuery.SubQuery());
                 }
             }
             return this;
