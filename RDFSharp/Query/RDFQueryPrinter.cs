@@ -230,6 +230,175 @@ namespace RDFSharp.Query
             }
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL DESCRIBE query
+        /// </summary>
+        internal static String PrintDescribeQuery(RDFDescribeQuery describeQuery)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (describeQuery != null)
+            {
+
+                #region PREFIXES
+                if (describeQuery.Prefixes.Any())
+                {
+                    describeQuery.Prefixes.ForEach(pf =>
+                    {
+                        sb.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
+                    });
+                    sb.Append("\n");
+                }
+                #endregion
+
+                #region HEADER
+
+                #region BEGINDESCRIBE
+                sb.Append("DESCRIBE");
+                #endregion
+
+                #region TERMS
+                if (describeQuery.DescribeTerms.Any())
+                {
+                    describeQuery.DescribeTerms.ForEach(dt =>
+                    {
+                        sb.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(dt, describeQuery.Prefixes));
+                    });
+                }
+                else
+                {
+                    sb.Append(" *");
+                }
+                sb.Append("\n");
+                #endregion
+
+                #endregion
+
+                #region BODY
+                sb.Append("WHERE\n");
+                sb.Append("{\n");
+
+                #region MEMBERS
+                Boolean printingUnion = false;
+                List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
+                RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
+                foreach (var queryMember in evaluableQueryMembers)
+                {
+
+                    #region PATTERNGROUPS
+                    if (queryMember is RDFPatternGroup)
+                    {
+
+                        //Current pattern group is set as UNION with the next one
+                        if (((RDFPatternGroup)queryMember).JoinAsUnion)
+                        {
+
+                            //Current pattern group IS NOT the last of the query 
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(2, describeQuery.Prefixes) + "    UNION\n");
+                            }
+
+                            //Current pattern group IS the last of the query 
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(((RDFPatternGroup)queryMember).ToString(2, describeQuery.Prefixes));
+                                    sb.Append("  }");
+                                    sb.Append("\n");
+                                }
+                                else
+                                {
+                                    sb.Append(((RDFPatternGroup)queryMember).ToString(0, describeQuery.Prefixes));
+                                }
+                            }
+
+                        }
+
+                        //Current pattern group is set as INTERSECT with the next one
+                        else
+                        {
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(2, describeQuery.Prefixes));
+                                sb.Append("  }");
+                                sb.Append("\n");
+                            }
+                            else
+                            {
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(0, describeQuery.Prefixes));
+                            }
+                        }
+
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (queryMember is RDFQuery)
+                    {
+                        //Merge main query prefixes
+                        describeQuery.Prefixes.ForEach(pf1 => {
+                            if (!((RDFSelectQuery)queryMember).Prefixes.Any(pf2 => pf2.Equals(pf1)))
+                            {
+                                ((RDFSelectQuery)queryMember).AddPrefix(pf1);
+                            }
+                        });
+                        //End the Union block
+                        if (printingUnion)
+                        {
+                            printingUnion = false;
+                            sb.Append(((RDFSelectQuery)queryMember).ToString());
+                            sb.Append("  }");
+                            sb.AppendLine();
+                        }
+                        else
+                        {
+                            sb.Append(((RDFSelectQuery)queryMember).ToString());
+                        }
+                    }
+                    #endregion
+
+                }
+                #endregion
+
+                sb.Append("}\n");
+                #endregion
+
+                #region FOOTER
+
+                #region MODIFIERS
+                List<RDFModifier> modifiers = describeQuery.GetModifiers().ToList();
+
+                // LIMIT/OFFSET
+                if (modifiers.Any(mod => mod is RDFLimitModifier || mod is RDFOffsetModifier))
+                {
+                    modifiers.Where(mod => mod is RDFLimitModifier)
+                             .ToList()
+                             .ForEach(lim => { sb.Append("\n"); sb.Append(lim); });
+                    modifiers.Where(mod => mod is RDFOffsetModifier)
+                             .ToList()
+                             .ForEach(off => { sb.Append("\n"); sb.Append(off); });
+                }
+                #endregion
+
+                #endregion
+
+            }
+            return sb.ToString();
+        }
         #endregion
 
     }
