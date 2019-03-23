@@ -127,8 +127,13 @@ namespace RDFSharp.Query
                     else if (evaluableQueryMember is RDFQuery)
                     {
                         //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
-                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        RDFSelectQueryResult subQueryResult = (datasource is RDFGraph ? ((RDFSelectQuery)evaluableQueryMember).ApplyToGraph((RDFGraph)datasource)
+                                                                : datasource is RDFStore ? ((RDFSelectQuery)evaluableQueryMember).ApplyToStore((RDFStore)datasource)
+                                                                  : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        }
                     }
                     #endregion
 
@@ -213,8 +218,13 @@ namespace RDFSharp.Query
                     else if (evaluableQueryMember is RDFQuery)
                     {
                         //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
-                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        RDFSelectQueryResult subQueryResult = (datasource is RDFGraph ? ((RDFSelectQuery)evaluableQueryMember).ApplyToGraph((RDFGraph)datasource)
+                                                                : datasource is RDFStore ? ((RDFSelectQuery)evaluableQueryMember).ApplyToStore((RDFStore)datasource)
+                                                                  : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        }
                     }
                     #endregion
 
@@ -349,8 +359,13 @@ namespace RDFSharp.Query
                     else if (evaluableQueryMember is RDFQuery)
                     {
                         //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
-                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        RDFSelectQueryResult subQueryResult = (datasource is RDFGraph ? ((RDFSelectQuery)evaluableQueryMember).ApplyToGraph((RDFGraph)datasource)
+                                                                : datasource is RDFStore ? ((RDFSelectQuery)evaluableQueryMember).ApplyToStore((RDFStore)datasource)
+                                                                  : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        }
                     }
                     #endregion
 
@@ -438,8 +453,13 @@ namespace RDFSharp.Query
                     else if (evaluableQueryMember is RDFQuery)
                     {
                         //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
-                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        RDFSelectQueryResult subQueryResult = (datasource is RDFGraph ? ((RDFSelectQuery)evaluableQueryMember).ApplyToGraph((RDFGraph)datasource)
+                                                                : datasource is RDFStore ? ((RDFSelectQuery)evaluableQueryMember).ApplyToStore((RDFStore)datasource)
+                                                                  : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                        }
                     }
                     #endregion
 
