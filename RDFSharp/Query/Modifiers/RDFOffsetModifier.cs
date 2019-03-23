@@ -44,8 +44,6 @@ namespace RDFSharp.Query
             if (offset >= 0)
             {
                 this.Offset = offset;
-                this.IsEvaluable = false;
-                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
             {

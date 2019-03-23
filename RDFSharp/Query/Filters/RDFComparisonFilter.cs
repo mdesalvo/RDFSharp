@@ -59,7 +59,6 @@ namespace RDFSharp.Query
                     this.ComparisonFlavor = comparisonFlavor;
                     this.LeftMember = leftMember;
                     this.RightMember = rightMember;
-                    this.IsEvaluable = false;
                 }
                 else
                 {

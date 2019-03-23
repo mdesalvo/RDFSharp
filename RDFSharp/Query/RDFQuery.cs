@@ -49,6 +49,7 @@ namespace RDFSharp.Query
         {
             this.QueryMembers = new List<RDFQueryMember>();
             this.Prefixes = new List<RDFNamespace>();
+            this.IsEvaluable = true;
         }
         #endregion
 
@@ -77,6 +78,14 @@ namespace RDFSharp.Query
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
         {
             return this.QueryMembers.Where(q => q.IsEvaluable);
+        }
+
+        /// <summary>
+        /// Gets the strin representation of the query member
+        /// </summary>
+        internal override String GetQueryMemberString()
+        {
+            return this.ToString();
         }
         #endregion
 

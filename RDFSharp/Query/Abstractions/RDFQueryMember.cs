@@ -15,6 +15,7 @@
 */
 
 using System;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -29,7 +30,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the query member
         /// </summary>
-        public Int64 QueryMemberID { get; internal set; }
+        public Int64 QueryMemberID
+        {
+            get { return RDFModelUtilities.CreateHash(this.GetQueryMemberString()); }
+        }
 
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine
@@ -53,6 +57,13 @@ namespace RDFSharp.Query
         {
             return (other != null && this.QueryMemberID.Equals(other.QueryMemberID));
         }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Gets the string representation of the query member
+        /// </summary>
+        internal abstract String GetQueryMemberString();
         #endregion
 
     }

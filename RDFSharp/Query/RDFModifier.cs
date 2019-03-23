@@ -41,6 +41,14 @@ namespace RDFSharp.Query
         /// Applies the modifier on the given datatable 
         /// </summary>
         internal abstract DataTable ApplyModifier(DataTable tableToFilter);
+
+        /// <summary>
+        /// Gets the strin representation of the query member
+        /// </summary>
+        internal override String GetQueryMemberString()
+        {
+            return this.ToString();
+        }
         #endregion
 
     }

@@ -49,8 +49,6 @@ namespace RDFSharp.Query
             {
                 this.OrderByFlavor = orderbyFlavor;
                 this.Variable = variable;
-                this.IsEvaluable = false;
-                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
             {

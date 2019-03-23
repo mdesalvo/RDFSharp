@@ -90,9 +90,6 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
             }
 
-            //IsEvaluable
-            this.IsEvaluable = false;
-
         }
         #endregion
 

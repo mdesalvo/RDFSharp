@@ -52,7 +52,6 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery()
         {
-            this.IsEvaluable = true;
             this.Templates = new List<RDFPattern>();
             this.Variables = new List<RDFVariable>();
         }

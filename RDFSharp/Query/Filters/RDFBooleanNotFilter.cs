@@ -44,7 +44,6 @@ namespace RDFSharp.Query
             if (filter != null)
             {
                 this.Filter = filter;
-                this.IsEvaluable = false;
             }
             else
             {

@@ -52,7 +52,6 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQuery()
         {
-            this.IsEvaluable = true;
             this.DescribeTerms = new List<RDFPatternMember>();
             this.Variables = new List<RDFVariable>();
         }

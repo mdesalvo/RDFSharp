@@ -70,7 +70,6 @@ namespace RDFSharp.Query
                 this.JoinAsUnion = false;
                 this.GroupMembers = new List<RDFPatternGroupMember>();
                 this.Variables = new List<RDFVariable>();
-                this.QueryMemberID = RDFModelUtilities.CreateHash(this.PatternGroupName);
             }
             else
             {
@@ -348,6 +347,14 @@ namespace RDFSharp.Query
         internal IEnumerable<RDFPatternGroupMember> GetEvaluablePatternGroupMembers()
         {
             return this.GroupMembers.Where(g => g.IsEvaluable);
+        }
+
+        /// <summary>
+        /// Gets the string representation of the query member
+        /// </summary>
+        internal override String GetQueryMemberString()
+        {
+            return this.PatternGroupName;
         }
         #endregion
 

@@ -52,7 +52,6 @@ namespace RDFSharp.Query
             {
                 this.Variable = variable;
                 this.Datatype = datatype;
-                this.IsEvaluable = false;
             }
             else
             {

@@ -52,7 +52,6 @@ namespace RDFSharp.Query
                 {
                     this.LeftFilter = leftFilter;
                     this.RightFilter = rightFilter;
-                    this.IsEvaluable = false;
                 }
                 else
                 {

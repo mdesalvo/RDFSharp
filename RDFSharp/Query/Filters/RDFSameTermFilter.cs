@@ -53,7 +53,6 @@ namespace RDFSharp.Query
                 {
                     this.Variable = variable;
                     this.RDFTerm = rdfTerm;
-                    this.IsEvaluable = false;
                 }
                 else
                 {

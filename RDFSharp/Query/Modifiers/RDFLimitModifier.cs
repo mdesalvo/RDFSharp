@@ -44,8 +44,6 @@ namespace RDFSharp.Query
             if (limit >= 0)
             {
                 this.Limit = limit;
-                this.IsEvaluable = false;
-                this.QueryMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
             {

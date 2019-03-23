@@ -55,7 +55,6 @@ namespace RDFSharp.Query
                     {
                         this.Variable = variable;
                         this.Language = language.ToUpperInvariant();
-                        this.IsEvaluable = false;
                     }
                     else
                     {

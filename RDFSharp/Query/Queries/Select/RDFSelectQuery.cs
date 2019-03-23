@@ -47,7 +47,6 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery()
         {
-            this.IsEvaluable = true;
             this.ProjectionVars = new Dictionary<RDFVariable, Int32>();
         }
         #endregion

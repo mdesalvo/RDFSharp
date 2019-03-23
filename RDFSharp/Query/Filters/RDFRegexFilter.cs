@@ -54,7 +54,6 @@ namespace RDFSharp.Query
                 {
                     this.Variable = variable;
                     this.RegEx = regex;
-                    this.IsEvaluable = false;
                 }
                 else
                 {

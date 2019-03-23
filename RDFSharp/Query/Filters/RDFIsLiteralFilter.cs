@@ -44,7 +44,6 @@ namespace RDFSharp.Query
             if (variable != null)
             {
                 this.Variable = variable;
-                this.IsEvaluable = false;
             }
             else
             {
