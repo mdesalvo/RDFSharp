@@ -452,7 +452,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append("WHERE");
+                sb.Append("WHERE\n");
                 sb.Append("{\n");
 
                 #region MEMBERS
@@ -571,6 +571,141 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #endregion
+
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL ASK query
+        /// </summary>
+        internal static String PrintAskQuery(RDFAskQuery askQuery)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (askQuery != null)
+            {
+
+                #region PREFIXES
+                if (askQuery.Prefixes.Any())
+                {
+                    askQuery.Prefixes.ForEach(pf =>
+                    {
+                        sb.Append("PREFIX " + pf.NamespacePrefix + ": <" + pf.NamespaceUri + ">\n");
+                    });
+                    sb.Append("\n");
+                }
+                #endregion
+
+                #region HEADER
+
+                #region BEGINASK
+                sb.Append("ASK");
+                #endregion
+
+                #endregion
+
+                #region BODY
+                sb.Append("\nWHERE\n");
+                sb.Append("{\n");
+
+                #region MEMBERS
+                Boolean printingUnion = false;
+                List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
+                RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
+                foreach (var queryMember in evaluableQueryMembers)
+                {
+
+                    #region PATTERNGROUPS
+                    if (queryMember is RDFPatternGroup)
+                    {
+
+                        //Current pattern group is set as UNION with the next one
+                        if (((RDFPatternGroup)queryMember).JoinAsUnion)
+                        {
+
+                            //Current pattern group IS NOT the last of the query 
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(2, askQuery.Prefixes) + "    UNION\n");
+                            }
+
+                            //Current pattern group IS the last of the query 
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(((RDFPatternGroup)queryMember).ToString(2, askQuery.Prefixes));
+                                    sb.Append("  }");
+                                    sb.Append("\n");
+                                }
+                                else
+                                {
+                                    sb.Append(((RDFPatternGroup)queryMember).ToString(0, askQuery.Prefixes));
+                                }
+                            }
+
+                        }
+
+                        //Current pattern group is set as INTERSECT with the next one
+                        else
+                        {
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(2, askQuery.Prefixes));
+                                sb.Append("  }");
+                                sb.Append("\n");
+                            }
+                            else
+                            {
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(0, askQuery.Prefixes));
+                            }
+                        }
+
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (queryMember is RDFQuery)
+                    {
+                        //Merge main query prefixes
+                        askQuery.Prefixes.ForEach(pf1 => {
+                            if (!((RDFSelectQuery)queryMember).Prefixes.Any(pf2 => pf2.Equals(pf1)))
+                            {
+                                ((RDFSelectQuery)queryMember).AddPrefix(pf1);
+                            }
+                        });
+                        //End the Union block
+                        if (printingUnion)
+                        {
+                            printingUnion = false;
+                            sb.Append(((RDFSelectQuery)queryMember).ToString());
+                            sb.Append("  }");
+                            sb.AppendLine();
+                        }
+                        else
+                        {
+                            sb.Append(((RDFSelectQuery)queryMember).ToString());
+                        }
+                    }
+                    #endregion
+
+                }
+                #endregion
+
+                sb.Append("}\n");
                 #endregion
 
             }
