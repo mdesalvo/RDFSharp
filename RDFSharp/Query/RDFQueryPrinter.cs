@@ -34,8 +34,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal static String PrintSelectQuery(RDFSelectQuery selectQuery)
         {
-            String subqueryIndent = selectQuery.IsSubQuery ? "  " : String.Empty;
-            String subqueryBodyIndent = selectQuery.IsSubQuery ? "    " : String.Empty;
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
             {
@@ -57,6 +55,8 @@ namespace RDFSharp.Query
                 #region HEADER
 
                 #region BEGINSELECT
+                String subqueryIndent = selectQuery.IsSubQuery ? "  " : String.Empty;
+                String subqueryBodyIndent = selectQuery.IsSubQuery ? "    " : String.Empty;
                 if (selectQuery.IsSubQuery)
                     sb.Append(subqueryIndent + "{\n");
                 sb.Append(subqueryBodyIndent + "SELECT");
