@@ -126,7 +126,9 @@ namespace RDFSharp.Query
                     #region SUBQUERY
                     else if (evaluableQueryMember is RDFQuery)
                     {
-
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
+                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                     }
                     #endregion
 
@@ -210,7 +212,9 @@ namespace RDFSharp.Query
                     #region SUBQUERY
                     else if (evaluableQueryMember is RDFQuery)
                     {
-
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
+                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                     }
                     #endregion
 
@@ -344,7 +348,9 @@ namespace RDFSharp.Query
                     #region SUBQUERY
                     else if (evaluableQueryMember is RDFQuery)
                     {
-
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
+                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                     }
                     #endregion
 
@@ -431,7 +437,9 @@ namespace RDFSharp.Query
                     #region SUBQUERY
                     else if (evaluableQueryMember is RDFQuery)
                     {
-
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = EvaluateSelectQuery((RDFSelectQuery)evaluableQueryMember, datasource);
+                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                     }
                     #endregion
 
