@@ -73,6 +73,15 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the query members of type: query
+        /// </summary>
+        internal IEnumerable<RDFQuery> GetSubQueries()
+        {
+            return this.QueryMembers.Where(q => q is RDFQuery)
+                                    .OfType<RDFQuery>();
+        }
+
+        /// <summary>
         /// Gets the query members which can be evaluated
         /// </summary>
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()

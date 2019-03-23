@@ -158,6 +158,13 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region SUBQUERY
+                else if (queryMember is RDFQuery)
+                {
+
+                }
+                #endregion
+
             }
             #endregion
 
@@ -274,6 +281,21 @@ namespace RDFSharp.Query
                 if (!this.Prefixes.Any(p => p.Equals(prefix)))
                 {
                     this.Prefixes.Add(prefix);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given subquery to the query
+        /// </summary>
+        public RDFDescribeQuery AddSubQuery(RDFSelectQuery subQuery)
+        {
+            if (subQuery != null)
+            {
+                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
+                {
+                    this.QueryMembers.Add(subQuery);
                 }
             }
             return this;

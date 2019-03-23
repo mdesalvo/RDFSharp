@@ -123,6 +123,13 @@ namespace RDFSharp.Query
                     }
                     #endregion
 
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+
+                    }
+                    #endregion
+
                 }
 
                 //Step 4: Get the result table of the query
@@ -197,6 +204,13 @@ namespace RDFSharp.Query
 
                         //Step 3: Apply the filters of the current pattern group to its result table
                         ApplyFilters(describeQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+
                     }
                     #endregion
 
@@ -327,6 +341,13 @@ namespace RDFSharp.Query
                     }
                     #endregion
 
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+
+                    }
+                    #endregion
+
                 }
 
                 //Step 4: Get the result table of the query
@@ -404,6 +425,13 @@ namespace RDFSharp.Query
 
                         //Step 3: Apply the filters of the current pattern group to its result table
                         ApplyFilters(askQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+
                     }
                     #endregion
 
