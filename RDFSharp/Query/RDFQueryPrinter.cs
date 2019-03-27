@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static String PrintSelectQuery(RDFSelectQuery selectQuery)
+        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Int32 indentLevel = 0)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
@@ -55,11 +55,13 @@ namespace RDFSharp.Query
                 #region HEADER
 
                 #region BEGINSELECT
-                String subqueryIndent = selectQuery.IsSubQuery ? "  " : String.Empty;
-                String subqueryBodyIndent = selectQuery.IsSubQuery ? "    " : String.Empty;
+                Int32 subquerySpacesFunc(Int32 indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
+                Int32 subqueryBodySpacesFunc(Int32 indLevel) { return 4 * indentLevel; }
+                String subquerySpaces = new String(' ', subquerySpacesFunc(indentLevel));
+                String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel));
                 if (selectQuery.IsSubQuery)
-                    sb.Append(subqueryIndent + "{\n");
-                sb.Append(subqueryBodyIndent + "SELECT");
+                    sb.Append(subquerySpaces + "{\n");
+                sb.Append(subqueryBodySpaces + "SELECT");
                 #endregion
 
                 #region DISTINCT
@@ -86,8 +88,8 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append(subqueryBodyIndent + "WHERE\n");
-                sb.Append(subqueryBodyIndent + "{\n");
+                sb.Append(subqueryBodySpaces + "WHERE\n");
+                sb.Append(subqueryBodySpaces + "{\n");
 
                 #region MEMBERS
                 Boolean printingUnion = false;
@@ -112,9 +114,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.Append(subqueryBodySpaces + "  {\n");
                                 }
-                                sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodyIndent.Length + 2, selectQuery.Prefixes) + "    UNION\n");
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodySpaces.Length + 2, selectQuery.Prefixes));
+                                sb.Append(subqueryBodySpaces + "    UNION\n");
                             }
 
                             //Current pattern group IS the last of the query 
@@ -125,13 +128,12 @@ namespace RDFSharp.Query
                                 if (printingUnion)
                                 {
                                     printingUnion = false;
-                                    sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodyIndent.Length + 2, selectQuery.Prefixes));
-                                    sb.Append("  }");
-                                    sb.Append("\n");
+                                    sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodySpaces.Length + 2, selectQuery.Prefixes));
+                                    sb.Append(subqueryBodySpaces + "  }\n");
                                 }
                                 else
                                 {
-                                    sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodyIndent.Length, selectQuery.Prefixes));
+                                    sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodySpaces.Length, selectQuery.Prefixes));
                                 }
                             }
 
@@ -144,13 +146,12 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodyIndent.Length + 2, selectQuery.Prefixes));
-                                sb.Append("  }");
-                                sb.Append("\n");
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodySpaces.Length + 2, selectQuery.Prefixes));
+                                sb.Append(subqueryBodySpaces + "  }\n");
                             }
                             else
                             {
-                                sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodyIndent.Length, selectQuery.Prefixes));
+                                sb.Append(((RDFPatternGroup)queryMember).ToString(subqueryBodySpaces.Length, selectQuery.Prefixes));
                             }
                         }
 
@@ -171,13 +172,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(((RDFSelectQuery)queryMember).ToString());
-                            sb.Append(subqueryIndent + "  }");
-                            sb.AppendLine();
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1));
+                            sb.Append(subqueryBodySpaces + "  }\n");
                         }
                         else
                         {
-                            sb.Append(((RDFSelectQuery)queryMember).ToString());
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1));
                         }
                     }
                     #endregion
@@ -185,7 +185,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                sb.Append(subqueryBodyIndent + "}\n");
+                sb.Append(subqueryBodySpaces + "}\n");
                 #endregion
 
                 #region FOOTER
@@ -197,7 +197,7 @@ namespace RDFSharp.Query
                 if (modifiers.Any(mod => mod is RDFOrderByModifier))
                 {
                     sb.Append("\n");
-                    sb.Append(subqueryBodyIndent + "ORDER BY");
+                    sb.Append(subqueryBodySpaces + "ORDER BY");
                     modifiers.Where(mod => mod is RDFOrderByModifier)
                              .ToList()
                              .ForEach(om => sb.Append(" " + om));
@@ -208,16 +208,16 @@ namespace RDFSharp.Query
                 {
                     modifiers.Where(mod => mod is RDFLimitModifier)
                              .ToList()
-                             .ForEach(lim => { sb.Append("\n"); sb.Append(subqueryBodyIndent + lim); });
+                             .ForEach(lim => { sb.Append("\n"); sb.Append(subqueryBodySpaces + lim); });
                     modifiers.Where(mod => mod is RDFOffsetModifier)
                              .ToList()
-                             .ForEach(off => { sb.Append("\n"); sb.Append(subqueryBodyIndent + off); });
+                             .ForEach(off => { sb.Append("\n"); sb.Append(subqueryBodySpaces + off); });
                 }
                 #endregion
 
                 #region ENDSELECT
                 if (selectQuery.IsSubQuery)
-                    sb.Append(subqueryIndent + "}\n");
+                    sb.Append(subquerySpaces + "}\n");
                 #endregion
 
                 #endregion

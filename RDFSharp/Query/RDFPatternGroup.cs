@@ -116,7 +116,8 @@ namespace RDFSharp.Query
             StringBuilder patternGroup = new StringBuilder();
             if (this.IsOptional)
             {
-                patternGroup.Append("  " + spaces + "OPTIONAL {\n");
+                patternGroup.Append("  " + spaces + "OPTIONAL\n");
+                patternGroup.Append("  " + spaces + "{\n");
                 spaces = spaces + "  ";
             }
             patternGroup.Append("  " + spaces + "#" + this.PatternGroupName + "\n");
