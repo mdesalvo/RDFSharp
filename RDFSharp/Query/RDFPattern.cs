@@ -194,31 +194,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>());
-        }
-        internal String ToString(List<RDFNamespace> prefixes)
-        {
-            String subj = RDFQueryUtilities.PrintRDFPatternMember(this.Subject, prefixes);
-            String pred = RDFQueryUtilities.PrintRDFPatternMember(this.Predicate, prefixes);
-            String obj = RDFQueryUtilities.PrintRDFPatternMember(this.Object, prefixes);
-
-            //CSPO pattern
-            if (this.Context != null)
-            {
-                String ctx = RDFQueryUtilities.PrintRDFPatternMember(this.Context, prefixes);
-                if (this.IsOptional)
-                {
-                    return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
-                }
-                return "GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " }";
-            }
-
-            //SPO pattern
-            if (this.IsOptional)
-            {
-                return "OPTIONAL { " + subj + " " + pred + " " + obj + " }";
-            }
-            return subj + " " + pred + " " + obj;
+            return RDFQueryPrinter.PrintPattern(this, new List<RDFNamespace>());
         }
         #endregion
 

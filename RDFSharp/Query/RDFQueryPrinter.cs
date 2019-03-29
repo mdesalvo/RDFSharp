@@ -424,7 +424,7 @@ namespace RDFSharp.Query
                 sb.Append("\n{\n");
                 constructQuery.Templates.ForEach(tp =>
                 {
-                    String tpString = tp.ToString(constructQuery.Prefixes);
+                    String tpString = PrintPattern(tp, constructQuery.Prefixes);
 
                     //Remove the Context from the template print (since it is not supported by CONSTRUCT query)
                     if (tp.Context != null)
@@ -739,7 +739,7 @@ namespace RDFSharp.Query
                         {
                             //Begin a new Union block
                             printingUnion = true;
-                            result.Append(spaces + "    { " + ((RDFPattern)pgMember).ToString(prefixes) + " }\n" + spaces + "    UNION\n");
+                            result.Append(spaces + "    { " + PrintPattern((RDFPattern)pgMember, prefixes) + " }\n" + spaces + "    UNION\n");
                         }
                         else
                         {
@@ -747,11 +747,11 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                result.Append(spaces + "    { " + ((RDFPattern)pgMember).ToString(prefixes) + " }\n");
+                                result.Append(spaces + "    { " + PrintPattern((RDFPattern)pgMember, prefixes) + " }\n");
                             }
                             else
                             {
-                                result.Append(spaces + "    " + ((RDFPattern)pgMember).ToString(prefixes) + " .\n");
+                                result.Append(spaces + "    " + PrintPattern((RDFPattern)pgMember, prefixes) + " .\n");
                             }
                         }
                     }
@@ -763,11 +763,11 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            result.Append(spaces + "    { " + ((RDFPattern)pgMember).ToString(prefixes) + " }\n");
+                            result.Append(spaces + "    { " + PrintPattern((RDFPattern)pgMember, prefixes) + " }\n");
                         }
                         else
                         {
-                            result.Append(spaces + "    " + ((RDFPattern)pgMember).ToString(prefixes) + " .\n");
+                            result.Append(spaces + "    " + PrintPattern((RDFPattern)pgMember, prefixes) + " .\n");
                         }
                     }
                 }
@@ -807,6 +807,34 @@ namespace RDFSharp.Query
             #endregion
 
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a pattern
+        /// </summary>
+        internal static String PrintPattern(RDFPattern pattern, List<RDFNamespace> prefixes)
+        {
+            String subj = RDFQueryUtilities.PrintRDFPatternMember(pattern.Subject, prefixes);
+            String pred = RDFQueryUtilities.PrintRDFPatternMember(pattern.Predicate, prefixes);
+            String obj = RDFQueryUtilities.PrintRDFPatternMember(pattern.Object, prefixes);
+
+            //CSPO pattern
+            if (pattern.Context != null)
+            {
+                String ctx = RDFQueryUtilities.PrintRDFPatternMember(pattern.Context, prefixes);
+                if (pattern.IsOptional)
+                {
+                    return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
+                }
+                return "GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " }";
+            }
+
+            //SPO pattern
+            if (pattern.IsOptional)
+            {
+                return "OPTIONAL { " + subj + " " + pred + " " + obj + " }";
+            }
+            return subj + " " + pred + " " + obj;
         }
         #endregion
 
