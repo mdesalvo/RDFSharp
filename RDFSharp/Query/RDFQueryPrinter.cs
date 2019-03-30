@@ -780,11 +780,11 @@ namespace RDFSharp.Query
                     if (printingUnion)
                     {
                         printingUnion = false;
-                        result.Append(spaces + "    { " + ((RDFPropertyPath)pgMember).ToString(prefixes) + " }\n");
+                        result.Append(spaces + "    { " + PrintPropertyPath((RDFPropertyPath)pgMember, prefixes) + " }\n");
                     }
                     else
                     {
-                        result.Append(spaces + "    " + ((RDFPropertyPath)pgMember).ToString(prefixes) + " .\n");
+                        result.Append(spaces + "    " + PrintPropertyPath((RDFPropertyPath)pgMember, prefixes) + " .\n");
                     }
                 }
                 #endregion
@@ -835,6 +835,112 @@ namespace RDFSharp.Query
                 return "OPTIONAL { " + subj + " " + pred + " " + obj + " }";
             }
             return subj + " " + pred + " " + obj;
+        }
+
+        /// <summary>
+        /// Prints the string representation of a property path
+        /// </summary>
+        internal static String PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propertyPath.Start, prefixes));
+            result.Append(" ");
+
+            #region StepString
+
+            #region Single Property
+            if (propertyPath.Steps.Count == 1)
+            {
+
+                //InversePath (will swap start/end)
+                if (propertyPath.Steps[0].IsInverseStep)
+                {
+                    result.Append("^");
+                }
+
+                var propPath = propertyPath.Steps[0].StepProperty;
+                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+
+            }
+            #endregion
+
+            #region Multiple Properties
+            else
+            {
+
+                //Initialize printing
+                Boolean openedParenthesis = false;
+
+                //Iterate properties
+                for (int i = 0; i < propertyPath.Steps.Count; i++)
+                {
+
+                    //Alternative: generate union pattern
+                    if (propertyPath.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                    {
+                        if (!openedParenthesis)
+                        {
+                            openedParenthesis = true;
+                            result.Append("(");
+                        }
+
+                        //InversePath (will swap start/end)
+                        if (propertyPath.Steps[i].IsInverseStep)
+                        {
+                            result.Append("^");
+                        }
+
+                        var propPath = propertyPath.Steps[i].StepProperty;
+                        if (i < propertyPath.Steps.Count - 1)
+                        {
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append((Char)propertyPath.Steps[i].StepFlavor);
+                        }
+                        else
+                        {
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append(")");
+                        }
+                    }
+
+                    //Sequence: generate pattern
+                    else
+                    {
+                        if (openedParenthesis)
+                        {
+                            result.Remove(result.Length - 1, 1);
+                            openedParenthesis = false;
+                            result.Append(")/");
+                        }
+
+                        //InversePath (will swap start/end)
+                        if (propertyPath.Steps[i].IsInverseStep)
+                        {
+                            result.Append("^");
+                        }
+
+                        var propPath = propertyPath.Steps[i].StepProperty;
+                        if (i < propertyPath.Steps.Count - 1)
+                        {
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append((Char)propertyPath.Steps[i].StepFlavor);
+                        }
+                        else
+                        {
+                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                        }
+                    }
+
+                }
+
+            }
+            #endregion
+
+            #endregion
+
+            result.Append(" ");
+            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propertyPath.End, prefixes));
+            return result.ToString();
         }
         #endregion
 

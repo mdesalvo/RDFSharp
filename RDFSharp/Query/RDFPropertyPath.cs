@@ -99,15 +99,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>());
-        }
-        internal String ToString(List<RDFNamespace> prefixes)
-        {
-            return RDFQueryUtilities.PrintRDFPatternMember(this.Start, prefixes) +
-                   " " +
-                   this.GetStepString(prefixes) +
-                   " " +
-                   RDFQueryUtilities.PrintRDFPatternMember(this.End, prefixes);
+            return RDFQueryPrinter.PrintPropertyPath(this, new List<RDFNamespace>());
         }
         #endregion
 
@@ -149,104 +141,6 @@ namespace RDFSharp.Query
                 this.IsEvaluable = true;
             }
             return this;
-        }
-
-        /// <summary>
-        /// Gets the string representation of the path
-        /// </summary>
-        internal String GetStepString(List<RDFNamespace> prefixes)
-        {
-            var result = new StringBuilder();
-
-            #region Single Property
-            if (this.Steps.Count == 1)
-            {
-
-                //InversePath (will swap start/end)
-                if (this.Steps[0].IsInverseStep)
-                {
-                    result.Append("^");
-                }
-
-                var propPath = this.Steps[0].StepProperty;
-                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
-
-            }
-            #endregion
-
-            #region Multiple Properties
-            else
-            {
-
-                //Initialize printing
-                Boolean openedParenthesis = false;
-
-                //Iterate properties
-                for (int i = 0; i < this.Steps.Count; i++)
-                {
-
-                    //Alternative: generate union pattern
-                    if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
-                    {
-                        if (!openedParenthesis)
-                        {
-                            openedParenthesis = true;
-                            result.Append("(");
-                        }
-
-                        //InversePath (will swap start/end)
-                        if (this.Steps[i].IsInverseStep)
-                        {
-                            result.Append("^");
-                        }
-
-                        var propPath = this.Steps[i].StepProperty;
-                        if (i < this.Steps.Count - 1)
-                        {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
-                            result.Append((Char)this.Steps[i].StepFlavor);
-                        }
-                        else
-                        {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
-                            result.Append(")");
-                        }
-                    }
-
-                    //Sequence: generate pattern
-                    else
-                    {
-                        if (openedParenthesis)
-                        {
-                            result.Remove(result.Length - 1, 1);
-                            openedParenthesis = false;
-                            result.Append(")/");
-                        }
-
-                        //InversePath (will swap start/end)
-                        if (this.Steps[i].IsInverseStep)
-                        {
-                            result.Append("^");
-                        }
-
-                        var propPath = this.Steps[i].StepProperty;
-                        if (i < this.Steps.Count - 1)
-                        {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
-                            result.Append((Char)this.Steps[i].StepFlavor);
-                        }
-                        else
-                        {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
-                        }
-                    }
-
-                }
-
-            }
-            #endregion
-
-            return result.ToString();
         }
 
         /// <summary>
