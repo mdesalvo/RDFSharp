@@ -20,6 +20,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using RDFSharp.Model;
+using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -258,7 +259,7 @@ namespace RDFSharp.Query
                 {
                     describeQuery.DescribeTerms.ForEach(dt =>
                     {
-                        sb.Append(" " + RDFQueryUtilities.PrintRDFPatternMember(dt, describeQuery.Prefixes));
+                        sb.Append(" " + PrintPatternMember(dt, describeQuery.Prefixes));
                     });
                 }
                 else
@@ -814,14 +815,14 @@ namespace RDFSharp.Query
         /// </summary>
         internal static String PrintPattern(RDFPattern pattern, List<RDFNamespace> prefixes)
         {
-            String subj = RDFQueryUtilities.PrintRDFPatternMember(pattern.Subject, prefixes);
-            String pred = RDFQueryUtilities.PrintRDFPatternMember(pattern.Predicate, prefixes);
-            String obj = RDFQueryUtilities.PrintRDFPatternMember(pattern.Object, prefixes);
+            String subj = PrintPatternMember(pattern.Subject, prefixes);
+            String pred = PrintPatternMember(pattern.Predicate, prefixes);
+            String obj = PrintPatternMember(pattern.Object, prefixes);
 
             //CSPO pattern
             if (pattern.Context != null)
             {
-                String ctx = RDFQueryUtilities.PrintRDFPatternMember(pattern.Context, prefixes);
+                String ctx = PrintPatternMember(pattern.Context, prefixes);
                 if (pattern.IsOptional)
                 {
                     return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
@@ -843,7 +844,7 @@ namespace RDFSharp.Query
         internal static String PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
             StringBuilder result = new StringBuilder();
-            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propertyPath.Start, prefixes));
+            result.Append(PrintPatternMember(propertyPath.Start, prefixes));
             result.Append(" ");
 
             #region StepString
@@ -859,7 +860,7 @@ namespace RDFSharp.Query
                 }
 
                 var propPath = propertyPath.Steps[0].StepProperty;
-                result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                result.Append(PrintPatternMember(propPath, prefixes));
 
             }
             #endregion
@@ -893,12 +894,12 @@ namespace RDFSharp.Query
                         var propPath = propertyPath.Steps[i].StepProperty;
                         if (i < propertyPath.Steps.Count - 1)
                         {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append(PrintPatternMember(propPath, prefixes));
                             result.Append((Char)propertyPath.Steps[i].StepFlavor);
                         }
                         else
                         {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append(PrintPatternMember(propPath, prefixes));
                             result.Append(")");
                         }
                     }
@@ -922,12 +923,12 @@ namespace RDFSharp.Query
                         var propPath = propertyPath.Steps[i].StepProperty;
                         if (i < propertyPath.Steps.Count - 1)
                         {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append(PrintPatternMember(propPath, prefixes));
                             result.Append((Char)propertyPath.Steps[i].StepFlavor);
                         }
                         else
                         {
-                            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propPath, prefixes));
+                            result.Append(PrintPatternMember(propPath, prefixes));
                         }
                     }
 
@@ -939,8 +940,84 @@ namespace RDFSharp.Query
             #endregion
 
             result.Append(" ");
-            result.Append(RDFQueryUtilities.PrintRDFPatternMember(propertyPath.End, prefixes));
+            result.Append(PrintPatternMember(propertyPath.End, prefixes));
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a pattern member
+        /// </summary>
+        internal static String PrintPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes = null)
+        {
+
+            if (patternMember != null)
+            {
+
+                #region Variable
+                if (patternMember is RDFVariable)
+                {
+                    return patternMember.ToString();
+                }
+                #endregion
+
+                #region Resource/Context
+                if (patternMember is RDFResource || patternMember is RDFContext)
+                {
+                    #region Blank
+                    if (patternMember is RDFResource && ((RDFResource)patternMember).IsBlank)
+                    {
+                        return patternMember.ToString().Replace("bnode:", "_:");
+                    }
+                    #endregion
+
+                    #region NonBlank
+                    var abbreviatedPM = RDFQueryUtilities.AbbreviateRDFPatternMember(patternMember, prefixes);
+                    if (abbreviatedPM.Item1)
+                    {
+                        return abbreviatedPM.Item2;
+                    }
+                    else
+                    {
+                        return "<" + abbreviatedPM.Item2 + ">";
+                    }
+                    #endregion
+                }
+                #endregion
+
+                #region Literal
+                if (patternMember is RDFLiteral)
+                {
+                    #region PlainLiteral
+                    if (patternMember is RDFPlainLiteral)
+                    {
+                        if (((RDFPlainLiteral)patternMember).Language != String.Empty)
+                        {
+                            return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"@" + ((RDFPlainLiteral)patternMember).Language;
+                        }
+                        return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"";
+                    }
+                    #endregion
+
+                    #region TypedLiteral
+                    else
+                    {
+                        var abbreviatedPM = RDFQueryUtilities.AbbreviateRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)patternMember).Datatype)), prefixes);
+                        if (abbreviatedPM.Item1)
+                        {
+                            return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^" + abbreviatedPM.Item2;
+                        }
+                        else
+                        {
+                            return "\"" + ((RDFTypedLiteral)patternMember).Value + "\"^^<" + abbreviatedPM.Item2 + ">";
+                        }
+                    }
+                    #endregion
+                }
+                #endregion
+
+            }
+            return null;
+
         }
         #endregion
 

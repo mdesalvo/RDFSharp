@@ -113,7 +113,7 @@ namespace RDFSharp.Model
                             actualPred = String.Empty;
                             if (!actualSubj.StartsWith("_:"))
                             {
-                                abbreviatedSubj = RDFQueryUtilities.PrintRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubj), prefixes);
+                                abbreviatedSubj = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubj), prefixes);
                             }
                             else
                             {
@@ -138,7 +138,7 @@ namespace RDFSharp.Model
                                     result.Append(spaceConst.PadRight(abbreviatedSubj.Length + 1)); //pretty-printing spaces to align the predList
                                 }
                                 actualPred = triple.Predicate.ToString();
-                                abbreviatedPred = RDFQueryUtilities.PrintRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPred), prefixes);
+                                abbreviatedPred = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPred), prefixes);
                                 //Turtle goody for "rdf:type" shortcutting to "a"
                                 if (abbreviatedPred == RDFVocabulary.RDF.PREFIX + ":type")
                                 {
@@ -155,7 +155,7 @@ namespace RDFSharp.Model
                                 String obj = triple.Object.ToString();
                                 if (!obj.StartsWith("_:"))
                                 {
-                                    result.Append(RDFQueryUtilities.PrintRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(obj), prefixes));
+                                    result.Append(RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(obj), prefixes));
                                 }
                                 else
                                 {
@@ -177,7 +177,7 @@ namespace RDFSharp.Model
 
                                 if (triple.Object is RDFTypedLiteral)
                                 {
-                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\", "\\\\") + litValDelim + "^^" + RDFQueryUtilities.PrintRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype)), prefixes);
+                                    String tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\", "\\\\") + litValDelim + "^^" + RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype)), prefixes);
                                     result.Append(tLit);
                                 }
                                 else

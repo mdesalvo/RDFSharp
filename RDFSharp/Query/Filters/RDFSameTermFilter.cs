@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         }
         internal override String ToString(List<RDFNamespace> prefixes)
         {
-            return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFQueryUtilities.PrintRDFPatternMember(this.RDFTerm, prefixes) + ") )";
+            return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFQueryPrinter.PrintPatternMember(this.RDFTerm, prefixes) + ") )";
         }
         #endregion
 

@@ -70,7 +70,7 @@ namespace RDFSharp.Query
         }
         internal override String ToString(List<RDFNamespace> prefixes)
         {
-            return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFQueryUtilities.PrintRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes) + " )";
+            return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes) + " )";
         }
         #endregion
 
