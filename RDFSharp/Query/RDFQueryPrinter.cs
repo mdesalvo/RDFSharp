@@ -24,7 +24,7 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFQueryPrinter is responsible for getting string representation of SPARQL queries
+    /// RDFQueryPrinter is responsible for getting string representation of SPARQL query entities
     /// </summary>
     internal static class RDFQueryPrinter
     {
