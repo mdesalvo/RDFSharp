@@ -207,8 +207,7 @@ namespace RDFSharp.Query
         }
         
         /// <summary>
-        /// Tries to abbreviate the string representation of the given pattern member
-        /// by searching for it in the given list of namespaces
+        /// Tries to abbreviate the string representation of the given pattern member by searching for it in the given list of namespaces
         /// </summary>
         internal static (Boolean, String) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
