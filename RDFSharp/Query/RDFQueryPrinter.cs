@@ -947,7 +947,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a pattern member
         /// </summary>
-        internal static String PrintPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes = null)
+        internal static String PrintPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
 
             if (patternMember != null)
