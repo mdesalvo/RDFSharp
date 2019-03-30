@@ -57,7 +57,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintSelectQuery(this);
+            return RDFQueryPrinter.PrintSelectQuery(this, 0, false);
         }
         #endregion
 

@@ -34,11 +34,20 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Int32 indentLevel = 0)
+        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Int32 indentLevel, Boolean fromUnion)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
             {
+
+                #region INDENT
+                Int32 subqueryHeaderSpacesFunc(Int32 indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
+                Int32 subqueryBodySpacesFunc(Int32 indLevel) { return 4 * indentLevel; }
+                Int32 subqueryUnionSpacesFunc(Boolean union) { return union ? 2 : 0; }
+
+                String subquerySpaces = new String(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+                String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+                #endregion
 
                 #region PREFIX
                 if (!selectQuery.IsSubQuery)
@@ -57,10 +66,6 @@ namespace RDFSharp.Query
                 #region HEADER
 
                 #region BEGINSELECT
-                Int32 subquerySpacesFunc(Int32 indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
-                Int32 subqueryBodySpacesFunc(Int32 indLevel) { return 4 * indentLevel; }
-                String subquerySpaces = new String(' ', subquerySpacesFunc(indentLevel));
-                String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel));
                 if (selectQuery.IsSubQuery)
                     sb.Append(subquerySpaces + "{\n");
                 sb.Append(subqueryBodySpaces + "SELECT");
@@ -174,12 +179,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1, true));
                             sb.Append(subqueryBodySpaces + "  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1, false));
                         }
                     }
                     #endregion
@@ -356,12 +361,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, true));
                             sb.Append("  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, false));
                         }
                     }
                     #endregion
@@ -531,12 +536,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, true));
                             sb.Append("  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, false));
                         }
                     }
                     #endregion
@@ -683,12 +688,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, true));
                             sb.Append("  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, false));
                         }
                     }
                     #endregion
