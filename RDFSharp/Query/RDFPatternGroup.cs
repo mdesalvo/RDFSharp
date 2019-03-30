@@ -106,7 +106,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintPatternGroup(this, 0, new List<RDFNamespace>());
+            return RDFQueryPrinter.PrintPatternGroup(this, 0, false, new List<RDFNamespace>());
         }
         #endregion
 
