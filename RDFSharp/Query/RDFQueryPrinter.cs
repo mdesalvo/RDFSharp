@@ -95,8 +95,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append(subqueryBodySpaces + "WHERE\n");
-                sb.Append(subqueryBodySpaces + "{\n");
+                sb.Append(subqueryBodySpaces + "WHERE {\n");
 
                 #region MEMBERS
                 Boolean printingUnion = false;
@@ -277,8 +276,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append("WHERE\n");
-                sb.Append("{\n");
+                sb.Append("WHERE {\n");
 
                 #region MEMBERS
                 Boolean printingUnion = false;
@@ -452,8 +450,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append("WHERE\n");
-                sb.Append("{\n");
+                sb.Append("WHERE {\n");
 
                 #region MEMBERS
                 Boolean printingUnion = false;
@@ -604,8 +601,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append("\nWHERE\n");
-                sb.Append("{\n");
+                sb.Append("\nWHERE {\n");
 
                 #region MEMBERS
                 Boolean printingUnion = false;
@@ -719,8 +715,7 @@ namespace RDFSharp.Query
             StringBuilder result = new StringBuilder();
             if (patternGroup.IsOptional && !skipOptional)
             {
-                result.Append("  " + spaces + "OPTIONAL\n");
-                result.Append("  " + spaces + "{\n");
+                result.Append("  " + spaces + "OPTIONAL {\n");
                 spaces = spaces + "  ";
             }
             result.Append("  " + spaces + "#" + patternGroup.PatternGroupName + "\n");
