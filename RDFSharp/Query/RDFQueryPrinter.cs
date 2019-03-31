@@ -191,7 +191,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                sb.Append(subqueryBodySpaces + "}\n");
+                sb.Append(subqueryBodySpaces + "}");
                 #endregion
 
                 #region FOOTER
@@ -222,6 +222,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region ENDSELECT
+                sb.Append("\n");
                 if (selectQuery.IsSubQuery)
                     sb.Append(subquerySpaces + "}\n");
                 #endregion
@@ -359,12 +360,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, true));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
                             sb.Append("  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, false));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
                         }
                     }
                     #endregion
@@ -372,7 +373,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                sb.Append("}\n");
+                sb.Append("}");
                 #endregion
 
                 #region FOOTER
@@ -533,12 +534,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, true));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
                             sb.Append("  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, false));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
                         }
                     }
                     #endregion
@@ -546,7 +547,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                sb.Append("}\n");
+                sb.Append("}");
                 #endregion
 
                 #region FOOTER
@@ -684,12 +685,12 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, true));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
                             sb.Append("  }\n");
                         }
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 0, false));
+                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
                         }
                     }
                     #endregion
@@ -697,7 +698,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
-                sb.Append("}\n");
+                sb.Append("}");
                 #endregion
 
             }
