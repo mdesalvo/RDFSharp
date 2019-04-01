@@ -41,6 +41,11 @@ namespace RDFSharp.Query
         internal List<RDFNamespace> Prefixes { get; set; }
 
         /// <summary>
+        /// Flag indicating the subquery to be joined as Union
+        /// </summary>
+        internal Boolean JoinAsUnion { get; set; }
+
+        /// <summary>
         /// Flag indicating that the query is a subquery
         /// </summary>
         internal Boolean IsSubQuery { get; set; }
@@ -55,6 +60,7 @@ namespace RDFSharp.Query
             this.QueryMembers = new List<RDFQueryMember>();
             this.Prefixes = new List<RDFNamespace>();
             this.IsEvaluable = true;
+            this.JoinAsUnion = false;
         }
         #endregion
 

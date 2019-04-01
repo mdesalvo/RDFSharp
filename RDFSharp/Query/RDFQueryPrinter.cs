@@ -34,19 +34,19 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Int32 indentLevel, Boolean fromUnion)
+        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Double indentLevel, Boolean fromUnion)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
             {
 
                 #region INDENT
-                Int32 subqueryHeaderSpacesFunc(Int32 indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
-                Int32 subqueryBodySpacesFunc(Int32 indLevel) { return 4 * indentLevel; }
-                Int32 subqueryUnionSpacesFunc(Boolean union) { return union ? 2 : 0; }
+                Double subqueryHeaderSpacesFunc(Double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2.0 < 0.0 ? 0.0 : subqueryBodySpacesFunc(indentLevel) - 2.0; }
+                Double subqueryBodySpacesFunc(Double indLevel) { return 4.0 * indentLevel; }
+                Double subqueryUnionSpacesFunc(Boolean union) { return union ? 2.0 : 0.0; }
 
-                String subquerySpaces = new String(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
-                String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+                String subquerySpaces = new String(' ', Convert.ToInt32(subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion)));
+                String subqueryBodySpaces = new String(' ', Convert.ToInt32(subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion)));
                 #endregion
 
                 #region PREFIX
@@ -174,17 +174,59 @@ namespace RDFSharp.Query
                                 ((RDFSelectQuery)queryMember).AddPrefix(pf1);
                             }
                         });
-                        //End the Union block
-                        if (printingUnion)
+                        //Current subquery is set as UNION with the next one
+                        if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1, true));
-                            sb.Append(subqueryBodySpaces + "  }\n");
+
+                            //Current subquery IS NOT the last of the query 
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append(subqueryBodySpaces + "  {\n");
+                                }
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1.0 + (fromUnion ? 0.5 : 0.0), true));
+                                sb.Append(subqueryBodySpaces + "    UNION\n");
+                            }
+
+                            //Current query IS the last of the query 
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1.0 + (fromUnion ? 0.5 : 0.0), true));
+                                    sb.Append(subqueryBodySpaces + "  }\n");
+                                }
+                                else
+                                {
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1.0 + (fromUnion ? 0.5 : 0.0), false));
+                                }
+                            }
+
                         }
+
+                        //Current query is set as INTERSECT with the next one
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1, false));
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1.0 + (fromUnion ? 0.5 : 0.0), true));
+                                sb.Append(subqueryBodySpaces + "  }\n");
+                            }
+                            else
+                            {
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1.0 + (fromUnion ? 0.5 : 0.0), false));
+                            }
                         }
+
                     }
                     #endregion
 
@@ -356,16 +398,57 @@ namespace RDFSharp.Query
                                 ((RDFSelectQuery)queryMember).AddPrefix(pf1);
                             }
                         });
-                        //End the Union block
-                        if (printingUnion)
+                        //Current subquery is set as UNION with the next one
+                        if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                            sb.Append("  }\n");
+
+                            //Current subquery IS NOT the last of the query 
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                sb.Append("    UNION\n");
+                            }
+
+                            //Current query IS the last of the query 
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                    sb.Append("  }\n");
+                                }
+                                else
+                                {
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, false));
+                                }
+                            }
+
                         }
+
+                        //Current query is set as INTERSECT with the next one
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                sb.Append("  }\n");
+                            }
+                            else
+                            {
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, false));
+                            }
                         }
                     }
                     #endregion
@@ -530,16 +613,57 @@ namespace RDFSharp.Query
                                 ((RDFSelectQuery)queryMember).AddPrefix(pf1);
                             }
                         });
-                        //End the Union block
-                        if (printingUnion)
+                        //Current subquery is set as UNION with the next one
+                        if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                            sb.Append("  }\n");
+
+                            //Current subquery IS NOT the last of the query 
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                sb.Append("    UNION\n");
+                            }
+
+                            //Current query IS the last of the query 
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                    sb.Append("  }\n");
+                                }
+                                else
+                                {
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, false));
+                                }
+                            }
+
                         }
+
+                        //Current query is set as INTERSECT with the next one
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                sb.Append("  }\n");
+                            }
+                            else
+                            {
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, false));
+                            }
                         }
                     }
                     #endregion
@@ -681,16 +805,57 @@ namespace RDFSharp.Query
                                 ((RDFSelectQuery)queryMember).AddPrefix(pf1);
                             }
                         });
-                        //End the Union block
-                        if (printingUnion)
+                        //Current subquery is set as UNION with the next one
+                        if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-                            printingUnion = false;
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                            sb.Append("  }\n");
+
+                            //Current subquery IS NOT the last of the query 
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                sb.Append("    UNION\n");
+                            }
+
+                            //Current query IS the last of the query 
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                    sb.Append("  }\n");
+                                }
+                                else
+                                {
+                                    sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, false));
+                                }
+                            }
+
                         }
+
+                        //Current query is set as INTERSECT with the next one
                         else
                         {
-                            sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, true));
+                                sb.Append("  }\n");
+                            }
+                            else
+                            {
+                                sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1.0, false));
+                            }
                         }
                     }
                     #endregion

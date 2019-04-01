@@ -132,7 +132,17 @@ namespace RDFSharp.Query
                                                                   : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
                         if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
                         {
+                            //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                            }
                         }
                     }
                     #endregion
@@ -148,7 +158,17 @@ namespace RDFSharp.Query
             }
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
 
+            //Populate its name
             queryResult.SelectResults.TableName = selectQuery.ToString();
+            //Populate its metadata (JoinAsUnion)
+            if (!queryResult.SelectResults.ExtendedProperties.ContainsKey("JoinAsUnion"))
+            {
+                queryResult.SelectResults.ExtendedProperties.Add("JoinAsUnion", selectQuery.JoinAsUnion);
+            }
+            else
+            {
+                queryResult.SelectResults.ExtendedProperties["JoinAsUnion"] = selectQuery.JoinAsUnion;
+            }
             return queryResult;
         }
 
@@ -223,7 +243,17 @@ namespace RDFSharp.Query
                                                                   : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
                         if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
                         {
+                            //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                            }
                         }
                     }
                     #endregion
@@ -364,7 +394,17 @@ namespace RDFSharp.Query
                                                                   : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
                         if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
                         {
+                            //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                            }
                         }
                     }
                     #endregion
@@ -458,7 +498,17 @@ namespace RDFSharp.Query
                                                                   : ((RDFSelectQuery)evaluableQueryMember).ApplyToFederation((RDFFederation)datasource));
                         if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
                         {
+                            //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                            }
                         }
                     }
                     #endregion
