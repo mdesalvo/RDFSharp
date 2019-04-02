@@ -57,7 +57,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintSelectQuery(this, 0.0, false);
+            return RDFQueryPrinter.PrintSelectQuery(this, 0, false);
         }
         #endregion
 
@@ -247,6 +247,15 @@ namespace RDFSharp.Query
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
             return selResult;
+        }
+
+        /// <summary>
+        /// Sets the query as optional
+        /// </summary>
+        public RDFSelectQuery Optional()
+        {
+            this.IsOptional = true;
+            return this;
         }
 
         /// <summary>

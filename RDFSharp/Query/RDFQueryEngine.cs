@@ -134,6 +134,15 @@ namespace RDFSharp.Query
                         {
                             //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                            }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
                             {
@@ -158,17 +167,7 @@ namespace RDFSharp.Query
             }
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
 
-            //Populate its name
             queryResult.SelectResults.TableName = selectQuery.ToString();
-            //Populate its metadata (JoinAsUnion)
-            if (!queryResult.SelectResults.ExtendedProperties.ContainsKey("JoinAsUnion"))
-            {
-                queryResult.SelectResults.ExtendedProperties.Add("JoinAsUnion", selectQuery.JoinAsUnion);
-            }
-            else
-            {
-                queryResult.SelectResults.ExtendedProperties["JoinAsUnion"] = selectQuery.JoinAsUnion;
-            }
             return queryResult;
         }
 
@@ -245,6 +244,15 @@ namespace RDFSharp.Query
                         {
                             //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                            }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
                             {
@@ -396,6 +404,15 @@ namespace RDFSharp.Query
                         {
                             //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                            }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
                             {
@@ -500,6 +517,15 @@ namespace RDFSharp.Query
                         {
                             //Populate its name
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                            }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
                             {
