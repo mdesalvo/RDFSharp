@@ -1810,6 +1810,29 @@ namespace RDFSharp.Query
 
         #region MIRELLA TABLES
         /// <summary>
+        /// Utility class for comparison between data columns
+        /// </summary>
+        internal class DataColumnComparer : IEqualityComparer<DataColumn>
+        {
+
+            #region Methods
+            public Boolean Equals(DataColumn column1, DataColumn column2)
+            {
+                if (column1 != null)
+                {
+                    return column2 != null && column1.Caption.Equals(column2.Caption, StringComparison.Ordinal);
+                }
+                return column2 == null;
+            }
+
+            public Int32 GetHashCode(DataColumn column)
+            {
+                return column.Caption.GetHashCode();
+            }
+            #endregion
+
+        }
+        /// <summary>
         /// Static instance of the comparer used by the engine to compare data columns
         /// </summary>
         internal static readonly DataColumnComparer dtComparer = new DataColumnComparer();
@@ -2400,31 +2423,5 @@ namespace RDFSharp.Query
 
         #endregion
     }
-
-    #region MIRELLA TABLES
-    /// <summary>
-    /// Utility class for comparison between datacolumns
-    /// </summary>
-    internal class DataColumnComparer : IEqualityComparer<DataColumn>
-    {
-
-        #region Methods
-        public Boolean Equals(DataColumn column1, DataColumn column2)
-        {
-            if (column1 != null)
-            {
-                return column2 != null && column1.Caption.Equals(column2.Caption, StringComparison.Ordinal);
-            }
-            return column2 == null;
-        }
-
-        public Int32 GetHashCode(DataColumn column)
-        {
-            return column.Caption.GetHashCode();
-        }
-        #endregion
-
-    }
-    #endregion
 
 }
