@@ -708,8 +708,20 @@ namespace RDFSharp.Query
         internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
         {
 
-            #region ORDERBY/PROJECTION
+            #region GROUPBY
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
+            var groupbyModifier = modifiers.SingleOrDefault(m => m is RDFGroupByModifier);
+            if (groupbyModifier != null)
+            {
+                table = groupbyModifier.ApplyModifier(table);
+                //INFO: At this point we'll have a table with a row (and column) with primary key per variables 
+                //      specified in GroupBy variables and a column for each variable specified in GroupBy aggregators
+                //TODO: In ApplyModifier remember to adjust ProjectionVars to contain only variables 
+                //      specified in GroupBy aggregators, so that all the other variables will be stripped out
+            }
+            #endregion
+
+            #region ORDERBY/PROJECTION
             if (query is RDFSelectQuery)
             {
 

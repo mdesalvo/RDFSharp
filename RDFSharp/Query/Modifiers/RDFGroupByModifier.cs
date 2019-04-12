@@ -95,9 +95,51 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the modifier on the given datatable 
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable tableToFilter)
+        internal override DataTable ApplyModifier(DataTable table)
         {
-            throw new NotImplementedException();
+            DataTable result = new DataTable();
+
+            //Preliminary checks on GroupBy consistency
+            //1 - Every grouping variable must be found in the working table as a column
+            if (!this.GroupByVariables.TrueForAll(gv => table.Columns.Contains(gv.ToString())))
+            {
+                var notfoundGroupingVars = String.Join(",", this.GroupByVariables.Where(gv => !table.Columns.Contains(gv.ToString()))
+                                                                                 .Select(gv => gv.ToString()));
+                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for grouping: {0}", notfoundGroupingVars));
+            }
+            //2 - Every aggregation variable must be found in the working table as a column
+            if (!this.AggregatorFunctions.TrueForAll(af => table.Columns.Contains(af.AggregatorVariable.ToString())))
+            {
+                var notfoundAggregationVars = String.Join(",", this.AggregatorFunctions.Where(af => !table.Columns.Contains(af.AggregatorVariable.ToString()))
+                                                                                       .Select(af => af.AggregatorVariable.ToString()));
+                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregationVars));
+            }
+            //3 - There should NOT be intersection between grouping variables and projection variables
+            if (this.GroupByVariables.Any(gv => this.AggregatorFunctions.Any(af => gv.Equals(af.ProjectionVariable))))
+            {
+                var commonGroupingProjectionVars = String.Join(",", this.GroupByVariables.Where(gv => this.AggregatorFunctions.Any(af => gv.Equals(af.ProjectionVariable)))
+                                                                                         .Select(gv => gv.ToString()));
+                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for grouping and projection operations: {0}", commonGroupingProjectionVars));
+            }
+
+            //Create the structure of the result table
+            this.GroupByVariables.ForEach(gv => {
+                RDFQueryEngine.AddColumn(result, gv.ToString());
+            });
+            this.AggregatorFunctions.ForEach(af => {
+                RDFQueryEngine.AddColumn(result, af.ProjectionVariable.ToString());
+            });
+            result.AcceptChanges();
+
+            //Loop through table
+            result.BeginLoadData();
+            foreach (DataRow tableRow in table.Rows)
+            {
+                
+            }
+            result.EndLoadData();
+
+            return result;
         }
         #endregion
 
