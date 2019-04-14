@@ -116,12 +116,12 @@ namespace RDFSharp.Query
                 RDFQueryEngine.AddColumn(result, gv.VariableName));
             this.AggregatorFunctions.ForEach(af => 
                 RDFQueryEngine.AddColumn(result, af.ProjectionVariable.VariableName));
+            result.AcceptChanges();
 
             //Initialize grouping algorythm registry
             var groupingRegistry = new Dictionary<String, DataTable>();
             
             //Start executing grouping algorythm
-            result.AcceptChanges();
             result.BeginLoadData();
             foreach (DataRow tableRow in table.Rows)
             {
@@ -197,13 +197,12 @@ namespace RDFSharp.Query
         {
             if (!groupingRegistry.ContainsKey(groupingKey))
             {
-                groupingRegistry.Add(groupingKey, new DataTable());
+                DataTable newGroupingTable = new DataTable();
                 this.AggregatorFunctions.ForEach(af => {
-                    RDFQueryEngine.AddColumn(groupingRegistry[groupingKey], af.ProjectionVariable.VariableName);
-                    RDFQueryEngine.AddRow(groupingRegistry[groupingKey], new Dictionary<String, String>() {
-                        { af.ProjectionVariable.VariableName, new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() }
-                    });
+                    RDFQueryEngine.AddColumn(newGroupingTable, af.ProjectionVariable.VariableName);
                 });
+                newGroupingTable.AcceptChanges();
+                groupingRegistry.Add(groupingKey, newGroupingTable);
             }
         }
         
@@ -213,6 +212,7 @@ namespace RDFSharp.Query
         private void ExecuteAggregatorFunctions(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow)
         {
             this.AggregatorFunctions.ForEach(af => {
+                Decimal agValue = GetAggregatorValue(af.AggregatorVariable, tableRow);
                 switch (af.FunctionType)
                 {
                     case RDFQueryEnums.RDFAggregatorFunctionTypes.AVG:
@@ -227,6 +227,38 @@ namespace RDFSharp.Query
                         break;
                 }
             });
+        }
+
+        /// <summary>
+        /// Gets the value of the given aggregation function for the given row.
+        /// Null values or type errors are automatically considered 0.
+        /// </summary>
+        private Decimal GetAggregatorValue(RDFVariable agVariable, DataRow tableRow)
+        {
+            Decimal defaultAggregatorValue = 0;
+            if (!tableRow.IsNull(agVariable.VariableName))  {
+                RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[agVariable.VariableName].ToString());
+                //PlainLiteral: will be accepted only if non-languaged and parsable to Decimal
+                if (rowAggregatorValue is RDFPlainLiteral)
+                {
+                    if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
+                    {
+                        if(Decimal.TryParse(rowAggregatorValue.ToString(), out Decimal decimalValue))
+                        {
+                            return decimalValue;
+                        }
+                    }
+                }
+                //TypedLiteral: will be accepted only if parsable to Decimal
+                else if (rowAggregatorValue is RDFTypedLiteral)
+                {
+                    if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
+                    {
+                        return Decimal.Parse(((RDFTypedLiteral)rowAggregatorValue).Value);
+                    }
+                }
+            }
+            return defaultAggregatorValue;
         }
         #endregion
 
