@@ -99,7 +99,11 @@ namespace RDFSharp.Query
         {
             if (modifier != null)
             {
-
+                //Ensure to have only one groupby modifier in the query
+                if (modifier is RDFGroupByModifier && this.GetModifiers().Any(m => m is RDFGroupByModifier))
+                {
+                    return this;
+                }
                 //Ensure to have only one distinct modifier in the query
                 if (modifier is RDFDistinctModifier && this.GetModifiers().Any(m => m is RDFDistinctModifier))
                 {

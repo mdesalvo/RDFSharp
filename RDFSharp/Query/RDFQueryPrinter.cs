@@ -96,9 +96,19 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    sb.Append(" *");
+                    sb.Append(" *");                    
                 }
                 sb.Append("\n");
+                #endregion
+
+                #region AGGREGATORS
+                List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
+                if (modifiers.Any(m => m is RDFGroupByModifier))
+                {
+                    modifiers.Where(mod => mod is RDFGroupByModifier)
+                         .ToList()
+                         .ForEach(gm => { sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).Aggregators)); });
+                }
                 #endregion
 
                 #endregion
@@ -248,7 +258,13 @@ namespace RDFSharp.Query
                 #region FOOTER
 
                 #region MODIFIERS
-                List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
+                //GROUP BY
+                if (modifiers.Any(mod => mod is RDFGroupByModifier))
+                {
+                    modifiers.Where(mod => mod is RDFGroupByModifier)
+                             .ToList()
+                             .ForEach(gm => { sb.Append("\n"); sb.Append(subqueryBodySpaces + gm); });
+                }
 
                 // ORDER BY
                 if (modifiers.Any(mod => mod is RDFOrderByModifier))

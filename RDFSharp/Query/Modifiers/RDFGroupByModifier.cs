@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -36,9 +35,9 @@ namespace RDFSharp.Query
         internal List<RDFVariable> GroupByVariables { get; set; }
 
         /// <summary>
-        /// List of functions applied on the result groups
+        /// List of aggregators applied on the result groups
         /// </summary>
-        internal List<RDFAggregatorFunction> AggregatorFunctions { get; set; }
+        internal List<RDFAggregator> Aggregators { get; set; }
         #endregion
 
         #region Ctors
@@ -69,33 +68,26 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            var result = new StringBuilder();
-            result.Append(String.Format("GROUP BY {0}", String.Join(" ", this.GroupByVariables)));
-            if (this.AggregatorFunctions.Any())
-            {
-                result.Append("??");
-                result.Append(String.Join(" ", this.AggregatorFunctions.Select(v => v.ToString())));
-            }            
-            return result.ToString();
+            return String.Format("GROUP BY {0}", String.Join(" ", this.GroupByVariables));
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Adds the given aggregator function to the modifier
+        /// Adds the given aggregator to the modifier
         /// </summary>
-        public RDFGroupByModifier AddAggregatorFunction(RDFAggregatorFunction aggregatorFunction)
+        public RDFGroupByModifier AddAggregator(RDFAggregator aggregator)
         {
-            if (aggregatorFunction != null)
+            if (aggregator != null)
             {
-                //There cannot exist two aggregator functions projecting the same variable
-                if (!this.AggregatorFunctions.Any(af => af.ProjectionVariable.Equals(aggregatorFunction.ProjectionVariable)))
+                //There cannot exist two aggregators projecting the same variable
+                if (!this.Aggregators.Any(af => af.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                 {
-                    this.AggregatorFunctions.Add(aggregatorFunction);
+                    this.Aggregators.Add(aggregator);
                 }
                 else
                 {
-                    throw new RDFQueryException(String.Format("Cannot add aggregator function to GroupBy modifier because the given projection variable '{0}' is already used by another aggregator function.", aggregatorFunction.ProjectionVariable));
+                    throw new RDFQueryException(String.Format("Cannot add aggregator to GroupBy modifier because the given projection variable '{0}' is already used by another aggregator.", aggregator.ProjectionVariable));
                 }
             }
             return this;
@@ -114,7 +106,7 @@ namespace RDFSharp.Query
             //Initialize result table
             this.GroupByVariables.ForEach(gv => 
                 RDFQueryEngine.AddColumn(result, gv.VariableName));
-            this.AggregatorFunctions.ForEach(af => 
+            this.Aggregators.ForEach(af => 
                 RDFQueryEngine.AddColumn(result, af.ProjectionVariable.VariableName));
             result.AcceptChanges();
 
@@ -129,7 +121,7 @@ namespace RDFSharp.Query
                 //Calculate grouping key
                 String groupingKey = GetGroupingKey(tableRow);
 
-                //Update grouping registry
+                //Update grouping registry with grouping key
                 UpdateGroupingRegistry(groupingRegistry, groupingKey);
 
                 //Execute aggregator functions on the current row 
@@ -155,16 +147,16 @@ namespace RDFSharp.Query
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for grouping: {0}", notfoundGroupingVars));
             }
             //2 - Every aggregation variable must be found in the working table as a column
-            if (!this.AggregatorFunctions.TrueForAll(af => table.Columns.Contains(af.AggregatorVariable.ToString())))
+            if (!this.Aggregators.TrueForAll(ag => table.Columns.Contains(ag.AggregatorVariable.ToString())))
             {
-                var notfoundAggregationVars = String.Join(",", this.AggregatorFunctions.Where(af => !table.Columns.Contains(af.AggregatorVariable.ToString()))
-                                                                                       .Select(af => af.AggregatorVariable.ToString()));
+                var notfoundAggregationVars = String.Join(",", this.Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
+                                                                                       .Select(ag => ag.AggregatorVariable.ToString()));
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregationVars));
             }
             //3 - There should NOT be intersection between grouping variables and projection variables
-            if (this.GroupByVariables.Any(gv => this.AggregatorFunctions.Any(af => gv.Equals(af.ProjectionVariable))))
+            if (this.GroupByVariables.Any(gv => this.Aggregators.Any(ag => gv.Equals(ag.ProjectionVariable))))
             {
-                var commonGroupingProjectionVars = String.Join(",", this.GroupByVariables.Where(gv => this.AggregatorFunctions.Any(af => gv.Equals(af.ProjectionVariable)))
+                var commonGroupingProjectionVars = String.Join(",", this.GroupByVariables.Where(gv => this.Aggregators.Any(ag => gv.Equals(ag.ProjectionVariable)))
                                                                                          .Select(gv => gv.ToString()));
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for grouping and projection operations: {0}", commonGroupingProjectionVars));
             }
@@ -198,9 +190,8 @@ namespace RDFSharp.Query
             if (!groupingRegistry.ContainsKey(groupingKey))
             {
                 DataTable newGroupingTable = new DataTable();
-                this.AggregatorFunctions.ForEach(af => {
-                    RDFQueryEngine.AddColumn(newGroupingTable, af.ProjectionVariable.VariableName);
-                });
+                this.Aggregators.ForEach(ag => 
+                    RDFQueryEngine.AddColumn(newGroupingTable, ag.ProjectionVariable.VariableName));
                 newGroupingTable.AcceptChanges();
                 groupingRegistry.Add(groupingKey, newGroupingTable);
             }
@@ -211,134 +202,7 @@ namespace RDFSharp.Query
         /// </summary>
         private void ExecuteAggregatorFunctions(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow)
         {
-            this.AggregatorFunctions.ForEach(af => {
-                Decimal agValue = GetAggregatorValue(af.AggregatorVariable, tableRow);
-                switch (af.FunctionType)
-                {
-                    case RDFQueryEnums.RDFAggregatorFunctionTypes.AVG:
-                        break;
-                    case RDFQueryEnums.RDFAggregatorFunctionTypes.COUNT:
-                        break;
-                    case RDFQueryEnums.RDFAggregatorFunctionTypes.MAX:
-                        break;
-                    case RDFQueryEnums.RDFAggregatorFunctionTypes.MIN:
-                        break;
-                    case RDFQueryEnums.RDFAggregatorFunctionTypes.SUM:
-                        break;
-                }
-            });
-        }
-
-        /// <summary>
-        /// Gets the value of the given aggregation function for the given row.
-        /// Null values or type errors are automatically considered 0.
-        /// </summary>
-        private Decimal GetAggregatorValue(RDFVariable agVariable, DataRow tableRow)
-        {
-            Decimal defaultAggregatorValue = 0;
-            if (!tableRow.IsNull(agVariable.VariableName))  {
-                RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[agVariable.VariableName].ToString());
-                //PlainLiteral: will be accepted only if non-languaged and parsable to Decimal
-                if (rowAggregatorValue is RDFPlainLiteral)
-                {
-                    if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
-                    {
-                        if(Decimal.TryParse(rowAggregatorValue.ToString(), out Decimal decimalValue))
-                        {
-                            return decimalValue;
-                        }
-                    }
-                }
-                //TypedLiteral: will be accepted only if parsable to Decimal
-                else if (rowAggregatorValue is RDFTypedLiteral)
-                {
-                    if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
-                    {
-                        return Decimal.Parse(((RDFTypedLiteral)rowAggregatorValue).Value);
-                    }
-                }
-            }
-            return defaultAggregatorValue;
-        }
-        #endregion
-
-    }
-
-    /// <summary>
-    /// RDFAggregatorFunction represents an aggregation function applied by a GroupBy modifier
-    /// </summary>
-    public class RDFAggregatorFunction
-    {
-
-        #region Properties
-        /// <summary>
-        /// Type of aggregator function applied on the in-scope variable
-        /// </summary>
-        public RDFQueryEnums.RDFAggregatorFunctionTypes FunctionType { get; internal set; }
-
-        /// <summary>
-        /// Variable on which the aggregator function is applied
-        /// </summary>
-        public RDFVariable AggregatorVariable { get; internal set; }
-
-        /// <summary>
-        /// Variable used for projection of aggregator function results
-        /// </summary>
-        public RDFVariable ProjectionVariable { get; internal set; }
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to build an aggregator function of the given type on the given variable and with the given projection name
-        /// </summary>
-        public RDFAggregatorFunction(RDFQueryEnums.RDFAggregatorFunctionTypes functionType, RDFVariable aggregatorVariable, RDFVariable projectionVariable)
-        {
-            if (aggregatorVariable != null)
-            {
-                if (projectionVariable != null)
-                {
-                    this.FunctionType = functionType;
-                    this.AggregatorVariable = aggregatorVariable;
-                    this.ProjectionVariable = projectionVariable;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFAggregatorFunction because given \"projectionVariable\" parameter is null.");
-                }
-            }
-            else
-            {
-                throw new RDFQueryException("Cannot create RDFAggregatorFunction because given \"aggregatorVariable\" parameter is null.");
-            }
-        }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the aggregator function 
-        /// </summary>
-        public override String ToString()
-        {
-            var result = new StringBuilder();
-            switch (this.FunctionType)
-            {
-                case RDFQueryEnums.RDFAggregatorFunctionTypes.AVG:
-                    result.Append(String.Format("(AVG({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-                    break;
-                case RDFQueryEnums.RDFAggregatorFunctionTypes.COUNT:
-                    result.Append(String.Format("(COUNT({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-                    break;
-                case RDFQueryEnums.RDFAggregatorFunctionTypes.MAX:
-                    result.Append(String.Format("(MAX({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-                    break;
-                case RDFQueryEnums.RDFAggregatorFunctionTypes.MIN:
-                    result.Append(String.Format("(MIN({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-                    break;
-                case RDFQueryEnums.RDFAggregatorFunctionTypes.SUM:
-                    result.Append(String.Format("(SUM({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-                    break;
-            }
-            return result.ToString();
+            this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(groupingRegistry, groupingKey, tableRow));
         }
         #endregion
 
