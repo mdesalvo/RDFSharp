@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the GROUP_CONCAT aggregator function on the given tablerow
         /// </summary>
-        internal override void ExecuteAggregatorFunction(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow)
+        internal override void ExecuteAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
         {
             //TODO
 

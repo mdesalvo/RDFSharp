@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// List of variables on which query results are grouped
         /// </summary>
-        internal List<RDFVariable> GroupByVariables { get; set; }
+        internal List<RDFVariable> PartitionVariables { get; set; }
 
         /// <summary>
         /// List of aggregators applied on the result groups
@@ -44,20 +44,20 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a GroupBy modifier on the given variables
         /// </summary>
-        internal RDFGroupByModifier(List<RDFVariable> groupByVariables)
+        internal RDFGroupByModifier(List<RDFVariable> partitionVariables)
         {
-            if (groupByVariables != null && groupByVariables.Any())
+            if (partitionVariables != null && partitionVariables.Any())
             {
-                groupByVariables.ForEach(gv1 => {
-                    if (!this.GroupByVariables.Any(gv2 => gv2.Equals(gv1)))
+                partitionVariables.ForEach(pv1 => {
+                    if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
                     {
-                        this.GroupByVariables.Add(gv1);
+                        this.PartitionVariables.Add(pv1);
                     }
                 });
             }
             else
             {
-                throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"groupByVariables\" parameter is null or empty.");
+                throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter is null or empty.");
             }
         }
         #endregion
@@ -68,7 +68,7 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return String.Format("GROUP BY {0}", String.Join(" ", this.GroupByVariables));
+            return String.Format("GROUP BY {0}", String.Join(" ", this.PartitionVariables));
         }
         #endregion
 
@@ -104,28 +104,28 @@ namespace RDFSharp.Query
             PreliminaryChecks(table);
 
             //Initialize result table
-            this.GroupByVariables.ForEach(gv => 
-                RDFQueryEngine.AddColumn(result, gv.VariableName));
-            this.Aggregators.ForEach(af => 
-                RDFQueryEngine.AddColumn(result, af.ProjectionVariable.VariableName));
+            this.PartitionVariables.ForEach(pv => 
+                RDFQueryEngine.AddColumn(result, pv.VariableName));
+            this.Aggregators.ForEach(ag => 
+                RDFQueryEngine.AddColumn(result, ag.ProjectionVariable.VariableName));
             result.AcceptChanges();
 
-            //Initialize grouping algorythm registry
-            var groupingRegistry = new Dictionary<String, DataTable>();
+            //Initialize partition registry
+            var partitionRegistry = new Dictionary<String, DataTable>();
             
-            //Start executing grouping algorythm
+            //Start executing partition algorythm
             result.BeginLoadData();
             foreach (DataRow tableRow in table.Rows)
             {
 
-                //Calculate grouping key
-                String groupingKey = GetGroupingKey(tableRow);
+                //Calculate partition key
+                String partitionKey = GetPartitionKey(tableRow);
 
-                //Update grouping registry with grouping key
-                UpdateGroupingRegistry(groupingRegistry, groupingKey);
+                //Update partition registry with partition key
+                UpdatePartitionRegistry(partitionRegistry, partitionKey);
 
                 //Execute aggregator functions on the current row 
-                ExecuteAggregatorFunctions(groupingRegistry, groupingKey, tableRow);
+                ExecuteAggregatorFunctions(partitionRegistry, partitionKey, tableRow);
                 
             }
             result.EndLoadData();
@@ -135,74 +135,72 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Performs preliminary consistency checks on the configuration of the modifier.
-        /// Throws error when a validation condition is violated.
         /// </summary>
         private void PreliminaryChecks(DataTable table)
         {
             //1 - Every grouping variable must be found in the working table as a column
-            if (!this.GroupByVariables.TrueForAll(gv => table.Columns.Contains(gv.ToString())))
+            if (!this.PartitionVariables.TrueForAll(pv => table.Columns.Contains(pv.ToString())))
             {
-                var notfoundGroupingVars = String.Join(",", this.GroupByVariables.Where(gv => !table.Columns.Contains(gv.ToString()))
-                                                                                 .Select(gv => gv.ToString()));
-                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for grouping: {0}", notfoundGroupingVars));
+                var notfoundPartitionVars = String.Join(",", this.PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
+                                                                                    .Select(pv => pv.ToString()));
+                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {0}", notfoundPartitionVars));
             }
             //2 - Every aggregation variable must be found in the working table as a column
             if (!this.Aggregators.TrueForAll(ag => table.Columns.Contains(ag.AggregatorVariable.ToString())))
             {
                 var notfoundAggregationVars = String.Join(",", this.Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
-                                                                                       .Select(ag => ag.AggregatorVariable.ToString()));
+                                                                               .Select(ag => ag.AggregatorVariable.ToString()));
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregationVars));
             }
             //3 - There should NOT be intersection between grouping variables and projection variables
-            if (this.GroupByVariables.Any(gv => this.Aggregators.Any(ag => gv.Equals(ag.ProjectionVariable))))
+            if (this.PartitionVariables.Any(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable))))
             {
-                var commonGroupingProjectionVars = String.Join(",", this.GroupByVariables.Where(gv => this.Aggregators.Any(ag => gv.Equals(ag.ProjectionVariable)))
-                                                                                         .Select(gv => gv.ToString()));
-                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for grouping and projection operations: {0}", commonGroupingProjectionVars));
+                var commonPartitionProjectionVars = String.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
+                                                                                            .Select(pv => pv.ToString()));
+                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning and projection operations: {0}", commonPartitionProjectionVars));
             }
         }
 
         /// <summary>
-        /// Calculates the grouping key on the given datarow
+        /// Calculates the partition key on the given datarow
         /// </summary>
-        private String GetGroupingKey(DataRow tableRow)
+        private String GetPartitionKey(DataRow tableRow)
         {
-            List<String> groupingKeyList = new List<String>();
-            this.GroupByVariables.ForEach(gv => {
-                if (tableRow.IsNull(gv.VariableName))
+            List<String> partitionKey = new List<String>();
+            this.PartitionVariables.ForEach(pv => {
+                if (tableRow.IsNull(pv.VariableName))
                 {
-                    groupingKeyList.Add(String.Empty);
+                    partitionKey.Add(String.Empty);
                 }
                 else
                 {
-                    groupingKeyList.Add(tableRow[gv.VariableName].ToString());
+                    partitionKey.Add(tableRow[pv.VariableName].ToString());
                 }
             });
-            String groupingKey = String.Join("§§", groupingKeyList);
-            return groupingKey;
+            return String.Join("§§", partitionKey);
         }
         
         /// <summary>
-        /// Updates grouping registry with the given grouping key
+        /// Updates partition registry with the given partition key
         /// </summary>
-        private void UpdateGroupingRegistry(Dictionary<String, DataTable> groupingRegistry, String groupingKey)
+        private void UpdatePartitionRegistry(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
         {
-            if (!groupingRegistry.ContainsKey(groupingKey))
+            if (!partitionRegistry.ContainsKey(partitionKey))
             {
-                DataTable newGroupingTable = new DataTable();
+                DataTable aggregationTable = new DataTable();
                 this.Aggregators.ForEach(ag => 
-                    RDFQueryEngine.AddColumn(newGroupingTable, ag.ProjectionVariable.VariableName));
-                newGroupingTable.AcceptChanges();
-                groupingRegistry.Add(groupingKey, newGroupingTable);
+                    RDFQueryEngine.AddColumn(aggregationTable, ag.ProjectionVariable.VariableName));
+                aggregationTable.AcceptChanges();
+                partitionRegistry.Add(partitionKey, aggregationTable);
             }
         }
         
         /// <summary>
         /// Executes aggregator functions on the given datarow
         /// </summary>
-        private void ExecuteAggregatorFunctions(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow)
+        private void ExecuteAggregatorFunctions(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
         {
-            this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(groupingRegistry, groupingKey, tableRow));
+            this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(partitionRegistry, partitionKey, tableRow));
         }
         #endregion
 

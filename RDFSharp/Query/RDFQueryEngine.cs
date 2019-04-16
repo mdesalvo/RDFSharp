@@ -708,10 +708,28 @@ namespace RDFSharp.Query
         internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
         {
 
-            #region ORDERBY/PROJECTION
+            #region GROUPBY/ORDERBY/PROJECTION
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
             if (query is RDFSelectQuery)
             {
+
+                #region GROUPBY
+                var grbModifier = modifiers.SingleOrDefault(m => m is RDFGroupByModifier);
+                if (grbModifier != null)
+                {
+                    table = grbModifier.ApplyModifier(table);
+
+                    #region PROJECTION
+                    ((RDFSelectQuery)query).ProjectionVars.Clear();
+                    ((RDFGroupByModifier)grbModifier).PartitionVariables.ForEach(pv => {
+                        ((RDFSelectQuery)query).AddProjectionVariable(pv);
+                    });
+                    ((RDFGroupByModifier)grbModifier).Aggregators.ForEach(ag => {
+                        ((RDFSelectQuery)query).AddProjectionVariable(ag.ProjectionVariable);
+                    });
+                    #endregion
+                }
+                #endregion
 
                 #region ORDERBY
                 var ordModifiers = modifiers.Where(m => m is RDFOrderByModifier);
@@ -723,31 +741,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROJECTION
-                if (((RDFSelectQuery)query).ProjectionVars.Any())
-                {
-
-                    //Remove non-projection variables
-                    var nonProjCols = new List<DataColumn>();
-                    foreach (DataColumn dtCol in table.Columns)
-                    {
-                        if (!((RDFSelectQuery)query).ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            nonProjCols.Add(dtCol);
-                        }
-                    }
-                    nonProjCols.ForEach(npc =>
-                    {
-                        table.Columns.Remove(npc.ColumnName);
-                    });
-
-                    //Adjust ordinals
-                    foreach (var pVar in ((RDFSelectQuery)query).ProjectionVars)
-                    {
-                        AddColumn(table, pVar.Key.ToString());
-                        table.Columns[pVar.Key.ToString()].SetOrdinal(pVar.Value);
-                    }
-
-                }
+                table = ProjectTable((RDFSelectQuery)query, table);
                 #endregion
 
             }
@@ -2418,6 +2412,39 @@ namespace RDFSharp.Query
 
             }
             return finalTable;
+        }
+        
+        /// <summary>
+        /// Applies the projection operator on the given table, based on the given query's projection variables
+        /// </summary>
+        internal DataTable ProjectTable(RDFSelectQuery query, DataTable table)
+        {
+            if (query.ProjectionVars.Any())
+            {
+
+                //Remove non-projection variables
+                var nonProjCols = new List<DataColumn>();
+                foreach (DataColumn dtCol in table.Columns)
+                {
+                    if (!query.ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        nonProjCols.Add(dtCol);
+                    }
+                }
+                nonProjCols.ForEach(npc =>
+                {
+                    table.Columns.Remove(npc.ColumnName);
+                });
+
+                //Adjust ordinals
+                foreach (var pVar in query.ProjectionVars)
+                {
+                    AddColumn(table, pVar.Key.ToString());
+                    table.Columns[pVar.Key.ToString()].SetOrdinal(pVar.Value);
+                }
+
+            }
+            return table;
         }
         #endregion
 
