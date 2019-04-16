@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -80,6 +80,50 @@ namespace RDFSharp.Query
         /// Executes the aggregator function on the given tablerow
         /// </summary>
         internal abstract void ExecuteAggregatorFunction(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow);
+
+        /// <summary>
+        /// Gets the aggregator value for the given datarow as Decimal
+        /// </summary>
+        internal Decimal GetAggregatorValueAsDecimal(RDFVariable agVariable, DataRow tableRow)
+        {
+            if (!tableRow.IsNull(agVariable.VariableName))
+            {
+                RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[agVariable.VariableName].ToString());
+                //PlainLiteral: accepted only if numeric and non-languaged
+                if (rowAggregatorValue is RDFPlainLiteral)
+                {
+                    if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
+                    {
+                        if (Decimal.TryParse(rowAggregatorValue.ToString(), out Decimal decimalValue))
+                        {
+                            return decimalValue;
+                        }
+                    }
+                }
+                //TypedLiteral: accepted only if numeric
+                else if (rowAggregatorValue is RDFTypedLiteral)
+                {
+                    if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
+                    {
+                        return Decimal.Parse(((RDFTypedLiteral)rowAggregatorValue).Value);
+                    }
+                }
+            }
+            //Fallback: return zero
+            return Decimal.Zero;
+        }
+
+        /// <summary>
+        /// Gets the aggregator value for the given datarow as String
+        /// </summary>
+        internal String GetAggregatorValueAsString(RDFVariable agVariable, DataRow tableRow)
+        {
+            if (!tableRow.IsNull(agVariable.VariableName))
+            {
+                return tableRow[agVariable.VariableName].ToString();
+            }
+            return String.Empty;
+        }
         #endregion
 
     }
