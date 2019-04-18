@@ -113,7 +113,7 @@ namespace RDFSharp.Query
             //Initialize partition registry
             var partitionRegistry = new Dictionary<String, DataTable>();
             
-            //Start executing partition algorythm
+            //Execute partition algorythm
             result.BeginLoadData();
             foreach (DataRow tableRow in table.Rows)
             {

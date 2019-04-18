@@ -82,9 +82,9 @@ namespace RDFSharp.Query
         internal abstract void ExecuteAggregatorFunction(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow);
 
         /// <summary>
-        /// Gets the aggregator value for the given datarow as Decimal
+        /// Gets the row value for the aggregator as Decimal
         /// </summary>
-        internal Decimal GetAggregatorValueAsDecimal(RDFVariable agVariable, DataRow tableRow)
+        internal Decimal GetRowValueAsDecimal(RDFVariable agVariable, DataRow tableRow)
         {
             if (!tableRow.IsNull(agVariable.VariableName))
             {
@@ -109,20 +109,49 @@ namespace RDFSharp.Query
                     }
                 }
             }
-            //Fallback: return zero
             return Decimal.Zero;
         }
 
         /// <summary>
-        /// Gets the aggregator value for the given datarow as String
+        /// Gets the aggregator value as Decimal
         /// </summary>
-        internal String GetAggregatorValueAsString(RDFVariable agVariable, DataRow tableRow)
+        internal Decimal GetAggregatorValueAsDecimal(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
+        {
+            String aggregatorValue = partitionRegistry[partitionKey].Rows[0].Field<String>(this.ProjectionVariable.VariableName);
+            if (Decimal.TryParse(aggregatorValue, out Decimal decimalAggregatorValue))
+            {
+                return decimalAggregatorValue;
+            }
+            return Decimal.Zero;
+        }
+
+        /// <summary>
+        /// Sets the aggregator value to the given value
+        /// </summary>
+        internal void SetAggregatorValue(Dictionary<String, DataTable> partitionRegistry, String partitionKey, Object aggregatorValue)
+        {
+            partitionRegistry[partitionKey].Rows[0].SetField<String>(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
+        }
+
+        /// <summary>
+        /// Gets the row value for the aggregator as String
+        /// </summary>
+        internal String GetRowValueAsString(RDFVariable agVariable, DataRow tableRow)
         {
             if (!tableRow.IsNull(agVariable.VariableName))
             {
                 return tableRow[agVariable.VariableName].ToString();
             }
             return String.Empty;
+        }
+
+        /// <summary>
+        /// Gets the aggregator value as String
+        /// </summary>
+        internal String GetAggregatorValueAsString(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
+        {
+            String aggregatorValue = partitionRegistry[partitionKey].Rows[0].Field<String>(this.ProjectionVariable.VariableName);
+            return aggregatorValue ?? String.Empty;
         }
         #endregion
 

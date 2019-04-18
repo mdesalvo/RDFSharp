@@ -27,9 +27,6 @@ namespace RDFSharp.Query
     public class RDFAvgAggregator: RDFAggregator
     {
 
-        #region Properties
-        #endregion
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build an AVG aggregator on the given variable and with the given projection name
@@ -53,8 +50,30 @@ namespace RDFSharp.Query
         /// </summary>
         internal override void ExecuteAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
         {
-            //TODO
+            //Get the row value
+            Decimal rowValue = GetRowValueAsDecimal(this.AggregatorVariable, tableRow);
+            //Get the aggregator value
+            Decimal aggregatorValue = GetAggregatorValueAsDecimal(partitionRegistry, partitionKey);
+            //Update the aggregator value
+            SetAggregatorValue(partitionRegistry, partitionKey, rowValue + aggregatorValue);
+            //Update the table metadata
+            UpdateExecutionMetadata(tableRow);
+        }
 
+        /// <summary>
+        /// Updates the metadata of the given table after current execution
+        /// </summary>
+        internal void UpdateExecutionMetadata(DataRow tableRow)
+        {
+            String extendedPropertyKey = this.ToString();
+            if (!tableRow.Table.ExtendedProperties.ContainsKey(extendedPropertyKey))
+            {
+                tableRow.Table.ExtendedProperties.Add(extendedPropertyKey, 1);
+            }
+            else
+            {
+                tableRow.Table.ExtendedProperties[extendedPropertyKey] = ((Decimal)tableRow.Table.ExtendedProperties[extendedPropertyKey]) + 1;
+            }
         }
         #endregion
 
