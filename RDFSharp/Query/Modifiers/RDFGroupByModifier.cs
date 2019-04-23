@@ -111,7 +111,9 @@ namespace RDFSharp.Query
             result.AcceptChanges();
 
             //Initialize partition registry
-            var partitionRegistry = new Dictionary<String, DataTable>();
+            //We need to store for each partition key
+            //the results of each projection variable
+            var partitionRegistry = new Dictionary<String, Dictionary<String, Object>>();
             
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
@@ -184,22 +186,23 @@ namespace RDFSharp.Query
         /// <summary>
         /// Updates partition registry with the given partition key
         /// </summary>
-        private void UpdatePartitionRegistry(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
+        private void UpdatePartitionRegistry(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey)
         {
             if (!partitionRegistry.ContainsKey(partitionKey))
             {
-                DataTable aggregationTable = new DataTable();
-                this.Aggregators.ForEach(ag => 
-                    RDFQueryEngine.AddColumn(aggregationTable, ag.ProjectionVariable.VariableName));
-                aggregationTable.AcceptChanges();
-                partitionRegistry.Add(partitionKey, aggregationTable);
+                var partitionRegistryOfKey = new Dictionary<String, Object>();
+                this.Aggregators.ForEach(ag =>
+                {
+                    partitionRegistryOfKey.Add(ag.ProjectionVariable.VariableName, null);
+                });
+                partitionRegistry.Add(partitionKey, partitionRegistryOfKey);
             }
         }
         
         /// <summary>
         /// Executes aggregator functions on the given datarow
         /// </summary>
-        private void ExecuteAggregatorFunctions(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
+        private void ExecuteAggregatorFunctions(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
         {
             this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(partitionRegistry, partitionKey, tableRow));
         }
@@ -207,7 +210,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes aggregator functions on the results table
         /// </summary>
-        private void FinalizeAggregatorFunctions(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable)
+        private void FinalizeAggregatorFunctions(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable)
         {
             this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionRegistry, resultTable));
         }

@@ -79,12 +79,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the aggregator function on the given tablerow
         /// </summary>
-        internal abstract void ExecuteAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow);
+        internal abstract void ExecuteAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow);
 
         /// <summary>
         /// Finalizes the aggregator function on the result table
         /// </summary>
-        internal abstract void FinalizeAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable);
+        internal abstract void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable);
 
         /// <summary>
         /// Gets the row value for the aggregator as Decimal
@@ -132,31 +132,32 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the aggregator value as Decimal
         /// </summary>
-        internal Decimal GetAggregatorValueAsDecimal(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
+        internal Decimal GetAggregatorValueAsDecimal(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey)
         {
-            String aggregatorValue = partitionRegistry[partitionKey].Rows[0].Field<String>(this.ProjectionVariable.VariableName);
-            if (Decimal.TryParse(aggregatorValue, out Decimal decimalAggregatorValue))
+            if (partitionRegistry[partitionKey][this.ProjectionVariable.VariableName] == null)
             {
-                return decimalAggregatorValue;
+                return Decimal.Zero;
             }
-            return Decimal.Zero;
+            else
+            {
+                return (Decimal)partitionRegistry[partitionKey][this.ProjectionVariable.VariableName];
+            }            
         }
 
         /// <summary>
         /// Gets the aggregator value as String
         /// </summary>
-        internal String GetAggregatorValueAsString(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
+        internal String GetAggregatorValueAsString(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey)
         {
-            String aggregatorValue = partitionRegistry[partitionKey].Rows[0].Field<String>(this.ProjectionVariable.VariableName);
-            return aggregatorValue ?? String.Empty;
+            return (String)partitionRegistry[partitionKey][this.ProjectionVariable.VariableName];
         }
 
         /// <summary>
         /// Sets the aggregator value to the given value
         /// </summary>
-        internal void SetAggregatorValue(Dictionary<String, DataTable> partitionRegistry, String partitionKey, Object aggregatorValue)
+        internal void SetAggregatorValue(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, Object aggregatorValue)
         {
-            partitionRegistry[partitionKey].Rows[0].SetField<String>(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
+            partitionRegistry[partitionKey][this.ProjectionVariable.VariableName] = aggregatorValue;
         }
         #endregion
 

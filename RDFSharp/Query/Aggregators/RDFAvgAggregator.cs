@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace RDFSharp.Query
 {
@@ -48,7 +49,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the AVG aggregator function on the given tablerow
         /// </summary>
-        internal override void ExecuteAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
+        internal override void ExecuteAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
         {
             //Get the row value
             Decimal rowValue = GetRowValueAsDecimal(tableRow);
@@ -57,13 +58,13 @@ namespace RDFSharp.Query
             //Update the aggregator value
             SetAggregatorValue(partitionRegistry, partitionKey, rowValue + aggregatorValue);
             //Update the table metadata
-            UpdateExecutionMetadata(tableRow);
+            UpdateAggregatorContext(partitionRegistry, tableRow);
         }
 
         /// <summary>
-        /// Updates the metadata of the given table after current execution
+        /// Updates the context of the aggregator after current execution
         /// </summary>
-        internal void UpdateExecutionMetadata(DataRow tableRow)
+        internal void UpdateAggregatorContext(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataRow tableRow)
         {
             String extendedPropertyKey = this.ToString();
             if (!tableRow.Table.ExtendedProperties.ContainsKey(extendedPropertyKey))
@@ -79,7 +80,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the AVG aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable)
+        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable)
         {
             
         }
