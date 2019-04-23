@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         internal override void ExecuteAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
         {
             //Get the row value
-            Decimal rowValue = GetRowValueAsDecimal(this.AggregatorVariable, tableRow);
+            Decimal rowValue = GetRowValueAsDecimal(tableRow);
             //Get the aggregator value
             Decimal aggregatorValue = GetAggregatorValueAsDecimal(partitionRegistry, partitionKey);
             //Update the aggregator value
@@ -68,12 +68,20 @@ namespace RDFSharp.Query
             String extendedPropertyKey = this.ToString();
             if (!tableRow.Table.ExtendedProperties.ContainsKey(extendedPropertyKey))
             {
-                tableRow.Table.ExtendedProperties.Add(extendedPropertyKey, 1);
+                tableRow.Table.ExtendedProperties.Add(extendedPropertyKey, Decimal.One);
             }
             else
             {
                 tableRow.Table.ExtendedProperties[extendedPropertyKey] = ((Decimal)tableRow.Table.ExtendedProperties[extendedPropertyKey]) + 1;
             }
+        }
+
+        /// <summary>
+        /// Finalizes the AVG aggregator function on the result table
+        /// </summary>
+        internal override void FinalizeAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable)
+        {
+            
         }
         #endregion
 

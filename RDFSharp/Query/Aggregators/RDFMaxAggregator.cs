@@ -56,6 +56,15 @@ namespace RDFSharp.Query
             //TODO
 
         }
+
+        /// <summary>
+        /// Finalizes the MAX aggregator function on the result table
+        /// </summary>
+        internal override void FinalizeAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable)
+        {
+            //TODO
+
+        }
         #endregion
 
     }

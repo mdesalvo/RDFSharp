@@ -114,7 +114,6 @@ namespace RDFSharp.Query
             var partitionRegistry = new Dictionary<String, DataTable>();
             
             //Execute partition algorythm
-            result.BeginLoadData();
             foreach (DataRow tableRow in table.Rows)
             {
 
@@ -128,8 +127,10 @@ namespace RDFSharp.Query
                 ExecuteAggregatorFunctions(partitionRegistry, partitionKey, tableRow);
                 
             }
-            result.EndLoadData();
 
+            //Finalize partition algorythm
+            FinalizeAggregatorFunctions(partitionRegistry, result);
+            
             return result;
         }
 
@@ -201,6 +202,14 @@ namespace RDFSharp.Query
         private void ExecuteAggregatorFunctions(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow)
         {
             this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(partitionRegistry, partitionKey, tableRow));
+        }
+
+        /// <summary>
+        /// Finalizes aggregator functions on the results table
+        /// </summary>
+        private void FinalizeAggregatorFunctions(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable)
+        {
+            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionRegistry, resultTable));
         }
         #endregion
 

@@ -79,16 +79,21 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the aggregator function on the given tablerow
         /// </summary>
-        internal abstract void ExecuteAggregatorFunction(Dictionary<String, DataTable> groupingRegistry, String groupingKey, DataRow tableRow);
+        internal abstract void ExecuteAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, String partitionKey, DataRow tableRow);
+
+        /// <summary>
+        /// Finalizes the aggregator function on the result table
+        /// </summary>
+        internal abstract void FinalizeAggregatorFunction(Dictionary<String, DataTable> partitionRegistry, DataTable resultTable);
 
         /// <summary>
         /// Gets the row value for the aggregator as Decimal
         /// </summary>
-        internal Decimal GetRowValueAsDecimal(RDFVariable agVariable, DataRow tableRow)
+        internal Decimal GetRowValueAsDecimal(DataRow tableRow)
         {
-            if (!tableRow.IsNull(agVariable.VariableName))
+            if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
             {
-                RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[agVariable.VariableName].ToString());
+                RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[this.AggregatorVariable.VariableName].ToString());
                 //PlainLiteral: accepted only if numeric and non-languaged
                 if (rowAggregatorValue is RDFPlainLiteral)
                 {
@@ -113,6 +118,18 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the row value for the aggregator as String
+        /// </summary>
+        internal String GetRowValueAsString(DataRow tableRow)
+        {
+            if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
+            {
+                return tableRow[this.AggregatorVariable.VariableName].ToString();
+            }
+            return String.Empty;
+        }
+
+        /// <summary>
         /// Gets the aggregator value as Decimal
         /// </summary>
         internal Decimal GetAggregatorValueAsDecimal(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
@@ -126,32 +143,20 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the aggregator value to the given value
-        /// </summary>
-        internal void SetAggregatorValue(Dictionary<String, DataTable> partitionRegistry, String partitionKey, Object aggregatorValue)
-        {
-            partitionRegistry[partitionKey].Rows[0].SetField<String>(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
-        }
-
-        /// <summary>
-        /// Gets the row value for the aggregator as String
-        /// </summary>
-        internal String GetRowValueAsString(RDFVariable agVariable, DataRow tableRow)
-        {
-            if (!tableRow.IsNull(agVariable.VariableName))
-            {
-                return tableRow[agVariable.VariableName].ToString();
-            }
-            return String.Empty;
-        }
-
-        /// <summary>
         /// Gets the aggregator value as String
         /// </summary>
         internal String GetAggregatorValueAsString(Dictionary<String, DataTable> partitionRegistry, String partitionKey)
         {
             String aggregatorValue = partitionRegistry[partitionKey].Rows[0].Field<String>(this.ProjectionVariable.VariableName);
             return aggregatorValue ?? String.Empty;
+        }
+
+        /// <summary>
+        /// Sets the aggregator value to the given value
+        /// </summary>
+        internal void SetAggregatorValue(Dictionary<String, DataTable> partitionRegistry, String partitionKey, Object aggregatorValue)
+        {
+            partitionRegistry[partitionKey].Rows[0].SetField<String>(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
         }
         #endregion
 
