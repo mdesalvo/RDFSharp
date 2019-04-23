@@ -131,7 +131,7 @@ namespace RDFSharp.Query
             }
 
             //Finalize partition algorythm
-            FinalizeAggregatorFunctions(partitionRegistry, result);
+            FinalizeAggregatorFunctions(partitionRegistry, table);
             
             return result;
         }
@@ -210,9 +210,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes aggregator functions on the results table
         /// </summary>
-        private void FinalizeAggregatorFunctions(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable)
+        private void FinalizeAggregatorFunctions(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable)
         {
-            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionRegistry, resultTable));
+            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionRegistry, workingTable));
         }
         #endregion
 

@@ -58,15 +58,15 @@ namespace RDFSharp.Query
             //Update the aggregator value
             SetAggregatorValue(partitionRegistry, partitionKey, rowValue + aggregatorValue);
             //Update the table metadata
-            UpdateAggregatorContext(partitionRegistry, tableRow);
+            UpdateAggregatorContext(partitionRegistry, partitionKey, tableRow);
         }
 
         /// <summary>
         /// Updates the context of the aggregator after current execution
         /// </summary>
-        internal void UpdateAggregatorContext(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataRow tableRow)
+        internal void UpdateAggregatorContext(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
         {
-            String extendedPropertyKey = this.ToString();
+            String extendedPropertyKey = partitionKey + "§§" + this.ProjectionVariable.VariableName;
             if (!tableRow.Table.ExtendedProperties.ContainsKey(extendedPropertyKey))
             {
                 tableRow.Table.ExtendedProperties.Add(extendedPropertyKey, Decimal.One);
@@ -80,9 +80,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the AVG aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable)
+        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable)
         {
-            
+            foreach(String partitionKey in partitionRegistry.Keys)
+            {
+                //Get the aggregator value
+                Decimal aggregatorValue = GetAggregatorValueAsDecimal(partitionRegistry, partitionKey);
+                //Get the aggregator context
+                String extendedPropertyKey = partitionKey + "§§" + this.ProjectionVariable.VariableName;
+                Decimal aggregatorContext = (Decimal)workingTable.ExtendedProperties[extendedPropertyKey];
+                //Update the aggregator value
+                SetAggregatorValue(partitionRegistry, partitionKey, aggregatorValue / aggregatorContext);
+            }
         }
         #endregion
 

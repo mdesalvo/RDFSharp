@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the MIN aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable)
+        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable)
         {
             //TODO
 

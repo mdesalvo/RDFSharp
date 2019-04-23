@@ -84,7 +84,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the aggregator function on the result table
         /// </summary>
-        internal abstract void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable resultTable);
+        internal abstract void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable);
 
         /// <summary>
         /// Gets the row value for the aggregator as Decimal
