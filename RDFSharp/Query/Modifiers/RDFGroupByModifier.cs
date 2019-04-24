@@ -85,6 +85,7 @@ namespace RDFSharp.Query
                 if (!this.Aggregators.Any(af => af.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                 {
                     this.Aggregators.Add(aggregator);
+                    this.IsEvaluable = true;
                 }
                 else
                 {
