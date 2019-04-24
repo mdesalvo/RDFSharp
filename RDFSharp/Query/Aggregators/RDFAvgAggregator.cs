@@ -63,9 +63,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the AVG aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(List<RDFVariable> partitionVariables, DataTable workingTable)
+        internal override DataTable FinalizeAggregatorFunction(List<RDFVariable> partitionVariables)
         {
-            foreach(String partitionKey in this.AggregatorContext.AggregatorContextRegistry.Keys)
+            DataTable aggFuncTable = new DataTable();
+
+            //Initialization
+            partitionVariables.ForEach(pv =>
+                RDFQueryEngine.AddColumn(aggFuncTable, pv.VariableName));
+            RDFQueryEngine.AddColumn(aggFuncTable, this.ProjectionVariable.VariableName);
+
+            //Finalization
+            foreach (String partitionKey in this.AggregatorContext.AggregatorContextRegistry.Keys)
             {
                 //Get aggregator value
                 Decimal aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey);
@@ -73,9 +81,11 @@ namespace RDFSharp.Query
                 Decimal aggregatorCounter = this.AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
                 //Update aggregator context (avg)
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, aggregatorValue / aggregatorCounter);
-                //Update working table
-                this.UpdateWorkingTable(partitionKey, workingTable);
+                //Update aggregator function results table
+                this.UpdateAggregatorFunctionTable(partitionKey, aggFuncTable);
             }
+
+            return aggFuncTable;
         }
         #endregion
 

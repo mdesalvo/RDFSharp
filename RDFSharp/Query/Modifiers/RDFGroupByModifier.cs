@@ -114,17 +114,20 @@ namespace RDFSharp.Query
 
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
-                ExecuteAggregatorFunctions(GetPartitionKey(tableRow), tableRow);
+                this.Aggregators.ForEach(ag => 
+                    ag.ExecuteAggregatorFunction(GetPartitionKey(tableRow), tableRow));
 
             //Finalize partition algorythm
-            FinalizeAggregatorFunctions(this.PartitionVariables, result);
-            result.AcceptChanges();
+            List<DataTable> aggFuncTables = new List<DataTable>(); 
+            this.Aggregators.ForEach(ag =>
+                aggFuncTables.Add(ag.FinalizeAggregatorFunction(this.PartitionVariables)));
+            result = RDFQueryEngine.CreateNew().CombineTables(aggFuncTables, false);
 
             return result;
         }
 
         /// <summary>
-        /// Performs preliminary consistency checks on the configuration of the modifier.
+        /// Performs preliminary consistency checks on the modifier
         /// </summary>
         private void PreliminaryChecks(DataTable table)
         {
@@ -159,31 +162,11 @@ namespace RDFSharp.Query
             List<String> partitionKey = new List<String>();
             this.PartitionVariables.ForEach(pv => {
                 if (tableRow.IsNull(pv.VariableName))
-                {
-                    partitionKey.Add(pv.VariableName + "__PV__" + String.Empty);
-                }
+                    partitionKey.Add(pv.VariableName + "§PV§" + String.Empty);
                 else
-                {
-                    partitionKey.Add(pv.VariableName + "__PV__" + tableRow[pv.VariableName].ToString());
-                }
+                    partitionKey.Add(pv.VariableName + "§PV§" + tableRow[pv.VariableName].ToString());
             });
-            return String.Join("__PK__", partitionKey);
-        }
-
-        /// <summary>
-        /// Executes aggregator functions on the given datarow
-        /// </summary>
-        private void ExecuteAggregatorFunctions(String partitionKey, DataRow tableRow)
-        {
-            this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(partitionKey, tableRow));
-        }
-
-        /// <summary>
-        /// Finalizes aggregator functions on the results table
-        /// </summary>
-        private void FinalizeAggregatorFunctions(List<RDFVariable> partitionVariables, DataTable workingTable)
-        {
-            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionVariables, workingTable));
+            return String.Join("§PK§", partitionKey);
         }
         #endregion
 

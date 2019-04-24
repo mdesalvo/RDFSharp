@@ -88,9 +88,24 @@ namespace RDFSharp.Query
         internal abstract void ExecuteAggregatorFunction(String partitionKey, DataRow tableRow);
 
         /// <summary>
-        /// Finalizes the aggregator function on the result table
+        /// Finalizes the aggregator function producing result's table
         /// </summary>
-        internal abstract void FinalizeAggregatorFunction(List<RDFVariable> partitionVariables, DataTable workingTable);
+        internal abstract DataTable FinalizeAggregatorFunction(List<RDFVariable> partitionVariables);
+
+        /// <summary>
+        /// Helps in finalization step by updating the aggregator function's result table 
+        /// </summary>
+        internal void UpdateAggregatorFunctionTable(String partitionKey, DataTable aggFuncTable)
+        {
+            Dictionary<String, String> bindings = new Dictionary<String, String>();
+            foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.RemoveEmptyEntries);
+                bindings.Add(pValues[0], pValues[1]);
+            }
+            bindings.Add(this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey).ToString());
+            RDFQueryEngine.AddRow(aggFuncTable, bindings);
+        }
 
         /// <summary>
         /// Gets the row value for the aggregator as Decimal
@@ -133,18 +148,6 @@ namespace RDFSharp.Query
                 return tableRow[this.AggregatorVariable.VariableName].ToString();
             }
             return String.Empty;
-        }
-        
-        internal void UpdateWorkingTable(String partitionKey, DataTable workingTable)
-        {
-            Dictionary<String, String> aggregatorResults = new Dictionary<String, String>();
-            foreach (String pkValue in partitionKey.Split(new String[] { "__PK__" }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                String[] pValues = pkValue.Split(new String[] { "__PV__" }, StringSplitOptions.RemoveEmptyEntries);
-                aggregatorResults.Add(pValues[0], pValues[1]);
-            }
-            aggregatorResults.Add(this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey).ToString());
-            RDFQueryEngine.AddRow(workingTable, aggregatorResults);
         }
         #endregion
 
