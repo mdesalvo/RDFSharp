@@ -90,7 +90,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the aggregator function on the result table
         /// </summary>
-        internal abstract void FinalizeAggregatorFunction(DataTable workingTable);
+        internal abstract void FinalizeAggregatorFunction(List<RDFVariable> partitionVariables, DataTable workingTable);
 
         /// <summary>
         /// Gets the row value for the aggregator as Decimal
@@ -133,6 +133,18 @@ namespace RDFSharp.Query
                 return tableRow[this.AggregatorVariable.VariableName].ToString();
             }
             return String.Empty;
+        }
+        
+        internal void UpdateWorkingTable(String partitionKey, DataTable workingTable)
+        {
+            Dictionary<String, String> aggregatorResults = new Dictionary<String, String>();
+            foreach (String pkValue in partitionKey.Split(new String[] { "__PK__" }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                String[] pValues = pkValue.Split(new String[] { "__PV__" }, StringSplitOptions.RemoveEmptyEntries);
+                aggregatorResults.Add(pValues[0], pValues[1]);
+            }
+            aggregatorResults.Add(this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey).ToString());
+            RDFQueryEngine.AddRow(workingTable, aggregatorResults);
         }
         #endregion
 

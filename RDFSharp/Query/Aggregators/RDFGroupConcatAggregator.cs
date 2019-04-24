@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the GROUP_CONCAT aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(DataTable workingTable)
+        internal override void FinalizeAggregatorFunction(List<RDFVariable> partitionVariables, DataTable workingTable)
         {
             //TODO
 

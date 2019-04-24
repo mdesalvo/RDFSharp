@@ -117,7 +117,7 @@ namespace RDFSharp.Query
                 ExecuteAggregatorFunctions(GetPartitionKey(tableRow), tableRow);
 
             //Finalize partition algorythm
-            FinalizeAggregatorFunctions(result);
+            FinalizeAggregatorFunctions(this.PartitionVariables, result);
             result.AcceptChanges();
 
             return result;
@@ -160,14 +160,14 @@ namespace RDFSharp.Query
             this.PartitionVariables.ForEach(pv => {
                 if (tableRow.IsNull(pv.VariableName))
                 {
-                    partitionKey.Add(String.Empty);
+                    partitionKey.Add(pv.VariableName + "__PV__" + String.Empty);
                 }
                 else
                 {
-                    partitionKey.Add(tableRow[pv.VariableName].ToString());
+                    partitionKey.Add(pv.VariableName + "__PV__" + tableRow[pv.VariableName].ToString());
                 }
             });
-            return String.Join("§§", partitionKey);
+            return String.Join("__PK__", partitionKey);
         }
 
         /// <summary>
@@ -181,9 +181,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes aggregator functions on the results table
         /// </summary>
-        private void FinalizeAggregatorFunctions(DataTable workingTable)
+        private void FinalizeAggregatorFunctions(List<RDFVariable> partitionVariables, DataTable workingTable)
         {
-            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(workingTable));
+            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionVariables, workingTable));
         }
         #endregion
 
