@@ -83,19 +83,19 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Executes the aggregator function on the given tablerow
+        /// Executes the partition function on the given tablerow
         /// </summary>
-        internal abstract void ExecuteAggregatorFunction(String partitionKey, DataRow tableRow);
+        internal abstract void ExecutePartitionFunction(String partitionKey, DataRow tableRow);
 
         /// <summary>
-        /// Finalizes the aggregator function producing result's table
+        /// Finalizes the projection function producing result's table
         /// </summary>
-        internal abstract DataTable FinalizeAggregatorFunction(List<RDFVariable> partitionVariables);
+        internal abstract DataTable ExecuteProjectionFunction(List<RDFVariable> partitionVariables);
 
         /// <summary>
-        /// Helps in finalization step by updating the aggregator function's result table 
+        /// Helps in finalization step by updating the projection function's result table 
         /// </summary>
-        internal void UpdateAggregatorFunctionTable(String partitionKey, DataTable aggFuncTable)
+        internal void UpdateProjectionFunctionTable(String partitionKey, DataTable aggFuncTable)
         {
             Dictionary<String, String> bindings = new Dictionary<String, String>();
             foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))

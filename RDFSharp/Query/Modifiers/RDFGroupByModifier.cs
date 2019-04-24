@@ -100,29 +100,27 @@ namespace RDFSharp.Query
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {
-            DataTable result = new DataTable();
-
-            //Perform preliminary consistency checks
-            PreliminaryChecks(table);
+            //Perform consistency checks
+            ConsistencyChecks(table);
 
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
                 this.Aggregators.ForEach(ag => 
-                    ag.ExecuteAggregatorFunction(GetPartitionKey(tableRow), tableRow));
+                    ag.ExecutePartitionFunction(GetPartitionKey(tableRow), tableRow));
 
-            //Finalize partition algorythm
-            List<DataTable> aggFuncTables = new List<DataTable>(); 
+            //Execute projection algorythm
+            List<DataTable> projFuncTables = new List<DataTable>(); 
             this.Aggregators.ForEach(ag =>
-                aggFuncTables.Add(ag.FinalizeAggregatorFunction(this.PartitionVariables)));
-            result = RDFQueryEngine.CreateNew().CombineTables(aggFuncTables, false);
+                projFuncTables.Add(ag.ExecuteProjectionFunction(this.PartitionVariables)));
 
-            return result;
+            //Produce result's table
+            return RDFQueryEngine.CreateNew().CombineTables(projFuncTables, false);
         }
 
         /// <summary>
-        /// Performs preliminary consistency checks on the modifier
+        /// Performs consistency checks on the modifier
         /// </summary>
-        private void PreliminaryChecks(DataTable table)
+        private void ConsistencyChecks(DataTable table)
         {
             //1 - Every grouping variable must be found in the working table as a column
             if (!this.PartitionVariables.TrueForAll(pv => table.Columns.Contains(pv.ToString())))

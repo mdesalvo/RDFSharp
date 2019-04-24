@@ -47,9 +47,9 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Executes the AVG aggregator function on the given tablerow
+        /// Executes the partition function on the given tablerow
         /// </summary>
-        internal override void ExecuteAggregatorFunction(String partitionKey, DataRow tableRow)
+        internal override void ExecutePartitionFunction(String partitionKey, DataRow tableRow)
         {
             //Get row value
             Decimal rowValue = GetRowValueAsDecimal(tableRow);
@@ -61,16 +61,16 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Finalizes the AVG aggregator function on the result table
+        /// Finalizes the projection function producing result's table
         /// </summary>
-        internal override DataTable FinalizeAggregatorFunction(List<RDFVariable> partitionVariables)
+        internal override DataTable ExecuteProjectionFunction(List<RDFVariable> partitionVariables)
         {
-            DataTable aggFuncTable = new DataTable();
+            DataTable projFuncTable = new DataTable();
 
             //Initialization
             partitionVariables.ForEach(pv =>
-                RDFQueryEngine.AddColumn(aggFuncTable, pv.VariableName));
-            RDFQueryEngine.AddColumn(aggFuncTable, this.ProjectionVariable.VariableName);
+                RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
+            RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
 
             //Finalization
             foreach (String partitionKey in this.AggregatorContext.AggregatorContextRegistry.Keys)
@@ -82,10 +82,10 @@ namespace RDFSharp.Query
                 //Update aggregator context (avg)
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, aggregatorValue / aggregatorCounter);
                 //Update aggregator function results table
-                this.UpdateAggregatorFunctionTable(partitionKey, aggFuncTable);
+                this.UpdateProjectionFunctionTable(partitionKey, projFuncTable);
             }
 
-            return aggFuncTable;
+            return projFuncTable;
         }
         #endregion
 
