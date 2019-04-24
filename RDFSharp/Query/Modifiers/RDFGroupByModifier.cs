@@ -43,7 +43,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a GroupBy modifier on the given variables
         /// </summary>
-        internal RDFGroupByModifier(List<RDFVariable> partitionVariables)
+        public RDFGroupByModifier(List<RDFVariable> partitionVariables)
         {
             if (partitionVariables != null && partitionVariables.Any())
             {
