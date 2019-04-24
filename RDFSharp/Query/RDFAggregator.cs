@@ -38,6 +38,11 @@ namespace RDFSharp.Query
         /// Variable used for projection of aggregator results
         /// </summary>
         public RDFVariable ProjectionVariable { get; internal set; }
+
+        /// <summary>
+        /// Context for keeping track of aggregator's execution
+        /// </summary>
+        internal RDFAggregatorContext AggregatorContext { get; set; }
         #endregion
 
         #region Ctors
@@ -52,6 +57,7 @@ namespace RDFSharp.Query
                 {
                     this.AggregatorVariable = aggregatorVariable;
                     this.ProjectionVariable = projectionVariable;
+                    this.AggregatorContext = new RDFAggregatorContext();
                 }
                 else
                 {
@@ -79,12 +85,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the aggregator function on the given tablerow
         /// </summary>
-        internal abstract void ExecuteAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow);
+        internal abstract void ExecuteAggregatorFunction(String partitionKey, DataRow tableRow);
 
         /// <summary>
         /// Finalizes the aggregator function on the result table
         /// </summary>
-        internal abstract void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable);
+        internal abstract void FinalizeAggregatorFunction(DataTable workingTable);
 
         /// <summary>
         /// Gets the row value for the aggregator as Decimal
@@ -128,39 +134,98 @@ namespace RDFSharp.Query
             }
             return String.Empty;
         }
+        #endregion
 
+    }
+
+    #region RDFAggregatorContext
+    /// <summary>
+    /// RDFAggregatorContext represents a registry for keeping track of aggregator's execution
+    /// </summary>
+    internal class RDFAggregatorContext
+    {
+
+        #region Properties
         /// <summary>
-        /// Gets the aggregator value as Decimal
+        /// Registry to keep rack of aggregator's execution
         /// </summary>
-        internal Decimal GetAggregatorValueAsDecimal(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey)
+        internal Dictionary<String, Dictionary<String, Object>> AggregatorContextRegistry { get; set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build an empty aggregator context
+        /// </summary>
+        internal RDFAggregatorContext()
         {
-            if (partitionRegistry[partitionKey][this.ProjectionVariable.VariableName] == null)
+            this.AggregatorContextRegistry = new Dictionary<String, Dictionary<String, Object>>();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Adds the given partitionKey to the aggregator context
+        /// </summary>
+        internal void AddPartitionKey(String partitionKey)
+        {
+            if (!this.AggregatorContextRegistry.ContainsKey(partitionKey))
             {
-                return Decimal.Zero;
+                this.AggregatorContextRegistry.Add(partitionKey, new Dictionary<String, Object>()
+                {
+                    { "ExecutionResult", null },
+                    { "ExecutionCounter", 0 }
+                });
             }
-            else
+        }
+
+        /// <summary>
+        /// Gets the execution result for the given partition key
+        /// </summary>
+        internal T GetPartitionKeyExecutionResult<T>(String partitionKey)
+        {
+            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
             {
-                return (Decimal)partitionRegistry[partitionKey][this.ProjectionVariable.VariableName];
-            }            
+                return (T)this.AggregatorContextRegistry[partitionKey]["ExecutionResult"];
+            }
+            return default(T);
         }
 
         /// <summary>
-        /// Gets the aggregator value as String
+        /// Gets the execution counter for the given partition key
         /// </summary>
-        internal String GetAggregatorValueAsString(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey)
+        internal Decimal GetPartitionKeyExecutionCounter(String partitionKey)
         {
-            return (String)partitionRegistry[partitionKey][this.ProjectionVariable.VariableName];
+            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
+            {
+                return (Int32)this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"];
+            }
+            return 0;
         }
 
         /// <summary>
-        /// Sets the aggregator value to the given value
+        /// Gets the execution result for the given partition key
         /// </summary>
-        internal void SetAggregatorValue(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, Object aggregatorValue)
+        internal void UpdatePartitionKeyExecutionResult<T>(String partitionKey, T newValue)
         {
-            partitionRegistry[partitionKey][this.ProjectionVariable.VariableName] = aggregatorValue;
+            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
+            {
+                this.AggregatorContextRegistry[partitionKey]["ExecutionResult"] = newValue;
+            }
+        }
+
+        /// <summary>
+        /// Updates the execution counter for the given partition key
+        /// </summary>
+        internal void UpdatePartitionKeyExecutionCounter(String partitionKey)
+        {
+            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
+            {
+                this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1;
+            }
         }
         #endregion
 
     }
+    #endregion
 
 }

@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Data;
 
@@ -104,34 +103,18 @@ namespace RDFSharp.Query
             PreliminaryChecks(table);
 
             //Initialize result table
-            this.PartitionVariables.ForEach(pv => 
-                RDFQueryEngine.AddColumn(result, pv.VariableName));
             this.Aggregators.ForEach(ag => 
                 RDFQueryEngine.AddColumn(result, ag.ProjectionVariable.VariableName));
             result.AcceptChanges();
 
-            //Initialize partition registry
-            //We need to store for each partition key
-            //the results of each projection variable
-            var partitionRegistry = new Dictionary<String, Dictionary<String, Object>>();
-            
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
             {
-
-                //Calculate partition key
-                String partitionKey = GetPartitionKey(tableRow);
-
-                //Update partition registry with partition key
-                UpdatePartitionRegistry(partitionRegistry, partitionKey);
-
-                //Execute aggregator functions on the current row 
-                ExecuteAggregatorFunctions(partitionRegistry, partitionKey, tableRow);
-                
+                ExecuteAggregatorFunctions(GetPartitionKey(tableRow), tableRow);
             }
 
             //Finalize partition algorythm
-            FinalizeAggregatorFunctions(partitionRegistry, table);
+            FinalizeAggregatorFunctions(table);
             
             return result;
         }
@@ -182,37 +165,21 @@ namespace RDFSharp.Query
             });
             return String.Join("§§", partitionKey);
         }
-        
-        /// <summary>
-        /// Updates partition registry with the given partition key
-        /// </summary>
-        private void UpdatePartitionRegistry(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey)
-        {
-            if (!partitionRegistry.ContainsKey(partitionKey))
-            {
-                var partitionRegistryOfKey = new Dictionary<String, Object>();
-                this.Aggregators.ForEach(ag =>
-                {
-                    partitionRegistryOfKey.Add(ag.ProjectionVariable.VariableName, null);
-                });
-                partitionRegistry.Add(partitionKey, partitionRegistryOfKey);
-            }
-        }
-        
+
         /// <summary>
         /// Executes aggregator functions on the given datarow
         /// </summary>
-        private void ExecuteAggregatorFunctions(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
+        private void ExecuteAggregatorFunctions(String partitionKey, DataRow tableRow)
         {
-            this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(partitionRegistry, partitionKey, tableRow));
+            this.Aggregators.ForEach(ag => ag.ExecuteAggregatorFunction(partitionKey, tableRow));
         }
 
         /// <summary>
         /// Finalizes aggregator functions on the results table
         /// </summary>
-        private void FinalizeAggregatorFunctions(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable)
+        private void FinalizeAggregatorFunctions(DataTable workingTable)
         {
-            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(partitionRegistry, workingTable));
+            this.Aggregators.ForEach(ag => ag.FinalizeAggregatorFunction(workingTable));
         }
         #endregion
 

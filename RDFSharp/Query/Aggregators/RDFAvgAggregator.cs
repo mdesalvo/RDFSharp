@@ -49,48 +49,35 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the AVG aggregator function on the given tablerow
         /// </summary>
-        internal override void ExecuteAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
+        internal override void ExecuteAggregatorFunction(String partitionKey, DataRow tableRow)
         {
-            //Get the row value
+            //Get row value
             Decimal rowValue = GetRowValueAsDecimal(tableRow);
-            //Get the aggregator value
-            Decimal aggregatorValue = GetAggregatorValueAsDecimal(partitionRegistry, partitionKey);
-            //Update the aggregator value
-            SetAggregatorValue(partitionRegistry, partitionKey, rowValue + aggregatorValue);
-            //Update the table metadata
-            UpdateAggregatorContext(partitionRegistry, partitionKey, tableRow);
-        }
-
-        /// <summary>
-        /// Updates the context of the aggregator after current execution
-        /// </summary>
-        internal void UpdateAggregatorContext(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
-        {
-            String extendedPropertyKey = partitionKey + "§§" + this.ProjectionVariable.VariableName;
-            if (!tableRow.Table.ExtendedProperties.ContainsKey(extendedPropertyKey))
-            {
-                tableRow.Table.ExtendedProperties.Add(extendedPropertyKey, Decimal.One);
-            }
-            else
-            {
-                tableRow.Table.ExtendedProperties[extendedPropertyKey] = ((Decimal)tableRow.Table.ExtendedProperties[extendedPropertyKey]) + 1;
-            }
+            //Get aggregator value
+            Decimal aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey);
+            //Update aggregator context (sum, count)
+            this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, rowValue + aggregatorValue);
+            this.AggregatorContext.UpdatePartitionKeyExecutionCounter(partitionKey);
         }
 
         /// <summary>
         /// Finalizes the AVG aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable)
+        internal override void FinalizeAggregatorFunction(DataTable workingTable)
         {
-            foreach(String partitionKey in partitionRegistry.Keys)
+            foreach(String partitionKey in this.AggregatorContext.AggregatorContextRegistry.Keys)
             {
-                //Get the aggregator value
-                Decimal aggregatorValue = GetAggregatorValueAsDecimal(partitionRegistry, partitionKey);
-                //Get the aggregator context
-                String extendedPropertyKey = partitionKey + "§§" + this.ProjectionVariable.VariableName;
-                Decimal aggregatorContext = (Decimal)workingTable.ExtendedProperties[extendedPropertyKey];
-                //Update the aggregator value
-                SetAggregatorValue(partitionRegistry, partitionKey, aggregatorValue / aggregatorContext);
+                //Get aggregator value
+                Decimal aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey);
+                //Get aggregator counter
+                Decimal aggregatorCounter = this.AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
+                //Update aggregator context (avg)
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, aggregatorValue / aggregatorCounter);
+                //Update working table
+                RDFQueryEngine.AddRow(workingTable, new Dictionary<String, String>()
+                {
+                    { this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey) }
+                });
             }
         }
         #endregion

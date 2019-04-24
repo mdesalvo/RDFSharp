@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the COUNT aggregator function on the given tablerow
         /// </summary>
-        internal override void ExecuteAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, String partitionKey, DataRow tableRow)
+        internal override void ExecuteAggregatorFunction(String partitionKey, DataRow tableRow)
         {
             //TODO
 
@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Finalizes the COUNT aggregator function on the result table
         /// </summary>
-        internal override void FinalizeAggregatorFunction(Dictionary<String, Dictionary<String, Object>> partitionRegistry, DataTable workingTable)
+        internal override void FinalizeAggregatorFunction(DataTable workingTable)
         {
             //TODO
 
