@@ -95,6 +95,30 @@ namespace RDFSharp.Query
 
             return projFuncTable;
         }
+
+        /// <summary>
+        /// Helps in finalization step by updating the projection function's result table 
+        /// </summary>
+        internal override void UpdateProjectionFunctionTable(String partitionKey, DataTable projFuncTable)
+        {
+            //Get bindings from context
+            Dictionary<String, String> bindings = new Dictionary<String, String>();
+            foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.None);
+                bindings.Add(pValues[0], pValues[1]);
+            }
+
+            //Add aggregator value to bindings
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            if (aggregatorValue.Equals(Double.NaN))
+                bindings.Add(this.ProjectionVariable.VariableName, String.Empty);
+            else
+                bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
+
+            //Add bindings to result's table
+            RDFQueryEngine.AddRow(projFuncTable, bindings);
+        }
         #endregion
 
     }
