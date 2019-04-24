@@ -88,7 +88,7 @@ namespace RDFSharp.Query
         internal abstract void ExecutePartitionFunction(String partitionKey, DataRow tableRow);
 
         /// <summary>
-        /// Finalizes the projection function producing result's table
+        /// Executes the projection function producing result's table
         /// </summary>
         internal abstract DataTable ExecuteProjectionFunction(List<RDFVariable> partitionVariables);
 

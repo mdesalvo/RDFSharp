@@ -61,7 +61,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Finalizes the projection function producing result's table
+        /// Executes the projection function producing result's table
         /// </summary>
         internal override DataTable ExecuteProjectionFunction(List<RDFVariable> partitionVariables)
         {
@@ -81,7 +81,7 @@ namespace RDFSharp.Query
                 Decimal aggregatorCounter = this.AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
                 //Update aggregator context (avg)
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, aggregatorValue / aggregatorCounter);
-                //Update aggregator function results table
+                //Update result's table
                 this.UpdateProjectionFunctionTable(partitionKey, projFuncTable);
             }
 
