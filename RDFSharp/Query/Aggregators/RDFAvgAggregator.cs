@@ -76,7 +76,7 @@ namespace RDFSharp.Query
                 //Update working table
                 RDFQueryEngine.AddRow(workingTable, new Dictionary<String, String>()
                 {
-                    { this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey) }
+                    { this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey).ToString() }
                 });
             }
         }

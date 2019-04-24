@@ -106,19 +106,20 @@ namespace RDFSharp.Query
             PreliminaryChecks(table);
 
             //Initialize result table
+            this.PartitionVariables.ForEach(pv =>
+                RDFQueryEngine.AddColumn(result, pv.VariableName));
             this.Aggregators.ForEach(ag => 
                 RDFQueryEngine.AddColumn(result, ag.ProjectionVariable.VariableName));
             result.AcceptChanges();
 
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
-            {
                 ExecuteAggregatorFunctions(GetPartitionKey(tableRow), tableRow);
-            }
 
             //Finalize partition algorythm
-            FinalizeAggregatorFunctions(table);
-            
+            FinalizeAggregatorFunctions(result);
+            result.AcceptChanges();
+
             return result;
         }
 
