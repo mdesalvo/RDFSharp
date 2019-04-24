@@ -47,6 +47,7 @@ namespace RDFSharp.Query
         {
             if (partitionVariables != null && partitionVariables.Any())
             {
+                this.PartitionVariables = new List<RDFVariable>();
                 partitionVariables.ForEach(pv1 => {
                     if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
                     {
