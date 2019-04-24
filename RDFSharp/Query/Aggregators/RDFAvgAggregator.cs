@@ -52,11 +52,15 @@ namespace RDFSharp.Query
         internal override void ExecutePartitionFunction(String partitionKey, DataRow tableRow)
         {
             //Get row value
-            Decimal rowValue = GetRowValueAsDecimal(tableRow);
+            Double rowValue = GetRowValueAsNumber(tableRow);
             //Get aggregator value
-            Decimal aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey);
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            //In case of non-numeric values, consider partitioning failed
+            Double newAggregatorValue = Double.NaN;
+            if (!aggregatorValue.Equals(Double.NaN) && !rowValue.Equals(Double.NaN))
+                newAggregatorValue = rowValue + aggregatorValue;
             //Update aggregator context (sum, count)
-            this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, rowValue + aggregatorValue);
+            this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, newAggregatorValue);
             this.AggregatorContext.UpdatePartitionKeyExecutionCounter(partitionKey);
         }
 
@@ -76,11 +80,15 @@ namespace RDFSharp.Query
             foreach (String partitionKey in this.AggregatorContext.AggregatorContextRegistry.Keys)
             {
                 //Get aggregator value
-                Decimal aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey);
+                Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
                 //Get aggregator counter
-                Decimal aggregatorCounter = this.AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
-                //Update aggregator context (avg)
-                this.AggregatorContext.UpdatePartitionKeyExecutionResult<Decimal>(partitionKey, aggregatorValue / aggregatorCounter);
+                Double aggregatorCounter = this.AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
+                //In case of non-numeric values, consider partition failed
+                Double finalAggregatorValue = Double.NaN;
+                if (!aggregatorValue.Equals(Double.NaN))
+                    finalAggregatorValue = aggregatorValue / aggregatorCounter;
+                //Update aggregator context (sum, count)
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, finalAggregatorValue);
                 //Update result's table
                 this.UpdateProjectionFunctionTable(partitionKey, projFuncTable);
             }

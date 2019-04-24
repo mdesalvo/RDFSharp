@@ -97,20 +97,29 @@ namespace RDFSharp.Query
         /// </summary>
         internal void UpdateProjectionFunctionTable(String partitionKey, DataTable aggFuncTable)
         {
+            //Get bindings from context
             Dictionary<String, String> bindings = new Dictionary<String, String>();
             foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.RemoveEmptyEntries);
+                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
-            bindings.Add(this.ProjectionVariable.VariableName, this.AggregatorContext.GetPartitionKeyExecutionResult<Decimal>(partitionKey).ToString());
+
+            //Add aggregator value to bindings
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            if (aggregatorValue.Equals(Double.NaN))
+                bindings.Add(this.ProjectionVariable.VariableName, String.Empty);
+            else
+                bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
+
+            //Add bindings to result's table
             RDFQueryEngine.AddRow(aggFuncTable, bindings);
         }
 
         /// <summary>
-        /// Gets the row value for the aggregator as Decimal
+        /// Gets the row value for the aggregator as number
         /// </summary>
-        internal Decimal GetRowValueAsDecimal(DataRow tableRow)
+        internal Double GetRowValueAsNumber(DataRow tableRow)
         {
             if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
             {
@@ -120,9 +129,9 @@ namespace RDFSharp.Query
                 {
                     if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
                     {
-                        if (Decimal.TryParse(rowAggregatorValue.ToString(), out Decimal decimalValue))
+                        if (Double.TryParse(rowAggregatorValue.ToString(), out Double doubleValue))
                         {
-                            return decimalValue;
+                            return doubleValue;
                         }
                     }
                 }
@@ -131,15 +140,15 @@ namespace RDFSharp.Query
                 {
                     if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
                     {
-                        return Decimal.Parse(((RDFTypedLiteral)rowAggregatorValue).Value);
+                        return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value);
                     }
                 }
             }
-            return Decimal.Zero;
+            return Double.NaN;
         }
 
         /// <summary>
-        /// Gets the row value for the aggregator as String
+        /// Gets the row value for the aggregator as string
         /// </summary>
         internal String GetRowValueAsString(DataRow tableRow)
         {
@@ -188,7 +197,7 @@ namespace RDFSharp.Query
                 this.AggregatorContextRegistry.Add(partitionKey, new Dictionary<String, Object>()
                 {
                     { "ExecutionResult", default(T) },
-                    { "ExecutionCounter", Decimal.Zero }
+                    { "ExecutionCounter", 0d }
                 });
             }
         }
@@ -207,13 +216,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the execution counter for the given partition key
         /// </summary>
-        internal Decimal GetPartitionKeyExecutionCounter(String partitionKey)
+        internal Double GetPartitionKeyExecutionCounter(String partitionKey)
         {
-            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
-            {
-                return (Decimal)this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"];
-            }
-            return Decimal.Zero;
+            return (Double)this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"];
         }
 
         /// <summary>
@@ -229,7 +234,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(String partitionKey)
         {
-            this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1;
+            this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
         }
         #endregion
 
