@@ -166,14 +166,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given partitionKey to the aggregator context
         /// </summary>
-        internal void AddPartitionKey(String partitionKey)
+        internal void AddPartitionKey<T>(String partitionKey)
         {
             if (!this.AggregatorContextRegistry.ContainsKey(partitionKey))
             {
                 this.AggregatorContextRegistry.Add(partitionKey, new Dictionary<String, Object>()
                 {
-                    { "ExecutionResult", null },
-                    { "ExecutionCounter", 0 }
+                    { "ExecutionResult", default(T) },
+                    { "ExecutionCounter", Decimal.Zero }
                 });
             }
         }
@@ -183,11 +183,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal T GetPartitionKeyExecutionResult<T>(String partitionKey)
         {
-            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
-            {
-                return (T)this.AggregatorContextRegistry[partitionKey]["ExecutionResult"];
-            }
-            return default(T);
+            if (!this.AggregatorContextRegistry.ContainsKey(partitionKey))
+                AddPartitionKey<T>(partitionKey);
+
+            return (T)this.AggregatorContextRegistry[partitionKey]["ExecutionResult"];
         }
 
         /// <summary>
@@ -197,9 +196,9 @@ namespace RDFSharp.Query
         {
             if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
             {
-                return (Int32)this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"];
+                return (Decimal)this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"];
             }
-            return 0;
+            return Decimal.Zero;
         }
 
         /// <summary>
@@ -207,10 +206,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void UpdatePartitionKeyExecutionResult<T>(String partitionKey, T newValue)
         {
-            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
-            {
-                this.AggregatorContextRegistry[partitionKey]["ExecutionResult"] = newValue;
-            }
+            this.AggregatorContextRegistry[partitionKey]["ExecutionResult"] = newValue;
         }
 
         /// <summary>
@@ -218,10 +214,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(String partitionKey)
         {
-            if (this.AggregatorContextRegistry.ContainsKey(partitionKey))
-            {
-                this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1;
-            }
+            this.AggregatorContextRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1;
         }
         #endregion
 
