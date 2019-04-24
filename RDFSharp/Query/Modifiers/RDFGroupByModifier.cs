@@ -105,13 +105,6 @@ namespace RDFSharp.Query
             //Perform preliminary consistency checks
             PreliminaryChecks(table);
 
-            //Initialize result table
-            this.PartitionVariables.ForEach(pv =>
-                RDFQueryEngine.AddColumn(result, pv.VariableName));
-            this.Aggregators.ForEach(ag => 
-                RDFQueryEngine.AddColumn(result, ag.ProjectionVariable.VariableName));
-            result.AcceptChanges();
-
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
                 this.Aggregators.ForEach(ag => 
