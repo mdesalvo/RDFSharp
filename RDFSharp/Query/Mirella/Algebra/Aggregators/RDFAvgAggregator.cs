@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 
 namespace RDFSharp.Query
 {
@@ -48,12 +47,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Executes the partition function on the given tablerow
+        /// Executes the partition on the given tablerow
         /// </summary>
-        internal override void ExecutePartitionFunction(String partitionKey, DataRow tableRow)
+        internal override void ExecutePartition(String partitionKey, DataRow tableRow)
         {
             //Get row value
             Double rowValue = GetRowValueAsNumber(tableRow);
+            if (this.IsDistinct)
+            {
+                //Cache-Hit: distinctness failed
+                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<Double>(partitionKey, rowValue))
+                    return;
+                //Cache-Miss: distinctness passed
+                else
+                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<Double>(partitionKey, rowValue);
+            }
             //Get aggregator value
             Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
             //In case of non-numeric values, consider partitioning failed
@@ -66,9 +74,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Executes the projection function producing result's table
+        /// Executes the projection producing result's table
         /// </summary>
-        internal override DataTable ExecuteProjectionFunction(List<RDFVariable> partitionVariables)
+        internal override DataTable ExecuteProjection(List<RDFVariable> partitionVariables)
         {
             DataTable projFuncTable = new DataTable();
 
@@ -91,16 +99,16 @@ namespace RDFSharp.Query
                 //Update aggregator context (sum, count)
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, finalAggregatorValue);
                 //Update result's table
-                this.UpdateProjectionFunctionTable(partitionKey, projFuncTable);
+                this.UpdateProjectionTable(partitionKey, projFuncTable);
             }
 
             return projFuncTable;
         }
 
         /// <summary>
-        /// Helps in finalization step by updating the projection function's result table 
+        /// Helps in finalization step by updating the projection's result table 
         /// </summary>
-        internal override void UpdateProjectionFunctionTable(String partitionKey, DataTable projFuncTable)
+        internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
         {
             //Get bindings from context
             Dictionary<String, String> bindings = new Dictionary<String, String>();

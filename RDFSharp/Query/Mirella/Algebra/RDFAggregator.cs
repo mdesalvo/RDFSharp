@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -89,19 +90,19 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Executes the partition function on the given tablerow
+        /// Executes the partition on the given tablerow
         /// </summary>
-        internal abstract void ExecutePartitionFunction(String partitionKey, DataRow tableRow);
+        internal abstract void ExecutePartition(String partitionKey, DataRow tableRow);
 
         /// <summary>
-        /// Executes the projection function producing result's table
+        /// Executes the projection producing result's table
         /// </summary>
-        internal abstract DataTable ExecuteProjectionFunction(List<RDFVariable> partitionVariables);
+        internal abstract DataTable ExecuteProjection(List<RDFVariable> partitionVariables);
 
         /// <summary>
-        /// Helps in finalization step by updating the projection function's result table 
+        /// Helps in finalization step by updating the projection's result table 
         /// </summary>
-        internal abstract void UpdateProjectionFunctionTable(String partitionKey, DataTable projFuncTable);
+        internal abstract void UpdateProjectionTable(String partitionKey, DataTable projFuncTable);
 
         /// <summary>
         /// Gets the row value for the aggregator as number
@@ -158,9 +159,14 @@ namespace RDFSharp.Query
 
         #region Properties
         /// <summary>
-        /// Registry to keep track of aggregator's execution
+        /// Registry to keep track of aggregator execution flow
         /// </summary>
         internal Dictionary<String, Dictionary<String, Object>> ExecutionRegistry { get; set; }
+
+        /// <summary>
+        /// Cache to keep track of aggregator execution values
+        /// </summary>
+        internal Dictionary<String, HashSet<Object>> ExecutionCache { get; set; }
         #endregion
 
         #region Ctors
@@ -170,6 +176,7 @@ namespace RDFSharp.Query
         internal RDFAggregatorContext()
         {
             this.ExecutionRegistry = new Dictionary<String, Dictionary<String, Object>>();
+            this.ExecutionCache = new Dictionary<String, HashSet<Object>>();
         }
         #endregion
 
@@ -209,7 +216,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Gets the execution result for the given partition key
+        /// Updates the execution result for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionResult<T>(String partitionKey, T newValue)
         {
@@ -222,6 +229,24 @@ namespace RDFSharp.Query
         internal void UpdatePartitionKeyExecutionCounter(String partitionKey)
         {
             this.ExecutionRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
+        }
+
+        /// <summary>
+        /// Checks for presence of the given value in given partitionkey's cache
+        /// </summary>
+        internal Boolean CheckPartitionKeyRowValueCache<T>(String partitionKey, T value)
+        {
+            if (!this.ExecutionCache.ContainsKey(partitionKey))
+                this.ExecutionCache.Add(partitionKey, new HashSet<Object>());
+            return this.ExecutionCache[partitionKey].Any(x => ((T)x).Equals(value));
+        }
+
+        /// <summary>
+        /// Updates the given partitionKey's cache with the given value
+        /// </summary>
+        internal void UpdatePartitionKeyRowValueCache<T>(String partitionKey, T newValue)
+        {
+            this.ExecutionCache[partitionKey].Add(newValue);
         }
         #endregion
 

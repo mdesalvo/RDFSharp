@@ -106,12 +106,12 @@ namespace RDFSharp.Query
             //Execute partition algorythm
             foreach (DataRow tableRow in table.Rows)
                 this.Aggregators.ForEach(ag => 
-                    ag.ExecutePartitionFunction(GetPartitionKey(tableRow), tableRow));
+                    ag.ExecutePartition(GetPartitionKey(tableRow), tableRow));
 
             //Execute projection algorythm
             List<DataTable> projFuncTables = new List<DataTable>(); 
             this.Aggregators.ForEach(ag =>
-                projFuncTables.Add(ag.ExecuteProjectionFunction(this.PartitionVariables)));
+                projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
 
             //Produce result's table
             return RDFQueryEngine.CreateNew().CombineTables(projFuncTables, false);
