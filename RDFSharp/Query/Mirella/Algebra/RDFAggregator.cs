@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using RDFSharp.Model;
 
@@ -117,7 +118,7 @@ namespace RDFSharp.Query
                 {
                     if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
                     {
-                        if (Double.TryParse(rowAggregatorValue.ToString(), out Double doubleValue))
+                        if (Double.TryParse(rowAggregatorValue.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out Double doubleValue))
                         {
                             return doubleValue;
                         }
@@ -128,7 +129,7 @@ namespace RDFSharp.Query
                 {
                     if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
                     {
-                        return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value);
+                        return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture);
                     }
                 }
             }
