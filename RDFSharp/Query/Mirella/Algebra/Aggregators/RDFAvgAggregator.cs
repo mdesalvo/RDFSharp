@@ -78,7 +78,7 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (String partitionKey in this.AggregatorContext.AggregatorContextRegistry.Keys)
+            foreach (String partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Get aggregator value
                 Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
