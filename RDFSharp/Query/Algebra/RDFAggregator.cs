@@ -40,6 +40,11 @@ namespace RDFSharp.Query
         public RDFVariable ProjectionVariable { get; internal set; }
 
         /// <summary>
+        /// Flag indicating that the aggregator discards duplicates
+        /// </summary>
+        public Boolean IsDistinct { get; internal set; }
+
+        /// <summary>
         /// Context for keeping track of aggregator's execution
         /// </summary>
         internal RDFAggregatorContext AggregatorContext { get; set; }
@@ -49,7 +54,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an aggregator on the given variable and with the given projection name
         /// </summary>
-        internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
+        internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable, Boolean isDistinct)
         {
             if (aggregatorVariable != null)
             {
@@ -57,6 +62,7 @@ namespace RDFSharp.Query
                 {
                     this.AggregatorVariable = aggregatorVariable;
                     this.ProjectionVariable = projectionVariable;
+                    this.IsDistinct = isDistinct;
                     this.AggregatorContext = new RDFAggregatorContext();
                 }
                 else

@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an AVG aggregator on the given variable and with the given projection name
         /// </summary>
-        public RDFAvgAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+        public RDFAvgAggregator(RDFVariable aggrVariable, RDFVariable projVariable, Boolean isDistinct) : base(aggrVariable, projVariable, isDistinct) { }
         #endregion
 
         #region Interfaces
@@ -41,7 +41,8 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return String.Format("(AVG({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
+            return (this.IsDistinct ? String.Format("(AVG(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
+                                    : String.Format("(AVG({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
         }
         #endregion
 
