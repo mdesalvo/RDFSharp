@@ -32,7 +32,7 @@ RDFSharp has a modular API made up of three layers:
 RDFSharp also delivers a set of extension projects enhancing its features and capabilities:
 
 <ul>
-    <li><b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">Ontology</a></b> modeling, validation and reasoning with full support for <i>RDFS/OWL-DL</i></li>  
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">Ontology</a></b> modeling, validation and reasoning with full support for <i>RDFS/OWL-DL/SKOS</i></li>  
     <li><b><a href="https://github.com/mdesalvo/RDFSharp.Stores">Storage</a></b> of RDF data on different SQL providers</li>
 </ul>
 <hr>
