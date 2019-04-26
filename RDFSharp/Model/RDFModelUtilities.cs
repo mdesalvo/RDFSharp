@@ -147,6 +147,17 @@ namespace RDFSharp.Model
             }
             return data;
         }
+
+        /// <summary>
+        /// Trims the end of the given source string searching for the given value
+        /// </summary>
+        internal static String TrimEnd(this String source, String value)
+        {
+            if (!source.EndsWith(value))
+                return source;
+
+            return source.Remove(source.LastIndexOf(value));
+        }
         #endregion
 
         #region Graph
