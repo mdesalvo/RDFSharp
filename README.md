@@ -29,9 +29,10 @@ RDFSharp has a modular API made up of three layers:
     </ul>
 </ul>
 <hr>
-Did you know that...
+RDFSharp also delivers a set of extension projects enhancing its features and capabilities:
+
 <ul>
-    <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">extension</a></b> for <b>OWL-DL</b> ontology modeling, validation and reasoning!</li>  
-    <li>RDFSharp has an <b><a href="https://github.com/mdesalvo/RDFSharp.Stores">extension</a></b> for <b>SQL</b> storage of RDF data!</li>
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.Semantics">Ontology</a></b> modeling, validation and reasoning with full support for <b>OWL-DL</b></li>  
+    <li><b><a href="https://github.com/mdesalvo/RDFSharp.Stores">Storage</a></b> of RDF data on different SQL providers</li>
 </ul>
 <hr>
