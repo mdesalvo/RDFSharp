@@ -87,14 +87,6 @@ namespace RDFSharp.Query
             //Finalization
             foreach (String partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
             {
-                //Get aggregator value
-                Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
-                //In case of non-numeric values, consider partition failed
-                Double finalAggregatorValue = Double.NaN;
-                if (!aggregatorValue.Equals(Double.NaN))
-                    finalAggregatorValue = aggregatorValue;
-                //Update aggregator context (sum)
-                this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, finalAggregatorValue);
                 //Update result's table
                 this.UpdateProjectionTable(partitionKey, projFuncTable);
             }
