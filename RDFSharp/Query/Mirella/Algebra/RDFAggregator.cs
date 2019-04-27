@@ -110,30 +110,38 @@ namespace RDFSharp.Query
         /// </summary>
         internal Double GetRowValueAsNumber(DataRow tableRow)
         {
-            if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
+            try
             {
-                RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[this.AggregatorVariable.VariableName].ToString());
-                //PlainLiteral: accepted only if numeric and non-languaged
-                if (rowAggregatorValue is RDFPlainLiteral)
+                if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
                 {
-                    if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
+                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[this.AggregatorVariable.VariableName].ToString());
+                    //PlainLiteral: accepted only if numeric and non-languaged
+                    if (rowAggregatorValue is RDFPlainLiteral)
                     {
-                        if (Double.TryParse(rowAggregatorValue.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out Double doubleValue))
+                        if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
                         {
-                            return doubleValue;
+                            if (Double.TryParse(rowAggregatorValue.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out Double doubleValue))
+                            {
+                                return doubleValue;
+                            }
+                        }
+                    }
+                    //TypedLiteral: accepted only if numeric
+                    else if (rowAggregatorValue is RDFTypedLiteral)
+                    {
+                        if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
+                        {
+                            return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture);
                         }
                     }
                 }
-                //TypedLiteral: accepted only if numeric
-                else if (rowAggregatorValue is RDFTypedLiteral)
-                {
-                    if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
-                    {
-                        return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture);
-                    }
-                }
+                return Double.NaN;
             }
-            return Double.NaN;
+            catch (Exception ex)
+            {
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Exception intercepted during evaluation of RDFAggregator '{0}' in method GetRowValueAsNumber: '{1}'", this, ex.Message));
+                return Double.NaN;
+            }
         }
 
         /// <summary>
@@ -141,11 +149,19 @@ namespace RDFSharp.Query
         /// </summary>
         internal String GetRowValueAsString(DataRow tableRow)
         {
-            if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
+            try
             {
-                return tableRow[this.AggregatorVariable.VariableName].ToString();
+                if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
+                {
+                    return tableRow[this.AggregatorVariable.VariableName].ToString();
+                }
+                return String.Empty;
             }
-            return String.Empty;
+            catch (Exception ex)
+            {
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Exception intercepted during evaluation of RDFAggregator '{0}' in method GetRowValueAsString: '{1}'", this, ex.Message));
+                return String.Empty;
+            }
         }
         #endregion
 
