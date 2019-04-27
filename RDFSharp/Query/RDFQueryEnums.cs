@@ -89,6 +89,21 @@ namespace RDFSharp.Query
             Alternative = '|'
         }
 
+        /// <summary>
+        /// RDFMinMaxAggregatorFlavors represents an enumeration for supported flavors of MIN/MAX aggregators
+        /// </summary>
+        public enum RDFMinMaxAggregatorFlavors
+        {
+            /// <summary>
+            /// MIN/MAX aggregator suitable for working on columns with numeric values
+            /// </summary>
+            Numeric = 1,
+            /// <summary>
+            /// MIN/MAX aggregator suitable for working on columns with string values
+            /// </summary>
+            String = 2
+        }
+
     }
 
 }

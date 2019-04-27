@@ -22,7 +22,7 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFSumAggregator represents an SUM aggregation function applied by a GroupBy modifier
+    /// RDFSumAggregator represents a SUM aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFSumAggregator : RDFAggregator
     {
