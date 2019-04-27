@@ -201,13 +201,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given partitionKey to the aggregator context
         /// </summary>
-        internal void AddPartitionKey<T>(String partitionKey)
+        internal void AddPartitionKey<T>(String partitionKey, T initValue)
         {
             if (!this.ExecutionRegistry.ContainsKey(partitionKey))
             {
                 this.ExecutionRegistry.Add(partitionKey, new Dictionary<String, Object>()
                 {
-                    { "ExecutionResult", default(T) },
+                    { "ExecutionResult", initValue },
                     { "ExecutionCounter", 0d }
                 });
             }
@@ -216,10 +216,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the execution result for the given partition key
         /// </summary>
-        internal T GetPartitionKeyExecutionResult<T>(String partitionKey)
+        internal T GetPartitionKeyExecutionResult<T>(String partitionKey, T initValue)
         {
             if (!this.ExecutionRegistry.ContainsKey(partitionKey))
-                AddPartitionKey<T>(partitionKey);
+                AddPartitionKey<T>(partitionKey, initValue);
 
             return (T)this.ExecutionRegistry[partitionKey]["ExecutionResult"];
         }

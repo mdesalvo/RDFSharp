@@ -89,7 +89,7 @@ namespace RDFSharp.Query
                     this.AggregatorContext.UpdatePartitionKeyRowValueCache<Double>(partitionKey, rowValue);
             }
             //Get aggregator value
-            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, Double.PositiveInfinity);
             //In case of non-numeric values, consider partitioning failed
             Double newAggregatorValue = Double.NaN;
             if (!aggregatorValue.Equals(Double.NaN) && !rowValue.Equals(Double.NaN))
@@ -114,9 +114,13 @@ namespace RDFSharp.Query
                     this.AggregatorContext.UpdatePartitionKeyRowValueCache<String>(partitionKey, rowValue);
             }
             //Get aggregator value
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey) ?? String.Empty;
+            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, null);
             //Update aggregator context (min)
-            this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, String.Compare(rowValue, aggregatorValue, true, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
+            if (aggregatorValue == null)
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, rowValue);
+            else
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, String.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
+
         }
 
         /// <summary>
@@ -170,7 +174,7 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, Double.PositiveInfinity);
             if (aggregatorValue.Equals(Double.NaN))
                 bindings.Add(this.ProjectionVariable.VariableName, String.Empty);
             else
@@ -193,7 +197,7 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey);
+            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty);
             bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table

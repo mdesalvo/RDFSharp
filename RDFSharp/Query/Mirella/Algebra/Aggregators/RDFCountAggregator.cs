@@ -64,7 +64,7 @@ namespace RDFSharp.Query
                     this.AggregatorContext.UpdatePartitionKeyRowValueCache<String>(partitionKey, rowValue);
             }
             //Get aggregator value
-            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, 0d);
             //Update aggregator context (sample)
             this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, aggregatorValue + 1);
         }
@@ -105,7 +105,7 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey);
+            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, 0d);
             bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
 
             //Add bindings to result's table
