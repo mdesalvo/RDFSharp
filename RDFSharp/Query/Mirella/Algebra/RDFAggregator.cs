@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an aggregator on the given variable and with the given projection name
         /// </summary>
-        internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable, Boolean isDistinct)
+        internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
             if (aggregatorVariable != null)
             {
@@ -64,7 +64,6 @@ namespace RDFSharp.Query
                 {
                     this.AggregatorVariable = aggregatorVariable;
                     this.ProjectionVariable = projectionVariable;
-                    this.IsDistinct = isDistinct;
                     this.AggregatorContext = new RDFAggregatorContext();
                 }
                 else
@@ -162,6 +161,15 @@ namespace RDFSharp.Query
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Exception intercepted during evaluation of RDFAggregator '{0}' in method GetRowValueAsString: '{1}'", this, ex.Message));
                 return String.Empty;
             }
+        }
+
+        /// <summary>
+        /// Sets the aggregator in order to discard duplicates
+        /// </summary>
+        public RDFAggregator Dictinct()
+        {
+            this.IsDistinct = true;
+            return this;
         }
         #endregion
 

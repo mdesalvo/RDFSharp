@@ -39,7 +39,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a GROUP_CONCAT aggregator on the given variable, with the given projection name and given separator
         /// </summary>
-        public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, Boolean isDistinct, String separator) : base(aggrVariable, projVariable, isDistinct)
+        public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, String separator) : base(aggrVariable, projVariable)
         {
             if (String.IsNullOrEmpty(separator))
                 this.Separator = " ";

@@ -39,7 +39,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a MIN aggregator on the given variable, with the given projection name and given flavor
         /// </summary>
-        public RDFMinAggregator(RDFVariable aggrVariable, RDFVariable projVariable, Boolean isDistinct, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable, isDistinct)
+        public RDFMinAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
         {
             this.AggregatorFlavor = aggregatorFlavor;
         }

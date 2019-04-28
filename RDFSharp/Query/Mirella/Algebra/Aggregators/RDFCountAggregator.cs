@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a COUNT aggregator on the given variable and with the given projection name
         /// </summary>
-        public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable, Boolean isDistinct) : base(aggrVariable, projVariable, isDistinct) { }
+        public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion
 
         #region Interfaces

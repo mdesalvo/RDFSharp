@@ -31,7 +31,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a SUM aggregator on the given variable and with the given projection name
         /// </summary>
-        public RDFSumAggregator(RDFVariable aggrVariable, RDFVariable projVariable, Boolean isDistinct) : base(aggrVariable, projVariable, isDistinct) { }
+        public RDFSumAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion
 
         #region Interfaces
