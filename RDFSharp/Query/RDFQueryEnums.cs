@@ -44,33 +44,6 @@ namespace RDFSharp.Query
         };
 
         /// <summary>
-        /// RDFAggregatorFunctionTypes represents an enumeration for supported types of aggregator functions
-        /// </summary>
-        public enum RDFAggregatorFunctionTypes
-        {
-            /// <summary>
-            /// Aggregator function which calculates the average value of the in-scope variable
-            /// </summary>
-            AVG = 1,
-            /// <summary>
-            /// Aggregator function which calculates the minimum value of the in-scope variable
-            /// </summary>
-            MIN = 2,
-            /// <summary>
-            /// Aggregator function which calculates the maximum value of the in-scope variable
-            /// </summary>
-            MAX = 3,
-            /// <summary>
-            /// Aggregator function which calculates the count of occurrences of the in-scope variable
-            /// </summary>
-            COUNT = 4,
-            /// <summary>
-            /// Aggregator function which calculates the sum value of the in-scope variable
-            /// </summary>
-            SUM = 5
-        }
-
-        /// <summary>
         /// RDFComparisonFlavors represents an enumeration for possible comparison modes between two patten members.
         /// </summary>
         public enum RDFComparisonFlavors
@@ -114,6 +87,21 @@ namespace RDFSharp.Query
             /// Steps within a property path are connected with OR semantic
             /// </summary>
             Alternative = '|'
+        }
+
+        /// <summary>
+        /// RDFMinMaxAggregatorFlavors represents an enumeration for supported flavors of MIN/MAX aggregators
+        /// </summary>
+        public enum RDFMinMaxAggregatorFlavors
+        {
+            /// <summary>
+            /// MIN/MAX aggregator suitable for working on columns with numeric values
+            /// </summary>
+            Numeric = 1,
+            /// <summary>
+            /// MIN/MAX aggregator suitable for working on columns with string values
+            /// </summary>
+            String = 2
         }
 
     }
