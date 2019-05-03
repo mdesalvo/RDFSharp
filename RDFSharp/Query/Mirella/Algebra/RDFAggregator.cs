@@ -125,12 +125,20 @@ namespace RDFSharp.Query
                             }
                         }
                     }
-                    //TypedLiteral: accepted only if numeric
+                    //TypedLiteral: accepted only if numeric (also from string/rdfsliteral)
                     else if (rowAggregatorValue is RDFTypedLiteral)
                     {
                         if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
                         {
                             return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+                        }
+                        else if (((RDFTypedLiteral)rowAggregatorValue).Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL)
+                                    || ((RDFTypedLiteral)rowAggregatorValue).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                        {
+                            if (Double.TryParse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture, out Double doubleValue))
+                            {
+                                return doubleValue;
+                            }
                         }
                     }
                 }
