@@ -87,28 +87,35 @@ namespace RDFSharp.Query
                            .ForEach(dm => sb.Append(" " + dm));
                 #endregion
 
-                #region VARIABLES
-                if (selectQuery.ProjectionVars.Any())
-                {
-                    selectQuery.ProjectionVars.OrderBy(x => x.Value)
-                                              .ToList()
-                                              .ForEach(v => sb.Append(" " + v.Key));
-                }
-                else
-                {
-                    sb.Append(" *");                    
-                }
-                sb.Append("\n");
-                #endregion
-
-                #region AGGREGATORS
+                #region VARIABLES/AGGREGATORS
                 List<RDFModifier> modifiers = selectQuery.GetModifiers().ToList();
+                //Query has groupby modifier
                 if (modifiers.Any(m => m is RDFGroupByModifier))
                 {
                     modifiers.Where(mod => mod is RDFGroupByModifier)
                          .ToList()
-                         .ForEach(gm => { sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).Aggregators)); });
+                         .ForEach(gm => {
+                             sb.Append(" ");
+                             sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).PartitionVariables));
+                             sb.Append(" ");
+                             sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).Aggregators));
+                         });
                 }
+                //Query hasn't groupby modifier
+                else
+                {
+                    if (selectQuery.ProjectionVars.Any())
+                    {
+                        selectQuery.ProjectionVars.OrderBy(x => x.Value)
+                                                  .ToList()
+                                                  .ForEach(v => sb.Append(" " + v.Key));
+                    }
+                    else
+                    {
+                        sb.Append(" *");
+                    }
+                }                
+                sb.Append("\n");
                 #endregion
 
                 #endregion
