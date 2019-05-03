@@ -166,7 +166,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the aggregator in order to discard duplicates
         /// </summary>
-        public RDFAggregator Dictinct()
+        public RDFAggregator Distinct()
         {
             this.IsDistinct = true;
             return this;
