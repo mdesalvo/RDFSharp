@@ -114,31 +114,12 @@ namespace RDFSharp.Query
                 if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
                 {
                     RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[this.AggregatorVariable.VariableName].ToString());
-                    //PlainLiteral: accepted only if numeric and non-languaged
-                    if (rowAggregatorValue is RDFPlainLiteral)
+                    //Only numeric typedliterals are suitable for processing
+                    if (rowAggregatorValue is RDFTypedLiteral && ((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
                     {
-                        if (String.IsNullOrEmpty(((RDFPlainLiteral)rowAggregatorValue).Language))
+                        if (Double.TryParse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture, out Double result))
                         {
-                            if (Double.TryParse(rowAggregatorValue.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out Double doubleValue))
-                            {
-                                return doubleValue;
-                            }
-                        }
-                    }
-                    //TypedLiteral: accepted only if numeric (also from string/rdfsliteral)
-                    else if (rowAggregatorValue is RDFTypedLiteral)
-                    {
-                        if (((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
-                        {
-                            return Double.Parse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture);
-                        }
-                        else if (((RDFTypedLiteral)rowAggregatorValue).Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL)
-                                    || ((RDFTypedLiteral)rowAggregatorValue).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                        {
-                            if (Double.TryParse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture, out Double doubleValue))
-                            {
-                                return doubleValue;
-                            }
+                            return result;
                         }
                     }
                 }
