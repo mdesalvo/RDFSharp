@@ -95,11 +95,11 @@ namespace RDFSharp.Query
         public enum RDFMinMaxAggregatorFlavors
         {
             /// <summary>
-            /// MIN/MAX aggregator suitable for working on columns with numeric values
+            /// MIN/MAX aggregator suitable for working on columns with numeric typedliteral values
             /// </summary>
             Numeric = 1,
             /// <summary>
-            /// MIN/MAX aggregator suitable for working on columns with string values
+            /// MIN/MAX aggregator suitable for working on columns with generic values
             /// </summary>
             String = 2
         }
