@@ -125,7 +125,7 @@ namespace RDFSharp.Query
         /// </summary>
         private void ConsistencyChecks(DataTable table)
         {
-            //1 - Every grouping variable must be found in the working table as a column
+            //1 - Every partition variable must be found in the working table as a column
             if (!this.PartitionVariables.TrueForAll(pv => table.Columns.Contains(pv.ToString())))
             {
                 String notfoundPartitionVars = String.Join(",", this.PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
@@ -137,19 +137,20 @@ namespace RDFSharp.Query
             {
                 //Use lookup hashset to ensure distinctness of result variables
                 HashSet<String> notfoundAggregatorVarsLookup = new HashSet<String>();
-                foreach (RDFAggregator notfoundAggregatorVar in this.Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))) {
+                foreach (RDFAggregator notfoundAggregatorVar in this.Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString())))
+                {
                     if (!notfoundAggregatorVarsLookup.Contains(notfoundAggregatorVar.AggregatorVariable.ToString()))
                         notfoundAggregatorVarsLookup.Add(notfoundAggregatorVar.AggregatorVariable.ToString());
                 }
                 var notfoundAggregatorVars = String.Join(",", notfoundAggregatorVarsLookup);
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregatorVars));
             }
-            //3 - There should NOT be intersection between grouping variables and projection variables
+            //3 - There should NOT be intersection between partition variables and projection variables
             if (this.PartitionVariables.Any(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable))))
             {
                 String commonPartitionProjectionVars = String.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
                                                                                                .Select(pv => pv.ToString()));
-                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning and projection operations: {0}", commonPartitionProjectionVars));
+                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning and projection: {0}", commonPartitionProjectionVars));
             }
         }
 
