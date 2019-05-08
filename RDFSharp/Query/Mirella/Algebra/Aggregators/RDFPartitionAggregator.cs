@@ -17,32 +17,30 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFCountAggregator represents a COUNT aggregation function applied by a GroupBy modifier
+    /// RDFPartitionAggregator represents a specialization of SAMPLE aggregation function always applied by a GroupBy modifier
     /// </summary>
-    public class RDFCountAggregator : RDFAggregator
+    public class RDFPartitionAggregator : RDFSampleAggregator
     {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a COUNT aggregator on the given variable and with the given projection name
+        /// Default-ctor to build a default aggregator on the given variable and with the given projection name
         /// </summary>
-        public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+        public RDFPartitionAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the COUNT aggregator
+        /// Gets the string representation of the default aggregator
         /// </summary>
         public override String ToString()
         {
-            return (this.IsDistinct ? String.Format("(COUNT(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                                    : String.Format("(COUNT({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
+            return String.Empty;
         }
         #endregion
 
@@ -52,21 +50,11 @@ namespace RDFSharp.Query
         /// </summary>
         internal override void ExecutePartition(String partitionKey, DataRow tableRow)
         {
-            //Get row value
-            String rowValue = GetRowValueAsString(tableRow);
-            if (this.IsDistinct)
-            {
-                //Cache-Hit: distinctness failed
-                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<String>(partitionKey, rowValue))
-                    return;
-                //Cache-Miss: distinctness passed
-                else
-                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<String>(partitionKey, rowValue);
-            }
             //Get aggregator value
-            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, 0d);
+            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty) ?? String.Empty;
             //Update aggregator context (sample)
-            this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, aggregatorValue + 1);
+            if (String.IsNullOrEmpty(aggregatorValue))
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, partitionKey);
         }
 
         /// <summary>
@@ -105,8 +93,9 @@ namespace RDFSharp.Query
             }
 
             //Add aggregator value to bindings
-            Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, 0d);
-            bindings.Add(this.ProjectionVariable.VariableName, new RDFTypedLiteral(aggregatorValue.ToString(), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty);
+            if (!bindings.ContainsKey(this.ProjectionVariable.VariableName))
+                bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -112,7 +113,7 @@ namespace RDFSharp.Query
             if (aggregatorValue.Equals(Double.NaN))
                 bindings.Add(this.ProjectionVariable.VariableName, String.Empty);
             else
-                bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue.ToString());
+                bindings.Add(this.ProjectionVariable.VariableName, new RDFTypedLiteral(aggregatorValue.ToString(), RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);

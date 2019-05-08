@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using System.Collections;
 
 namespace RDFSharp.Query
 {
@@ -53,6 +54,8 @@ namespace RDFSharp.Query
                     if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
                     {
                         this.PartitionVariables.Add(pv1);
+                        this.Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
+                        this.IsEvaluable = true;
                     }
                 });
             }
@@ -85,7 +88,6 @@ namespace RDFSharp.Query
                 if (!this.Aggregators.Any(af => af.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                 {
                     this.Aggregators.Add(aggregator);
-                    this.IsEvaluable = true;
                 }
                 else
                 {
@@ -116,8 +118,39 @@ namespace RDFSharp.Query
             this.Aggregators.ForEach(ag =>
                 projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
 
-            //Produce result's table
-            return RDFQueryEngine.CreateNew().CombineTables(projFuncTables, false);
+            //Produce results table
+            DataTable resultTable = RDFQueryEngine.CreateNew().CombineTables(projFuncTables, false);
+
+            //Execute filter algorythm
+            if (this.Aggregators.Any(ag => ag.HavingClause.Item1))
+            {
+                DataTable filteredTable = resultTable.Clone();
+                foreach (RDFAggregator aggregator in this.Aggregators.Where(ag => ag.HavingClause.Item1))
+                {
+
+                    //Build comparison filter representing having-clause
+                    RDFComparisonFilter comparisonFilter = new RDFComparisonFilter(aggregator.HavingClause.Item2, aggregator.ProjectionVariable, aggregator.HavingClause.Item3);
+
+                    //Iterate rows of results table
+                    IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
+                    while (rowsEnum.MoveNext())
+                    {
+                        //Apply comparison filter on current row
+                        if (comparisonFilter.ApplyFilter((DataRow)rowsEnum.Current, false))
+                        {
+                            DataRow newRow = filteredTable.NewRow();
+                            newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
+                            filteredTable.Rows.Add(newRow);
+                        }
+                    }
+
+                    //Assign filtered table to results table
+                    resultTable = filteredTable;
+
+                }
+            }
+
+            return resultTable;
         }
 
         /// <summary>
@@ -146,7 +179,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregatorVars));
             }
             //3 - There should NOT be intersection between partition variables and projection variables
-            if (this.PartitionVariables.Any(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable))))
+            if (this.PartitionVariables.Any(pv => this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable))))
             {
                 String commonPartitionProjectionVars = String.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
                                                                                                .Select(pv => pv.ToString()));

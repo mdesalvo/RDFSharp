@@ -270,7 +270,18 @@ namespace RDFSharp.Query
                 {
                     modifiers.Where(mod => mod is RDFGroupByModifier)
                              .ToList()
-                             .ForEach(gm => { sb.Append("\n"); sb.Append(subqueryBodySpaces + gm); });
+                             .ForEach(gm => 
+                             {
+                                 //GROUP BY
+                                 sb.Append("\n");
+                                 sb.Append(subqueryBodySpaces + gm);
+                                 //HAVING
+                                 if (((RDFGroupByModifier)gm).Aggregators.Any(ag => ag.HavingClause.Item1))
+                                 {
+                                     sb.Append("\n");
+                                     sb.Append(String.Format(subqueryBodySpaces + "HAVING ( {0} )", String.Join(" && ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
+                                 }                                 
+                             });
                 }
 
                 // ORDER BY
