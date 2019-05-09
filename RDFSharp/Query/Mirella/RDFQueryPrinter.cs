@@ -98,7 +98,7 @@ namespace RDFSharp.Query
                              sb.Append(" ");
                              sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).PartitionVariables));
                              sb.Append(" ");
-                             sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).Aggregators));
+                             sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
                          });
                 }
                 //Query hasn't groupby modifier

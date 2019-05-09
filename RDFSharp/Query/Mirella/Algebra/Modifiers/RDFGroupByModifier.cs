@@ -54,8 +54,10 @@ namespace RDFSharp.Query
                     if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
                     {
                         this.PartitionVariables.Add(pv1);
-                        this.Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
                         this.IsEvaluable = true;
+
+                        //At every partition variable must correspond a partition aggregator
+                        this.Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
                     }
                 });
             }

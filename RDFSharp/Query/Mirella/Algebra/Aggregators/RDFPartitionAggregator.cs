@@ -22,16 +22,16 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFPartitionAggregator represents a specialization of SAMPLE aggregation function always applied by a GroupBy modifier
+    /// RDFPartitionAggregator represents a PARTITION aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFPartitionAggregator : RDFSampleAggregator
+    internal class RDFPartitionAggregator : RDFSampleAggregator
     {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a default aggregator on the given variable and with the given projection name
+        /// Default-ctor to build a PARTITION aggregator on the given variable and with the given projection name
         /// </summary>
-        public RDFPartitionAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+        internal RDFPartitionAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
         #endregion
 
         #region Interfaces
