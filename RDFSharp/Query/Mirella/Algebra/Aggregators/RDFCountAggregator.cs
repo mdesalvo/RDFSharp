@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -106,7 +107,7 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, 0d);
-            bindings.Add(this.ProjectionVariable.VariableName, new RDFTypedLiteral(aggregatorValue.ToString(), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+            bindings.Add(this.ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
 
             //Add bindings to result's table
             RDFQueryEngine.AddRow(projFuncTable, bindings);
