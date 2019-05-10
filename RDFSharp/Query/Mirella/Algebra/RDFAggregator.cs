@@ -172,23 +172,22 @@ namespace RDFSharp.Query
                 switch (this.HavingClause.Item2)
                 {
                     case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                        result.Append(" < ");
+                        result.Append("< ");
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                        result.Append(" <= ");
+                        result.Append("<= ");
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                        result.Append(" = ");
+                        result.Append("= ");
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                        result.Append(" != ");
+                        result.Append("!= ");
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                        result.Append(" >= ");
+                        result.Append(">= ");
                         break;
                     case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                        result.Append(" >" +
-                            " ");
+                        result.Append("> ");
                         break;
                 }
                 result.Append(RDFQueryPrinter.PrintPatternMember(this.HavingClause.Item3, prefixes));

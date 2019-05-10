@@ -108,55 +108,18 @@ namespace RDFSharp.Query
             ConsistencyChecks(table);
 
             //Execute partition algorythm
-            foreach (DataRow tableRow in table.Rows)
-            {
-                String partitionKey = GetPartitionKey(tableRow);
-                this.Aggregators.ForEach(ag =>
-                    ag.ExecutePartition(partitionKey, tableRow));
-            }                
+            ExecutePartitionAlgorythm(table);
 
             //Execute projection algorythm
-            List<DataTable> projFuncTables = new List<DataTable>(); 
-            this.Aggregators.ForEach(ag =>
-                projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
-
-            //Produce results table
-            DataTable resultTable = RDFQueryEngine.CreateNew().CombineTables(projFuncTables, false);
+            DataTable resultTable = ExecuteProjectionAlgorythm();
 
             //Execute filter algorythm
-            if (this.Aggregators.Any(ag => ag.HavingClause.Item1))
-            {
-                DataTable filteredTable = resultTable.Clone();
-                foreach (RDFAggregator aggregator in this.Aggregators.Where(ag => ag.HavingClause.Item1))
-                {
-
-                    //Build comparison filter representing having-clause
-                    RDFComparisonFilter comparisonFilter = new RDFComparisonFilter(aggregator.HavingClause.Item2, aggregator.ProjectionVariable, aggregator.HavingClause.Item3);
-
-                    //Iterate rows of results table
-                    IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
-                    while (rowsEnum.MoveNext())
-                    {
-                        //Apply comparison filter on current row
-                        if (comparisonFilter.ApplyFilter((DataRow)rowsEnum.Current, false))
-                        {
-                            DataRow newRow = filteredTable.NewRow();
-                            newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
-                            filteredTable.Rows.Add(newRow);
-                        }
-                    }
-
-                    //Assign filtered table to results table
-                    resultTable = filteredTable;
-
-                }
-            }
-
-            return resultTable;
+            DataTable filteredTable = ExecuteFilterAlgorythm(resultTable);
+            return filteredTable;
         }
 
         /// <summary>
-        /// Performs consistency checks on the modifier
+        /// Performs consistency checks
         /// </summary>
         private void ConsistencyChecks(DataTable table)
         {
@@ -186,6 +149,76 @@ namespace RDFSharp.Query
                 String commonPartitionProjectionVars = String.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
                                                                                                .Select(pv => pv.ToString()));
                 throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning and projection: {0}", commonPartitionProjectionVars));
+            }
+        }
+
+        /// <summary>
+        /// Executes partition algorythm
+        /// </summary>
+        private void ExecutePartitionAlgorythm(DataTable table)
+        {
+            foreach (DataRow tableRow in table.Rows)
+            {
+                String partitionKey = GetPartitionKey(tableRow);
+                this.Aggregators.ForEach(ag =>
+                    ag.ExecutePartition(partitionKey, tableRow));
+            }
+        }
+
+        /// <summary>
+        /// Executes projection algorythm
+        /// </summary>
+        private DataTable ExecuteProjectionAlgorythm()
+        {
+            List<DataTable> projFuncTables = new List<DataTable>();
+            this.Aggregators.ForEach(ag =>
+                projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
+
+            DataTable resultTable = RDFQueryEngine.CreateNew()
+                                                  .CombineTables(projFuncTables, false);
+            return resultTable;
+        }
+
+        /// <summary>
+        /// Execute filter algorythm
+        /// </summary>
+        private DataTable ExecuteFilterAlgorythm(DataTable resultTable)
+        {
+            if (this.Aggregators.Any(ag => ag.HavingClause.Item1))
+            {
+                DataTable filteredTable = resultTable.Clone();
+                IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
+                IEnumerable<RDFComparisonFilter> havingFilters = this.Aggregators.Where(ag => ag.HavingClause.Item1)
+                                                                                 .Select(ag => new RDFComparisonFilter(ag.HavingClause.Item2,
+                                                                                                                       ag.ProjectionVariable,
+                                                                                                                       ag.HavingClause.Item3));
+                #region ExecuteFilters
+                Boolean keepRow = false;
+                while (rowsEnum.MoveNext())
+                {
+
+                    keepRow = true;
+                    var filtersEnum = havingFilters.GetEnumerator();
+                    while (keepRow && filtersEnum.MoveNext())
+                    {
+                        keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
+                    }
+
+                    if (keepRow)
+                    {
+                        DataRow newRow = filteredTable.NewRow();
+                        newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
+                        filteredTable.Rows.Add(newRow);
+                    }
+
+                }
+                #endregion
+
+                return filteredTable;
+            }
+            else
+            {
+                return resultTable;
             }
         }
 

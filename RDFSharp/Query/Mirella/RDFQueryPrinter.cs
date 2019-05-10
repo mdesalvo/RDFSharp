@@ -279,7 +279,7 @@ namespace RDFSharp.Query
                                  if (((RDFGroupByModifier)gm).Aggregators.Any(ag => ag.HavingClause.Item1))
                                  {
                                      sb.Append("\n");
-                                     sb.Append(String.Format(subqueryBodySpaces + "HAVING ( {0} )", String.Join(" && ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
+                                     sb.Append(String.Format(subqueryBodySpaces + "HAVING ({0})", String.Join(" && ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
                                  }                                 
                              });
                 }
