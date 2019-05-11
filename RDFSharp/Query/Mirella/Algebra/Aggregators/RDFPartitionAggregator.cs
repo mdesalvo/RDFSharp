@@ -36,7 +36,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the default aggregator
+        /// Gets the string representation of the PARTITION aggregator
         /// </summary>
         public override String ToString()
         {
