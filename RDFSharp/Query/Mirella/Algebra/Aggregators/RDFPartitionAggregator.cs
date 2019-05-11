@@ -52,7 +52,7 @@ namespace RDFSharp.Query
         {
             //Get aggregator value
             String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty) ?? String.Empty;
-            //Update aggregator context (sample)
+            //Update aggregator context (partition)
             if (String.IsNullOrEmpty(aggregatorValue))
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, partitionKey);
         }
