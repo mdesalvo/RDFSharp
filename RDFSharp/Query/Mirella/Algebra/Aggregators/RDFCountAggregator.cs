@@ -66,7 +66,7 @@ namespace RDFSharp.Query
             }
             //Get aggregator value
             Double aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<Double>(partitionKey, 0d);
-            //Update aggregator context (sample)
+            //Update aggregator context (count)
             this.AggregatorContext.UpdatePartitionKeyExecutionResult<Double>(partitionKey, aggregatorValue + 1);
         }
 
