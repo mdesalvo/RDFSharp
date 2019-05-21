@@ -26,7 +26,7 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFInFilter represents a filter checking if a variable is found in a given set of RDF terms.
+    /// RDFInFilter represents a filter checking if a RDF term is found in a given set of RDF terms.
     /// </summary>
     public class RDFInFilter : RDFFilter
     {
