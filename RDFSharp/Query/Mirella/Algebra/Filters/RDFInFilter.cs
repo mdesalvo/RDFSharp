@@ -88,7 +88,7 @@ namespace RDFSharp.Query
             while(inTermsEnumerator.MoveNext())
             {
                 RDFComparisonFilter compFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, this.TermToSearch, inTermsEnumerator.Current);
-                keepRow = compFilter.ApplyFilter(row, applyNegation);
+                keepRow = compFilter.ApplyFilter(row, false);
                 if (keepRow)
                 {
                     break;
