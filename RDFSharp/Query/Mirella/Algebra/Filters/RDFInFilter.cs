@@ -53,6 +53,8 @@ namespace RDFSharp.Query
             {
                 this.TermToSearch = termToSearch;
                 this.InTerms = inTerms ?? new List<RDFPatternMember>();
+                //Do not accept null values in input list
+                this.InTerms.RemoveAll(t => t == null);
             }
             else
             {
