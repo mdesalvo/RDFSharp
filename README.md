@@ -1,6 +1,6 @@
 # RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp)
 
-RDFSharp is a lightweight C# framework designed to ease the creation of .NET applications based on the <b>RDF model</b>, representing a straightforward <b>didactic</b> solution for start playing with RDF, SPARQL and Semantic Web concepts. 
+RDFSharp is a lightweight C# framework designed to ease the creation of .NET applications based on the <b>RDF model</b>, representing a straightforward solution for start working with RDF, SPARQL and Semantic Web concepts. 
 
 RDFSharp has a modular API made up of three layers: 
 
