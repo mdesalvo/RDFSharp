@@ -50,6 +50,7 @@ namespace RDFSharp.Query
             if (pattern != null)
             {
                 this.Pattern = pattern;
+                this.IsEvaluable = true;
             }
             else
             {
