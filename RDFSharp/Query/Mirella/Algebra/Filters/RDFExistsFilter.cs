@@ -134,7 +134,7 @@ namespace RDFSharp.Query
 
                 #region Decision
                 //Verify filter's response on the pattern resultset
-                if (patternResultsEnumerable.Any())
+                if (patternResultsEnumerable.ToList().Any())
                     keepRow = true;
                 #endregion
 
