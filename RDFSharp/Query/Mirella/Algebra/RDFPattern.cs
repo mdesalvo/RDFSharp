@@ -194,7 +194,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintPattern(this, new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            return RDFQueryPrinter.PrintPattern(this, prefixes);
         }
         #endregion
 

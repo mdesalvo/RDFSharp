@@ -568,12 +568,12 @@ namespace RDFSharp.Query
                 #region Pattern
                 if (evaluablePGMember is RDFPattern)
                 {
-                    var patternResultsTable = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)evaluablePGMember, (RDFGraph)graphOrStore) :
-                                                                       ApplyPattern((RDFPattern)evaluablePGMember, (RDFStore)graphOrStore);
+                    DataTable patternResultsTable = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)evaluablePGMember, (RDFGraph)graphOrStore) :
+                                                                             ApplyPattern((RDFPattern)evaluablePGMember, (RDFStore)graphOrStore);
 
                     #region Events
                     //Raise query event messages
-                    var eventMsg = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, graphOrStore, patternResultsTable.Rows.Count);
+                    String eventMsg = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, graphOrStore, patternResultsTable.Rows.Count);
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -597,11 +597,11 @@ namespace RDFSharp.Query
                 #region PropertyPath
                 else if (evaluablePGMember is RDFPropertyPath)
                 {
-                    var pPathResultsTable = ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, graphOrStore);
+                    DataTable pPathResultsTable = ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, graphOrStore);
 
                     #region Events
                     //Raise query event messages
-                    var eventMsg = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, graphOrStore, pPathResultsTable.Rows.Count));
+                    String eventMsg = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, graphOrStore, pPathResultsTable.Rows.Count));
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -617,6 +617,30 @@ namespace RDFSharp.Query
 
                     //Save result datatable
                     QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
+                }
+                #endregion
+
+                #region Filter
+                else if (evaluablePGMember is RDFFilter)
+                {
+
+                    #region ExistsFilter
+                    if (evaluablePGMember is RDFExistsFilter)
+                    {
+                        DataTable existsFilterResultsTable = graphOrStore.IsGraph() ? ApplyPattern(((RDFExistsFilter)evaluablePGMember).Pattern, (RDFGraph)graphOrStore) :
+                                                                                      ApplyPattern(((RDFExistsFilter)evaluablePGMember).Pattern, (RDFStore)graphOrStore);
+
+                        //Set name and metadata of result datatable
+                        existsFilterResultsTable.TableName = ((RDFExistsFilter)evaluablePGMember).Pattern.ToString();
+                        existsFilterResultsTable.ExtendedProperties.Add("IsOptional",  false);
+                        existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
+
+                        //Cleanup and assign result datatable
+                        ((RDFExistsFilter)evaluablePGMember).PatternResults?.Clear();
+                        ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
+                    }
+                    #endregion
+
                 }
                 #endregion
 

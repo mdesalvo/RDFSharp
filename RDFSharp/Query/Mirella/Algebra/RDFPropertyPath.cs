@@ -99,7 +99,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintPropertyPath(this, new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            return RDFQueryPrinter.PrintPropertyPath(this, prefixes);
         }
         #endregion
 
