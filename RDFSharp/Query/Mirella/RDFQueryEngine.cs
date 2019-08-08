@@ -83,6 +83,13 @@ namespace RDFSharp.Query
                     {
                         RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm => 
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
                         {
@@ -92,7 +99,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -112,7 +119,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -193,6 +200,13 @@ namespace RDFSharp.Query
                     {
                         RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
                         {
@@ -202,7 +216,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -222,7 +236,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -353,6 +367,13 @@ namespace RDFSharp.Query
                     {
                         RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
                         {
@@ -362,7 +383,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -382,7 +403,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -466,6 +487,13 @@ namespace RDFSharp.Query
                     {
                         RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
                         {
@@ -475,7 +503,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -495,7 +523,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -556,7 +584,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
-        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore)
+        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore, Boolean withinFederation)
         {
             QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
@@ -635,9 +663,15 @@ namespace RDFSharp.Query
                         existsFilterResultsTable.ExtendedProperties.Add("IsOptional",  false);
                         existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
 
-                        //Cleanup and assign result datatable
-                        ((RDFExistsFilter)evaluablePGMember).PatternResults?.Clear();
-                        ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
+                        //Initialize result datatable if needed
+                        if (((RDFExistsFilter)evaluablePGMember).PatternResults == null)
+                            ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable.Clone();
+
+                        //Assign result datatable (federation merges data)
+                        if (withinFederation)
+                            ((RDFExistsFilter)evaluablePGMember).PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
+                        else
+                            ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
                     }
                     #endregion
 
