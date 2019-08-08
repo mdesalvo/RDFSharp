@@ -153,13 +153,6 @@ namespace RDFSharp.Query
 
             return keepRow;
         }
-        
-        //Sets the resultset of the filter's pattern
-        internal RDFExistsFilter SetPatternResultset(DataTable table)
-        {
-            this.PatternResults = table;
-            return this;
-        }
         #endregion
 
     }
