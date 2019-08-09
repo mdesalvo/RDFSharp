@@ -69,7 +69,7 @@ namespace RDFSharp.Query
         }
         internal override String ToString(List<RDFNamespace> prefixes)
         {
-            return "FILTER ( EXISTS(" + this.Pattern.ToString(prefixes) + ") )";
+            return "FILTER ( EXISTS { " + this.Pattern.ToString(prefixes) + " } )";
         }
         #endregion
 
