@@ -43,7 +43,14 @@ namespace RDFSharp.Query
         {
             if (filter != null)
             {
-                this.Filter = filter;
+                if (filter is RDFExistsFilter)
+                {
+                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                }
+                else
+                {
+                    this.Filter = filter;
+                }
             }
             else
             {

@@ -48,14 +48,28 @@ namespace RDFSharp.Query
         {
             if (leftFilter != null)
             {
-                if (rightFilter != null)
+                if (leftFilter is RDFExistsFilter)
                 {
-                    this.LeftFilter = leftFilter;
-                    this.RightFilter = rightFilter;
+                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
                 }
                 else
                 {
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");
+                    if (rightFilter != null)
+                    {
+                        if (rightFilter is RDFExistsFilter)
+                        {
+                            throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                        }
+                        else
+                        {
+                            this.LeftFilter = leftFilter;
+                            this.RightFilter = rightFilter;
+                        }
+                    }
+                    else
+                    {
+                        throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");
+                    }
                 }
             }
             else
