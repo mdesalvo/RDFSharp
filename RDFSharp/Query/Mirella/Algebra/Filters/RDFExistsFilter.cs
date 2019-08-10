@@ -80,8 +80,8 @@ namespace RDFSharp.Query
         internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
         {
             Boolean keepRow = false;
-            EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults.AsEnumerable();
-            if (patternResultsEnumerable.Any())
+            EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
+            if (patternResultsEnumerable?.Any() ?? false)
             {
 
                 #region Evaluation
