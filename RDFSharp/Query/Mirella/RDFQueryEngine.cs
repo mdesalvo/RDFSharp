@@ -87,7 +87,11 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm => 
                         {
                             if (gm is RDFExistsFilter)
+                            { 
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
+                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
+                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
+                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -204,7 +208,11 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
+                            {
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
+                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
+                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
+                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -371,7 +379,11 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
+                            {
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
+                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
+                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
+                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -491,7 +503,11 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
+                            {
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
+                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
+                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
+                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -672,6 +688,26 @@ namespace RDFSharp.Query
                             ((RDFExistsFilter)evaluablePGMember).PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
                         else
                             ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
+
+                        //Assign pattern groundness and satisfaction
+                        if (((RDFExistsFilter)evaluablePGMember).Pattern.Variables.Any())
+                        {
+                            ((RDFExistsFilter)evaluablePGMember).IsGroundAndSatisfied = false;
+                            ((RDFExistsFilter)evaluablePGMember).IsGroundAndUnsatisfied = false;
+                        }
+                        else
+                        {
+                            if (((RDFExistsFilter)evaluablePGMember).PatternResults.Rows.Count > 0)
+                            {
+                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndSatisfied = true;
+                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndUnsatisfied = false;
+                            }
+                            else
+                            {
+                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndSatisfied = false;
+                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndUnsatisfied = true;
+                            }
+                        }
                     }
                     #endregion
 
