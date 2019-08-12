@@ -691,7 +691,7 @@ namespace RDFSharp.Query
             {
 
                 //Populate query member result table
-                var queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
+                DataTable queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
 
                 //Add it to the list of query member result tables
                 QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
