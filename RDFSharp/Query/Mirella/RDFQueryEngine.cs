@@ -87,11 +87,7 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm => 
                         {
                             if (gm is RDFExistsFilter)
-                            { 
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
-                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
-                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
-                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -208,11 +204,7 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
-                            {
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
-                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
-                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
-                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -379,11 +371,7 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
-                            {
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
-                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
-                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
-                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -503,11 +491,7 @@ namespace RDFSharp.Query
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
-                            {
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
-                                ((RDFExistsFilter)gm).IsGroundAndSatisfied = false;
-                                ((RDFExistsFilter)gm).IsGroundAndUnsatisfied = false;
-                            }
                         });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
@@ -688,26 +672,6 @@ namespace RDFSharp.Query
                             ((RDFExistsFilter)evaluablePGMember).PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
                         else
                             ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
-
-                        //Assign pattern groundness and satisfaction
-                        if (((RDFExistsFilter)evaluablePGMember).Pattern.Variables.Any())
-                        {
-                            ((RDFExistsFilter)evaluablePGMember).IsGroundAndSatisfied = false;
-                            ((RDFExistsFilter)evaluablePGMember).IsGroundAndUnsatisfied = false;
-                        }
-                        else
-                        {
-                            if (((RDFExistsFilter)evaluablePGMember).PatternResults.Rows.Count > 0)
-                            {
-                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndSatisfied = true;
-                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndUnsatisfied = false;
-                            }
-                            else
-                            {
-                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndSatisfied = false;
-                                ((RDFExistsFilter)evaluablePGMember).IsGroundAndUnsatisfied = true;
-                            }
-                        }
                     }
                     #endregion
 
@@ -1239,6 +1203,19 @@ namespace RDFSharp.Query
             var matchingTriples = new List<RDFTriple>();
             var resultTable = new DataTable();
 
+            //Manage pattern groundness (exists/notexists filter)
+            if (!pattern.Variables.Any())
+            {
+                RDFTriple triple = (pattern.Object is RDFResource ? new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
+                                                                  : new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFLiteral)pattern.Object));
+                AddColumn(resultTable, "__GROUND_SATISFIED");
+                AddRow(resultTable, new Dictionary<String, String>()
+                {
+                    { "__GROUND_SATISFIED", graph.ContainsTriple(triple).ToString() }
+                });
+                return resultTable;
+            }
+
             //Apply the right pattern to the graph
             if (pattern.Subject is RDFResource)
             {
@@ -1372,6 +1349,19 @@ namespace RDFSharp.Query
         {
             RDFMemoryStore result = new RDFMemoryStore();
             DataTable resultTable = new DataTable();
+
+            //Manage pattern groundness (exists/notexists filter)
+            if (!pattern.Variables.Any())
+            {
+                RDFQuadruple quadruple = (pattern.Object is RDFResource ? new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
+                                                                        : new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFLiteral)pattern.Object));
+                AddColumn(resultTable, "__GROUND_SATISFIED");
+                AddRow(resultTable, new Dictionary<String, String>()
+                {
+                    { "__GROUND_SATISFIED", store.ContainsQuadruple(quadruple).ToString() }
+                });
+                return resultTable;
+            }
 
             //CSPO pattern
             if (pattern.Context != null)

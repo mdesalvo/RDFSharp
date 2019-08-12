@@ -39,16 +39,6 @@ namespace RDFSharp.Query
         /// Results of the pattern evaluation on the RDF data source
         /// </summary>
         internal DataTable PatternResults { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the pattern is ground and satisfied on the RDF data source 
-        /// </summary>
-        internal Boolean IsGroundAndSatisfied { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the pattern is ground and not satisfied on the RDF data source 
-        /// </summary>
-        internal Boolean IsGroundAndUnsatisfied { get; set; }
         #endregion
 
         #region Ctors
@@ -91,19 +81,21 @@ namespace RDFSharp.Query
         {
             Boolean keepRow = false;
 
-            //Ground-Satisfied pattern
-            if (this.IsGroundAndSatisfied)
-                keepRow = true;
-
-            //Ground-Unsatisfied pattern
-            else if (this.IsGroundAndUnsatisfied)
-                keepRow = false;
-
-            //Non-Ground pattern
-            else
+            //Iterate filter's results
+            EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
+            if (patternResultsEnumerable?.Any() ?? false)
             {
-                EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
-                if (patternResultsEnumerable?.Any() ?? false)
+
+                #region Ground Pattern
+                if (this.PatternResults.Columns.Count == 1 
+                        && this.PatternResults.Columns[0].ColumnName.Equals("__GROUND_SATISFIED"))
+                {
+                    keepRow = patternResultsEnumerable.Any(res => Convert.ToBoolean(res["__GROUND_SATISFIED"]));
+                }
+                #endregion
+
+                #region Non-Ground Pattern
+                else
                 {
 
                     #region Evaluation
@@ -168,6 +160,8 @@ namespace RDFSharp.Query
                     #endregion
 
                 }
+                #endregion
+
             }
 
             //Apply the eventual negation
