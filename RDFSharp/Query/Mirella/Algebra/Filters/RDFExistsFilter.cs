@@ -81,21 +81,16 @@ namespace RDFSharp.Query
         {
             Boolean keepRow = false;
 
-            //Iterate filter's results
-            EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
-            if (patternResultsEnumerable?.Any() ?? false)
+            #region GROUND PATTERN
+            if (this.PatternResults?.ExtendedProperties.ContainsKey("GroundSatisfied") ?? false)
+                keepRow = this.PatternResults.ExtendedProperties["GroundSatisfied"].Equals(true);
+            #endregion
+
+            #region NON-GROUND PATTERN
+            else
             {
-
-                #region Ground Pattern
-                if (this.PatternResults.Columns.Count == 1 
-                        && this.PatternResults.Columns[0].ColumnName.Equals("__GROUND_SATISFIED"))
-                {
-                    keepRow = patternResultsEnumerable.Any(res => Convert.ToBoolean(res["__GROUND_SATISFIED"]));
-                }
-                #endregion
-
-                #region Non-Ground Pattern
-                else
+                EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
+                if (patternResultsEnumerable?.Any() ?? false)
                 {
 
                     #region Evaluation
@@ -160,9 +155,8 @@ namespace RDFSharp.Query
                     #endregion
 
                 }
-                #endregion
-
             }
+            #endregion
 
             //Apply the eventual negation
             if (applyNegation)

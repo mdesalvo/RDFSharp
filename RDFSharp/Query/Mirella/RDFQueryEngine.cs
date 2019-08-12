@@ -1208,11 +1208,7 @@ namespace RDFSharp.Query
             {
                 RDFTriple triple = (pattern.Object is RDFResource ? new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
                                                                   : new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFLiteral)pattern.Object));
-                AddColumn(resultTable, "__GROUND_SATISFIED");
-                AddRow(resultTable, new Dictionary<String, String>()
-                {
-                    { "__GROUND_SATISFIED", graph.ContainsTriple(triple).ToString() }
-                });
+                resultTable.ExtendedProperties.Add("GroundSatisfied", graph.ContainsTriple(triple));
                 return resultTable;
             }
             #endregion
@@ -1358,11 +1354,7 @@ namespace RDFSharp.Query
             {
                 RDFQuadruple quadruple = (pattern.Object is RDFResource ? new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
                                                                         : new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFLiteral)pattern.Object));
-                AddColumn(resultTable, "__GROUND_SATISFIED");
-                AddRow(resultTable, new Dictionary<String, String>()
-                {
-                    { "__GROUND_SATISFIED", store.ContainsQuadruple(quadruple).ToString() }
-                });
+                resultTable.ExtendedProperties.Add("GroundSatisfied", store.ContainsQuadruple(quadruple));
                 return resultTable;
             }
             #endregion
