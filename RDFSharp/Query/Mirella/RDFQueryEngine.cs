@@ -1200,8 +1200,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPattern(RDFPattern pattern, RDFGraph graph)
         {
-            var matchingTriples = new List<RDFTriple>();
-            var resultTable = new DataTable();
+            List<RDFTriple> matchingTriples = new List<RDFTriple>();
+            DataTable resultTable = new DataTable();
 
             #region Ground Pattern
             if (!pattern.Variables.Any())
