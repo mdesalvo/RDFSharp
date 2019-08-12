@@ -1203,7 +1203,7 @@ namespace RDFSharp.Query
             var matchingTriples = new List<RDFTriple>();
             var resultTable = new DataTable();
 
-            //Manage pattern groundness (exists/notexists filter)
+            #region Ground Pattern
             if (!pattern.Variables.Any())
             {
                 RDFTriple triple = (pattern.Object is RDFResource ? new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
@@ -1215,8 +1215,9 @@ namespace RDFSharp.Query
                 });
                 return resultTable;
             }
+            #endregion
 
-            //Apply the right pattern to the graph
+            #region Non-Ground Pattern
             if (pattern.Subject is RDFResource)
             {
                 if (pattern.Predicate is RDFResource)
@@ -1339,6 +1340,8 @@ namespace RDFSharp.Query
                     }
                 }
             }
+            #endregion
+
             return resultTable;
         }
 
@@ -1350,7 +1353,7 @@ namespace RDFSharp.Query
             RDFMemoryStore result = new RDFMemoryStore();
             DataTable resultTable = new DataTable();
 
-            //Manage pattern groundness (exists/notexists filter)
+            #region GROUND PATTERN
             if (!pattern.Variables.Any())
             {
                 RDFQuadruple quadruple = (pattern.Object is RDFResource ? new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
@@ -1362,7 +1365,9 @@ namespace RDFSharp.Query
                 });
                 return resultTable;
             }
+            #endregion
 
+            #region NON-GROUND PATTERN
             //CSPO pattern
             if (pattern.Context != null)
             {
@@ -1832,6 +1837,7 @@ namespace RDFSharp.Query
                     }
                 }
             }
+            #endregion
 
             return resultTable;
         }
@@ -1841,19 +1847,19 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource graphOrStore)
         {
-            var resultTable = new DataTable();
+            DataTable resultTable = new DataTable();
 
             //Translate property path into equivalent list of patterns
-            var patternList = propertyPath.GetPatternList();
+            List<RDFPattern> patternList = propertyPath.GetPatternList();
 
             //Evaluate produced list of patterns
-            var patternTables = new List<DataTable>();
+            List<DataTable> patternTables = new List<DataTable>();
             patternList.ForEach(pattern =>
             {
 
                 //Apply pattern to graph
-                var patternTable = graphOrStore is RDFGraph ? ApplyPattern(pattern, (RDFGraph)graphOrStore) :
-                                                              ApplyPattern(pattern, (RDFStore)graphOrStore);
+                DataTable patternTable = graphOrStore is RDFGraph ? ApplyPattern(pattern, (RDFGraph)graphOrStore) :
+                                                                    ApplyPattern(pattern, (RDFStore)graphOrStore);
 
                 //Set extended properties
                 patternTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
@@ -1868,7 +1874,7 @@ namespace RDFSharp.Query
             resultTable = CombineTables(patternTables, false);
 
             //Remove property path variables
-            var propPathCols = new List<DataColumn>();
+            List<DataColumn> propPathCols = new List<DataColumn>();
             foreach (DataColumn dtCol in resultTable.Columns)
             {
                 if (dtCol.ColumnName.StartsWith("?__PP"))
