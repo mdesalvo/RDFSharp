@@ -124,7 +124,7 @@ namespace RDFSharp.Query
             //Avoid chaining of alternative steps
             if (this.Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
             {
-                RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: discarding given alternativeSteps because this kind of chaining is not allowed.");
+                RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: chaining of alternative steps detected, discarding these ones.");
                 return this;
             }   
 
@@ -147,9 +147,12 @@ namespace RDFSharp.Query
 
                 //Avoid evaluability of ground property paths
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
+                {
                     this.IsEvaluable = true;
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: non-ground property path detected, evaluability granted or confirmed.");
+                }   
                 else
-                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: ground property path detected, evaluability not granted at the moment.");
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: ground property path detected, evaluability not granted.");
             }
             return this;
         }
@@ -167,9 +170,12 @@ namespace RDFSharp.Query
 
                 //Avoid evaluability of ground property paths
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
+                {
                     this.IsEvaluable = true;
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: non-ground property path detected, evaluability granted or confirmed.");
+                }   
                 else
-                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted at the moment.");
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted.");
             }
             return this;
         }
