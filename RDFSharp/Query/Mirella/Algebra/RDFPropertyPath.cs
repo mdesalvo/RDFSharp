@@ -170,7 +170,6 @@ namespace RDFSharp.Query
                     this.IsEvaluable = true;
                 else
                     RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted.");
-
             }
             return this;
         }
