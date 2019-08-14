@@ -108,6 +108,26 @@ namespace RDFSharp.Query
         }
         #endregion
 
+        #region OnGENERICQueryEvaluation
+        /// <summary>
+        /// Event representing an information message generated during SPARQL query evaluation
+        /// </summary>
+        public static event RDFGENERICQueryEvaluationEventHandler OnGENERICQueryEvaluation = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated during SPARQL query evaluation
+        /// </summary>
+        public delegate void RDFGENERICQueryEvaluationEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseGENERICQueryEvaluation(String eventMessage)
+        {
+            Parallel.Invoke(() => OnGENERICQueryEvaluation(DateTime.Now.ToString() + ";GENERIC_QUERY_EVALUATION;" + eventMessage));
+        }
+        #endregion
+
         #endregion
 
     }
