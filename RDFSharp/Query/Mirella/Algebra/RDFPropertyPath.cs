@@ -152,7 +152,9 @@ namespace RDFSharp.Query
                     RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: non-ground property path detected, evaluability granted or confirmed.");
                 }   
                 else
+                { 
                     RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: ground property path detected, evaluability not granted.");
+                }
             }
             return this;
         }
@@ -175,7 +177,9 @@ namespace RDFSharp.Query
                     RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: non-ground property path detected, evaluability granted or confirmed.");
                 }   
                 else
+                { 
                     RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted.");
+                }
             }
             return this;
         }
