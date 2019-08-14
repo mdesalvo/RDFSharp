@@ -124,7 +124,7 @@ namespace RDFSharp.Query
             //Avoid chaining of alternative steps
             if (this.Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
             {
-                RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: chaining of alternative steps detected, discarding these ones.");
+                RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: chaining of alternative steps detected, discarding last ones.");
                 return this;
             }   
 
