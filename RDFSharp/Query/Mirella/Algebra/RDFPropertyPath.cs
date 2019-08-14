@@ -142,7 +142,7 @@ namespace RDFSharp.Query
                     });
                 }
 
-                //Update property path evaluability
+                //Anti-groundness evaluability guard
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
                     this.IsEvaluable = true;
             }
@@ -160,7 +160,7 @@ namespace RDFSharp.Query
                 this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
                                            .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
 
-                //Update property path evaluability
+                //Anti-groundness evaluability guard
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
                     this.IsEvaluable = true;
             }
