@@ -57,6 +57,11 @@ namespace RDFSharp.Query
         internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
         {
             Boolean keepRow = base.ApplyFilter(row, true);
+
+            //Apply the eventual negation
+            if (applyNegation)
+                keepRow = !keepRow;
+
             return keepRow;
         }
         #endregion

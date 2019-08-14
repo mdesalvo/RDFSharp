@@ -175,7 +175,7 @@ namespace RDFSharp.Query
                 projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
 
             DataTable resultTable = RDFQueryEngine.CreateNew()
-                                                  .CombineTables(projFuncTables, false, false);
+                                                  .CombineTables(projFuncTables, false);
             return resultTable;
         }
 

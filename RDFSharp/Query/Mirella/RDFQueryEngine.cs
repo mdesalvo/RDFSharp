@@ -166,7 +166,7 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false, false);
+                var queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
 
                 //Step 5: Apply the modifiers of the query to the result table
                 queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
@@ -283,7 +283,7 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                DataTable queryResultTable = CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false, false);
+                DataTable queryResultTable = CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
 
                 //Step 5: Describe the terms from the result table
                 DataTable describeResultTable = new DataTable(this.ToString());
@@ -450,7 +450,7 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false, false);
+                DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
 
                 //Step 5: Fill the templates from the result table
                 DataTable filledResultTable = FillTemplates(constructQuery, queryResultTable);
@@ -570,7 +570,7 @@ namespace RDFSharp.Query
                 }
 
                 //Step 4: Get the result table of the query
-                var queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false, false);
+                var queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
 
                 //Step 5: Transform the result into a boolean response 
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
@@ -691,7 +691,7 @@ namespace RDFSharp.Query
             {
 
                 //Populate query member result table
-                DataTable queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false, false);
+                DataTable queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
 
                 //Add it to the list of query member result tables
                 QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
@@ -1203,17 +1203,7 @@ namespace RDFSharp.Query
             List<RDFTriple> matchingTriples = new List<RDFTriple>();
             DataTable resultTable = new DataTable();
 
-            #region Ground Pattern
-            if (!pattern.Variables.Any())
-            {
-                RDFTriple triple = (pattern.Object is RDFResource ? new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
-                                                                  : new RDFTriple((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFLiteral)pattern.Object));
-                resultTable.ExtendedProperties.Add("GroundSatisfied", graph.ContainsTriple(triple));
-                return resultTable;
-            }
-            #endregion
-
-            #region Non-Ground Pattern
+            //SPO pattern
             if (pattern.Subject is RDFResource)
             {
                 if (pattern.Predicate is RDFResource)
@@ -1336,7 +1326,6 @@ namespace RDFSharp.Query
                     }
                 }
             }
-            #endregion
 
             return resultTable;
         }
@@ -1349,17 +1338,6 @@ namespace RDFSharp.Query
             RDFMemoryStore result = new RDFMemoryStore();
             DataTable resultTable = new DataTable();
 
-            #region GROUND PATTERN
-            if (!pattern.Variables.Any())
-            {
-                RDFQuadruple quadruple = (pattern.Object is RDFResource ? new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFResource)pattern.Object)
-                                                                        : new RDFQuadruple((RDFContext)pattern.Context, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, (RDFLiteral)pattern.Object));
-                resultTable.ExtendedProperties.Add("GroundSatisfied", store.ContainsQuadruple(quadruple));
-                return resultTable;
-            }
-            #endregion
-
-            #region NON-GROUND PATTERN
             //CSPO pattern
             if (pattern.Context != null)
             {
@@ -1829,7 +1807,6 @@ namespace RDFSharp.Query
                     }
                 }
             }
-            #endregion
 
             return resultTable;
         }
@@ -1863,7 +1840,7 @@ namespace RDFSharp.Query
             });
 
             //Merge produced list of tables
-            resultTable = CombineTables(patternTables, false, true);
+            resultTable = CombineTables(patternTables, false);
 
             //Remove property path variables
             List<DataColumn> propPathCols = new List<DataColumn>();
@@ -2442,15 +2419,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Merges / Joins / Products the given list of data tables, based on presence of common columns and dynamic detection of Optional / Union operators
         /// </summary>
-        internal DataTable CombineTables(List<DataTable> dataTables, Boolean isMerge, Boolean fromPropertyPath)
+        internal DataTable CombineTables(List<DataTable> dataTables, Boolean isMerge)
         {
             DataTable finalTable = new DataTable();
             Boolean switchToOuterJoin = false;
-
-            //Ground satisfied tables are only for property paths
-            if (!fromPropertyPath)
-                dataTables.RemoveAll(t => t.ExtendedProperties.ContainsKey("GroundSatisfied") && t.ExtendedProperties["GroundSatisfied"].Equals(true));
-
             if (dataTables.Count > 0)
             {
 

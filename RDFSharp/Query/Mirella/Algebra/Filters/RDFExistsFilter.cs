@@ -49,8 +49,15 @@ namespace RDFSharp.Query
         {
             if (pattern != null)
             {
-                this.Pattern = pattern;
-                this.IsEvaluable = true;
+                if (pattern.Variables.Any())
+                {
+                    this.Pattern = pattern;
+                    this.IsEvaluable = true;
+                }
+                else
+                {
+                    throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is a ground pattern.");
+                }
             }
             else
             {
@@ -80,83 +87,72 @@ namespace RDFSharp.Query
         internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
         {
             Boolean keepRow = false;
-
-            #region GROUND PATTERN
-            if (this.PatternResults?.ExtendedProperties.ContainsKey("GroundSatisfied") ?? false)
-                keepRow = this.PatternResults.ExtendedProperties["GroundSatisfied"].Equals(true);
-            #endregion
-
-            #region NON-GROUND PATTERN
-            else
+            EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
+            if (patternResultsEnumerable?.Any() ?? false)
             {
-                EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
-                if (patternResultsEnumerable?.Any() ?? false)
+
+                #region Evaluation
+
+                #region Subject
+                Boolean subjectCompared = false;
+                if (this.Pattern.Subject is RDFVariable
+                        && this.PatternResults.Columns.Contains(this.Pattern.Subject.ToString())
+                            && row.Table.Columns.Contains(this.Pattern.Subject.ToString()))
                 {
 
-                    #region Evaluation
+                    //Get subject filter's value for the given row
+                    RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Subject.ToString()].ToString());
 
-                    #region Subject
-                    Boolean subjectCompared = false;
-                    if (this.Pattern.Subject is RDFVariable
-                            && this.PatternResults.Columns.Contains(this.Pattern.Subject.ToString())
-                                && row.Table.Columns.Contains(this.Pattern.Subject.ToString()))
-                    {
-
-                        //Get subject filter's value for the given row
-                        RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Subject.ToString()].ToString());
-
-                        //Apply subject filter on the pattern resultset
-                        patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Subject.ToString())).Equals(rowMember));
-                        subjectCompared = true;
-
-                    }
-                    #endregion
-
-                    #region Predicate
-                    Boolean predicateCompared = false;
-                    if (this.Pattern.Predicate is RDFVariable
-                            && this.PatternResults.Columns.Contains(this.Pattern.Predicate.ToString())
-                                && row.Table.Columns.Contains(this.Pattern.Predicate.ToString()))
-                    {
-
-                        //Get predicate filter's value for the given row
-                        RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Predicate.ToString()].ToString());
-
-                        //Apply predicate filter on the pattern resultset
-                        patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Predicate.ToString())).Equals(rowMember));
-                        predicateCompared = true;
-
-                    }
-                    #endregion
-
-                    #region Object
-                    Boolean objectCompared = false;
-                    if (this.Pattern.Object is RDFVariable
-                            && this.PatternResults.Columns.Contains(this.Pattern.Object.ToString())
-                                && row.Table.Columns.Contains(this.Pattern.Object.ToString()))
-                    {
-
-                        //Get object filter's value for the given row
-                        RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Object.ToString()].ToString());
-
-                        //Apply object filter on the pattern resultset
-                        patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Object.ToString())).Equals(rowMember));
-                        objectCompared = true;
-
-                    }
-                    #endregion
-
-                    #endregion
-
-                    #region Decision
-                    //Verify filter's response on the pattern resultset
-                    if ((subjectCompared || predicateCompared || objectCompared) && patternResultsEnumerable.ToList().Any())
-                        keepRow = true;
-                    #endregion
+                    //Apply subject filter on the pattern resultset
+                    patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Subject.ToString())).Equals(rowMember));
+                    subjectCompared = true;
 
                 }
+                #endregion
+
+                #region Predicate
+                Boolean predicateCompared = false;
+                if (this.Pattern.Predicate is RDFVariable
+                        && this.PatternResults.Columns.Contains(this.Pattern.Predicate.ToString())
+                            && row.Table.Columns.Contains(this.Pattern.Predicate.ToString()))
+                {
+
+                    //Get predicate filter's value for the given row
+                    RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Predicate.ToString()].ToString());
+
+                    //Apply predicate filter on the pattern resultset
+                    patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Predicate.ToString())).Equals(rowMember));
+                    predicateCompared = true;
+
+                }
+                #endregion
+
+                #region Object
+                Boolean objectCompared = false;
+                if (this.Pattern.Object is RDFVariable
+                        && this.PatternResults.Columns.Contains(this.Pattern.Object.ToString())
+                            && row.Table.Columns.Contains(this.Pattern.Object.ToString()))
+                {
+
+                    //Get object filter's value for the given row
+                    RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Object.ToString()].ToString());
+
+                    //Apply object filter on the pattern resultset
+                    patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Object.ToString())).Equals(rowMember));
+                    objectCompared = true;
+
+                }
+                #endregion
+
+                #endregion
+
+                #region Decision
+                //Verify filter's response on the pattern resultset
+                if ((subjectCompared || predicateCompared || objectCompared) && patternResultsEnumerable.ToList().Any())
+                    keepRow = true;
+                #endregion
+
             }
-            #endregion
 
             //Apply the eventual negation
             if (applyNegation)
