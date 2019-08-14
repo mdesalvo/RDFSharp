@@ -121,9 +121,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathStep> alternativeSteps)
         {
-            //Avoid sequences of alternative steps
+            //Avoid chaining of alternative steps
             if (this.Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+            {
+                RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: discarding given alternativeSteps because this kind of chaining is not allowed.");
                 return this;
+            }   
 
             if (alternativeSteps != null && alternativeSteps.Any())
             {
@@ -142,9 +145,11 @@ namespace RDFSharp.Query
                     });
                 }
 
-                //Anti-groundness evaluability guard
+                //Avoid evaluability of ground property paths
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
                     this.IsEvaluable = true;
+                else
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: ground property path detected, evaluability not granted.");
             }
             return this;
         }
@@ -160,9 +165,12 @@ namespace RDFSharp.Query
                 this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
                                            .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
 
-                //Anti-groundness evaluability guard
+                //Avoid evaluability of ground property paths
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
                     this.IsEvaluable = true;
+                else
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted.");
+
             }
             return this;
         }
