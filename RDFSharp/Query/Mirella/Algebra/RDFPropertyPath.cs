@@ -41,6 +41,11 @@ namespace RDFSharp.Query
         internal List<RDFPropertyPathStep> Steps { get; set; }
 
         /// <summary>
+        /// Depth of the path
+        /// </summary>
+        internal Int32 Depth { get; set; }
+
+        /// <summary>
         /// End of the path
         /// </summary>
         public RDFPatternMember End { get; internal set; }
@@ -72,6 +77,9 @@ namespace RDFSharp.Query
 
             //Steps
             this.Steps = new List<RDFPropertyPathStep>();
+
+            //Depth
+            this.Depth = 0;
 
             //End
             if (end != null)
@@ -113,8 +121,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathStep> alternativeSteps)
         {
+            //Avoid sequences of alternative steps
+            if (this.Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                return this;
+
             if (alternativeSteps != null && alternativeSteps.Any())
             {
+                this.Depth++;
                 if (alternativeSteps.Count == 1)
                 {
                     this.Steps.Add(alternativeSteps[0].SetOrdinal(this.Steps.Count)
@@ -128,7 +141,10 @@ namespace RDFSharp.Query
                                                       .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
                     });
                 }
-                this.IsEvaluable = true;
+
+                //Update property path evaluability
+                if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
+                    this.IsEvaluable = true;
             }
             return this;
         }
@@ -140,9 +156,13 @@ namespace RDFSharp.Query
         {
             if (sequenceStep != null)
             {
+                this.Depth++;
                 this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
                                            .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
-                this.IsEvaluable = true;
+
+                //Update property path evaluability
+                if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
+                    this.IsEvaluable = true;
             }
             return this;
         }
