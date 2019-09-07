@@ -240,11 +240,11 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Removes the quadruples with the given (non-blank) predicate
+        /// Removes the quadruples with the given predicate
         /// </summary>
         public override RDFStore RemoveQuadruplesByPredicate(RDFResource predicateResource)
         {
-            if (predicateResource != null && !predicateResource.IsBlank)
+            if (predicateResource != null)
             {
                 foreach (var quad in this.SelectQuadruplesByPredicate(predicateResource))
                 {
@@ -287,6 +287,305 @@ namespace RDFSharp.Store
             if (literalObject != null)
             {
                 foreach (var quad in this.SelectQuadruplesByLiteral(literalObject))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and subject
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubject(RDFContext contextResource, RDFResource subjectResource)
+        {
+            if (contextResource != null && subjectResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesBySubject(subjectResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and predicate
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextPredicate(RDFContext contextResource, RDFResource predicateResource)
+        {
+            if (contextResource != null && predicateResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesByPredicate(predicateResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextObject(RDFContext contextResource, RDFResource objectResource)
+        {
+            if (contextResource != null && objectResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesByObject(objectResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextLiteral(RDFContext contextResource, RDFLiteral objectLiteral)
+        {
+            if (contextResource != null && objectLiteral != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesByLiteral(objectLiteral))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and predicate
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubjectPredicate(RDFContext contextResource, RDFResource subjectResource, RDFResource predicateResource)
+        {
+            if (contextResource != null && subjectResource != null && predicateResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesBySubject(subjectResource)
+                                         .SelectQuadruplesByPredicate(predicateResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubjectObject(RDFContext contextResource, RDFResource subjectResource, RDFResource objectResource)
+        {
+            if (contextResource != null && subjectResource != null && objectResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesBySubject(subjectResource)
+                                         .SelectQuadruplesByObject(objectResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubjectLiteral(RDFContext contextResource, RDFResource subjectResource, RDFLiteral objectLiteral)
+        {
+            if (contextResource != null && subjectResource != null && objectLiteral != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesBySubject(subjectResource)
+                                         .SelectQuadruplesByLiteral(objectLiteral))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, predicate and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextPredicateObject(RDFContext contextResource, RDFResource predicateResource, RDFResource objectResource)
+        {
+            if (contextResource != null && predicateResource != null && objectResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesByPredicate(predicateResource)
+                                         .SelectQuadruplesByObject(objectResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, predicate and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextPredicateLiteral(RDFContext contextResource, RDFResource predicateResource, RDFLiteral objectLiteral)
+        {
+            if (contextResource != null && predicateResource != null && objectLiteral != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByContext(contextResource)
+                                         .SelectQuadruplesByPredicate(predicateResource)
+                                         .SelectQuadruplesByLiteral(objectLiteral))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and predicate
+        /// </summary>
+        public override RDFStore RemoveQuadruplesBySubjectPredicate(RDFResource subjectResource, RDFResource predicateResource)
+        {
+            if (subjectResource != null && predicateResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesBySubject(subjectResource)
+                                         .SelectQuadruplesByPredicate(predicateResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource)
+        {
+            if (subjectResource != null && objectResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesBySubject(subjectResource)
+                                         .SelectQuadruplesByObject(objectResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesBySubjectLiteral(RDFResource subjectResource, RDFLiteral objectLiteral)
+        {
+            if (subjectResource != null && objectLiteral != null)
+            {
+                foreach (var quad in this.SelectQuadruplesBySubject(subjectResource)
+                                         .SelectQuadruplesByLiteral(objectLiteral))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given predicate and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource)
+        {
+            if (predicateResource != null && objectResource != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByPredicate(predicateResource)
+                                         .SelectQuadruplesByObject(objectResource))
+                {
+                    //Remove quadruple
+                    this.Quadruples.Remove(quad.QuadrupleID);
+                    //Remove index
+                    this.StoreIndex.RemoveIndex(quad);
+                    //Raise event
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given predicate and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral)
+        {
+            if (predicateResource != null && objectLiteral != null)
+            {
+                foreach (var quad in this.SelectQuadruplesByPredicate(predicateResource)
+                                         .SelectQuadruplesByLiteral(objectLiteral))
                 {
                     //Remove quadruple
                     this.Quadruples.Remove(quad.QuadrupleID);

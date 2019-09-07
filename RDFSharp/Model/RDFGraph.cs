@@ -402,23 +402,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Removes the triples with the given flavor
-        /// </summary>
-        public RDFGraph RemoveTriplesByFlavor(RDFModelEnums.RDFTripleFlavors tripleFlavor)
-        {
-            foreach (var triple in this.Where(t => t.TripleFlavor == tripleFlavor).ToList())
-            {
-                //Remove triple
-                this.Triples.Remove(triple.TripleID);
-                //Remove index
-                this.GraphIndex.RemoveIndex(triple);
-                //Raise event
-                RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
-            }
-            return this;
-        }
-
-        /// <summary>
         /// Clears the triples and metadata of the graph
         /// </summary>
         public void ClearTriples()
