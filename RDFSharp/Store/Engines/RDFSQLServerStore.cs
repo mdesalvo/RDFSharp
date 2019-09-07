@@ -572,6 +572,848 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Removes the quadruples with the given context and subject
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubject(RDFContext contextResource, RDFResource subjectResource)
+        {
+            if (contextResource != null && subjectResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [SubjectID] = @SUBJID", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}' and Subject '{1}' have been removed from the Store '{2}'.", contextResource, subjectResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and predicate
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextPredicate(RDFContext contextResource, RDFResource predicateResource)
+        {
+            if (contextResource != null && predicateResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [PredicateID] = @PREDID", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}' and Predicate '{1}' have been removed from the Store '{2}'.", contextResource, predicateResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextObject(RDFContext contextResource, RDFResource objectResource)
+        {
+            if (contextResource != null && objectResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectResource.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPO;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}' and Object '{1}' have been removed from the Store '{2}'.", contextResource, objectResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextLiteral(RDFContext contextResource, RDFLiteral objectLiteral)
+        {
+            if (contextResource != null && objectLiteral != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectLiteral.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPL;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}' and Literal '{1}' have been removed from the Store '{2}'.", contextResource, objectLiteral, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and predicate
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubjectPredicate(RDFContext contextResource, RDFResource subjectResource, RDFResource predicateResource)
+        {
+            if (contextResource != null && subjectResource != null && predicateResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [SubjectID] = @SUBJID AND [PredicateID] = @PREDID", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}', Subject '{1}' and Predicate '{2}' have been removed from the Store '{3}'.", contextResource, subjectResource, predicateResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubjectObject(RDFContext contextResource, RDFResource subjectResource, RDFResource objectResource)
+        {
+            if (contextResource != null && subjectResource != null && objectResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [SubjectID] = @SUBJID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectResource.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPO;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}', Subject '{1}' and Object '{2}' have been removed from the Store '{3}'.", contextResource, subjectResource, objectResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextSubjectLiteral(RDFContext contextResource, RDFResource subjectResource, RDFLiteral objectLiteral)
+        {
+            if (contextResource != null && subjectResource != null && objectLiteral != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [SubjectID] = @SUBJID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectLiteral.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPL;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}', Subject '{1}' and Literal '{2}' have been removed from the Store '{3}'.", contextResource, subjectResource, objectLiteral, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, predicate and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextPredicateObject(RDFContext contextResource, RDFResource predicateResource, RDFResource objectResource)
+        {
+            if (contextResource != null && predicateResource != null && objectResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [PredicateID] = @PREDID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectResource.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPO;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}', Predicate '{1}' and Object '{2}' have been removed from the Store '{3}'.", contextResource, predicateResource, objectResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given context, predicate and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByContextPredicateLiteral(RDFContext contextResource, RDFResource predicateResource, RDFLiteral objectLiteral)
+        {
+            if (contextResource != null && predicateResource != null && objectLiteral != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [ContextID] = @CTXID AND [PredicateID] = @PREDID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("CTXID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["CTXID"].Value = contextResource.PatternMemberID;
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectLiteral.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPL;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Context '{0}', Predicate '{1}' and Literal '{2}' have been removed from the Store '{3}'.", contextResource, predicateResource, objectLiteral, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and predicate
+        /// </summary>
+        public override RDFStore RemoveQuadruplesBySubjectPredicate(RDFResource subjectResource, RDFResource predicateResource)
+        {
+            if (subjectResource != null && predicateResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID AND [PredicateID] = @PREDID", this.Connection);
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+
+                //Valorize parameters
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Subject '{0}' and Predicate '{1}' have been removed from the Store '{2}'.", subjectResource, predicateResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource)
+        {
+            if (subjectResource != null && objectResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectResource.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPO;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Subject '{0}' and Object '{1}' have been removed from the Store '{2}'.", subjectResource, objectResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesBySubjectLiteral(RDFResource subjectResource, RDFLiteral objectLiteral)
+        {
+            if (subjectResource != null && objectLiteral != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [SubjectID] = @SUBJID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("SUBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["SUBJID"].Value = subjectResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectLiteral.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPL;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Subject '{0}' and Literal '{1}' have been removed from the Store '{2}'.", subjectResource, objectLiteral, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given predicate and object
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource)
+        {
+            if (predicateResource != null && objectResource != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [PredicateID] = @PREDID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectResource.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPO;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Predicate '{0}' and Object '{1}' have been removed from the Store '{2}'.", predicateResource, objectResource, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the quadruples with the given predicate and literal
+        /// </summary>
+        public override RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral)
+        {
+            if (predicateResource != null && objectLiteral != null)
+            {
+
+                //Create command
+                var command = new SqlCommand("DELETE FROM [dbo].[Quadruples] WHERE [PredicateID] = @PREDID AND [ObjectID] = @OBJID AND [TripleFlavor] = @TFV", this.Connection);
+                command.Parameters.Add(new SqlParameter("PREDID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("OBJID", SqlDbType.BigInt));
+                command.Parameters.Add(new SqlParameter("TFV", SqlDbType.Int));
+
+                //Valorize parameters
+                command.Parameters["PREDID"].Value = predicateResource.PatternMemberID;
+                command.Parameters["OBJID"].Value = objectLiteral.PatternMemberID;
+                command.Parameters["TFV"].Value = RDFModelEnums.RDFTripleFlavors.SPL;
+
+                try
+                {
+
+                    //Open connection
+                    this.Connection.Open();
+
+                    //Prepare command
+                    command.Prepare();
+
+                    //Open transaction
+                    command.Transaction = this.Connection.BeginTransaction();
+
+                    //Execute command
+                    command.ExecuteNonQuery();
+
+                    //Close transaction
+                    command.Transaction.Commit();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    RDFStoreEvents.RaiseOnQuadrupleRemoved(String.Format("Quadruples with Predicate '{0}' and Literal '{1}' have been removed from the Store '{2}'.", predicateResource, objectLiteral, this));
+                }
+                catch (Exception ex)
+                {
+
+                    //Rollback transaction
+                    command.Transaction.Rollback();
+
+                    //Close connection
+                    this.Connection.Close();
+
+                    //Propagate exception
+                    throw new RDFStoreException("Cannot delete data from SQL Server store because: " + ex.Message, ex);
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
         public override void ClearQuadruples()
