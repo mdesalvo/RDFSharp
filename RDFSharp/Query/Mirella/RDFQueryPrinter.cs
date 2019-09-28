@@ -999,6 +999,22 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region VALUES
+                else if (pgMember is RDFValues && pgMember.IsEvaluable)
+                {
+                    //End the Union block
+                    if (printingUnion)
+                    {
+                        printingUnion = false;
+                        result.Append(spaces + "    { " + PrintValues((RDFValues)pgMember, prefixes) + " }\n");
+                    }
+                    else
+                    {
+                        result.Append(spaces + "    " + PrintValues((RDFValues)pgMember, prefixes) + " .\n");
+                    }
+                }
+                #endregion
+
             }
             #endregion
 
