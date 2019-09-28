@@ -648,6 +648,21 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region Values
+                else if (evaluablePGMember is RDFValues)
+                {
+                    DataTable valuesResultsTable = ((RDFValues)evaluablePGMember).GetDataTable();
+
+                    //Set name and metadata of result datatable
+                    valuesResultsTable.TableName = ((RDFValues)evaluablePGMember).ToString();
+                    valuesResultsTable.ExtendedProperties.Add("IsOptional", true);
+                    valuesResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
+
+                    //Save result datatable
+                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesResultsTable);
+                }
+                #endregion
+
                 #region Filter
                 else if (evaluablePGMember is RDFFilter)
                 {

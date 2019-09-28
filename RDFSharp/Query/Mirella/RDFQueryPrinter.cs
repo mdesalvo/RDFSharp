@@ -1154,6 +1154,30 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Prints the string representation of a SPARQL values
+        /// </summary>
+        internal static String PrintValues(RDFValues values, List<RDFNamespace> prefixes)
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append(String.Format("VALUES ({0})", String.Join(" ", values.Bindings.Keys)));
+            result.Append("\n{");
+            foreach(DataRow valuesTableRow in values.GetDataTable().AsEnumerable())
+            {
+                result.Append("\n(");
+                foreach(Object binding in valuesTableRow.ItemArray)
+                {
+                    if (binding == null)
+                        result.Append("UNDEF");
+                    else
+                        result.Append(PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(binding.ToString()), prefixes));
+                }
+                result.Append(")\n");
+            }
+            result.Append("\n}");
+            return result.ToString();
+        }
+
+        /// <summary>
         /// Prints the string representation of a pattern member
         /// </summary>
         internal static String PrintPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
