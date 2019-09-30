@@ -1006,11 +1006,11 @@ namespace RDFSharp.Query
                     if (printingUnion)
                     {
                         printingUnion = false;
-                        result.Append(spaces + "    { " + PrintValues((RDFValues)pgMember, prefixes) + " }\n");
+                        result.Append(spaces + "    { " + PrintValues((RDFValues)pgMember, prefixes, spaces) + " }\n");
                     }
                     else
                     {
-                        result.Append(spaces + "    " + PrintValues((RDFValues)pgMember, prefixes) + " .\n");
+                        result.Append(spaces + "    " + PrintValues((RDFValues)pgMember, prefixes, spaces) + " .\n");
                     }
                 }
                 #endregion
@@ -1172,24 +1172,25 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL values
         /// </summary>
-        internal static String PrintValues(RDFValues values, List<RDFNamespace> prefixes)
+        internal static String PrintValues(RDFValues values, List<RDFNamespace> prefixes, String spaces)
         {
             StringBuilder result = new StringBuilder();
             result.Append(String.Format("VALUES ({0})", String.Join(" ", values.Bindings.Keys)));
-            result.Append("\n{");
+            result.Append(" {\n");
             foreach(DataRow valuesTableRow in values.GetDataTable().AsEnumerable())
             {
-                result.Append("\n(");
+                result.Append(spaces + "      ( ");
                 foreach(Object binding in valuesTableRow.ItemArray)
                 {
-                    if (binding == null)
+                    if (binding == null || binding.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
                         result.Append("UNDEF");
                     else
                         result.Append(PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(binding.ToString()), prefixes));
+                    result.Append(" ");
                 }
                 result.Append(")\n");
             }
-            result.Append("\n}");
+            result.Append(spaces + "    }");
             return result.ToString();
         }
 

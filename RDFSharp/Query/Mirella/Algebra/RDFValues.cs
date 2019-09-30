@@ -31,6 +31,11 @@ namespace RDFSharp.Query
 
         #region Properties
         /// <summary>
+        /// Identifier of the SPARQL values
+        /// </summary>
+        internal Guid ValuesIdentifier { get; set; }
+
+        /// <summary>
         /// Dictionary of bindings representing the SPARQL values
         /// </summary>
         internal Dictionary<String, List<RDFPatternMember>> Bindings { get; set; }
@@ -53,6 +58,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFValues()
         {
+            this.ValuesIdentifier = Guid.NewGuid();
             this.Bindings = new Dictionary<String, List<RDFPatternMember>>();
             this.IsEvaluable = false;
         }
@@ -64,11 +70,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>(), String.Empty);
         }
-        internal String ToString(List<RDFNamespace> prefixes)
+        internal String ToString(List<RDFNamespace> prefixes, String spaces)
         {
-            return RDFQueryPrinter.PrintValues(this, prefixes);
+            return RDFQueryPrinter.PrintValues(this, prefixes, spaces);
         }
         #endregion
 
@@ -104,7 +110,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable GetDataTable()
         {
-            DataTable result = new DataTable(this.ToString());
+            DataTable result = new DataTable();
 
             //Create the columns of the SPARQL values
             this.Bindings.ToList()

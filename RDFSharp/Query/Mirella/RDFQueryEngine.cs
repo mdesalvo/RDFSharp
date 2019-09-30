@@ -654,8 +654,8 @@ namespace RDFSharp.Query
                     DataTable valuesResultsTable = ((RDFValues)evaluablePGMember).GetDataTable();
 
                     //Set name and metadata of result datatable
-                    valuesResultsTable.TableName = ((RDFValues)evaluablePGMember).ToString();
-                    valuesResultsTable.ExtendedProperties.Add("IsOptional", true);
+                    valuesResultsTable.TableName = ((RDFValues)evaluablePGMember).ValuesIdentifier.ToString();
+                    valuesResultsTable.ExtendedProperties.Add("IsOptional", false); //TODO
                     valuesResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
 
                     //Save result datatable
