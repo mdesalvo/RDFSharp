@@ -99,6 +99,17 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the prefixes of the query, including those from subqueries
+        /// </summary>
+        internal List<RDFNamespace> GetPrefixes()
+        {
+            List<RDFNamespace> result = new List<RDFNamespace>(this.Prefixes);
+            foreach(RDFQuery subQuery in this.GetSubQueries())
+                result.AddRange(subQuery.GetPrefixes());
+            return result.Distinct().ToList();
+        }
+
+        /// <summary>
         /// Gets the query members which can be evaluated
         /// </summary>
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
