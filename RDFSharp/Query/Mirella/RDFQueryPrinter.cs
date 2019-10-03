@@ -1163,22 +1163,47 @@ namespace RDFSharp.Query
         internal static String PrintValues(RDFValues values, List<RDFNamespace> prefixes, String spaces)
         {
             StringBuilder result = new StringBuilder();
-            result.Append(String.Format("VALUES ({0})", String.Join(" ", values.Bindings.Keys)));
-            result.Append(" {\n");
-            foreach(DataRow valuesTableRow in values.GetDataTable().AsEnumerable())
+
+            //Compact representation
+            if (values.Bindings.Keys.Count == 1)
             {
-                result.Append(spaces + "      ( ");
-                foreach(Object binding in valuesTableRow.ItemArray)
+                result.Append(String.Format("VALUES {0}", values.Bindings.Keys.ElementAt(0)));
+                result.Append(" { ");
+                foreach (DataRow valuesTableRow in values.GetDataTable().AsEnumerable())
                 {
-                    if (binding == null || binding.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
-                        result.Append("UNDEF");
-                    else
-                        result.Append(PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(binding.ToString()), prefixes));
-                    result.Append(" ");
+                    foreach (Object binding in valuesTableRow.ItemArray)
+                    {
+                        if (binding == null || binding.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
+                            result.Append("UNDEF");
+                        else
+                            result.Append(PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(binding.ToString()), prefixes));
+                        result.Append(" ");
+                    }
                 }
-                result.Append(")\n");
+                result.Append("} ");
             }
-            result.Append(spaces + "    }");
+
+            //Extended representation
+            else
+            {
+                result.Append(String.Format("VALUES ({0})", String.Join(" ", values.Bindings.Keys)));
+                result.Append(" {\n");
+                foreach (DataRow valuesTableRow in values.GetDataTable().AsEnumerable())
+                {
+                    result.Append(spaces + "      ( ");
+                    foreach (Object binding in valuesTableRow.ItemArray)
+                    {
+                        if (binding == null || binding.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
+                            result.Append("UNDEF");
+                        else
+                            result.Append(PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(binding.ToString()), prefixes));
+                        result.Append(" ");
+                    }
+                    result.Append(")\n");
+                }
+                result.Append(spaces + "    }");
+            }
+
             return result.ToString();
         }
 
