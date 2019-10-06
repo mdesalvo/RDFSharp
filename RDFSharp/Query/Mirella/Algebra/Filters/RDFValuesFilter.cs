@@ -77,7 +77,7 @@ namespace RDFSharp.Query
                 result.Append(" { ");
                 foreach (RDFPatternMember binding in this.Bindings.ElementAt(0).Value)
                 {
-                    if (binding == null || binding.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
+                    if (binding == null)
                         result.Append("UNDEF");
                     else
                         result.Append(RDFQueryPrinter.PrintPatternMember(binding, prefixes));
@@ -96,7 +96,7 @@ namespace RDFSharp.Query
                     result.Append(spaces + "      ( ");
                     this.Bindings.ToList().ForEach(binding => {
                         RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
-                        if (bindingValue == null || bindingValue.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
+                        if (bindingValue == null)
                             result.Append("UNDEF");
                         else
                             result.Append(RDFQueryPrinter.PrintPatternMember(bindingValue, prefixes));
@@ -154,7 +154,7 @@ namespace RDFSharp.Query
                 {
 
                     //Take the value of the column
-                    String filterColumnValue = row[filterColumn]?.ToString() ?? String.Empty;
+                    String filterColumnValue = row[filterColumn].ToString();
 
                     //Filter the enumerable representation of the filter table
                     bindingsTable = bindingsTable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue));
