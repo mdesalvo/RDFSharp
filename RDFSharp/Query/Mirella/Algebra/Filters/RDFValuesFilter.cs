@@ -18,23 +18,19 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFValues represents a binding of variables provided directly inside a SPARQL query.
+    /// RDFValuesFilter represents an explicit binding of variables provided for filtering a SPARQL query.
     /// </summary>
-    public class RDFValues : RDFPatternGroupMember
+    public class RDFValuesFilter : RDFFilter
     {
 
         #region Properties
-        /// <summary>
-        /// Identifier of the SPARQL values
-        /// </summary>
-        internal Guid ValuesIdentifier { get; set; }
-
         /// <summary>
         /// Dictionary of bindings representing the SPARQL values
         /// </summary>
@@ -54,35 +50,76 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty SPARQL values
+        /// Default-ctor to build an empty SPARQL values filter
         /// </summary>
-        public RDFValues()
+        public RDFValuesFilter()
         {
-            this.ValuesIdentifier = Guid.NewGuid();
             this.Bindings = new Dictionary<String, List<RDFPatternMember>>();
-            this.IsEvaluable = false;
         }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the SPARQL values
+        /// Gives the string representation of the SPARQL values filter
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>(), String.Empty);
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal override String ToString(List<RDFNamespace> prefixes)
+        {
+            return this.ToString(prefixes, String.Empty);
         }
         internal String ToString(List<RDFNamespace> prefixes, String spaces)
         {
-            return RDFQueryPrinter.PrintValues(this, prefixes, spaces);
+            StringBuilder result = new StringBuilder();
+
+            //Compact representation
+            if (this.Bindings.Keys.Count == 1)
+            {
+                result.Append(String.Format("VALUES {0}", this.Bindings.Keys.ElementAt(0)));
+                result.Append(" { ");
+                foreach (RDFPatternMember binding in this.Bindings.ElementAt(0).Value)
+                {
+                    if (binding == null || binding.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
+                        result.Append("UNDEF");
+                    else
+                        result.Append(RDFQueryPrinter.PrintPatternMember(binding, prefixes));
+                    result.Append(" ");
+                }
+                result.Append("} ");
+            }
+
+            //Extended representation
+            else
+            {
+                result.Append(String.Format("VALUES ({0})", String.Join(" ", this.Bindings.Keys)));
+                result.Append(" {\n");
+                for (int i = 0; i < this.MaxBindingsLength; i++)
+                {
+                    result.Append(spaces + "      ( ");
+                    this.Bindings.ToList().ForEach(binding => {
+                        RDFPatternMember bindingValue = binding.Value.ElementAt(i);
+                        if (bindingValue == null || bindingValue.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
+                            result.Append("UNDEF");
+                        else
+                            result.Append(RDFQueryPrinter.PrintPatternMember(bindingValue, prefixes));
+                        result.Append(" ");
+                    });
+                    result.Append(")\n");
+                }
+                result.Append(spaces + "    }");
+            }
+
+            return result.ToString();
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Adds the given binding values to the given variable
+        /// Adds the given bindings to the given variable of the SPARQL values filter
         /// </summary>
-        public RDFValues AddBindings(RDFVariable variable, List<RDFPatternMember> bindings)
+        public RDFValuesFilter AddBindings(RDFVariable variable, List<RDFPatternMember> bindings)
         {
             if (variable != null)
             {
@@ -91,22 +128,37 @@ namespace RDFSharp.Query
                 if (!this.Bindings.ContainsKey(variable.ToString()))
                     this.Bindings.Add(variable.ToString(), new List<RDFPatternMember>());
 
-                //Populate bindings of the given variable
-                //(null indicates the special UNDEF binding)
+                //Populate bindings of the given variable (null indicates UNDEF)
                 if (bindings?.Any() ?? false)
                     bindings.ForEach(b => this.Bindings[variable.ToString()].Add((b is RDFResource || b is RDFLiteral) ? b : null));
                 else
                     this.Bindings[variable.ToString()].Add(null);
 
-                //Mark the SPARQL values as evaluable
-                this.IsEvaluable = true;
-
             }
             return this;
         }
-        
+
         /// <summary>
-        /// Gets the datatable representing the SPARQL values
+        /// Applies the filter on the columns corresponding to the variables in the given datarow
+        /// </summary>
+        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        {
+            Boolean keepRow = true;
+
+            //TODO
+
+
+            //Apply the eventual negation
+            if (applyNegation)
+            {
+                keepRow = !keepRow;
+            }
+
+            return keepRow;
+        }
+
+        /// <summary>
+        /// Gets the datatable representing the SPARQL values filter
         /// </summary>
         internal DataTable GetDataTable()
         {
