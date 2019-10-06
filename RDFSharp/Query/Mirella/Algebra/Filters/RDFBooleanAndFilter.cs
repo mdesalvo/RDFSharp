@@ -48,17 +48,17 @@ namespace RDFSharp.Query
         {
             if (leftFilter != null)
             {
-                if (leftFilter is RDFExistsFilter)
+                if (leftFilter is RDFExistsFilter || leftFilter is RDFValuesFilter)
                 {
-                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter or RDFValuesFilter: this is not allowed.");
                 }
                 else
                 {
                     if (rightFilter != null)
                     {
-                        if (rightFilter is RDFExistsFilter)
+                        if (rightFilter is RDFExistsFilter || rightFilter is RDFValuesFilter)
                         {
-                            throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                            throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter or RDFValuesFilter: this is not allowed.");
                         }
                         else
                         {
@@ -85,13 +85,17 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>(), String.Empty);
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override String ToString(List<RDFNamespace> prefixes, String spaces)
         {
             return "FILTER ( " +
-                this.LeftFilter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " && " +
-                this.RightFilter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " )";
+                this.LeftFilter.ToString(prefixes, spaces)
+                               .Replace("FILTER ", String.Empty)
+                               .Trim() + " && " +
+                this.RightFilter.ToString(prefixes, spaces)
+                                .Replace("FILTER ", String.Empty)
+                                .Trim() + " )";
         }
         #endregion
 

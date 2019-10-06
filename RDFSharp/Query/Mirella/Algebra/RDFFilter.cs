@@ -34,9 +34,9 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>(), String.Empty);
         }
-        internal abstract String ToString(List<RDFNamespace> prefixes);
+        internal abstract String ToString(List<RDFNamespace> prefixes, String spaces);
         #endregion
 
         #region Methods

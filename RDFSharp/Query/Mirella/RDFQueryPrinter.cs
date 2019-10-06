@@ -993,7 +993,7 @@ namespace RDFSharp.Query
             #region FILTERS
             patternGroup.GroupMembers.Where(m => m is RDFFilter)
                                      .ToList()
-                                     .ForEach(f => result.Append(spaces + "    " + ((RDFFilter)f).ToString(prefixes) + " \n"));
+                                     .ForEach(f => result.Append(spaces + "    " + ((RDFFilter)f).ToString(prefixes, spaces) + " \n"));
             #endregion
 
             #region FOOTER
