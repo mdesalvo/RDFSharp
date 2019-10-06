@@ -99,7 +99,7 @@ namespace RDFSharp.Query
                 {
                     result.Append(spaces + "      ( ");
                     this.Bindings.ToList().ForEach(binding => {
-                        RDFPatternMember bindingValue = binding.Value.ElementAt(i);
+                        RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
                         if (bindingValue == null || bindingValue.ToString().Equals(String.Empty, StringComparison.OrdinalIgnoreCase))
                             result.Append("UNDEF");
                         else
@@ -145,8 +145,30 @@ namespace RDFSharp.Query
         {
             Boolean keepRow = true;
 
-            //TODO
+            //Check is performed only on columns found as bindings in the filter
+            List<String> filterColumns = this.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
+            if (filterColumns.Any())
+            {
 
+                //Get the enumerable representation of the filter table
+                IEnumerable<DataRow> bindingsTable = this.GetDataTable().AsEnumerable();
+
+                //Perform the iterative check on the filter columns
+                filterColumns.ForEach(filterColumn => 
+                {
+
+                    //Take the value of the column
+                    String filterColumnValue = row[filterColumn]?.ToString() ?? String.Empty;
+
+                    //Filter the enumerable representation of the filter table
+                    bindingsTable = bindingsTable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue));
+
+                });
+
+                //Analyze the response of the check
+                keepRow = bindingsTable.Any();
+
+            }
 
             //Apply the eventual negation
             if (applyNegation)
