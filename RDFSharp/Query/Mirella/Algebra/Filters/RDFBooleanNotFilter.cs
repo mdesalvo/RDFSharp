@@ -43,9 +43,9 @@ namespace RDFSharp.Query
         {
             if (filter != null)
             {
-                if (filter is RDFExistsFilter || filter is RDFValuesFilter)
+                if (filter is RDFExistsFilter)
                 {
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter or RDFValuesFilter: this is not allowed.");
+                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
                 }
                 else
                 {
@@ -65,13 +65,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>(), String.Empty);
+            return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes, String spaces)
+        internal override String ToString(List<RDFNamespace> prefixes)
         {
-            return "FILTER ( !" + this.Filter.ToString(prefixes, spaces)
-                                             .Replace("FILTER ", String.Empty)
-                                             .Trim() + " )";
+            return "FILTER ( !" + this.Filter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " )";
         }
         #endregion
 

@@ -987,13 +987,29 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region VALUES
+                else if (pgMember is RDFValues && pgMember.IsEvaluable)
+                {
+                    //End the Union block
+                    if (printingUnion)
+                    {
+                        printingUnion = false;
+                        result.Append(spaces + "    { " + PrintValues((RDFValues)pgMember, prefixes, spaces) + " }\n");
+                    }
+                    else
+                    {
+                        result.Append(spaces + "    " + PrintValues((RDFValues)pgMember, prefixes, spaces) + " .\n");
+                    }
+                }
+                #endregion
+
             }
             #endregion
 
             #region FILTERS
-            patternGroup.GroupMembers.Where(m => m is RDFFilter)
+            patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
                                      .ToList()
-                                     .ForEach(f => result.Append(spaces + "    " + ((RDFFilter)f).ToString(prefixes, spaces) + " \n"));
+                                     .ForEach(f => result.Append(spaces + "    " + f.ToString(prefixes) + " \n"));
             #endregion
 
             #region FOOTER
@@ -1138,6 +1154,54 @@ namespace RDFSharp.Query
 
             result.Append(" ");
             result.Append(PrintPatternMember(propertyPath.End, prefixes));
+            return result.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL values
+        /// </summary>
+        internal static String PrintValues(RDFValues values, List<RDFNamespace> prefixes, String spaces)
+        {
+            StringBuilder result = new StringBuilder();
+
+            //Compact representation
+            if (values.Bindings.Keys.Count == 1)
+            {
+                result.Append(String.Format("VALUES {0}", values.Bindings.Keys.ElementAt(0)));
+                result.Append(" { ");
+                foreach (RDFPatternMember binding in values.Bindings.ElementAt(0).Value)
+                {
+                    if (binding == null)
+                        result.Append("UNDEF");
+                    else
+                        result.Append(RDFQueryPrinter.PrintPatternMember(binding, prefixes));
+                    result.Append(" ");
+                }
+                result.Append("} ");
+            }
+
+            //Extended representation
+            else
+            {
+                result.Append(String.Format("VALUES ({0})", String.Join(" ", values.Bindings.Keys)));
+                result.Append(" {\n");
+                for (int i = 0; i < values.MaxBindingsLength; i++)
+                {
+                    result.Append(spaces + "      ( ");
+                    values.Bindings.ToList().ForEach(binding => 
+                    {
+                        RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
+                        if (bindingValue == null)
+                            result.Append("UNDEF");
+                        else
+                            result.Append(RDFQueryPrinter.PrintPatternMember(bindingValue, prefixes));
+                        result.Append(" ");
+                    });
+                    result.Append(")\n");
+                }
+                result.Append(spaces + "    }");
+            }
+
             return result.ToString();
         }
 

@@ -78,9 +78,9 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return this.ToString(new List<RDFNamespace>(), String.Empty);
+            return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes, String spaces)
+        internal override String ToString(List<RDFNamespace> prefixes)
         {
             String leftValue = RDFQueryPrinter.PrintPatternMember(this.LeftMember, prefixes);
             String rightValue = RDFQueryPrinter.PrintPatternMember(this.RightMember, prefixes);

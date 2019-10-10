@@ -648,6 +648,19 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region Values
+                else if (evaluablePGMember is RDFValues)
+                {
+                    DataTable valuesResultsTable = ((RDFValues)evaluablePGMember).GetDataTable();
+
+                    //Save result datatable
+                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesResultsTable);
+
+                    //Inject SPARQL values filter
+                    patternGroup.AddFilter(((RDFValues)evaluablePGMember).GetValuesFilter());
+                }
+                #endregion
+
                 #region Filter
                 else if (evaluablePGMember is RDFFilter)
                 {

@@ -184,6 +184,17 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given SPARQL values to the pattern group
+        /// </summary>
+        public RDFPatternGroup AddValues(RDFValues values)
+        {
+            if (values != null)
+                this.GroupMembers.Add(values);
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds the given filter to the pattern group
         /// </summary>
         public RDFPatternGroup AddFilter(RDFFilter filter)
