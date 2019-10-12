@@ -74,9 +74,9 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given binding values to the given variable
+        /// Adds the given column of bindings to the SPARQL values
         /// </summary>
-        public RDFValues AddBindings(RDFVariable variable, List<RDFPatternMember> bindings)
+        public RDFValues AddColumn(RDFVariable variable, List<RDFPatternMember> bindings)
         {
             if (variable != null)
             {
