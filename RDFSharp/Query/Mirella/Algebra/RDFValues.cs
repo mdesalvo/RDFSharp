@@ -45,6 +45,11 @@ namespace RDFSharp.Query
                 return this.Bindings?.Select(x => x.Value.Count).Max() ?? 0;
             }
         }
+        
+        /// <summary>
+        /// Flag indicating that the SPARQL values has been injected by Mirella
+        /// </summary>
+        internal Boolean IsInjected { get; set; }
         #endregion
 
         #region Ctors
@@ -55,6 +60,7 @@ namespace RDFSharp.Query
         {
             this.Bindings = new Dictionary<String, List<RDFPatternMember>>();
             this.IsEvaluable = false;
+            this.IsInjected = false;
         }
         #endregion
 
