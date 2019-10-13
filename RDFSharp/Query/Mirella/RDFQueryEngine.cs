@@ -68,6 +68,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            selectQuery.InjectValues(selectQuery.GetValues());
+
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -75,7 +78,7 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -143,20 +146,21 @@ namespace RDFSharp.Query
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                             //Populate its metadata (IsOptional)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                            {
+                            { 
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
                             }
                             else
-                            {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                            { 
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                            {
+                            { 
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
                             }
                             else
-                            {
+                            { 
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
                             }
                         }
@@ -185,6 +189,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            describeQuery.InjectValues(describeQuery.GetValues());
+
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult(this.ToString());
             List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -192,7 +199,7 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -265,7 +272,8 @@ namespace RDFSharp.Query
                             }
                             else
                             {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -352,6 +360,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            constructQuery.InjectValues(constructQuery.GetValues());
+
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
             List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -359,7 +370,7 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -432,7 +443,8 @@ namespace RDFSharp.Query
                             }
                             else
                             {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -472,6 +484,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            askQuery.InjectValues(askQuery.GetValues());
+
             RDFAskQueryResult askResult = new RDFAskQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -479,7 +494,7 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
@@ -552,7 +567,8 @@ namespace RDFSharp.Query
                             }
                             else
                             {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -590,7 +606,7 @@ namespace RDFSharp.Query
 
             //Iterate the evaluable members of the pattern group
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
-            foreach (var evaluablePGMember in evaluablePGMembers)
+            foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
             {
 
                 #region Pattern
@@ -718,7 +734,8 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional
+                                                                                                                    || (Boolean)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
                 }
                 //Populate its metadata (JoinAsUnion)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))

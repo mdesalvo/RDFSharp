@@ -256,6 +256,24 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given injected SPARQL values to the pattern group
+        /// </summary>
+        internal RDFPatternGroup AddInjectedValues(RDFValues values)
+        {
+            if (values != null)
+            {
+                //Clone the SPARQL values and set as injected
+                RDFValues clonedValues = new RDFValues();
+                clonedValues.Bindings = values.Bindings;
+                clonedValues.IsEvaluable = values.IsEvaluable;
+                clonedValues.IsInjected = true;
+
+                this.GroupMembers.Add(clonedValues);
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Gets the group members of type: filter
         /// </summary>
         internal IEnumerable<RDFFilter> GetFilters()
