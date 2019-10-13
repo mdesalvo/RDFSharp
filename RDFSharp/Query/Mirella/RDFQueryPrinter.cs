@@ -1177,7 +1177,7 @@ namespace RDFSharp.Query
                         result.Append(RDFQueryPrinter.PrintPatternMember(binding, prefixes));
                     result.Append(" ");
                 }
-                result.Append("} ");
+                result.Append("}");
             }
 
             //Extended representation
