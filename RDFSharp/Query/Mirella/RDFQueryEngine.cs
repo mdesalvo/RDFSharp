@@ -605,7 +605,9 @@ namespace RDFSharp.Query
             QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
+                                                                         .Distinct()
+                                                                         .ToList();
             foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
             {
 

@@ -189,8 +189,12 @@ namespace RDFSharp.Query
         public RDFPatternGroup AddValues(RDFValues values)
         {
             if (values != null)
-                this.GroupMembers.Add(values);
-
+            {
+                if (!this.GetValues().Any(v => v.Equals(values)))
+                {
+                    this.GroupMembers.Add(values);
+                }
+            }
             return this;
         }
 
@@ -268,7 +272,7 @@ namespace RDFSharp.Query
                 clonedValues.IsEvaluable = values.IsEvaluable;
                 clonedValues.IsInjected = true;
 
-                this.GroupMembers.Add(clonedValues);
+                this.AddValues(clonedValues);
             }
             return this;
         }
