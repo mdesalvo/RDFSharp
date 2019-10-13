@@ -146,6 +146,15 @@ namespace RDFSharp.Query
         {
             return new RDFValuesFilter(this);
         }
+
+        /// <summary>
+        /// Sets the SPARQL values as injected
+        /// </summary>
+        internal RDFValues SetInjected()
+        {
+            this.IsInjected = true;
+            return this;
+        }
         #endregion
 
     }
