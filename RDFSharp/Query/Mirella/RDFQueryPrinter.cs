@@ -192,10 +192,8 @@ namespace RDFSharp.Query
                     else if (queryMember is RDFQuery)
                     {
                         //Merge main query prefixes
-                        selectQuery.Prefixes.ForEach(pf1 => {
-                            if (!((RDFSelectQuery)queryMember).Prefixes.Any(pf2 => pf2.Equals(pf1)))
-                                ((RDFSelectQuery)queryMember).AddPrefix(pf1);
-                        });
+                        selectQuery.GetPrefixes()
+                                   .ForEach(pf1 => ((RDFSelectQuery)queryMember).AddPrefix(pf1));
  
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
@@ -429,10 +427,8 @@ namespace RDFSharp.Query
                     else if (queryMember is RDFQuery)
                     {
                         //Merge main query prefixes
-                        describeQuery.Prefixes.ForEach(pf1 => {
-                            if (!((RDFSelectQuery)queryMember).Prefixes.Any(pf2 => pf2.Equals(pf1)))
-                                ((RDFSelectQuery)queryMember).AddPrefix(pf1);
-                        });
+                        describeQuery.GetPrefixes()
+                                     .ForEach(pf1 => ((RDFSelectQuery)queryMember).AddPrefix(pf1));
  
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
@@ -641,10 +637,8 @@ namespace RDFSharp.Query
                     else if (queryMember is RDFQuery)
                     {
                         //Merge main query prefixes
-                        constructQuery.Prefixes.ForEach(pf1 => {
-                            if (!((RDFSelectQuery)queryMember).Prefixes.Any(pf2 => pf2.Equals(pf1)))
-                                ((RDFSelectQuery)queryMember).AddPrefix(pf1);
-                        });
+                        constructQuery.GetPrefixes()
+                                      .ForEach(pf1 => ((RDFSelectQuery)queryMember).AddPrefix(pf1));
 
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
@@ -830,10 +824,8 @@ namespace RDFSharp.Query
                     else if (queryMember is RDFQuery)
                     {
                         //Merge main query prefixes
-                        askQuery.Prefixes.ForEach(pf1 => {
-                            if (!((RDFSelectQuery)queryMember).Prefixes.Any(pf2 => pf2.Equals(pf1)))
-                                ((RDFSelectQuery)queryMember).AddPrefix(pf1);
-                        });
+                        askQuery.GetPrefixes()
+                                .ForEach(pf1 => ((RDFSelectQuery)queryMember).AddPrefix(pf1));
 
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
