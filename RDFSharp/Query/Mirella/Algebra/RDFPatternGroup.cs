@@ -247,6 +247,15 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the group members of type: values
+        /// </summary>
+        internal IEnumerable<RDFValues> GetValues()
+        {
+            return this.GroupMembers.Where(g => g is RDFValues)
+                                    .OfType<RDFValues>();
+        }
+
+        /// <summary>
         /// Gets the group members of type: filter
         /// </summary>
         internal IEnumerable<RDFFilter> GetFilters()
