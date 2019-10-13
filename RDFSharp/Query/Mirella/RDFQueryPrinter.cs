@@ -125,7 +125,7 @@ namespace RDFSharp.Query
                 Boolean printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-                foreach (var queryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERNGROUPS
@@ -362,7 +362,7 @@ namespace RDFSharp.Query
                 Boolean printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-                foreach (var queryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERNGROUPS
@@ -574,7 +574,7 @@ namespace RDFSharp.Query
                 Boolean printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-                foreach (var queryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERNGROUPS
@@ -763,7 +763,7 @@ namespace RDFSharp.Query
                 Boolean printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
-                foreach (var queryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERNGROUPS
