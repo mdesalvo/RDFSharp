@@ -922,7 +922,7 @@ namespace RDFSharp.Query
             Boolean printingUnion = false;
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             RDFPatternGroupMember lastPGMember = evaluablePGMembers.LastOrDefault();
-            foreach(var pgMember in evaluablePGMembers)
+            foreach(RDFPatternGroupMember pgMember in evaluablePGMembers)
             {
 
                 #region PATTERNS
@@ -988,7 +988,7 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region VALUES
-                else if (pgMember is RDFValues && pgMember.IsEvaluable)
+                else if (pgMember is RDFValues && pgMember.IsEvaluable && !((RDFValues)pgMember).IsInjected)
                 {
                     //End the Union block
                     if (printingUnion)
