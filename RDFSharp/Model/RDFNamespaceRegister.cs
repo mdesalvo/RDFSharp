@@ -82,6 +82,8 @@ namespace RDFSharp.Model
             AddNamespace(new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI));
             //owl
             AddNamespace(new RDFNamespace(RDFVocabulary.OWL.PREFIX, RDFVocabulary.OWL.BASE_URI));
+            //sh
+            AddNamespace(new RDFNamespace(RDFVocabulary.SHACL.PREFIX, RDFVocabulary.SHACL.BASE_URI));
             #endregion
 
             #region Extended Namespaces

@@ -675,6 +675,28 @@ namespace RDFSharp.Model
         }
         #endregion
 
+        #region SHACL
+        /// <summary>
+        /// SHACL represents the W3C SHACL vocabulary.
+        /// </summary>
+        public static class SHACL
+        {
+
+            #region Properties
+            /// <summary>
+            /// sh
+            /// </summary>
+            public static readonly String PREFIX = "sh";
+
+            /// <summary>
+            /// http://www.w3.org/ns/shacl#
+            /// </summary>
+            public static readonly String BASE_URI = "http://www.w3.org/ns/shacl#";
+            #endregion
+
+        }
+        #endregion
+
         #region XML
         /// <summary>
         /// XML represents the XML vocabulary.
