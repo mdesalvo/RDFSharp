@@ -692,6 +692,56 @@ namespace RDFSharp.Model
             /// http://www.w3.org/ns/shacl#
             /// </summary>
             public static readonly String BASE_URI = "http://www.w3.org/ns/shacl#";
+
+            /// <summary>
+            /// sh:Shape
+            /// </summary>
+            public static readonly RDFResource SHAPE = new RDFResource(SHACL.BASE_URI + "Shape");
+
+            /// <summary>
+            /// sh:NodeShape
+            /// </summary>
+            public static readonly RDFResource NODE_SHAPE = new RDFResource(SHACL.BASE_URI + "NodeShape");
+
+            /// <summary>
+            /// sh:PropertyShape
+            /// </summary>
+            public static readonly RDFResource PROPERTY_SHAPE = new RDFResource(SHACL.BASE_URI + "PropertyShape");
+
+            /// <summary>
+            /// sh:deactivated
+            /// </summary>
+            public static readonly RDFResource DEACTIVATED = new RDFResource(SHACL.BASE_URI + "deactivated");
+
+            /// <summary>
+            /// sh:message
+            /// </summary>
+            public static readonly RDFResource MESSAGE = new RDFResource(SHACL.BASE_URI + "message");
+
+            /// <summary>
+            /// sh:severity
+            /// </summary>
+            public static readonly RDFResource SEVERITY = new RDFResource(SHACL.BASE_URI + "severity");
+
+            /// <summary>
+            /// sh:targetClass
+            /// </summary>
+            public static readonly RDFResource TARGET_CLASS = new RDFResource(SHACL.BASE_URI + "targetClass");
+
+            /// <summary>
+            /// sh:targetNode
+            /// </summary>
+            public static readonly RDFResource TARGET_NODE = new RDFResource(SHACL.BASE_URI + "targetNode");
+
+            /// <summary>
+            /// sh:targetObjectsOf
+            /// </summary>
+            public static readonly RDFResource TARGET_OBJECTS_OF = new RDFResource(SHACL.BASE_URI + "targetObjectsOf");
+
+            /// <summary>
+            /// sh:targetSubjectsOf
+            /// </summary>
+            public static readonly RDFResource TARGET_SUBJECTS_OF = new RDFResource(SHACL.BASE_URI + "targetSubjectsOf");
             #endregion
 
         }
