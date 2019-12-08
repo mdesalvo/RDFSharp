@@ -742,6 +742,41 @@ namespace RDFSharp.Model
             /// sh:targetSubjectsOf
             /// </summary>
             public static readonly RDFResource TARGET_SUBJECTS_OF = new RDFResource(SHACL.BASE_URI + "targetSubjectsOf");
+
+            /// <summary>
+            /// sh:NodeKind
+            /// </summary>
+            public static readonly RDFResource NODE_KIND = new RDFResource(SHACL.BASE_URI + "NodeKind");
+
+            /// <summary>
+            /// sh:BlankNode
+            /// </summary>
+            public static readonly RDFResource BLANK_NODE = new RDFResource(SHACL.BASE_URI + "BlankNode");
+
+            /// <summary>
+            /// sh:BlankNodeOrIRI
+            /// </summary>
+            public static readonly RDFResource BLANK_NODE_OR_IRI = new RDFResource(SHACL.BASE_URI + "BlankNodeOrIRI");
+
+            /// <summary>
+            /// sh:BlankNodeOrLiteral
+            /// </summary>
+            public static readonly RDFResource BLANK_NODE_OR_LITERAL = new RDFResource(SHACL.BASE_URI + "BlankNodeOrLiteral");
+
+            /// <summary>
+            /// sh:IRI
+            /// </summary>
+            public static readonly RDFResource IRI = new RDFResource(SHACL.BASE_URI + "IRI");
+
+            /// <summary>
+            /// sh:IRIOrLiteral
+            /// </summary>
+            public static readonly RDFResource IRI_OR_LITERAL = new RDFResource(SHACL.BASE_URI + "IRIOrLiteral");
+
+            /// <summary>
+            /// sh:Literal
+            /// </summary>
+            public static readonly RDFResource LITERAL = new RDFResource(SHACL.BASE_URI + "Literal");
             #endregion
 
         }
