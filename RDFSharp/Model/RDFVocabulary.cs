@@ -721,7 +721,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// sh:severity
             /// </summary>
-            public static readonly RDFResource SEVERITY = new RDFResource(SHACL.BASE_URI + "severity");
+            public static readonly RDFResource SEVERITY_PROPERTY = new RDFResource(SHACL.BASE_URI + "severity");
 
             /// <summary>
             /// sh:targetClass
@@ -777,6 +777,116 @@ namespace RDFSharp.Model
             /// sh:Literal
             /// </summary>
             public static readonly RDFResource LITERAL = new RDFResource(SHACL.BASE_URI + "Literal");
+
+            /// <summary>
+            /// sh:ValidationReport
+            /// </summary>
+            public static readonly RDFResource VALIDATION_REPORT = new RDFResource(SHACL.BASE_URI + "ValidationReport");
+
+            /// <summary>
+            /// sh:conforms
+            /// </summary>
+            public static readonly RDFResource CONFORMS = new RDFResource(SHACL.BASE_URI + "conforms");
+
+            /// <summary>
+            /// sh:result
+            /// </summary>
+            public static readonly RDFResource RESULT = new RDFResource(SHACL.BASE_URI + "result");
+
+            /// <summary>
+            /// sh:shapesGraphWellFormed
+            /// </summary>
+            public static readonly RDFResource SHAPES_GRAPH_WELL_FORMED = new RDFResource(SHACL.BASE_URI + "shapesGraphWellFormed");
+
+            /// <summary>
+            /// sh:AbstractResult
+            /// </summary>
+            public static readonly RDFResource ABSTRACT_RESULT = new RDFResource(SHACL.BASE_URI + "AbstractResult");
+
+            /// <summary>
+            /// sh:ValidationResult
+            /// </summary>
+            public static readonly RDFResource VALIDATION_RESULT = new RDFResource(SHACL.BASE_URI + "ValidationResult");
+
+            /// <summary>
+            /// sh:Severity
+            /// </summary>
+            public static readonly RDFResource SEVERITY_CLASS = new RDFResource(SHACL.BASE_URI + "Severity");
+
+            /// <summary>
+            /// sh:Info
+            /// </summary>
+            public static readonly RDFResource INFO = new RDFResource(SHACL.BASE_URI + "Info");
+
+            /// <summary>
+            /// sh:Violation
+            /// </summary>
+            public static readonly RDFResource VIOLATION = new RDFResource(SHACL.BASE_URI + "Violation");
+
+            /// <summary>
+            /// sh:Warning
+            /// </summary>
+            public static readonly RDFResource WARNING = new RDFResource(SHACL.BASE_URI + "Warning");
+
+            /// <summary>
+            /// sh:detail
+            /// </summary>
+            public static readonly RDFResource DETAIL = new RDFResource(SHACL.BASE_URI + "detail");
+
+            /// <summary>
+            /// sh:focusNode
+            /// </summary>
+            public static readonly RDFResource FOCUS_NODE = new RDFResource(SHACL.BASE_URI + "focusNode");
+
+            /// <summary>
+            /// sh:resultMessage
+            /// </summary>
+            public static readonly RDFResource RESULT_MESSAGE = new RDFResource(SHACL.BASE_URI + "resultMessage");
+
+            /// <summary>
+            /// sh:resultPath
+            /// </summary>
+            public static readonly RDFResource RESULT_PATH = new RDFResource(SHACL.BASE_URI + "resultPath");
+
+            /// <summary>
+            /// sh:resultSeverity
+            /// </summary>
+            public static readonly RDFResource RESULT_SEVERITY = new RDFResource(SHACL.BASE_URI + "resultSeverity");
+
+            /// <summary>
+            /// sh:sourceConstraint
+            /// </summary>
+            public static readonly RDFResource SOURCE_CONSTRAINT = new RDFResource(SHACL.BASE_URI + "sourceConstraint");
+
+            /// <summary>
+            /// sh:sourceShape
+            /// </summary>
+            public static readonly RDFResource SOURCE_SHAPE = new RDFResource(SHACL.BASE_URI + "sourceShape");
+
+            /// <summary>
+            /// sh:sourceConstraintComponent
+            /// </summary>
+            public static readonly RDFResource SOURCE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "sourceConstraintComponent");
+
+            /// <summary>
+            /// sh:value
+            /// </summary>
+            public static readonly RDFResource VALUE = new RDFResource(SHACL.BASE_URI + "value");
+
+            /// <summary>
+            /// sh:shapesGraph
+            /// </summary>
+            public static readonly RDFResource SHAPES_GRAPH = new RDFResource(SHACL.BASE_URI + "shapesGraph");
+
+            /// <summary>
+            /// sh:suggestedShapesGraph
+            /// </summary>
+            public static readonly RDFResource SUGGESTED_SHAPES_GRAPH = new RDFResource(SHACL.BASE_URI + "suggestedShapesGraph");
+
+            /// <summary>
+            /// sh:entailment
+            /// </summary>
+            public static readonly RDFResource ENTAILMENT = new RDFResource(SHACL.BASE_URI + "entailment");
             #endregion
 
         }
