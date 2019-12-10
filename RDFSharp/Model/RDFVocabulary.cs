@@ -887,6 +887,36 @@ namespace RDFSharp.Model
             /// sh:entailment
             /// </summary>
             public static readonly RDFResource ENTAILMENT = new RDFResource(SHACL.BASE_URI + "entailment");
+
+            /// <summary>
+            /// sh:path
+            /// </summary>
+            public static readonly RDFResource PATH = new RDFResource(SHACL.BASE_URI + "path");
+
+            /// <summary>
+            /// sh:inversePath
+            /// </summary>
+            public static readonly RDFResource INVERSE_PATH = new RDFResource(SHACL.BASE_URI + "inversePath");
+
+            /// <summary>
+            /// sh:alternativePath
+            /// </summary>
+            public static readonly RDFResource ALTERNATIVE_PATH = new RDFResource(SHACL.BASE_URI + "alternativePath");
+
+            /// <summary>
+            /// sh:zeroOrMorePath
+            /// </summary>
+            public static readonly RDFResource ZERO_OR_MORE_PATH = new RDFResource(SHACL.BASE_URI + "zeroOrMorePath");
+
+            /// <summary>
+            /// sh:oneOrMorePath
+            /// </summary>
+            public static readonly RDFResource ONE_OR_MORE_PATH = new RDFResource(SHACL.BASE_URI + "oneOrMorePath");
+
+            /// <summary>
+            /// sh:zeroOrOnePath
+            /// </summary>
+            public static readonly RDFResource ZERO_OR_ONE_PATH = new RDFResource(SHACL.BASE_URI + "zeroOrOnePath");
             #endregion
 
         }
