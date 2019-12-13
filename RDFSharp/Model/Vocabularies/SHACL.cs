@@ -265,6 +265,36 @@ namespace RDFSharp.Model
             /// sh:zeroOrOnePath
             /// </summary>
             public static readonly RDFResource ZERO_OR_ONE_PATH = new RDFResource(SHACL.BASE_URI + "zeroOrOnePath");
+
+            /// <summary>
+            /// sh:defaultValue
+            /// </summary>
+            public static readonly RDFResource DEFAULT_VALUE = new RDFResource(SHACL.BASE_URI + "defaultValue");
+
+            /// <summary>
+            /// sh:description
+            /// </summary>
+            public static readonly RDFResource DESCRIPTION = new RDFResource(SHACL.BASE_URI + "description");
+
+            /// <summary>
+            /// sh:group
+            /// </summary>
+            public static readonly RDFResource GROUP = new RDFResource(SHACL.BASE_URI + "group");
+
+            /// <summary>
+            /// sh:name
+            /// </summary>
+            public static readonly RDFResource NAME = new RDFResource(SHACL.BASE_URI + "name");
+
+            /// <summary>
+            /// sh:order
+            /// </summary>
+            public static readonly RDFResource ORDER = new RDFResource(SHACL.BASE_URI + "order");
+
+            /// <summary>
+            /// sh:PropertyGroup
+            /// </summary>
+            public static readonly RDFResource PROPERTY_GROUP = new RDFResource(SHACL.BASE_URI + "PropertyGroup");
             #endregion
 
         }
