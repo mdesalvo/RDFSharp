@@ -295,6 +295,66 @@ namespace RDFSharp.Model
             /// sh:PropertyGroup
             /// </summary>
             public static readonly RDFResource PROPERTY_GROUP = new RDFResource(SHACL.BASE_URI + "PropertyGroup");
+
+            /// <summary>
+            /// sh:Parameterizable
+            /// </summary>
+            public static readonly RDFResource PARAMETERIZABLE = new RDFResource(SHACL.BASE_URI + "Parameterizable");
+
+            /// <summary>
+            /// sh:Parameter
+            /// </summary>
+            public static readonly RDFResource PARAMETER_CLASS = new RDFResource(SHACL.BASE_URI + "Parameter");
+
+            /// <summary>
+            /// sh:parameter
+            /// </summary>
+            public static readonly RDFResource PARAMETER_PROPERTY = new RDFResource(SHACL.BASE_URI + "parameter");
+
+            /// <summary>
+            /// sh:labelTemplate
+            /// </summary>
+            public static readonly RDFResource LABEL_TEMPLATE = new RDFResource(SHACL.BASE_URI + "labelTemplate");
+
+            /// <summary>
+            /// sh:optional
+            /// </summary>
+            public static readonly RDFResource OPTIONAL = new RDFResource(SHACL.BASE_URI + "optional");
+
+            /// <summary>
+            /// sh:ConstraintComponent
+            /// </summary>
+            public static readonly RDFResource CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "ConstraintComponent");
+
+            /// <summary>
+            /// sh:validator
+            /// </summary>
+            public static readonly RDFResource VALIDATOR_PROPERTY = new RDFResource(SHACL.BASE_URI + "validator");
+
+            /// <summary>
+            /// sh:nodeValidator
+            /// </summary>
+            public static readonly RDFResource NODE_VALIDATOR = new RDFResource(SHACL.BASE_URI + "nodeValidator");
+
+            /// <summary>
+            /// sh:propertyValidator
+            /// </summary>
+            public static readonly RDFResource PROPERTY_VALIDATOR = new RDFResource(SHACL.BASE_URI + "propertyValidator");
+
+            /// <summary>
+            /// sh:Validator
+            /// </summary>
+            public static readonly RDFResource VALIDATOR_CLASS = new RDFResource(SHACL.BASE_URI + "Validator");
+
+            /// <summary>
+            /// sh:SPARQLAskValidator
+            /// </summary>
+            public static readonly RDFResource SPARQL_ASK_VALIDATOR = new RDFResource(SHACL.BASE_URI + "SPARQLAskValidator");
+
+            /// <summary>
+            /// sh:SPARQLSelectValidator
+            /// </summary>
+            public static readonly RDFResource SPARQL_SELECT_VALIDATOR = new RDFResource(SHACL.BASE_URI + "SPARQLSelectValidator");
             #endregion
 
         }
