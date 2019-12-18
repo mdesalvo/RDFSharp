@@ -92,11 +92,6 @@ namespace RDFSharp.Model
             public static readonly RDFResource TARGET_SUBJECTS_OF = new RDFResource(SHACL.BASE_URI + "targetSubjectsOf");
 
             /// <summary>
-            /// sh:NodeKind
-            /// </summary>
-            public static readonly RDFResource NODE_KIND = new RDFResource(SHACL.BASE_URI + "NodeKind");
-
-            /// <summary>
             /// sh:BlankNode
             /// </summary>
             public static readonly RDFResource BLANK_NODE = new RDFResource(SHACL.BASE_URI + "BlankNode");
@@ -355,6 +350,496 @@ namespace RDFSharp.Model
             /// sh:SPARQLSelectValidator
             /// </summary>
             public static readonly RDFResource SPARQL_SELECT_VALIDATOR = new RDFResource(SHACL.BASE_URI + "SPARQLSelectValidator");
+
+            /// <summary>
+            /// sh:AndConstraintComponent
+            /// </summary>
+            public static readonly RDFResource AND_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "AndConstraintComponent");
+
+            /// <summary>
+            /// sh:AndConstraintComponent-and
+            /// </summary>
+            public static readonly RDFResource AND_CONSTRAINT_COMPONENT_AND = new RDFResource(SHACL.BASE_URI + "AndConstraintComponent-and");
+
+            /// <summary>
+            /// sh:and
+            /// </summary>
+            public static readonly RDFResource AND = new RDFResource(SHACL.BASE_URI + "and");
+
+            /// <summary>
+            /// sh:ClassConstraintComponent
+            /// </summary>
+            public static readonly RDFResource CLASS_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "ClassConstraintComponent");
+
+            /// <summary>
+            /// sh:ClassConstraintComponent-class
+            /// </summary>
+            public static readonly RDFResource CLASS_CONSTRAINT_COMPONENT_CLASS = new RDFResource(SHACL.BASE_URI + "ClassConstraintComponent-class");
+
+            /// <summary>
+            /// sh:class
+            /// </summary>
+            public static readonly RDFResource CLASS = new RDFResource(SHACL.BASE_URI + "class");
+
+            /// <summary>
+            /// sh:ClosedConstraintComponent
+            /// </summary>
+            public static readonly RDFResource CLOSED_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "ClosedConstraintComponent");
+
+            /// <summary>
+            /// sh:ClosedConstraintComponent-closed
+            /// </summary>
+            public static readonly RDFResource CLOSED_CONSTRAINT_COMPONENT_CLOSED = new RDFResource(SHACL.BASE_URI + "ClosedConstraintComponent-closed");
+
+            /// <summary>
+            /// sh:ClosedConstraintComponent-ignoredProperties
+            /// </summary>
+            public static readonly RDFResource CLOSED_CONSTRAINT_COMPONENT_IGNORED_PROPERTIES = new RDFResource(SHACL.BASE_URI + "ClosedConstraintComponent-ignoredProperties");
+
+            /// <summary>
+            /// sh:closed
+            /// </summary>
+            public static readonly RDFResource CLOSED = new RDFResource(SHACL.BASE_URI + "closed");
+
+            /// <summary>
+            /// sh:ignoredProperties
+            /// </summary>
+            public static readonly RDFResource IGNORED_PROPERTIES = new RDFResource(SHACL.BASE_URI + "ignoredProperties");
+
+            /// <summary>
+            /// sh:DatatypeConstraintComponent
+            /// </summary>
+            public static readonly RDFResource DATATYPE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "DatatypeConstraintComponent");
+
+            /// <summary>
+            /// sh:DatatypeConstraintComponent-datatype
+            /// </summary>
+            public static readonly RDFResource DATATYPE_CONSTRAINT_COMPONENT_DATATYPE = new RDFResource(SHACL.BASE_URI + "DatatypeConstraintComponent-datatype");
+
+            /// <summary>
+            /// sh:datatype
+            /// </summary>
+            public static readonly RDFResource DATATYPE = new RDFResource(SHACL.BASE_URI + "datatype");
+
+            /// <summary>
+            /// sh:DisjointConstraintComponent
+            /// </summary>
+            public static readonly RDFResource DISJOINT_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "DisjointConstraintComponent");
+
+            /// <summary>
+            /// sh:DisjointConstraintComponent-disjoint
+            /// </summary>
+            public static readonly RDFResource DISJOINT_CONSTRAINT_COMPONENT_DISJOINT = new RDFResource(SHACL.BASE_URI + "DisjointConstraintComponent-disjoint");
+
+            /// <summary>
+            /// sh:disjoint
+            /// </summary>
+            public static readonly RDFResource DISJOINT = new RDFResource(SHACL.BASE_URI + "disjoint");
+
+            /// <summary>
+            /// sh:EqualsConstraintComponent
+            /// </summary>
+            public static readonly RDFResource EQUALS_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "EqualsConstraintComponent");
+
+            /// <summary>
+            /// sh:EqualsConstraintComponent-equals
+            /// </summary>
+            public static readonly RDFResource EQUALS_CONSTRAINT_COMPONENT_EQUALS = new RDFResource(SHACL.BASE_URI + "EqualsConstraintComponent-equals");
+
+            /// <summary>
+            /// sh:equals
+            /// </summary>
+            public static readonly RDFResource EQUALS = new RDFResource(SHACL.BASE_URI + "equals");
+
+            /// <summary>
+            /// sh:HasValueConstraintComponent
+            /// </summary>
+            public static readonly RDFResource HAS_VALUE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "HasValueConstraintComponent");
+
+            /// <summary>
+            /// sh:HasValueConstraintComponent-hasValue
+            /// </summary>
+            public static readonly RDFResource HAS_VALUE_CONSTRAINT_COMPONENT_HAS_VALUE = new RDFResource(SHACL.BASE_URI + "HasValueConstraintComponent-hasValue");
+
+            /// <summary>
+            /// sh:hasValue
+            /// </summary>
+            public static readonly RDFResource HAS_VALUE = new RDFResource(SHACL.BASE_URI + "hasValue");
+
+            /// <summary>
+            /// sh:InConstraintComponent
+            /// </summary>
+            public static readonly RDFResource IN_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "InConstraintComponent");
+
+            /// <summary>
+            /// sh:InConstraintComponent-in
+            /// </summary>
+            public static readonly RDFResource IN_CONSTRAINT_COMPONENT_IN = new RDFResource(SHACL.BASE_URI + "InConstraintComponent-in");
+
+            /// <summary>
+            /// sh:in
+            /// </summary>
+            public static readonly RDFResource IN = new RDFResource(SHACL.BASE_URI + "in");
+
+            /// <summary>
+            /// sh:LanguageInConstraintComponent
+            /// </summary>
+            public static readonly RDFResource LANGUAGE_IN_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "LanguageInConstraintComponent");
+
+            /// <summary>
+            /// sh:LanguageInConstraintComponent-languageIn
+            /// </summary>
+            public static readonly RDFResource LANGUAGE_IN_CONSTRAINT_COMPONENT_LANGUAGE_IN = new RDFResource(SHACL.BASE_URI + "LanguageInConstraintComponent-languageIn");
+
+            /// <summary>
+            /// sh:languageIn
+            /// </summary>
+            public static readonly RDFResource LANGUAGE_IN = new RDFResource(SHACL.BASE_URI + "languageIn");
+
+            /// <summary>
+            /// sh:LessThanConstraintComponent
+            /// </summary>
+            public static readonly RDFResource LESS_THAN_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "LessThanConstraintComponent");
+
+            /// <summary>
+            /// sh:LessThanConstraintComponent-lessThan
+            /// </summary>
+            public static readonly RDFResource LESS_THAN_CONSTRAINT_COMPONENT_LESS_THAN = new RDFResource(SHACL.BASE_URI + "LessThanConstraintComponent-lessThan");
+
+            /// <summary>
+            /// sh:lessThan
+            /// </summary>
+            public static readonly RDFResource LESS_THAN = new RDFResource(SHACL.BASE_URI + "lessThan");
+
+            /// <summary>
+            /// sh:LessThanOrEqualsConstraintComponent
+            /// </summary>
+            public static readonly RDFResource LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "LessThanOrEqualsConstraintComponent");
+
+            /// <summary>
+            /// sh:LessThanOrEqualsConstraintComponent-lessThanOrEquals
+            /// </summary>
+            public static readonly RDFResource LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT_LESS_THAN_OR_EQUALS = new RDFResource(SHACL.BASE_URI + "LessThanOrEqualsConstraintComponent-lessThanOrEquals");
+
+            /// <summary>
+            /// sh:lessThanOrEquals
+            /// </summary>
+            public static readonly RDFResource LESS_THAN_OR_EQUALS = new RDFResource(SHACL.BASE_URI + "lessThanOrEquals");
+
+            /// <summary>
+            /// sh:MaxCountConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MAX_COUNT_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MaxCountConstraintComponent");
+
+            /// <summary>
+            /// sh:MaxCountConstraintComponent-maxCount
+            /// </summary>
+            public static readonly RDFResource MAX_COUNT_CONSTRAINT_COMPONENT_MAX_COUNT = new RDFResource(SHACL.BASE_URI + "MaxCountConstraintComponent-maxCount");
+
+            /// <summary>
+            /// sh:maxCount
+            /// </summary>
+            public static readonly RDFResource MAX_COUNT = new RDFResource(SHACL.BASE_URI + "maxCount");
+
+            /// <summary>
+            /// sh:MaxExclusiveConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MAX_EXCLUSIVE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MaxExclusiveConstraintComponent");
+
+            /// <summary>
+            /// sh:MaxExclusiveConstraintComponent-maxExclusive
+            /// </summary>
+            public static readonly RDFResource MAX_EXCLUSIVE_CONSTRAINT_COMPONENT_MAX_EXCLUSIVE = new RDFResource(SHACL.BASE_URI + "MaxExclusiveConstraintComponent-maxExclusive");
+
+            /// <summary>
+            /// sh:maxExclusive
+            /// </summary>
+            public static readonly RDFResource MAX_EXCLUSIVE = new RDFResource(SHACL.BASE_URI + "maxExclusive");
+
+            /// <summary>
+            /// sh:MaxInclusiveConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MAX_INCLUSIVE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MaxInclusiveConstraintComponent");
+
+            /// <summary>
+            /// sh:MaxInclusiveConstraintComponent-maxInclusive
+            /// </summary>
+            public static readonly RDFResource MAX_INCLUSIVE_CONSTRAINT_COMPONENT_MAX_INCLUSIVE = new RDFResource(SHACL.BASE_URI + "MaxInclusiveConstraintComponent-maxInclusive");
+
+            /// <summary>
+            /// sh:maxInclusive
+            /// </summary>
+            public static readonly RDFResource MAX_INCLUSIVE = new RDFResource(SHACL.BASE_URI + "maxInclusive");
+
+            /// <summary>
+            /// sh:MaxLengthConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MAX_LENGTH_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MaxLengthConstraintComponent");
+
+            /// <summary>
+            /// sh:MaxLengthConstraintComponent-maxLength
+            /// </summary>
+            public static readonly RDFResource MAX_LENGTH_CONSTRAINT_COMPONENT_MAX_LENGTH = new RDFResource(SHACL.BASE_URI + "MaxLengthConstraintComponent-maxLength");
+
+            /// <summary>
+            /// sh:maxLength
+            /// </summary>
+            public static readonly RDFResource MAX_LENGTH = new RDFResource(SHACL.BASE_URI + "maxLength");
+
+            /// <summary>
+            /// sh:MinCountConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MIN_COUNT_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MinCountConstraintComponent");
+
+            /// <summary>
+            /// sh:MinCountConstraintComponent-minCount
+            /// </summary>
+            public static readonly RDFResource MIN_COUNT_CONSTRAINT_COMPONENT_MIN_COUNT = new RDFResource(SHACL.BASE_URI + "MinCountConstraintComponent-minCount");
+
+            /// <summary>
+            /// sh:minCount
+            /// </summary>
+            public static readonly RDFResource MIN_COUNT = new RDFResource(SHACL.BASE_URI + "minCount");
+
+            /// <summary>
+            /// sh:MinExclusiveConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MIN_EXCLUSIVE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MinExclusiveConstraintComponent");
+
+            /// <summary>
+            /// sh:MinExclusiveConstraintComponent-minExclusive
+            /// </summary>
+            public static readonly RDFResource MIN_EXCLUSIVE_CONSTRAINT_COMPONENT_MIN_EXCLUSIVE = new RDFResource(SHACL.BASE_URI + "MinExclusiveConstraintComponent-minExclusive");
+
+            /// <summary>
+            /// sh:minExclusive
+            /// </summary>
+            public static readonly RDFResource MIN_EXCLUSIVE = new RDFResource(SHACL.BASE_URI + "minExclusive");
+
+            /// <summary>
+            /// sh:MinInclusiveConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MIN_INCLUSIVE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MinInclusiveConstraintComponent");
+
+            /// <summary>
+            /// sh:MinInclusiveConstraintComponent-minInclusive
+            /// </summary>
+            public static readonly RDFResource MIN_INCLUSIVE_CONSTRAINT_COMPONENT_MIN_INCLUSIVE = new RDFResource(SHACL.BASE_URI + "MinInclusiveConstraintComponent-minInclusive");
+
+            /// <summary>
+            /// sh:minInclusive
+            /// </summary>
+            public static readonly RDFResource MIN_INCLUSIVE = new RDFResource(SHACL.BASE_URI + "minInclusive");
+
+            /// <summary>
+            /// sh:MinLengthConstraintComponent
+            /// </summary>
+            public static readonly RDFResource MIN_LENGTH_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "MinLengthConstraintComponent");
+
+            /// <summary>
+            /// sh:MinLengthConstraintComponent-minLength
+            /// </summary>
+            public static readonly RDFResource MIN_LENGTH_CONSTRAINT_COMPONENT_MIN_LENGTH = new RDFResource(SHACL.BASE_URI + "MinLengthConstraintComponent-minLength");
+
+            /// <summary>
+            /// sh:minLength
+            /// </summary>
+            public static readonly RDFResource MIN_LENGTH = new RDFResource(SHACL.BASE_URI + "minLength");
+
+            /// <summary>
+            /// sh:NodeConstraintComponent
+            /// </summary>
+            public static readonly RDFResource NODE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "NodeConstraintComponent");
+
+            /// <summary>
+            /// sh:NodeConstraintComponent-node
+            /// </summary>
+            public static readonly RDFResource NODE_CONSTRAINT_COMPONENT_NODE = new RDFResource(SHACL.BASE_URI + "NodeConstraintComponent-node");
+
+            /// <summary>
+            /// sh:node
+            /// </summary>
+            public static readonly RDFResource NODE = new RDFResource(SHACL.BASE_URI + "node");
+
+            /// <summary>
+            /// sh:NodeKindConstraintComponent
+            /// </summary>
+            public static readonly RDFResource NODE_KIND_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "NodeKindConstraintComponent");
+
+            /// <summary>
+            /// sh:NodeKindConstraintComponent-nodeKind
+            /// </summary>
+            public static readonly RDFResource NODE_KIND_CONSTRAINT_COMPONENT_NODE_KIND = new RDFResource(SHACL.BASE_URI + "NodeKindConstraintComponent-nodeKind");
+
+            /// <summary>
+            /// sh:nodeKind
+            /// </summary>
+            public static readonly RDFResource NODE_KIND = new RDFResource(SHACL.BASE_URI + "nodeKind");
+
+            /// <summary>
+            /// sh:NodeKind
+            /// </summary>
+            public static readonly RDFResource NODE_KIND_CLASS = new RDFResource(SHACL.BASE_URI + "NodeKind");
+
+            /// <summary>
+            /// sh:NotConstraintComponent
+            /// </summary>
+            public static readonly RDFResource NOT_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "NotConstraintComponent");
+
+            /// <summary>
+            /// sh:NotConstraintComponent-not
+            /// </summary>
+            public static readonly RDFResource NOT_CONSTRAINT_COMPONENT_NOT = new RDFResource(SHACL.BASE_URI + "NotConstraintComponent-not");
+
+            /// <summary>
+            /// sh:not
+            /// </summary>
+            public static readonly RDFResource NOT = new RDFResource(SHACL.BASE_URI + "not");
+
+            /// <summary>
+            /// sh:OrConstraintComponent
+            /// </summary>
+            public static readonly RDFResource OR_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "OrConstraintComponent");
+
+            /// <summary>
+            /// sh:OrConstraintComponent-or
+            /// </summary>
+            public static readonly RDFResource OR_CONSTRAINT_COMPONENT_OR = new RDFResource(SHACL.BASE_URI + "OrConstraintComponent-or");
+
+            /// <summary>
+            /// sh:or
+            /// </summary>
+            public static readonly RDFResource OR = new RDFResource(SHACL.BASE_URI + "or");
+
+            /// <summary>
+            /// sh:PatternConstraintComponent
+            /// </summary>
+            public static readonly RDFResource PATTERN_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "PatternConstraintComponent");
+
+            /// <summary>
+            /// sh:PatternConstraintComponent-pattern
+            /// </summary>
+            public static readonly RDFResource PATTERN_CONSTRAINT_COMPONENT_PATTERN = new RDFResource(SHACL.BASE_URI + "PatternConstraintComponent-pattern");
+
+            /// <summary>
+            /// sh:PatternConstraintComponent-flags
+            /// </summary>
+            public static readonly RDFResource PATTERN_CONSTRAINT_COMPONENT_FLAGS = new RDFResource(SHACL.BASE_URI + "PatternConstraintComponent-flags");
+
+            /// <summary>
+            /// sh:flags
+            /// </summary>
+            public static readonly RDFResource FLAGS = new RDFResource(SHACL.BASE_URI + "flags");
+
+            /// <summary>
+            /// sh:pattern
+            /// </summary>
+            public static readonly RDFResource PATTERN = new RDFResource(SHACL.BASE_URI + "pattern");
+
+            /// <summary>
+            /// sh:PropertyConstraintComponent
+            /// </summary>
+            public static readonly RDFResource PROPERTY_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "PropertyConstraintComponent");
+
+            /// <summary>
+            /// sh:PropertyConstraintComponent-property
+            /// </summary>
+            public static readonly RDFResource PROPERTY_CONSTRAINT_COMPONENT_PROPERTY = new RDFResource(SHACL.BASE_URI + "PropertyConstraintComponent-property");
+
+            /// <summary>
+            /// sh:property
+            /// </summary>
+            public static readonly RDFResource PROPERTY = new RDFResource(SHACL.BASE_URI + "property");
+
+            /// <summary>
+            /// sh:QualifiedMaxCountConstraintComponent
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "QualifiedMaxCountConstraintComponent");
+
+            /// <summary>
+            /// sh:QualifiedMaxCountConstraintComponent-qualifiedMaxCount
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT_QUALIFIED_MAX_COUNT = new RDFResource(SHACL.BASE_URI + "QualifiedMaxCountConstraintComponent-qualifiedMaxCount");
+
+            /// <summary>
+            /// sh:QualifiedMaxCountConstraintComponent-qualifiedValueShape
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT_QUALIFIED_VALUE_SHAPE = new RDFResource(SHACL.BASE_URI + "QualifiedMaxCountConstraintComponent-qualifiedValueShape");
+
+            /// <summary>
+            /// sh:QualifiedMaxCountConstraintComponent-qualifiedValueShapesDisjoint
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT_QUALIFIED_VALUE_SHAPES_DISJOINT = new RDFResource(SHACL.BASE_URI + "QualifiedMaxCountConstraintComponent-qualifiedValueShapesDisjoint");
+
+            /// <summary>
+            /// sh:QualifiedMinCountConstraintComponent
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "QualifiedMinCountConstraintComponent");
+
+            /// <summary>
+            /// sh:QualifiedMinCountConstraintComponent-qualifiedMinCount
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT_QUALIFIED_MIN_COUNT = new RDFResource(SHACL.BASE_URI + "QualifiedMinCountConstraintComponent-qualifiedMinCount");
+
+            /// <summary>
+            /// sh:QualifiedMinCountConstraintComponent-qualifiedValueShape
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT_QUALIFIED_VALUE_SHAPE = new RDFResource(SHACL.BASE_URI + "QualifiedMinCountConstraintComponent-qualifiedValueShape");
+
+            /// <summary>
+            /// sh:QualifiedMinCountConstraintComponent-qualifiedValueShapesDisjoint
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT_QUALIFIED_VALUE_SHAPES_DISJOINT = new RDFResource(SHACL.BASE_URI + "QualifiedMinCountConstraintComponent-qualifiedValueShapesDisjoint");
+
+            /// <summary>
+            /// sh:qualifiedMaxCount
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MAX_COUNT = new RDFResource(SHACL.BASE_URI + "qualifiedMaxCount");
+
+            /// <summary>
+            /// sh:qualifiedMinCount
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_MIN_COUNT = new RDFResource(SHACL.BASE_URI + "qualifiedMinCount");
+
+            /// <summary>
+            /// sh:qualifiedValueShape
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_VALUE_SHAPE = new RDFResource(SHACL.BASE_URI + "qualifiedValueShape");
+
+            /// <summary>
+            /// sh:qualifiedValueShapesDisjoint
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_VALUE_SHAPES_DISJOINT = new RDFResource(SHACL.BASE_URI + "qualifiedValueShapesDisjoint");
+
+            /// <summary>
+            /// sh:UniqueLangConstraintComponent
+            /// </summary>
+            public static readonly RDFResource UNIQUE_LANG_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "UniqueLangConstraintComponent");
+
+            /// <summary>
+            /// sh:UniqueLangConstraintComponent-uniqueLang
+            /// </summary>
+            public static readonly RDFResource UNIQUE_LANG_CONSTRAINT_COMPONENT_UNIQUE_LANG = new RDFResource(SHACL.BASE_URI + "UniqueLangConstraintComponent-uniqueLang");
+
+            /// <summary>
+            /// sh:uniqueLang
+            /// </summary>
+            public static readonly RDFResource UNIQUE_LANG = new RDFResource(SHACL.BASE_URI + "uniqueLang");
+
+            /// <summary>
+            /// sh:XoneConstraintComponent
+            /// </summary>
+            public static readonly RDFResource XONE_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "XoneConstraintComponent");
+
+            /// <summary>
+            /// sh:XoneConstraintComponent-xone
+            /// </summary>
+            public static readonly RDFResource XONE_CONSTRAINT_COMPONENT_XONE = new RDFResource(SHACL.BASE_URI + "XoneConstraintComponent-xone");
+
+            /// <summary>
+            /// sh:xone
+            /// </summary>
+            public static readonly RDFResource XONE = new RDFResource(SHACL.BASE_URI + "xone");
             #endregion
 
         }
