@@ -930,7 +930,7 @@ namespace RDFSharp.Model
             /// sh:SPARQLConstraint
             /// </summary>
             public static readonly RDFResource SPARQL_CONSTRAINT = new RDFResource(SHACL.BASE_URI + "SPARQLConstraint");
-    #endregion
+            #endregion
 
         }
         #endregion
