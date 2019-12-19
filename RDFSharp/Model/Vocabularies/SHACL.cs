@@ -25,7 +25,7 @@ namespace RDFSharp.Model
     {
         #region SHACL
         /// <summary>
-        /// SHACL represents the W3C SHACL vocabulary.
+        /// SHACL represents the W3C SHACL Core vocabulary.
         /// </summary>
         public static class SHACL
         {
@@ -840,7 +840,97 @@ namespace RDFSharp.Model
             /// sh:xone
             /// </summary>
             public static readonly RDFResource XONE = new RDFResource(SHACL.BASE_URI + "xone");
-            #endregion
+
+            /// <summary>
+            /// sh:SPARQLExecutable
+            /// </summary>
+            public static readonly RDFResource SPARQL_EXECUTABLE = new RDFResource(SHACL.BASE_URI + "SPARQLExecutable");
+
+            /// <summary>
+            /// sh:SPARQLAskExecutable
+            /// </summary>
+            public static readonly RDFResource SPARQL_ASK_EXECUTABLE = new RDFResource(SHACL.BASE_URI + "SPARQLAskExecutable");
+
+            /// <summary>
+            /// sh:ask
+            /// </summary>
+            public static readonly RDFResource ASK = new RDFResource(SHACL.BASE_URI + "ask");
+
+            /// <summary>
+            /// sh:SPARQLConstructExecutable
+            /// </summary>
+            public static readonly RDFResource SPARQL_CONSTRUCT_EXECUTABLE = new RDFResource(SHACL.BASE_URI + "SPARQLConstructExecutable");
+
+            /// <summary>
+            /// sh:construct
+            /// </summary>
+            public static readonly RDFResource CONSTRUCT = new RDFResource(SHACL.BASE_URI + "construct");
+
+            /// <summary>
+            /// sh:SPARQLSelectExecutable
+            /// </summary>
+            public static readonly RDFResource SPARQL_SELECT_EXECUTABLE = new RDFResource(SHACL.BASE_URI + "SPARQLSelectExecutable");
+
+            /// <summary>
+            /// sh:select
+            /// </summary>
+            public static readonly RDFResource SELECT = new RDFResource(SHACL.BASE_URI + "select");
+
+            /// <summary>
+            /// sh:SPARQLUpdateExecutable
+            /// </summary>
+            public static readonly RDFResource SPARQL_UPDATE_EXECUTABLE = new RDFResource(SHACL.BASE_URI + "SPARQLUpdateExecutable");
+
+            /// <summary>
+            /// sh:update
+            /// </summary>
+            public static readonly RDFResource UPDATE = new RDFResource(SHACL.BASE_URI + "update");
+
+            /// <summary>
+            /// sh:prefixes
+            /// </summary>
+            public static readonly RDFResource PREFIXES = new RDFResource(SHACL.BASE_URI + "prefixes");
+
+            /// <summary>
+            /// sh:PrefixDeclaration
+            /// </summary>
+            public static readonly RDFResource PREFIX_DECLARATION = new RDFResource(SHACL.BASE_URI + "PrefixDeclaration");
+
+            /// <summary>
+            /// sh:declare
+            /// </summary>
+            public static readonly RDFResource DECLARE = new RDFResource(SHACL.BASE_URI + "declare");
+
+            /// <summary>
+            /// sh:prefix
+            /// </summary>
+            public static readonly RDFResource PREFIX_PROPERTY = new RDFResource(SHACL.BASE_URI + "prefix");
+
+            /// <summary>
+            /// sh:namespace
+            /// </summary>
+            public static readonly RDFResource NAMESPACE = new RDFResource(SHACL.BASE_URI + "namespace");
+
+            /// <summary>
+            /// sh:SPARQLConstraintComponent
+            /// </summary>
+            public static readonly RDFResource SPARQL_CONSTRAINT_COMPONENT = new RDFResource(SHACL.BASE_URI + "SPARQLConstraintComponent");
+
+            /// <summary>
+            /// sh:SPARQLConstraintComponent-sparql
+            /// </summary>
+            public static readonly RDFResource SPARQL_CONSTRAINT_COMPONENT_SPARQL = new RDFResource(SHACL.BASE_URI + "SPARQLConstraintComponent-sparql");
+
+            /// <summary>
+            /// sh:sparql
+            /// </summary>
+            public static readonly RDFResource SPARQL = new RDFResource(SHACL.BASE_URI + "sparql");
+
+            /// <summary>
+            /// sh:SPARQLConstraint
+            /// </summary>
+            public static readonly RDFResource SPARQL_CONSTRAINT = new RDFResource(SHACL.BASE_URI + "SPARQLConstraint");
+    #endregion
 
         }
         #endregion
