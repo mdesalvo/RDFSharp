@@ -23,3 +23,5 @@ RDFSharp has a modular API made up of three layers:
         <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
     </ul>
 </ul>
+
+RDFSharp also provides a <b>[semantic extension](https://github.com/mdesalvo/RDFSharp.Semantics)</b> for <i>OWL-DL/SKOS/SHACL ontology</i> modeling, validation and reasoning!
