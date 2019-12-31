@@ -24,4 +24,4 @@ RDFSharp has a modular API made up of three layers:
     </ul>
 </ul>
 
-RDFSharp also provides a <b>[semantic extension](https://github.com/mdesalvo/RDFSharp.Semantics)</b> for <i>OWL-DL/SKOS/SHACL ontology</i> modeling, validation and reasoning!
+RDFSharp also provides a <b>[semantic framework](https://github.com/mdesalvo/RDFSharp.Semantics)</b> for <i>OWL-DL/SKOS/SHACL ontology</i> modeling, validation and reasoning!
