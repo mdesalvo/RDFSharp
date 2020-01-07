@@ -14,6 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
+using System.Collections.Generic;
+
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
@@ -32,7 +35,7 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Evaluates this SHACL constraint against the given data graph
         /// </summary>
-        internal abstract RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, RDFShape shape, RDFGraph dataGraph);
+        internal abstract RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, RDFShape shape, RDFGraph dataGraph, List<RDFPatternMember> focusNodes);
 
         /// <summary>
         /// Gets a graph representation of this SHACL constraint
