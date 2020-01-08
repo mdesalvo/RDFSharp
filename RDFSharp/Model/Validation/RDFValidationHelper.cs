@@ -38,7 +38,7 @@ namespace RDFSharp.Model.Validation
 
                         //sh:targetClass
                         case RDFTargetClass targetClass:
-                            result.AddRange(GetInstancesOfClass(target.TargetValue, dataGraph));
+                            result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue));
                             break;
 
                         //sh:targetNode
@@ -48,14 +48,12 @@ namespace RDFSharp.Model.Validation
 
                         //sh:targetSubjectsOf
                         case RDFTargetSubjectsOf targetSubjectsOf:
-                            foreach(var triple in dataGraph.SelectTriplesByPredicate(target.TargetValue))
-                                result.Add(triple.Subject);
+                            result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue).Select(x => x.Subject));
                             break;
 
                         //sh:targetObjectsOf
                         case RDFTargetObjectsOf targetObjectsOf:
-                            foreach (var triple in dataGraph.SelectTriplesByPredicate(target.TargetValue))
-                                result.Add(triple.Object);
+                            result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue).Select(x => x.Object));
                             break;
 
                     }
@@ -78,10 +76,10 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf/owl:equivalentClass) instances of the given class
+        /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf/owl:equivalentClass) instances of the given class within the given data graph
         /// </summary>
-        internal static List<RDFPatternMember> GetInstancesOfClass(RDFResource className, 
-                                                                   RDFGraph dataGraph, 
+        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph,
+                                                                   RDFResource className, 
                                                                    HashSet<Int64> visitContext = null) {
             var result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null) {
@@ -110,7 +108,7 @@ namespace RDFSharp.Model.Validation
                 var equivalentClassTriples = dataGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_CLASS);
                 foreach (var triple in subclassOfTriples.UnionWith(equivalentClassTriples)
                                                         .SelectTriplesByObject(className))
-                    result.AddRange(GetInstancesOfClass((RDFResource)triple.Subject, dataGraph, visitContext));
+                    result.AddRange(dataGraph.GetInstancesOfClass((RDFResource)triple.Subject, visitContext));
 
             }
             return result;
