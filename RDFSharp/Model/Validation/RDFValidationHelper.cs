@@ -27,18 +27,19 @@ namespace RDFSharp.Model.Validation
 
         #region Modeling
         /// <summary>
-        /// Gets the SHACL focus nodes of the given SHACL shape within the given data graph
+        /// Gets the SHACL focus nodes (subjects) of the given SHACL shape within the given data graph
         /// </summary>
-        internal static List<RDFPatternMember> GetFocusNodesOf(this RDFGraph dataGraph,
+        internal static List<RDFResource> GetFocusNodesOf(this RDFGraph dataGraph,
                                                                RDFShape shape) {
-            var result = new List<RDFPatternMember>();
+            var result = new List<RDFResource>();
             if (shape != null && dataGraph != null) {
                 shape.Targets.ForEach(target => {
                     switch (target) {
 
                         //sh:targetClass
                         case RDFTargetClass targetClass:
-                            result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue));
+                            result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue)
+                                                     .OfType<RDFResource>());
                             break;
 
                         //sh:targetNode
@@ -48,12 +49,16 @@ namespace RDFSharp.Model.Validation
 
                         //sh:targetSubjectsOf
                         case RDFTargetSubjectsOf targetSubjectsOf:
-                            result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue).Select(x => x.Subject));
+                            result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue)
+                                                     .Select(x => x.Subject)
+                                                     .OfType<RDFResource>());
                             break;
 
                         //sh:targetObjectsOf
                         case RDFTargetObjectsOf targetObjectsOf:
-                            result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue).Select(x => x.Object));
+                            result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue)
+                                                     .Select(x => x.Object)
+                                                     .OfType<RDFResource>());
                             break;
 
                     }
@@ -63,7 +68,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets the SHACL value nodes of the given SHACL property shape within the given data graph
+        /// Gets the SHACL value nodes (objects) of the given SHACL property shape within the given data graph
         /// </summary>
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph,
                                                                RDFPropertyShape propertyShape) {
@@ -76,7 +81,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf/owl:equivalentClass) instances of the given class within the given data graph
+        /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf) instances of the given class within the given data graph
         /// </summary>
         internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph,
                                                                    RDFResource className, 
@@ -99,15 +104,13 @@ namespace RDFSharp.Model.Validation
                 #endregion
 
                 //rdf:type
-                var typeTriples = dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
-                foreach (var triple in typeTriples.SelectTriplesByObject(className))
+                foreach (var triple in dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+                                                .SelectTriplesByObject(className))
                     result.Add(triple.Subject);
 
-                //rdfs:subClassOf / owl:equivalentClass
-                var subclassOfTriples = dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF);
-                var equivalentClassTriples = dataGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_CLASS);
-                foreach (var triple in subclassOfTriples.UnionWith(equivalentClassTriples)
-                                                        .SelectTriplesByObject(className))
+                //rdfs:subClassOf
+                foreach (var triple in dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF)
+                                                .SelectTriplesByObject(className))
                     result.AddRange(dataGraph.GetInstancesOfClass((RDFResource)triple.Subject, visitContext));
 
             }

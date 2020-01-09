@@ -35,7 +35,7 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Evaluates this SHACL constraint against the given data graph
         /// </summary>
-        internal abstract RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, RDFShape shape, RDFGraph dataGraph, List<RDFPatternMember> focusNodes);
+        internal abstract RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, RDFShape shape, RDFGraph dataGraph, List<RDFResource> focusNodes);
 
         /// <summary>
         /// Gets a graph representation of this SHACL constraint

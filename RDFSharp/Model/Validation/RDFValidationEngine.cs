@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,8 +35,9 @@ namespace RDFSharp.Model.Validation
                                                    RDFGraph dataGraph) {
             var report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (RDFShape shape in shapesGraph.Where(s => !s.Deactivated))
+                foreach (var shape in shapesGraph.Where(s => !s.Deactivated)) { 
                     report = report.UnionWith(shape.EvaluateShape(shapesGraph, dataGraph, dataGraph.GetFocusNodesOf(shape)));
+                }
             }
             return report;
         }
@@ -48,11 +48,12 @@ namespace RDFSharp.Model.Validation
         internal static RDFValidationReport EvaluateShape(this RDFShape shape,
                                                           RDFShapesGraph shapesGraph,
                                                           RDFGraph dataGraph,
-                                                          List<RDFPatternMember> focusNodes) {
+                                                          List<RDFResource> focusNodes) {
             var report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (RDFConstraint constraint in shape)                    
+                foreach (var constraint in shape) { 
                     report = report.UnionWith(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNodes));
+                }
             }
             return report;
         }
