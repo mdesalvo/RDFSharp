@@ -27,7 +27,7 @@ namespace RDFSharp.Model.Validation
 
         #region Modeling
         /// <summary>
-        /// Gets the SHACL focus nodes (subjects) of the given SHACL shape within the given data graph
+        /// Gets the SHACL focus nodes of the given SHACL shape within the given data graph
         /// </summary>
         internal static List<RDFResource> GetFocusNodesOf(this RDFGraph dataGraph,
                                                                RDFShape shape) {
@@ -68,14 +68,27 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets the SHACL value nodes (objects) of the given SHACL property shape within the given data graph
+        /// Gets the SHACL value nodes of the given SHACL shape within the given data graph
         /// </summary>
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph,
-                                                               RDFPropertyShape propertyShape) {
+                                                               RDFShape shape,
+                                                               RDFResource focusNode) {
             var result = new List<RDFPatternMember>();
-            if (propertyShape != null && dataGraph != null) {
-                foreach (var triple in dataGraph.SelectTriplesByPredicate(propertyShape.Path))
-                    result.Add(triple.Object);
+            if (shape != null && dataGraph != null) {
+                switch (shape) {
+
+                    //sh:NodeShape
+                    case RDFNodeShape nodeShape:
+                        result.Add(focusNode);
+                        break;
+
+                    //sh:PropertyShape
+                    case RDFPropertyShape propertyShape:
+                        foreach (var triple in dataGraph.SelectTriplesByPredicate(((RDFPropertyShape)shape).Path))
+                            result.Add(triple.Object);
+                        break;
+
+                }
             }
             return result;
         }

@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,8 +36,12 @@ namespace RDFSharp.Model.Validation
                                                    RDFGraph dataGraph) {
             var report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (var shape in shapesGraph.Where(s => !s.Deactivated)) { 
-                    report = report.UnionWith(shape.EvaluateShape(shapesGraph, dataGraph, dataGraph.GetFocusNodesOf(shape)));
+                foreach (var shape in shapesGraph.Where(s => !s.Deactivated)) {
+                    dataGraph.GetFocusNodesOf(shape).ForEach(focusNode => {
+                        dataGraph.GetValueNodesOf(shape, focusNode).ForEach(valueNode => {
+                            report = report.UnionWith(shape.EvaluateShape(shapesGraph, dataGraph, focusNode, valueNode));
+                        });
+                    });
                 }
             }
             return report;
@@ -48,11 +53,12 @@ namespace RDFSharp.Model.Validation
         internal static RDFValidationReport EvaluateShape(this RDFShape shape,
                                                           RDFShapesGraph shapesGraph,
                                                           RDFGraph dataGraph,
-                                                          List<RDFResource> focusNodes) {
+                                                          RDFResource focusNode,
+                                                          RDFPatternMember valueNode) {
             var report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (var constraint in shape) { 
-                    report = report.UnionWith(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNodes));
+                foreach (var constraint in shape) {
+                    report = report.UnionWith(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNode, valueNode));
                 }
             }
             return report;

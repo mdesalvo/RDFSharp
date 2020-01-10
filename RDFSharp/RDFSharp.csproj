@@ -43,8 +43,4 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\Validation\Abstractions\Constraints\" />
-  </ItemGroup>
-
 </Project>
