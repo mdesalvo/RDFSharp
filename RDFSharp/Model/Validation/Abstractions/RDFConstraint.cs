@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System.Collections.Generic;
 
 namespace RDFSharp.Model.Validation
 {

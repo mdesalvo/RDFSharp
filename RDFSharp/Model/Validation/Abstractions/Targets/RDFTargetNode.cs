@@ -40,9 +40,9 @@ namespace RDFSharp.Model.Validation
         /// Gets a graph representation of this SHACL target
         /// </summary>
         public override RDFGraph ToRDFGraph(RDFShape shape) {
-            var result = base.ToRDFGraph(shape);
+            var result = new RDFGraph();
 
-            //TargetNode
+            //sh:targetNode
             if (shape != null)
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_NODE, this.TargetValue));
 

@@ -88,12 +88,8 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Gets a graph representation of this validation result
         /// </summary>
-        public RDFGraph ToRDFGraph(RDFValidationReport report) {
+        public RDFGraph ToRDFGraph() {
             var result = new RDFGraph();
-
-            //Result
-            if (report != null)
-                result.AddTriple(new RDFTriple(report, RDFVocabulary.SHACL.RESULT, this));
 
             //ValidationResult
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT));
@@ -121,7 +117,8 @@ namespace RDFSharp.Model.Validation
             result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, this.FocusNode));
 
             //ResultPath
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, this.ResultPath));
+            if (this.ResultPath != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, this.ResultPath));
 
             //Value
             if (this.ResultValue is RDFLiteral)

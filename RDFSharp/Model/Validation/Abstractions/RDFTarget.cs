@@ -19,7 +19,7 @@ namespace RDFSharp.Model.Validation
     /// <summary>
     /// RDFTarget represents a generic SHACL target definition within a SHACL shape.
     /// </summary>
-    public class RDFTarget : RDFResource {
+    public abstract class RDFTarget : RDFResource {
 
         #region Properties
         /// <summary>
@@ -39,9 +39,7 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Gets a graph representation of this SHACL target
         /// </summary>
-        public virtual RDFGraph ToRDFGraph(RDFShape shape) {
-            return new RDFGraph();
-        }
+        public abstract RDFGraph ToRDFGraph(RDFShape shape);
         #endregion
 
     }

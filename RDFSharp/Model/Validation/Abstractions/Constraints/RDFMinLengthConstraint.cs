@@ -6,23 +6,23 @@ using System.Text;
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFMaxLengthConstraint represents a SHACL constraint on the maximum allowed length for a given RDF term
+    /// RDFMinLengthConstraint represents a SHACL constraint on the minimum allowed length for a given RDF term
     /// </summary>
-    public class RDFMaxLengthConstraint: RDFConstraint {
+    public class RDFMinLengthConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Indicates the maximum allowed length for a given RDF term
+        /// Indicates the minimum allowed length for a given RDF term
         /// </summary>
-        public uint MaxLength { get; internal set; }
+        public uint MinLength { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL maxlength constraint
+        /// Default-ctor to build a SHACL minlength constraint
         /// </summary>
-        public RDFMaxLengthConstraint(RDFResource constraintName, uint maxLength) : base(constraintName) {
-            this.MaxLength = maxLength;
+        public RDFMinLengthConstraint(RDFResource constraintName, uint minLength) : base(constraintName) {
+            this.MinLength = minLength;
         }
         #endregion
 
@@ -30,19 +30,20 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Evaluates this SHACL constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, 
-                                                                 RDFShape shape, 
-                                                                 RDFGraph dataGraph, 
+        internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph,
+                                                                 RDFShape shape,
+                                                                 RDFGraph dataGraph,
                                                                  RDFResource focusNode,
-                                                                 RDFPatternMember valueNode) {
+                                                                 RDFPatternMember valueNode)
+        {
             var report = new RDFValidationReport(new RDFResource());
             switch (valueNode) {
 
                 //Resource
                 case RDFResource valueNodeResource:
-                    if (valueNodeResource.IsBlank || valueNodeResource.ToString().Length > this.MaxLength) {
+                    if (valueNodeResource.IsBlank || (this.MinLength > 0 && valueNodeResource.ToString().Length < this.MinLength)) {
                         report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
+                                                                 RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                  valueNode,
@@ -54,9 +55,9 @@ namespace RDFSharp.Model.Validation
 
                 //Literal
                 case RDFLiteral valueNodeLiteral:
-                    if (valueNodeLiteral.Value.Length > this.MaxLength) {
+                    if (this.MinLength > 0 && valueNodeLiteral.Value.Length < this.MinLength) {
                         report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
+                                                                 RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                  valueNode,
@@ -73,12 +74,13 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Gets a graph representation of this SHACL constraint
         /// </summary>
-        public override RDFGraph ToRDFGraph(RDFShape shape) {
+        public override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             var result = new RDFGraph();
 
-            //sh:maxLength
+            //sh:minLength
             if (shape != null)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_LENGTH, new RDFTypedLiteral(this.MaxLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(this.MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
             return result;
         }
