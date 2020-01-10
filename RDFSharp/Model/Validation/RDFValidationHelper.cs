@@ -84,7 +84,8 @@ namespace RDFSharp.Model.Validation
 
                     //sh:PropertyShape
                     case RDFPropertyShape propertyShape:
-                        foreach (var triple in dataGraph.SelectTriplesByPredicate(((RDFPropertyShape)shape).Path))
+                        foreach (var triple in dataGraph.SelectTriplesBySubject(focusNode)
+                                                        .SelectTriplesByPredicate(((RDFPropertyShape)shape).Path))
                             result.Add(triple.Object);
                         break;
 
