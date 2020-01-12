@@ -145,13 +145,14 @@ namespace RDFSharp.Model.Validation
             result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, this.Path));
 
             //Descriptions
-            this.Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));
+            this.Descriptions?.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));
 
             //Names
-            this.Names.ForEach(name => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.NAME, name)));
+            this.Names?.ForEach(name => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.NAME, name)));
 
             //Order
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.ORDER, this.Order));
+            if (this.Order != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.ORDER, this.Order));
 
             //Group
             if (this.Group != null)
