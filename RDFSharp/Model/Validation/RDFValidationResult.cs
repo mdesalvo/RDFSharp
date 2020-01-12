@@ -79,7 +79,7 @@ namespace RDFSharp.Model.Validation
             this.FocusNode = focusNode;
             this.ResultPath = resultPath;
             this.ResultValue = resultValue;
-            this.ResultMessages = resultMessages;
+            this.ResultMessages = resultMessages ?? new List<RDFLiteral>();
             this.Severity = severity;
         }
         #endregion

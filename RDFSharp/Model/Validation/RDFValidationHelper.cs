@@ -33,7 +33,7 @@ namespace RDFSharp.Model.Validation
                                                                RDFShape shape) {
             var result = new List<RDFResource>();
             if (shape != null && dataGraph != null) {
-                shape.Targets.ForEach(target => {
+                foreach (var target in shape.Targets) {
                     switch (target) {
 
                         //sh:targetClass
@@ -62,7 +62,7 @@ namespace RDFSharp.Model.Validation
                             break;
 
                     }
-                });
+                }
             }
             return result;
         }

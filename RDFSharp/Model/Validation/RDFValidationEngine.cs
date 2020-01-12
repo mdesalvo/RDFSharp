@@ -37,11 +37,11 @@ namespace RDFSharp.Model.Validation
             var report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
                 foreach (var shape in shapesGraph.Where(s => !s.Deactivated)) {
-                    dataGraph.GetFocusNodesOf(shape).ForEach(focusNode => {
-                        dataGraph.GetValueNodesOf(shape, focusNode).ForEach(valueNode => {
+                    foreach (var focusNode in dataGraph.GetFocusNodesOf(shape)) {
+                        foreach (var valueNode in dataGraph.GetValueNodesOf(shape, focusNode)) {
                             report = report.UnionWith(shape.EvaluateShape(shapesGraph, dataGraph, focusNode, valueNode));
-                        });
-                    });
+                        }
+                    }
                 }
             }
             return report;

@@ -139,9 +139,9 @@ namespace RDFSharp.Model.Validation
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
 
             //Results
-            this.Results.ForEach(r => {
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT, r));
-                result = result.UnionWith(r.ToRDFGraph());
+            this.Results.ForEach(res => {
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT, res));
+                result = result.UnionWith(res.ToRDFGraph());
             });
 
             result.SetContext(this.URI);
