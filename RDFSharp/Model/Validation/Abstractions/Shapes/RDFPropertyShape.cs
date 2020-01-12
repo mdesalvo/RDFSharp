@@ -58,6 +58,8 @@ namespace RDFSharp.Model.Validation
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName) {
             if (path != null) {
                 this.Path = path;
+                this.Descriptions = new List<RDFLiteral>();
+                this.Names = new List<RDFLiteral>();
             }
             else {
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
@@ -145,10 +147,10 @@ namespace RDFSharp.Model.Validation
             result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, this.Path));
 
             //Descriptions
-            this.Descriptions?.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));
+            this.Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));
 
             //Names
-            this.Names?.ForEach(name => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.NAME, name)));
+            this.Names.ForEach(name => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.NAME, name)));
 
             //Order
             if (this.Order != null)
