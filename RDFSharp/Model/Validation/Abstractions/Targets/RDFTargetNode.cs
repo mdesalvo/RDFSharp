@@ -33,6 +33,11 @@ namespace RDFSharp.Model.Validation
                 throw new RDFModelException("Cannot create RDFTargetNode because given \"targetNode\" parameter is null.");
             }
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL targetNode on the given resource
+        /// </summary>
+        public RDFTargetNode(RDFResource targetNode) : this(new RDFResource(), targetNode) { }
         #endregion
 
         #region Methods

@@ -33,6 +33,11 @@ namespace RDFSharp.Model.Validation
                 throw new RDFModelException("Cannot create RDFTargetObjectsOf because given \"targetProperty\" parameter is null.");
             }
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL targetObjectsOf on the given property
+        /// </summary>
+        public RDFTargetObjectsOf(RDFResource targetProperty) : this(new RDFResource(), targetProperty) { }
         #endregion
 
         #region Methods
