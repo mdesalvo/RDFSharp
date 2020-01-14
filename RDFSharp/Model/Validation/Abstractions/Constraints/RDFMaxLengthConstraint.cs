@@ -19,11 +19,16 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL maxlength constraint
+        /// Default-ctor to build a named SHACL maxLength constraint
         /// </summary>
         public RDFMaxLengthConstraint(RDFResource constraintName, uint maxLength) : base(constraintName) {
             this.MaxLength = maxLength;
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL maxLength constraint
+        /// </summary>
+        public RDFMaxLengthConstraint(uint maxLength) : this(new RDFResource(), maxLength) { }
         #endregion
 
         #region Methods

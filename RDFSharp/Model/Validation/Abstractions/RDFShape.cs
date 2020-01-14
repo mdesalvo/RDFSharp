@@ -97,7 +97,7 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL shape with the given name
+        /// Default-ctor to build a generic SHACL shape
         /// </summary>
         internal RDFShape(RDFResource shapeName) : base(shapeName.ToString()) {
             this.Deactivated = false;

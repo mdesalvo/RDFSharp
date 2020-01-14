@@ -23,7 +23,7 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL targetObjectsOf on the given property
+        /// Default-ctor to build a named SHACL targetObjectsOf on the given property
         /// </summary>
         public RDFTargetObjectsOf(RDFResource targetName, RDFResource targetProperty) : base(targetName) {
             if (targetProperty != null) {

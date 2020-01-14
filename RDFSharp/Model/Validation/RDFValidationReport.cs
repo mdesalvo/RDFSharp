@@ -55,11 +55,16 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty validation report
+        /// Default-ctor to build a named SHACL validation report
         /// </summary>
         internal RDFValidationReport(RDFResource reportName): base(reportName.ToString()) {
             this.Results = new List<RDFValidationResult>();
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL validation report
+        /// </summary>
+        internal RDFValidationReport() : this(new RDFResource()) { }
         #endregion
 
         #region Interfaces

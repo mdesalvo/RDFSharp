@@ -19,11 +19,16 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL minlength constraint
+        /// Default-ctor to build a named SHACL minLength constraint
         /// </summary>
         public RDFMinLengthConstraint(RDFResource constraintName, uint minLength) : base(constraintName) {
             this.MinLength = minLength;
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL minLength constraint
+        /// </summary>
+        public RDFMinLengthConstraint(uint minLength) : this(new RDFResource(), minLength) { }
         #endregion
 
         #region Methods

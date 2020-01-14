@@ -23,7 +23,7 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL targetNode on the given resource
+        /// Default-ctor to build a named SHACL targetNode on the given resource
         /// </summary>
         public RDFTargetNode(RDFResource targetName, RDFResource targetNode) : base(targetName) {
             if (targetNode != null) {

@@ -23,9 +23,14 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL node shape with the given name
+        /// Default-ctor to build a named SHACL node shape
         /// </summary>
         public RDFNodeShape(RDFResource nodeShapeName) : base(nodeShapeName) { }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL node shape
+        /// </summary>
+        public RDFNodeShape() : this(new RDFResource()) { }
         #endregion
 
         #region Methods

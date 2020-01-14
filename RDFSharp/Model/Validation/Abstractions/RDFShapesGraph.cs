@@ -49,11 +49,16 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build SHACL shapes graph with the given name
+        /// Default-ctor to build a named SHACL shapes graph
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName): base(shapesGraphName.ToString()) {
             this.Shapes = new Dictionary<Int64, RDFShape>();
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL shapes graph
+        /// </summary>
+        public RDFShapesGraph() : this(new RDFResource()) { }
         #endregion
 
         #region Interfaces

@@ -53,7 +53,7 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SHACL property shape with the given name on the given property
+        /// Default-ctor to build a named SHACL property shape on the given property
         /// </summary>
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName) {
             if (path != null) {
@@ -65,6 +65,11 @@ namespace RDFSharp.Model.Validation
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
             }
         }
+
+        /// <summary>
+        /// Default-ctor to build a blank SHACL property shape on the given property
+        /// </summary>
+        public RDFPropertyShape(RDFResource path) : this(new RDFResource(), path) { }
         #endregion
 
         #region Methods
