@@ -108,23 +108,28 @@ namespace RDFSharp.Model.Validation
             }
 
             //SourceShape
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_SHAPE, this.SourceShape));
+            if (this.SourceShape != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_SHAPE, this.SourceShape));
 
             //SourceConstraintComponent
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, this.SourceConstraintComponent));
+            if (this.SourceConstraintComponent != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, this.SourceConstraintComponent));
 
             //FocusNode
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, this.FocusNode));
+            if (this.FocusNode != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, this.FocusNode));
 
             //ResultPath
             if (this.ResultPath != null)
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, this.ResultPath));
 
             //Value
-            if (this.ResultValue is RDFLiteral)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFLiteral)this.ResultValue));
-            else
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)this.ResultValue));
+            if (this.ResultValue != null) {
+                if (this.ResultValue is RDFLiteral)
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFLiteral)this.ResultValue));
+                else
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)this.ResultValue));
+            }
 
             //Messages
             this.ResultMessages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_MESSAGE, message)));
