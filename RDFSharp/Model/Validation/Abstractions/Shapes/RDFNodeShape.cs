@@ -23,19 +23,19 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL node shape
+        /// Default-ctor to build a named node shape
         /// </summary>
         public RDFNodeShape(RDFResource nodeShapeName) : base(nodeShapeName) { }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL node shape
+        /// Default-ctor to build a blank node shape
         /// </summary>
         public RDFNodeShape() : this(new RDFResource()) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Gets a graph representation of this SHACL node shape
+        /// Gets a graph representation of this node shape
         /// </summary>
         public override RDFGraph ToRDFGraph() {
             var result = base.ToRDFGraph();

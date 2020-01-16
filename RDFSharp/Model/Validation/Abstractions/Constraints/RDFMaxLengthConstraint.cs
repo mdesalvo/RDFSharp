@@ -19,21 +19,21 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL maxLength constraint
+        /// Default-ctor to build a named maxLength constraint
         /// </summary>
         public RDFMaxLengthConstraint(RDFResource constraintName, uint maxLength) : base(constraintName) {
             this.MaxLength = maxLength;
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL maxLength constraint
+        /// Default-ctor to build a blank maxLength constraint
         /// </summary>
         public RDFMaxLengthConstraint(uint maxLength) : this(new RDFResource(), maxLength) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Evaluates this SHACL constraint against the given data graph
+        /// Evaluates this constraint against the given data graph
         /// </summary>
         internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, 
                                                                  RDFShape shape, 
@@ -76,7 +76,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets a graph representation of this SHACL constraint
+        /// Gets a graph representation of this constraint
         /// </summary>
         public override RDFGraph ToRDFGraph(RDFShape shape) {
             var result = new RDFGraph();

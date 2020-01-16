@@ -28,49 +28,49 @@ namespace RDFSharp.Model.Validation
 
         #region Properties
         /// <summary>
-        /// Count of the SHACL shapes composing this SHACL shapes graph
+        /// Count of the shapes composing this shapes graph
         /// </summary>
         public Int64 ShapesCount {
             get { return this.Shapes.Count; }
         }
 
         /// <summary>
-        /// Gets the enumerator on the SHACL shapes of this SHACL shapes graph for iteration
+        /// Gets the enumerator on the shapes of this shapes graph for iteration
         /// </summary>
         public IEnumerator<RDFShape> ShapesEnumerator {
             get { return this.Shapes.Values.GetEnumerator(); }
         }
 
         /// <summary>
-        /// SHACL shapes contained in this SHACL shapes graph
+        /// SHACL shapes contained in this shapes graph
         /// </summary>
         internal Dictionary<Int64, RDFShape> Shapes { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL shapes graph
+        /// Default-ctor to build a named shapes graph
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName): base(shapesGraphName.ToString()) {
             this.Shapes = new Dictionary<Int64, RDFShape>();
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL shapes graph
+        /// Default-ctor to build a blank shapes graph
         /// </summary>
         public RDFShapesGraph() : this(new RDFResource()) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Exposes a typed enumerator on the SHACL shapes of this SHACL shapes graph
+        /// Exposes a typed enumerator on the shapes of this shapes graph
         /// </summary>
         IEnumerator<RDFShape> IEnumerable<RDFShape>.GetEnumerator() {
             return this.ShapesEnumerator;
         }
 
         /// <summary>
-        /// Exposes an untyped enumerator on the SHACL shapes of this SHACL shapes graph
+        /// Exposes an untyped enumerator on the shapes of this shapes graph
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
             return this.ShapesEnumerator;
@@ -81,7 +81,7 @@ namespace RDFSharp.Model.Validation
 
         #region Add
         /// <summary>
-        /// Adds the given SHACL shape to this SHACL shapes graph
+        /// Adds the given shape to this shapes graph
         /// </summary>
         public RDFShapesGraph AddShape(RDFShape shape) {
             if (shape != null) {
@@ -91,11 +91,25 @@ namespace RDFSharp.Model.Validation
             }
             return this;
         }
+
+        /// <summary>
+        /// Merges the shapes of the given shapes graph to this shapes graph
+        /// </summary>
+        public RDFShapesGraph MergeShapes(RDFShapesGraph shapesGraph) {
+            if (shapesGraph != null) {
+                foreach(var shape in shapesGraph) {
+                    if (!this.Shapes.ContainsKey(shape.PatternMemberID)) {
+                        this.Shapes.Add(shape.PatternMemberID, shape);
+                    }
+                }
+            }
+            return this;
+        }
         #endregion
 
         #region Remove
         /// <summary>
-        /// Removes the given SHACL shape from this SHACL shapes graph
+        /// Removes the given shape from this shapes graph
         /// </summary>
         public RDFShapesGraph RemoveShape(RDFShape shape) {
             if (shape != null) {
@@ -109,80 +123,10 @@ namespace RDFSharp.Model.Validation
 
         #region Select
         /// <summary>
-        /// Checks if this shapes graph contains the given SHACL shape
+        /// Checks if this shapes graph contains the given shape
         /// </summary>
         public Boolean ContainsShape(RDFShape shape) {
             return (shape != null && this.Shapes.ContainsKey(shape.PatternMemberID));
-        }
-        #endregion
-
-        #region Set
-        /// <summary>
-        /// Builds a new intersection SHACL shapes graph from this SHACL shapes graph and a given one
-        /// </summary>
-        public RDFShapesGraph IntersectWith(RDFShapesGraph shapesGraph) {
-            var result = new RDFShapesGraph(new RDFResource());
-            if (shapesGraph != null) {
-
-                //Add intersection shapes
-                foreach (var s in this) {
-                    if (shapesGraph.ContainsShape(s)) {
-                        result.AddShape(s);
-                    }
-                }
-
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Builds a new union SHACL shapes graph from this SHACL shapes graph and the given one
-        /// </summary>
-        public RDFShapesGraph UnionWith(RDFShapesGraph shapesGraph) {
-            var result = new RDFShapesGraph(new RDFResource());
-
-            //Add shapes from this shapes graph
-            foreach (var s in this) {
-                result.AddShape(s);
-            }
-
-            //Manage the given shapes graph
-            if (shapesGraph != null) {
-
-                //Add triples from the given graph
-                foreach (var s in shapesGraph) {
-                    result.AddShape(s);
-                }
-
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Builds a new difference SHACL shapes graph from this SHACL shapes graph and a given one
-        /// </summary>
-        public RDFShapesGraph DifferenceWith(RDFShapesGraph shapesGraph) {
-            var result = new RDFShapesGraph(new RDFResource());
-            if (shapesGraph != null) {
-
-                //Add difference shapes
-                foreach (var s in this) {
-                    if (!shapesGraph.ContainsShape(s)) {
-                        result.AddShape(s);
-                    }
-                }
-
-            }
-            else {
-
-                //Add shapes from this shape
-                foreach (var s in this) {
-                    result.AddShape(s);
-                }
-
-            }
-            return result;
         }
         #endregion
 

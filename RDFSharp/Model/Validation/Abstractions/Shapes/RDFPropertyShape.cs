@@ -26,34 +26,34 @@ namespace RDFSharp.Model.Validation
 
         #region Properties
         /// <summary>
-        /// Indicates the property on which this SHACL property shape is applied (sh:path)
+        /// Indicates the property on which this property shape is applied (sh:path)
         /// </summary>
         public RDFResource Path { get; internal set; }
 
         /// <summary>
-        /// Indicates the human-readable descriptions of this SHACL property shape's path (sh:description)
+        /// Indicates the human-readable descriptions of this property shape's path (sh:description)
         /// </summary>
         public List<RDFLiteral> Descriptions { get; internal set; }
 
         /// <summary>
-        /// Indicates the human-readable labels of this SHACL property shape's path (sh:name)
+        /// Indicates the human-readable labels of this property shape's path (sh:name)
         /// </summary>
         public List<RDFLiteral> Names { get; internal set; }
 
         /// <summary>
-        /// Indicates the relative order of this SHACL property shape compared to its siblings (sh:order)
+        /// Indicates the relative order of this property shape compared to its siblings (sh:order)
         /// </summary>
         public RDFLiteral Order { get; internal set; }
 
         /// <summary>
-        /// Indicates the group of SHACL property shapes to which this SHACL property shape belongs (sh:group)
+        /// Indicates the group of property shapes to which this property shape belongs (sh:group)
         /// </summary>
         public RDFResource Group { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL property shape on the given property
+        /// Default-ctor to build a named property shape on the given property
         /// </summary>
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName) {
             if (path != null) {
@@ -67,14 +67,14 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL property shape on the given property
+        /// Default-ctor to build a blank property shape on the given property
         /// </summary>
         public RDFPropertyShape(RDFResource path) : this(new RDFResource(), path) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Adds the given human-readable description to this SHACL property shape's path
+        /// Adds the given human-readable description to this property shape's path
         /// </summary>
         public RDFPropertyShape AddDescription(RDFLiteral description) {
             if (description != null) {
@@ -99,7 +99,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Adds the given human-readable label to this SHACL property shape's path
+        /// Adds the given human-readable label to this property shape's path
         /// </summary>
         public RDFPropertyShape AddName(RDFLiteral name) {
             if (name != null) {
@@ -124,7 +124,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Sets the relative order of this SHACL property shape compared to its siblings
+        /// Sets the relative order of this property shape compared to its siblings
         /// </summary>
         public RDFPropertyShape SetOrder(Int32 order) {
             this.Order = new RDFTypedLiteral(order.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
@@ -132,7 +132,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Sets the group of SHACL property shapes to which this SHACL property shape belongs
+        /// Sets the group of property shapes to which this SHACL property shape belongs
         /// </summary>
         public RDFPropertyShape SetGroup(RDFResource group) {
             this.Group = group;
@@ -140,7 +140,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets a graph representation of this SHACL property shape
+        /// Gets a graph representation of this property shape
         /// </summary>
         public override RDFGraph ToRDFGraph() {
             var result = base.ToRDFGraph();

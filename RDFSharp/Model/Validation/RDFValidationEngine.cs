@@ -39,7 +39,7 @@ namespace RDFSharp.Model.Validation
                 foreach (var shape in shapesGraph.Where(s => !s.Deactivated)) {
                     foreach (var focusNode in dataGraph.GetFocusNodesOf(shape)) {
                         foreach (var valueNode in dataGraph.GetValueNodesOf(shape, focusNode)) {
-                            report = report.UnionWith(shape.EvaluateShape(shapesGraph, dataGraph, focusNode, valueNode));
+                            report.MergeResults(shape.EvaluateShape(shapesGraph, dataGraph, focusNode, valueNode));
                         }
                     }
                 }
@@ -58,7 +58,7 @@ namespace RDFSharp.Model.Validation
             var report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
                 foreach (var constraint in shape) {
-                    report = report.UnionWith(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNode, valueNode));
+                    report.MergeResults(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNode, valueNode));
                 }
             }
             return report;

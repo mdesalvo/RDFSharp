@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    ///  RDFValidationReport represents a detailed report of a SHACL shapes graph's validation.
+    ///  RDFValidationReport represents a detailed report of a shapes graph's validation.
     /// </summary>
     public class RDFValidationReport: RDFResource, IEnumerable<RDFValidationResult> {
 
@@ -55,28 +55,28 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL validation report
+        /// Default-ctor to build a named validation report
         /// </summary>
         internal RDFValidationReport(RDFResource reportName): base(reportName.ToString()) {
             this.Results = new List<RDFValidationResult>();
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL validation report
+        /// Default-ctor to build a blank validation report
         /// </summary>
         internal RDFValidationReport() : this(new RDFResource()) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Exposes a typed enumerator on the SHACL validation report's results
+        /// Exposes a typed enumerator on the validation report's results
         /// </summary>
         IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() {
             return this.ResultsEnumerator;
         }
 
         /// <summary>
-        /// Exposes an untyped enumerator on the SHACL validation report's results
+        /// Exposes an untyped enumerator on the validation report's results
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
             return this.ResultsEnumerator;
@@ -90,40 +90,16 @@ namespace RDFSharp.Model.Validation
         /// Adds the given result to this validation report
         /// </summary>
         internal void AddResult(RDFValidationResult result) {
-            this.Results.Add(result);
+            if (result != null)
+                this.Results.Add(result);
         }
 
         /// <summary>
-        /// Merges the results of the given validation report
+        /// Merges the results of the given validation report to this validation report
         /// </summary>
         internal void MergeResults(RDFValidationReport report) {
-           this.Results.AddRange(report.Results);
-        }
-        #endregion
-
-        #region Set
-        /// <summary>
-        /// Builds a new union validation report from this validation report and the given one
-        /// </summary>
-        internal RDFValidationReport UnionWith(RDFValidationReport validationReport) {
-            var result = new RDFValidationReport(new RDFResource());
-
-            //Add results from this validation report
-            foreach (var r in this) {
-                result.AddResult(r);
-            }
-
-            //Manage the given validation report
-            if (validationReport != null) {
-
-                //Add results from the given validation report
-                foreach (var r in validationReport) {
-                    result.AddResult(r);
-                }
-
-            }
-
-            return result;
+            if (report != null && report.Results != null)
+                this.Results.AddRange(report.Results);
         }
         #endregion
 

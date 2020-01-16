@@ -17,87 +17,86 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFShape represents a SHACL shape definition
+    /// RDFShape represents a generic SHACL shape definition
     /// </summary>
     public class RDFShape: RDFResource, IEnumerable<RDFConstraint> {
 
         #region Properties
         /// <summary>
-        /// Indicates the severity level of this SHACL shape (sh:severity)
+        /// Indicates the severity level of this shape (sh:severity)
         /// </summary>
         public RDFValidationEnums.RDFShapeSeverity Severity { get; internal set; }
 
         /// <summary>
-        /// Indicates that this SHACL shape is ignored (sh:deactivated)
+        /// Indicates that this shape is ignored (sh:deactivated)
         /// </summary>
         public Boolean Deactivated { get; internal set; }
 
         /// <summary>
-        /// Count of the human-readable messages of this SHACL shape
+        /// Count of the human-readable messages of this shape
         /// </summary>
         public Int64 MessagesCount {
             get { return this.Messages.Count; }
         }
 
         /// <summary>
-        /// Gets the enumerator on human-readable messages of this SHACL shape for iteration
+        /// Gets the enumerator on human-readable messages of this shape for iteration
         /// </summary>
         public IEnumerator<RDFLiteral> MessagesEnumerator {
             get { return this.Messages.GetEnumerator(); }
         }
 
         /// <summary>
-        /// Count of the SHACL targets of this SHACL shape
+        /// Count of the targets of this shape
         /// </summary>
         public Int64 TargetsCount {
             get { return this.Targets.Count; }
         }
 
         /// <summary>
-        /// Gets the enumerator on the SHACL targets of this SHACL shape for iteration
+        /// Gets the enumerator on the targets of this shape for iteration
         /// </summary>
         public IEnumerator<RDFTarget> TargetsEnumerator {
             get { return this.Targets.GetEnumerator(); }
         }
 
         /// <summary>
-        /// Count of the SHACL constraints of this SHACL shape
+        /// Count of the constraints of this shape
         /// </summary>
         public Int64 ConstraintsCount {
             get { return this.Constraints.Count; }
         }
 
         /// <summary>
-        /// Gets the enumerator on the SHACL constraints of this SHACL shape for iteration
+        /// Gets the enumerator on the constraints of this shape for iteration
         /// </summary>
         public IEnumerator<RDFConstraint> ConstraintsEnumerator {
             get { return this.Constraints.GetEnumerator(); }
         }
 
         /// <summary>
-        /// Indicates the human-readable messages of this SHACL shape (sh:message)
+        /// Indicates the human-readable messages of this shape (sh:message)
         /// </summary>
         internal List<RDFLiteral> Messages { get; set; }
 
         /// <summary>
-        /// Indicats the SHACL targets of this SHACL shape (sh:targetClass,sh:targetNode,sh:targetsSubjectsOf,sh:targetObjectsOf)
+        /// Indicats the targets of this shape (sh:targetClass,sh:targetNode,sh:targetsSubjectsOf,sh:targetObjectsOf)
         /// </summary>
         internal List<RDFTarget> Targets { get; set; }
 
         /// <summary>
-        /// Indicates the SHACL constraints of this SHACL shape
+        /// Indicates the constraints of this shape
         /// </summary>
         internal List<RDFConstraint> Constraints { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a generic SHACL shape
+        /// Default-ctor to build a generic shape
         /// </summary>
         internal RDFShape(RDFResource shapeName) : base(shapeName.ToString()) {
             this.Deactivated = false;
@@ -110,14 +109,14 @@ namespace RDFSharp.Model.Validation
 
         #region Interfaces
         /// <summary>
-        /// Exposes a typed enumerator on this SHACL shape's constraints
+        /// Exposes a typed enumerator on this shape's constraints
         /// </summary>
         IEnumerator<RDFConstraint> IEnumerable<RDFConstraint>.GetEnumerator() {
             return this.ConstraintsEnumerator;
         }
 
         /// <summary>
-        /// Exposes an untyped enumerator on this SHACL shape's constraints
+        /// Exposes an untyped enumerator on this shape's constraints
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
             return this.ConstraintsEnumerator;
@@ -126,7 +125,7 @@ namespace RDFSharp.Model.Validation
 
         #region Methods
         /// <summary>
-        /// Activates this SHACL shape, making it available to the processor
+        /// Activates this shape, making it available to the processor
         /// </summary>
         public RDFShape Activate()
         {
@@ -135,7 +134,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Deactivates this SHACL shape, making it unavailable to the processor
+        /// Deactivates this shape, making it unavailable to the processor
         /// </summary>
         public RDFShape Deactivate()
         {
@@ -144,7 +143,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Sets the severity level of this SHACL shape
+        /// Sets the severity level of this shape
         /// </summary>
         public RDFShape SetSeverity(RDFValidationEnums.RDFShapeSeverity shapeSeverity)
         {
@@ -153,7 +152,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Adds the given human-readable message to this SHACL shape
+        /// Adds the given human-readable message to this shape
         /// </summary>
         public RDFShape AddMessage(RDFLiteral message) {
             if (message != null) {
@@ -178,7 +177,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Adds the given SHACL target to this SHACL shape
+        /// Adds the given SHACL target to this shape
         /// </summary>
         public RDFShape AddTarget(RDFTarget target)
         {
@@ -189,7 +188,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Adds the given SHACL constraint to this SHACL shape
+        /// Adds the given SHACL constraint to this shape
         /// </summary>
         public RDFShape AddConstraint(RDFConstraint constraint) {
             if (constraint != null)
@@ -199,7 +198,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets a graph representation of this SHACL shape
+        /// Gets a graph representation of this shape
         /// </summary>
         public virtual RDFGraph ToRDFGraph() {
             var result = new RDFGraph();

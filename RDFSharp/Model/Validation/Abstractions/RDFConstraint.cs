@@ -19,20 +19,20 @@ using RDFSharp.Query;
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFConstraint represents a generic SHACL constraint definition within a SHACL shape.
+    /// RDFConstraint represents a generic SHACL constraint definition within a shape.
     /// </summary>
     public abstract class RDFConstraint: RDFResource {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a generic SHACL constraint
+        /// Default-ctor to build a generic constraint
         /// </summary>
         internal RDFConstraint(RDFResource constraintName) : base(constraintName.ToString()) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Evaluates this SHACL constraint against the given data graph
+        /// Evaluates this constraint against the given data graph
         /// </summary>
         internal abstract RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, 
                                                                  RDFShape shape, 
@@ -41,7 +41,7 @@ namespace RDFSharp.Model.Validation
                                                                  RDFPatternMember valueNode);
 
         /// <summary>
-        /// Gets a graph representation of this SHACL constraint
+        /// Gets a graph representation of this constraint
         /// </summary>
         public abstract RDFGraph ToRDFGraph(RDFShape shape);
         #endregion

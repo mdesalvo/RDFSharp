@@ -21,7 +21,7 @@ using RDFSharp.Query;
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    ///  RDFValidationResult represents an evidence reported by a SHACL shape's validation.
+    ///  RDFValidationResult represents an evidence reported by a shape's validation.
     /// </summary>
     public class RDFValidationResult: RDFResource {
 

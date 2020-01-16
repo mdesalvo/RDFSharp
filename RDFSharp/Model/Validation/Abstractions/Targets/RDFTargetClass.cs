@@ -17,13 +17,13 @@
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFTargetClass represents a SHACL targetClass definition within a SHACL shape.
+    /// RDFTargetClass represents a SHACL target of type "Class" within a shape.
     /// </summary>
     public class RDFTargetClass : RDFTarget {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL targetClass on the given class
+        /// Default-ctor to build a named target of type "Class" on the given class
         /// </summary>
         public RDFTargetClass(RDFResource targetName, RDFResource targetClass) : base(targetName) {
             if (targetClass != null) {
@@ -35,14 +35,14 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL targetClass on the given class
+        /// Default-ctor to build a blank target of type "Class" on the given class
         /// </summary>
         public RDFTargetClass(RDFResource targetClass) : this(new RDFResource(), targetClass) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Gets a graph representation of this SHACL target
+        /// Gets a graph representation of this target
         /// </summary>
         public override RDFGraph ToRDFGraph(RDFShape shape) {
             var result = new RDFGraph();

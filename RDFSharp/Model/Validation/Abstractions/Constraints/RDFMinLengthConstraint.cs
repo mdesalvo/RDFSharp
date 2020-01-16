@@ -19,21 +19,21 @@ namespace RDFSharp.Model.Validation
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL minLength constraint
+        /// Default-ctor to build a named minLength constraint
         /// </summary>
         public RDFMinLengthConstraint(RDFResource constraintName, uint minLength) : base(constraintName) {
             this.MinLength = minLength;
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL minLength constraint
+        /// Default-ctor to build a blank minLength constraint
         /// </summary>
         public RDFMinLengthConstraint(uint minLength) : this(new RDFResource(), minLength) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Evaluates this SHACL constraint against the given data graph
+        /// Evaluates this constraint against the given data graph
         /// </summary>
         internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph,
                                                                  RDFShape shape,
@@ -77,7 +77,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets a graph representation of this SHACL constraint
+        /// Gets a graph representation of this constraint
         /// </summary>
         public override RDFGraph ToRDFGraph(RDFShape shape)
         {

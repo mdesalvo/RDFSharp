@@ -17,13 +17,13 @@
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFTargetObjectsOf represents a SHACL targetObjectsOf definition within a SHACL shape.
+    /// RDFTargetObjectsOf represents a SHACL target of type "ObjectsOf" within a shape.
     /// </summary>
     public class RDFTargetObjectsOf : RDFTarget {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named SHACL targetObjectsOf on the given property
+        /// Default-ctor to build a named target of type "ObjectsOf" on the given property
         /// </summary>
         public RDFTargetObjectsOf(RDFResource targetName, RDFResource targetProperty) : base(targetName) {
             if (targetProperty != null) {
@@ -35,14 +35,14 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Default-ctor to build a blank SHACL targetObjectsOf on the given property
+        /// Default-ctor to build a blank target of type "ObjectsOf" on the given property
         /// </summary>
         public RDFTargetObjectsOf(RDFResource targetProperty) : this(new RDFResource(), targetProperty) { }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Gets a graph representation of this SHACL target
+        /// Gets a graph representation of this target
         /// </summary>
         public override RDFGraph ToRDFGraph(RDFShape shape) {
             var result = new RDFGraph();

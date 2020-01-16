@@ -27,7 +27,7 @@ namespace RDFSharp.Model.Validation
 
         #region Modeling
         /// <summary>
-        /// Gets the SHACL focus nodes of the given SHACL shape within the given data graph
+        /// Gets the focus nodes of the given shape within the given data graph
         /// </summary>
         internal static List<RDFResource> GetFocusNodesOf(this RDFGraph dataGraph,
                                                                RDFShape shape) {
@@ -68,7 +68,7 @@ namespace RDFSharp.Model.Validation
         }
 
         /// <summary>
-        /// Gets the SHACL value nodes of the given SHACL shape within the given data graph
+        /// Gets the value nodes of the given shape within the given data graph
         /// </summary>
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph,
                                                                RDFShape shape,

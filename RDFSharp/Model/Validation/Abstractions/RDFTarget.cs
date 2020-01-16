@@ -17,27 +17,27 @@
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFTarget represents a generic SHACL target definition within a SHACL shape.
+    /// RDFTarget represents a generic SHACL target definition within a shape.
     /// </summary>
     public abstract class RDFTarget : RDFResource {
 
         #region Properties
         /// <summary>
-        /// Indicates the value of this SHACL target
+        /// Indicates the value of this target
         /// </summary>
         public RDFResource TargetValue { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a generic SHACL target
+        /// Default-ctor to build a generic target
         /// </summary>
         internal RDFTarget(RDFResource targetName): base(targetName.ToString()) { }
         #endregion
 
         #region Properties
         /// <summary>
-        /// Gets a graph representation of this SHACL target
+        /// Gets a graph representation of this target
         /// </summary>
         public abstract RDFGraph ToRDFGraph(RDFShape shape);
         #endregion
