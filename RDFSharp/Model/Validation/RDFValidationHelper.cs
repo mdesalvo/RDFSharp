@@ -64,7 +64,7 @@ namespace RDFSharp.Model.Validation
                     }
                 }
             }
-            return result;
+            return RDFQueryUtilities.RemoveDuplicates(result);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace RDFSharp.Model.Validation
 
                 }
             }
-            return result;
+            return RDFQueryUtilities.RemoveDuplicates(result);
         }
 
         /// <summary>
