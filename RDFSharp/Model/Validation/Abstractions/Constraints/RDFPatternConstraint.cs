@@ -1,47 +1,40 @@
-﻿/*
-   Copyright 2012-2019 Marco De Salvo
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
-
-using RDFSharp.Query;
+﻿using RDFSharp.Query;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model.Validation
 {
     /// <summary>
-    /// RDFMinLengthConstraint represents a SHACL constraint on the minimum allowed length for a given RDF term
+    /// RDFPatternConstraint represents a SHACL constraint on the specified regular expression for a given RDF term
     /// </summary>
-    public class RDFMinLengthConstraint : RDFConstraint {
+    public class RDFPatternConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Indicates the minimum allowed length for a given RDF term
+        /// Regular Expression to be applied on the given RDF term
         /// </summary>
-        public uint MinLength { get; internal set; }
+        public Regex RegEx { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named minLength constraint
+        /// Default-ctor to build a named pattern constraint
         /// </summary>
-        public RDFMinLengthConstraint(RDFResource constraintName, uint minLength) : base(constraintName) {
-            this.MinLength = minLength;
+        public RDFPatternConstraint(RDFResource constraintName, Regex regex) : base(constraintName) {
+            if (regex != null) {
+                this.RegEx = regex;
+            }
+            else {
+                throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
+            }
         }
 
         /// <summary>
-        /// Default-ctor to build a blank minLength constraint
+        /// Default-ctor to build a blank pattern constraint
         /// </summary>
-        public RDFMinLengthConstraint(uint minLength) : this(new RDFResource(), minLength) { }
+        public RDFPatternConstraint(Regex regex) : this(new RDFResource(), regex) { }
         #endregion
 
         #region Methods
@@ -52,16 +45,15 @@ namespace RDFSharp.Model.Validation
                                                                  RDFShape shape,
                                                                  RDFGraph dataGraph,
                                                                  RDFResource focusNode,
-                                                                 RDFPatternMember valueNode)
-        {
+                                                                 RDFPatternMember valueNode) {
             var report = new RDFValidationReport(new RDFResource());
             switch (valueNode) {
 
                 //Resource
                 case RDFResource valueNodeResource:
-                    if (valueNodeResource.IsBlank || (this.MinLength > 0 && valueNodeResource.ToString().Length < this.MinLength)) {
+                    if (valueNodeResource.IsBlank || !this.RegEx.IsMatch(valueNodeResource.ToString())) {
                         report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
+                                                                 RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                  valueNode,
@@ -73,9 +65,9 @@ namespace RDFSharp.Model.Validation
 
                 //Literal
                 case RDFLiteral valueNodeLiteral:
-                    if (this.MinLength > 0 && valueNodeLiteral.Value.Length < this.MinLength) {
+                    if (!this.RegEx.IsMatch(valueNodeLiteral.Value)) {
                         report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
+                                                                 RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                  valueNode,
@@ -92,13 +84,25 @@ namespace RDFSharp.Model.Validation
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        public override RDFGraph ToRDFGraph(RDFShape shape)
-        {
+        public override RDFGraph ToRDFGraph(RDFShape shape) {
             var result = new RDFGraph();
             if (shape != null) {
 
-                //sh:minLength
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(this.MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+                //sh:pattern
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(this.RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
+
+                //sh:flags
+                StringBuilder regexFlags = new StringBuilder();
+                if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+                    regexFlags.Append("i");
+                if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
+                    regexFlags.Append("s");
+                if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
+                    regexFlags.Append("m");
+                if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+                    regexFlags.Append("x");
+                if (regexFlags.ToString() != String.Empty)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
             }
             return result;
