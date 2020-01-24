@@ -88,16 +88,16 @@ namespace RDFSharp.Model.Validation
                     using (DataTable table = new DataTable(this.ToString())) {
 
                         //Create langMatches table
-                        RDFQueryEngine.AddColumn(table, "?languageTag");
+                        RDFQueryEngine.AddColumn(table, "?valueNode");
                         RDFQueryEngine.AddRow(table, new Dictionary<string, string>() {
-                            { "?languageTag", valueNodePlainLiteral.Language }
+                            { "?valueNode", valueNodePlainLiteral.ToString() }
                         });
 
                         //Execute langMatches filter
                         bool langMatches = false;
                         var languageTagsEnumerator = this.LanguageTags.GetEnumerator();
                         while (languageTagsEnumerator.MoveNext() && !langMatches) {
-                            RDFLangMatchesFilter langMatchesFilter = new RDFLangMatchesFilter(new RDFVariable("languageTag"), languageTagsEnumerator.Current);
+                            RDFLangMatchesFilter langMatchesFilter = new RDFLangMatchesFilter(new RDFVariable("valueNode"), languageTagsEnumerator.Current);
                             if (langMatchesFilter.ApplyFilter(table.Rows[0], false)) 
                                 langMatches = true;
                         }
