@@ -127,7 +127,13 @@ namespace RDFSharp.Model.Validation
             var result = new RDFGraph();
             if (shape != null) {
 
-                //TODO
+                //Get collection from language tags
+                RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+                this.LanguageTags.ToList().ForEach(lt => languageTags.AddItem(new RDFPlainLiteral(lt)));
+                result.AddCollection(languageTags);
+
+                //sh:languageIn
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LANGUAGE_IN, languageTags.ReificationSubject));
 
             }
             return result;
