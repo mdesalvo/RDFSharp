@@ -90,7 +90,7 @@ namespace RDFSharp.Model.Validation
                         //Create langMatches table
                         RDFQueryEngine.AddColumn(table, "languageTag");
                         RDFQueryEngine.AddRow(table, new Dictionary<string, string>() {
-                            { "languageTag", valueNodePlainLiteral.Language.ToString() }
+                            { "languageTag", valueNodePlainLiteral.Language }
                         });
 
                         //Execute langMatches filter
