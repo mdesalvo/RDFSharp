@@ -40,5 +40,36 @@ namespace RDFSharp.Model.Validation
             Violation = 2
         };
 
+        /// <summary>
+        /// RDFNodeKinds represents an enumeration for supported values of sh:nodeKind constraint
+        /// </summary>
+        public enum RDFNodeKinds
+        {
+            /// <summary>
+            /// sh:BlankNode
+            /// </summary>
+            BlankNode = 0,
+            /// <summary>
+            ///  sh:BlankNodeOrIRI
+            /// </summary>
+            BlankNodeOrIRI = 1,
+            /// <summary>
+            /// sh:BlankNodeOrLiteral
+            /// </summary>
+            BlankNodeOrLiteral = 2,
+            /// <summary>
+            ///  sh:IRI
+            /// </summary>
+            IRI = 3,
+            /// <summary>
+            /// sh:IRIOrLiteral
+            /// </summary>
+            IRIOrLiteral = 4,
+            /// <summary>
+            /// sh:Literal
+            /// </summary>
+            Literal = 5
+        }
+
     }
 }
