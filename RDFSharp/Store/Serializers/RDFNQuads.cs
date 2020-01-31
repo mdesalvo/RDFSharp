@@ -20,8 +20,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using RDFSharp.Model;
+using RDFSharp.Model.Serializers;
+using RDFSharp.Store.Engines;
 
-namespace RDFSharp.Store
+namespace RDFSharp.Store.Serializers
 {
 
     /// <summary>

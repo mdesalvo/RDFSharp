@@ -19,7 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model.Validation.Abstractions
 {
     /// <summary>
     /// RDFShapesGraph represents a SHACL shapes graph definition

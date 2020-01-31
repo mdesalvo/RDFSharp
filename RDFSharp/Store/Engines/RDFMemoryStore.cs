@@ -21,8 +21,9 @@ using System.Data;
 using System.IO;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store.Serializers;
 
-namespace RDFSharp.Store
+namespace RDFSharp.Store.Engines
 {
 
     /// <summary>

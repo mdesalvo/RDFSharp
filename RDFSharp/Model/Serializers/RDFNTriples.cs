@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model.Serializers
 {
 
     /// <summary>

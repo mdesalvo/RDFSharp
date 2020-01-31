@@ -19,8 +19,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Web;
+using RDFSharp.Model.Vocabularies;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model.Serializers
 {
 
     /// <summary>

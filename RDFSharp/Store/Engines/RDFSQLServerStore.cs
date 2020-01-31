@@ -19,7 +19,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using RDFSharp.Model;
 
-namespace RDFSharp.Store
+namespace RDFSharp.Store.Engines
 {
 
     /// <summary>

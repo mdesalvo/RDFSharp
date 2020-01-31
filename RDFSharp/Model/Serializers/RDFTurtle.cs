@@ -21,9 +21,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
+using RDFSharp.Query.Mirella;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model.Serializers
 {
 
     /// <summary>

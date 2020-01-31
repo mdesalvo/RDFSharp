@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model.Validation
+using RDFSharp.Model.Vocabularies;
+
+namespace RDFSharp.Model.Validation.Abstractions.Targets
 {
     /// <summary>
     /// RDFTargetClass represents a SHACL target of type "Class" within a shape.

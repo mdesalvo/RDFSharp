@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model.Validation
+using RDFSharp.Model.Vocabularies;
+
+namespace RDFSharp.Model.Validation.Abstractions.Targets
 {
     /// <summary>
     /// RDFTargetObjectsOf represents a SHACL target of type "ObjectsOf" within a shape.

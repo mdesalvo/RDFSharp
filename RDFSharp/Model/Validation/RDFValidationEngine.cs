@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
+using RDFSharp.Model.Validation.Abstractions;
 using RDFSharp.Query;
+using RDFSharp.Query.Mirella.Algebra.Abstractions;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RDFSharp.Model.Validation

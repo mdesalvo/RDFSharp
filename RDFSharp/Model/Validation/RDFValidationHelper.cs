@@ -14,7 +14,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RDFSharp.Model.Validation.Abstractions;
+using RDFSharp.Model.Validation.Abstractions.Shapes;
+using RDFSharp.Model.Validation.Abstractions.Targets;
+using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
+using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
 namespace RDFSharp.Model.Validation
 {

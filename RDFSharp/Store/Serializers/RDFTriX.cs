@@ -21,8 +21,10 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using RDFSharp.Model;
+using RDFSharp.Model.Vocabularies;
+using RDFSharp.Store.Engines;
 
-namespace RDFSharp.Store
+namespace RDFSharp.Store.Serializers
 {
 
     /// <summary>

@@ -20,7 +20,7 @@ using System.Web;
 using System.Net;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query.Mirella.Algebra
 {
     /// <summary>
     /// RDFSPARQLEndpoint represents a SPARQL endpoint

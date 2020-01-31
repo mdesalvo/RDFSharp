@@ -19,8 +19,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using RDFSharp.Model;
+using RDFSharp.Query.Mirella.Algebra.Abstractions;
+using RDFSharp.Query.Mirella.Algebra.Filters;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query.Mirella.Algebra
 {
 
     /// <summary>

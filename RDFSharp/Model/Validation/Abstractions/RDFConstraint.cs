@@ -15,8 +15,9 @@
 */
 
 using RDFSharp.Query;
+using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model.Validation.Abstractions
 {
     /// <summary>
     /// RDFConstraint represents a generic SHACL constraint definition within a shape.

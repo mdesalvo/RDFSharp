@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model.Validation.Abstractions
 {
     /// <summary>
     /// RDFTarget represents a generic SHACL target definition within a shape.

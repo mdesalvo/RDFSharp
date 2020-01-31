@@ -19,8 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.Collections;
+using RDFSharp.Query.Mirella.Algebra.Aggregators;
+using RDFSharp.Query.Mirella.Algebra.Filters;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query.Mirella.Algebra.Modifiers
 {
     /// <summary>
     /// RDFGroupByModifier represents an aggregator modifier to be applied on a query results table.

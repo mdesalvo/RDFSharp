@@ -15,7 +15,9 @@
 */
 
 using System;
+using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
+using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
 namespace RDFSharp.Model
 {

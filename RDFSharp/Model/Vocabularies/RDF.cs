@@ -16,7 +16,7 @@
 
 using System;
 
-namespace RDFSharp.Model
+namespace RDFSharp.Model.Vocabularies
 {
     /// <summary>
     /// RDFVocabulary is an helper for handy usage of supported RDF vocabularies.

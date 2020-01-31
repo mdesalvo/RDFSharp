@@ -22,9 +22,10 @@ using System.Net;
 using System.Text;
 using System.Web;
 using RDFSharp.Model;
+using RDFSharp.Query.Mirella.Algebra.Queries.Select;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query.Mirella.Algebra.Queries.Ask
 {
 
     /// <summary>

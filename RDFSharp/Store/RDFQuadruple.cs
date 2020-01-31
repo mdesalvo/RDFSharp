@@ -16,7 +16,10 @@
 
 using System;
 using RDFSharp.Model;
+using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
+using RDFSharp.Query.Mirella.Algebra.Abstractions;
+using RDFSharp.Store.Engines;
 
 namespace RDFSharp.Store
 {

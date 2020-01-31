@@ -20,7 +20,7 @@ using System.Data;
 using System.Globalization;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query.Mirella.Algebra.Aggregators
 {
 
     /// <summary>

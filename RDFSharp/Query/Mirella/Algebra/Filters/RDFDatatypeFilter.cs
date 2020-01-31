@@ -21,7 +21,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query
+namespace RDFSharp.Query.Mirella.Algebra.Filters
 {
 
     /// <summary>

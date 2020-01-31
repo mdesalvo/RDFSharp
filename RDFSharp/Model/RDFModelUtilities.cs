@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Security.Cryptography;
+using RDFSharp.Model.Vocabularies;
 
 namespace RDFSharp.Model
 {
