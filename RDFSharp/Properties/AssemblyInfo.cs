@@ -19,9 +19,8 @@ using System.Runtime.CompilerServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 //Internals
-[assembly: InternalsVisibleTo("RDFSharp.Semantics")]
-[assembly: InternalsVisibleTo("RDFSharp.RDFFirebirdStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFSQLiteStore")]
+[assembly: InternalsVisibleTo("RDFSharp.RDFFirebirdStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFMySQLStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFPostgreSQLStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFOracleStore")]
