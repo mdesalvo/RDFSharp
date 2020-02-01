@@ -40,15 +40,18 @@ namespace RDFSharp.Model
         public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatypes datatype)
         {
             this.Value = (value ?? String.Empty);
-            this.Datatype = datatype;
-            if (RDFModelUtilities.ValidateTypedLiteral(this))
-            {
-                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-            }
+
+            //Guard (rdf:langString)
+            if (datatype != RDFModelEnums.RDFDatatypes.RDF_LANGSTRING)
+                this.Datatype = datatype;
             else
-            {
+                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ") is reserved and cannot be directly used");
+
+            //Validation
+            if (RDFModelUtilities.ValidateTypedLiteral(this))
+                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            else
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ")");
-            }
         }
         #endregion
 
