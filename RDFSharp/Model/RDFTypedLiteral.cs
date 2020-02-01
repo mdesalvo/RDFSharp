@@ -104,6 +104,7 @@ namespace RDFSharp.Model
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL) ||
+                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_LANGSTRING) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE) ||
