@@ -40,14 +40,9 @@ namespace RDFSharp.Model
         public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatypes datatype)
         {
             this.Value = (value ?? String.Empty);
+            this.Datatype = datatype;
 
-            //Guard (rdf:langString)
-            if (datatype != RDFModelEnums.RDFDatatypes.RDF_LANGSTRING)
-                this.Datatype = datatype;
-            else
-                throw new RDFModelException("Cannot create RDFTypedLiteral because given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ") is reserved and cannot be directly used");
-
-            //Validation
+            //Validation against semantic of given datatype
             if (RDFModelUtilities.ValidateTypedLiteral(this))
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             else
@@ -104,7 +99,6 @@ namespace RDFSharp.Model
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_LANGSTRING) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE) ||

@@ -75,7 +75,7 @@ namespace RDFSharp.Model.Validation.Abstractions.Constraints
 
                 //PlainLiteral
                 case RDFPlainLiteral valueNodePlainLiteral:
-                    if ((this.Datatype == RDFModelEnums.RDFDatatypes.RDF_LANGSTRING && string.IsNullOrEmpty(valueNodePlainLiteral.Language))
+                    if (this.Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING 
                             || (this.Datatype == RDFModelEnums.RDFDatatypes.XSD_STRING && !string.IsNullOrEmpty(valueNodePlainLiteral.Language))) {
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
