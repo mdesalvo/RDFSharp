@@ -377,6 +377,10 @@ namespace RDFSharp.Model
                 {
                     return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
                 }
+                else if (datatypeString.Equals(RDFVocabulary.RDF.LANGSTRING.ToString(), StringComparison.Ordinal))
+                {
+                    return RDFModelEnums.RDFDatatypes.RDF_LANGSTRING;
+                }
                 else if (datatypeString.Equals(RDFVocabulary.XSD.STRING.ToString(), StringComparison.Ordinal))
                 {
                     return RDFModelEnums.RDFDatatypes.XSD_STRING;
@@ -555,6 +559,10 @@ namespace RDFSharp.Model
             else if (datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL))
             {
                 return RDFVocabulary.RDFS.LITERAL.ToString();
+            }
+            else if (datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_LANGSTRING))
+            {
+                return RDFVocabulary.RDF.LANGSTRING.ToString();
             }
             else if (datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
             {
