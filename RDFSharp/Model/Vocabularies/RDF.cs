@@ -120,6 +120,11 @@ namespace RDFSharp.Model.Vocabularies
             /// rdf:rest
             /// </summary>
             public static readonly RDFResource REST = new RDFResource(RDF.BASE_URI + "rest");
+
+            /// <summary>
+            /// rdf:langString
+            /// </summary>
+            public static readonly RDFResource LANGSTRING = new RDFResource(RDF.BASE_URI + "langString");
             #endregion
 
         }

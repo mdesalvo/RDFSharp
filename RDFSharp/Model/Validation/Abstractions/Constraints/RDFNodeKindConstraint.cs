@@ -39,8 +39,7 @@ namespace RDFSharp.Model.Validation.Abstractions.Constraints
         /// <summary>
         /// Default-ctor to build a named nodeKind constraint
         /// </summary>
-        public RDFNodeKindConstraint(RDFResource constraintName, RDFValidationEnums.RDFNodeKinds nodeKind) : base(constraintName)
-        {
+        public RDFNodeKindConstraint(RDFResource constraintName, RDFValidationEnums.RDFNodeKinds nodeKind) : base(constraintName) {
             this.NodeKind = nodeKind;
         }
 
@@ -58,15 +57,12 @@ namespace RDFSharp.Model.Validation.Abstractions.Constraints
                                                                  RDFShape shape,
                                                                  RDFGraph dataGraph,
                                                                  RDFResource focusNode,
-                                                                 RDFPatternMember valueNode)
-        {
+                                                                 RDFPatternMember valueNode) {
             var report = new RDFValidationReport(new RDFResource());
             switch (valueNode) {
 
                 //Resource
                 case RDFResource valueNodeResource:
-
-                    //Blank
                     if (valueNodeResource.IsBlank) {
                         if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
                                 || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
@@ -81,8 +77,6 @@ namespace RDFSharp.Model.Validation.Abstractions.Constraints
                                                                      shape.Severity));
                         }
                     }
-
-                    //Uri
                     else {
                         if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                                 || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
@@ -97,7 +91,6 @@ namespace RDFSharp.Model.Validation.Abstractions.Constraints
                                                                      shape.Severity));
                         }
                     }
-
                     break;
 
                 //Literal

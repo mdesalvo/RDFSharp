@@ -79,161 +79,165 @@ namespace RDFSharp.Model
             /// </summary>
             RDF_XMLLITERAL = 1,
             /// <summary>
+            /// http://www.w3.org/1999/02/22-rdf-syntax-ns#langString
+            /// </summary>
+            RDF_LANGSTRING = 2,
+            /// <summary>
             /// http://www.w3.org/2001/XMLSchema#string
             /// </summary>
-            XSD_STRING = 2,
+            XSD_STRING = 3,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#boolean
             /// </summary>
-            XSD_BOOLEAN = 3,
+            XSD_BOOLEAN = 4,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#decimal
             /// </summary>
-            XSD_DECIMAL = 4,
+            XSD_DECIMAL = 5,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#float
             /// </summary>
-            XSD_FLOAT = 5,
+            XSD_FLOAT = 6,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#double
             /// </summary>
-            XSD_DOUBLE = 6,
+            XSD_DOUBLE = 7,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#positiveInteger
             /// </summary>
-            XSD_POSITIVEINTEGER = 7,
+            XSD_POSITIVEINTEGER = 8,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#negativeInteger
             /// </summary>
-            XSD_NEGATIVEINTEGER = 8,
+            XSD_NEGATIVEINTEGER = 9,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#nonPositiveInteger
             /// </summary>
-            XSD_NONPOSITIVEINTEGER = 9,
+            XSD_NONPOSITIVEINTEGER = 10,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#nonNegativeInteger
             /// </summary>
-            XSD_NONNEGATIVEINTEGER = 10,
+            XSD_NONNEGATIVEINTEGER = 11,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#integer
             /// </summary>
-            XSD_INTEGER = 11,
+            XSD_INTEGER = 12,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#long
             /// </summary>
-            XSD_LONG = 12,
+            XSD_LONG = 13,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#int
             /// </summary>
-            XSD_INT = 13,
+            XSD_INT = 14,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#short
             /// </summary>
-            XSD_SHORT = 14,
+            XSD_SHORT = 15,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#byte
             /// </summary>
-            XSD_BYTE = 15,
+            XSD_BYTE = 16,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedLong
             /// </summary>
-            XSD_UNSIGNEDLONG = 16,
+            XSD_UNSIGNEDLONG = 17,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedInt
             /// </summary>
-            XSD_UNSIGNEDINT = 17,
+            XSD_UNSIGNEDINT = 18,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedShort
             /// </summary>
-            XSD_UNSIGNEDSHORT = 18,
+            XSD_UNSIGNEDSHORT = 19,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#unsignedByte
             /// </summary>
-            XSD_UNSIGNEDBYTE = 19,
+            XSD_UNSIGNEDBYTE = 20,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#duration
             /// </summary>
-            XSD_DURATION = 20,
+            XSD_DURATION = 21,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#dateTime
             /// </summary>
-            XSD_DATETIME = 21,
+            XSD_DATETIME = 22,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#date
             /// </summary>
-            XSD_DATE = 22,
+            XSD_DATE = 23,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#time
             /// </summary>
-            XSD_TIME = 23,
+            XSD_TIME = 24,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYear
             /// </summary>
-            XSD_GYEAR = 24,
+            XSD_GYEAR = 25,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonth
             /// </summary>
-            XSD_GMONTH = 25,
+            XSD_GMONTH = 26,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gDay
             /// </summary>
-            XSD_GDAY = 26,
+            XSD_GDAY = 27,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYearMonth
             /// </summary>
-            XSD_GYEARMONTH = 27,
+            XSD_GYEARMONTH = 28,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonthDay
             /// </summary>
-            XSD_GMONTHDAY = 28,
+            XSD_GMONTHDAY = 29,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#hexBinary
             /// </summary>
-            XSD_HEXBINARY = 29,
+            XSD_HEXBINARY = 30,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#base64Binary
             /// </summary>
-            XSD_BASE64BINARY = 30,
+            XSD_BASE64BINARY = 31,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#anyURI
             /// </summary>
-            XSD_ANYURI = 31,
+            XSD_ANYURI = 32,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#QName
             /// </summary>
-            XSD_QNAME = 32,
+            XSD_QNAME = 33,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NOTATION
             /// </summary>
-            XSD_NOTATION = 33,
+            XSD_NOTATION = 34,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#language
             /// </summary>
-            XSD_LANGUAGE = 34,
+            XSD_LANGUAGE = 35,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#normalizedString
             /// </summary>
-            XSD_NORMALIZEDSTRING = 35,
+            XSD_NORMALIZEDSTRING = 36,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#token
             /// </summary>
-            XSD_TOKEN = 36,
+            XSD_TOKEN = 37,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NMToken
             /// </summary>
-            XSD_NMTOKEN = 37,
+            XSD_NMTOKEN = 38,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#Name
             /// </summary>
-            XSD_NAME = 38,
+            XSD_NAME = 39,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NCName
             /// </summary>
-            XSD_NCNAME = 39,
+            XSD_NCNAME = 40,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#ID
             /// </summary>
-            XSD_ID = 40
+            XSD_ID = 41
         };
 
         /// <summary>
