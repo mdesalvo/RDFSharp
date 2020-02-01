@@ -1,6 +1,6 @@
 # RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp)
 
-RDFSharp has a modular API made up of three layers: 
+RDFSharp has a modular API made up of four layers: 
 
 <ul>
     <li><b>RDFSharp.Model</b></li> 
@@ -24,5 +24,12 @@ RDFSharp has a modular API made up of three layers:
         <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
     </ul>
 </ul>
-
-RDFSharp also provides a <b>[semantic framework](https://github.com/mdesalvo/RDFSharp.Semantics)</b> for <i>OWL-DL/SKOS ontology</i> modeling, validation and reasoning!
+<ul>
+    <li><b>RDFSharp.Semantics</b></li> 
+    <ul>
+        <li>Create and manage <i>OWL-DL ontologies</i> (classes, restrictions, properties, facts, assertions, annotations, ...)</li>
+        <li>Validate ontology <i>T-BOX</i> and <i>A-BOX</i> against a wide set of <i>RDFS/OWL-DL</i> constraint rules</li>
+        <li>Create <i>OWL-DL reasoners</i> with a wide set of <i>RDFS/OWL-DL</i> inference rules</li>
+        <li>Create and manage <i>SKOS thesauri</i> with a friendly and powerful .NET API</li>
+    </ul>
+</ul>
