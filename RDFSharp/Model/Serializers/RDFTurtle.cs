@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,11 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Query;
-using RDFSharp.Query.Mirella;
 
-namespace RDFSharp.Model.Serializers
+namespace RDFSharp.Model
 {
 
     /// <summary>

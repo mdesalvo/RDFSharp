@@ -11,17 +11,12 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RDFSharp.Model.Validation.Abstractions;
-using RDFSharp.Model.Validation.Abstractions.Shapes;
-using RDFSharp.Model.Validation.Abstractions.Targets;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model
 {
     /// <summary>
     ///  RDFValidationHelper contains utility methods supporting SHACL modeling and validation
@@ -143,6 +138,36 @@ namespace RDFSharp.Model.Validation
                                                       String languageTag) {
             return literals.Any(lit => lit is RDFPlainLiteral
                                             && ((RDFPlainLiteral)lit).Language.Equals(languageTag, StringComparison.OrdinalIgnoreCase));
+        }
+        #endregion
+
+        #region Conversion
+        /// <summary>
+        /// Gets a shapes graph representation of the given graph
+        /// </summary>
+        internal static RDFShapesGraph FromRDFGraph(RDFGraph graph) {
+            if (graph != null) {
+                RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
+
+                //Detect node shapes
+                foreach (RDFTriple nodeShapeTriple in graph.SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE)
+                                                           .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE))
+                    result.AddShape(new RDFNodeShape((RDFResource)nodeShapeTriple.Subject));
+
+                //Detect property shapes
+                foreach (RDFTriple propertyShapeTriple in graph.SelectTriplesByObject(RDFVocabulary.SHACL.PROPERTY_SHAPE)
+                                                               .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE))
+                    result.AddShape(new RDFPropertyShape((RDFResource)propertyShapeTriple.Subject));
+
+                //Fetch shapes data
+                foreach (RDFShape shape in result) {
+                    //TODO
+
+                }
+
+                return result;
+            }
+            return null;
         }
         #endregion
 

@@ -14,13 +14,9 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Validation.Abstractions.Shapes;
-using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
-using System;
 
-namespace RDFSharp.Model.Validation.Abstractions.Constraints
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFNodeKindConstraint represents a SHACL constraint on the specified type for a given RDF term

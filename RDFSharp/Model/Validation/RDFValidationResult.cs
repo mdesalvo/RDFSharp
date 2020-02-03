@@ -14,13 +14,11 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model
 {
     /// <summary>
     ///  RDFValidationResult represents an evidence reported by a shape's validation.

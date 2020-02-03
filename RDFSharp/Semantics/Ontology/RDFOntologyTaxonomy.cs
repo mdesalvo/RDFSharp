@@ -20,7 +20,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Semantics.Ontology {
+namespace RDFSharp.Semantics
+{ 
 
     /// <summary>
     /// RDFOntologyTaxonomy represents a register for storing a generic taxonomy relationship.

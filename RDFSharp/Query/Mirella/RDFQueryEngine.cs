@@ -14,24 +14,15 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using RDFSharp.Model;
-using RDFSharp.Query.Mirella.Algebra;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
-using RDFSharp.Query.Mirella.Algebra.Filters;
-using RDFSharp.Query.Mirella.Algebra.Modifiers;
-using RDFSharp.Query.Mirella.Algebra.Queries.Ask;
-using RDFSharp.Query.Mirella.Algebra.Queries.Construct;
-using RDFSharp.Query.Mirella.Algebra.Queries.Describe;
-using RDFSharp.Query.Mirella.Algebra.Queries.Select;
-using RDFSharp.Store;
-using RDFSharp.Store.Engines;
 
-namespace RDFSharp.Query.Mirella
+namespace RDFSharp.Query
 {
 
     /// <summary>

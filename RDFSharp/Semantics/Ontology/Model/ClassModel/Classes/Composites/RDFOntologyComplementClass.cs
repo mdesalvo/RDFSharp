@@ -16,7 +16,7 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Semantics.Ontology.Model.ClassModel.Classes.Composites
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

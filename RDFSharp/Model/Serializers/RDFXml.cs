@@ -23,9 +23,8 @@ using System.Text;
 using System.Xml;
 using System.Web;
 using System.Text.RegularExpressions;
-using RDFSharp.Model.Vocabularies;
 
-namespace RDFSharp.Model.Serializers
+namespace RDFSharp.Model
 {
 
     /// <summary>

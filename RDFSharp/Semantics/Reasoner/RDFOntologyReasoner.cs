@@ -14,13 +14,12 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.Ontology;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Semantics.Reasoner
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

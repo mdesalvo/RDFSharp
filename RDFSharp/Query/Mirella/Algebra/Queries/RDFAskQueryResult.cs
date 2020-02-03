@@ -19,7 +19,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace RDFSharp.Query.Mirella.Algebra.Queries.Ask
+namespace RDFSharp.Query
 {
 
     /// <summary>

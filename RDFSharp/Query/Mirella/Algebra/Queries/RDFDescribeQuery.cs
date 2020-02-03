@@ -14,33 +14,29 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Web;
-using RDFSharp.Model;
-using RDFSharp.Query.Mirella.Algebra.Modifiers;
-using RDFSharp.Query.Mirella.Algebra.Queries.Select;
-using RDFSharp.Store;
 
-namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
+namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
+    /// RDFDescribeQuery is the SPARQL "DESCRIBE" query implementation.
     /// </summary>
-    public class RDFConstructQuery : RDFQuery
+    public class RDFDescribeQuery : RDFQuery
     {
 
         #region Properties
         /// <summary>
-        /// List of template patterns carried by the query
+        /// List of RDF terms to be described by the query
         /// </summary>
-        internal List<RDFPattern> Templates { get; set; }
+        internal List<RDFPatternMember> DescribeTerms { get; set; }
 
         /// <summary>
         /// List of variables carried by the template patterns of the query
@@ -50,82 +46,65 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty CONSTRUCT query
+        /// Default-ctor to build an empty DESCRIBE query
         /// </summary>
-        public RDFConstructQuery()
+        public RDFDescribeQuery()
         {
-            this.Templates = new List<RDFPattern>();
+            this.DescribeTerms = new List<RDFPatternMember>();
             this.Variables = new List<RDFVariable>();
         }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the CONSTRUCT query
+        /// Gives the string representation of the DESCRIBE query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintConstructQuery(this);
+            return RDFQueryPrinter.PrintDescribeQuery(this);
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Adds the given pattern to the templates of the query
+        /// Adds the given resource to the describe terms of the query
         /// </summary>
-        public RDFConstructQuery AddTemplate(RDFPattern template)
+        public RDFDescribeQuery AddDescribeTerm(RDFResource describeTerm)
         {
-            if (template != null)
+            if (describeTerm != null)
             {
-                if (!this.Templates.Any(tp => tp.Equals(template)))
+                if (!this.DescribeTerms.Any(dt => dt.Equals(describeTerm)))
                 {
-                    this.Templates.Add(template);
-
-                    //Context
-                    if (template.Context != null && template.Context is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Context)))
-                        {
-                            this.Variables.Add((RDFVariable)template.Context);
-                        }
-                    }
-
-                    //Subject
-                    if (template.Subject is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                        {
-                            this.Variables.Add((RDFVariable)template.Subject);
-                        }
-                    }
-
-                    //Predicate
-                    if (template.Predicate is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                        {
-                            this.Variables.Add((RDFVariable)template.Predicate);
-                        }
-                    }
-
-                    //Object
-                    if (template.Object is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Object)))
-                        {
-                            this.Variables.Add((RDFVariable)template.Object);
-                        }
-                    }
-
+                    this.DescribeTerms.Add(describeTerm);
                 }
             }
             return this;
         }
 
         /// <summary>
-        /// Adds the given pattern group to the body of the query
+        /// Adds the given variable to the describe terms of the query
         /// </summary>
-        public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup)
+        public RDFDescribeQuery AddDescribeTerm(RDFVariable describeVar)
+        {
+            if (describeVar != null)
+            {
+                if (!this.DescribeTerms.Any(dt => dt.Equals(describeVar)))
+                {
+                    this.DescribeTerms.Add(describeVar);
+                    //Variable
+                    if (!this.Variables.Any(v => v.Equals(describeVar)))
+                    {
+                        this.Variables.Add(describeVar);
+                    }
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given pattern group to the query
+        /// </summary>
+        public RDFDescribeQuery AddPatternGroup(RDFPatternGroup patternGroup)
         {
             if (patternGroup != null)
             {
@@ -140,7 +119,7 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
+        public RDFDescribeQuery AddModifier(RDFLimitModifier modifier)
         {
             if (modifier != null)
             {
@@ -155,7 +134,7 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
+        public RDFDescribeQuery AddModifier(RDFOffsetModifier modifier)
         {
             if (modifier != null)
             {
@@ -170,7 +149,7 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
         /// <summary>
         /// Adds the given prefix declaration to the query
         /// </summary>
-        public RDFConstructQuery AddPrefix(RDFNamespace prefix)
+        public RDFDescribeQuery AddPrefix(RDFNamespace prefix)
         {
             if (prefix != null)
             {
@@ -185,7 +164,7 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
         /// <summary>
         /// Adds the given subquery to the query
         /// </summary>
-        public RDFConstructQuery AddSubQuery(RDFSelectQuery subQuery)
+        public RDFDescribeQuery AddSubQuery(RDFSelectQuery subQuery)
         {
             if (subQuery != null)
             {
@@ -200,57 +179,57 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
         /// <summary>
         /// Applies the query to the given graph 
         /// </summary>
-        public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
+        public RDFDescribeQueryResult ApplyToGraph(RDFGraph graph)
         {
             if (graph != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, graph);
+                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, graph);
             }
             else
             {
-                return new RDFConstructQueryResult(this.ToString());
+                return new RDFDescribeQueryResult(this.ToString());
             }
         }
 
         /// <summary>
         /// Applies the query to the given store 
         /// </summary>
-        public RDFConstructQueryResult ApplyToStore(RDFStore store)
+        public RDFDescribeQueryResult ApplyToStore(RDFStore store)
         {
             if (store != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, store);
+                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, store);
             }
             else
             {
-                return new RDFConstructQueryResult(this.ToString());
+                return new RDFDescribeQueryResult(this.ToString());
             }
         }
 
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
-        public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
+        public RDFDescribeQueryResult ApplyToFederation(RDFFederation federation)
         {
             if (federation != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, federation);
+                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, federation);
             }
             else
             {
-                return new RDFConstructQueryResult(this.ToString());
+                return new RDFDescribeQueryResult(this.ToString());
             }
         }
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
-        public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+        public RDFDescribeQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
+            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(this.ToString());
             if (sparqlEndpoint != null)
             {
-                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on SPARQL endpoint '{0}'...", sparqlEndpoint));
 
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
@@ -274,16 +253,16 @@ namespace RDFSharp.Query.Mirella.Algebra.Queries.Construct
                     {
                         using (var sStream = new MemoryStream(sparqlResponse))
                         {
-                            constructResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                            describeResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
                         }
-                        constructResult.ConstructResults.TableName = this.ToString();
+                        describeResult.DescribeResults.TableName = this.ToString();
                     }
 
                 }
 
-                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated CONSTRUCT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
             }
-            return constructResult;
+            return describeResult;
         }
         #endregion
 

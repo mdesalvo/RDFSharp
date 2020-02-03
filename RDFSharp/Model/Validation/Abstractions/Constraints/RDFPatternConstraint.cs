@@ -14,15 +14,12 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Validation.Abstractions.Shapes;
-using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace RDFSharp.Model.Validation.Abstractions.Constraints
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFPatternConstraint represents a SHACL constraint on the specified regular expression for a given RDF term

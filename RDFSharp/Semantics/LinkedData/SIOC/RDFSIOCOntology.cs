@@ -15,12 +15,8 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Semantics.Ontology;
-using RDFSharp.Semantics.Ontology.Model.ClassModel;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties;
 
-namespace RDFSharp.Semantics.LinkedData.SIOC
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

@@ -18,13 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Security.Cryptography;
-using RDFSharp.Model.Vocabularies;
 
 namespace RDFSharp.Model
 {

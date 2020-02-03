@@ -15,9 +15,8 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Semantics.Ontology.Data;
 
-namespace RDFSharp.Semantics.LinkedData.SKOS
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

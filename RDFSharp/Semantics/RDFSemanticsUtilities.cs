@@ -14,25 +14,12 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Queries.Ask;
-using RDFSharp.Query.Mirella.Algebra.Queries.Construct;
-using RDFSharp.Query.Mirella.Algebra.Queries.Describe;
-using RDFSharp.Query.Mirella.Algebra.Queries.Select;
-using RDFSharp.Semantics.Ontology;
-using RDFSharp.Semantics.Ontology.Data;
-using RDFSharp.Semantics.Ontology.Model.ClassModel;
-using RDFSharp.Semantics.Ontology.Model.ClassModel.Classes.Composites;
-using RDFSharp.Semantics.Ontology.Model.ClassModel.Classes.Enumerates;
-using RDFSharp.Semantics.Ontology.Model.ClassModel.Classes.Restrictions;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties;
 
 namespace RDFSharp.Semantics
 {

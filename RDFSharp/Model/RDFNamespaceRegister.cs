@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Vocabularies;
 using System;
 using System.Collections;
 using System.Collections.Generic;

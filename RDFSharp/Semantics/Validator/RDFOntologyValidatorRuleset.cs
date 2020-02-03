@@ -14,18 +14,11 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.Ontology;
-using RDFSharp.Semantics.Ontology.Data;
-using RDFSharp.Semantics.Ontology.Model.ClassModel;
-using RDFSharp.Semantics.Ontology.Model.ClassModel.Classes.Composites;
-using RDFSharp.Semantics.Ontology.Model.ClassModel.Classes.Restrictions;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Semantics.Validator
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

@@ -14,13 +14,9 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.Ontology.Data;
-using RDFSharp.Semantics.Ontology.Model.ClassModel;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties;
 using System;
 
-namespace RDFSharp.Semantics.Ontology
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

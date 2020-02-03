@@ -14,20 +14,13 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Validation.Abstractions.Shapes;
-using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
-using RDFSharp.Query.Mirella;
-using RDFSharp.Query.Mirella.Algebra;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
-using RDFSharp.Query.Mirella.Algebra.Filters;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace RDFSharp.Model.Validation.Abstractions.Constraints
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFLanguageInConstraint represents a SHACL constraint on the allowed language tags for a given RDF term

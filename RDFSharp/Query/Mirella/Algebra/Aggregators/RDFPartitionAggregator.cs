@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Query.Mirella.Algebra.Aggregators
+namespace RDFSharp.Query
 {
 
     /// <summary>

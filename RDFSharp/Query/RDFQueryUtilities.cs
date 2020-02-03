@@ -14,14 +14,12 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
-using RDFSharp.Model;
-using RDFSharp.Model.Serializers;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
-using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {

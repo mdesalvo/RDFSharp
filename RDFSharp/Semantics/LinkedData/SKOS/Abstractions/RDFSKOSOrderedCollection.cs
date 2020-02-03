@@ -14,15 +14,12 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Semantics.Ontology;
-using RDFSharp.Semantics.Ontology.Data;
 
-namespace RDFSharp.Semantics.LinkedData.SKOS
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

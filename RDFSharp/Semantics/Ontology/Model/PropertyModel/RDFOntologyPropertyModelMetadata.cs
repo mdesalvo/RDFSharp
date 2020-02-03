@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Semantics.Ontology.Model.PropertyModel
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

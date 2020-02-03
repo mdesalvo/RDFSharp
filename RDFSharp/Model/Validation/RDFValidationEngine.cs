@@ -14,13 +14,10 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Validation.Abstractions;
 using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
-using System;
 using System.Linq;
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFValidationEngine analyzes a given data graph by applying the given SHACL shapes graph,

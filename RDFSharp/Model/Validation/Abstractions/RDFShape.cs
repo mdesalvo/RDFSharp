@@ -14,12 +14,11 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Vocabularies;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RDFSharp.Model.Validation.Abstractions
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFShape represents a generic SHACL shape definition

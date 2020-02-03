@@ -15,10 +15,8 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Semantics.Ontology;
 
-namespace RDFSharp.Semantics.LinkedData.SHACL
+namespace RDFSharp.Semantics
 {
     /// <summary>
     /// RDFSHACLOntology represents an OWL-DL ontology implementation of W3C SHACL Core vocabulary

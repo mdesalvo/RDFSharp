@@ -17,7 +17,8 @@
 using System;
 using System.Threading.Tasks;
 
-namespace RDFSharp.Semantics {
+namespace RDFSharp.Semantics
+{
 
     /// <summary>
     /// RDFSemanticsEvents represents a collector for all the events generated within the "RDFSharp.Semantics" namespace

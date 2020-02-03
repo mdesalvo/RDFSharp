@@ -18,9 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using RDFSharp.Model;
 
-namespace RDFSharp.Query.Mirella.Algebra.Modifiers
+namespace RDFSharp.Query
 {
 
     /// <summary>

@@ -23,10 +23,8 @@ using System.Text;
 using System.Xml;
 using System.Web;
 using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
-namespace RDFSharp.Query.Mirella.Algebra.Queries.Select
+namespace RDFSharp.Query
 {
 
     /// <summary>

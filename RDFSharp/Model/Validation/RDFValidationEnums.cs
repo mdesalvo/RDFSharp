@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model.Validation
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFValidationEnums represents a collector for all the enumerations used for SHACL modeling and validation

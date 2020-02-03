@@ -14,9 +14,7 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.Ontology;
-
-namespace RDFSharp.Semantics.LinkedData.SKOS
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

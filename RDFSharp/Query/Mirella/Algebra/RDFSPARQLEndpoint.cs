@@ -16,11 +16,8 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Web;
-using System.Net;
-using RDFSharp.Model;
 
-namespace RDFSharp.Query.Mirella.Algebra
+namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFSPARQLEndpoint represents a SPARQL endpoint

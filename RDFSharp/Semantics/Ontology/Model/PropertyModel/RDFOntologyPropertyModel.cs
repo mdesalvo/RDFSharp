@@ -15,14 +15,12 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Semantics.Ontology.Model.PropertyModel
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

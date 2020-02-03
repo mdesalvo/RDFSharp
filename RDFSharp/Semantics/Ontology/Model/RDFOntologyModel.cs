@@ -15,10 +15,8 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Semantics.Ontology.Model.ClassModel;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel;
 
-namespace RDFSharp.Semantics.Ontology.Model
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

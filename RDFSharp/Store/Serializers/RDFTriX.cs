@@ -14,17 +14,15 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Web;
 using System.Xml;
-using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Store.Engines;
 
-namespace RDFSharp.Store.Serializers
+namespace RDFSharp.Store
 {
 
     /// <summary>

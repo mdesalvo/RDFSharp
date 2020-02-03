@@ -14,12 +14,9 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Validation.Abstractions.Shapes;
-using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
 
-namespace RDFSharp.Model.Validation.Abstractions.Constraints
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFMaxLengthConstraint represents a SHACL constraint on the maximum allowed length for a given RDF term

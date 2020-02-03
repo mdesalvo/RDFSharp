@@ -14,11 +14,10 @@
    limitations under the License.
 */
 
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
 using System;
 using System.Data;
 
-namespace RDFSharp.Query.Mirella.Algebra
+namespace RDFSharp.Query
 {
 
     /// <summary>

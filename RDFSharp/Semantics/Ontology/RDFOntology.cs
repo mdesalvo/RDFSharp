@@ -15,13 +15,9 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Model.Vocabularies;
-using RDFSharp.Semantics.Ontology.Data;
-using RDFSharp.Semantics.Ontology.Model;
-using RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties;
 using System;
 
-namespace RDFSharp.Semantics.Ontology
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

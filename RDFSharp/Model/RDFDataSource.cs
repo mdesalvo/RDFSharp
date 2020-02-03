@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using System;
 using RDFSharp.Store;
+using System;
 
 namespace RDFSharp.Model
 {

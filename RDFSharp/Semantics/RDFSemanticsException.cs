@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace RDFSharp.Semantics 
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

@@ -14,9 +14,7 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Vocabularies;
-
-namespace RDFSharp.Model.Validation.Abstractions.Targets
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFTargetNode represents a SHACL target of type "Node" within a shape.

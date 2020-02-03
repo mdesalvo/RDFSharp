@@ -16,7 +16,7 @@
 
 using System;
 
-namespace RDFSharp.Semantics.Validator
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

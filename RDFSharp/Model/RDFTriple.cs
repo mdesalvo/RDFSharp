@@ -14,10 +14,8 @@
    limitations under the License.
 */
 
-using System;
-using RDFSharp.Model.Vocabularies;
 using RDFSharp.Query;
-using RDFSharp.Query.Mirella.Algebra.Abstractions;
+using System;
 
 namespace RDFSharp.Model
 {

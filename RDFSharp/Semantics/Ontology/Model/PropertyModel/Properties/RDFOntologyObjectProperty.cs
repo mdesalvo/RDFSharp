@@ -17,7 +17,7 @@
 using RDFSharp.Model;
 using System;
 
-namespace RDFSharp.Semantics.Ontology.Model.PropertyModel.Properties
+namespace RDFSharp.Semantics
 {
 
     /// <summary>

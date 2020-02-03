@@ -14,9 +14,7 @@
    limitations under the License.
 */
 
-using RDFSharp.Model.Vocabularies;
-
-namespace RDFSharp.Model.Validation.Abstractions.Shapes
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFNodeShape represents a SHACL node shape definition

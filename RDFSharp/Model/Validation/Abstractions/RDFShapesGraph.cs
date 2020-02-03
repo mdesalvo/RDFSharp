@@ -19,7 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Model.Validation.Abstractions
+namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFShapesGraph represents a SHACL shapes graph definition
@@ -142,6 +142,13 @@ namespace RDFSharp.Model.Validation.Abstractions
 
             result.SetContext(this.URI);
             return result;
+        }
+
+        /// <summary>
+        /// Gets a shapes graph representation of the given graph
+        /// </summary>
+        public RDFShapesGraph FromRDFGraph(RDFGraph graph) {
+            return RDFValidationHelper.FromRDFGraph(graph);
         }
         #endregion
 
