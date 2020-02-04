@@ -1,0 +1,113 @@
+﻿/*
+   Copyright 2012-2020 Marco De Salvo
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+using RDFSharp.Query;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace RDFSharp.Model
+{
+    /// <summary>
+    /// RDFClassConstraint represents a SHACL constraint on the specified class for a given RDF term
+    /// </summary>
+    public class RDFClassConstraint : RDFConstraint {
+
+        #region Properties
+        /// <summary>
+        /// ClassType of the given RDF term
+        /// </summary>
+        public RDFResource ClassType { get; internal set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build a named class constraint
+        /// </summary>
+        public RDFClassConstraint(RDFResource constraintName, RDFResource classType) : base(constraintName) {
+            if (classType != null) {
+                this.ClassType = classType;
+            }
+            else {
+                throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
+            }
+        }
+
+        /// <summary>
+        /// Default-ctor to build a blank class constraint
+        /// </summary>
+        public RDFClassConstraint(RDFResource classType) : this(new RDFResource(), classType) { }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Evaluates this constraint against the given data graph
+        /// </summary>
+        internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph,
+                                                                 RDFShape shape,
+                                                                 RDFGraph dataGraph,
+                                                                 RDFResource focusNode,
+                                                                 RDFPatternMember valueNode) {
+            var report = new RDFValidationReport(new RDFResource());
+            switch (valueNode) {
+
+                //Resource
+                case RDFResource valueNodeResource:
+                    if (!dataGraph.GetInstancesOfClass(this.ClassType).Any(x => x.Equals(valueNodeResource))) {
+                        report.AddResult(new RDFValidationResult(shape,
+                                                                 RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
+                                                                 focusNode,
+                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                 valueNode,
+                                                                 shape.Messages,
+                                                                 new RDFResource(),
+                                                                 shape.Severity));
+                    }
+                    break;
+
+                //Literal
+                case RDFLiteral valueNodeLiteral:
+                    report.AddResult(new RDFValidationResult(shape,
+                                                             RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
+                                                             focusNode,
+                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             valueNode,
+                                                             shape.Messages,
+                                                             new RDFResource(),
+                                                             shape.Severity));
+                    break;
+
+            }
+            return report;
+        }
+
+        /// <summary>
+        /// Gets a graph representation of this constraint
+        /// </summary>
+        public override RDFGraph ToRDFGraph(RDFShape shape) {
+            var result = new RDFGraph();
+            if (shape != null) {
+
+                //sh:class
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, this.ClassType));
+
+            }
+            return result;
+        }
+        #endregion
+
+    }
+}
