@@ -148,26 +148,67 @@ namespace RDFSharp.Model
         internal static RDFShapesGraph FromRDFGraph(RDFGraph graph) {
             if (graph != null) {
                 RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
+                RDFGraph typesGraph = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
+                RDFGraph pathGraph = graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.PATH);
 
-                //Detect node shapes
-                foreach (RDFTriple nodeShapeTriple in graph.SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE)
-                                                           .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE))
-                    result.AddShape(new RDFNodeShape((RDFResource)nodeShapeTriple.Subject));
+                #region Typed Shape
 
-                //Detect property shapes
-                foreach (RDFTriple propertyShapeTriple in graph.SelectTriplesByObject(RDFVocabulary.SHACL.PROPERTY_SHAPE)
-                                                               .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE))
-                    result.AddShape(new RDFPropertyShape((RDFResource)propertyShapeTriple.Subject));
+                //NodeShape
+                foreach (RDFTriple shapeTriple in typesGraph.SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE))
+                    result.AddShape(new RDFNodeShape((RDFResource)shapeTriple.Subject));
 
-                //Fetch shapes data
-                foreach (RDFShape shape in result) {
-                    //TODO
+                //PropertyShape
+                foreach (RDFTriple shapeTriple in typesGraph.SelectTriplesByObject(RDFVocabulary.SHACL.PROPERTY_SHAPE))
+                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, false);
 
-                }
+                #endregion
+
+                #region Target Shape
+
+                //TargetClass
+                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_CLASS))
+                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
+
+                //TargetNode
+                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_NODE))
+                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
+
+                //TargetSubjectsOf
+                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_SUBJECTS_OF))
+                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
+
+                //TargetObjectsOf
+                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_OBJECTS_OF))
+                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
+
+                #endregion
 
                 return result;
             }
             return null;
+        }
+        private static void DetectShapeTypeByPath(RDFShapesGraph result, 
+                                                          RDFResource shape, 
+                                                          RDFGraph pathGraph,
+                                                          bool allowNodeShapeFallback) {
+
+            //Search for sh:path property
+            RDFGraph propertyShapeGraph = pathGraph.SelectTriplesBySubject(shape);
+
+            //sh:path property defined
+            if (propertyShapeGraph.TriplesCount > 0)
+                if (propertyShapeGraph.First().Object is RDFResource)
+                    result.AddShape(new RDFPropertyShape(shape, (RDFResource)propertyShapeGraph.First().Object));
+                else
+                    throw new RDFModelException(String.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property links to a literal", shape));
+
+            //sh:path property not defined
+            else
+                if (allowNodeShapeFallback)
+                    result.AddShape(new RDFNodeShape(shape));
+                else
+                    throw new RDFModelException(String.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property is not defined", shape));
+
         }
         #endregion
 
