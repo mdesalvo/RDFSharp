@@ -193,21 +193,25 @@ namespace RDFSharp.Model
                                                   bool allowNodeShapeFallback) {
 
             //Search for sh:path property
-            RDFGraph propertyShapeGraph = pathGraph.SelectTriplesBySubject(shape);
-
-            //sh:path property defined
-            if (propertyShapeGraph.TriplesCount > 0)
-                if (propertyShapeGraph.First().Object is RDFResource)
-                    result.AddShape(new RDFPropertyShape(shape, (RDFResource)propertyShapeGraph.First().Object));
-                else
-                    throw new RDFModelException(String.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property links to a literal", shape));
+            RDFGraph pathOccurrences = pathGraph.SelectTriplesBySubject(shape);
 
             //sh:path property not defined
-            else
+            if (pathOccurrences.TriplesCount == 0)
                 if (allowNodeShapeFallback)
                     result.AddShape(new RDFNodeShape(shape));
                 else
-                    throw new RDFModelException(String.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property is not defined", shape));
+                    throw new RDFModelException(string.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property is not defined", shape));
+
+            //sh:path property defined exactly one time
+            else if (pathOccurrences.TriplesCount == 1)
+                if (pathOccurrences.Single().Object is RDFResource)
+                    result.AddShape(new RDFPropertyShape(shape, (RDFResource)pathOccurrences.Single().Object));
+                else
+                    throw new RDFModelException(string.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property links to a literal", shape));
+
+            //sh:path property defined more than one time
+            else
+                throw new RDFModelException(string.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property has more than one definition", shape));
 
         }
         #endregion
