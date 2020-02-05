@@ -188,9 +188,9 @@ namespace RDFSharp.Model
             return null;
         }
         private static void DetectShapeTypeByPath(RDFShapesGraph result, 
-                                                          RDFResource shape, 
-                                                          RDFGraph pathGraph,
-                                                          bool allowNodeShapeFallback) {
+                                                  RDFResource shape, 
+                                                  RDFGraph pathGraph,
+                                                  bool allowNodeShapeFallback) {
 
             //Search for sh:path property
             RDFGraph propertyShapeGraph = pathGraph.SelectTriplesBySubject(shape);
