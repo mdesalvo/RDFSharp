@@ -147,7 +147,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a shapes graph representation of the given graph
         /// </summary>
-        public RDFShapesGraph FromRDFGraph(RDFGraph graph) {
+        public static RDFShapesGraph FromRDFGraph(RDFGraph graph) {
             return RDFValidationHelper.FromRDFGraph(graph);
         }
         #endregion
