@@ -148,72 +148,45 @@ namespace RDFSharp.Model
         internal static RDFShapesGraph FromRDFGraph(RDFGraph graph) {
             if (graph != null) {
                 RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
-                RDFGraph typesGraph = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
+                RDFGraph typeGraph = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
                 RDFGraph pathGraph = graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.PATH);
 
-                #region Typed Shape
+                //Execute SPARQL query for shapes detection
+                RDFSelectQuery shapesDetectionQuery =
+                    new RDFSelectQuery()
+                        .AddPatternGroup(new RDFPatternGroup("NodeShapes")
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE))
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.TARGET_CLASS, new RDFVariable("targetclass")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.TARGET_NODE, new RDFVariable("targetnode")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, new RDFVariable("targetsubjectsof")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, new RDFVariable("targetobjectsof")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.SEVERITY_PROPERTY, new RDFVariable("severity")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("deactivated")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("nodeshape"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("message")).Optional())
+                            .UnionWithNext())
+                        .AddPatternGroup(new RDFPatternGroup("PropertyShapes")
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE))
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.PATH, new RDFVariable("path")))
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.TARGET_CLASS, new RDFVariable("targetclass")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.TARGET_NODE, new RDFVariable("targetnode")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, new RDFVariable("targetsubjectsof")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, new RDFVariable("targetobjectsof")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.SEVERITY_PROPERTY, new RDFVariable("severity")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("deactivated")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("message")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.DESCRIPTION, new RDFVariable("description")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.NAME, new RDFVariable("name")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.GROUP, new RDFVariable("group")).Optional())
+                            .AddPattern(new RDFPattern(new RDFVariable("propertyshape"), RDFVocabulary.SHACL.ORDER, new RDFVariable("order")).Optional()));
+                RDFSelectQueryResult shapesDetectionResult = shapesDetectionQuery.ApplyToGraph(graph);
 
-                //NodeShape
-                foreach (RDFTriple shapeTriple in typesGraph.SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE))
-                    result.AddShape(new RDFNodeShape((RDFResource)shapeTriple.Subject));
+                //TODO
 
-                //PropertyShape
-                foreach (RDFTriple shapeTriple in typesGraph.SelectTriplesByObject(RDFVocabulary.SHACL.PROPERTY_SHAPE))
-                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, false);
-
-                #endregion
-
-                #region Target Shape
-
-                //TargetClass
-                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_CLASS))
-                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
-
-                //TargetNode
-                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_NODE))
-                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
-
-                //TargetSubjectsOf
-                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_SUBJECTS_OF))
-                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
-
-                //TargetObjectsOf
-                foreach (RDFTriple shapeTriple in graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_OBJECTS_OF))
-                    DetectShapeTypeByPath(result, (RDFResource)shapeTriple.Subject, pathGraph, true);
-
-                #endregion
 
                 return result;
             }
             return null;
-        }
-        private static void DetectShapeTypeByPath(RDFShapesGraph result, 
-                                                  RDFResource shape, 
-                                                  RDFGraph pathGraph,
-                                                  bool allowNodeShapeFallback) {
-
-            //Search for sh:path property
-            RDFGraph pathOccurrences = pathGraph.SelectTriplesBySubject(shape);
-
-            //sh:path property not defined
-            if (pathOccurrences.TriplesCount == 0)
-                if (allowNodeShapeFallback)
-                    result.AddShape(new RDFNodeShape(shape));
-                else
-                    throw new RDFModelException(string.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property is not defined", shape));
-
-            //sh:path property defined exactly one time
-            else if (pathOccurrences.TriplesCount == 1)
-                if (pathOccurrences.Single().Object is RDFResource)
-                    result.AddShape(new RDFPropertyShape(shape, (RDFResource)pathOccurrences.Single().Object));
-                else
-                    throw new RDFModelException(string.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property links to a literal", shape));
-
-            //sh:path property defined more than one time
-            else
-                throw new RDFModelException(string.Format("Cannot create RDFPropertyShape with identifier '{0}' because 'sh:path' property has more than one definition", shape));
-
-        }
+        }        
         #endregion
 
         #endregion
