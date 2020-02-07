@@ -148,8 +148,6 @@ namespace RDFSharp.Model
         internal static RDFShapesGraph FromRDFGraph(RDFGraph graph) {
             if (graph != null) {
                 RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
-                RDFGraph typeGraph = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
-                RDFGraph pathGraph = graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.PATH);
 
                 //Execute SPARQL query for shapes detection
                 RDFSelectQuery shapesDetectionQuery =
