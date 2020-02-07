@@ -149,7 +149,7 @@ namespace RDFSharp.Model
             if (graph != null) {
                 RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
 
-                //Execute SPARQL query for shapes detection
+                //Engage Mirella engine for shapes detection
                 RDFSelectQuery shapesDetectionQuery =
                     new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup("NodeShapes")
