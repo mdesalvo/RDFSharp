@@ -33,7 +33,7 @@ namespace RDFSharp.Model
     public static class RDFModelUtilities
     {
 
-        #region Greta
+        #region Hashing
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
