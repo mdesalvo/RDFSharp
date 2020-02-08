@@ -72,7 +72,7 @@ namespace RDFSharp.Query
             {
 
                 //Get the enumerable representation of the filter table
-                IEnumerable<DataRow> bindingsTable = this.Values.GetDataTable().AsEnumerable();
+                EnumerableRowCollection<DataRow> bindingsTable = this.Values.GetDataTable().AsEnumerable();
 
                 //Perform the iterative check on the filter columns
                 filterColumns.ForEach(filterColumn => 
