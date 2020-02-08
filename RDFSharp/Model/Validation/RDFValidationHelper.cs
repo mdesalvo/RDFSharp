@@ -209,19 +209,69 @@ namespace RDFSharp.Model
 
                 #region Shapes Transformation
                 foreach (DataRow shapesRow in shapesResult.SelectResults.AsEnumerable()) {
+                    RDFShape shape;
 
-                    //NodeShape
-                    if (!shapesRow.IsNull("?NSHAPE")) {
-                        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource(shapesRow.Field<string>("?NSHAPE")));
+                    //Definition
+                    if (!shapesRow.IsNull("?NSHAPE"))
+                        shape = new RDFNodeShape(new RDFResource(shapesRow.Field<string>("?NSHAPE")));
+                    else if (!shapesRow.IsNull("?PSHAPE") && !shapesRow.IsNull("?PATH")) { 
+                        shape = new RDFPropertyShape(new RDFResource(shapesRow.Field<string>("?PSHAPE")), new RDFResource(shapesRow.Field<string>("?PATH")));
+                        //NonValidating
+                        if (!shapesRow.IsNull("?DESCRIPTION")) {
+                            RDFPatternMember description = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DESCRIPTION"));
+                            if (description is RDFLiteral)
+                                ((RDFPropertyShape)shape).AddDescription((RDFLiteral)description);
+                        }
+                        if (!shapesRow.IsNull("?NAME")) {
+                            RDFPatternMember name = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?NAME"));
+                            if (name is RDFLiteral)
+                                ((RDFPropertyShape)shape).AddName((RDFLiteral)name);
+                        }
+                        if (!shapesRow.IsNull("?GROUP")) {
+                            RDFPatternMember group = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?GROUP"));
+                            if (group is RDFResource)
+                                ((RDFPropertyShape)shape).SetGroup((RDFResource)group);
+                        }
+                        if (!shapesRow.IsNull("?ORDER")) {
+                            RDFPatternMember order = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?ORDER"));
+                            if (order is RDFTypedLiteral && ((RDFTypedLiteral)order).Datatype.Equals(RDFVocabulary.XSD.INTEGER))
+                                ((RDFPropertyShape)shape).SetOrder(int.Parse(((RDFTypedLiteral)order).Value));
+                        }
+                    }
+                    else
+                        continue;
 
+                    //Targets
+                    if (!shapesRow.IsNull("?TARGETCLASS"))
+                        shape.AddTarget(new RDFTargetClass(new RDFResource(shapesRow.Field<string>("?TARGETCLASS"))));
+                    if (!shapesRow.IsNull("?TARGETNODE"))
+                        shape.AddTarget(new RDFTargetNode(new RDFResource(shapesRow.Field<string>("?TARGETNODE"))));
+                    if (!shapesRow.IsNull("?TARGETSUBJECTSOF"))
+                        shape.AddTarget(new RDFTargetSubjectsOf(new RDFResource(shapesRow.Field<string>("?TARGETSUBJECTSOF"))));
+                    if (!shapesRow.IsNull("?TARGETOBJECTSOF"))
+                        shape.AddTarget(new RDFTargetObjectsOf(new RDFResource(shapesRow.Field<string>("?TARGETOBJECTSOF"))));
+
+                    //Attributes
+                    if (!shapesRow.IsNull("?SEVERITY")) { 
+                        if (shapesRow.Field<string>("?SEVERITY").Equals(RDFVocabulary.SHACL.INFO.ToString()))
+                            shape.SetSeverity(RDFValidationEnums.RDFShapeSeverity.Info);
+                        else if (shapesRow.Field<string>("?SEVERITY").Equals(RDFVocabulary.SHACL.WARNING.ToString()))
+                            shape.SetSeverity(RDFValidationEnums.RDFShapeSeverity.Warning);
+                    }
+                    if (!shapesRow.IsNull("?DEACTIVATED")) { 
+                        if (shapesRow.Field<bool>("?DEACTIVATED"))
+                            shape.Deactivate();
+                    }
+                    if (!shapesRow.IsNull("?MESSAGE")) {
+                        RDFPatternMember message = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MESSAGE"));
+                        if (message is RDFLiteral)
+                            shape.AddMessage((RDFLiteral)message);
                     }
 
-                    //PropertyShape
-                    else if (!shapesRow.IsNull("?PSHAPE") && !shapesRow.IsNull("?PATH")) {
-                        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource(shapesRow.Field<string>("?PSHAPE")), new RDFResource(shapesRow.Field<string>("?PATH")));
+                    //Constraints
 
-                    }
 
+                    result.AddShape(shape);
                 }
                 #endregion
 
