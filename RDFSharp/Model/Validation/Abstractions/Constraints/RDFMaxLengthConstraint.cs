@@ -27,21 +27,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates the maximum allowed length for a given RDF term
         /// </summary>
-        public uint MaxLength { get; internal set; }
+        public int MaxLength { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a named maxLength constraint
         /// </summary>
-        public RDFMaxLengthConstraint(RDFResource constraintName, uint maxLength) : base(constraintName) {
-            this.MaxLength = maxLength;
+        public RDFMaxLengthConstraint(RDFResource constraintName, int maxLength) : base(constraintName) {
+            this.MaxLength = maxLength < 0 ? 0 : maxLength;
         }
 
         /// <summary>
         /// Default-ctor to build a blank maxLength constraint
         /// </summary>
-        public RDFMaxLengthConstraint(uint maxLength) : this(new RDFResource(), maxLength) { }
+        public RDFMaxLengthConstraint(int maxLength) : this(new RDFResource(), maxLength) { }
         #endregion
 
         #region Methods

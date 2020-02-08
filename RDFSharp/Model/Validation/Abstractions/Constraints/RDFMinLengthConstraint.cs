@@ -27,21 +27,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates the minimum allowed length for a given RDF term
         /// </summary>
-        public uint MinLength { get; internal set; }
+        public int MinLength { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a named minLength constraint
         /// </summary>
-        public RDFMinLengthConstraint(RDFResource constraintName, uint minLength) : base(constraintName) {
-            this.MinLength = minLength;
+        public RDFMinLengthConstraint(RDFResource constraintName, int minLength) : base(constraintName) {
+            this.MinLength = minLength < 0 ? 0 : minLength;
         }
 
         /// <summary>
         /// Default-ctor to build a blank minLength constraint
         /// </summary>
-        public RDFMinLengthConstraint(uint minLength) : this(new RDFResource(), minLength) { }
+        public RDFMinLengthConstraint(int minLength) : this(new RDFResource(), minLength) { }
         #endregion
 
         #region Methods
