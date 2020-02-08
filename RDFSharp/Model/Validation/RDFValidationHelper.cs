@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
@@ -212,8 +213,9 @@ namespace RDFSharp.Model
                     RDFShape shape;
 
                     //Definition
-                    if (!shapesRow.IsNull("?NSHAPE"))
+                    if (!shapesRow.IsNull("?NSHAPE")) { 
                         shape = new RDFNodeShape(new RDFResource(shapesRow.Field<string>("?NSHAPE")));
+                    }
                     else if (!shapesRow.IsNull("?PSHAPE") && !shapesRow.IsNull("?PATH")) { 
                         shape = new RDFPropertyShape(new RDFResource(shapesRow.Field<string>("?PSHAPE")), new RDFResource(shapesRow.Field<string>("?PATH")));
                         //NonValidating
@@ -238,18 +240,23 @@ namespace RDFSharp.Model
                                 ((RDFPropertyShape)shape).SetOrder(int.Parse(((RDFTypedLiteral)order).Value));
                         }
                     }
-                    else
+                    else { 
                         continue;
+                    }
 
                     //Targets
-                    if (!shapesRow.IsNull("?TARGETCLASS"))
+                    if (!shapesRow.IsNull("?TARGETCLASS")) { 
                         shape.AddTarget(new RDFTargetClass(new RDFResource(shapesRow.Field<string>("?TARGETCLASS"))));
-                    if (!shapesRow.IsNull("?TARGETNODE"))
+                    }
+                    if (!shapesRow.IsNull("?TARGETNODE")) { 
                         shape.AddTarget(new RDFTargetNode(new RDFResource(shapesRow.Field<string>("?TARGETNODE"))));
-                    if (!shapesRow.IsNull("?TARGETSUBJECTSOF"))
+                    }
+                    if (!shapesRow.IsNull("?TARGETSUBJECTSOF")) { 
                         shape.AddTarget(new RDFTargetSubjectsOf(new RDFResource(shapesRow.Field<string>("?TARGETSUBJECTSOF"))));
-                    if (!shapesRow.IsNull("?TARGETOBJECTSOF"))
+                    }
+                    if (!shapesRow.IsNull("?TARGETOBJECTSOF")) { 
                         shape.AddTarget(new RDFTargetObjectsOf(new RDFResource(shapesRow.Field<string>("?TARGETOBJECTSOF"))));
+                    }
 
                     //Attributes
                     if (!shapesRow.IsNull("?SEVERITY")) { 
@@ -269,7 +276,57 @@ namespace RDFSharp.Model
                     }
 
                     //Constraints
-
+                    if (!shapesRow.IsNull("?CLASS")) { 
+                        shape.AddConstraint(new RDFClassConstraint(new RDFResource(shapesRow.Field<string>("?CLASS"))));
+                    }
+                    if (!shapesRow.IsNull("?DATATYPE")) { 
+                        shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapesRow.Field<string>("?DATATYPE"))));
+                    }
+                    if (!shapesRow.IsNull("?MAXLENGTH")) {
+                        RDFPatternMember maxLength = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MAXLENGTH"));
+                        if (maxLength is RDFTypedLiteral && ((RDFTypedLiteral)maxLength).Datatype.Equals(RDFVocabulary.XSD.INTEGER))
+                            shape.AddConstraint(new RDFMaxLengthConstraint(int.Parse(((RDFTypedLiteral)maxLength).Value)));
+                    }
+                    if (!shapesRow.IsNull("?MINLENGTH")) {
+                        RDFPatternMember minLength = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MINLENGTH"));
+                        if (minLength is RDFTypedLiteral && ((RDFTypedLiteral)minLength).Datatype.Equals(RDFVocabulary.XSD.INTEGER))
+                            shape.AddConstraint(new RDFMinLengthConstraint(int.Parse(((RDFTypedLiteral)minLength).Value)));
+                    }
+                    if (!shapesRow.IsNull("?NODEKIND")) {
+                        if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.BLANK_NODE.ToString())) { 
+                            shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNode));
+                        }
+                        else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI.ToString())) { 
+                            shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI));
+                        }
+                        else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_LITERAL.ToString())) { 
+                            shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral));
+                        }
+                        else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.IRI.ToString())) { 
+                            shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.IRI));
+                        }
+                        else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.IRI_OR_LITERAL.ToString())) { 
+                            shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.IRIOrLiteral));
+                        }
+                        else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.LITERAL.ToString())) { 
+                            shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.Literal));
+                        }
+                    }
+                    if (!shapesRow.IsNull("?PATTERN")) {
+                        RegexOptions regexOptions = RegexOptions.None;
+                        if (!shapesRow.IsNull("?FLAGS")) {
+                            string regexFlags = shapesRow.Field<string>("?FLAGS");
+                            if (regexFlags.Contains("i"))
+                                regexOptions |= RegexOptions.IgnoreCase;
+                            if (regexFlags.Contains("s"))
+                                regexOptions |= RegexOptions.Singleline;
+                            if (regexFlags.Contains("m"))
+                                regexOptions |= RegexOptions.Multiline;
+                            if (regexFlags.Contains("x"))
+                                regexOptions |= RegexOptions.IgnorePatternWhitespace;
+                        }
+                        shape.AddConstraint(new RDFPatternConstraint(new Regex(shapesRow.Field<string>("?PATTERN"), regexOptions)));
+                    }
 
                     result.AddShape(shape);
                 }
