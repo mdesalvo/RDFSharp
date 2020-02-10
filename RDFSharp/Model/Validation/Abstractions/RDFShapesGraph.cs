@@ -123,10 +123,16 @@ namespace RDFSharp.Model
 
         #region Select
         /// <summary>
-        /// Checks if this shapes graph contains the given shape
+        /// Selects the shape represented by the given string from this shapes graph
         /// </summary>
-        public Boolean ContainsShape(RDFShape shape) {
-            return (shape != null && this.Shapes.ContainsKey(shape.PatternMemberID));
+        public RDFShape SelectShape(String shapeName) {
+            if (shapeName != null) {
+                Int64 shapeID = RDFModelUtilities.CreateHash(shapeName);
+                if (this.Shapes.ContainsKey(shapeID)) {
+                    return this.Shapes[shapeID];
+                }
+            }
+            return null;
         }
         #endregion
 
