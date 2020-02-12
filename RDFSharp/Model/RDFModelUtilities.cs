@@ -318,6 +318,60 @@ namespace RDFSharp.Model
         }
         #endregion
 
+        #region Collections
+        /// <summary>
+        /// Rebuilds the collection represented by the given resource within the given graph
+        /// </summary>
+        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, 
+                                                                     RDFResource collRepresentative, 
+                                                                     RDFModelEnums.RDFTripleFlavors expectedFlavor)
+        {
+            RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource :
+                                                                                                                RDFModelEnums.RDFItemTypes.Literal);
+            RDFGraph rdfFirst = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
+            RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
+
+            #region Deserialization
+            Boolean nilFound = false;
+            RDFResource itemRest = collRepresentative;
+            while (!nilFound) {
+
+                #region rdf:first
+                RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                          .FirstOrDefault();
+                if (first != null && first.TripleFlavor == expectedFlavor) {
+                    if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        collection.AddItem((RDFResource)first.Object);
+                    }
+                    else {
+                        collection.AddItem((RDFLiteral)first.Object);
+                    }
+                }
+                else {
+                    nilFound = true;
+                }
+                #endregion
+
+                #region rdf:rest
+                RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                        .FirstOrDefault();
+                if (rest != null) {
+                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL)) {
+                        nilFound = true;
+                    }
+                    else {
+                        itemRest = (RDFResource)rest.Object;
+                    }
+                }
+                #endregion
+
+            }
+            #endregion
+
+            return collection;
+        }
+        #endregion
+
         #region Namespaces        
         /// <summary>
         /// Gets the list of namespaces used within the triples of the given graph
