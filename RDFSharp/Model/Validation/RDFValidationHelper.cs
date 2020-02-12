@@ -333,8 +333,8 @@ namespace RDFSharp.Model
             if (!shapesRow.IsNull("?LANGUAGEIN")) {
                 RDFPatternMember reifSubj = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?LANGUAGEIN"));
                 if (reifSubj is RDFResource) {
-                   //TODO
-
+                    RDFCollection langTagsColl = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)reifSubj, RDFModelEnums.RDFTripleFlavors.SPL);
+                    shape.AddConstraint(new RDFLanguageInConstraint(langTagsColl.Select(x => x.ToString()).ToList()));
                 }
             }
 
