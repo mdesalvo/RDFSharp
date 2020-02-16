@@ -54,7 +54,7 @@ namespace RDFSharp.Model
                                                                  RDFGraph dataGraph,
                                                                  RDFResource focusNode,
                                                                  RDFPatternMember valueNode) {
-            var report = new RDFValidationReport(new RDFResource());
+            RDFValidationReport report = new RDFValidationReport(new RDFResource());
             switch (valueNode) {
 
                 //Resource
@@ -112,8 +112,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        public override RDFGraph ToRDFGraph(RDFShape shape) {
-            var result = new RDFGraph();
+        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+            RDFGraph result = new RDFGraph();
             if (shape != null) {
 
                 //sh:nodeKind

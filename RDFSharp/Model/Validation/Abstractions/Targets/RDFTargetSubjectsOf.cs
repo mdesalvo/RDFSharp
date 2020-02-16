@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this target
         /// </summary>
-        public override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape) {
             var result = new RDFGraph();
 
             //sh:targetSubjectsOf

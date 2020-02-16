@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this target
         /// </summary>
-        public abstract RDFGraph ToRDFGraph(RDFShape shape);
+        internal abstract RDFGraph ToRDFGraph(RDFShape shape);
         #endregion
 
     }

@@ -65,7 +65,7 @@ namespace RDFSharp.Model
                                                                  RDFGraph dataGraph,
                                                                  RDFResource focusNode,
                                                                  RDFPatternMember valueNode) {
-            var report = new RDFValidationReport(new RDFResource());
+            RDFValidationReport report = new RDFValidationReport(new RDFResource());
             switch (valueNode) {
 
                 //Resource/TypedLiteral
@@ -121,12 +121,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        public override RDFGraph ToRDFGraph(RDFShape shape) {
-            var result = new RDFGraph();
+        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+            RDFGraph result = new RDFGraph();
             if (shape != null) {
 
                 //Get collection from language tags
-                RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+                RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
                 this.LanguageTags.ToList().ForEach(lt => languageTags.AddItem(new RDFPlainLiteral(lt)));
                 result.AddCollection(languageTags);
 
