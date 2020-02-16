@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
@@ -177,7 +178,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Adds the given SHACL target to this shape
+        /// Adds the given target to this shape
         /// </summary>
         public RDFShape AddTarget(RDFTarget target)
         {
@@ -188,13 +189,35 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Adds the given SHACL constraint to this shape
+        /// Adds the given constraint to this shape
         /// </summary>
         public RDFShape AddConstraint(RDFConstraint constraint) {
             if (constraint != null)
                 this.Constraints.Add(constraint);
 
             return this;
+        }
+
+        /// <summary>
+        /// Selects the constraint represented by the given string from this shape
+        /// </summary>
+        public RDFConstraint SelectConstraint(String constraintName) {
+            if (constraintName != null) {
+                Int64 constraintID = RDFModelUtilities.CreateHash(constraintName);
+                return this.Constraints.Find(c => c.PatternMemberID.Equals(constraintID));
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Selects the target represented by the given string from this shape
+        /// </summary>
+        public RDFTarget SelectTarget(String targetName) {
+            if (targetName != null) {
+                Int64 targetID = RDFModelUtilities.CreateHash(targetName);
+                return this.Targets.Find(t => t.PatternMemberID.Equals(targetID));
+            }
+            return null;
         }
 
         /// <summary>
