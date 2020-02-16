@@ -305,7 +305,10 @@ namespace RDFSharp.Model
 
             //sh:deactivated
             if (!shapesRow.IsNull("?DEACTIVATED")) {
-                if (shapesRow.Field<bool>("?DEACTIVATED"))
+                RDFPatternMember deactivated = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DEACTIVATED"));
+                if (deactivated is RDFTypedLiteral 
+                        && ((RDFTypedLiteral)deactivated).HasBooleanDatatype()
+                            && Boolean.Parse(((RDFTypedLiteral)deactivated).Value))
                     shape.Deactivate();
             }
 
