@@ -373,19 +373,26 @@ namespace RDFSharp.Model
 
             //sh:pattern
             if (!shapesRow.IsNull("?PATTERN")) {
-                RegexOptions regexOptions = RegexOptions.None;
-                if (!shapesRow.IsNull("?FLAGS")) {
-                    string regexFlags = shapesRow.Field<string>("?FLAGS");
-                    if (regexFlags.Contains("i"))
-                        regexOptions |= RegexOptions.IgnoreCase;
-                    if (regexFlags.Contains("s"))
-                        regexOptions |= RegexOptions.Singleline;
-                    if (regexFlags.Contains("m"))
-                        regexOptions |= RegexOptions.Multiline;
-                    if (regexFlags.Contains("x"))
-                        regexOptions |= RegexOptions.IgnorePatternWhitespace;
+                RDFPatternMember regexPattern = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?PATTERN"));
+                if (regexPattern is RDFTypedLiteral && ((RDFTypedLiteral)regexPattern).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) {
+                    //sh:flags
+                    RegexOptions regexOptions = RegexOptions.None;
+                    if (!shapesRow.IsNull("?FLAGS")) {
+                        RDFPatternMember regexFlags = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?FLAGS"));
+                        if (regexFlags is RDFTypedLiteral && ((RDFTypedLiteral)regexFlags).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                        {
+                            if (((RDFTypedLiteral)regexFlags).Value.Contains("i"))
+                                regexOptions |= RegexOptions.IgnoreCase;
+                            if (((RDFTypedLiteral)regexFlags).Value.Contains("s"))
+                                regexOptions |= RegexOptions.Singleline;
+                            if (((RDFTypedLiteral)regexFlags).Value.Contains("m"))
+                                regexOptions |= RegexOptions.Multiline;
+                            if (((RDFTypedLiteral)regexFlags).Value.Contains("x"))
+                                regexOptions |= RegexOptions.IgnorePatternWhitespace;
+                        }
+                    }
+                    shape.AddConstraint(new RDFPatternConstraint(new Regex(((RDFTypedLiteral)regexPattern).Value, regexOptions)));
                 }
-                shape.AddConstraint(new RDFPatternConstraint(new Regex(shapesRow.Field<string>("?PATTERN"), regexOptions)));
             }
 
         }
