@@ -344,14 +344,14 @@ namespace RDFSharp.Model
             //sh:maxLength
             if (!shapesRow.IsNull("?MAXLENGTH")) {
                 RDFPatternMember maxLength = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MAXLENGTH"));
-                if (maxLength is RDFTypedLiteral && ((RDFTypedLiteral)maxLength).Datatype.Equals(RDFVocabulary.XSD.INTEGER))
+                if (maxLength is RDFTypedLiteral && ((RDFTypedLiteral)maxLength).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
                     shape.AddConstraint(new RDFMaxLengthConstraint(int.Parse(((RDFTypedLiteral)maxLength).Value)));
             }
 
             //sh:minLength
             if (!shapesRow.IsNull("?MINLENGTH")) {
                 RDFPatternMember minLength = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MINLENGTH"));
-                if (minLength is RDFTypedLiteral && ((RDFTypedLiteral)minLength).Datatype.Equals(RDFVocabulary.XSD.INTEGER))
+                if (minLength is RDFTypedLiteral && ((RDFTypedLiteral)minLength).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
                     shape.AddConstraint(new RDFMinLengthConstraint(int.Parse(((RDFTypedLiteral)minLength).Value)));
             }
 
