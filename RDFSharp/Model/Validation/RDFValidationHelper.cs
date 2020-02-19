@@ -152,20 +152,21 @@ namespace RDFSharp.Model
                 RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
                 RDFSelectQueryResult shapesResult = GetShapeQuery().ApplyToGraph(graph);
                 foreach (DataRow shapesRow in shapesResult.SelectResults.AsEnumerable()) {
-                    RDFShape shape = ParseShapeType(shapesRow, shapesResult);
+                    RDFShape shape = ParseShapeType(shapesRow);
                     if (shape == null)
                         continue;
 
                     //Targets
-                    ParseShapeTargets(shapesRow, shapesResult, shape);
+                    ParseShapeTargets(shapesRow, shape);
 
                     //Attributes
-                    ParseShapeAttributes(shapesRow, shapesResult, shape);
+                    ParseShapeAttributes(shapesRow, shape);
 
                     //Constraints
-                    ParseShapeConstraints(shapesRow, shapesResult, graph, shape);
+                    ParseShapeConstraints(shapesRow, graph, shape);
 
-                    result.AddShape(shape);
+                    //Merge
+                    MergeShape(result, shape);
                 }
                 return result;
             }
@@ -227,7 +228,7 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
                 );
         }
-        private static RDFShape ParseShapeType(DataRow shapesRow, RDFSelectQueryResult shapesResult) {
+        private static RDFShape ParseShapeType(DataRow shapesRow) {
             RDFShape shape = null;
 
             //sh:NodeShape
@@ -263,14 +264,14 @@ namespace RDFSharp.Model
                 //sh:order
                 if (!shapesRow.IsNull("?ORDER")) {
                     RDFPatternMember order = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?ORDER"));
-                    if (order is RDFTypedLiteral && ((RDFTypedLiteral)order).Datatype.Equals(RDFVocabulary.XSD.INTEGER))
+                    if (order is RDFTypedLiteral && ((RDFTypedLiteral)order).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
                         ((RDFPropertyShape)shape).SetOrder(int.Parse(((RDFTypedLiteral)order).Value));
                 }
             }
 
             return shape;
         }
-        private static void ParseShapeTargets(DataRow shapesRow, RDFSelectQueryResult shapesResult, RDFShape shape) {
+        private static void ParseShapeTargets(DataRow shapesRow, RDFShape shape) {
 
             //sh:targetClass
             if (!shapesRow.IsNull("?TARGETCLASS")) { 
@@ -293,7 +294,7 @@ namespace RDFSharp.Model
             }
 
         }
-        private static void ParseShapeAttributes(DataRow shapesRow, RDFSelectQueryResult shapesResult, RDFShape shape) {
+        private static void ParseShapeAttributes(DataRow shapesRow, RDFShape shape) {
 
             //sh:severity
             if (!shapesRow.IsNull("?SEVERITY")) {
@@ -320,7 +321,7 @@ namespace RDFSharp.Model
             }
 
         }
-        private static void ParseShapeConstraints(DataRow shapesRow, RDFSelectQueryResult shapesResult, RDFGraph graph, RDFShape shape) {
+        private static void ParseShapeConstraints(DataRow shapesRow, RDFGraph graph, RDFShape shape) {
 
             //sh:class
             if (!shapesRow.IsNull("?CLASS")) { 
@@ -395,6 +396,23 @@ namespace RDFSharp.Model
                 }
             }
 
+        }
+        private static void MergeShape(RDFShapesGraph result, RDFShape shape) {
+            RDFShape existingShape = result.SelectShape(shape.ToString());
+            if (existingShape == null) { 
+                result.AddShape(shape);
+            }
+            else {
+                existingShape.Targets.AddRange(shape.Targets);
+                existingShape.Constraints.AddRange(shape.Constraints);
+                existingShape.Messages.AddRange(shape.Messages);
+                if (existingShape is RDFPropertyShape && shape is RDFPropertyShape) {
+                    ((RDFPropertyShape)existingShape).Descriptions.AddRange(((RDFPropertyShape)shape).Descriptions);
+                    ((RDFPropertyShape)existingShape).Names.AddRange(((RDFPropertyShape)shape).Names);
+                }
+                result.RemoveShape(existingShape);
+                result.AddShape(existingShape);
+            }
         }
         #endregion
 
