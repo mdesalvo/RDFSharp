@@ -370,6 +370,17 @@ namespace RDFSharp.Model
 
             return collection;
         }
+
+        /// <summary>
+        /// Detects the flavor (SPO/SPL) of the collection represented by the given resource within the given graph
+        /// </summary>
+        internal static RDFModelEnums.RDFTripleFlavors DetectCollectionFlavorFromGraph(RDFGraph graph,
+                                                                                       RDFResource collRepresentative) {
+            return graph.SelectTriplesBySubject(collRepresentative)
+                        .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+                        .FirstOrDefault()
+                       ?.TripleFlavor ?? RDFModelEnums.RDFTripleFlavors.SPO;
+        }
         #endregion
 
         #region Namespaces        

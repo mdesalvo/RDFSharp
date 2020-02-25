@@ -191,6 +191,7 @@ namespace RDFSharp.Model
                     //Constraints
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
@@ -220,6 +221,7 @@ namespace RDFSharp.Model
                     //Constraints
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
@@ -331,6 +333,23 @@ namespace RDFSharp.Model
             //sh:datatype
             if (!shapesRow.IsNull("?DATATYPE")) { 
                 shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapesRow.Field<string>("?DATATYPE"))));
+            }
+
+            //sh:in
+            if (!shapesRow.IsNull("?IN")) {
+                RDFPatternMember reifSubj = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?IN"));
+                if (reifSubj is RDFResource) {
+                    RDFModelEnums.RDFTripleFlavors inCollFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, (RDFResource)reifSubj);
+                    RDFCollection inColl = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)reifSubj, inCollFlavor);
+                    RDFInConstraint inConstraint = new RDFInConstraint(inColl.ItemType);
+                    inColl.Items.ForEach(item => {
+                        if (inColl.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                            inConstraint.AddValue((RDFLiteral)item);
+                        else
+                            inConstraint.AddValue((RDFResource)item);
+                    });
+                    shape.AddConstraint(inConstraint);
+                }
             }
 
             //sh:languageIn
