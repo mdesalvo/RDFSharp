@@ -57,7 +57,7 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Adds the given resource to the values of this constraint (if consistent with semantics of Itemtype property)
+        /// Adds the given resource to the values of this constraint (if ItemType has been set to Resource)
         /// </summary>
         public RDFInConstraint AddValue(RDFResource resource) {
             if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
@@ -69,7 +69,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Adds the given literal to the values of this constraint (if consistent with semantics of Itemtype property)
+        /// Adds the given literal to the values of this constraint (if ItemType has been set to Literal)
         /// </summary>
         public RDFInConstraint AddValue(RDFLiteral literal) {
             if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
