@@ -15,8 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RDFSharp.Model
@@ -35,9 +33,9 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named class constraint
+        /// Default-ctor to build a class constraint with the given class
         /// </summary>
-        public RDFClassConstraint(RDFResource constraintName, RDFResource classType) : base(constraintName) {
+        public RDFClassConstraint(RDFResource classType) : base() {
             if (classType != null) {
                 this.ClassType = classType;
             }
@@ -45,11 +43,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
             }
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank class constraint
-        /// </summary>
-        public RDFClassConstraint(RDFResource classType) : this(new RDFResource(), classType) { }
         #endregion
 
         #region Methods

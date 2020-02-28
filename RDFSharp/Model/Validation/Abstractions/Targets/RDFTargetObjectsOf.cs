@@ -23,9 +23,9 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named target of type "ObjectsOf" on the given property
+        /// Default-ctor to build an objectsOf target on the given property
         /// </summary>
-        public RDFTargetObjectsOf(RDFResource targetName, RDFResource targetProperty) : base(targetName) {
+        public RDFTargetObjectsOf(RDFResource targetProperty) : base() {
             if (targetProperty != null) {
                 this.TargetValue = targetProperty;
             }
@@ -33,11 +33,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFTargetObjectsOf because given \"targetProperty\" parameter is null.");
             }
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank target of type "ObjectsOf" on the given property
-        /// </summary>
-        public RDFTargetObjectsOf(RDFResource targetProperty) : this(new RDFResource(), targetProperty) { }
         #endregion
 
         #region Methods

@@ -32,7 +32,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a generic target
         /// </summary>
-        internal RDFTarget(RDFResource targetName): base(targetName.ToString()) { }
+        internal RDFTarget(): base() { }
         #endregion
 
         #region Properties

@@ -36,9 +36,9 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named languageIn constraint
+        /// Default-ctor to build a languageIn constraint with the given list of language tags
         /// </summary>
-        public RDFLanguageInConstraint(RDFResource constraintName, List<string> languageTags) : base(constraintName) {
+        public RDFLanguageInConstraint(List<string> languageTags) : base() {
             this.LanguageTags = new HashSet<string>();
 
             //Accept only language tags compatible with langMatches filter
@@ -49,11 +49,6 @@ namespace RDFSharp.Model
                 }
             });
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank languageIn constraint
-        /// </summary>
-        public RDFLanguageInConstraint(List<string> languageTags) : this(new RDFResource(), languageTags) { }
         #endregion
 
         #region Methods

@@ -35,9 +35,9 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named pattern constraint
+        /// Default-ctor to build a pattern constraint with the given regex
         /// </summary>
-        public RDFPatternConstraint(RDFResource constraintName, Regex regex) : base(constraintName) {
+        public RDFPatternConstraint(Regex regex) : base() {
             if (regex != null) {
                 this.RegEx = regex;
             }
@@ -45,11 +45,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
             }
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank pattern constraint
-        /// </summary>
-        public RDFPatternConstraint(Regex regex) : this(new RDFResource(), regex) { }
         #endregion
 
         #region Methods

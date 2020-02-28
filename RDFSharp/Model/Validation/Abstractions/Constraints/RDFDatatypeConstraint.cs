@@ -33,16 +33,11 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named datatype constraint
+        /// Default-ctor to build a datatype constraint with the given datatype
         /// </summary>
-        public RDFDatatypeConstraint(RDFResource constraintName, RDFModelEnums.RDFDatatypes datatype) : base(constraintName) {
+        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) : base() {
             this.Datatype = datatype;
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank datatype constraint
-        /// </summary>
-        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) : this(new RDFResource(), datatype) { }
         #endregion
 
         #region Methods

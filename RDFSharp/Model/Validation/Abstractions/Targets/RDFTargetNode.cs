@@ -23,21 +23,16 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named target of type "Node" on the given resource
+        /// Default-ctor to build a node target on the given resource
         /// </summary>
-        public RDFTargetNode(RDFResource targetName, RDFResource targetNode) : base(targetName) {
-            if (targetNode != null) {
-                this.TargetValue = targetNode;
+        public RDFTargetNode(RDFResource targetResource) : base() {
+            if (targetResource != null) {
+                this.TargetValue = targetResource;
             }
             else {
                 throw new RDFModelException("Cannot create RDFTargetNode because given \"targetNode\" parameter is null.");
             }
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank target of type "Node" on the given resource
-        /// </summary>
-        public RDFTargetNode(RDFResource targetNode) : this(new RDFResource(), targetNode) { }
         #endregion
 
         #region Methods

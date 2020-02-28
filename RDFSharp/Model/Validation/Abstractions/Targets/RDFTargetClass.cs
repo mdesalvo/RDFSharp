@@ -23,9 +23,9 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named target of type "Class" on the given class
+        /// Default-ctor to build a class target on the given resource
         /// </summary>
-        public RDFTargetClass(RDFResource targetName, RDFResource targetClass) : base(targetName) {
+        public RDFTargetClass(RDFResource targetClass) : base() {
             if (targetClass != null) {
                 this.TargetValue = targetClass;
             }
@@ -33,11 +33,6 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
             }
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank target of type "Class" on the given class
-        /// </summary>
-        public RDFTargetClass(RDFResource targetClass) : this(new RDFResource(), targetClass) { }
         #endregion
 
         #region Methods

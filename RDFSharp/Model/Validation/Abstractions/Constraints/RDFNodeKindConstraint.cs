@@ -33,16 +33,11 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named nodeKind constraint
+        /// Default-ctor to build a nodeKind constraint of the given kind
         /// </summary>
-        public RDFNodeKindConstraint(RDFResource constraintName, RDFValidationEnums.RDFNodeKinds nodeKind) : base(constraintName) {
+        public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind) : base() {
             this.NodeKind = nodeKind;
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank nodeKind constraint
-        /// </summary>
-        public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind) : this(new RDFResource(), nodeKind) { }
         #endregion
 
         #region Methods

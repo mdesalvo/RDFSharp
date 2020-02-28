@@ -32,16 +32,11 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named minLength constraint
+        /// Default-ctor to build a minLength constraint with the given minLength
         /// </summary>
-        public RDFMinLengthConstraint(RDFResource constraintName, int minLength) : base(constraintName) {
+        public RDFMinLengthConstraint(int minLength) : base() {
             this.MinLength = minLength < 0 ? 0 : minLength;
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank minLength constraint
-        /// </summary>
-        public RDFMinLengthConstraint(int minLength) : this(new RDFResource(), minLength) { }
         #endregion
 
         #region Methods

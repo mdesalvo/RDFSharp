@@ -17,9 +17,7 @@
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
@@ -42,17 +40,12 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a named In constraint
+        /// Default-ctor to build a in constraint of the given type (Resource/Literal)
         /// </summary>
-        public RDFInConstraint(RDFResource constraintName, RDFModelEnums.RDFItemTypes itemType) : base(constraintName) {
+        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base() {
             this.InValues = new Dictionary<Int64, RDFPatternMember>();
             this.ItemType = itemType;
         }
-
-        /// <summary>
-        /// Default-ctor to build a blank In constraint
-        /// </summary>
-        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : this(new RDFResource(), itemType) { }
         #endregion
 
         #region Methods

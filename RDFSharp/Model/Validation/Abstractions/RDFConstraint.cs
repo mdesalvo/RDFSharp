@@ -27,7 +27,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a generic constraint
         /// </summary>
-        internal RDFConstraint(RDFResource constraintName) : base(constraintName.ToString()) { }
+        internal RDFConstraint() : base() { }
         #endregion
 
         #region Methods
