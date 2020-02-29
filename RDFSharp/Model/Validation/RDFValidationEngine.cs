@@ -34,19 +34,23 @@ namespace RDFSharp.Model
                                                    RDFGraph dataGraph) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
+                RDFValidationContext validationContext = new RDFValidationContext(shapesGraph, dataGraph);
                 foreach (RDFShape currentShape in shapesGraph.Where(s => !s.Deactivated)) {
+                    validationContext.CurrentShape = currentShape;
 
                     //Get focus nodes of current shape
                     List<RDFResource> focusNodes = dataGraph.GetFocusNodesOf(currentShape);
                     foreach (RDFResource currentFocusNode in focusNodes) {
+                        validationContext.CurrentFocusNode = currentFocusNode;
 
                         //Get value nodes of current focus node
-                        List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(currentShape, currentFocusNode);
-                        foreach (RDFPatternMember currentValueNode in valueNodes) {
+                        validationContext.AllValueNodes = dataGraph.GetValueNodesOf(currentShape, currentFocusNode);
+                        foreach (RDFPatternMember currentValueNode in validationContext.AllValueNodes) {
+                            validationContext.CurrentValueNode = currentValueNode;
 
                             //Evaluate constraints on current value node
-                            foreach (RDFConstraint constraint in currentShape) {
-                                report.MergeResults(constraint.Evaluate(shapesGraph, currentShape, dataGraph, currentFocusNode, currentValueNode, valueNodes));
+                            foreach (RDFConstraint currentConstraint in currentShape) {
+                                report.MergeResults(currentConstraint.Evaluate(validationContext));
                             }
 
                         }

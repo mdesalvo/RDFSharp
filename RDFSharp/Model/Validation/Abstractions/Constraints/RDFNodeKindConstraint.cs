@@ -45,14 +45,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFShapesGraph shapesGraph,
-                                                       RDFShape currentShape,
-                                                       RDFGraph dataGraph,
-                                                       RDFResource currentFocusNode,
-                                                       RDFPatternMember currentValueNode,
-                                                       List<RDFPatternMember> allValueNodes) {
+        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            switch (currentValueNode) {
+            switch (validationContext.CurrentValueNode) {
 
                 //Resource
                 case RDFResource valueNodeResource:
@@ -60,28 +55,28 @@ namespace RDFSharp.Model
                         if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
                                 || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
                                     || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal) {
-                            report.AddResult(new RDFValidationResult(currentShape,
+                            report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
                                                                      RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
-                                                                     currentFocusNode,
-                                                                     currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
-                                                                     currentValueNode,
-                                                                     currentShape.Messages,
+                                                                     validationContext.CurrentFocusNode,
+                                                                     validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
+                                                                     validationContext.CurrentValueNode,
+                                                                     validationContext.CurrentShape.Messages,
                                                                      new RDFResource(),
-                                                                     currentShape.Severity));
+                                                                     validationContext.CurrentShape.Severity));
                         }
                     }
                     else {
                         if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                                 || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
                                     || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal) {
-                            report.AddResult(new RDFValidationResult(currentShape,
+                            report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
                                                                      RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
-                                                                     currentFocusNode,
-                                                                     currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
-                                                                     currentValueNode,
-                                                                     currentShape.Messages,
+                                                                     validationContext.CurrentFocusNode,
+                                                                     validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
+                                                                     validationContext.CurrentValueNode,
+                                                                     validationContext.CurrentShape.Messages,
                                                                      new RDFResource(),
-                                                                     currentShape.Severity));
+                                                                     validationContext.CurrentShape.Severity));
                         }
                     }
                     break;
@@ -91,14 +86,14 @@ namespace RDFSharp.Model
                     if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                             || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI
                                 || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI) {
-                        report.AddResult(new RDFValidationResult(currentShape,
+                        report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
                                                                  RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
-                                                                 currentFocusNode,
-                                                                 currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
-                                                                 currentValueNode,
-                                                                 currentShape.Messages,
+                                                                 validationContext.CurrentFocusNode,
+                                                                 validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
+                                                                 validationContext.CurrentValueNode,
+                                                                 validationContext.CurrentShape.Messages,
                                                                  new RDFResource(),
-                                                                 currentShape.Severity));
+                                                                 validationContext.CurrentShape.Severity));
                     }
                     break;
 

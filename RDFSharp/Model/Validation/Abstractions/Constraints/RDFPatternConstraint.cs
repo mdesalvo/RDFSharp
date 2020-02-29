@@ -52,40 +52,35 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFShapesGraph shapesGraph,
-                                                       RDFShape currentShape,
-                                                       RDFGraph dataGraph,
-                                                       RDFResource currentFocusNode,
-                                                       RDFPatternMember currentValueNode,
-                                                       List<RDFPatternMember> allValueNodes) {
+        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            switch (currentValueNode) {
+            switch (validationContext.CurrentValueNode) {
 
                 //Resource
                 case RDFResource valueNodeResource:
                     if (valueNodeResource.IsBlank || !this.RegEx.IsMatch(valueNodeResource.ToString())) {
-                        report.AddResult(new RDFValidationResult(currentShape,
+                        report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
                                                                  RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
-                                                                 currentFocusNode,
-                                                                 currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
-                                                                 currentValueNode,
-                                                                 currentShape.Messages,
+                                                                 validationContext.CurrentFocusNode,
+                                                                 validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
+                                                                 validationContext.CurrentValueNode,
+                                                                 validationContext.CurrentShape.Messages,
                                                                  new RDFResource(),
-                                                                 currentShape.Severity));
+                                                                 validationContext.CurrentShape.Severity));
                     }
                     break;
 
                 //Literal
                 case RDFLiteral valueNodeLiteral:
                     if (!this.RegEx.IsMatch(valueNodeLiteral.Value)) {
-                        report.AddResult(new RDFValidationResult(currentShape,
+                        report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
                                                                  RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
-                                                                 currentFocusNode,
-                                                                 currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
-                                                                 currentValueNode,
-                                                                 currentShape.Messages,
+                                                                 validationContext.CurrentFocusNode,
+                                                                 validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
+                                                                 validationContext.CurrentValueNode,
+                                                                 validationContext.CurrentShape.Messages,
                                                                  new RDFResource(),
-                                                                 currentShape.Severity));
+                                                                 validationContext.CurrentShape.Severity));
                     }
                     break;
 

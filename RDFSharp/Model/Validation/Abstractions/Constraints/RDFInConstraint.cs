@@ -76,23 +76,18 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFShapesGraph shapesGraph,
-                                                       RDFShape currentShape,
-                                                       RDFGraph dataGraph,
-                                                       RDFResource currentFocusNode,
-                                                       RDFPatternMember currentValueNode,
-                                                       List<RDFPatternMember> allValueNodes) {
+        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
-            if (!this.InValues.Any(v => v.Value.Equals(currentValueNode)))
-                report.AddResult(new RDFValidationResult(currentShape,
+            if (!this.InValues.Any(v => v.Value.Equals(validationContext.CurrentValueNode)))
+                report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
                                                          RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
-                                                         currentFocusNode,
-                                                         currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
-                                                         currentValueNode,
-                                                         currentShape.Messages,
+                                                         validationContext.CurrentFocusNode,
+                                                         validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
+                                                         validationContext.CurrentValueNode,
+                                                         validationContext.CurrentShape.Messages,
                                                          new RDFResource(),
-                                                         currentShape.Severity));
+                                                         validationContext.CurrentShape.Severity));
 
             return report;
         }

@@ -35,12 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal abstract RDFValidationReport Evaluate(RDFShapesGraph shapesGraph, 
-                                                       RDFShape currentShape, 
-                                                       RDFGraph dataGraph, 
-                                                       RDFResource currentFocusNode,
-                                                       RDFPatternMember currentValueNode,
-                                                       List<RDFPatternMember> allValueNodes);
+        internal abstract RDFValidationReport Evaluate(RDFValidationContext validationContext);
 
         /// <summary>
         /// Gets a graph representation of this constraint
