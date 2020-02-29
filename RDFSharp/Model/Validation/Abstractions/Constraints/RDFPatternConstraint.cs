@@ -16,6 +16,7 @@
 
 using RDFSharp.Query;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -51,39 +52,40 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph,
-                                                                 RDFShape shape,
-                                                                 RDFGraph dataGraph,
-                                                                 RDFResource focusNode,
-                                                                 RDFPatternMember valueNode) {
+        internal override RDFValidationReport Evaluate(RDFShapesGraph shapesGraph,
+                                                       RDFShape currentShape,
+                                                       RDFGraph dataGraph,
+                                                       RDFResource currentFocusNode,
+                                                       RDFPatternMember currentValueNode,
+                                                       List<RDFPatternMember> allValueNodes) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            switch (valueNode) {
+            switch (currentValueNode) {
 
                 //Resource
                 case RDFResource valueNodeResource:
                     if (valueNodeResource.IsBlank || !this.RegEx.IsMatch(valueNodeResource.ToString())) {
-                        report.AddResult(new RDFValidationResult(shape,
+                        report.AddResult(new RDFValidationResult(currentShape,
                                                                  RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
-                                                                 valueNode,
-                                                                 shape.Messages,
+                                                                 currentFocusNode,
+                                                                 currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
+                                                                 currentValueNode,
+                                                                 currentShape.Messages,
                                                                  new RDFResource(),
-                                                                 shape.Severity));
+                                                                 currentShape.Severity));
                     }
                     break;
 
                 //Literal
                 case RDFLiteral valueNodeLiteral:
                     if (!this.RegEx.IsMatch(valueNodeLiteral.Value)) {
-                        report.AddResult(new RDFValidationResult(shape,
+                        report.AddResult(new RDFValidationResult(currentShape,
                                                                  RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
-                                                                 valueNode,
-                                                                 shape.Messages,
+                                                                 currentFocusNode,
+                                                                 currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
+                                                                 currentValueNode,
+                                                                 currentShape.Messages,
                                                                  new RDFResource(),
-                                                                 shape.Severity));
+                                                                 currentShape.Severity));
                     }
                     break;
 

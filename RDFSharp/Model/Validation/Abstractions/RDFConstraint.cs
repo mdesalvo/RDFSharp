@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Query;
+using System.Collections.Generic;
 
 namespace RDFSharp.Model
 {
@@ -34,11 +35,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal abstract RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph, 
-                                                                 RDFShape shape, 
-                                                                 RDFGraph dataGraph, 
-                                                                 RDFResource focusNode,
-                                                                 RDFPatternMember valueNode);
+        internal abstract RDFValidationReport Evaluate(RDFShapesGraph shapesGraph, 
+                                                       RDFShape currentShape, 
+                                                       RDFGraph dataGraph, 
+                                                       RDFResource currentFocusNode,
+                                                       RDFPatternMember currentValueNode,
+                                                       List<RDFPatternMember> allValueNodes);
 
         /// <summary>
         /// Gets a graph representation of this constraint

@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Query;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RDFSharp.Model
@@ -33,29 +34,25 @@ namespace RDFSharp.Model
                                                    RDFGraph dataGraph) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (RDFShape shape in shapesGraph.Where(s => !s.Deactivated)) {
-                    foreach (RDFResource focusNode in dataGraph.GetFocusNodesOf(shape)) {
-                        foreach (RDFPatternMember valueNode in dataGraph.GetValueNodesOf(shape, focusNode)) {
-                            report.MergeResults(shape.EvaluateShape(shapesGraph, dataGraph, focusNode, valueNode));
-                        }
-                    }
-                }
-            }
-            return report;
-        }
+                foreach (RDFShape currentShape in shapesGraph.Where(s => !s.Deactivated)) {
 
-        /// <summary>
-        /// Validates the given data graph against the given SHACL shape
-        /// </summary>
-        internal static RDFValidationReport EvaluateShape(this RDFShape shape,
-                                                          RDFShapesGraph shapesGraph,
-                                                          RDFGraph dataGraph,
-                                                          RDFResource focusNode,
-                                                          RDFPatternMember valueNode) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (dataGraph != null) {
-                foreach (RDFConstraint constraint in shape) {
-                    report.MergeResults(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNode, valueNode));
+                    //Get focus nodes of current shape
+                    List<RDFResource> focusNodes = dataGraph.GetFocusNodesOf(currentShape);
+                    foreach (RDFResource currentFocusNode in focusNodes) {
+
+                        //Get value nodes of current focus node
+                        List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(currentShape, currentFocusNode);
+                        foreach (RDFPatternMember currentValueNode in valueNodes) {
+
+                            //Evaluate constraints on current value node
+                            foreach (RDFConstraint constraint in currentShape) {
+                                report.MergeResults(constraint.Evaluate(shapesGraph, currentShape, dataGraph, currentFocusNode, currentValueNode, valueNodes));
+                            }
+
+                        }
+
+                    }
+
                 }
             }
             return report;

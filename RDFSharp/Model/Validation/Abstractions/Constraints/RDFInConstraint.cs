@@ -76,22 +76,23 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport EvaluateConstraint(RDFShapesGraph shapesGraph,
-                                                                 RDFShape shape,
-                                                                 RDFGraph dataGraph,
-                                                                 RDFResource focusNode,
-                                                                 RDFPatternMember valueNode) {
+        internal override RDFValidationReport Evaluate(RDFShapesGraph shapesGraph,
+                                                       RDFShape currentShape,
+                                                       RDFGraph dataGraph,
+                                                       RDFResource currentFocusNode,
+                                                       RDFPatternMember currentValueNode,
+                                                       List<RDFPatternMember> allValueNodes) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
-            if (!this.InValues.Any(v => v.Value.Equals(valueNode)))
-                report.AddResult(new RDFValidationResult(shape,
+            if (!this.InValues.Any(v => v.Value.Equals(currentValueNode)))
+                report.AddResult(new RDFValidationResult(currentShape,
                                                          RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
-                                                         focusNode,
-                                                         shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
-                                                         valueNode,
-                                                         shape.Messages,
+                                                         currentFocusNode,
+                                                         currentShape is RDFPropertyShape ? ((RDFPropertyShape)currentShape).Path : null,
+                                                         currentValueNode,
+                                                         currentShape.Messages,
                                                          new RDFResource(),
-                                                         shape.Severity));
+                                                         currentShape.Severity));
 
             return report;
         }
