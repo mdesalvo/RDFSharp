@@ -328,13 +328,17 @@ namespace RDFSharp.Model
         private static void ParseShapeConstraints(DataRow shapesRow, RDFGraph graph, RDFShape shape) {
 
             //sh:class
-            if (!shapesRow.IsNull("?CLASS")) { 
-                shape.AddConstraint(new RDFClassConstraint(new RDFResource(shapesRow.Field<string>("?CLASS"))));
+            if (!shapesRow.IsNull("?CLASS")) {
+                RDFPatternMember cls = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?CLASS"));
+                if (cls is RDFResource)
+                    shape.AddConstraint(new RDFClassConstraint((RDFResource)cls));
             }
 
             //sh:datatype
-            if (!shapesRow.IsNull("?DATATYPE")) { 
-                shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapesRow.Field<string>("?DATATYPE"))));
+            if (!shapesRow.IsNull("?DATATYPE")) {
+                RDFPatternMember datatype = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DATATYPE"));
+                if (datatype is RDFResource)
+                    shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(datatype.ToString())));
             }
 
             //sh:hasValue
@@ -388,18 +392,21 @@ namespace RDFSharp.Model
 
             //sh:nodeKind
             if (!shapesRow.IsNull("?NODEKIND")) {
-                if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.BLANK_NODE.ToString()))
-                    shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNode));
-                else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI.ToString()))
-                    shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI));
-                else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_LITERAL.ToString()))
-                    shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral));
-                else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.IRI.ToString()))
-                    shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.IRI));
-                else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.IRI_OR_LITERAL.ToString()))
-                    shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.IRIOrLiteral));
-                else if (shapesRow.Field<string>("?NODEKIND").Equals(RDFVocabulary.SHACL.LITERAL.ToString()))
-                    shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.Literal));
+                RDFPatternMember nodeKind = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?NODEKIND"));
+                if (nodeKind is RDFResource) {
+                    if (nodeKind.Equals(RDFVocabulary.SHACL.BLANK_NODE))
+                        shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNode));
+                    else if (nodeKind.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI))
+                        shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI));
+                    else if (nodeKind.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_LITERAL))
+                        shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral));
+                    else if (nodeKind.Equals(RDFVocabulary.SHACL.IRI))
+                        shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.IRI));
+                    else if (nodeKind.Equals(RDFVocabulary.SHACL.IRI_OR_LITERAL))
+                        shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.IRIOrLiteral));
+                    else if (nodeKind.Equals(RDFVocabulary.SHACL.LITERAL))
+                        shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.Literal));
+                }
             }
 
             //sh:pattern
