@@ -31,11 +31,11 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFValidationReport Validate(this RDFShapesGraph shapesGraph,
                                                    RDFGraph dataGraph) {
-            var report = new RDFValidationReport(new RDFResource());
+            RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (var shape in shapesGraph.Where(s => !s.Deactivated)) {
-                    foreach (var focusNode in dataGraph.GetFocusNodesOf(shape)) {
-                        foreach (var valueNode in dataGraph.GetValueNodesOf(shape, focusNode)) {
+                foreach (RDFShape shape in shapesGraph.Where(s => !s.Deactivated)) {
+                    foreach (RDFResource focusNode in dataGraph.GetFocusNodesOf(shape)) {
+                        foreach (RDFPatternMember valueNode in dataGraph.GetValueNodesOf(shape, focusNode)) {
                             report.MergeResults(shape.EvaluateShape(shapesGraph, dataGraph, focusNode, valueNode));
                         }
                     }
@@ -52,9 +52,9 @@ namespace RDFSharp.Model
                                                           RDFGraph dataGraph,
                                                           RDFResource focusNode,
                                                           RDFPatternMember valueNode) {
-            var report = new RDFValidationReport(new RDFResource());
+            RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
-                foreach (var constraint in shape) {
+                foreach (RDFConstraint constraint in shape) {
                     report.MergeResults(constraint.EvaluateConstraint(shapesGraph, shape, dataGraph, focusNode, valueNode));
                 }
             }
