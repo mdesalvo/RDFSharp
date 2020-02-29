@@ -35,21 +35,21 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (dataGraph != null) {
                 RDFValidationContext validationContext = new RDFValidationContext(shapesGraph, dataGraph);
-                foreach (RDFShape currentShape in shapesGraph.Where(s => !s.Deactivated)) {
-                    validationContext.CurrentShape = currentShape;
+                foreach (RDFShape shape in shapesGraph.Where(s => !s.Deactivated)) {
+                    validationContext.Shape = shape;
 
                     //Get focus nodes of current shape
-                    List<RDFResource> focusNodes = dataGraph.GetFocusNodesOf(currentShape);
-                    foreach (RDFResource currentFocusNode in focusNodes) {
-                        validationContext.CurrentFocusNode = currentFocusNode;
+                    List<RDFResource> focusNodes = dataGraph.GetFocusNodesOf(shape);
+                    foreach (RDFResource focusNode in focusNodes) {
+                        validationContext.FocusNode = focusNode;
 
                         //Get value nodes of current focus node
-                        validationContext.AllValueNodes = dataGraph.GetValueNodesOf(currentShape, currentFocusNode);
-                        foreach (RDFPatternMember currentValueNode in validationContext.AllValueNodes) {
-                            validationContext.CurrentValueNode = currentValueNode;
+                        validationContext.ValueNodes = dataGraph.GetValueNodesOf(shape, focusNode);
+                        foreach (RDFPatternMember valueNode in validationContext.ValueNodes) {
+                            validationContext.ValueNode = valueNode;
 
                             //Evaluate constraints on current value node
-                            foreach (RDFConstraint currentConstraint in currentShape) {
+                            foreach (RDFConstraint currentConstraint in shape) {
                                 report.MergeResults(currentConstraint.Evaluate(validationContext));
                             }
 

@@ -38,22 +38,22 @@ namespace RDFSharp.Model
         /// <summary>
         /// Shape being currently evaluated
         /// </summary>
-        internal RDFShape CurrentShape { get; set; }
+        internal RDFShape Shape { get; set; }
 
         /// <summary>
         /// Focus node currently evaluated
         /// </summary>
-        internal RDFResource CurrentFocusNode { get; set; }
+        internal RDFResource FocusNode { get; set; }
 
         /// <summary>
         /// Value node currently evaluated
         /// </summary>
-        internal RDFPatternMember CurrentValueNode { get; set; }
+        internal RDFPatternMember ValueNode { get; set; }
 
         /// <summary>
         /// Full set of value nodes to be evaluated
         /// </summary>
-        internal List<RDFPatternMember> AllValueNodes { get; set; }
+        internal List<RDFPatternMember> ValueNodes { get; set; }
         #endregion
 
         #region Ctors

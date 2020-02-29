@@ -57,19 +57,19 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            switch (validationContext.CurrentValueNode) {
+            switch (validationContext.ValueNode) {
 
                 //Resource/TypedLiteral
                 case RDFResource valueNodeResource:
                 case RDFTypedLiteral valueNodeTypedLiteral:
-                    report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
+                    report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                              RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                             validationContext.CurrentFocusNode,
-                                                             validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
-                                                             validationContext.CurrentValueNode,
-                                                             validationContext.CurrentShape.Messages,
+                                                             validationContext.FocusNode,
+                                                             validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                             validationContext.ValueNode,
+                                                             validationContext.Shape.Messages,
                                                              new RDFResource(),
-                                                             validationContext.CurrentShape.Severity));
+                                                             validationContext.Shape.Severity));
                     break;
 
                 //PlainLiteral
@@ -93,14 +93,14 @@ namespace RDFSharp.Model
 
                         //Report langMatches violation
                         if (!langMatches) { 
-                            report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
+                            report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                     validationContext.CurrentFocusNode,
-                                                                     validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
-                                                                     validationContext.CurrentValueNode,
-                                                                     validationContext.CurrentShape.Messages,
+                                                                     validationContext.FocusNode,
+                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                     validationContext.ValueNode,
+                                                                     validationContext.Shape.Messages,
                                                                      new RDFResource(),
-                                                                     validationContext.CurrentShape.Severity));
+                                                                     validationContext.Shape.Severity));
                         }
                     }
                     break;

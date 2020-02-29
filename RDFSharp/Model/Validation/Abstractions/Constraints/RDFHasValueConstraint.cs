@@ -66,15 +66,15 @@ namespace RDFSharp.Model
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
-            if (!validationContext.AllValueNodes.Any(v => v.Equals(this.Value)))
-                report.AddResult(new RDFValidationResult(validationContext.CurrentShape,
+            if (!validationContext.ValueNodes.Any(v => v.Equals(this.Value)))
+                report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                          RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                         validationContext.CurrentFocusNode,
-                                                         validationContext.CurrentShape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.CurrentShape).Path : null,
-                                                         validationContext.CurrentValueNode,
-                                                         validationContext.CurrentShape.Messages,
+                                                         validationContext.FocusNode,
+                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                         validationContext.ValueNode,
+                                                         validationContext.Shape.Messages,
                                                          new RDFResource(),
-                                                         validationContext.CurrentShape.Severity));
+                                                         validationContext.Shape.Severity));
 
             return report;
         }
