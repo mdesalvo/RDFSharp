@@ -51,6 +51,11 @@ namespace RDFSharp.Model
         internal RDFPatternMember ValueNode { get; set; }
 
         /// <summary>
+        /// Full set of focus nodes to be evaluated
+        /// </summary>
+        internal List<RDFResource> FocusNodes { get; set; }
+
+        /// <summary>
         /// Full set of value nodes to be evaluated
         /// </summary>
         internal List<RDFPatternMember> ValueNodes { get; set; }

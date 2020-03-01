@@ -39,8 +39,8 @@ namespace RDFSharp.Model
                     validationContext.Shape = shape;
 
                     //Get focus nodes of current shape
-                    List<RDFResource> focusNodes = dataGraph.GetFocusNodesOf(shape);
-                    foreach (RDFResource focusNode in focusNodes) {
+                    validationContext.FocusNodes = dataGraph.GetFocusNodesOf(shape);
+                    foreach (RDFResource focusNode in validationContext.FocusNodes) {
                         validationContext.FocusNode = focusNode;
 
                         //Get value nodes of current focus node
