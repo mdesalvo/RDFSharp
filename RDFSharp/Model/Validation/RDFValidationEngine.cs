@@ -52,11 +52,8 @@ namespace RDFSharp.Model
                             foreach (RDFConstraint currentConstraint in shape) {
                                 report.MergeResults(currentConstraint.Evaluate(validationContext));
                             }
-
                         }
-
                     }
-
                 }
             }
             return report;
