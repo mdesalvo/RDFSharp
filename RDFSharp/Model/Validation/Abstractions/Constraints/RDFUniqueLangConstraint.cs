@@ -60,15 +60,14 @@ namespace RDFSharp.Model
                     //PlainLiteral
                     case RDFPlainLiteral plainLiteralValueNode:
                         if (!String.IsNullOrEmpty(plainLiteralValueNode.Language)) {
-                            List<RDFLiteral> plainLiteralValueNodes = validationContext.ValueNodes.Where(v => v is RDFPlainLiteral 
-                                                                                                                        && !String.IsNullOrEmpty(((RDFPlainLiteral)v).Language))
-                                                                                                       .OfType<RDFLiteral>()
-                                                                                                       .ToList();
+                            List<RDFLiteral> plainLiteralValueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral && !String.IsNullOrEmpty(((RDFPlainLiteral)vn).Language))
+                                                                                                  .OfType<RDFLiteral>()
+                                                                                                  .ToList();
                             if (RDFValidationHelper.CheckLanguageTagInUse(plainLiteralValueNodes, plainLiteralValueNode.Language))
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
                                                                          validationContext.FocusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         ((RDFPropertyShape)validationContext.Shape).Path,
                                                                          validationContext.ValueNode,
                                                                          validationContext.Shape.Messages,
                                                                          new RDFResource(),
