@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
@@ -47,10 +47,12 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            
-            //TODO
+            if (this.UniqueLang) {
+                
+                //TODO
 
 
+            }
             return report;
         }
 
