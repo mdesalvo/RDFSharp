@@ -172,8 +172,7 @@ namespace RDFSharp.Model
             }
             return null;
         }
-        private static RDFSelectQuery GetShapeQuery()
-        {
+        private static RDFSelectQuery GetShapeQuery() {
            return 
             new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup("NODESHAPES")
@@ -199,6 +198,7 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
                     .UnionWithNext()
                 )
                 .AddPatternGroup(new RDFPatternGroup("PROPERTYSHAPES")
@@ -230,6 +230,7 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
                 );
         }
         private static RDFShape ParseShapeType(DataRow shapesRow) {
@@ -431,6 +432,14 @@ namespace RDFSharp.Model
                     }
                     shape.AddConstraint(new RDFPatternConstraint(new Regex(((RDFTypedLiteral)regexPattern).Value, regexOptions)));
                 }
+            }
+
+            //sh:uniqueLang
+            if (!shapesRow.IsNull("?UNIQUELANG")) {
+                RDFPatternMember uniqueLang = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?UNIQUELANG"));
+                if (uniqueLang is RDFTypedLiteral
+                        && ((RDFTypedLiteral)uniqueLang).HasBooleanDatatype())
+                    shape.AddConstraint(new RDFUniqueLangConstraint(Boolean.Parse(((RDFTypedLiteral)uniqueLang).Value)));
             }
 
         }
