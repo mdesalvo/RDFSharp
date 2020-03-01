@@ -47,11 +47,36 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (this.UniqueLang) {
-                
-                //TODO
 
+            //Only property shapes are allowed to use uniqueLang constraint
+            if (this.UniqueLang && validationContext.Shape is RDFPropertyShape) {
+                switch (validationContext.ValueNode) {
 
+                    //Resource/TypedLiteral
+                    case RDFResource valueNodeResource:
+                    case RDFTypedLiteral valueNodeTypedLiteral:
+                        break;
+
+                    //PlainLiteral
+                    case RDFPlainLiteral plainLiteralValueNode:
+                        if (!String.IsNullOrEmpty(plainLiteralValueNode.Language)) {
+                            List<RDFLiteral> plainLiteralValueNodes = validationContext.ValueNodes.Where(v => v is RDFPlainLiteral 
+                                                                                                                        && !String.IsNullOrEmpty(((RDFPlainLiteral)v).Language))
+                                                                                                       .OfType<RDFLiteral>()
+                                                                                                       .ToList();
+                            if (RDFValidationHelper.CheckLanguageTagInUse(plainLiteralValueNodes, plainLiteralValueNode.Language))
+                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                         RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
+                                                                         validationContext.FocusNode,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         validationContext.ValueNode,
+                                                                         validationContext.Shape.Messages,
+                                                                         new RDFResource(),
+                                                                         validationContext.Shape.Severity));
+                        }
+                        break;
+
+                }
             }
             return report;
         }
