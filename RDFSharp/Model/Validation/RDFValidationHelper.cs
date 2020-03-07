@@ -140,7 +140,7 @@ namespace RDFSharp.Model
                                                       String langTag,
                                                       Int32 minOccurrences = 0) {
             return literals.OfType<RDFPlainLiteral>()
-                           .Count(plit => plit.Language.Equals(langTag, StringComparison.OrdinalIgnoreCase)) > minOccurrences;
+                           .Count(plit => langTag.StartsWith(plit.Language, StringComparison.OrdinalIgnoreCase)) > minOccurrences;
         }
         #endregion
 
