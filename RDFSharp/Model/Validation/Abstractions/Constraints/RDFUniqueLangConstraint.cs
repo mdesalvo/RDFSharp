@@ -57,7 +57,6 @@ namespace RDFSharp.Model
                             IEnumerable<RDFPlainLiteral> plValueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral plitVN && !String.IsNullOrEmpty(plitVN.Language))
                                                                                                     .OfType<RDFPlainLiteral>();
                             if (plValueNodes.Count(vn => vn.Language.Equals(plValueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1)
-                                //We report one evidence per occurrence of the affected language tag
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
                                                                          validationContext.FocusNode,
