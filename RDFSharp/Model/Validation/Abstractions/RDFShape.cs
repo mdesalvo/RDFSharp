@@ -161,17 +161,20 @@ namespace RDFSharp.Model
                 //Plain Literal (only one occurrence per language tag is allowed)
                 if (message is RDFPlainLiteral) {
                     string languageTag = ((RDFPlainLiteral)message).Language;
-                    if (!RDFValidationHelper.CheckLanguageTagInUse(this.Messages, languageTag)) {
+                    if (!RDFValidationHelper.CheckLanguageTagInUse(this.Messages, languageTag)) { 
                         this.Messages.Add(message);
                     }
                 }
 
                 //Typed Literal (only xsd:String datatype is allowed)
                 else {
-                    if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) {
+                    if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) { 
                         this.Messages.Add(message);
                     }
                 }
+
+                //Adjust semantics of language tags
+                RDFValidationHelper.FilterPlainLiteralsByLanguageTag(this.Messages);
 
             }
             return this;
@@ -180,8 +183,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given target to this shape
         /// </summary>
-        public RDFShape AddTarget(RDFTarget target)
-        {
+        public RDFShape AddTarget(RDFTarget target) {
             if (target != null)
                 this.Targets.Add(target);
 

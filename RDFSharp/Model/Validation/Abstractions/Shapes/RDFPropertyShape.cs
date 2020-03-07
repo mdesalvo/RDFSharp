@@ -94,6 +94,9 @@ namespace RDFSharp.Model
                     }
                 }
 
+                //Adjust semantics of language tags
+                RDFValidationHelper.FilterPlainLiteralsByLanguageTag(this.Descriptions);
+
             }
             return this;
         }
@@ -118,6 +121,9 @@ namespace RDFSharp.Model
                         this.Names.Add(name);
                     }
                 }
+
+                //Adjust semantics of language tags
+                RDFValidationHelper.FilterPlainLiteralsByLanguageTag(this.Names);
 
             }
             return this;
