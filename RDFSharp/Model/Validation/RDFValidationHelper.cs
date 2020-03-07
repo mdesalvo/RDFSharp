@@ -134,7 +134,8 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Checks if the given language tag is used at least N times within the given collection of literals
+        /// Checks if the given language tag is used at least N times within the given collection of literals.<br/>
+        /// This also subsumes language tags hierarchy (e.g: "EN-US" is counted even if collection contains "EN").
         /// </summary>
         internal static Boolean CheckLanguageTagInUse(List<RDFLiteral> literals, 
                                                       String langTag,
