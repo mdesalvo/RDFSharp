@@ -140,8 +140,16 @@ namespace RDFSharp.Model
         internal static Boolean CheckLanguageTagInUse(List<RDFLiteral> literals, 
                                                       String langTag,
                                                       Int32 minOccurrences = 0) {
-            return literals.OfType<RDFPlainLiteral>()
-                           .Count(plit => langTag.StartsWith(plit.Language, StringComparison.OrdinalIgnoreCase)) > minOccurrences;
+            //PlainLiteral
+            if (String.IsNullOrEmpty(langTag))
+                return literals.OfType<RDFPlainLiteral>()
+                               .Count(plit => String.IsNullOrEmpty(plit.Language)) > minOccurrences;
+
+            //LanguagedLiteral
+            else
+                return literals.OfType<RDFPlainLiteral>()
+                               .Count(plit => !String.IsNullOrEmpty(plit.Language) 
+                                                && langTag.StartsWith(plit.Language, StringComparison.OrdinalIgnoreCase)) > minOccurrences;
         }
         #endregion
 
