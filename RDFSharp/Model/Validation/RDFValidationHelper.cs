@@ -134,12 +134,13 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Checks if the given language tag is used within the given collection of literals
+        /// Checks if the given language tag is used at least N times within the given collection of literals
         /// </summary>
         internal static Boolean CheckLanguageTagInUse(List<RDFLiteral> literals, 
-                                                      String languageTag) {
-            return literals.Any(lit => lit is RDFPlainLiteral
-                                            && ((RDFPlainLiteral)lit).Language.Equals(languageTag, StringComparison.OrdinalIgnoreCase));
+                                                      String languageTag,
+                                                      Int32 minOccurrences = 0) {
+            return literals.Count(lit => lit is RDFPlainLiteral
+                                            && ((RDFPlainLiteral)lit).Language.Equals(languageTag, StringComparison.OrdinalIgnoreCase)) > minOccurrences;
         }
         #endregion
 
