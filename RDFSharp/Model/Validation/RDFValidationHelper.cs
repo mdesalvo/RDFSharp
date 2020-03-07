@@ -132,36 +132,6 @@ namespace RDFSharp.Model
             }
             return result;
         }
-
-        /// <summary>
-        /// Checks if the given language tag is used at least N times within the given collection of literals.
-        /// </summary>
-        internal static Boolean CheckLanguageTagInUse(List<RDFLiteral> literals, 
-                                                      String languageTag,
-                                                      Int32 minOccurrences = 0) {
-            //PlainLiteral
-            if (String.IsNullOrEmpty(languageTag))
-                return literals.OfType<RDFPlainLiteral>()
-                               .Count(plit => String.IsNullOrEmpty(plit.Language)) > minOccurrences;
-
-            //LanguagedLiteral
-            else
-                return literals.OfType<RDFPlainLiteral>()
-                               .Where(plit => !String.IsNullOrEmpty(plit.Language))
-                               .Count(plit => languageTag.StartsWith(plit.Language, StringComparison.OrdinalIgnoreCase)) > minOccurrences;
-        }
-
-        /// <summary>
-        /// Removes the literals which have a language tag subsumed by another literal's language tag (e.g: "EN-US" subsumed by "EN")
-        /// </summary>
-        internal static void FilterPlainLiteralsByLanguageTag(List<RDFLiteral> literals) {
-            literals.RemoveAll(lit1 => lit1 is RDFPlainLiteral plit1 
-                                         && !String.IsNullOrEmpty(plit1.Language)
-                                           && literals.Any(lit2 => lit2 is RDFPlainLiteral plit2 
-                                                                     && !String.IsNullOrEmpty(plit2.Language) 
-                                                                       && !plit1.Equals(plit2) 
-                                                                         && plit1.Language.StartsWith(plit2.Language)));
-        }
         #endregion
 
         #region Conversion

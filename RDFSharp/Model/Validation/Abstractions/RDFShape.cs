@@ -158,23 +158,14 @@ namespace RDFSharp.Model
         public RDFShape AddMessage(RDFLiteral message) {
             if (message != null) {
  
-                //Plain Literal (only one occurrence per language tag is allowed)
-                if (message is RDFPlainLiteral) {
-                    string languageTag = ((RDFPlainLiteral)message).Language;
-                    if (!RDFValidationHelper.CheckLanguageTagInUse(this.Messages, languageTag)) { 
+                //Plain Literal
+                if (message is RDFPlainLiteral)
                         this.Messages.Add(message);
-                    }
-                }
 
-                //Typed Literal (only xsd:String datatype is allowed)
-                else {
-                    if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) { 
+                //Typed Literal
+                else
+                    if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
                         this.Messages.Add(message);
-                    }
-                }
-
-                //Adjust semantics of language tags
-                RDFValidationHelper.FilterPlainLiteralsByLanguageTag(this.Messages);
 
             }
             return this;

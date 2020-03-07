@@ -47,32 +47,29 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-
-            //Only property shapes are allowed to use uniqueLang constraint
-            if (this.UniqueLang && validationContext.Shape is RDFPropertyShape) {
+            if (this.UniqueLang) {
                 switch (validationContext.ValueNode) {
 
-                    //Resource/TypedLiteral
-                    case RDFResource valueNodeResource:
-                    case RDFTypedLiteral valueNodeTypedLiteral:
-                        break;
-
                     //PlainLiteral
-                    case RDFPlainLiteral plainLiteralValueNode:
-                        if (!String.IsNullOrEmpty(plainLiteralValueNode.Language)) {
-                            List<RDFLiteral> plainLiteralValueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral && !String.IsNullOrEmpty(((RDFPlainLiteral)vn).Language))
-                                                                                                  .OfType<RDFLiteral>()
-                                                                                                  .ToList();
-                            if (RDFValidationHelper.CheckLanguageTagInUse(plainLiteralValueNodes, plainLiteralValueNode.Language, 1))
+                    case RDFPlainLiteral plValueNode:
+                        if (!String.IsNullOrEmpty(plValueNode.Language)) {
+                            List<RDFPlainLiteral> plValueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral && !String.IsNullOrEmpty(((RDFPlainLiteral)vn).Language))
+                                                                                             .OfType<RDFPlainLiteral>()
+                                                                                             .ToList();
+                            if (plValueNodes.Count(plit => plValueNode.Language.StartsWith(plit.Language, StringComparison.OrdinalIgnoreCase)) > 1)
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
                                                                          validationContext.FocusNode,
-                                                                         ((RDFPropertyShape)validationContext.Shape).Path,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
                                                                          validationContext.ValueNode,
                                                                          validationContext.Shape.Messages,
                                                                          new RDFResource(),
                                                                          validationContext.Shape.Severity));
                         }
+                        break;
+
+                    //Resource/TypedLiteral
+                    default:
                         break;
 
                 }

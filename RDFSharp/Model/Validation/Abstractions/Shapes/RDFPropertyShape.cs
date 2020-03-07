@@ -79,23 +79,14 @@ namespace RDFSharp.Model
         public RDFPropertyShape AddDescription(RDFLiteral description) {
             if (description != null) {
 
-                //Plain Literal (only one occurrence per language tag is allowed)
-                if (description is RDFPlainLiteral) {
-                    string languageTag = ((RDFPlainLiteral)description).Language;
-                    if (!RDFValidationHelper.CheckLanguageTagInUse(this.Descriptions, languageTag)) {
+                //Plain Literal
+                if (description is RDFPlainLiteral)
                         this.Descriptions.Add(description);
-                    }
-                }
 
-                //Typed Literal (only xsd:String datatype is allowed)
-                else {
-                    if (((RDFTypedLiteral)description).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) {
+                //Typed Literal
+                else
+                    if (((RDFTypedLiteral)description).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
                         this.Descriptions.Add(description);
-                    }
-                }
-
-                //Adjust semantics of language tags
-                RDFValidationHelper.FilterPlainLiteralsByLanguageTag(this.Descriptions);
 
             }
             return this;
@@ -107,23 +98,14 @@ namespace RDFSharp.Model
         public RDFPropertyShape AddName(RDFLiteral name) {
             if (name != null) {
 
-                //Plain Literal (only one occurrence per language tag is allowed)
-                if (name is RDFPlainLiteral) {
-                    string languageTag = ((RDFPlainLiteral)name).Language;
-                    if (!RDFValidationHelper.CheckLanguageTagInUse(this.Names, languageTag)) {
-                        this.Names.Add(name);
-                    }
-                }
+                //Plain Literal
+                if (name is RDFPlainLiteral)
+                    this.Names.Add(name);
 
-                //Typed Literal (only xsd:String datatype is allowed)
-                else {
-                    if (((RDFTypedLiteral)name).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) {
+                //Typed Literal
+                else
+                    if (((RDFTypedLiteral)name).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
                         this.Names.Add(name);
-                    }
-                }
-
-                //Adjust semantics of language tags
-                RDFValidationHelper.FilterPlainLiteralsByLanguageTag(this.Names);
 
             }
             return this;
