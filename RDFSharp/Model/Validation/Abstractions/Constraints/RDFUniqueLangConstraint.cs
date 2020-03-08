@@ -52,9 +52,8 @@ namespace RDFSharp.Model
                 #region Evaluate
 
                 //Consider only values nodes which are languaged plain literals
-                List<RDFPlainLiteral> valueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral 
-                                                                                              && !String.IsNullOrEmpty(((RDFPlainLiteral)vn).Language))
-                                                                               .OfType<RDFPlainLiteral>()
+                List<RDFPlainLiteral> valueNodes = validationContext.ValueNodes.OfType<RDFPlainLiteral>()
+                                                                               .Where(vn => !String.IsNullOrEmpty(vn.Language))                                                                               
                                                                                .ToList();
                 valueNodes.ForEach(valueNode => {
 
