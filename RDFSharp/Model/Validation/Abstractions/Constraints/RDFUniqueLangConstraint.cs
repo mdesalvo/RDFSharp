@@ -55,21 +55,28 @@ namespace RDFSharp.Model
                 List<RDFPlainLiteral> valueNodes = validationContext.ValueNodes.OfType<RDFPlainLiteral>()
                                                                                .Where(vn => !String.IsNullOrEmpty(vn.Language))                                                                               
                                                                                .ToList();
+                HashSet<String> languages = new HashSet<String>();
                 valueNodes.ForEach(valueNode => {
 
                     //Set current value node
                     validationContext.ValueNode = valueNode;
 
                     //Evaluate current value node
-                    if (valueNodes.Count(vn => vn.Language.Equals(valueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1)
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
-                                                                 validationContext.FocusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 validationContext.ValueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 new RDFResource(),
-                                                                 validationContext.Shape.Severity));
+                    if (valueNodes.Count(vn => vn.Language.Equals(valueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1) { 
+                        if (languages.Contains(valueNode.Language)) {
+                            report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                     RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
+                                                                     validationContext.FocusNode,
+                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                     validationContext.ValueNode,
+                                                                     validationContext.Shape.Messages,
+                                                                     new RDFResource(),
+                                                                     validationContext.Shape.Severity));
+                        }
+                        else {
+                            languages.Add(valueNode.Language);
+                        }
+                    }
 
                 });
 
