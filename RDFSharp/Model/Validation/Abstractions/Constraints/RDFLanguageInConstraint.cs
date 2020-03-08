@@ -57,55 +57,66 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            switch (validationContext.ValueNode) {
+            validationContext.ValueNodes.ForEach(valueNode => {
 
-                //Resource/TypedLiteral
-                case RDFResource valueNodeResource:
-                case RDFTypedLiteral valueNodeTypedLiteral:
-                    report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                             RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                             validationContext.FocusNode,
-                                                             validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                             validationContext.ValueNode,
-                                                             validationContext.Shape.Messages,
-                                                             new RDFResource(),
-                                                             validationContext.Shape.Severity));
-                    break;
+                #region Evaluate
 
-                //PlainLiteral
-                case RDFPlainLiteral valueNodePlainLiteral:
-                    using (DataTable table = new DataTable(this.ToString())) {
+                //Set current value node
+                validationContext.ValueNode = valueNode;
 
-                        //Create langMatches table
-                        RDFQueryEngine.AddColumn(table, "?valueNode");
-                        RDFQueryEngine.AddRow(table, new Dictionary<string, string>() {
-                            { "?valueNode", valueNodePlainLiteral.ToString() }
-                        });
+                //Evaluate current value node
+                switch (validationContext.ValueNode) {
 
-                        //Execute langMatches filter
-                        bool langMatches = false;
-                        var languageTagsEnumerator = this.LanguageTags.GetEnumerator();
-                        while (languageTagsEnumerator.MoveNext() && !langMatches) {
-                            RDFLangMatchesFilter langMatchesFilter = new RDFLangMatchesFilter(new RDFVariable("valueNode"), languageTagsEnumerator.Current);
-                            if (langMatchesFilter.ApplyFilter(table.Rows[0], false)) 
-                                langMatches = true;
+                    //PlainLiteral
+                    case RDFPlainLiteral valueNodePlainLiteral:
+                        using (DataTable table = new DataTable(this.ToString())) {
+
+                            //Create langMatches table
+                            RDFQueryEngine.AddColumn(table, "?valueNode");
+                            RDFQueryEngine.AddRow(table, new Dictionary<string, string>() {
+                                { "?valueNode", valueNodePlainLiteral.ToString() }
+                            });
+
+                            //Execute langMatches filter
+                            bool langMatches = false;
+                            var langTagsEnumerator = this.LanguageTags.GetEnumerator();
+                            while (langTagsEnumerator.MoveNext() && !langMatches) {
+                                RDFLangMatchesFilter langMatchesFilter = new RDFLangMatchesFilter(new RDFVariable("valueNode"), langTagsEnumerator.Current);
+                                if (langMatchesFilter.ApplyFilter(table.Rows[0], false))
+                                    langMatches = true;
+                            }
+
+                            //Report langMatches violation
+                            if (!langMatches) {
+                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                         RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
+                                                                         validationContext.FocusNode,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         validationContext.ValueNode,
+                                                                         validationContext.Shape.Messages,
+                                                                         new RDFResource(),
+                                                                         validationContext.Shape.Severity));
+                            }
                         }
+                        break;
 
-                        //Report langMatches violation
-                        if (!langMatches) { 
-                            report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
-                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                     validationContext.ValueNode,
-                                                                     validationContext.Shape.Messages,
-                                                                     new RDFResource(),
-                                                                     validationContext.Shape.Severity));
-                        }
-                    }
-                    break;
+                    //Resource/TypedLiteral
+                    default:
+                        report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                 RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
+                                                                 validationContext.FocusNode,
+                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                 validationContext.ValueNode,
+                                                                 validationContext.Shape.Messages,
+                                                                 new RDFResource(),
+                                                                 validationContext.Shape.Severity));
+                        break;
 
-            }
+                }
+
+                #endregion
+
+            });
             return report;
         }
 

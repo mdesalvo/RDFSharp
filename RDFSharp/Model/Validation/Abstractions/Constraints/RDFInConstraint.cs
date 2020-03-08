@@ -78,17 +78,27 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
+            validationContext.ValueNodes.ForEach(valueNode => {
 
-            if (!this.InValues.Any(v => v.Value.Equals(validationContext.ValueNode)))
-                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                         RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
-                                                         validationContext.FocusNode,
-                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                         validationContext.ValueNode,
-                                                         validationContext.Shape.Messages,
-                                                         new RDFResource(),
-                                                         validationContext.Shape.Severity));
+                #region Evaluate
 
+                //Set current value node
+                validationContext.ValueNode = valueNode;
+
+                //Evaluate current value node
+                if (!this.InValues.Any(v => v.Value.Equals(validationContext.ValueNode)))
+                    report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                             RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
+                                                             validationContext.FocusNode,
+                                                             validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                             validationContext.ValueNode,
+                                                             validationContext.Shape.Messages,
+                                                             new RDFResource(),
+                                                             validationContext.Shape.Severity));
+
+                #endregion
+
+            });
             return report;
         }
 

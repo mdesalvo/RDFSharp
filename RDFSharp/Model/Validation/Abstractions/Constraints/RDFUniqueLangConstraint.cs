@@ -48,31 +48,41 @@ namespace RDFSharp.Model
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (this.UniqueLang) {
-                switch (validationContext.ValueNode) {
+                validationContext.ValueNodes.ForEach(valueNode => {
 
-                    //PlainLiteral
-                    case RDFPlainLiteral plValueNode:
-                        //Only plain literals with language tag are subject to this constraint
-                        if (!String.IsNullOrEmpty(plValueNode.Language)) {
-                            IEnumerable<RDFPlainLiteral> plValueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral plitVN && !String.IsNullOrEmpty(plitVN.Language))
-                                                                                                    .OfType<RDFPlainLiteral>();
-                            if (plValueNodes.Count(vn => vn.Language.Equals(plValueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1)
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                         RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
-                                                                         validationContext.FocusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         validationContext.ValueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         new RDFResource(),
-                                                                         validationContext.Shape.Severity));
-                        }
-                        break;
+                    #region Evaluate
 
-                    //Resource/TypedLiteral
-                    default:
-                        break;
+                    //Set current value node
+                    validationContext.ValueNode = valueNode;
 
-                }
+                    //Evaluate current value node
+                    switch (validationContext.ValueNode) {
+
+                        //PlainLiteral
+                        case RDFPlainLiteral plValueNode:
+                            if (!String.IsNullOrEmpty(plValueNode.Language)) {
+                                IEnumerable<RDFPlainLiteral> plValueNodes = validationContext.ValueNodes.Where(vn => vn is RDFPlainLiteral plitVN && !String.IsNullOrEmpty(plitVN.Language)).OfType<RDFPlainLiteral>();
+                                if (plValueNodes.Count(vn => vn.Language.Equals(plValueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1)
+                                    report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                             RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
+                                                                             validationContext.FocusNode,
+                                                                             validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                             validationContext.ValueNode,
+                                                                             validationContext.Shape.Messages,
+                                                                             new RDFResource(),
+                                                                             validationContext.Shape.Severity));
+                            }
+                            break;
+
+                        //Resource/TypedLiteral
+                        default:
+                            break;
+
+                    }
+
+                    #endregion
+
+                });
             }
             return report;
         }
