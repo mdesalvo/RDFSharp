@@ -43,17 +43,46 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (validationContext.ValueNodes.Count > this.MaxCount) {
-                validationContext.ValueNode = new RDFTypedLiteral(validationContext.ValueNodes.Count.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                         RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
-                                                         validationContext.FocusNode,
-                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                         validationContext.ValueNode, //In this constraint, we signal as valueNode the detected count
-                                                         validationContext.Shape.Messages,
-                                                         new RDFResource(),
-                                                         validationContext.Shape.Severity));
+
+            #region Evaluation
+
+            //Evaluate current shape
+            switch (validationContext.Shape) {
+
+                //NodeShape
+                case RDFNodeShape nodeShape:
+                    if (validationContext.FocusNodes.Count > this.MaxCount) {
+                        validationContext.ValueNode = new RDFTypedLiteral(validationContext.FocusNodes.Count.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                 RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
+                                                                 validationContext.FocusNode,
+                                                                 null,
+                                                                 validationContext.ValueNode,
+                                                                 validationContext.Shape.Messages,
+                                                                 new RDFResource(),
+                                                                 validationContext.Shape.Severity));
+                    }
+                    break;
+
+                //PropertyShape
+                case RDFPropertyShape propertyShape:
+                    if (validationContext.ValueNodes.Count > this.MaxCount) {
+                        validationContext.ValueNode = new RDFTypedLiteral(validationContext.ValueNodes.Count.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                        report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                 RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
+                                                                 validationContext.FocusNode,
+                                                                 ((RDFPropertyShape)validationContext.Shape).Path,
+                                                                 validationContext.ValueNode,
+                                                                 validationContext.Shape.Messages,
+                                                                 new RDFResource(),
+                                                                 validationContext.Shape.Severity));
+                    }
+                    break;
+
             }
+
+            #endregion
+
             return report;
         }
 
