@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Query;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -69,34 +70,32 @@ namespace RDFSharp.Model
 
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
-                        using (DataTable table = new DataTable(this.ToString())) {
+                        bool langMatches = false;
+                        var langTagsEnumerator = this.LanguageTags.GetEnumerator();
+                        while (langTagsEnumerator.MoveNext() && !langMatches) {
 
-                            //Create langMatches table
-                            RDFQueryEngine.AddColumn(table, "?valueNode");
-                            RDFQueryEngine.AddRow(table, new Dictionary<string, string>() {
-                                { "?valueNode", valueNodePlainLiteral.ToString() }
-                            });
+                            //NO language is found in the variable
+                            if (langTagsEnumerator.Current == String.Empty) 
+                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
-                            //Execute langMatches filter
-                            bool langMatches = false;
-                            var langTagsEnumerator = this.LanguageTags.GetEnumerator();
-                            while (langTagsEnumerator.MoveNext() && !langMatches) {
-                                RDFLangMatchesFilter langMatchesFilter = new RDFLangMatchesFilter(new RDFVariable("valueNode"), langTagsEnumerator.Current);
-                                if (langMatchesFilter.ApplyFilter(table.Rows[0], false))
-                                    langMatches = true;
-                            }
+                            //ANY language is found in the variable
+                            else if (langTagsEnumerator.Current == "*") 
+                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
-                            //Report langMatches violation
-                            if (!langMatches) {
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                         RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                         validationContext.FocusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         validationContext.ValueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         new RDFResource(),
-                                                                         validationContext.Shape.Severity));
-                            }
+                            //GIVEN language is found in the variable
+                            else
+                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@" + langTagsEnumerator.Current + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+
+                        }
+                        if (!langMatches) {
+                            report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                     RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
+                                                                     validationContext.FocusNode,
+                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                     validationContext.ValueNode,
+                                                                     validationContext.Shape.Messages,
+                                                                     new RDFResource(),
+                                                                     validationContext.Shape.Severity));
                         }
                         break;
 
