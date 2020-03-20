@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -48,14 +48,28 @@ namespace RDFSharp.Query
         {
             if (leftFilter != null)
             {
-                if (rightFilter != null)
+                if (leftFilter is RDFExistsFilter)
                 {
-                    this.LeftFilter = leftFilter;
-                    this.RightFilter = rightFilter;
+                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
                 }
                 else
                 {
-                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
+                    if (rightFilter != null)
+                    {
+                        if (rightFilter is RDFExistsFilter)
+                        {
+                            throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                        }
+                        else
+                        {
+                            this.LeftFilter = leftFilter;
+                            this.RightFilter = rightFilter;
+                        }
+                    }
+                    else
+                    {
+                        throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
+                    }
                 }
             }
             else

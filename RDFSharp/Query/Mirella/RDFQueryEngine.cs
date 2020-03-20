@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using RDFSharp.Model;
-using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -68,6 +68,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            selectQuery.InjectValues(selectQuery.GetValues());
+
             RDFSelectQueryResult queryResult = new RDFSelectQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -75,13 +78,20 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
                         RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm => 
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
@@ -92,7 +102,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -112,7 +122,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -136,20 +146,21 @@ namespace RDFSharp.Query
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                             //Populate its metadata (IsOptional)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                            {
+                            { 
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
                             }
                             else
-                            {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                            { 
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                            {
+                            { 
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
                             }
                             else
-                            {
+                            { 
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
                             }
                         }
@@ -178,6 +189,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            describeQuery.InjectValues(describeQuery.GetValues());
+
             RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult(this.ToString());
             List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -185,13 +199,20 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
                         RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
@@ -202,7 +223,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -222,7 +243,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -251,7 +272,8 @@ namespace RDFSharp.Query
                             }
                             else
                             {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -338,6 +360,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            constructQuery.InjectValues(constructQuery.GetValues());
+
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
             List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -345,13 +370,20 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
                         RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
@@ -362,7 +394,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -382,7 +414,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -411,7 +443,8 @@ namespace RDFSharp.Query
                             }
                             else
                             {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -451,6 +484,9 @@ namespace RDFSharp.Query
         {
             RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
+            //Inject SPARQL values within every evaluable member
+            askQuery.InjectValues(askQuery.GetValues());
+
             RDFAskQueryResult askResult = new RDFAskQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
@@ -458,13 +494,20 @@ namespace RDFSharp.Query
 
                 //Iterate the evaluable members of the query
                 var fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-                foreach (var evaluableQueryMember in evaluableQueryMembers)
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
                         RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
 
                         //Step 1: Get the intermediate result tables of the current pattern group
                         if (datasource.IsFederation())
@@ -475,7 +518,7 @@ namespace RDFSharp.Query
                             {
 
                                 //Step FED.1: Evaluate the current pattern group on the current store
-                                EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, store);
+                                EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, store, true);
 
                                 //Step FED.2: Federate the results of the current pattern group on the current store
                                 if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
@@ -495,7 +538,7 @@ namespace RDFSharp.Query
                         }
                         else
                         {
-                            EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, datasource);
+                            EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
                         }
 
                         //Step 2: Get the result table of the current pattern group
@@ -524,7 +567,8 @@ namespace RDFSharp.Query
                             }
                             else
                             {
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional;
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -556,24 +600,26 @@ namespace RDFSharp.Query
         /// <summary>
         /// Get the intermediate result tables of the given pattern group
         /// </summary>
-        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore)
+        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource graphOrStore, Boolean withinFederation)
         {
             QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
             //Iterate the evaluable members of the pattern group
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
-            foreach (var evaluablePGMember in evaluablePGMembers)
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
+                                                                         .Distinct()
+                                                                         .ToList();
+            foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
             {
 
                 #region Pattern
                 if (evaluablePGMember is RDFPattern)
                 {
-                    var patternResultsTable = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)evaluablePGMember, (RDFGraph)graphOrStore) :
-                                                                       ApplyPattern((RDFPattern)evaluablePGMember, (RDFStore)graphOrStore);
+                    DataTable patternResultsTable = graphOrStore.IsGraph() ? ApplyPattern((RDFPattern)evaluablePGMember, (RDFGraph)graphOrStore) :
+                                                                             ApplyPattern((RDFPattern)evaluablePGMember, (RDFStore)graphOrStore);
 
                     #region Events
                     //Raise query event messages
-                    var eventMsg = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, graphOrStore, patternResultsTable.Rows.Count);
+                    String eventMsg = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, graphOrStore, patternResultsTable.Rows.Count);
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -597,11 +643,11 @@ namespace RDFSharp.Query
                 #region PropertyPath
                 else if (evaluablePGMember is RDFPropertyPath)
                 {
-                    var pPathResultsTable = ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, graphOrStore);
+                    DataTable pPathResultsTable = ApplyPropertyPath((RDFPropertyPath)evaluablePGMember, graphOrStore);
 
                     #region Events
                     //Raise query event messages
-                    var eventMsg = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, graphOrStore, pPathResultsTable.Rows.Count));
+                    String eventMsg = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, graphOrStore, pPathResultsTable.Rows.Count));
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -620,6 +666,49 @@ namespace RDFSharp.Query
                 }
                 #endregion
 
+                #region Values
+                else if (evaluablePGMember is RDFValues)
+                {
+                    DataTable valuesResultsTable = ((RDFValues)evaluablePGMember).GetDataTable();
+
+                    //Save result datatable
+                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesResultsTable);
+
+                    //Inject SPARQL values filter
+                    patternGroup.AddFilter(((RDFValues)evaluablePGMember).GetValuesFilter());
+                }
+                #endregion
+
+                #region Filter
+                else if (evaluablePGMember is RDFFilter)
+                {
+
+                    #region ExistsFilter
+                    if (evaluablePGMember is RDFExistsFilter)
+                    {
+                        DataTable existsFilterResultsTable = graphOrStore.IsGraph() ? ApplyPattern(((RDFExistsFilter)evaluablePGMember).Pattern, (RDFGraph)graphOrStore) :
+                                                                                      ApplyPattern(((RDFExistsFilter)evaluablePGMember).Pattern, (RDFStore)graphOrStore);
+
+                        //Set name and metadata of result datatable
+                        existsFilterResultsTable.TableName = ((RDFExistsFilter)evaluablePGMember).Pattern.ToString();
+                        existsFilterResultsTable.ExtendedProperties.Add("IsOptional",  false);
+                        existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
+
+                        //Initialize result datatable if needed
+                        if (((RDFExistsFilter)evaluablePGMember).PatternResults == null)
+                            ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable.Clone();
+
+                        //Assign result datatable (federation merges data)
+                        if (withinFederation)
+                            ((RDFExistsFilter)evaluablePGMember).PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
+                        else
+                            ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
+                    }
+                    #endregion
+
+                }
+                #endregion
+
             }
         }
 
@@ -633,7 +722,7 @@ namespace RDFSharp.Query
             {
 
                 //Populate query member result table
-                var queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
+                DataTable queryMemberFinalResultTable = CombineTables(QueryMemberTemporaryResultTables[patternGroup.QueryMemberID], false);
 
                 //Add it to the list of query member result tables
                 QueryMemberFinalResultTables.Add(patternGroup.QueryMemberID, queryMemberFinalResultTable);
@@ -647,7 +736,8 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional;
+                    QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional
+                                                                                                                    || (Boolean)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
                 }
                 //Populate its metadata (JoinAsUnion)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -1142,10 +1232,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPattern(RDFPattern pattern, RDFGraph graph)
         {
-            var matchingTriples = new List<RDFTriple>();
-            var resultTable = new DataTable();
+            List<RDFTriple> matchingTriples = new List<RDFTriple>();
+            DataTable resultTable = new DataTable();
 
-            //Apply the right pattern to the graph
+            //SPO pattern
             if (pattern.Subject is RDFResource)
             {
                 if (pattern.Predicate is RDFResource)
@@ -1268,6 +1358,7 @@ namespace RDFSharp.Query
                     }
                 }
             }
+
             return resultTable;
         }
 
@@ -1757,19 +1848,19 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource graphOrStore)
         {
-            var resultTable = new DataTable();
+            DataTable resultTable = new DataTable();
 
             //Translate property path into equivalent list of patterns
-            var patternList = propertyPath.GetPatternList();
+            List<RDFPattern> patternList = propertyPath.GetPatternList();
 
             //Evaluate produced list of patterns
-            var patternTables = new List<DataTable>();
+            List<DataTable> patternTables = new List<DataTable>();
             patternList.ForEach(pattern =>
             {
 
                 //Apply pattern to graph
-                var patternTable = graphOrStore is RDFGraph ? ApplyPattern(pattern, (RDFGraph)graphOrStore) :
-                                                              ApplyPattern(pattern, (RDFStore)graphOrStore);
+                DataTable patternTable = graphOrStore is RDFGraph ? ApplyPattern(pattern, (RDFGraph)graphOrStore) :
+                                                                    ApplyPattern(pattern, (RDFStore)graphOrStore);
 
                 //Set extended properties
                 patternTable.ExtendedProperties.Add("IsOptional", pattern.IsOptional);
@@ -1784,7 +1875,7 @@ namespace RDFSharp.Query
             resultTable = CombineTables(patternTables, false);
 
             //Remove property path variables
-            var propPathCols = new List<DataColumn>();
+            List<DataColumn> propPathCols = new List<DataColumn>();
             foreach (DataColumn dtCol in resultTable.Columns)
             {
                 if (dtCol.ColumnName.StartsWith("?__PP"))
@@ -2364,7 +2455,6 @@ namespace RDFSharp.Query
         {
             DataTable finalTable = new DataTable();
             Boolean switchToOuterJoin = false;
-
             if (dataTables.Count > 0)
             {
 

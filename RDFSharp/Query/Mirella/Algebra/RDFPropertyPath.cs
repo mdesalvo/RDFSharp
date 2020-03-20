@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -39,6 +38,11 @@ namespace RDFSharp.Query
         /// Steps of the path
         /// </summary>
         internal List<RDFPropertyPathStep> Steps { get; set; }
+
+        /// <summary>
+        /// Depth of the path
+        /// </summary>
+        internal Int32 Depth { get; set; }
 
         /// <summary>
         /// End of the path
@@ -73,6 +77,9 @@ namespace RDFSharp.Query
             //Steps
             this.Steps = new List<RDFPropertyPathStep>();
 
+            //Depth
+            this.Depth = 0;
+
             //End
             if (end != null)
             {
@@ -99,7 +106,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintPropertyPath(this, new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            return RDFQueryPrinter.PrintPropertyPath(this, prefixes);
         }
         #endregion
 
@@ -111,6 +122,16 @@ namespace RDFSharp.Query
         {
             if (alternativeSteps != null && alternativeSteps.Any())
             {
+                #region Depth Guard
+                if (this.Steps.Count == 0 
+                        || alternativeSteps.Count == 1
+                            || this.Steps.LastOrDefault()?.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence)
+                {
+                    this.Depth++;
+                }
+                #endregion
+
+                #region Steps Update
                 if (alternativeSteps.Count == 1)
                 {
                     this.Steps.Add(alternativeSteps[0].SetOrdinal(this.Steps.Count)
@@ -124,7 +145,19 @@ namespace RDFSharp.Query
                                                       .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
                     });
                 }
-                this.IsEvaluable = true;
+                #endregion
+
+                #region Evaluability Guard
+                if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
+                {
+                    this.IsEvaluable = true;
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: non-ground property path detected, evaluability granted or confirmed.");
+                }   
+                else
+                { 
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: ground property path detected, evaluability not granted.");
+                }
+                #endregion
             }
             return this;
         }
@@ -136,9 +169,23 @@ namespace RDFSharp.Query
         {
             if (sequenceStep != null)
             {
+                #region Steps Update
+                this.Depth++;
                 this.Steps.Add(sequenceStep.SetOrdinal(this.Steps.Count)
                                            .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
-                this.IsEvaluable = true;
+                #endregion
+
+                #region Evaluability Guard
+                if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
+                {
+                    this.IsEvaluable = true;
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: non-ground property path detected, evaluability granted or confirmed.");
+                }   
+                else
+                { 
+                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted.");
+                }
+                #endregion
             }
             return this;
         }
@@ -148,7 +195,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal List<RDFPattern> GetPatternList()
         {
-            var patterns = new List<RDFPattern>();
+            List<RDFPattern> patterns = new List<RDFPattern>();
 
             #region Single Property
             if (this.Steps.Count == 1)

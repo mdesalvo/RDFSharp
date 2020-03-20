@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,19 +14,19 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using RDFSharp.Model;
-using RDFSharp.Query;
 
 namespace RDFSharp.Store
 {
 
     /// <summary>
-    /// RDFStore represents an abstract RDF store, baseline for Memory or SQL-based implementations.
+    /// RDFStore represents an abstract store in the RDF model.
     /// </summary>
     public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     {
@@ -105,6 +105,77 @@ namespace RDFSharp.Store
         /// Removes the quadruples with the given literal as object
         /// </summary>
         public abstract RDFStore RemoveQuadruplesByLiteral(RDFLiteral objectLiteral);
+
+        /// <summary>
+        /// Removes the quadruples with the given context and subject
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextSubject(RDFContext contextResource, RDFResource subjectResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given context and predicate
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextPredicate(RDFContext contextResource, RDFResource predicateResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given context and object
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextObject(RDFContext contextResource, RDFResource objectResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given context and literal
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextLiteral(RDFContext contextResource, RDFLiteral objectLiteral);
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and predicate
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextSubjectPredicate(RDFContext contextResource, RDFResource subjectResource, RDFResource predicateResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and object
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextSubjectObject(RDFContext contextResource, RDFResource subjectResource, RDFResource objectResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given context, subject and literal
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextSubjectLiteral(RDFContext contextResource, RDFResource subjectResource, RDFLiteral objectLiteral);
+
+        /// <summary>
+        /// Removes the quadruples with the given context, predicate and object
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextPredicateObject(RDFContext contextResource, RDFResource predicateResource, RDFResource objectResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given context, predicate and literal
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByContextPredicateLiteral(RDFContext contextResource, RDFResource predicateResource, RDFLiteral objectLiteral);
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and predicate
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesBySubjectPredicate(RDFResource subjectResource, RDFResource predicateResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and object
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given subject and literal
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesBySubjectLiteral(RDFResource subjectResource, RDFLiteral objectLiteral);
+
+        /// <summary>
+        /// Removes the quadruples with the given predicate and object
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource);
+
+        /// <summary>
+        /// Removes the quadruples with the given predicate and literal
+        /// </summary>
+        public abstract RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral);
+
 
         /// <summary>
         /// Clears the quadruples of the store

@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -106,7 +105,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintPatternGroup(this, 0, false, new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            return RDFQueryPrinter.PrintPatternGroup(this, 0, false, prefixes);
         }
         #endregion
 
@@ -180,6 +183,21 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given SPARQL values to the pattern group
+        /// </summary>
+        public RDFPatternGroup AddValues(RDFValues values)
+        {
+            if (values != null)
+            {
+                if (!this.GetValues().Any(v => v.Equals(values)))
+                {
+                    this.GroupMembers.Add(values);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Adds the given filter to the pattern group
         /// </summary>
         public RDFPatternGroup AddFilter(RDFFilter filter)
@@ -229,6 +247,33 @@ namespace RDFSharp.Query
         {
             return this.GroupMembers.Where(g => g is RDFPropertyPath)
                                     .OfType<RDFPropertyPath>();
+        }
+
+        /// <summary>
+        /// Gets the group members of type: values
+        /// </summary>
+        internal IEnumerable<RDFValues> GetValues()
+        {
+            return this.GroupMembers.Where(g => g is RDFValues)
+                                    .OfType<RDFValues>();
+        }
+
+        /// <summary>
+        /// Adds the given injected SPARQL values to the pattern group
+        /// </summary>
+        internal RDFPatternGroup AddInjectedValues(RDFValues values)
+        {
+            if (values != null)
+            {
+                //Clone the SPARQL values and set as injected
+                RDFValues clonedValues = new RDFValues();
+                clonedValues.Bindings = values.Bindings;
+                clonedValues.IsEvaluable = values.IsEvaluable;
+                clonedValues.IsInjected = true;
+
+                this.AddValues(clonedValues);
+            }
+            return this;
         }
 
         /// <summary>

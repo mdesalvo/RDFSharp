@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -43,7 +43,14 @@ namespace RDFSharp.Query
         {
             if (filter != null)
             {
-                this.Filter = filter;
+                if (filter is RDFExistsFilter)
+                {
+                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
+                }
+                else
+                {
+                    this.Filter = filter;
+                }
             }
             else
             {

@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
@@ -236,11 +236,11 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Removes the triples with the given (non-blank) predicate
+        /// Removes the triples with the given predicate
         /// </summary>
         public RDFGraph RemoveTriplesByPredicate(RDFResource predicateResource)
         {
-            if (predicateResource != null && !predicateResource.IsBlank)
+            if (predicateResource != null)
             {
                 foreach (var triple in this.SelectTriplesByPredicate(predicateResource))
                 {
@@ -283,6 +283,111 @@ namespace RDFSharp.Model
             if (objectLiteral != null)
             {
                 foreach (var triple in this.SelectTriplesByLiteral(objectLiteral))
+                {
+                    //Remove triple
+                    this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
+                    //Raise event
+                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the triples with the given subject and predicate
+        /// </summary>
+        public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subjectResource, RDFResource predicateResource)
+        {
+            if (subjectResource != null && predicateResource != null)
+            {
+                foreach (var triple in this.SelectTriplesBySubject(subjectResource)
+                                           .SelectTriplesByPredicate(predicateResource))
+                {
+                    //Remove triple
+                    this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
+                    //Raise event
+                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the triples with the given subject and object
+        /// </summary>
+        public RDFGraph RemoveTriplesBySubjectObject(RDFResource subjectResource, RDFResource objectResource)
+        {
+            if (subjectResource != null && objectResource != null)
+            {
+                foreach (var triple in this.SelectTriplesBySubject(subjectResource)
+                                           .SelectTriplesByObject(objectResource))
+                {
+                    //Remove triple
+                    this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
+                    //Raise event
+                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the triples with the given subject and literal
+        /// </summary>
+        public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subjectResource, RDFLiteral objectLiteral)
+        {
+            if (subjectResource != null && objectLiteral != null)
+            {
+                foreach (var triple in this.SelectTriplesBySubject(subjectResource)
+                                           .SelectTriplesByLiteral(objectLiteral))
+                {
+                    //Remove triple
+                    this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
+                    //Raise event
+                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the triples with the given predicate and object
+        /// </summary>
+        public RDFGraph RemoveTriplesByPredicateObject(RDFResource predicateResource, RDFResource objectResource)
+        {
+            if (predicateResource != null && objectResource != null)
+            {
+                foreach (var triple in this.SelectTriplesByPredicate(predicateResource)
+                                           .SelectTriplesByObject(objectResource))
+                {
+                    //Remove triple
+                    this.Triples.Remove(triple.TripleID);
+                    //Remove index
+                    this.GraphIndex.RemoveIndex(triple);
+                    //Raise event
+                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the triples with the given predicate and literal
+        /// </summary>
+        public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral)
+        {
+            if (predicateResource != null && objectLiteral != null)
+            {
+                foreach (var triple in this.SelectTriplesByPredicate(predicateResource)
+                                           .SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);

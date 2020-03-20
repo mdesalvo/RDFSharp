@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RDFSharp.Model;
-using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -194,7 +194,11 @@ namespace RDFSharp.Query
         /// </summary>
         public override String ToString()
         {
-            return RDFQueryPrinter.PrintPattern(this, new List<RDFNamespace>());
+            return this.ToString(new List<RDFNamespace>());
+        }
+        internal String ToString(List<RDFNamespace> prefixes)
+        {
+            return RDFQueryPrinter.PrintPattern(this, prefixes);
         }
         #endregion
 

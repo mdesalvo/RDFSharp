@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
-using RDFSharp.Model;
-using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -254,6 +254,23 @@ namespace RDFSharp.Query
             });
             return (abbrev, pmString);
             #endregion
+        }
+        
+        /// <summary>
+        /// Removes the duplicates from the given list of T elements
+        /// </summary>
+        internal static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember {
+            List<T> results = new List<T>();
+            if (elements?.Count > 0) {
+                HashSet<Int64> lookup = new HashSet<Int64>();
+                elements.ForEach(element => {
+                    if (!lookup.Contains(element.PatternMemberID)) {
+                        lookup.Add(element.PatternMemberID);
+                        results.Add(element);
+                    }
+                });
+            }
+            return results;
         }
         #endregion
 

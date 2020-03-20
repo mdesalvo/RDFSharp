@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Web;
-using System.Net;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {

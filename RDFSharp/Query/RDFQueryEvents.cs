@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -105,6 +105,26 @@ namespace RDFSharp.Query
         internal static void RaiseSELECTQueryEvaluation(String eventMessage)
         {
             Parallel.Invoke(() => OnSELECTQueryEvaluation(DateTime.Now.ToString() + ";SELECT_QUERY_EVALUATION;" + eventMessage));
+        }
+        #endregion
+
+        #region OnGENERICQueryEvaluation
+        /// <summary>
+        /// Event representing an information message generated during SPARQL query evaluation
+        /// </summary>
+        public static event RDFGENERICQueryEvaluationEventHandler OnGENERICQueryEvaluation = delegate { };
+
+        /// <summary>
+        /// Delegate to handle information events generated during SPARQL query evaluation
+        /// </summary>
+        public delegate void RDFGENERICQueryEvaluationEventHandler(String eventMessage);
+
+        /// <summary>
+        /// Internal invoker of the subscribed information event handler
+        /// </summary>
+        internal static void RaiseGENERICQueryEvaluation(String eventMessage)
+        {
+            Parallel.Invoke(() => OnGENERICQueryEvaluation(DateTime.Now.ToString() + ";GENERIC_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 

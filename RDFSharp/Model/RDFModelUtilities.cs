@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -34,7 +33,7 @@ namespace RDFSharp.Model
     public static class RDFModelUtilities
     {
 
-        #region Greta
+        #region Hashing
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
@@ -316,6 +315,71 @@ namespace RDFSharp.Model
 
             }
             return matchResult;
+        }
+        #endregion
+
+        #region Collections
+        /// <summary>
+        /// Rebuilds the collection represented by the given resource within the given graph
+        /// </summary>
+        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, 
+                                                                     RDFResource collRepresentative, 
+                                                                     RDFModelEnums.RDFTripleFlavors expectedFlavor)
+        {
+            RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource :
+                                                                                                                RDFModelEnums.RDFItemTypes.Literal);
+            RDFGraph rdfFirst = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
+            RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
+
+            #region Deserialization
+            Boolean nilFound = false;
+            RDFResource itemRest = collRepresentative;
+            while (!nilFound) {
+
+                #region rdf:first
+                RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                          .FirstOrDefault();
+                if (first != null && first.TripleFlavor == expectedFlavor) {
+                    if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                        collection.AddItem((RDFResource)first.Object);
+                    }
+                    else {
+                        collection.AddItem((RDFLiteral)first.Object);
+                    }
+                }
+                else {
+                    nilFound = true;
+                }
+                #endregion
+
+                #region rdf:rest
+                RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                        .FirstOrDefault();
+                if (rest != null) {
+                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL)) {
+                        nilFound = true;
+                    }
+                    else {
+                        itemRest = (RDFResource)rest.Object;
+                    }
+                }
+                #endregion
+
+            }
+            #endregion
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Detects the flavor (SPO/SPL) of the collection represented by the given resource within the given graph
+        /// </summary>
+        internal static RDFModelEnums.RDFTripleFlavors DetectCollectionFlavorFromGraph(RDFGraph graph,
+                                                                                       RDFResource collRepresentative) {
+            return graph.SelectTriplesBySubject(collRepresentative)
+                        .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+                        .FirstOrDefault()
+                       ?.TripleFlavor ?? RDFModelEnums.RDFTripleFlavors.SPO;
         }
         #endregion
 

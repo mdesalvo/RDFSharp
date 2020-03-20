@@ -4,13 +4,14 @@
     <AssemblyTitle>RDFSharp</AssemblyTitle>
     <AssemblyName>RDFSharp</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>2.5.0.0</Version>
+    <Version>2.10.0</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
-    <Description>Start playing with RDF!</Description>
+    <Description></Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
+    <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -38,8 +39,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

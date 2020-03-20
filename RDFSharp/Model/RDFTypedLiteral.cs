@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,14 +41,12 @@ namespace RDFSharp.Model
         {
             this.Value = (value ?? String.Empty);
             this.Datatype = datatype;
+
+            //Validation against semantic of given datatype
             if (RDFModelUtilities.ValidateTypedLiteral(this))
-            {
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-            }
             else
-            {
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ")");
-            }
         }
         #endregion
 

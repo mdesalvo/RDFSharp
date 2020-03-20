@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Marco De Salvo
+   Copyright 2012-2020 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -98,32 +98,23 @@ namespace RDFSharp.Query
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString()))
             {
-                String variableValue = row[this.Variable.ToString()].ToString().ToUpperInvariant();
+                String variableValue = row[this.Variable.ToString()].ToString();
 
-                //Successfull match if NO language is found in the variable
+                //NO language is found in the variable
                 if (this.Language == String.Empty)
-                {
-                    keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$");
-                }
+                    keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                
+                //ANY language is found in the variable
+                else if (this.Language == "*")
+                    keepRow = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                
+                //GIVEN language is found in the variable
                 else
-                {
-                    //Successfull match if ANY language is found in the variable
-                    if (this.Language == "*")
-                    {
-                        keepRow = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$");
-                    }
-                    //Successfull match if GIVEN language is found in the variable
-                    else
-                    {
-                        keepRow = Regex.IsMatch(variableValue, "@" + this.Language + "(-[a-zA-Z0-9]{1,8})*$");
-                    }
-                }
-
+                    keepRow = Regex.IsMatch(variableValue, "@" + this.Language + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                
                 //Apply the eventual negation
                 if (applyNegation)
-                {
                     keepRow = !keepRow;
-                }
             }
 
             return keepRow;
