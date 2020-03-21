@@ -64,47 +64,53 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            validationContext.ValueNodes.ForEach(valueNode => {
 
-                #region Evaluation
+            #region Evaluation
+            //Evaluate focus nodes
+            foreach (RDFResource focusNode in validationContext.FocusNodes) {
 
-                //Set current value node
-                validationContext.ValueNode = valueNode;
+                //Set current focus node
+                validationContext.FocusNode = focusNode;
 
-                //Evaluate current value node
+                //Get value nodes of current focus node
+                validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
+
+                //Evaluate current shape
                 switch (validationContext.Shape) {
 
                     //NodeShape
                     case RDFNodeShape nodeShape:
-                        if (!validationContext.FocusNodes.Any(v => v.Equals(this.Value)))
+                        if (!validationContext.FocusNodes.Any(v => v.Equals(this.Value))) { 
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
-                                                                     null,
-                                                                     validationContext.ValueNode,
-                                                                     validationContext.Shape.Messages,
-                                                                     new RDFResource(),
-                                                                     validationContext.Shape.Severity));
+                                                                        RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
+                                                                        validationContext.FocusNode,
+                                                                        null,
+                                                                        null,
+                                                                        validationContext.Shape.Messages,
+                                                                        new RDFResource(),
+                                                                        validationContext.Shape.Severity));
+                        }
                         break;
 
                     //PropertyShape
                     case RDFPropertyShape propertyShape:
-                        if (!validationContext.ValueNodes.Any(v => v.Equals(this.Value)))
+                        if (!validationContext.ValueNodes.Any(v => v.Equals(this.Value))) { 
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
-                                                                     ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                     validationContext.ValueNode,
-                                                                     validationContext.Shape.Messages,
-                                                                     new RDFResource(),
-                                                                     validationContext.Shape.Severity));
+                                                                        RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
+                                                                        validationContext.FocusNode,
+                                                                        ((RDFPropertyShape)validationContext.Shape).Path,
+                                                                        null,
+                                                                        validationContext.Shape.Messages,
+                                                                        new RDFResource(),
+                                                                        validationContext.Shape.Severity));
+                        }
                         break;
 
                 }
 
-                #endregion
+            }
+            #endregion
 
-            });
             return report;
         }
 

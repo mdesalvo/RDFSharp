@@ -55,15 +55,26 @@ namespace RDFSharp.Model
 
                 //PropertyShape
                 case RDFPropertyShape propertyShape:
-                    if (validationContext.ValueNodes.Count < this.MinCount) {
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
-                                                                 validationContext.FocusNode,
-                                                                 ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                 null, //ValueNode is not provided in this situation
-                                                                 validationContext.Shape.Messages,
-                                                                 new RDFResource(),
-                                                                 validationContext.Shape.Severity));
+
+                    //Evaluate focus nodes
+                    foreach (RDFResource focusNode in validationContext.FocusNodes) {
+
+                        //Set current focus node
+                        validationContext.FocusNode = focusNode;
+
+                        //Get value nodes of current focus node
+                        validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
+                        if (validationContext.ValueNodes.Count < this.MinCount) { 
+                            report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                     RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
+                                                                     validationContext.FocusNode,
+                                                                     ((RDFPropertyShape)validationContext.Shape).Path,
+                                                                     null, //ValueNode is not provided in this situation
+                                                                     validationContext.Shape.Messages,
+                                                                     new RDFResource(),
+                                                                     validationContext.Shape.Severity));
+                        }
+
                     }
                     break;
 
