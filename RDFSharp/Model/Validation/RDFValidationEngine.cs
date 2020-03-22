@@ -54,6 +54,12 @@ namespace RDFSharp.Model
             //Get focus nodes of current shape
             validationContext.FocusNodes = validationContext.DataGraph.GetFocusNodesOf(validationContext.Shape);
 
+            //Get value nodes of each focus node
+            validationContext.FocusNodes.ForEach(focusNode => {
+                if (!validationContext.ValueNodes.ContainsKey(focusNode.PatternMemberID))
+                    validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(shape, focusNode));
+            });
+
             //Evaluate constraints
             foreach (RDFConstraint currentConstraint in shape)
                 report.MergeResults(currentConstraint.Evaluate(validationContext));

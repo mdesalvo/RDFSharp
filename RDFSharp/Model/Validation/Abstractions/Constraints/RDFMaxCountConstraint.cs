@@ -57,29 +57,24 @@ namespace RDFSharp.Model
                 case RDFPropertyShape propertyShape:
 
                     //Evaluate focus nodes
-                    foreach (RDFResource focusNode in validationContext.FocusNodes) {
-
-                        //Set current focus node
-                        validationContext.FocusNode = focusNode;
+                    validationContext.FocusNodes.ForEach(focusNode => {
 
                         //Get value nodes of current focus node
-                        validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
-                        if (validationContext.ValueNodes.Count > this.MaxCount) {
+                        if (validationContext.ValueNodes[focusNode.PatternMemberID].Count > this.MaxCount) {
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
+                                                                     focusNode,
                                                                      ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                     null, //ValueNode is not provided in this situation
+                                                                     null,
                                                                      validationContext.Shape.Messages,
-                                                                     new RDFResource(),
                                                                      validationContext.Shape.Severity));
                         }
 
-                    }
+                    });
                     break;
 
             }
-
+            
             #endregion
 
             return report;

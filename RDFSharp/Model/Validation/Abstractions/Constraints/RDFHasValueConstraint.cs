@@ -67,53 +67,45 @@ namespace RDFSharp.Model
 
             #region Evaluation
             //Evaluate focus nodes
-            foreach (RDFResource focusNode in validationContext.FocusNodes) {
-
-                //Set current focus node
-                validationContext.FocusNode = focusNode;
-
-                //Get value nodes of current focus node
-                validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
+            validationContext.FocusNodes.ForEach(focusNode => {
 
                 //Evaluate current shape
                 switch (validationContext.Shape) {
 
                     //NodeShape
                     case RDFNodeShape nodeShape:
-                        if (!validationContext.FocusNodes.Any(v => v.Equals(this.Value))) { 
+                        if (!validationContext.FocusNodes.Any(v => v.Equals(this.Value))) {
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                        RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                                        validationContext.FocusNode,
-                                                                        null,
-                                                                        null,
-                                                                        validationContext.Shape.Messages,
-                                                                        new RDFResource(),
-                                                                        validationContext.Shape.Severity));
+                                                                     RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     null,
+                                                                     null,
+                                                                     validationContext.Shape.Messages,
+                                                                     validationContext.Shape.Severity));
                         }
                         break;
 
                     //PropertyShape
                     case RDFPropertyShape propertyShape:
-                        if (!validationContext.ValueNodes.Any(v => v.Equals(this.Value))) { 
+                        if (!validationContext.ValueNodes[focusNode.PatternMemberID].Any(v => v.Equals(this.Value))) {
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                        RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                                        validationContext.FocusNode,
-                                                                        ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                        null,
-                                                                        validationContext.Shape.Messages,
-                                                                        new RDFResource(),
-                                                                        validationContext.Shape.Severity));
+                                                                     RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     ((RDFPropertyShape)validationContext.Shape).Path,
+                                                                     null,
+                                                                     validationContext.Shape.Messages,
+                                                                     validationContext.Shape.Severity));
                         }
                         break;
 
                 }
 
-            }
+            });
             #endregion
 
             return report;
         }
-
+        
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>

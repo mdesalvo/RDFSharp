@@ -46,31 +46,23 @@ namespace RDFSharp.Model
 
             #region Evaluation
             //Evaluate focus nodes
-            foreach (RDFResource focusNode in validationContext.FocusNodes) {
-
-                //Set current focus node
-                validationContext.FocusNode = focusNode;
+            validationContext.FocusNodes.ForEach(focusNode => {
 
                 //Get value nodes of current focus node
-                validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
-                validationContext.ValueNodes.ForEach(valueNode => {
-
-                    //Set current value node
-                    validationContext.ValueNode = valueNode;
+                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                     //Evaluate current value node
-                    switch (validationContext.ValueNode) {
+                    switch (valueNode) {
 
                         //Resource
                         case RDFResource valueNodeResource:
                             if (valueNodeResource.IsBlank || valueNodeResource.ToString().Length > this.MaxLength) {
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
-                                                                         validationContext.FocusNode,
+                                                                         focusNode,
                                                                          validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         validationContext.ValueNode,
+                                                                         valueNode,
                                                                          validationContext.Shape.Messages,
-                                                                         new RDFResource(),
                                                                          validationContext.Shape.Severity));
                             }
                             break;
@@ -80,11 +72,10 @@ namespace RDFSharp.Model
                             if (valueNodeLiteral.Value.Length > this.MaxLength) {
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
-                                                                         validationContext.FocusNode,
+                                                                         focusNode,
                                                                          validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         validationContext.ValueNode,
+                                                                         valueNode,
                                                                          validationContext.Shape.Messages,
-                                                                         new RDFResource(),
                                                                          validationContext.Shape.Severity));
                             }
                             break;
@@ -93,7 +84,7 @@ namespace RDFSharp.Model
 
                 });
 
-            }
+            });
             #endregion
 
             return report;

@@ -14,10 +14,8 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -61,20 +59,13 @@ namespace RDFSharp.Model
 
             #region Evaluation
             //Evaluate focus nodes
-            foreach (RDFResource focusNode in validationContext.FocusNodes) {
-
-                //Set current focus node
-                validationContext.FocusNode = focusNode;
+            validationContext.FocusNodes.ForEach(focusNode => {
 
                 //Get value nodes of current focus node
-                validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
-                validationContext.ValueNodes.ForEach(valueNode => {
-
-                    //Set current value node
-                    validationContext.ValueNode = valueNode;
+                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                     //Evaluate current value node
-                    switch (validationContext.ValueNode) {
+                    switch (valueNode) {
 
                         //PlainLiteral
                         case RDFPlainLiteral valueNodePlainLiteral:
@@ -98,11 +89,10 @@ namespace RDFSharp.Model
                             if (!langMatches) {
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                         validationContext.FocusNode,
+                                                                         focusNode,
                                                                          validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         validationContext.ValueNode,
+                                                                         valueNode,
                                                                          validationContext.Shape.Messages,
-                                                                         new RDFResource(),
                                                                          validationContext.Shape.Severity));
                             }
                             break;
@@ -111,11 +101,10 @@ namespace RDFSharp.Model
                         default:
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
+                                                                     focusNode,
                                                                      validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                     validationContext.ValueNode,
+                                                                     valueNode,
                                                                      validationContext.Shape.Messages,
-                                                                     new RDFResource(),
                                                                      validationContext.Shape.Severity));
                             break;
 
@@ -123,7 +112,7 @@ namespace RDFSharp.Model
 
                 });
 
-            }
+            });
             #endregion
 
             return report;

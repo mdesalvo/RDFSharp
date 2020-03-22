@@ -50,36 +50,27 @@ namespace RDFSharp.Model
 
             #region Evaluation
             if (this.UniqueLang) {
+                HashSet<String> languages = new HashSet<String>();
 
                 //Evaluate focus nodes
-                foreach (RDFResource focusNode in validationContext.FocusNodes) {
-
-                    //Set current focus node
-                    validationContext.FocusNode = focusNode;
-
-                    //Get value nodes of current focus node
-                    validationContext.ValueNodes = validationContext.DataGraph.GetValueNodesOf(validationContext.Shape, focusNode);
+                validationContext.FocusNodes.ForEach(focusNode => {
 
                     //Consider only values nodes which are languaged plain literals
-                    List<RDFPlainLiteral> valueNodes = validationContext.ValueNodes.OfType<RDFPlainLiteral>()
-                                                                                   .Where(vn => !String.IsNullOrEmpty(vn.Language))
-                                                                                   .ToList();
-                    HashSet<String> languages = new HashSet<String>();
+                    List<RDFPlainLiteral> valueNodes = validationContext.ValueNodes[focusNode.PatternMemberID]
+                                                                        .OfType<RDFPlainLiteral>()
+                                                                        .Where(vn => !String.IsNullOrEmpty(vn.Language))
+                                                                        .ToList();
                     valueNodes.ForEach(valueNode => {
-
-                        //Set current value node
-                        validationContext.ValueNode = valueNode;
 
                         //Evaluate current value node
                         if (valueNodes.Count(vn => vn.Language.Equals(valueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1) {
                             if (languages.Contains(valueNode.Language)) { 
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
-                                                                         validationContext.FocusNode,
+                                                                         focusNode,
                                                                          validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         validationContext.ValueNode,
+                                                                         valueNode,
                                                                          validationContext.Shape.Messages,
-                                                                         new RDFResource(),
                                                                          validationContext.Shape.Severity));
                             }
                             else { 
@@ -88,9 +79,9 @@ namespace RDFSharp.Model
                         }
 
                     });
+                    languages.Clear();
 
-                }
-
+                });
             }
             #endregion
 

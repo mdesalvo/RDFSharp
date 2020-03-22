@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Query;
+using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
@@ -41,16 +42,6 @@ namespace RDFSharp.Model
         internal RDFShape Shape { get; set; }
 
         /// <summary>
-        /// Focus node currently evaluated
-        /// </summary>
-        internal RDFResource FocusNode { get; set; }
-
-        /// <summary>
-        /// Value node currently evaluated
-        /// </summary>
-        internal RDFPatternMember ValueNode { get; set; }
-
-        /// <summary>
         /// Full set of focus nodes to be evaluated
         /// </summary>
         internal List<RDFResource> FocusNodes { get; set; }
@@ -58,7 +49,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Full set of value nodes to be evaluated
         /// </summary>
-        internal List<RDFPatternMember> ValueNodes { get; set; }
+        internal Dictionary<Int64, List<RDFPatternMember>> ValueNodes { get; set; }
         #endregion
 
         #region Ctors
@@ -69,6 +60,8 @@ namespace RDFSharp.Model
                                       RDFGraph dataGraph) {
             this.ShapesGraph = shapesGraph;
             this.DataGraph = dataGraph;
+            this.FocusNodes = new List<RDFResource>();
+            this.ValueNodes = new Dictionary<Int64, List<RDFPatternMember>>();
         }
         #endregion
 
