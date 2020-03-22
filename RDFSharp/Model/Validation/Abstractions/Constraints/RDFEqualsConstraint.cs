@@ -63,8 +63,6 @@ namespace RDFSharp.Model
                                                                                    .SelectTriplesByPredicate(this.EqualsPredicate)
                                                                                    .Select(x => x.Object)
                                                                                    .ToList();
-
-                //Evaluate predicate nodes of current focus node
                 predicateNodes.ForEach(predicateNode => { 
                     
                     //Evaluate current predicate node
