@@ -178,6 +178,7 @@ namespace RDFSharp.Model
                     //Constraints
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
@@ -213,6 +214,7 @@ namespace RDFSharp.Model
                     //Constraints
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
@@ -334,6 +336,13 @@ namespace RDFSharp.Model
                 RDFPatternMember datatype = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DATATYPE"));
                 if (datatype is RDFResource)
                     shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(datatype.ToString())));
+            }
+
+            //sh:disjoint
+            if (!shapesRow.IsNull("?DISJOINT")) {
+                RDFPatternMember disjpred = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DISJOINT"));
+                if (disjpred is RDFResource)
+                    shape.AddConstraint(new RDFDisjointConstraint((RDFResource)disjpred));
             }
 
             //sh:equals
