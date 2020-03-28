@@ -22,7 +22,7 @@ using System.Linq;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFEqualsConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
+    /// RDFDisjointConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
     /// </summary>
     public class RDFDisjointConstraint : RDFConstraint {
 
