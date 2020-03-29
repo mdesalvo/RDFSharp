@@ -7,7 +7,7 @@ RDFSharp has a modular API made up of four layers:
     <ul>
         <li>Create and manage <i>RDF models</i> (resources, literals, triples, graphs, namespaces, ...)</li>
         <li>Exchange them using standard <i>RDF formats</i> (N-Triples, TriX, Turtle, RDF/Xml)</li>
-        <li>Create and process <i>SHACL shapes</i> (shape graphs, shapes, targets, constraints, reports, ...) <b>--> In Progress (68%)</b></li>
+        <li>Create and validate <i>SHACL shapes</i> (shape graphs, shapes, targets, constraints, reports, ...) <b>--> In Progress (69%)</b></li>
     </ul>
 </ul>
 <ul>
@@ -28,8 +28,8 @@ RDFSharp has a modular API made up of four layers:
     <li><b>RDFSharp.Semantics</b></li> 
     <ul>
         <li>Create and manage <i>OWL-DL ontologies</i> (classes, restrictions, properties, facts, assertions, annotations, ...)</li>
-        <li>Validate ontology <i>T-BOX</i> and <i>A-BOX</i> against a wide set of <i>RDFS/OWL-DL</i> constraint rules</li>
-        <li>Create <i>OWL-DL reasoners</i> with a wide set of <i>RDFS/OWL-DL</i> inference rules</li>
-        <li>Create and manage <i>SKOS thesauri</i> with a friendly and powerful .NET API</li>
+        <li>Validate ontology <i>T-BOX</i> and <i>A-BOX</i> against a customizable set of <i>RDFS/OWL-DL</i> constraint rules</li>
+        <li>Create <i>OWL-DL reasoners</i> exploiting a customizable set of <i>RDFS/OWL-DL</i> inference rules</li>
+        <li>Create and manage <i>SKOS thesauri</i> with a friendly and powerful fluent API</li>
     </ul>
 </ul>
