@@ -64,50 +64,48 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            validationContext.ValueNodes.ForEach(valueNode => {
 
-                #region Evaluation
+            #region Evaluation
+            //Evaluate focus nodes
+            validationContext.FocusNodes.ForEach(focusNode => {
 
-                //Set current value node
-                validationContext.ValueNode = valueNode;
-
-                //Evaluate current value node
+                //Evaluate current shape
                 switch (validationContext.Shape) {
 
                     //NodeShape
                     case RDFNodeShape nodeShape:
-                        if (!validationContext.FocusNodes.Any(v => v.Equals(this.Value)))
+                        if (!validationContext.FocusNodes.Any(v => v.Equals(this.Value))) {
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
+                                                                     focusNode,
                                                                      null,
-                                                                     validationContext.ValueNode,
+                                                                     null,
                                                                      validationContext.Shape.Messages,
-                                                                     new RDFResource(),
                                                                      validationContext.Shape.Severity));
+                        }
                         break;
 
                     //PropertyShape
                     case RDFPropertyShape propertyShape:
-                        if (!validationContext.ValueNodes.Any(v => v.Equals(this.Value)))
+                        if (!validationContext.ValueNodes[focusNode.PatternMemberID].Any(v => v.Equals(this.Value))) {
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
+                                                                     focusNode,
                                                                      ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                     validationContext.ValueNode,
+                                                                     null,
                                                                      validationContext.Shape.Messages,
-                                                                     new RDFResource(),
                                                                      validationContext.Shape.Severity));
+                        }
                         break;
 
                 }
 
-                #endregion
-
             });
+            #endregion
+
             return report;
         }
-
+        
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>

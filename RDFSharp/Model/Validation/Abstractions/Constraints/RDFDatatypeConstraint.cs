@@ -16,6 +16,7 @@
 
 using RDFSharp.Query;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
@@ -47,62 +48,62 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            validationContext.ValueNodes.ForEach(valueNode => {
 
-                #region Evaluation
+            #region Evaluation
+            //Evaluate focus nodes
+            validationContext.FocusNodes.ForEach(focusNode => {
 
-                //Set current value node
-                validationContext.ValueNode = valueNode;
+                //Get value nodes of current focus node
+                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
-                //Evaluate current value node
-                switch (validationContext.ValueNode) {
+                    //Evaluate current value node
+                    switch (valueNode) {
 
-                    //Resource
-                    case RDFResource valueNodeResource:
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
-                                                                 validationContext.FocusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 validationContext.ValueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 new RDFResource(),
-                                                                 validationContext.Shape.Severity));
-                        break;
-
-                    //PlainLiteral
-                    case RDFPlainLiteral valueNodePlainLiteral:
-                        if (this.Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING 
-                                || !string.IsNullOrEmpty(valueNodePlainLiteral.Language)) {
+                        //Resource
+                        case RDFResource valueNodeResource:
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
+                                                                     focusNode,
                                                                      validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                     validationContext.ValueNode,
+                                                                     valueNode,
                                                                      validationContext.Shape.Messages,
-                                                                     new RDFResource(),
                                                                      validationContext.Shape.Severity));
-                        }
-                        break;
+                            break;
 
-                    //TypedLiteral
-                    case RDFTypedLiteral valueNodeTypedLiteral:
-                        if (this.Datatype != valueNodeTypedLiteral.Datatype) {
-                            report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
-                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                     validationContext.ValueNode,
-                                                                     validationContext.Shape.Messages,
-                                                                     new RDFResource(),
-                                                                     validationContext.Shape.Severity));
-                        }
-                        break;
+                        //PlainLiteral
+                        case RDFPlainLiteral valueNodePlainLiteral:
+                            if (this.Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING
+                                    || !string.IsNullOrEmpty(valueNodePlainLiteral.Language)) {
+                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                         RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
+                                                                         focusNode,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         valueNode,
+                                                                         validationContext.Shape.Messages,
+                                                                         validationContext.Shape.Severity));
+                            }
+                            break;
 
-                }
+                        //TypedLiteral
+                        case RDFTypedLiteral valueNodeTypedLiteral:
+                            if (this.Datatype != valueNodeTypedLiteral.Datatype) {
+                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                         RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
+                                                                         focusNode,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         valueNode,
+                                                                         validationContext.Shape.Messages,
+                                                                         validationContext.Shape.Severity));
+                            }
+                            break;
 
-                #endregion
+                    }
+
+                });
 
             });
+            #endregion
+
             return report;
         }
 

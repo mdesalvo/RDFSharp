@@ -22,27 +22,29 @@ using System.Linq;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFClassConstraint represents a SHACL constraint on the specified class for a given RDF term
+    /// RDFLessThanOrEqualsConstraint represents a SHACL constraint on minority or equality comparison of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFClassConstraint : RDFConstraint {
+    public class RDFLessThanOrEqualsConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
-        /// ClassType of the given RDF term
+        /// Predicate for which value nodes of a given RDF term are compared for minority or equality
         /// </summary>
-        public RDFResource ClassType { get; internal set; }
+        public RDFResource LessThanOrEqualsPredicate { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a class constraint with the given class
+        /// Default-ctor to build a lessThanOrEquals constraint with the given predicate
         /// </summary>
-        public RDFClassConstraint(RDFResource classType) : base() {
-            if (classType != null) {
-                this.ClassType = classType;
+        public RDFLessThanOrEqualsConstraint(RDFResource lessThanOrEqualsPredicate) : base()
+        {
+            if (lessThanOrEqualsPredicate != null) {
+                this.LessThanOrEqualsPredicate = lessThanOrEqualsPredicate;
             }
             else {
-                throw new RDFModelException("Cannot create RDFClassConstraint because given \"classType\" parameter is null.");
+                throw new RDFModelException("Cannot create RDFLessThanOrEqualsConstraint because given \"lessThanOrEqualsPredicate\" parameter is null.");
             }
         }
         #endregion
@@ -51,47 +53,36 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
+        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext)
+        {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
             #region Evaluation
-            //Get class instances
-            List<RDFPatternMember> classInstances = validationContext.DataGraph.GetInstancesOfClass(this.ClassType);
-
             //Evaluate focus nodes
             validationContext.FocusNodes.ForEach(focusNode => {
+
+                //Get predicate nodes of current focus node
+                List<RDFPatternMember> predicateNodes = validationContext.DataGraph.SelectTriplesBySubject(focusNode)
+                                                                                   .SelectTriplesByPredicate(this.LessThanOrEqualsPredicate)
+                                                                                   .Select(x => x.Object)
+                                                                                   .ToList();
 
                 //Get value nodes of current focus node
                 validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                     //Evaluate current value node
-                    switch (valueNode) {
-
-                        //Resource
-                        case RDFResource valueNodeResource:
-                            if (!classInstances.Any(x => x.Equals(valueNodeResource))) {
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                         RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         valueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         validationContext.Shape.Severity));
-                            }
-                            break;
-
-                        //Literal
-                        case RDFLiteral valueNodeLiteral:
+                    predicateNodes.ForEach(predicateNode => {
+                        Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(valueNode, predicateNode);
+                        if (comparison == -99 || comparison > 0) {
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
+                                                                     RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT,
                                                                      focusNode,
                                                                      validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
                                                                      valueNode,
                                                                      validationContext.Shape.Messages,
                                                                      validationContext.Shape.Severity));
-                            break;
-
-                    }
+                        }
+                    });
 
                 });
 
@@ -108,8 +99,8 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //sh:class
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, this.ClassType));
+                //sh:lessThanOrEquals
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, this.LessThanOrEqualsPredicate));
 
             }
             return result;

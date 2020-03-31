@@ -14,10 +14,8 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -58,64 +56,65 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            validationContext.ValueNodes.ForEach(valueNode => {
 
-                #region Evaluate
+            #region Evaluation
+            //Evaluate focus nodes
+            validationContext.FocusNodes.ForEach(focusNode => {
 
-                //Set current value node
-                validationContext.ValueNode = valueNode;
+                //Get value nodes of current focus node
+                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
-                //Evaluate current value node
-                switch (validationContext.ValueNode) {
+                    //Evaluate current value node
+                    switch (valueNode) {
 
-                    //PlainLiteral
-                    case RDFPlainLiteral valueNodePlainLiteral:
-                        bool langMatches = false;
-                        var langTagsEnumerator = this.LanguageTags.GetEnumerator();
-                        while (langTagsEnumerator.MoveNext() && !langMatches) {
+                        //PlainLiteral
+                        case RDFPlainLiteral valueNodePlainLiteral:
+                            bool langMatches = false;
+                            var langTagsEnumerator = this.LanguageTags.GetEnumerator();
+                            while (langTagsEnumerator.MoveNext() && !langMatches) {
 
-                            //NO language is found in the variable
-                            if (langTagsEnumerator.Current == String.Empty) 
-                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                                //NO language is found in the variable
+                                if (langTagsEnumerator.Current == String.Empty) 
+                                    langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
-                            //ANY language is found in the variable
-                            else if (langTagsEnumerator.Current == "*") 
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                                //ANY language is found in the variable
+                                else if (langTagsEnumerator.Current == "*") 
+                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
-                            //GIVEN language is found in the variable
-                            else
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@" + langTagsEnumerator.Current + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                                //GIVEN language is found in the variable
+                                else
+                                    langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@" + langTagsEnumerator.Current + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
-                        }
-                        if (!langMatches) {
+                            }
+                            if (!langMatches) {
+                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                         RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
+                                                                         focusNode,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         valueNode,
+                                                                         validationContext.Shape.Messages,
+                                                                         validationContext.Shape.Severity));
+                            }
+                            break;
+
+                        //Resource/TypedLiteral
+                        default:
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                     validationContext.FocusNode,
+                                                                     focusNode,
                                                                      validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                     validationContext.ValueNode,
+                                                                     valueNode,
                                                                      validationContext.Shape.Messages,
-                                                                     new RDFResource(),
                                                                      validationContext.Shape.Severity));
-                        }
-                        break;
+                            break;
 
-                    //Resource/TypedLiteral
-                    default:
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
-                                                                 validationContext.FocusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 validationContext.ValueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 new RDFResource(),
-                                                                 validationContext.Shape.Severity));
-                        break;
+                    }
 
-                }
-
-                #endregion
+                });
 
             });
+            #endregion
+
             return report;
         }
 

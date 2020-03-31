@@ -55,20 +55,26 @@ namespace RDFSharp.Model
 
                 //PropertyShape
                 case RDFPropertyShape propertyShape:
-                    if (validationContext.ValueNodes.Count > this.MaxCount) {
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
-                                                                 validationContext.FocusNode,
-                                                                 ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                 null, //ValueNode is not provided in this situation
-                                                                 validationContext.Shape.Messages,
-                                                                 new RDFResource(),
-                                                                 validationContext.Shape.Severity));
-                    }
+
+                    //Evaluate focus nodes
+                    validationContext.FocusNodes.ForEach(focusNode => {
+
+                        //Get value nodes of current focus node
+                        if (validationContext.ValueNodes[focusNode.PatternMemberID].Count > this.MaxCount) {
+                            report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                     RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     ((RDFPropertyShape)validationContext.Shape).Path,
+                                                                     null,
+                                                                     validationContext.Shape.Messages,
+                                                                     validationContext.Shape.Severity));
+                        }
+
+                    });
                     break;
 
             }
-
+            
             #endregion
 
             return report;

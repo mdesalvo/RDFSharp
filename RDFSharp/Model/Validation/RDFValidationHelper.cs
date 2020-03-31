@@ -178,9 +178,13 @@ namespace RDFSharp.Model
                     //Constraints
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
@@ -212,9 +216,13 @@ namespace RDFSharp.Model
                     //Constraints
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
@@ -334,6 +342,20 @@ namespace RDFSharp.Model
                     shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(datatype.ToString())));
             }
 
+            //sh:disjoint
+            if (!shapesRow.IsNull("?DISJOINT")) {
+                RDFPatternMember disjpred = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DISJOINT"));
+                if (disjpred is RDFResource)
+                    shape.AddConstraint(new RDFDisjointConstraint((RDFResource)disjpred));
+            }
+
+            //sh:equals
+            if (!shapesRow.IsNull("?EQUALS")) {
+                RDFPatternMember eqpred = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?EQUALS"));
+                if (eqpred is RDFResource)
+                    shape.AddConstraint(new RDFEqualsConstraint((RDFResource)eqpred));
+            }
+
             //sh:hasValue
             if (!shapesRow.IsNull("?HASVALUE")) {
                 RDFPatternMember value = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?HASVALUE"));
@@ -367,6 +389,20 @@ namespace RDFSharp.Model
                     RDFCollection langTagsColl = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)reifSubj, RDFModelEnums.RDFTripleFlavors.SPL);
                     shape.AddConstraint(new RDFLanguageInConstraint(langTagsColl.Select(x => x.ToString()).ToList()));
                 }
+            }
+
+            //sh:lessThan
+            if (!shapesRow.IsNull("?LESSTHAN")) {
+                RDFPatternMember ltpred = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?LESSTHAN"));
+                if (ltpred is RDFResource)
+                    shape.AddConstraint(new RDFLessThanConstraint((RDFResource)ltpred));
+            }
+
+            //sh:lessThanOrEquals
+            if (!shapesRow.IsNull("?LESSTHANOREQUALS")) {
+                RDFPatternMember lteqpred = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?LESSTHANOREQUALS"));
+                if (lteqpred is RDFResource)
+                    shape.AddConstraint(new RDFLessThanOrEqualsConstraint((RDFResource)lteqpred));
             }
 
             //sh:maxCount

@@ -22,57 +22,32 @@ using System.Linq;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFInConstraint represents a SHACL constraint on the allowed values for a given RDF term
+    /// RDFDisjointConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFInConstraint : RDFConstraint {
+    public class RDFDisjointConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Values allowed on the given RDF term
+        /// Predicate for which value nodes of a given RDF term are checked for absence
         /// </summary>
-        internal Dictionary<Int64, RDFPatternMember> InValues { get; set; }
-
-        /// <summary>
-        /// Type of the allowed values (Resource/Literal)
-        /// </summary>
-        internal RDFModelEnums.RDFItemTypes ItemType { get; set; }
+        public RDFResource DisjointPredicate { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a in constraint of the given type (Resource/Literal)
+        /// Default-ctor to build a disjoint constraint with the given predicate
         /// </summary>
-        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base() {
-            this.InValues = new Dictionary<Int64, RDFPatternMember>();
-            this.ItemType = itemType;
+        public RDFDisjointConstraint(RDFResource disjointPredicate) : base() {
+            if (disjointPredicate != null) {
+                this.DisjointPredicate = disjointPredicate;
+            }
+            else {
+                throw new RDFModelException("Cannot create RDFDisjointConstraint because given \"disjointPredicate\" parameter is null.");
+            }
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Adds the given resource to the values of this constraint (if ItemType has been set to Resource)
-        /// </summary>
-        public RDFInConstraint AddValue(RDFResource resource) {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                if (resource != null && !this.InValues.ContainsKey(resource.PatternMemberID)) {
-                    this.InValues.Add(resource.PatternMemberID, resource);
-                }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given literal to the values of this constraint (if ItemType has been set to Literal)
-        /// </summary>
-        public RDFInConstraint AddValue(RDFLiteral literal) {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                if (literal != null && !this.InValues.ContainsKey(literal.PatternMemberID)) {
-                    this.InValues.Add(literal.PatternMemberID, literal);
-                }
-            }
-            return this;
-        }
-
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
@@ -87,9 +62,11 @@ namespace RDFSharp.Model
                 validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                     //Evaluate current value node
-                    if (!this.InValues.Any(v => v.Value.Equals(valueNode))) { 
+                    if (validationContext.DataGraph.Any(t => t.Subject.Equals(focusNode) 
+                                                                && t.Predicate.Equals(this.DisjointPredicate)
+                                                                    && t.Object.Equals(valueNode))) {
                         report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
+                                                                 RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
                                                                  valueNode,
@@ -112,18 +89,8 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //Get collection from values
-                RDFCollection values = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
-                foreach (RDFPatternMember value in this.InValues.Values) {
-                    if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                        values.AddItem((RDFLiteral)value);
-                    else
-                        values.AddItem((RDFResource)value);
-                }
-                result.AddCollection(values);
-
-                //sh:in
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, values.ReificationSubject));
+                //sh:disjoint
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, this.DisjointPredicate));
 
             }
             return result;

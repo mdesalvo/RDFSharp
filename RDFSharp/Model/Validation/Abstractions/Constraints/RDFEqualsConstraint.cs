@@ -22,57 +22,32 @@ using System.Linq;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFInConstraint represents a SHACL constraint on the allowed values for a given RDF term
+    /// RDFEqualsConstraint represents a SHACL constraint on presence of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFInConstraint : RDFConstraint {
+    public class RDFEqualsConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Values allowed on the given RDF term
+        /// Predicate for which value nodes of a given RDF term are checked for presence
         /// </summary>
-        internal Dictionary<Int64, RDFPatternMember> InValues { get; set; }
-
-        /// <summary>
-        /// Type of the allowed values (Resource/Literal)
-        /// </summary>
-        internal RDFModelEnums.RDFItemTypes ItemType { get; set; }
+        public RDFResource EqualsPredicate { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a in constraint of the given type (Resource/Literal)
+        /// Default-ctor to build an equals constraint with the given predicate
         /// </summary>
-        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base() {
-            this.InValues = new Dictionary<Int64, RDFPatternMember>();
-            this.ItemType = itemType;
+        public RDFEqualsConstraint(RDFResource equalsPredicate) : base() {
+            if (equalsPredicate != null) {
+                this.EqualsPredicate = equalsPredicate;
+            }
+            else {
+                throw new RDFModelException("Cannot create RDFEqualsConstraint because given \"equalsPredicate\" parameter is null.");
+            }
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Adds the given resource to the values of this constraint (if ItemType has been set to Resource)
-        /// </summary>
-        public RDFInConstraint AddValue(RDFResource resource) {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                if (resource != null && !this.InValues.ContainsKey(resource.PatternMemberID)) {
-                    this.InValues.Add(resource.PatternMemberID, resource);
-                }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given literal to the values of this constraint (if ItemType has been set to Literal)
-        /// </summary>
-        public RDFInConstraint AddValue(RDFLiteral literal) {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                if (literal != null && !this.InValues.ContainsKey(literal.PatternMemberID)) {
-                    this.InValues.Add(literal.PatternMemberID, literal);
-                }
-            }
-            return this;
-        }
-
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
@@ -83,13 +58,33 @@ namespace RDFSharp.Model
             //Evaluate focus nodes
             validationContext.FocusNodes.ForEach(focusNode => {
 
+                //Get predicate nodes of current focus node
+                List<RDFPatternMember> predicateNodes = validationContext.DataGraph.SelectTriplesBySubject(focusNode)
+                                                                                   .SelectTriplesByPredicate(this.EqualsPredicate)
+                                                                                   .Select(x => x.Object)
+                                                                                   .ToList();
+                predicateNodes.ForEach(predicateNode => { 
+                    
+                    //Evaluate current predicate node
+                    if (!validationContext.ValueNodes[focusNode.PatternMemberID].Any(v => v.Equals(predicateNode))) {
+                        report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                 RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
+                                                                 focusNode,
+                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                 predicateNode,
+                                                                 validationContext.Shape.Messages,
+                                                                 validationContext.Shape.Severity));
+                    }
+
+                });
+
                 //Get value nodes of current focus node
                 validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                     //Evaluate current value node
-                    if (!this.InValues.Any(v => v.Value.Equals(valueNode))) { 
+                    if (!predicateNodes.Any(p => p.Equals(valueNode))) {
                         report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
+                                                                 RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
                                                                  valueNode,
@@ -112,18 +107,8 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //Get collection from values
-                RDFCollection values = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
-                foreach (RDFPatternMember value in this.InValues.Values) {
-                    if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                        values.AddItem((RDFLiteral)value);
-                    else
-                        values.AddItem((RDFResource)value);
-                }
-                result.AddCollection(values);
-
-                //sh:in
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, values.ReificationSubject));
+                //sh:equals
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, this.EqualsPredicate));
 
             }
             return result;
