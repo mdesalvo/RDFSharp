@@ -186,8 +186,12 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_EXCLUSIVE, new RDFVariable("MAXEXCLUSIVE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_INCLUSIVE, new RDFVariable("MAXINCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
@@ -224,8 +228,12 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_EXCLUSIVE, new RDFVariable("MAXEXCLUSIVE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_INCLUSIVE, new RDFVariable("MAXINCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
@@ -412,6 +420,24 @@ namespace RDFSharp.Model
                     shape.AddConstraint(new RDFMaxCountConstraint(int.Parse(((RDFTypedLiteral)maxCount).Value)));
             }
 
+            //sh:maxExclusive
+            if (!shapesRow.IsNull("?MAXEXCLUSIVE")) {
+                RDFPatternMember value = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MAXEXCLUSIVE"));
+                if (value is RDFResource)
+                    shape.AddConstraint(new RDFMaxExclusiveConstraint((RDFResource)value));
+                else if (value is RDFLiteral)
+                    shape.AddConstraint(new RDFMaxExclusiveConstraint((RDFLiteral)value));
+            }
+
+            //sh:maxInclusive
+            if (!shapesRow.IsNull("?MAXINCLUSIVE")) {
+                RDFPatternMember value = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MAXINCLUSIVE"));
+                if (value is RDFResource)
+                    shape.AddConstraint(new RDFMaxInclusiveConstraint((RDFResource)value));
+                else if (value is RDFLiteral)
+                    shape.AddConstraint(new RDFMaxInclusiveConstraint((RDFLiteral)value));
+            }
+
             //sh:maxLength
             if (!shapesRow.IsNull("?MAXLENGTH")) {
                 RDFPatternMember maxLength = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MAXLENGTH"));
@@ -424,6 +450,24 @@ namespace RDFSharp.Model
                 RDFPatternMember minCount = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MINCOUNT"));
                 if (minCount is RDFTypedLiteral && ((RDFTypedLiteral)minCount).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
                     shape.AddConstraint(new RDFMinCountConstraint(int.Parse(((RDFTypedLiteral)minCount).Value)));
+            }
+
+            //sh:minExclusive
+            if (!shapesRow.IsNull("?MINEXCLUSIVE")) {
+                RDFPatternMember value = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MINEXCLUSIVE"));
+                if (value is RDFResource)
+                    shape.AddConstraint(new RDFMinExclusiveConstraint((RDFResource)value));
+                else if (value is RDFLiteral)
+                    shape.AddConstraint(new RDFMinExclusiveConstraint((RDFLiteral)value));
+            }
+
+            //sh:minInclusive
+            if (!shapesRow.IsNull("?MININCLUSIVE")) {
+                RDFPatternMember value = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MININCLUSIVE"));
+                if (value is RDFResource)
+                    shape.AddConstraint(new RDFMinInclusiveConstraint((RDFResource)value));
+                else if (value is RDFLiteral)
+                    shape.AddConstraint(new RDFMinInclusiveConstraint((RDFLiteral)value));
             }
 
             //sh:minLength
