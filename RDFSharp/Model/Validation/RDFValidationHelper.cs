@@ -193,6 +193,7 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
@@ -235,6 +236,7 @@ namespace RDFSharp.Model
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
+                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
@@ -475,6 +477,13 @@ namespace RDFSharp.Model
                 RDFPatternMember minLength = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?MINLENGTH"));
                 if (minLength is RDFTypedLiteral && ((RDFTypedLiteral)minLength).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
                     shape.AddConstraint(new RDFMinLengthConstraint(int.Parse(((RDFTypedLiteral)minLength).Value)));
+            }
+
+            //sh:node
+            if (!shapesRow.IsNull("?NODE")) {
+                RDFPatternMember nodeshapeUri = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?NODE"));
+                if (nodeshapeUri is RDFResource)
+                    shape.AddConstraint(new RDFNodeConstraint((RDFResource)nodeshapeUri));
             }
 
             //sh:nodeKind

@@ -36,7 +36,7 @@ namespace RDFSharp.Model
                 RDFValidationContext validationContext = new RDFValidationContext(shapesGraph, dataGraph);
 
                 //Evaluate active shapes of shapes graph
-                foreach (RDFShape shape in shapesGraph.Where(s => !s.Deactivated))
+                foreach (RDFShape shape in shapesGraph)
                     report.MergeResults(shape.EvaluateShape(validationContext));
             }
             return report;
@@ -47,23 +47,25 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFValidationReport EvaluateShape(this RDFShape shape, RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
+            if (!shape.Deactivated) {
 
-            //Set current shape
-            validationContext.Shape = shape;
+                //Set current shape
+                validationContext.Shape = shape;
 
-            //Get focus nodes of current shape
-            validationContext.FocusNodes = validationContext.DataGraph.GetFocusNodesOf(validationContext.Shape);
+                //Get focus nodes of current shape
+                validationContext.FocusNodes = validationContext.DataGraph.GetFocusNodesOf(validationContext.Shape);
 
-            //Get value nodes of each focus node
-            validationContext.FocusNodes.ForEach(focusNode => {
-                if (!validationContext.ValueNodes.ContainsKey(focusNode.PatternMemberID))
-                    validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(shape, focusNode));
-            });
+                //Get value nodes of each focus node
+                validationContext.FocusNodes.ForEach(focusNode => {
+                    if (!validationContext.ValueNodes.ContainsKey(focusNode.PatternMemberID))
+                        validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(shape, focusNode));
+                });
 
-            //Evaluate constraints
-            foreach (RDFConstraint currentConstraint in shape)
-                report.MergeResults(currentConstraint.Evaluate(validationContext));
+                //Evaluate constraints
+                foreach (RDFConstraint currentConstraint in shape)
+                    report.MergeResults(currentConstraint.Evaluate(validationContext));
 
+            }
             return report;
         }
         #endregion
