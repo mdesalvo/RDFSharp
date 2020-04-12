@@ -56,6 +56,7 @@ namespace RDFSharp.Model
                 validationContext.FocusNodes = validationContext.DataGraph.GetFocusNodesOf(validationContext.Shape);
 
                 //Get value nodes of each focus node
+                validationContext.ValueNodes.Clear();
                 validationContext.FocusNodes.ForEach(focusNode => {
                     if (!validationContext.ValueNodes.ContainsKey(focusNode.PatternMemberID))
                         validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(shape, focusNode));
