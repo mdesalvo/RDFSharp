@@ -62,8 +62,10 @@ namespace RDFSharp.Model
                 return report;
 
             //Evaluate node shape
-            RDFValidationReport nodeshapeReport = nodeShape.EvaluateShape(
-                new RDFValidationContext(validationContext.ShapesGraph, validationContext.DataGraph));
+            RDFValidationReport nodeshapeReport = nodeShape.EvaluateShape(validationContext, 
+                new RDFValidationOptions() {
+                    PreserveExistingContextData = true
+                });
                 
             //Evaluate focus nodes
             validationContext.FocusNodes.ForEach(focusNode => {
@@ -103,5 +105,6 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
+
     }
 }
