@@ -63,29 +63,17 @@ namespace RDFSharp.Model
 
             //Evaluate node shape
             RDFValidationReport nodeshapeReport = nodeShape.EvaluateShape(validationContext, 
-                new RDFValidationOptions() {
-                    PreserveExistingContextData = true
-                });
-                
-            //Evaluate focus nodes
-            validationContext.FocusNodes.ForEach(focusNode => {
+                new RDFValidationOptions() { PreserveExistingContextData = true });
 
-                //Get value nodes of current focus node
-                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
-
-                    //Evaluate current value node
-                    if (nodeshapeReport.Any(result => result.FocusNode.Equals(valueNode)))
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 valueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 validationContext.Shape.Severity));
-
-                });
-
-            });
+            //Report node shape evidences
+            foreach (RDFValidationResult nodeshapeResult in nodeshapeReport)
+                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                         RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
+                                                         nodeshapeResult.FocusNode,
+                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                         nodeshapeResult.ResultValue,
+                                                         validationContext.Shape.Messages,
+                                                         validationContext.Shape.Severity));
             #endregion
 
             return report;
