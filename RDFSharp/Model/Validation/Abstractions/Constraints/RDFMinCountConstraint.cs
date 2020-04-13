@@ -45,34 +45,21 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
             #region Evaluation
-            //Evaluate current shape
-            switch (validationContext.Shape) {
+            //Evaluate focus nodes
+            validationContext.FocusNodes.ForEach(focusNode => {
 
-                //NodeShape (not allowed)
-                case RDFNodeShape nodeShape:
-                    break;
+                //Get value nodes of current focus node
+                if (validationContext.ValueNodes[focusNode.PatternMemberID].Count < this.MinCount) { 
+                    report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                             RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
+                                                             focusNode,
+                                                             validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                             null, //This constraint does not report sh:value
+                                                             validationContext.Shape.Messages,
+                                                             validationContext.Shape.Severity));
+                }
 
-                //PropertyShape
-                case RDFPropertyShape propertyShape:
-
-                    //Evaluate focus nodes
-                    validationContext.FocusNodes.ForEach(focusNode => {
-
-                        //Get value nodes of current focus node
-                        if (validationContext.ValueNodes[focusNode.PatternMemberID].Count < this.MinCount) { 
-                            report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                     null,
-                                                                     validationContext.Shape.Messages,
-                                                                     validationContext.Shape.Severity));
-                        }
-
-                    });
-                    break;
-                    
-            }
+            });
             #endregion
 
             return report;
