@@ -33,14 +33,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a property constraint with the given property shape identifier
         /// </summary>
-        public RDFPropertyConstraint(RDFResource propertyShapeUri) : base()
-        {
-            if (propertyShapeUri != null)
-            {
+        public RDFPropertyConstraint(RDFResource propertyShapeUri) : base() {
+            if (propertyShapeUri != null) {
                 this.PropertyShapeUri = propertyShapeUri;
             }
-            else
-            {
+            else {
                 throw new RDFModelException("Cannot create RDFPropertyConstraint because given \"propertyShapeUri\" parameter is null.");
             }
         }
