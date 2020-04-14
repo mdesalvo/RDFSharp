@@ -65,14 +65,7 @@ namespace RDFSharp.Model
                                          validationContext.ValueNodes));
 
             //Report property constraint shape evidences
-            foreach (RDFValidationResult propertyshapeResult in propertyshapeReport)
-                report.AddResult(new RDFValidationResult(propertyshapeResult.SourceShape,
-                                                         propertyshapeResult.SourceConstraintComponent,
-                                                         propertyshapeResult.FocusNode,
-                                                         propertyshapeResult.ResultPath,
-                                                         propertyshapeResult.ResultValue,
-                                                         propertyshapeResult.ResultMessages,
-                                                         propertyshapeResult.Severity));
+            report.MergeResults(propertyshapeReport);
             #endregion
 
             return report;
