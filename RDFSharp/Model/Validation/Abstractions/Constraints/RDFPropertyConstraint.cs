@@ -51,7 +51,28 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
             #region Evaluation
-            
+            //Search property constraint shape
+            RDFPropertyShape propertyShape = validationContext.ShapesGraph.SelectShape(this.PropertyShapeUri.ToString()) as RDFPropertyShape;
+            if (propertyShape == null)
+                return report;
+
+            //Evaluate property constraint shape
+            RDFValidationReport propertyshapeReport = propertyShape.EvaluatePropertyConstraintShape(
+                new RDFValidationContext(validationContext.ShapesGraph,
+                                         validationContext.DataGraph,
+                                         validationContext.Shape,
+                                         validationContext.FocusNodes,
+                                         validationContext.ValueNodes));
+
+            //Report property constraint shape evidences
+            foreach (RDFValidationResult propertyshapeResult in propertyshapeReport)
+                report.AddResult(new RDFValidationResult(propertyshapeResult.SourceShape,
+                                                         propertyshapeResult.SourceConstraintComponent,
+                                                         propertyshapeResult.FocusNode,
+                                                         propertyshapeResult.ResultPath,
+                                                         propertyshapeResult.ResultValue,
+                                                         propertyshapeResult.ResultMessages,
+                                                         propertyshapeResult.Severity));
             #endregion
 
             return report;

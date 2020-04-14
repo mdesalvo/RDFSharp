@@ -57,11 +57,15 @@ namespace RDFSharp.Model
         /// Default-ctor to build a validation context
         /// </summary>
         internal RDFValidationContext(RDFShapesGraph shapesGraph, 
-                                      RDFGraph dataGraph) {
+                                      RDFGraph dataGraph,
+                                      RDFShape shape = null,
+                                      List<RDFResource> focusNodes = null,
+                                      Dictionary<Int64, List<RDFPatternMember>> valueNodes = null) {
             this.ShapesGraph = shapesGraph;
             this.DataGraph = dataGraph;
-            this.FocusNodes = new List<RDFResource>();
-            this.ValueNodes = new Dictionary<Int64, List<RDFPatternMember>>();
+            this.Shape = shape;
+            this.FocusNodes = focusNodes ?? new List<RDFResource>();
+            this.ValueNodes = valueNodes ?? new Dictionary<Int64, List<RDFPatternMember>>();
         }
         #endregion
 

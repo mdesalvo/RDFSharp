@@ -51,16 +51,20 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
             #region Evaluation
-            //Search node shape
+            //Search node constraint shape
             RDFNodeShape nodeShape = validationContext.ShapesGraph.SelectShape(this.NodeShapeUri.ToString()) as RDFNodeShape;
             if (nodeShape == null)
                 return report;
 
-            //Evaluate node shape
-            RDFValidationReport nodeshapeReport = nodeShape.EvaluateShape(validationContext, 
-                new RDFValidationOptions() { PreserveExistingContextData = true });
+            //Evaluate node constraint shape
+            RDFValidationReport nodeshapeReport = nodeShape.EvaluateNodeConstraintShape(
+                new RDFValidationContext(validationContext.ShapesGraph, 
+                                         validationContext.DataGraph, 
+                                         validationContext.Shape,
+                                         validationContext.FocusNodes,
+                                         validationContext.ValueNodes));
 
-            //Report node shape evidences
+            //Report node constraint shape evidences
             foreach (RDFValidationResult nodeshapeResult in nodeshapeReport)
                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                          RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
