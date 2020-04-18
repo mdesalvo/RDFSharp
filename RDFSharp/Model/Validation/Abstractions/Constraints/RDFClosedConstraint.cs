@@ -39,7 +39,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a in constraint of the given type (Resource/Literal)
+        /// Default-ctor to build a closed constraint with the given behavior
         /// </summary>
         public RDFClosedConstraint(Boolean closed) : base() {
             this.Closed = closed;
