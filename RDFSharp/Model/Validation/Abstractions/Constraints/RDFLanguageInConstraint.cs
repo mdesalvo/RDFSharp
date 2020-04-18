@@ -127,7 +127,8 @@ namespace RDFSharp.Model
 
                 //Get collection from language tags
                 RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
-                this.LanguageTags.ToList().ForEach(lt => languageTags.AddItem(new RDFPlainLiteral(lt)));
+                foreach (String languageTag in this.LanguageTags)
+                    languageTags.AddItem(new RDFPlainLiteral(languageTag));
                 result.AddCollection(languageTags);
 
                 //sh:languageIn

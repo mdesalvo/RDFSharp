@@ -112,18 +112,18 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //Get collection from values
-                RDFCollection values = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
-                foreach (RDFPatternMember value in this.InValues.Values) {
+                //Get collection from inValues
+                RDFCollection inValues = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
+                foreach (RDFPatternMember inValue in this.InValues.Values) {
                     if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                        values.AddItem((RDFLiteral)value);
+                        inValues.AddItem((RDFLiteral)inValue);
                     else
-                        values.AddItem((RDFResource)value);
+                        inValues.AddItem((RDFResource)inValue);
                 }
-                result.AddCollection(values);
+                result.AddCollection(inValues);
 
                 //sh:in
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, values.ReificationSubject));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, inValues.ReificationSubject));
 
             }
             return result;
