@@ -110,18 +110,16 @@ namespace RDFSharp.Model
 
                 //sh:closed
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, new RDFTypedLiteral(this.Closed.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
-                if (this.Closed) {
+                
+                //Get collection from ignored properties
+                RDFCollection ignoredProperties = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
+                foreach (RDFResource ignoredProperty in this.IgnoredProperties.Values)
+                    ignoredProperties.AddItem(ignoredProperty);
+                result.AddCollection(ignoredProperties);
 
-                    //Get collection from ignored properties
-                    RDFCollection ignoredProperties = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
-                    foreach (RDFResource ignoredProperty in this.IgnoredProperties.Values)
-                        ignoredProperties.AddItem(ignoredProperty);
-                    result.AddCollection(ignoredProperties);
+                //sh:ignoredProperties
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IGNORED_PROPERTIES, ignoredProperties.ReificationSubject));
 
-                    //sh:ignoredProperties
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IGNORED_PROPERTIES, ignoredProperties.ReificationSubject));
-
-                }
             }
             return result;
         }
