@@ -363,7 +363,7 @@ namespace RDFSharp.Model
                     if (reifSubj is RDFResource) {
                         RDFCollection ignoredPropsColl = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)reifSubj, RDFModelEnums.RDFTripleFlavors.SPO);
                         ignoredPropsColl.Items.ForEach(item => {
-                            closedConstraint.AddIgnoredproperty((RDFResource)item);
+                            closedConstraint.AddIgnoredProperty((RDFResource)item);
                         });
                     }
 

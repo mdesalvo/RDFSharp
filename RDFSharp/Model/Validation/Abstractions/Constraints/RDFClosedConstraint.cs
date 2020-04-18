@@ -51,7 +51,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given property to the allowed properties of this constraint
         /// </summary>
-        public RDFClosedConstraint AddIgnoredproperty(RDFResource ignoredProperty) {
+        public RDFClosedConstraint AddIgnoredProperty(RDFResource ignoredProperty) {
             if (ignoredProperty != null && !this.IgnoredProperties.ContainsKey(ignoredProperty.PatternMemberID))
                 this.IgnoredProperties.Add(ignoredProperty.PatternMemberID, ignoredProperty);
 
