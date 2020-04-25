@@ -7,7 +7,7 @@ RDFSharp has a modular API made up of four layers:
     <ul>
         <li>Create and manage <i>RDF models</i> (resources, literals, triples, graphs, namespaces, ...)</li>
         <li>Exchange them using standard <i>RDF formats</i> (N-Triples, TriX, Turtle, RDF/Xml)</li>
-        <li>Create and validate <i>SHACL shapes</i> (shape graphs, shapes, targets, constraints, reports, ...) <b>--> In Progress (82%)</b></li>
+        <li>Create and validate <i>SHACL shapes</i> (shape graphs, shapes, targets, constraints, reports, ...) <b>--> In Progress (84%)</b></li>
     </ul>
 </ul>
 <ul>
