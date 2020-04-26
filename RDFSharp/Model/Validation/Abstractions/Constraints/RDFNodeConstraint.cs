@@ -57,7 +57,7 @@ namespace RDFSharp.Model
                 return report;
 
             //Evaluate node constraint shape
-            RDFValidationReport nodeshapeReport = nodeShape.EvaluateShapeWithFocusAndValuesPreservation(
+            RDFValidationReport nodeshapeReport = nodeShape.EvaluateNodeConstraintShape(
                 new RDFValidationContext(validationContext.ShapesGraph, 
                                          validationContext.DataGraph, 
                                          validationContext.Shape,
