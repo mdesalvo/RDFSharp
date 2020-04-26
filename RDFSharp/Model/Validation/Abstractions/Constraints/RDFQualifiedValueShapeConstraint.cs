@@ -86,19 +86,21 @@ namespace RDFSharp.Model
                 
                 //Evaluate focus nodes
                 validationContext.FocusNodes.ForEach(focusNode => {
-                    int conformsCounter = 0;
+                    int conformingValues = 0;
 
                     //Get value nodes of current focus node
                     validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                         //Evaluate current value node
-                        if (!qualifiedValueShapeReport.Any(result => result.FocusNode.Equals(valueNode)))
-                            conformsCounter++;
+                        if (!qualifiedValueShapeReport.Any(result => result.FocusNode.Equals(focusNode)
+                                                                        && result.ResultValue != null
+                                                                            && result.ResultValue.Equals(valueNode)))
+                            conformingValues++;
 
                     });
 
                     //Report evidences (sh:qualifiedMinCount)
-                    if (this.QualifiedValueMinCount.HasValue && conformsCounter < this.QualifiedValueMinCount)
+                    if (this.QualifiedValueMinCount.HasValue && conformingValues < this.QualifiedValueMinCount)
                         report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                  RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT,
                                                                  focusNode,
@@ -108,7 +110,7 @@ namespace RDFSharp.Model
                                                                  validationContext.Shape.Severity));
 
                     //Report evidences (sh:qualifiedMaxCount)
-                    if (this.QualifiedValueMaxCount.HasValue && conformsCounter > this.QualifiedValueMaxCount)
+                    if (this.QualifiedValueMaxCount.HasValue && conformingValues > this.QualifiedValueMaxCount)
                         report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                  RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT,
                                                                  focusNode,
