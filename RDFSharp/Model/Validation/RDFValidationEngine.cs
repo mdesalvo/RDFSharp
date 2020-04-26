@@ -68,14 +68,14 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Validates the given data graph against the given SHACL node constraint shape
+        /// Validates the given data graph against the given SHACL shape (preserves both focus nodes and values nodes)
         /// </summary>
-        internal static RDFValidationReport EvaluateNodeConstraintShape(this RDFNodeShape nodeShape, RDFValidationContext validationContext) {
+        internal static RDFValidationReport EvaluateShapeWithFocusAndValuesPreservation(this RDFShape shape, RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (!nodeShape.Deactivated) {
+            if (!shape.Deactivated) {
 
                //Evaluate constraints
-                foreach (RDFConstraint currentConstraint in nodeShape)
+                foreach (RDFConstraint currentConstraint in shape)
                     report.MergeResults(currentConstraint.Evaluate(validationContext));
 
             }
@@ -83,24 +83,24 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Validates the given data graph against the given SHACL property constraint shape
+        /// Validates the given data graph against the given SHACL shape (preserves only focus nodes)
         /// </summary>
-        internal static RDFValidationReport EvaluatePropertyConstraintShape(this RDFPropertyShape propertyShape, RDFValidationContext validationContext) {
+        internal static RDFValidationReport EvaluateShapeWithFocusPreservation(this RDFShape shape, RDFValidationContext validationContext) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (!propertyShape.Deactivated) {
+            if (!shape.Deactivated) {
 
                 //Set current shape
-                validationContext.Shape = propertyShape;
+                validationContext.Shape = shape;
 
                 //Get value nodes of each focus node
                 validationContext.ValueNodes.Clear();
                 validationContext.FocusNodes.ForEach(focusNode => {
                     if (!validationContext.ValueNodes.ContainsKey(focusNode.PatternMemberID))
-                        validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(propertyShape, focusNode));
+                        validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(shape, focusNode));
                 });
 
                 //Evaluate constraints
-                foreach (RDFConstraint currentConstraint in propertyShape)
+                foreach (RDFConstraint currentConstraint in shape)
                     report.MergeResults(currentConstraint.Evaluate(validationContext));
 
             }
