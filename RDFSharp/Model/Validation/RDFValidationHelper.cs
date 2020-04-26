@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     ///  RDFValidationHelper contains utility methods supporting SHACL modeling and validation
     /// </summary>
-    internal static class RDFValidationHelper {
+    internal static class RDFValidationHelper
+    {
 
         #region Methods
 
@@ -33,9 +34,9 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFResource> GetFocusNodesOf(this RDFGraph dataGraph,
                                                                RDFShape shape) {
-            var result = new List<RDFResource>();
+            List<RDFResource> result = new List<RDFResource>();
             if (shape != null && dataGraph != null) {
-                foreach (var target in shape.Targets) {
+                foreach (RDFTarget target in shape.Targets) {
                     switch (target) {
 
                         //sh:targetClass
@@ -75,7 +76,7 @@ namespace RDFSharp.Model
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph,
                                                                RDFShape shape,
                                                                RDFResource focusNode) {
-            var result = new List<RDFPatternMember>();
+            List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null) {
                 switch (shape) {
 
@@ -100,7 +101,7 @@ namespace RDFSharp.Model
         /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf) instances of the given class within the given data graph
         /// </summary>
         internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph,
-                                                                   RDFResource className, 
+                                                                   RDFResource className,
                                                                    HashSet<Int64> visitContext = null) {
             var result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null) {
@@ -161,99 +162,105 @@ namespace RDFSharp.Model
             return null;
         }
         private static RDFSelectQuery GetShapeQuery() {
-           return 
-            new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup("NODESHAPES")
-                    //Definition
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE))
-                    //Targets
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_CLASS, new RDFVariable("TARGETCLASS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_NODE, new RDFVariable("TARGETNODE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, new RDFVariable("TARGETSUBJECTSOF")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, new RDFVariable("TARGETOBJECTSOF")).Optional())
-                    //Attributes
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.SEVERITY_PROPERTY, new RDFVariable("SEVERITY")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("DEACTIVATED")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("MESSAGE")).Optional())
-                    //Constraints
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLOSED, new RDFVariable("CLOSED")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IGNORED_PROPERTIES, new RDFVariable("IGNOREDPROPERTIES")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_EXCLUSIVE, new RDFVariable("MAXEXCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_INCLUSIVE, new RDFVariable("MAXINCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PROPERTY, new RDFVariable("PROPERTY")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
-                    .UnionWithNext()
-                )
-                .AddPatternGroup(new RDFPatternGroup("PROPERTYSHAPES")
-                    //Definition
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE))
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATH, new RDFVariable("PATH")))
-                    //Targets
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_CLASS, new RDFVariable("TARGETCLASS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_NODE, new RDFVariable("TARGETNODE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, new RDFVariable("TARGETSUBJECTSOF")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, new RDFVariable("TARGETOBJECTSOF")).Optional())
-                    //Attributes
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.SEVERITY_PROPERTY, new RDFVariable("SEVERITY")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("DEACTIVATED")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("MESSAGE")).Optional())
-                    //NonValidating
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DESCRIPTION, new RDFVariable("DESCRIPTION")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NAME, new RDFVariable("NAME")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.GROUP, new RDFVariable("GROUP")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.ORDER, new RDFVariable("ORDER")).Optional())
-                    //Constraints
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLOSED, new RDFVariable("CLOSED")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IGNORED_PROPERTIES, new RDFVariable("IGNOREDPROPERTIES")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_EXCLUSIVE, new RDFVariable("MAXEXCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_INCLUSIVE, new RDFVariable("MAXINCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PROPERTY, new RDFVariable("PROPERTY")).Optional())
-                    .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
-                );
+            return
+             new RDFSelectQuery()
+                 .AddPatternGroup(new RDFPatternGroup("NODESHAPES")
+                     //Definition
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE))
+                     //Targets
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_CLASS, new RDFVariable("TARGETCLASS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_NODE, new RDFVariable("TARGETNODE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, new RDFVariable("TARGETSUBJECTSOF")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, new RDFVariable("TARGETOBJECTSOF")).Optional())
+                     //Attributes
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.SEVERITY_PROPERTY, new RDFVariable("SEVERITY")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("DEACTIVATED")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("MESSAGE")).Optional())
+                     //Constraints
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLOSED, new RDFVariable("CLOSED")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IGNORED_PROPERTIES, new RDFVariable("IGNOREDPROPERTIES")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_EXCLUSIVE, new RDFVariable("MAXEXCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_INCLUSIVE, new RDFVariable("MAXINCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PROPERTY, new RDFVariable("PROPERTY")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, new RDFVariable("QUALIFIEDVALUESHAPE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, new RDFVariable("QUALIFIEDMINCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFVariable("QUALIFIEDMAXCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
+                     .UnionWithNext()
+                 )
+                 .AddPatternGroup(new RDFPatternGroup("PROPERTYSHAPES")
+                     //Definition
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE))
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATH, new RDFVariable("PATH")))
+                     //Targets
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_CLASS, new RDFVariable("TARGETCLASS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_NODE, new RDFVariable("TARGETNODE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, new RDFVariable("TARGETSUBJECTSOF")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.TARGET_OBJECTS_OF, new RDFVariable("TARGETOBJECTSOF")).Optional())
+                     //Attributes
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.SEVERITY_PROPERTY, new RDFVariable("SEVERITY")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("DEACTIVATED")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("MESSAGE")).Optional())
+                     //NonValidating
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DESCRIPTION, new RDFVariable("DESCRIPTION")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NAME, new RDFVariable("NAME")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.GROUP, new RDFVariable("GROUP")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.ORDER, new RDFVariable("ORDER")).Optional())
+                     //Constraints
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLOSED, new RDFVariable("CLOSED")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IGNORED_PROPERTIES, new RDFVariable("IGNOREDPROPERTIES")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DATATYPE, new RDFVariable("DATATYPE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.DISJOINT, new RDFVariable("DISJOINT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.EQUALS, new RDFVariable("EQUALS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.HAS_VALUE, new RDFVariable("HASVALUE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IN, new RDFVariable("IN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LANGUAGE_IN, new RDFVariable("LANGUAGEIN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN, new RDFVariable("LESSTHAN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, new RDFVariable("LESSTHANOREQUALS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_COUNT, new RDFVariable("MAXCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_EXCLUSIVE, new RDFVariable("MAXEXCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_INCLUSIVE, new RDFVariable("MAXINCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MAX_LENGTH, new RDFVariable("MAXLENGTH")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_COUNT, new RDFVariable("MINCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_EXCLUSIVE, new RDFVariable("MINEXCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_INCLUSIVE, new RDFVariable("MININCLUSIVE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PROPERTY, new RDFVariable("PROPERTY")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, new RDFVariable("QUALIFIEDVALUESHAPE")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, new RDFVariable("QUALIFIEDMINCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFVariable("QUALIFIEDMAXCOUNT")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
+                 );
         }
         private static RDFShape ParseShapeType(DataRow shapesRow) {
             RDFShape shape = null;
 
             //sh:NodeShape
-            if (!shapesRow.IsNull("?NSHAPE")) { 
+            if (!shapesRow.IsNull("?NSHAPE")) {
                 shape = new RDFNodeShape(new RDFResource(shapesRow.Field<string>("?NSHAPE")));
             }
 
@@ -295,24 +302,20 @@ namespace RDFSharp.Model
         private static void ParseShapeTargets(DataRow shapesRow, RDFShape shape) {
 
             //sh:targetClass
-            if (!shapesRow.IsNull("?TARGETCLASS")) { 
+            if (!shapesRow.IsNull("?TARGETCLASS"))
                 shape.AddTarget(new RDFTargetClass(new RDFResource(shapesRow.Field<string>("?TARGETCLASS"))));
-            }
-
+            
             //sh:targetNode
-            if (!shapesRow.IsNull("?TARGETNODE")) { 
+            if (!shapesRow.IsNull("?TARGETNODE"))
                 shape.AddTarget(new RDFTargetNode(new RDFResource(shapesRow.Field<string>("?TARGETNODE"))));
-            }
-
+            
             //sh:targetSubjectsOf
-            if (!shapesRow.IsNull("?TARGETSUBJECTSOF")) { 
+            if (!shapesRow.IsNull("?TARGETSUBJECTSOF"))
                 shape.AddTarget(new RDFTargetSubjectsOf(new RDFResource(shapesRow.Field<string>("?TARGETSUBJECTSOF"))));
-            }
-
+            
             //sh:targetObjectsOf
-            if (!shapesRow.IsNull("?TARGETOBJECTSOF")) { 
+            if (!shapesRow.IsNull("?TARGETOBJECTSOF"))
                 shape.AddTarget(new RDFTargetObjectsOf(new RDFResource(shapesRow.Field<string>("?TARGETOBJECTSOF"))));
-            }
 
         }
         private static void ParseShapeAttributes(DataRow shapesRow, RDFShape shape) {
@@ -328,7 +331,7 @@ namespace RDFSharp.Model
             //sh:deactivated
             if (!shapesRow.IsNull("?DEACTIVATED")) {
                 RDFPatternMember deactivated = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?DEACTIVATED"));
-                if (deactivated is RDFTypedLiteral 
+                if (deactivated is RDFTypedLiteral
                         && ((RDFTypedLiteral)deactivated).HasBooleanDatatype()
                             && Boolean.Parse(((RDFTypedLiteral)deactivated).Value))
                     shape.Deactivate();
@@ -539,8 +542,7 @@ namespace RDFSharp.Model
                     RegexOptions regexOptions = RegexOptions.None;
                     if (!shapesRow.IsNull("?FLAGS")) {
                         RDFPatternMember regexFlags = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?FLAGS"));
-                        if (regexFlags is RDFTypedLiteral && ((RDFTypedLiteral)regexFlags).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                        {
+                        if (regexFlags is RDFTypedLiteral && ((RDFTypedLiteral)regexFlags).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING)) {
                             if (((RDFTypedLiteral)regexFlags).Value.Contains("i"))
                                 regexOptions |= RegexOptions.IgnoreCase;
                             if (((RDFTypedLiteral)regexFlags).Value.Contains("s"))
@@ -562,6 +564,28 @@ namespace RDFSharp.Model
                     shape.AddConstraint(new RDFPropertyConstraint((RDFResource)propertyshapeUri));
             }
 
+            //sh:qualifiedValueShape
+            if (!shapesRow.IsNull("?QUALIFIEDVALUESHAPE")) {
+                RDFPatternMember qualifiedValueShapeUri = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?QUALIFIEDVALUESHAPE"));
+                if (qualifiedValueShapeUri is RDFResource) {
+                    //sh:qualifiedMinCount
+                    int? qualifiedMinCountValue = null;
+                    if (!shapesRow.IsNull("?QUALIFIEDMINCOUNT")) {
+                        RDFPatternMember qualifiedMinCount = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?QUALIFIEDMINCOUNT"));
+                        if (qualifiedMinCount is RDFTypedLiteral && ((RDFTypedLiteral)qualifiedMinCount).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                            qualifiedMinCountValue = int.Parse(((RDFTypedLiteral)qualifiedMinCount).Value);
+                    }
+                    //sh:qualifiedMaxCount
+                    int? qualifiedMaxCountValue = null;
+                    if (!shapesRow.IsNull("?QUALIFIEDMAXCOUNT")) {
+                        RDFPatternMember qualifiedMaxCount = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?QUALIFIEDMAXCOUNT"));
+                        if (qualifiedMaxCount is RDFTypedLiteral && ((RDFTypedLiteral)qualifiedMaxCount).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                            qualifiedMaxCountValue = int.Parse(((RDFTypedLiteral)qualifiedMaxCount).Value);
+                    }
+                    shape.AddConstraint(new RDFQualifiedValueShapeConstraint((RDFResource)qualifiedValueShapeUri, qualifiedMinCountValue, qualifiedMaxCountValue));
+                }
+            }
+
             //sh:uniqueLang
             if (!shapesRow.IsNull("?UNIQUELANG")) {
                 RDFPatternMember uniqueLang = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?UNIQUELANG"));
@@ -573,7 +597,7 @@ namespace RDFSharp.Model
         }
         private static void MergeShape(RDFShapesGraph result, RDFShape shape) {
             RDFShape existingShape = result.SelectShape(shape.ToString());
-            if (existingShape == null) { 
+            if (existingShape == null) {
                 result.AddShape(shape);
             }
             else {

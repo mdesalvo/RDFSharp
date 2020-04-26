@@ -56,7 +56,7 @@ namespace RDFSharp.Model
                 return report;
 
             //Evaluate property constraint shape
-            RDFValidationReport propertyshapeReport = propertyShape.EvaluatePropertyConstraintShape(
+            RDFValidationReport propertyshapeReport = propertyShape.EvaluateShapeWithFocusPreservation(
                 new RDFValidationContext(validationContext.ShapesGraph,
                                          validationContext.DataGraph,
                                          validationContext.Shape,
