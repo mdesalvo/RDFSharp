@@ -77,12 +77,15 @@ namespace RDFSharp.Model
                     return report;
 
                 //Evaluate qualified value shape
-                RDFValidationReport qualifiedValueShapeReport = qualifiedValueShape.EvaluateShapeWithFocusAndValuesPreservation(
+                RDFValidationContext qualifiedValueShapeValidationContext =
                     new RDFValidationContext(validationContext.ShapesGraph,
                                              validationContext.DataGraph,
                                              validationContext.Shape,
                                              validationContext.FocusNodes,
-                                             validationContext.ValueNodes));
+                                             validationContext.ValueNodes);
+                RDFValidationReport qualifiedValueShapeReport =
+                    qualifiedValueShape is RDFNodeShape ? qualifiedValueShape.EvaluateShapeWithFocusAndValuesPreservation(qualifiedValueShapeValidationContext)
+                                                        : qualifiedValueShape.EvaluateShapeWithFocusPreservation(qualifiedValueShapeValidationContext);
                 
                 //Evaluate focus nodes
                 validationContext.FocusNodes.ForEach(focusNode => {
