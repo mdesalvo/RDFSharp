@@ -133,6 +133,16 @@ namespace RDFSharp.Model
             }
             return result;
         }
+       
+        /// <summary>
+        /// Verifies that the given focus node does not produce evidences with the given value node in the given validation report
+        /// </summary>
+        internal static Boolean Conforms(this RDFValidationReport validationReport,
+                                         RDFResource focusNode,
+                                         RDFPatternMember valueNode) {
+            return !validationReport.Any(result => result.FocusNode.Equals(focusNode)
+                                                      && (result.ResultValue == null || result.ResultValue.Equals(valueNode)));
+        }
         #endregion
 
         #region Conversion

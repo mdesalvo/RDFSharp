@@ -54,7 +54,7 @@ namespace RDFSharp.Model
                                                              RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
                                                              focusNode,
                                                              validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                             null, //This constraint does not report sh:value
+                                                             null,
                                                              validationContext.Shape.Messages,
                                                              validationContext.Shape.Severity));
                 }

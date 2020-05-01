@@ -95,8 +95,7 @@ namespace RDFSharp.Model
                     validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                         //Evaluate current value node
-                        if (!qualifiedValueShapeReport.Any(result => result.FocusNode.Equals(focusNode)
-                                                                        && (result.ResultValue == null || result.ResultValue.Equals(valueNode))))
+                        if (qualifiedValueShapeReport.Conforms(focusNode, valueNode))
                             conformingValues++;
 
                     });
