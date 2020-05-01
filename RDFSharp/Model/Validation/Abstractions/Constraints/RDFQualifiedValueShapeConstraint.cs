@@ -96,8 +96,7 @@ namespace RDFSharp.Model
 
                         //Evaluate current value node
                         if (!qualifiedValueShapeReport.Any(result => result.FocusNode.Equals(focusNode)
-                                                                        && result.ResultValue != null
-                                                                            && result.ResultValue.Equals(valueNode)))
+                                                                        && (result.ResultValue == null || result.ResultValue.Equals(valueNode))))
                             conformingValues++;
 
                     });
