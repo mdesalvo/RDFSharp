@@ -72,20 +72,20 @@ namespace RDFSharp.Model
             if (this.QualifiedValueMinCount.HasValue || this.QualifiedValueMaxCount.HasValue) {
 
                 //Search qualified value shape
-                RDFShape qualifiedValueShape = validationContext.ShapesGraph.SelectShape(this.QualifiedValueShapeUri.ToString());
-                if (qualifiedValueShape == null)
+                RDFShape qvShape = validationContext.ShapesGraph.SelectShape(this.QualifiedValueShapeUri.ToString());
+                if (qvShape == null)
                     return report;
 
                 //Evaluate qualified value shape
-                RDFValidationContext qualifiedValueShapeValidationContext =
+                RDFValidationContext qvShapeValidationContext =
                     new RDFValidationContext(validationContext.ShapesGraph,
                                              validationContext.DataGraph,
                                              validationContext.Shape,
                                              validationContext.FocusNodes,
                                              validationContext.ValueNodes);
-                RDFValidationReport qualifiedValueShapeReport =
-                    qualifiedValueShape is RDFNodeShape ? qualifiedValueShape.EvaluateShapeWithFocusAndValuesPreservation(qualifiedValueShapeValidationContext)
-                                                        : qualifiedValueShape.EvaluateShapeWithFocusPreservation(qualifiedValueShapeValidationContext);
+                RDFValidationReport qvShapeReport =
+                    qvShape is RDFNodeShape ? qvShape.EvaluateShapeWithFocusAndValuesPreservation(qvShapeValidationContext)
+                                            : qvShape.EvaluateShapeWithFocusPreservation(qvShapeValidationContext);
                 
                 //Evaluate focus nodes
                 validationContext.FocusNodes.ForEach(focusNode => {
@@ -95,7 +95,7 @@ namespace RDFSharp.Model
                     validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                         //Evaluate current value node
-                        if (qualifiedValueShapeReport.ValueNodeConforms(focusNode, valueNode))
+                        if (qvShapeReport.ValueNodeConforms(focusNode, valueNode))
                             conformingValues++;
 
                     });
