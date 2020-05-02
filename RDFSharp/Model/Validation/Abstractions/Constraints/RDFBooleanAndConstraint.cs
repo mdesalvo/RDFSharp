@@ -89,22 +89,44 @@ namespace RDFSharp.Model
 
             //Evaluate focus nodes
             validationContext.FocusNodes.ForEach(focusNode => {
+                switch (validationContext.Shape) {
 
-                //Get value nodes of current focus node
-                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
+                    //NodeShape
+                    case RDFNodeShape nodeShape:
 
-                    //Evaluate current value node
-                    if (!andShapesReport.TrueForAll(andShapeReport => andShapeReport.Conforms(focusNode, valueNode)))
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 valueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 validationContext.Shape.Severity));
+                        //Evaluate current focus node
+                        if (!andShapesReport.TrueForAll(andShapeReport => andShapeReport.FocusNodeConforms(focusNode)))
+                            report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                     RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                     focusNode,
+                                                                     validationContext.Shape.Messages,
+                                                                     validationContext.Shape.Severity));
 
-                });
+                        break;
+                    
+                    //PropertyShape
+                    case RDFPropertyShape propertyShape:
 
+                        //Get value nodes of current focus node
+                        validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
+
+                            //Evaluate current value node
+                            if (!andShapesReport.TrueForAll(andShapeReport => andShapeReport.ValueNodeConforms(focusNode, valueNode)))
+                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                                                                         RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
+                                                                         focusNode,
+                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                         valueNode,
+                                                                         validationContext.Shape.Messages,
+                                                                         validationContext.Shape.Severity));
+
+                        });
+
+                        break;
+
+                }
             });
             #endregion
 
