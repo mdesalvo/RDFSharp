@@ -68,7 +68,7 @@ namespace RDFSharp.Model
             }
 
             //Evaluate and shapes
-            List<RDFValidationReport> andShapesReport = new List<RDFValidationReport>();
+            RDFValidationReport andShapesReport = new RDFValidationReport();
             foreach (RDFShape andShape in andShapes) {
 
                 //Generate validation report
@@ -78,12 +78,8 @@ namespace RDFSharp.Model
                                          validationContext.Shape,
                                          validationContext.FocusNodes,
                                          validationContext.ValueNodes);
-                RDFValidationReport andShapeReport =
-                    andShape is RDFNodeShape ? andShape.EvaluateShapeWithFocusAndValuesPreservation(andShapeValidationContext)
-                                             : andShape.EvaluateShapeWithFocusPreservation(andShapeValidationContext);
-
-                //Collect validation report
-                andShapesReport.Add(andShapeReport);
+                andShapesReport.MergeResults(andShape is RDFNodeShape ? andShape.EvaluateShapeWithFocusAndValuesPreservation(andShapeValidationContext)
+                                                                      : andShape.EvaluateShapeWithFocusPreservation(andShapeValidationContext));
 
             }
 
@@ -95,7 +91,7 @@ namespace RDFSharp.Model
                     case RDFNodeShape nodeShape:
 
                         //Evaluate current focus node
-                        if (!andShapesReport.TrueForAll(andShapeReport => andShapeReport.FocusNodeConforms(focusNode)))
+                        if (!andShapesReport.FocusNodeConforms(focusNode))
                             report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                      RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -113,7 +109,7 @@ namespace RDFSharp.Model
                         validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
 
                             //Evaluate current value node
-                            if (!andShapesReport.TrueForAll(andShapeReport => andShapeReport.ValueNodeConforms(focusNode, valueNode)))
+                            if (!andShapesReport.ValueNodeConforms(focusNode, valueNode))
                                 report.AddResult(new RDFValidationResult(validationContext.Shape,
                                                                          RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
                                                                          focusNode,
