@@ -71,7 +71,7 @@ namespace RDFSharp.Model
             List<RDFValidationReport> andShapesReport = new List<RDFValidationReport>();
             foreach (RDFShape andShape in andShapes) {
 
-                //Evaluate shape and generate validation report
+                //Generate validation report
                 RDFValidationContext andShapeValidationContext =
                 new RDFValidationContext(validationContext.ShapesGraph,
                                          validationContext.DataGraph,
@@ -82,7 +82,7 @@ namespace RDFSharp.Model
                     andShape is RDFNodeShape ? andShape.EvaluateShapeWithFocusAndValuesPreservation(andShapeValidationContext)
                                              : andShape.EvaluateShapeWithFocusPreservation(andShapeValidationContext);
 
-                //Collect generated validation report
+                //Collect validation report
                 andShapesReport.Add(andShapeReport);
 
             }
