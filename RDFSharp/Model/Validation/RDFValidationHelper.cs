@@ -135,7 +135,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Verifies that the given focus node does not produce evidences with the given value node in the given validation report
+        /// Verifies that the given focus node does not produce evidences in the given validation report
         /// </summary>
         internal static Boolean FocusNodeConforms(this RDFValidationReport validationReport,
                                                   RDFResource focusNode) {
