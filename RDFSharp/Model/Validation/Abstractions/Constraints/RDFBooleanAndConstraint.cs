@@ -99,7 +99,7 @@ namespace RDFSharp.Model
                                                                  RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
                                                                  focusNode,
                                                                  validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 null,
+                                                                 valueNode,
                                                                  validationContext.Shape.Messages,
                                                                  validationContext.Shape.Severity));
 
