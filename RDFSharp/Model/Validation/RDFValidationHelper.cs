@@ -187,6 +187,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.DEACTIVATED, new RDFVariable("DEACTIVATED")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MESSAGE, new RDFVariable("MESSAGE")).Optional())
                      //Constraints
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.AND, new RDFVariable("AND")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.CLOSED, new RDFVariable("CLOSED")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.IGNORED_PROPERTIES, new RDFVariable("IGNOREDPROPERTIES")).Optional())
@@ -236,6 +237,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.GROUP, new RDFVariable("GROUP")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.ORDER, new RDFVariable("ORDER")).Optional())
                      //Constraints
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.AND, new RDFVariable("AND")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLASS, new RDFVariable("CLASS")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.CLOSED, new RDFVariable("CLOSED")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.IGNORED_PROPERTIES, new RDFVariable("IGNOREDPROPERTIES")).Optional())
@@ -356,6 +358,19 @@ namespace RDFSharp.Model
 
         }
         private static void ParseShapeConstraints(DataRow shapesRow, RDFGraph graph, RDFShape shape) {
+
+            //sh:and
+            if (!shapesRow.IsNull("?AND")) {
+                RDFPatternMember reifSubj = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?AND"));
+                if (reifSubj is RDFResource) {
+                    RDFBooleanAndConstraint andConstraint = new RDFBooleanAndConstraint();
+                    RDFCollection andColl = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)reifSubj, RDFModelEnums.RDFTripleFlavors.SPO);
+                    andColl.Items.ForEach(item => {
+                        andConstraint.AddShape((RDFResource)item);
+                    });
+                    shape.AddConstraint(andConstraint);
+                }
+            }
 
             //sh:class
             if (!shapesRow.IsNull("?CLASS")) {
