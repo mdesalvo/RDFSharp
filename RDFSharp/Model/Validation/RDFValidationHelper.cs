@@ -23,18 +23,14 @@ namespace RDFSharp.Model
     /// <summary>
     ///  RDFValidationHelper contains utility methods supporting SHACL modeling and validation
     /// </summary>
-    internal static class RDFValidationHelper
-    {
-
-        #region Methods
+    internal static class RDFValidationHelper {
 
         #region Modeling
         /// <summary>
-        /// Gets the focus nodes of the given shape within the given data graph
+        /// Gets the focus nodes of the given shape
         /// </summary>
-        internal static List<RDFResource> GetFocusNodesOf(this RDFGraph dataGraph,
-                                                               RDFShape shape) {
-            List<RDFResource> result = new List<RDFResource>();
+        internal static List<RDFPatternMember> GetFocusNodesOf(this RDFGraph dataGraph, RDFShape shape) {
+            List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null) {
                 foreach (RDFTarget target in shape.Targets) {
                     switch (target) {
@@ -71,11 +67,9 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Gets the value nodes of the given shape within the given data graph
+        /// Gets the value nodes of the given focus node
         /// </summary>
-        internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph,
-                                                               RDFShape shape,
-                                                               RDFResource focusNode) {
+        internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode) {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (shape != null && dataGraph != null) {
                 switch (shape) {
@@ -87,9 +81,12 @@ namespace RDFSharp.Model
 
                     //sh:PropertyShape
                     case RDFPropertyShape propertyShape:
-                        foreach (var triple in dataGraph.SelectTriplesBySubject(focusNode)
-                                                        .SelectTriplesByPredicate(((RDFPropertyShape)shape).Path))
-                            result.Add(triple.Object);
+                        if (focusNode is RDFResource) { 
+                            foreach (var triple in dataGraph.SelectTriplesBySubject((RDFResource)focusNode)
+                                                            .SelectTriplesByPredicate(((RDFPropertyShape)shape).Path)) { 
+                                result.Add(triple.Object);
+                            }
+                        }
                         break;
 
                 }
@@ -100,9 +97,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf) instances of the given class within the given data graph
         /// </summary>
-        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph,
-                                                                   RDFResource className,
-                                                                   HashSet<Int64> visitContext = null) {
+        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<Int64> visitContext = null) {
             var result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null) {
 
@@ -542,8 +537,6 @@ namespace RDFSharp.Model
                 result.AddShape(existingShape);
             }
         }
-        #endregion
-
         #endregion
 
     }

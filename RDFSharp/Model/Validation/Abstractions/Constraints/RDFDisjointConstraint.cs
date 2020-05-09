@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,32 +50,24 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            //Evaluate focus nodes
-            validationContext.FocusNodes.ForEach(focusNode => {
-
-                //Get value nodes of current focus node
-                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
-
-                    //Evaluate current value node
-                    if (validationContext.DataGraph.Any(t => t.Subject.Equals(focusNode) 
-                                                                && t.Predicate.Equals(this.DisjointPredicate)
-                                                                    && t.Object.Equals(valueNode))) {
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
+            foreach (RDFPatternMember valueNode in valueNodes) {
+                if (dataGraph.Any(t => t.Subject.Equals(focusNode) 
+                                           && t.Predicate.Equals(this.DisjointPredicate)
+                                               && t.Object.Equals(valueNode))) {
+                        report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
                                                                  focusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                  valueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 validationContext.Shape.Severity));
-                    }
-
-                });
-
-            });
+                                                                 shape.Messages,
+                                                                 shape.Severity));
+                
+                }
+            }
             #endregion
 
             return report;

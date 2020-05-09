@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates the node which caused the validation result (sh:focusNode)
         /// </summary>
-        public RDFResource FocusNode { get; internal set; }
+        public RDFPatternMember FocusNode { get; internal set; }
 
         /// <summary>
         /// Indicates the property which caused the validation result (sh:resultPath)
@@ -68,7 +68,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFValidationResult(RDFResource sourceShape,
                                      RDFResource sourceConstraintComponent,
-                                     RDFResource focusNode,
+                                     RDFPatternMember focusNode,
                                      RDFResource resultPath,
                                      RDFPatternMember resultValue,
                                      List<RDFLiteral> resultMessages,
@@ -115,8 +115,8 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, this.SourceConstraintComponent));
 
             //FocusNode
-            if (this.FocusNode != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, this.FocusNode));
+            if (this.FocusNode != null && this.FocusNode is RDFResource)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, (RDFResource)this.FocusNode));
 
             //ResultPath
             if (this.ResultPath != null)
