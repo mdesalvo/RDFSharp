@@ -72,7 +72,7 @@ namespace RDFSharp.Model
                                                          RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
                                                          focusNode,
                                                          shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
-                                                         this.Value,
+                                                         null,
                                                          shape.Messages,
                                                          shape.Severity));
             }

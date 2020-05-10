@@ -51,19 +51,30 @@ namespace RDFSharp.Model
 
             #region Evaluation
             if (this.UniqueLang) {
+                HashSet<string> reportedLangs = new HashSet<string>();
                 List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
                                                                     .Where(vn => !string.IsNullOrEmpty(vn.Language))
                                                                     .ToList();
 
-                if (langlitValueNodes.Any(innerlit => langlitValueNodes.Any(outerlit => innerlit != outerlit 
-                                                                                            && innerlit.Language.Equals(outerlit.Language)))) {  
-                    report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
-                                                             focusNode,
-                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
-                                                             null,
-                                                             shape.Messages,
-                                                             shape.Severity));
+                foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes) {
+                    foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes) {
+                        if (!innerlanglitValueNode.Equals(outerlanglitValueNode) 
+                                && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language)) {
+
+                            //Ensure to not report twice the same language tag
+                            if (!reportedLangs.Contains(innerlanglitValueNode.Language)) {
+                                reportedLangs.Add(innerlanglitValueNode.Language);
+                                report.AddResult(new RDFValidationResult(shape,
+                                                                         RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
+                                                                         focusNode,
+                                                                         shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                         null,
+                                                                         shape.Messages,
+                                                                         shape.Severity));
+                            }
+
+                        }
+                    }
                 }
             }
             #endregion
