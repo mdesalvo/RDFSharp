@@ -14,6 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
+using System.Collections.Generic;
+
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -41,25 +44,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            //Evaluate focus nodes
-            validationContext.FocusNodes.ForEach(focusNode => {
-
-                //Get value nodes of current focus node
-                if (validationContext.ValueNodes[focusNode.PatternMemberID].Count < this.MinCount) { 
-                    report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                             RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
-                                                             focusNode,
-                                                             validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                             null,
-                                                             validationContext.Shape.Messages,
-                                                             validationContext.Shape.Severity));
-                }
-
-            });
+            if (valueNodes.Count < this.MinCount) {
+                report.AddResult(new RDFValidationResult(shape,
+                                                         RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
+                                                         focusNode,
+                                                         shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                         null,
+                                                         shape.Messages,
+                                                         shape.Severity));
+            }
             #endregion
 
             return report;
