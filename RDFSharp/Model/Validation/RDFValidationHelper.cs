@@ -193,6 +193,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PROPERTY, new RDFVariable("PROPERTY")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
                      .UnionWithNext()
                  )
@@ -236,6 +237,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PROPERTY, new RDFVariable("PROPERTY")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
                  );
         }
@@ -518,6 +520,13 @@ namespace RDFSharp.Model
                     }
                     shape.AddConstraint(new RDFPatternConstraint(new Regex(((RDFTypedLiteral)regexPattern).Value, regexOptions)));
                 }
+            }
+
+            //sh:property
+            if (!shapesRow.IsNull("?PROPERTY")) {
+                RDFPatternMember propertyshapeUri = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?PROPERTY"));
+                if (propertyshapeUri is RDFResource)
+                    shape.AddConstraint(new RDFPropertyConstraint((RDFResource)propertyshapeUri));
             }
 
             //sh:uniqueLang
