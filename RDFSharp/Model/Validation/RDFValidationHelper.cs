@@ -203,6 +203,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, new RDFVariable("QUALIFIEDMINCOUNT")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFVariable("QUALIFIEDMAXCOUNT")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.XONE, new RDFVariable("XONE")).Optional())
                      .UnionWithNext()
                  )
                  .AddPatternGroup(new RDFPatternGroup("PROPERTYSHAPES")
@@ -255,6 +256,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT, new RDFVariable("QUALIFIEDMINCOUNT")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFVariable("QUALIFIEDMAXCOUNT")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.UNIQUE_LANG, new RDFVariable("UNIQUELANG")).Optional())
+                     .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.XONE, new RDFVariable("XONE")).Optional())
                  );
         }
         private static RDFShape ParseShapeType(DataRow shapesRow) {
@@ -626,6 +628,19 @@ namespace RDFSharp.Model
                 if (uniqueLang is RDFTypedLiteral
                         && ((RDFTypedLiteral)uniqueLang).HasBooleanDatatype())
                     shape.AddConstraint(new RDFUniqueLangConstraint(Boolean.Parse(((RDFTypedLiteral)uniqueLang).Value)));
+            }
+
+            //sh:xone
+            if (!shapesRow.IsNull("?XONE")) {
+                RDFPatternMember reifSubj = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?XONE"));
+                if (reifSubj is RDFResource) {
+                    RDFXoneConstraint xoneConstraint = new RDFXoneConstraint();
+                    RDFCollection xoneColl = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)reifSubj, RDFModelEnums.RDFTripleFlavors.SPO);
+                    xoneColl.Items.ForEach(item => {
+                        xoneConstraint.AddShape((RDFResource)item);
+                    });
+                    shape.AddConstraint(xoneConstraint);
+                }
             }
 
         }
