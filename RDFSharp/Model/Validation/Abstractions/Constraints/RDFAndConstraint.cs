@@ -69,14 +69,16 @@ namespace RDFSharp.Model
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes) {
-                RDFValidationReport valueNodeReport = new RDFValidationReport();
+                Boolean valueNodeConforms = true;
                 foreach (RDFShape andShape in andShapes) {
                     RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember>() { valueNode });
-                    if (!andShapeReport.Conforms)
-                        valueNodeReport.MergeResults(andShapeReport);
+                    if (!andShapeReport.Conforms) {
+						valueNodeConforms = false;
+						break;
+					}
                 }
 
-                if (!valueNodeReport.Conforms)
+                if (!valueNodeConforms)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT,
                                                              focusNode,
