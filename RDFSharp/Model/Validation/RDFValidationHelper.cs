@@ -194,6 +194,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
+					 .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.NOT, new RDFVariable("NOT")).Optional())
 					 .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.OR, new RDFVariable("OR")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("NSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
@@ -245,6 +246,7 @@ namespace RDFSharp.Model
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.MIN_LENGTH, new RDFVariable("MINLENGTH")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE, new RDFVariable("NODE")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NODE_KIND, new RDFVariable("NODEKIND")).Optional())
+					 .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.NOT, new RDFVariable("NOT")).Optional())
 					 .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.OR, new RDFVariable("OR")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.PATTERN, new RDFVariable("PATTERN")).Optional())
                      .AddPattern(new RDFPattern(new RDFVariable("PSHAPE"), RDFVocabulary.SHACL.FLAGS, new RDFVariable("FLAGS")).Optional())
@@ -544,6 +546,13 @@ namespace RDFSharp.Model
                     else if (nodeKind.Equals(RDFVocabulary.SHACL.LITERAL))
                         shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.Literal));
                 }
+            }
+
+            //sh:not
+            if (!shapesRow.IsNull("?NOT")) {
+                RDFPatternMember notshapeUri = RDFQueryUtilities.ParseRDFPatternMember(shapesRow.Field<string>("?NOT"));
+                if (notshapeUri is RDFResource)
+                    shape.AddConstraint(new RDFNotConstraint((RDFResource)notshapeUri));
             }
 
             //sh:or
