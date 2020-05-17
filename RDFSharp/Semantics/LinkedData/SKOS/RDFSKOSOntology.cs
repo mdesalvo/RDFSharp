@@ -43,7 +43,7 @@ namespace RDFSharp.Semantics
             #region Declarations
 
             #region Ontology
-            Instance = new RDFOntology(new RDFResource("http://www.w3.org/TR/skos-reference/skos-owl1-dl.rdf"));
+            Instance = new RDFOntology(new RDFResource(RDFVocabulary.SKOS.BASE_URI));
             #endregion
 
             #region Classes
