@@ -17,66 +17,75 @@
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFMinInclusiveConstraint represents a SHACL constraint on an inclusive lower-bound value for a given RDF term
+    /// RDFOrConstraint represents a SHACL constraint requiring at least one of the given shapes for a given RDF term
     /// </summary>
-    public class RDFMinInclusiveConstraint : RDFConstraint {
+    public class RDFOrConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Inclusive lower-bound value required on the given RDF term
+        /// Shapes required for the given RDF term
         /// </summary>
-        public RDFPatternMember Value { get; internal set; }
+        internal Dictionary<Int64, RDFResource> OrShapes { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given resource value
+        /// Default-ctor to build an or constraint
         /// </summary>
-        public RDFMinInclusiveConstraint(RDFResource value) : base() {
-            if (value != null) {
-                this.Value = value;
-            }
-            else {
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            }
-        }
-
-        /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given literal value
-        /// </summary>
-        public RDFMinInclusiveConstraint(RDFLiteral value) : base() {
-            if (value != null) {
-                this.Value = value;
-            }
-            else {
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            }
+        public RDFOrConstraint() : base() {
+            this.OrShapes = new Dictionary<Int64, RDFResource>();
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Adds the given shape to the required shapes of this constraint
+        /// </summary>
+        public RDFOrConstraint AddShape(RDFResource shapeUri) {
+            if (shapeUri != null && !this.OrShapes.ContainsKey(shapeUri.PatternMemberID)) {
+                this.OrShapes.Add(shapeUri.PatternMemberID, shapeUri);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
             RDFValidationReport report = new RDFValidationReport();
 
+            //Search for given or shapes
+            List<RDFShape> orShapes = new List<RDFShape>();
+            foreach (RDFResource orShapeUri in this.OrShapes.Values) {
+                RDFShape orShape = shapesGraph.SelectShape(orShapeUri.ToString());
+                if (orShape != null)
+                    orShapes.Add(orShape);
+            }
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes) {
-                Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
-                if (comparison == -99 || comparison > 0) {
+                Boolean valueNodeConforms = false;
+                foreach (RDFShape orShape in orShapes) {
+                    RDFValidationReport orShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, orShape, new List<RDFPatternMember>() { valueNode });
+                    if (orShapeReport.Conforms) {
+						valueNodeConforms = true;
+						break;
+					}                        
+                }
+
+                if (!valueNodeConforms)
                     report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT,
+                                                             RDFVocabulary.SHACL.OR_CONSTRAINT_COMPONENT,
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
             }
             #endregion
 
@@ -90,11 +99,14 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //sh:minInclusive
-                if (this.Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFResource)this.Value));
-                else
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFLiteral)this.Value));
+                //Get collection from OrShapes
+                RDFCollection orShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
+                foreach (RDFResource orShape in this.OrShapes.Values)
+                    orShapes.AddItem(orShape);
+                result.AddCollection(orShapes);
+
+                //sh:or
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.OR, orShapes.ReificationSubject));
 
             }
             return result;

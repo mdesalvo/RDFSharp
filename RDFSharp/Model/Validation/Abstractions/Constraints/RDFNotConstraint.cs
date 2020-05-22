@@ -17,43 +17,32 @@
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFMinInclusiveConstraint represents a SHACL constraint on an inclusive lower-bound value for a given RDF term
+    /// RDFNotConstraint represents a SHACL constraint not allowing the given shape for a given RDF term
     /// </summary>
-    public class RDFMinInclusiveConstraint : RDFConstraint {
+    public class RDFNotConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Inclusive lower-bound value required on the given RDF term
+        /// Shape not allowed for the given RDF term
         /// </summary>
-        public RDFPatternMember Value { get; internal set; }
+        public RDFResource NotShape { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given resource value
+        /// Default-ctor to build a not constraint with the given shape
         /// </summary>
-        public RDFMinInclusiveConstraint(RDFResource value) : base() {
-            if (value != null) {
-                this.Value = value;
+        public RDFNotConstraint(RDFResource notShape) : base() {
+            if (notShape != null) {
+                this.NotShape = notShape;
             }
             else {
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            }
-        }
-
-        /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given literal value
-        /// </summary>
-        public RDFMinInclusiveConstraint(RDFLiteral value) : base() {
-            if (value != null) {
-                this.Value = value;
-            }
-            else {
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
+                throw new RDFModelException("Cannot create RDFNotConstraint because given \"notShape\" parameter is null.");
             }
         }
         #endregion
@@ -65,18 +54,22 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
             RDFValidationReport report = new RDFValidationReport();
 
+            //Search for given not shape
+            RDFShape notShape = shapesGraph.SelectShape(this.NotShape.ToString());
+            if (notShape == null)
+				return report;
+            
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes) {
-                Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
-                if (comparison == -99 || comparison > 0) {
+                RDFValidationReport notShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, notShape, new List<RDFPatternMember>() { valueNode });
+				if (notShapeReport.Conforms)
                     report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT,
+                                                             RDFVocabulary.SHACL.NOT_CONSTRAINT_COMPONENT,
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
             }
             #endregion
 
@@ -90,11 +83,8 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //sh:minInclusive
-                if (this.Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFResource)this.Value));
-                else
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFLiteral)this.Value));
+                //sh:not
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NOT, this.NotShape));
 
             }
             return result;

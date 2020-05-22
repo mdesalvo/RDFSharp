@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,43 +46,36 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
             if (this.UniqueLang) {
-                HashSet<String> languages = new HashSet<String>();
+                HashSet<string> reportedLangs = new HashSet<string>();
+                List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
+                                                                    .Where(vn => !string.IsNullOrEmpty(vn.Language))
+                                                                    .ToList();
 
-                //Evaluate focus nodes
-                validationContext.FocusNodes.ForEach(focusNode => {
+                foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes) {
+                    foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes) {
+                        if (!innerlanglitValueNode.Equals(outerlanglitValueNode) 
+                                && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language)) {
 
-                    //Consider only values nodes which are languaged plain literals
-                    List<RDFPlainLiteral> valueNodes = validationContext.ValueNodes[focusNode.PatternMemberID]
-                                                                        .OfType<RDFPlainLiteral>()
-                                                                        .Where(vn => !String.IsNullOrEmpty(vn.Language))
-                                                                        .ToList();
-                    valueNodes.ForEach(valueNode => {
-
-                        //Evaluate current value node
-                        if (valueNodes.Count(vn => vn.Language.Equals(valueNode.Language, StringComparison.OrdinalIgnoreCase)) > 1) {
-                            if (languages.Contains(valueNode.Language)) { 
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
+                            //Ensure to not report twice the same language tag
+                            if (!reportedLangs.Contains(innerlanglitValueNode.Language)) {
+                                reportedLangs.Add(innerlanglitValueNode.Language);
+                                report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
                                                                          focusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         valueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         validationContext.Shape.Severity));
+                                                                         shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                         null,
+                                                                         shape.Messages,
+                                                                         shape.Severity));
                             }
-                            else { 
-                                languages.Add(valueNode.Language);
-                            }
+
                         }
-
-                    });
-                    languages.Clear();
-
-                });
+                    }
+                }
             }
             #endregion
 

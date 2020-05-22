@@ -14,6 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
+using System.Collections.Generic;
+
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -41,40 +44,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-
-            //Evaluate current shape
-            switch (validationContext.Shape) {
-
-                //NodeShape (not allowed)
-                case RDFNodeShape nodeShape:
-                    break;
-
-                //PropertyShape
-                case RDFPropertyShape propertyShape:
-
-                    //Evaluate focus nodes
-                    validationContext.FocusNodes.ForEach(focusNode => {
-
-                        //Get value nodes of current focus node
-                        if (validationContext.ValueNodes[focusNode.PatternMemberID].Count > this.MaxCount) {
-                            report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                     RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
-                                                                     focusNode,
-                                                                     ((RDFPropertyShape)validationContext.Shape).Path,
-                                                                     null,
-                                                                     validationContext.Shape.Messages,
-                                                                     validationContext.Shape.Severity));
-                        }
-
-                    });
-                    break;
-
+            if (valueNodes.Count > this.MaxCount) {
+                report.AddResult(new RDFValidationResult(shape,
+                                                         RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
+                                                         focusNode,
+                                                         shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                         null,
+                                                         shape.Messages,
+                                                         shape.Severity));
             }
-            
             #endregion
 
             return report;

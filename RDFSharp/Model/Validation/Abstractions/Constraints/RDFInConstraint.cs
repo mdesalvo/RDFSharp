@@ -76,30 +76,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            //Evaluate focus nodes
-            validationContext.FocusNodes.ForEach(focusNode => {
-
-                //Get value nodes of current focus node
-                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
-
-                    //Evaluate current value node
-                    if (!this.InValues.Any(v => v.Value.Equals(valueNode))) { 
-                        report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                 RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                 valueNode,
-                                                                 validationContext.Shape.Messages,
-                                                                 validationContext.Shape.Severity));
-                    }
-
-                });
-
-            });
+            foreach (RDFPatternMember valueNode in valueNodes) {
+                if (!this.InValues.Any(v => v.Value.Equals(valueNode))) { 
+                    report.AddResult(new RDFValidationResult(shape,
+                                                             RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
+                                                             focusNode,
+                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             valueNode,
+                                                             shape.Messages,
+                                                             shape.Severity));
+                }
+            }
             #endregion
 
             return report;
@@ -112,18 +103,18 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //Get collection from values
-                RDFCollection values = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
-                foreach (RDFPatternMember value in this.InValues.Values) {
+                //Get collection from inValues
+                RDFCollection inValues = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
+                foreach (RDFPatternMember inValue in this.InValues.Values) {
                     if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-                        values.AddItem((RDFLiteral)value);
+                        inValues.AddItem((RDFLiteral)inValue);
                     else
-                        values.AddItem((RDFResource)value);
+                        inValues.AddItem((RDFResource)inValue);
                 }
-                result.AddCollection(values);
+                result.AddCollection(inValues);
 
                 //sh:in
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, values.ReificationSubject));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, inValues.ReificationSubject));
 
             }
             return result;

@@ -16,7 +16,6 @@
 
 using RDFSharp.Query;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RDFSharp.Model
 {
@@ -32,12 +31,10 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFValidationReport Validate(this RDFShapesGraph shapesGraph, RDFGraph dataGraph) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (dataGraph != null) {
-                RDFValidationContext validationContext = new RDFValidationContext(shapesGraph, dataGraph);
-
-                //Evaluate active shapes of shapes graph
-                foreach (RDFShape shape in shapesGraph.Where(s => !s.Deactivated))
-                    report.MergeResults(shape.EvaluateShape(validationContext));
+            if (dataGraph != null) { 
+                foreach (RDFShape shape in shapesGraph) { 
+                    report.MergeResults(ValidateShape(shapesGraph, dataGraph, shape));
+                }
             }
             return report;
         }
@@ -45,25 +42,25 @@ namespace RDFSharp.Model
         /// <summary>
         /// Validates the given data graph against the given SHACL shape
         /// </summary>
-        internal static RDFValidationReport EvaluateShape(this RDFShape shape, RDFValidationContext validationContext) {
+        internal static RDFValidationReport ValidateShape(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, List<RDFPatternMember> focusNodes = null) {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
+            if (!shape.Deactivated) {
 
-            //Set current shape
-            validationContext.Shape = shape;
+                //Resolve focus nodes
+                if (focusNodes == null)
+                    focusNodes = dataGraph.GetFocusNodesOf(shape);
+                foreach (RDFPatternMember focusNode in focusNodes) {
 
-            //Get focus nodes of current shape
-            validationContext.FocusNodes = validationContext.DataGraph.GetFocusNodesOf(validationContext.Shape);
+                    //Resolve value nodes
+                    List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(shape, focusNode);
 
-            //Get value nodes of each focus node
-            validationContext.FocusNodes.ForEach(focusNode => {
-                if (!validationContext.ValueNodes.ContainsKey(focusNode.PatternMemberID))
-                    validationContext.ValueNodes.Add(focusNode.PatternMemberID, validationContext.DataGraph.GetValueNodesOf(shape, focusNode));
-            });
+                    //Evaluate constraints
+                    foreach (RDFConstraint constraint in shape)
+                        report.MergeResults(constraint.ValidateConstraint(shapesGraph, dataGraph, shape, focusNode, valueNodes));
 
-            //Evaluate constraints
-            foreach (RDFConstraint currentConstraint in shape)
-                report.MergeResults(currentConstraint.Evaluate(validationContext));
+                }
 
+            }
             return report;
         }
         #endregion

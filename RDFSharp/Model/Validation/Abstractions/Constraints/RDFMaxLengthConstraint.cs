@@ -14,6 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
+using System.Collections.Generic;
+
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -41,50 +44,42 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            //Evaluate focus nodes
-            validationContext.FocusNodes.ForEach(focusNode => {
+            foreach (RDFPatternMember valueNode in valueNodes) {
+                switch (valueNode) {
 
-                //Get value nodes of current focus node
-                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
+                    //Resource
+                    case RDFResource valueNodeResource:
+                        if (valueNodeResource.IsBlank 
+                                || valueNodeResource.ToString().Length > this.MaxLength) {
+                            report.AddResult(new RDFValidationResult(shape,
+                                                                     RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                     valueNode,
+                                                                     shape.Messages,
+                                                                     shape.Severity));
+                        }
+                        break;
 
-                    //Evaluate current value node
-                    switch (valueNode) {
+                    //Literal
+                    case RDFLiteral valueNodeLiteral:
+                        if (valueNodeLiteral.Value.Length > this.MaxLength) {
+                            report.AddResult(new RDFValidationResult(shape,
+                                                                     RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                     valueNode,
+                                                                     shape.Messages,
+                                                                     shape.Severity));
+                        }
+                        break;
 
-                        //Resource
-                        case RDFResource valueNodeResource:
-                            if (valueNodeResource.IsBlank || valueNodeResource.ToString().Length > this.MaxLength) {
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                         RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         valueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         validationContext.Shape.Severity));
-                            }
-                            break;
-
-                        //Literal
-                        case RDFLiteral valueNodeLiteral:
-                            if (valueNodeLiteral.Value.Length > this.MaxLength) {
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                         RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         valueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         validationContext.Shape.Severity));
-                            }
-                            break;
-
-                    }
-
-                });
-
-            });
+                }
+            }
             #endregion
 
             return report;

@@ -15,45 +15,32 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// RDFMinInclusiveConstraint represents a SHACL constraint on an inclusive lower-bound value for a given RDF term
+    /// RDFNodeConstraint represents a SHACL constraint requiring the specified node shape for a given RDF term
     /// </summary>
-    public class RDFMinInclusiveConstraint : RDFConstraint {
+    public class RDFNodeConstraint : RDFConstraint {
 
         #region Properties
         /// <summary>
-        /// Inclusive lower-bound value required on the given RDF term
+        /// Identifier of the node shape against which the given RDF term must be validated
         /// </summary>
-        public RDFPatternMember Value { get; internal set; }
+        public RDFResource NodeShapeUri { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given resource value
+        /// Default-ctor to build a node constraint with the given node shape identifier
         /// </summary>
-        public RDFMinInclusiveConstraint(RDFResource value) : base() {
-            if (value != null) {
-                this.Value = value;
+        public RDFNodeConstraint(RDFResource nodeShapeUri) : base() {
+            if (nodeShapeUri != null) {
+                this.NodeShapeUri = nodeShapeUri;
             }
             else {
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            }
-        }
-
-        /// <summary>
-        /// Default-ctor to build a minInclusive constraint with the given literal value
-        /// </summary>
-        public RDFMinInclusiveConstraint(RDFLiteral value) : base() {
-            if (value != null) {
-                this.Value = value;
-            }
-            else {
-                throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
+                throw new RDFModelException("Cannot create RDFNodeConstraint because given \"nodeShapeUri\" parameter is null.");
             }
         }
         #endregion
@@ -65,19 +52,23 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
             RDFValidationReport report = new RDFValidationReport();
 
+            //Search for given node shape
+            RDFNodeShape nodeShape = shapesGraph.SelectShape(this.NodeShapeUri.ToString()) as RDFNodeShape;
+            if (nodeShape == null)
+                return report;
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes) {
-                Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
-                if (comparison == -99 || comparison > 0) {
+                RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, new List<RDFPatternMember>() { valueNode });
+                if (!nodeShapeReport.Conforms)
                     report.AddResult(new RDFValidationResult(shape,
-                                                             RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT,
+                                                             RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
-            }
+            }               
             #endregion
 
             return report;
@@ -90,11 +81,8 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null) {
 
-                //sh:minInclusive
-                if (this.Value is RDFResource)
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFResource)this.Value));
-                else
-                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_INCLUSIVE, (RDFLiteral)this.Value));
+                //sh:node
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, this.NodeShapeUri));
 
             }
             return result;

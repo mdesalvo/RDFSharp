@@ -42,7 +42,7 @@ namespace RDFSharp.Semantics
             #region Declarations
 
             #region Ontology
-            Instance = new RDFOntology(new RDFResource("https://rdfsharp.codeplex.com/semantics/dc#"));
+            Instance = new RDFOntology(new RDFResource(RDFVocabulary.DC.BASE_URI));
             #endregion
 
             #region Classes

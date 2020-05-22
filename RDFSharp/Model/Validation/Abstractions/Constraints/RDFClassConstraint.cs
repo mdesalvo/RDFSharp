@@ -51,51 +51,40 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport Evaluate(RDFValidationContext validationContext) {
-            RDFValidationReport report = new RDFValidationReport(new RDFResource());
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+            RDFValidationReport report = new RDFValidationReport();
+            List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(this.ClassType);
 
             #region Evaluation
-            //Get class instances
-            List<RDFPatternMember> classInstances = validationContext.DataGraph.GetInstancesOfClass(this.ClassType);
+            foreach (RDFPatternMember valueNode in valueNodes) { 
+                switch (valueNode) {
 
-            //Evaluate focus nodes
-            validationContext.FocusNodes.ForEach(focusNode => {
-
-                //Get value nodes of current focus node
-                validationContext.ValueNodes[focusNode.PatternMemberID].ForEach(valueNode => {
-
-                    //Evaluate current value node
-                    switch (valueNode) {
-
-                        //Resource
-                        case RDFResource valueNodeResource:
-                            if (!classInstances.Any(x => x.Equals(valueNodeResource))) {
-                                report.AddResult(new RDFValidationResult(validationContext.Shape,
-                                                                         RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
-                                                                         focusNode,
-                                                                         validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
-                                                                         valueNode,
-                                                                         validationContext.Shape.Messages,
-                                                                         validationContext.Shape.Severity));
-                            }
-                            break;
-
-                        //Literal
-                        case RDFLiteral valueNodeLiteral:
-                            report.AddResult(new RDFValidationResult(validationContext.Shape,
+                    //Resource
+                    case RDFResource valueNodeResource:
+                        if (!classInstances.Any(x => x.Equals(valueNodeResource))) {
+                            report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
                                                                      focusNode,
-                                                                     validationContext.Shape is RDFPropertyShape ? ((RDFPropertyShape)validationContext.Shape).Path : null,
+                                                                     shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                      valueNode,
-                                                                     validationContext.Shape.Messages,
-                                                                     validationContext.Shape.Severity));
-                            break;
+                                                                     shape.Messages,
+                                                                     shape.Severity));
+                        }
+                        break;
 
-                    }
+                    //Literal
+                    case RDFLiteral valueNodeLiteral:
+                        report.AddResult(new RDFValidationResult(shape,
+                                                                 RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
+                                                                 focusNode,
+                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                                 valueNode,
+                                                                 shape.Messages,
+                                                                 shape.Severity));
+                        break;
 
-                });
-
-            });
+                }
+            }
             #endregion
 
             return report;
