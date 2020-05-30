@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections.Specialized;
 
@@ -22,7 +23,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFSPARQLEndpoint represents a SPARQL endpoint
     /// </summary>
-    public class RDFSPARQLEndpoint
+    public class RDFSPARQLEndpoint : RDFDataSource
     {
 
         #region Properties
@@ -30,6 +31,11 @@ namespace RDFSharp.Query
         /// Base address of the SPARQL endpoint
         /// </summary>
         public Uri BaseAddress { get; internal set; }
+
+        /// <summary>
+        /// Unique representation of the SPARQL endpoint
+        /// </summary>
+        public Int64 EndpointID { get; internal set; }
 
         /// <summary>
         /// Collection of query params sent to the SPARQL endpoint
@@ -46,6 +52,7 @@ namespace RDFSharp.Query
             if (baseAddress != null)
             {
                 this.BaseAddress = baseAddress;
+                this.EndpointID = RDFModelUtilities.CreateHash(this.ToString());
                 this.QueryParams = new NameValueCollection();
             }
             else
