@@ -174,8 +174,7 @@ namespace RDFSharp.Query
             this.Aggregators.ForEach(ag =>
                 projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
 
-            DataTable resultTable = RDFQueryEngine.CreateNew()
-                                                  .CombineTables(projFuncTables, false);
+            DataTable resultTable = new RDFQueryEngine().CombineTables(projFuncTables, false);
             return resultTable;
         }
 

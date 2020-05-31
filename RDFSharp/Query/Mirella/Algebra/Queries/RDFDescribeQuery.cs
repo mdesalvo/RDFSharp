@@ -183,7 +183,7 @@ namespace RDFSharp.Query
         {
             if (graph != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, graph);
+                return new RDFQueryEngine().EvaluateDescribeQuery(this, graph);
             }
             else
             {
@@ -198,7 +198,7 @@ namespace RDFSharp.Query
         {
             if (store != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, store);
+                return new RDFQueryEngine().EvaluateDescribeQuery(this, store);
             }
             else
             {
@@ -213,7 +213,7 @@ namespace RDFSharp.Query
         {
             if (federation != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateDescribeQuery(this, federation);
+                return new RDFQueryEngine().EvaluateDescribeQuery(this, federation);
             }
             else
             {
@@ -263,6 +263,28 @@ namespace RDFSharp.Query
                 RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
             }
             return describeResult;
+        }
+
+        /// <summary>
+        /// Applies the query to the given data source
+        /// </summary>
+        internal RDFDescribeQueryResult ApplyToDataSource(RDFDataSource dataSource)
+        {
+            if (dataSource != null)
+            {
+                switch (dataSource)
+                {
+                    case RDFGraph graph:
+                        return this.ApplyToGraph(graph);
+                    case RDFStore store:
+                        return this.ApplyToStore(store);
+                    case RDFFederation federation:
+                        return this.ApplyToFederation(federation);
+                    case RDFSPARQLEndpoint sparqlEndpoint:
+                        return this.ApplyToSPARQLEndpoint(sparqlEndpoint);
+                }
+            }
+            return new RDFDescribeQueryResult(null);
         }
         #endregion
 

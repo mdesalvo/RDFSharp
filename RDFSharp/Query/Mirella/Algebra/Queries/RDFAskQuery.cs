@@ -101,7 +101,7 @@ namespace RDFSharp.Query
         {
             if (graph != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateAskQuery(this, graph);
+                return new RDFQueryEngine().EvaluateAskQuery(this, graph);
             }
             else
             {
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
         {
             if (store != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateAskQuery(this, store);
+                return new RDFQueryEngine().EvaluateAskQuery(this, store);
             }
             else
             {
@@ -131,7 +131,7 @@ namespace RDFSharp.Query
         {
             if (federation != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateAskQuery(this, federation);
+                return new RDFQueryEngine().EvaluateAskQuery(this, federation);
             }
             else
             {
@@ -179,6 +179,28 @@ namespace RDFSharp.Query
                 RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated ASK query on SPARQL endpoint '{0}': Result is '{1}'.", sparqlEndpoint, askResult.AskResult));
             }
             return askResult;
+        }
+
+        /// <summary>
+        /// Applies the query to the given data source
+        /// </summary>
+        internal RDFAskQueryResult ApplyToDataSource(RDFDataSource dataSource)
+        {
+            if (dataSource != null)
+            {
+                switch (dataSource)
+                {
+                    case RDFGraph graph:
+                        return this.ApplyToGraph(graph);
+                    case RDFStore store:
+                        return this.ApplyToStore(store);
+                    case RDFFederation federation:
+                        return this.ApplyToFederation(federation);
+                    case RDFSPARQLEndpoint sparqlEndpoint:
+                        return this.ApplyToSPARQLEndpoint(sparqlEndpoint);
+                }
+            }
+            return new RDFAskQueryResult();
         }
         #endregion
 

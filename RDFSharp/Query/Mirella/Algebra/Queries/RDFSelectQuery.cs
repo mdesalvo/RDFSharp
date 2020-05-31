@@ -170,7 +170,7 @@ namespace RDFSharp.Query
         {
             if (graph != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, graph);
+                return new RDFQueryEngine().EvaluateSelectQuery(this, graph);
             }
             else
             {
@@ -185,7 +185,7 @@ namespace RDFSharp.Query
         {
             if (store != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, store);
+                return new RDFQueryEngine().EvaluateSelectQuery(this, store);
             }
             else
             {
@@ -200,7 +200,7 @@ namespace RDFSharp.Query
         {
             if (federation != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, federation);
+                return new RDFQueryEngine().EvaluateSelectQuery(this, federation);
             }
             else
             {
@@ -252,7 +252,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the query to the given federation
+        /// Applies the query to the given data source
         /// </summary>
         internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource dataSource)
         {
@@ -260,14 +260,14 @@ namespace RDFSharp.Query
             {
                 switch (dataSource)
                 {
-                    case RDFGraph dataSourceGraph:
-                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceGraph);
-                    case RDFStore dataSourceStore:
-                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceStore);
-                    case RDFFederation dataSourceFederation:
-                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceFederation);
-                    case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceSparqlEndpoint);
+                    case RDFGraph graph:
+                        return this.ApplyToGraph(graph);
+                    case RDFStore store:
+                        return this.ApplyToStore(store);
+                    case RDFFederation federation:
+                        return this.ApplyToFederation(federation);
+                    case RDFSPARQLEndpoint sparqlEndpoint:
+                        return this.ApplyToSPARQLEndpoint(sparqlEndpoint);
                 }
             }
             return new RDFSelectQueryResult();

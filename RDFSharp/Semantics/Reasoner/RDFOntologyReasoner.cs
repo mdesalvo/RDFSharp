@@ -25,7 +25,7 @@ namespace RDFSharp.Semantics
     /// <summary>
     /// RDFOntologyReasoner represents an inference engine applied on a given ontology
     /// </summary>
-    public sealed class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule> {
+    public class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule> {
 
         #region Properties
         /// <summary>
@@ -52,7 +52,7 @@ namespace RDFSharp.Semantics
         /// <summary>
         /// Default-ctor to build an empty ontology reasoner
         /// </summary>
-        internal RDFOntologyReasoner() {
+        public RDFOntologyReasoner() {
             this.Rules = new List<RDFOntologyReasonerRule>();
         }
         #endregion
@@ -77,17 +77,10 @@ namespace RDFSharp.Semantics
 
         #region Create
         /// <summary>
-        /// Creates a new reasoner with the given description
-        /// </summary>
-        public static RDFOntologyReasoner CreateNew() {
-            return new RDFOntologyReasoner();
-        }
-
-        /// <summary>
         /// Adds the given rule to the reasoner
         /// </summary>
-        public RDFOntologyReasoner WithRule(RDFOntologyReasonerRule rule) {
-            if (rule   != null) {
+        public RDFOntologyReasoner AddRule(RDFOntologyReasonerRule rule) {
+            if (rule != null) {
                 if (this.SelectRule(rule.RuleName) == null) {
                     this.Rules.Add(rule);
                 }

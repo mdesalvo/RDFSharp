@@ -47,14 +47,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to initialize a query engine instance
         /// </summary>
-        private RDFQueryEngine()
+        internal RDFQueryEngine()
         {
             this.QueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
             this.QueryMemberFinalResultTables = new Dictionary<Int64, DataTable>();
-        }
-        internal static RDFQueryEngine CreateNew()
-        {
-            return new RDFQueryEngine();
         }
         #endregion
 

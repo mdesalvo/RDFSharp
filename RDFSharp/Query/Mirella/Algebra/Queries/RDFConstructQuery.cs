@@ -200,7 +200,7 @@ namespace RDFSharp.Query
         {
             if (graph != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, graph);
+                return new RDFQueryEngine().EvaluateConstructQuery(this, graph);
             }
             else
             {
@@ -215,7 +215,7 @@ namespace RDFSharp.Query
         {
             if (store != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, store);
+                return new RDFQueryEngine().EvaluateConstructQuery(this, store);
             }
             else
             {
@@ -230,7 +230,7 @@ namespace RDFSharp.Query
         {
             if (federation != null)
             {
-                return RDFQueryEngine.CreateNew().EvaluateConstructQuery(this, federation);
+                return new RDFQueryEngine().EvaluateConstructQuery(this, federation);
             }
             else
             {
@@ -280,6 +280,28 @@ namespace RDFSharp.Query
                 RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated CONSTRUCT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));
             }
             return constructResult;
+        }
+
+        /// <summary>
+        /// Applies the query to the given data source
+        /// </summary>
+        internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource dataSource)
+        {
+            if (dataSource != null)
+            {
+                switch (dataSource)
+                {
+                    case RDFGraph graph:
+                        return this.ApplyToGraph(graph);
+                    case RDFStore store:
+                        return this.ApplyToStore(store);
+                    case RDFFederation federation:
+                        return this.ApplyToFederation(federation);
+                    case RDFSPARQLEndpoint sparqlEndpoint:
+                        return this.ApplyToSPARQLEndpoint(sparqlEndpoint);
+                }
+            }
+            return new RDFConstructQueryResult(null);
         }
         #endregion
 
