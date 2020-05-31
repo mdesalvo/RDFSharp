@@ -33,11 +33,6 @@ namespace RDFSharp.Query
         public Uri BaseAddress { get; internal set; }
 
         /// <summary>
-        /// Unique representation of the SPARQL endpoint
-        /// </summary>
-        public Int64 EndpointID { get; internal set; }
-
-        /// <summary>
         /// Collection of query params sent to the SPARQL endpoint
         /// </summary>
         internal NameValueCollection QueryParams { get; set; }
@@ -52,8 +47,8 @@ namespace RDFSharp.Query
             if (baseAddress != null)
             {
                 this.BaseAddress = baseAddress;
-                this.EndpointID = RDFModelUtilities.CreateHash(this.ToString());
                 this.QueryParams = new NameValueCollection();
+                this.DataSourceID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
             {

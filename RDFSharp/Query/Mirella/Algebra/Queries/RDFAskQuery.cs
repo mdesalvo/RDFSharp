@@ -127,7 +127,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
-        public RDFAskQueryResult ApplyToFederation(RDFSPARQLFederation federation)
+        public RDFAskQueryResult ApplyToFederation(RDFFederation federation)
         {
             if (federation != null)
             {

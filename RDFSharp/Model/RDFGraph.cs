@@ -72,6 +72,7 @@ namespace RDFSharp.Model
             this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.GraphIndex = new RDFGraphIndex();
             this.Triples = new Dictionary<Int64, RDFTriple>();
+            this.DataSourceID = RDFModelUtilities.CreateHash(this.Context.ToString());
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace RDFSharp.Model
             {
                 return false;
             }
-            foreach (var t in this)
+            foreach (RDFTriple t in this)
             {
                 if (!other.ContainsTriple(t))
                 {
@@ -140,6 +141,7 @@ namespace RDFSharp.Model
             if (contextUri != null && !contextUri.ToString().ToUpperInvariant().StartsWith("BNODE:"))
             {
                 this.Context = contextUri;
+                this.DataSourceID = RDFModelUtilities.CreateHash(this.Context.ToString());
             }
             return this;
         }
@@ -172,9 +174,9 @@ namespace RDFSharp.Model
             if (container != null)
             {
                 //Reify the container to get its graph representation
-                var reifCont = container.ReifyContainer();
+                RDFGraph reifCont = container.ReifyContainer();
                 //Iterate on the constructed triples
-                foreach (var t in reifCont)
+                foreach (RDFTriple t in reifCont)
                     this.AddTriple(t);
             }
             return this;
@@ -188,9 +190,9 @@ namespace RDFSharp.Model
             if (collection != null)
             {
                 //Reify the collection to get its graph representation
-                var reifColl = collection.ReifyCollection();
+                RDFGraph reifColl = collection.ReifyCollection();
                 //Iterate on the constructed triples
-                foreach (var t in reifColl)
+                foreach (RDFTriple t in reifColl)
                     this.AddTriple(t);
             }
             return this;
@@ -222,7 +224,7 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null)
             {
-                foreach (var triple in this.SelectTriplesBySubject(subjectResource))
+                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -242,7 +244,7 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null)
             {
-                foreach (var triple in this.SelectTriplesByPredicate(predicateResource))
+                foreach (RDFTriple triple in this.SelectTriplesByPredicate(predicateResource))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -262,7 +264,7 @@ namespace RDFSharp.Model
         {
             if (objectResource != null)
             {
-                foreach (var triple in this.SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in this.SelectTriplesByObject(objectResource))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -282,7 +284,7 @@ namespace RDFSharp.Model
         {
             if (objectLiteral != null)
             {
-                foreach (var triple in this.SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in this.SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -302,8 +304,8 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && predicateResource != null)
             {
-                foreach (var triple in this.SelectTriplesBySubject(subjectResource)
-                                           .SelectTriplesByPredicate(predicateResource))
+                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource)
+                                                 .SelectTriplesByPredicate(predicateResource))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -323,8 +325,8 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && objectResource != null)
             {
-                foreach (var triple in this.SelectTriplesBySubject(subjectResource)
-                                           .SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource)
+                                                 .SelectTriplesByObject(objectResource))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -344,8 +346,8 @@ namespace RDFSharp.Model
         {
             if (subjectResource != null && objectLiteral != null)
             {
-                foreach (var triple in this.SelectTriplesBySubject(subjectResource)
-                                           .SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in this.SelectTriplesBySubject(subjectResource)
+                                                 .SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -365,8 +367,8 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null && objectResource != null)
             {
-                foreach (var triple in this.SelectTriplesByPredicate(predicateResource)
-                                           .SelectTriplesByObject(objectResource))
+                foreach (RDFTriple triple in this.SelectTriplesByPredicate(predicateResource)
+                                                 .SelectTriplesByObject(objectResource))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -386,8 +388,8 @@ namespace RDFSharp.Model
         {
             if (predicateResource != null && objectLiteral != null)
             {
-                foreach (var triple in this.SelectTriplesByPredicate(predicateResource)
-                                           .SelectTriplesByLiteral(objectLiteral))
+                foreach (RDFTriple triple in this.SelectTriplesByPredicate(predicateResource)
+                                                 .SelectTriplesByLiteral(objectLiteral))
                 {
                     //Remove triple
                     this.Triples.Remove(triple.TripleID);
@@ -420,34 +422,34 @@ namespace RDFSharp.Model
         {
 
             //Create SPARQL SELECT query for detecting reified triples
-            var T = new RDFVariable("T");
-            var S = new RDFVariable("S");
-            var P = new RDFVariable("P");
-            var O = new RDFVariable("O");
-            var Q = new RDFSelectQuery()
-                        .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
-                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
-                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
-                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))
-                            .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O))
-                            .AddFilter(new RDFIsUriFilter(T))
-                            .AddFilter(new RDFIsUriFilter(S))
-                            .AddFilter(new RDFIsUriFilter(P))
-                        );
+            RDFVariable T = new RDFVariable("T");
+            RDFVariable S = new RDFVariable("S");
+            RDFVariable P = new RDFVariable("P");
+            RDFVariable O = new RDFVariable("O");
+            RDFSelectQuery Q = new RDFSelectQuery()
+                                    .AddPatternGroup(new RDFPatternGroup("UnreifyTriples")
+                                        .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
+                                        .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.SUBJECT, S))
+                                        .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.PREDICATE, P))
+                                        .AddPattern(new RDFPattern(T, RDFVocabulary.RDF.OBJECT, O))
+                                        .AddFilter(new RDFIsUriFilter(T))
+                                        .AddFilter(new RDFIsUriFilter(S))
+                                        .AddFilter(new RDFIsUriFilter(P))
+                                    );
 
             //Apply it to the graph
-            var R = Q.ApplyToGraph(this);
+            RDFSelectQueryResult R = Q.ApplyToGraph(this);
 
             //Iterate results
-            var reifiedTriples = R.SelectResults.Rows.GetEnumerator();
+            IEnumerator reifiedTriples = R.SelectResults.Rows.GetEnumerator();
             while (reifiedTriples.MoveNext())
             {
 
                 //Get reification data (T, S, P, O)
-                var tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?T"].ToString());
-                var tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?S"].ToString());
-                var tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?P"].ToString());
-                var tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?O"].ToString());
+                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?T"].ToString());
+                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?S"].ToString());
+                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?P"].ToString());
+                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedTriples.Current)["?O"].ToString());
 
                 //Cleanup graph from detected reifications
                 if (tObject is RDFResource)
@@ -520,12 +522,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph IntersectWith(RDFGraph graph)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
             if (graph != null)
             {
 
                 //Add intersection triples
-                foreach (var t in this)
+                foreach (RDFTriple t in this)
                 {
                     if (graph.ContainsTriple(t))
                     {
@@ -542,10 +544,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph UnionWith(RDFGraph graph)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //Add triples from this graph
-            foreach (var t in this)
+            foreach (RDFTriple t in this)
             {
                 result.AddTriple(t);
             }
@@ -555,7 +557,7 @@ namespace RDFSharp.Model
             {
 
                 //Add triples from the given graph
-                foreach (var t in graph)
+                foreach (RDFTriple t in graph)
                 {
                     result.AddTriple(t);
                 }
@@ -570,12 +572,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph DifferenceWith(RDFGraph graph)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
             if (graph != null)
             {
 
                 //Add difference triples
-                foreach (var t in this)
+                foreach (RDFTriple t in this)
                 {
                     if (!graph.ContainsTriple(t))
                     {
@@ -588,7 +590,7 @@ namespace RDFSharp.Model
             {
 
                 //Add triples from this graph
-                foreach (var t in this)
+                foreach (RDFTriple t in this)
                 {
                     result.AddTriple(t);
                 }
@@ -666,7 +668,7 @@ namespace RDFSharp.Model
         {
 
             //Create the structure of the result datatable
-            var result = new DataTable(this.ToString());
+            DataTable result = new DataTable(this.ToString());
             result.Columns.Add("SUBJECT", Type.GetType("System.String"));
             result.Columns.Add("PREDICATE", Type.GetType("System.String"));
             result.Columns.Add("OBJECT", Type.GetType("System.String"));
@@ -674,7 +676,7 @@ namespace RDFSharp.Model
 
             //Iterate the triples of the graph to populate the result datatable
             result.BeginLoadData();
-            foreach (var t in this)
+            foreach (RDFTriple t in this)
             {
                 var newRow = result.NewRow();
                 newRow["SUBJECT"] = t.Subject.ToString();
@@ -768,7 +770,7 @@ namespace RDFSharp.Model
                         //Parse the triple subject
                         if (!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty)
                         {
-                            var rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
+                            RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
                             if (rowSubj is RDFResource)
                             {
 
@@ -776,7 +778,7 @@ namespace RDFSharp.Model
                                 //Parse the triple predicate
                                 if (!tableRow.IsNull("PREDICATE") && tableRow["PREDICATE"].ToString() != String.Empty)
                                 {
-                                    var rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
+                                    RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
                                     if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank)
                                     {
 
@@ -784,7 +786,7 @@ namespace RDFSharp.Model
                                         //Parse the triple object
                                         if (!tableRow.IsNull("OBJECT"))
                                         {
-                                            var rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
+                                            RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
                                             if (rowObj is RDFResource)
                                             {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));

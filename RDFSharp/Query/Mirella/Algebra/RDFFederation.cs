@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using RDFSharp.Store;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,9 +24,9 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFSPARQLFederation represents a logically integrated collection of SPARQL endpoints
+    /// RDFFederation represents a logically integrated collection of RDF data sources
     /// </summary>
-    public sealed class RDFSPARQLFederation : RDFDataSource, IEquatable<RDFSPARQLFederation>, IEnumerable<RDFSPARQLEndpoint>
+    public sealed class RDFFederation : RDFDataSource, IEquatable<RDFFederation>, IEnumerable<RDFDataSource>
     {
 
         #region Properties
@@ -35,41 +36,42 @@ namespace RDFSharp.Query
         public String FederationName { get; internal set; }
 
         /// <summary>
-        /// Count of the federation's endpoints
+        /// Count of the federation's data sources
         /// </summary>
-        public Int32 EndpointsCount
+        public Int32 DataSourcesCount
         {
-            get { return this.Endpoints.Count; }
+            get { return this.DataSources.Count; }
         }
 
         /// <summary>
-        /// Gets the enumerator on the federation's endpoints for iteration
+        /// Gets the enumerator on the federation's data sources for iteration
         /// </summary>
-        public IEnumerator<RDFSPARQLEndpoint> EndpointsEnumerator
+        public IEnumerator<RDFDataSource> DataSourcesEnumerator
         {
-            get { return this.Endpoints.Values.GetEnumerator(); }
+            get { return this.DataSources.Values.GetEnumerator(); }
         }
 
         /// <summary>
-        /// List of endpoints embedded into the federation
+        /// List of data sources of the federation
         /// </summary>
-        internal Dictionary<Int64, RDFSPARQLEndpoint> Endpoints { get; set; }
+        internal Dictionary<Int64, RDFDataSource> DataSources { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default ctor to build an empty named federation
         /// </summary>
-        public RDFSPARQLFederation(String federationName)
+        public RDFFederation(String federationName)
         {
             this.FederationName = "FEDERATION|ID=" + federationName ?? Guid.NewGuid().ToString("N");
-            this.Endpoints = new Dictionary<Int64, RDFSPARQLEndpoint>();
+            this.DataSources = new Dictionary<Int64, RDFDataSource>();
+            this.DataSourceID = RDFModelUtilities.CreateHash(this.FederationName);
         }
 
         /// <summary>
         /// Default ctor to build an empty federation
         /// </summary>
-        public RDFSPARQLFederation() : this(Guid.NewGuid().ToString("N")) { }
+        public RDFFederation() : this(Guid.NewGuid().ToString("N")) { }
         #endregion
 
         #region Interfaces
@@ -84,15 +86,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs the equality comparison between two federations
         /// </summary>
-        public Boolean Equals(RDFSPARQLFederation other)
+        public Boolean Equals(RDFFederation other)
         {
-            if (other == null || this.EndpointsCount != other.EndpointsCount)
+            if (other == null || this.DataSourcesCount != other.DataSourcesCount)
             {
                 return false;
             }
-            foreach (RDFSPARQLEndpoint sparqlEndpoint in this)
+            foreach (RDFDataSource dataSource in this)
             {
-                if (!other.Endpoints.ContainsKey(sparqlEndpoint.EndpointID))
+                if (!other.DataSources.ContainsKey(dataSource.DataSourceID))
                 {
                     return false;
                 }
@@ -101,19 +103,19 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Exposes a typed enumerator on the federation's endpoints
+        /// Exposes a typed enumerator on the federation's data sources
         /// </summary>
-        IEnumerator<RDFSPARQLEndpoint> IEnumerable<RDFSPARQLEndpoint>.GetEnumerator()
+        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator()
         {
-            return this.EndpointsEnumerator;
+            return this.DataSourcesEnumerator;
         }
 
         /// <summary>
-        /// Exposes an untyped enumerator on the federation's endpoints
+        /// Exposes an untyped enumerator on the federation's data sources
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.EndpointsEnumerator;
+            return this.DataSourcesEnumerator;
         }
         #endregion
 
@@ -121,15 +123,60 @@ namespace RDFSharp.Query
 
         #region Add
         /// <summary>
-        /// Adds the given endpoint to the federation, avoiding duplicate insertions
+        /// Adds the given graph to the federation, avoiding duplicate insertions
         /// </summary>
-        public RDFSPARQLFederation AddEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+        public RDFFederation AddGraph(RDFGraph graph)
+        {
+            if (graph != null)
+            {
+                if (!this.DataSources.ContainsKey(graph.DataSourceID))
+                {
+                    this.DataSources.Add(graph.DataSourceID, graph);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given store to the federation, avoiding duplicate insertions
+        /// </summary>
+        public RDFFederation AddStore(RDFStore store)
+        {
+            if (store != null)
+            {
+                if (!this.DataSources.ContainsKey(store.DataSourceID))
+                {
+                    this.DataSources.Add(store.DataSourceID, store);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given federation to the federation, avoiding duplicate insertions
+        /// </summary>
+        public RDFFederation AddFederation(RDFFederation federation)
+        {
+            if (federation != null)
+            {
+                if (!this.DataSources.ContainsKey(federation.DataSourceID))
+                {
+                    this.DataSources.Add(federation.DataSourceID, federation);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given SPARQL endpoint to the federation, avoiding duplicate insertions
+        /// </summary>
+        public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
             if (sparqlEndpoint != null)
             {
-                if (!this.Endpoints.ContainsKey(sparqlEndpoint.EndpointID))
+                if (!this.DataSources.ContainsKey(sparqlEndpoint.DataSourceID))
                 {
-                    this.Endpoints.Add(sparqlEndpoint.EndpointID, sparqlEndpoint);
+                    this.DataSources.Add(sparqlEndpoint.DataSourceID, sparqlEndpoint);
                 }
             }
             return this;
@@ -138,26 +185,71 @@ namespace RDFSharp.Query
 
         #region Remove
         /// <summary>
-        /// Removes the given endpoint from the federation 
+        /// Removes the given graph from the federation 
         /// </summary>
-        public RDFSPARQLFederation RemoveEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+        public RDFFederation RemoveGraph(RDFGraph graph)
         {
-            if (sparqlEndpoint != null)
+            if (graph != null)
             {
-                if (this.Endpoints.ContainsKey(sparqlEndpoint.EndpointID))
+                if (this.DataSources.ContainsKey(graph.DataSourceID))
                 {
-                    this.Endpoints.Remove(sparqlEndpoint.EndpointID);
+                    this.DataSources.Remove(graph.DataSourceID);
                 }
             }
             return this;
         }
 
         /// <summary>
-        /// Clears the endpoints of the federation
+        /// Removes the given store from the federation 
         /// </summary>
-        public void ClearEndpoints()
+        public RDFFederation RemoveStore(RDFStore store)
         {
-            this.Endpoints.Clear();
+            if (store != null)
+            {
+                if (this.DataSources.ContainsKey(store.DataSourceID))
+                {
+                    this.DataSources.Remove(store.DataSourceID);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the given federation from the federation 
+        /// </summary>
+        public RDFFederation RemoveFederation(RDFFederation federation)
+        {
+            if (federation != null)
+            {
+                if (this.DataSources.ContainsKey(federation.DataSourceID))
+                {
+                    this.DataSources.Remove(federation.DataSourceID);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the given SPARQL endpoint from the federation 
+        /// </summary>
+        public RDFFederation RemoveSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+        {
+            if (sparqlEndpoint != null)
+            {
+                if (this.DataSources.ContainsKey(sparqlEndpoint.DataSourceID))
+                {
+                    this.DataSources.Remove(sparqlEndpoint.DataSourceID);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Clears the data sources of the federation
+        /// </summary>
+        public void ClearDataSources()
+        {
+            this.DataSources.Clear();
         }
         #endregion
 

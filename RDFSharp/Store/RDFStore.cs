@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -189,37 +190,37 @@ namespace RDFSharp.Store
         {
 
             //Create SPARQL SELECT query for detecting reified quadruples
-            var T = new RDFVariable("T");
-            var C = new RDFVariable("C");
-            var S = new RDFVariable("S");
-            var P = new RDFVariable("P");
-            var O = new RDFVariable("O");
-            var Q = new RDFSelectQuery()
-                            .AddPatternGroup(new RDFPatternGroup("UnreifyQuadruples")
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.SUBJECT, S))
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.PREDICATE, P))
-                                .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.OBJECT, O))
-                                .AddFilter(new RDFIsUriFilter(C))
-                                .AddFilter(new RDFIsUriFilter(T))
-                                .AddFilter(new RDFIsUriFilter(S))
-                                .AddFilter(new RDFIsUriFilter(P))
-                            );
+            RDFVariable T = new RDFVariable("T");
+            RDFVariable C = new RDFVariable("C");
+            RDFVariable S = new RDFVariable("S");
+            RDFVariable P = new RDFVariable("P");
+            RDFVariable O = new RDFVariable("O");
+            RDFSelectQuery Q = new RDFSelectQuery()
+                                .AddPatternGroup(new RDFPatternGroup("UnreifyQuadruples")
+                                    .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT))
+                                    .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.SUBJECT, S))
+                                    .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.PREDICATE, P))
+                                    .AddPattern(new RDFPattern(C, T, RDFVocabulary.RDF.OBJECT, O))
+                                    .AddFilter(new RDFIsUriFilter(C))
+                                    .AddFilter(new RDFIsUriFilter(T))
+                                    .AddFilter(new RDFIsUriFilter(S))
+                                    .AddFilter(new RDFIsUriFilter(P))
+                                );
 
             //Apply it to the store
-            var R = Q.ApplyToStore(this);
+            RDFSelectQueryResult R = Q.ApplyToStore(this);
 
             //Iterate results
-            var reifiedQuadruples = R.SelectResults.Rows.GetEnumerator();
+            IEnumerator reifiedQuadruples = R.SelectResults.Rows.GetEnumerator();
             while (reifiedQuadruples.MoveNext())
             {
 
                 //Get reification data (T, C, S, P, O)
-                var tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?T"].ToString());
-                var tContext = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?C"].ToString());
-                var tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?S"].ToString());
-                var tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?P"].ToString());
-                var tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?O"].ToString());
+                RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?T"].ToString());
+                RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?C"].ToString());
+                RDFPatternMember tSubject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?S"].ToString());
+                RDFPatternMember tPredicate = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?P"].ToString());
+                RDFPatternMember tObject = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?O"].ToString());
 
                 //Cleanup store from detected reifications
                 if (tObject is RDFResource)
@@ -250,8 +251,8 @@ namespace RDFSharp.Store
         /// </summary>
         public List<RDFGraph> ExtractGraphs()
         {
-            var graphs = new Dictionary<Int64, RDFGraph>();
-            foreach (var q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
+            Dictionary<Int64, RDFGraph> graphs = new Dictionary<Int64, RDFGraph>();
+            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
             {
 
                 // Step 1: Cache-Update
@@ -429,7 +430,7 @@ namespace RDFSharp.Store
 
             //Iterate the quadruples of the store to populate the result datatable
             result.BeginLoadData();
-            foreach (var q in this.SelectAllQuadruples())
+            foreach (RDFQuadruple q in this.SelectAllQuadruples())
             {
                 DataRow newRow = result.NewRow();
                 newRow["CONTEXT"] = q.Context.ToString();

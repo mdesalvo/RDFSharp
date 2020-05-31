@@ -196,7 +196,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
-        public RDFSelectQueryResult ApplyToFederation(RDFSPARQLFederation federation)
+        public RDFSelectQueryResult ApplyToFederation(RDFFederation federation)
         {
             if (federation != null)
             {
@@ -249,6 +249,28 @@ namespace RDFSharp.Query
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
             return selResult;
+        }
+
+        /// <summary>
+        /// Applies the query to the given federation
+        /// </summary>
+        internal RDFSelectQueryResult ApplyToDataSource(RDFDataSource dataSource)
+        {
+            if (dataSource != null)
+            {
+                switch (dataSource)
+                {
+                    case RDFGraph dataSourceGraph:
+                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceGraph);
+                    case RDFStore dataSourceStore:
+                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceStore);
+                    case RDFFederation dataSourceFederation:
+                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceFederation);
+                    case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
+                        return RDFQueryEngine.CreateNew().EvaluateSelectQuery(this, dataSourceSparqlEndpoint);
+                }
+            }
+            return new RDFSelectQueryResult();
         }
 
         /// <summary>

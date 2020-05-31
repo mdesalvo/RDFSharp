@@ -75,6 +75,7 @@ namespace RDFSharp.Store
             this.StoreIndex = new RDFStoreIndex();
             this.StoreID = RDFModelUtilities.CreateHash(this.ToString());
             this.Quadruples = new Dictionary<Int64, RDFQuadruple>();
+            this.DataSourceID = RDFModelUtilities.CreateHash(this.ToString());
         }
 
         /// <summary>
