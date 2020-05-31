@@ -2017,6 +2017,13 @@ namespace RDFSharp.Query
             //Apply the query to the SPARQL endpoint
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToSPARQLEndpoint(sparqlEndpoint);
 
+            //Eventually adjust variable names (should start with "?")
+            Int32 columnsCount = selectQueryResult.SelectResults.Columns.Count;
+            for (Int32 i = 0; i < columnsCount; i++) { 
+                if (!selectQueryResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
+                    selectQueryResult.SelectResults.Columns[i].ColumnName = "?" + selectQueryResult.SelectResults.Columns[i].ColumnName;
+            }
+
             return selectQueryResult.SelectResults;
         }
 

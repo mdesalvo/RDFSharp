@@ -246,6 +246,13 @@ namespace RDFSharp.Query
 
                 }
 
+                //Eventually adjust column names (should start with "?")
+                Int32 columnsCount = selResult.SelectResults.Columns.Count;
+                for (Int32 i = 0; i < columnsCount; i++) {
+                    if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
+                        selResult.SelectResults.Columns[i].ColumnName = "?" + selResult.SelectResults.Columns[i].ColumnName;
+                }
+
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
             return selResult;
