@@ -15,13 +15,13 @@ RDFSharp has a modular API made up of four layers ([docs](https://github.com/mde
     <ul>
         <li>Create and manage <i>RDF stores</i> for context-aware modeling of RDF data (quadruples)</li>
         <li>Exchange them using standard <i>RDF formats</i> (N-Quads, TriX)</li>
-        <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple stores</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.Query</b></li> 
     <ul>
-        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
+        <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple data sources</li>
+        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>        
     </ul>
 </ul>
 <ul>
