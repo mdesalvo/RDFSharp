@@ -1093,22 +1093,13 @@ namespace RDFSharp.Query
             }
 
             //Query IS NOT empty, so does have query members to fetch data from.
+            //We proceed by searching for resources and variables in the describe terms.
             else
             {
 
-                //In case of a "Star" query, all the variables must be considered describe terms
+                //In case of a "Star" query, all the variables must be extracted as describe terms
                 if (!describeQuery.DescribeTerms.Any())
-                {
-                    foreach(RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                    {
-                        #region PATTERN GROUP
-                        if (evaluableQueryMember is RDFPatternGroup)
-                        {
-                            ((RDFPatternGroup)evaluableQueryMember).Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
-                        }
-                        #endregion
-                    }
-                }
+                    GetDescribeTermsFromQueryMembers(describeQuery, evaluableQueryMembers);
 
                 //Iterate the describe terms of the query
                 foreach (RDFPatternMember dt in describeQuery.DescribeTerms)
@@ -1350,6 +1341,29 @@ namespace RDFSharp.Query
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Exracts the describe terms from the given collection of query members
+        /// </summary>
+        internal void GetDescribeTermsFromQueryMembers(RDFDescribeQuery describeQuery, IEnumerable<RDFQueryMember> evaluableQueryMembers)
+        {
+            foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+            {
+                #region PATTERN GROUP
+                if (evaluableQueryMember is RDFPatternGroup)
+                {
+                    ((RDFPatternGroup)evaluableQueryMember).Variables.ForEach(v => describeQuery.AddDescribeTerm(v));
+                }
+                #endregion
+
+                #region SUBQUERY
+                else if (evaluableQueryMember is RDFQuery)
+                {
+                    GetDescribeTermsFromQueryMembers(describeQuery, ((RDFSelectQuery)evaluableQueryMember).GetEvaluableQueryMembers());
+                }
+                #endregion
+            }
         }
 
         /// <summary>
