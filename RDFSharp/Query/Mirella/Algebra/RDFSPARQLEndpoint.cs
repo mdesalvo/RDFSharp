@@ -48,7 +48,6 @@ namespace RDFSharp.Query
             {
                 this.BaseAddress = baseAddress;
                 this.QueryParams = new NameValueCollection();
-                this.DataSourceID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
             {

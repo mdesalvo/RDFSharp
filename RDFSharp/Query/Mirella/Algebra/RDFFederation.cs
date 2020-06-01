@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFFederation represents a logically integrated collection of RDF data sources
     /// </summary>
-    public sealed class RDFFederation : RDFDataSource, IEquatable<RDFFederation>, IEnumerable<RDFDataSource>
+    public sealed class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
     {
 
         #region Properties
@@ -48,30 +48,24 @@ namespace RDFSharp.Query
         /// </summary>
         public IEnumerator<RDFDataSource> DataSourcesEnumerator
         {
-            get { return this.DataSources.Values.GetEnumerator(); }
+            get { return this.DataSources.GetEnumerator(); }
         }
 
         /// <summary>
         /// List of data sources of the federation
         /// </summary>
-        internal Dictionary<Int64, RDFDataSource> DataSources { get; set; }
+        internal List<RDFDataSource> DataSources { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default ctor to build an empty named federation
-        /// </summary>
-        public RDFFederation(String federationName)
-        {
-            this.FederationName = "FEDERATION|ID=" + federationName ?? Guid.NewGuid().ToString("N");
-            this.DataSources = new Dictionary<Int64, RDFDataSource>();
-            this.DataSourceID = RDFModelUtilities.CreateHash(this.FederationName);
-        }
-
-        /// <summary>
         /// Default ctor to build an empty federation
         /// </summary>
-        public RDFFederation() : this(Guid.NewGuid().ToString("N")) { }
+        public RDFFederation()
+        {
+            this.FederationName = "FEDERATION|ID=" + Guid.NewGuid().ToString("N");
+            this.DataSources = new List<RDFDataSource>();
+        }
         #endregion
 
         #region Interfaces
@@ -81,25 +75,6 @@ namespace RDFSharp.Query
         public override String ToString()
         {
             return this.FederationName;
-        }
-
-        /// <summary>
-        /// Performs the equality comparison between two federations
-        /// </summary>
-        public Boolean Equals(RDFFederation other)
-        {
-            if (other == null || this.DataSourcesCount != other.DataSourcesCount)
-            {
-                return false;
-            }
-            foreach (RDFDataSource dataSource in this)
-            {
-                if (!other.DataSources.ContainsKey(dataSource.DataSourceID))
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         /// <summary>
@@ -129,10 +104,7 @@ namespace RDFSharp.Query
         {
             if (graph != null)
             {
-                if (!this.DataSources.ContainsKey(graph.DataSourceID))
-                {
-                    this.DataSources.Add(graph.DataSourceID, graph);
-                }
+                this.DataSources.Add(graph);
             }
             return this;
         }
@@ -144,10 +116,7 @@ namespace RDFSharp.Query
         {
             if (store != null)
             {
-                if (!this.DataSources.ContainsKey(store.DataSourceID))
-                {
-                    this.DataSources.Add(store.DataSourceID, store);
-                }
+                this.DataSources.Add(store);
             }
             return this;
         }
@@ -159,10 +128,7 @@ namespace RDFSharp.Query
         {
             if (federation != null)
             {
-                if (!this.DataSources.ContainsKey(federation.DataSourceID))
-                {
-                    this.DataSources.Add(federation.DataSourceID, federation);
-                }
+                this.DataSources.Add(federation);
             }
             return this;
         }
@@ -174,76 +140,13 @@ namespace RDFSharp.Query
         {
             if (sparqlEndpoint != null)
             {
-                if (!this.DataSources.ContainsKey(sparqlEndpoint.DataSourceID))
-                {
-                    this.DataSources.Add(sparqlEndpoint.DataSourceID, sparqlEndpoint);
-                }
+                this.DataSources.Add(sparqlEndpoint);
             }
             return this;
         }
         #endregion
 
         #region Remove
-        /// <summary>
-        /// Removes the given graph from the federation 
-        /// </summary>
-        public RDFFederation RemoveGraph(RDFGraph graph)
-        {
-            if (graph != null)
-            {
-                if (this.DataSources.ContainsKey(graph.DataSourceID))
-                {
-                    this.DataSources.Remove(graph.DataSourceID);
-                }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the given store from the federation 
-        /// </summary>
-        public RDFFederation RemoveStore(RDFStore store)
-        {
-            if (store != null)
-            {
-                if (this.DataSources.ContainsKey(store.DataSourceID))
-                {
-                    this.DataSources.Remove(store.DataSourceID);
-                }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the given federation from the federation 
-        /// </summary>
-        public RDFFederation RemoveFederation(RDFFederation federation)
-        {
-            if (federation != null)
-            {
-                if (this.DataSources.ContainsKey(federation.DataSourceID))
-                {
-                    this.DataSources.Remove(federation.DataSourceID);
-                }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the given SPARQL endpoint from the federation 
-        /// </summary>
-        public RDFFederation RemoveSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
-        {
-            if (sparqlEndpoint != null)
-            {
-                if (this.DataSources.ContainsKey(sparqlEndpoint.DataSourceID))
-                {
-                    this.DataSources.Remove(sparqlEndpoint.DataSourceID);
-                }
-            }
-            return this;
-        }
-
         /// <summary>
         /// Clears the data sources of the federation
         /// </summary>

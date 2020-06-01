@@ -72,7 +72,6 @@ namespace RDFSharp.Model
             this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.GraphIndex = new RDFGraphIndex();
             this.Triples = new Dictionary<Int64, RDFTriple>();
-            this.DataSourceID = RDFModelUtilities.CreateHash(this.Context.ToString() + "|" + this.GetHashCode());
         }
 
         /// <summary>
@@ -141,7 +140,6 @@ namespace RDFSharp.Model
             if (contextUri != null && !contextUri.ToString().ToUpperInvariant().StartsWith("BNODE:"))
             {
                 this.Context = contextUri;
-                this.DataSourceID = RDFModelUtilities.CreateHash(this.Context.ToString());
             }
             return this;
         }

@@ -27,13 +27,6 @@ namespace RDFSharp.Model
     public abstract class RDFDataSource
     {
 
-        #region Properties
-        /// <summary>
-        /// Unique identifier of the data source
-        /// </summary>
-        public Int64 DataSourceID { get; set; }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Checks if this data source is a graph
