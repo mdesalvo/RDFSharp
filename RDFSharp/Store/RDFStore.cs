@@ -422,10 +422,10 @@ namespace RDFSharp.Store
 
             //Create the structure of the result datatable
             DataTable result = new DataTable(this.ToString());
-            result.Columns.Add("CONTEXT", Type.GetType("System.String"));
-            result.Columns.Add("SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("OBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?CONTEXT", Type.GetType("System.String"));
+            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
+            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
             result.AcceptChanges();
 
             //Iterate the quadruples of the store to populate the result datatable
@@ -433,10 +433,10 @@ namespace RDFSharp.Store
             foreach (RDFQuadruple q in this.SelectAllQuadruples())
             {
                 DataRow newRow = result.NewRow();
-                newRow["CONTEXT"] = q.Context.ToString();
-                newRow["SUBJECT"] = q.Subject.ToString();
-                newRow["PREDICATE"] = q.Predicate.ToString();
-                newRow["OBJECT"] = q.Object.ToString();
+                newRow["?CONTEXT"] = q.Context.ToString();
+                newRow["?SUBJECT"] = q.Subject.ToString();
+                newRow["?PREDICATE"] = q.Predicate.ToString();
+                newRow["?OBJECT"] = q.Object.ToString();
                 newRow.AcceptChanges();
                 result.Rows.Add(newRow);
             }

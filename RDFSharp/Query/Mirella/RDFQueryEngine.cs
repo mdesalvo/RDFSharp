@@ -293,6 +293,9 @@ namespace RDFSharp.Query
                     #region TrueFederations
                     foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
                     {
+                        //Ensure to skip tricky empty federations
+                        if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
+                            continue;
                         describeResultTable.Merge(DescribeTerms(describeQuery, fedDataSource, queryResultTable), true, MissingSchemaAction.Add);
                     }
                     #endregion
@@ -323,6 +326,9 @@ namespace RDFSharp.Query
                         #region TrueFederations
                         foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
                         {
+                            //Ensure to skip tricky empty federations
+                            if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
+                                continue;
                             describeResultTable.Merge(DescribeTerms(describeQuery, fedDataSource, new DataTable()), true, MissingSchemaAction.Add);
                         }
                         #endregion
@@ -858,16 +864,16 @@ namespace RDFSharp.Query
 
             //Create the structure of the result datatable
             DataTable result = new DataTable("CONSTRUCT_RESULTS");
-            result.Columns.Add("SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("OBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
+            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
             result.AcceptChanges();
 
             //Initialize working variables
             var constructRow = new Dictionary<String, String>();
-            constructRow.Add("SUBJECT", null);
-            constructRow.Add("PREDICATE", null);
-            constructRow.Add("OBJECT", null);
+            constructRow.Add("?SUBJECT", null);
+            constructRow.Add("?PREDICATE", null);
+            constructRow.Add("?OBJECT", null);
 
             //Iterate on the templates
             foreach (RDFPattern tp in constructQuery.Templates.Where(tp => tp.Variables.Count == 0 ||
@@ -878,9 +884,9 @@ namespace RDFSharp.Query
                 //Check if the template is ground, so represents an explicit triple to be added as-is
                 if (tp.Variables.Count == 0)
                 {
-                    constructRow["SUBJECT"] = tp.Subject.ToString();
-                    constructRow["PREDICATE"] = tp.Predicate.ToString();
-                    constructRow["OBJECT"] = tp.Object.ToString();
+                    constructRow["?SUBJECT"] = tp.Subject.ToString();
+                    constructRow["?PREDICATE"] = tp.Predicate.ToString();
+                    constructRow["?OBJECT"] = tp.Object.ToString();
                     AddRow(result, constructRow);
                     continue;
                 }
@@ -911,13 +917,13 @@ namespace RDFSharp.Query
                             continue;
                         }
                         //Row contains a resource in position of the variable corresponding to the template subject
-                        constructRow["SUBJECT"] = subj.ToString();
+                        constructRow["?SUBJECT"] = subj.ToString();
 
                     }
                     //Subject of the template is a resource
                     else
                     {
-                        constructRow["SUBJECT"] = tp.Subject.ToString();
+                        constructRow["?SUBJECT"] = tp.Subject.ToString();
                     }
                     #endregion
 
@@ -939,13 +945,13 @@ namespace RDFSharp.Query
                             continue;
                         }
                         //Row contains a non-blank resource in position of the variable corresponding to the template predicate
-                        constructRow["PREDICATE"] = pred.ToString();
+                        constructRow["?PREDICATE"] = pred.ToString();
 
                     }
                     //Predicate of the template is a resource
                     else
                     {
-                        constructRow["PREDICATE"] = tp.Predicate.ToString();
+                        constructRow["?PREDICATE"] = tp.Predicate.ToString();
                     }
                     #endregion
 
@@ -962,13 +968,13 @@ namespace RDFSharp.Query
                         }
                         RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[tp.Object.ToString()].ToString());
                         //Row contains a resource or a literal in position of the variable corresponding to the template object
-                        constructRow["OBJECT"] = obj.ToString();
+                        constructRow["?OBJECT"] = obj.ToString();
 
                     }
                     //Object of the template is a resource or a literal
                     else
                     {
-                        constructRow["OBJECT"] = tp.Object.ToString();
+                        constructRow["?OBJECT"] = tp.Object.ToString();
                     }
                     #endregion
 
@@ -992,10 +998,10 @@ namespace RDFSharp.Query
             //Create the structure of the result datatable
             DataTable result = new DataTable("DESCRIBE_RESULTS");
             if (dataSource.IsStore())
-                result.Columns.Add("CONTEXT", Type.GetType("System.String"));
-            result.Columns.Add("SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("OBJECT", Type.GetType("System.String"));
+                result.Columns.Add("?CONTEXT", Type.GetType("System.String"));
+            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
+            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
             result.AcceptChanges();
 
             //Query IS empty, so does not have evaluable members to fetch data from. 
@@ -1055,13 +1061,13 @@ namespace RDFSharp.Query
                         RDFConstructQuery constructQuery =
                             new RDFConstructQuery()
                                 .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                    .AddPattern(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt))
+                                    .AddPattern(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")).UnionWithNext())
+                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt))
                                 )
-                                .AddTemplate(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt));
+                                .AddTemplate(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
+                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")))
+                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt));
 
                         //Apply the query to the SPARQL endpoint
                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource);
@@ -1075,13 +1081,13 @@ namespace RDFSharp.Query
                         RDFConstructQuery constructQuery =
                             new RDFConstructQuery()
                                 .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                    .AddPattern(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")).UnionWithNext())
-                                    .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt))
+                                    .AddPattern(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")).UnionWithNext())
+                                    .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt))
                                 )
-                                .AddTemplate(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")))
-                                .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt));
+                                .AddTemplate(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
+                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")))
+                                .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt));
 
                         //Apply the query to the federation
                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToFederation((RDFFederation)dataSource);
@@ -1198,18 +1204,18 @@ namespace RDFSharp.Query
                                             term is RDFResource
                                                 ? new RDFConstructQuery()
                                                     .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                                        .AddPattern(new RDFPattern((RDFResource)term, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
-                                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), (RDFResource)term, new RDFVariable("OBJECT")).UnionWithNext())
-                                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFResource)term))
+                                                        .AddPattern(new RDFPattern((RDFResource)term, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), (RDFResource)term, new RDFVariable("?OBJECT")).UnionWithNext())
+                                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFResource)term))
                                                     )
-                                                    .AddTemplate(new RDFPattern((RDFResource)term, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")))
-                                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), (RDFResource)term, new RDFVariable("OBJECT")))
-                                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFResource)term))
+                                                    .AddTemplate(new RDFPattern((RDFResource)term, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
+                                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), (RDFResource)term, new RDFVariable("?OBJECT")))
+                                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFResource)term))
                                                 : new RDFConstructQuery()
                                                     .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFLiteral)term))
+                                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)term))
                                                     )
-                                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFLiteral)term));
+                                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)term));
 
                                         //Apply the query to the SPARQL endpoint
                                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource);
@@ -1224,18 +1230,18 @@ namespace RDFSharp.Query
                                             term is RDFResource
                                                 ? new RDFConstructQuery()
                                                     .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                                        .AddPattern(new RDFPattern((RDFResource)term, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
-                                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), (RDFResource)term, new RDFVariable("OBJECT")).UnionWithNext())
-                                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFResource)term))
+                                                        .AddPattern(new RDFPattern((RDFResource)term, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), (RDFResource)term, new RDFVariable("?OBJECT")).UnionWithNext())
+                                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFResource)term))
                                                     )
-                                                    .AddTemplate(new RDFPattern((RDFResource)term, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")))
-                                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), (RDFResource)term, new RDFVariable("OBJECT")))
-                                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFResource)term))
+                                                    .AddTemplate(new RDFPattern((RDFResource)term, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
+                                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), (RDFResource)term, new RDFVariable("?OBJECT")))
+                                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFResource)term))
                                                 : new RDFConstructQuery()
                                                     .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFLiteral)term))
+                                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)term))
                                                     )
-                                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), (RDFLiteral)term));
+                                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), (RDFLiteral)term));
 
                                         //Apply the query to the federation
                                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToFederation((RDFFederation)dataSource);
@@ -1301,13 +1307,13 @@ namespace RDFSharp.Query
                             RDFConstructQuery constructQuery =
                                 new RDFConstructQuery()
                                     .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                        .AddPattern(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt))
+                                        .AddPattern(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")).UnionWithNext())
+                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt))
                                     )
-                                    .AddTemplate(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt));
+                                    .AddTemplate(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
+                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")))
+                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt));
 
                             //Apply the query to the federation
                             RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource);
@@ -1321,13 +1327,13 @@ namespace RDFSharp.Query
                             RDFConstructQuery constructQuery =
                                 new RDFConstructQuery()
                                     .AddPatternGroup(new RDFPatternGroup("CONSTRUCT_RESULTS")
-                                        .AddPattern(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")).UnionWithNext())
-                                        .AddPattern(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt))
+                                        .AddPattern(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
+                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")).UnionWithNext())
+                                        .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt))
                                     )
-                                    .AddTemplate(new RDFPattern(dt, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), dt, new RDFVariable("OBJECT")))
-                                    .AddTemplate(new RDFPattern(new RDFVariable("SUBJECT"), new RDFVariable("PREDICATE"), dt));
+                                    .AddTemplate(new RDFPattern(dt, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")))
+                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), dt, new RDFVariable("?OBJECT")))
+                                    .AddTemplate(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), dt));
 
                             //Apply the query to the federation
                             RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToFederation((RDFFederation)dataSource);

@@ -72,9 +72,9 @@ namespace RDFSharp.Query
             IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
-                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
-                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
-                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
+                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
+                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
+                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
                 if (obj is RDFResource)
                 {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
@@ -103,12 +103,12 @@ namespace RDFSharp.Query
             IEnumerator resultRows = this.DescribeResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
-                ctx = (this.DescribeResults.Columns.Contains("CONTEXT") ?
-                                        new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["CONTEXT"].ToString()).ToString()) :
+                ctx = (this.DescribeResults.Columns.Contains("?CONTEXT") ?
+                                        new RDFContext(RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?CONTEXT"].ToString()).ToString()) :
                                         new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
-                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
-                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
+                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
+                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
+                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
                 if (obj is RDFResource)
                 {
                     result.AddQuadruple(new RDFQuadruple((RDFContext)ctx, (RDFResource)subj, (RDFResource)pred, (RDFResource)obj));

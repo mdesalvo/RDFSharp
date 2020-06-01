@@ -71,9 +71,9 @@ namespace RDFSharp.Query
             IEnumerator resultRows = this.ConstructResults.Rows.GetEnumerator();
             while (resultRows.MoveNext())
             {
-                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["SUBJECT"].ToString());
-                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["PREDICATE"].ToString());
-                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["OBJECT"].ToString());
+                subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?SUBJECT"].ToString());
+                pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
+                obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
                 if (obj is RDFResource)
                 {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));

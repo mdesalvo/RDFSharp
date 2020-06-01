@@ -667,9 +667,9 @@ namespace RDFSharp.Model
 
             //Create the structure of the result datatable
             DataTable result = new DataTable(this.ToString());
-            result.Columns.Add("SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("OBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
+            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
             result.AcceptChanges();
 
             //Iterate the triples of the graph to populate the result datatable
@@ -677,9 +677,9 @@ namespace RDFSharp.Model
             foreach (RDFTriple t in this)
             {
                 var newRow = result.NewRow();
-                newRow["SUBJECT"] = t.Subject.ToString();
-                newRow["PREDICATE"] = t.Predicate.ToString();
-                newRow["OBJECT"] = t.Object.ToString();
+                newRow["?SUBJECT"] = t.Subject.ToString();
+                newRow["?PREDICATE"] = t.Predicate.ToString();
+                newRow["?OBJECT"] = t.Object.ToString();
                 newRow.AcceptChanges();
                 result.Rows.Add(newRow);
             }
@@ -748,7 +748,9 @@ namespace RDFSharp.Model
             //Check the structure of the datatable for consistency against the "S-P-O" RDF model
             if (table != null && table.Columns.Count == 3)
             {
-                if (table.Columns.Contains("SUBJECT") && table.Columns.Contains("PREDICATE") && table.Columns.Contains("OBJECT"))
+                if (table.Columns.Contains("?SUBJECT") 
+                        && table.Columns.Contains("?PREDICATE") 
+                            && table.Columns.Contains("?OBJECT"))
                 {
 
                     #region CONTEXT
@@ -766,25 +768,25 @@ namespace RDFSharp.Model
 
                         #region SUBJECT
                         //Parse the triple subject
-                        if (!tableRow.IsNull("SUBJECT") && tableRow["SUBJECT"].ToString() != String.Empty)
+                        if (!tableRow.IsNull("?SUBJECT") && !String.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
                         {
-                            RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["SUBJECT"].ToString());
+                            RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
                             if (rowSubj is RDFResource)
                             {
 
                                 #region PREDICATE
                                 //Parse the triple predicate
-                                if (!tableRow.IsNull("PREDICATE") && tableRow["PREDICATE"].ToString() != String.Empty)
+                                if (!tableRow.IsNull("?PREDICATE") && !String.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
                                 {
-                                    RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["PREDICATE"].ToString());
+                                    RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
                                     if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank)
                                     {
 
                                         #region OBJECT
                                         //Parse the triple object
-                                        if (!tableRow.IsNull("OBJECT"))
+                                        if (!tableRow.IsNull("?OBJECT"))
                                         {
-                                            RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["OBJECT"].ToString());
+                                            RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                                             if (rowObj is RDFResource)
                                             {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
@@ -796,31 +798,31 @@ namespace RDFSharp.Model
                                         }
                                         else
                                         {
-                                            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having NULL value in the \"OBJECT\" column.");
+                                            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
                                         }
                                         #endregion
 
                                     }
                                     else
                                     {
-                                        throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"PREDICATE\" column.");
+                                        throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"?PREDICATE\" column.");
                                     }
                                 }
                                 else
                                 {
-                                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"PREDICATE\" column.");
+                                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
                                 }
                                 #endregion
 
                             }
                             else
                             {
-                                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"SUBJECT\" column.");
+                                throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
                             }
                         }
                         else
                         {
-                            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"SUBJECT\" column.");
+                            throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
                         }
                         #endregion
 
@@ -829,7 +831,7 @@ namespace RDFSharp.Model
                 }
                 else
                 {
-                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"SUBJECT\", \"PREDICATE\", \"OBJECT\".");
+                    throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter does not have the required columns \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
                 }
             }
             else
