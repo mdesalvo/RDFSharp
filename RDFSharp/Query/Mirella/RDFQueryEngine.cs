@@ -1196,7 +1196,7 @@ namespace RDFSharp.Query
                                     {
                                         //Create SELECT query to describe term
                                         RDFSelectQuery selectQuery =
-                                            dt is RDFResource
+                                            term is RDFResource
                                                 ? new RDFSelectQuery()
                                                     .AddPatternGroup(new RDFPatternGroup("DESCRIBE_RESULTS")
                                                         .AddPattern(new RDFPattern((RDFResource)term, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
@@ -1218,7 +1218,7 @@ namespace RDFSharp.Query
                                     {
                                         //Create SELECT query to describe term
                                         RDFSelectQuery selectQuery =
-                                            dt is RDFResource
+                                            term is RDFResource
                                                 ? new RDFSelectQuery()
                                                     .AddPatternGroup(new RDFPatternGroup("DESCRIBE_RESULTS")
                                                         .AddPattern(new RDFPattern((RDFResource)term, new RDFVariable("PREDICATE"), new RDFVariable("OBJECT")).UnionWithNext())
