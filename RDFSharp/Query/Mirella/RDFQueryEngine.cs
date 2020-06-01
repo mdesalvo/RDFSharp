@@ -92,6 +92,12 @@ namespace RDFSharp.Query
                         //Step 1: Get the intermediate result tables of the pattern group
                         if (datasource.IsFederation())
                         {
+                            //Ensure to skip tricky empty federations
+                            if (((RDFFederation)datasource).DataSourcesCount == 0)
+                            { 
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            }
 
                             #region TrueFederations
                             foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
@@ -211,6 +217,12 @@ namespace RDFSharp.Query
                         //Step 1: Get the intermediate result tables of the pattern group
                         if (datasource.IsFederation())
                         {
+                            //Ensure to skip tricky empty federations
+                            if (((RDFFederation)datasource).DataSourcesCount == 0)
+                            {
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            }
 
                             #region TrueFederations
                             foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
@@ -386,6 +398,12 @@ namespace RDFSharp.Query
                         //Step 1: Get the intermediate result tables of the pattern group
                         if (datasource.IsFederation())
                         {
+                            //Ensure to skip tricky empty federations
+                            if (((RDFFederation)datasource).DataSourcesCount == 0)
+                            {
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            }
 
                             #region TrueFederations
                             foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
@@ -508,6 +526,12 @@ namespace RDFSharp.Query
                         //Step 1: Get the intermediate result tables of the pattern group
                         if (datasource.IsFederation())
                         {
+                            //Ensure to skip tricky empty federations
+                            if (((RDFFederation)datasource).DataSourcesCount == 0)
+                            {
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            }
 
                             #region TrueFederations
                             foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
