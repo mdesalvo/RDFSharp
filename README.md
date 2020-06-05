@@ -1,6 +1,6 @@
 # RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp)
 
-RDFSharp has a modular API made up of four layers ([docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.12.0/RDFSharp-2.12.0.pdf)): 
+RDFSharp has a modular API made up of four layers ([docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.13.0/RDFSharp-2.13.0.pdf)): 
 
 <ul>
     <li><b>RDFSharp.Model</b></li> 
@@ -15,13 +15,13 @@ RDFSharp has a modular API made up of four layers ([docs](https://github.com/mde
     <ul>
         <li>Create and manage <i>RDF stores</i> for context-aware modeling of RDF data (quadruples)</li>
         <li>Exchange them using standard <i>RDF formats</i> (N-Quads, TriX)</li>
-        <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple stores</li>
     </ul>
 </ul>
 <ul>
     <li><b>RDFSharp.Query</b></li> 
     <ul>
-        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
+        <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple data sources</li>
+        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>        
     </ul>
 </ul>
 <ul>
