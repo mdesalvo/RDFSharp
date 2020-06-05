@@ -98,7 +98,7 @@ namespace RDFSharp.Query
 
         #region Add
         /// <summary>
-        /// Adds the given graph to the federation, avoiding duplicate insertions
+        /// Adds the given graph to the federation
         /// </summary>
         public RDFFederation AddGraph(RDFGraph graph)
         {
@@ -110,7 +110,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds the given store to the federation, avoiding duplicate insertions
+        /// Adds the given store to the federation
         /// </summary>
         public RDFFederation AddStore(RDFStore store)
         {
@@ -122,7 +122,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds the given federation to the federation, avoiding duplicate insertions
+        /// Adds the given federation to the federation
         /// </summary>
         public RDFFederation AddFederation(RDFFederation federation)
         {
@@ -134,7 +134,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds the given SPARQL endpoint to the federation, avoiding duplicate insertions
+        /// Adds the given SPARQL endpoint to the federation
         /// </summary>
         public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
