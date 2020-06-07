@@ -288,28 +288,6 @@ namespace RDFSharp.Query
             }
             return constructResult;
         }
-
-        /// <summary>
-        /// Applies the query to the given data source
-        /// </summary>
-        internal RDFConstructQueryResult ApplyToDataSource(RDFDataSource dataSource)
-        {
-            if (dataSource != null)
-            {
-                switch (dataSource)
-                {
-                    case RDFGraph graph:
-                        return this.ApplyToGraph(graph);
-                    case RDFStore store:
-                        return this.ApplyToStore(store);
-                    case RDFFederation federation:
-                        return this.ApplyToFederation(federation);
-                    case RDFSPARQLEndpoint sparqlEndpoint:
-                        return this.ApplyToSPARQLEndpoint(sparqlEndpoint);
-                }
-            }
-            return new RDFConstructQueryResult(null);
-        }
         #endregion
 
     }
