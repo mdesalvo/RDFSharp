@@ -15,6 +15,9 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RepositoryUrl>https://github.com/mdesalvo/RDFSharp.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>rdf rdfs sparql shacl triplestore owl-dl ontology skos semantic-web</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -22,11 +25,9 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>bin\Debug\netstandard2.0\RDFSharp.xml</DocumentationFile>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <NoWarn />
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+	<Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -34,10 +35,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>bin\Release\netstandard2.0\RDFSharp.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <NoWarn />
-    <DebugType>none</DebugType>
+    <DebugType>portable</DebugType>
+	<DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
   </PropertyGroup>
 
