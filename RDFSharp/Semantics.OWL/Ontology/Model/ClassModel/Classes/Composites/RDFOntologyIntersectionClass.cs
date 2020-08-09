@@ -15,21 +15,20 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Semantics.OWL;
 
-namespace RDFSharp.Semantics.SKOS
+namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFSKOSConcept represents an instance of skos:Concept within an instance of skos:ConceptScheme
+    /// RDFOntologyIntersectionClass represents an intersection class definition within an ontology model.
     /// </summary>
-    public class RDFSKOSConcept: RDFOntologyFact {
+    public class RDFOntologyIntersectionClass: RDFOntologyClass {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a skos:Concept with the given name
+        /// Default-ctor to build an empty ontology intersection class with the given className
         /// </summary>
-        public RDFSKOSConcept(RDFResource conceptName): base(conceptName) { }
+        public RDFOntologyIntersectionClass(RDFResource className): base(className) { }
         #endregion
 
     }

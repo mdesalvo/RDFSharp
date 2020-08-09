@@ -15,21 +15,28 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Semantics.OWL;
 
-namespace RDFSharp.Semantics.SKOS
+namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFSKOSConcept represents an instance of skos:Concept within an instance of skos:ConceptScheme
+    /// RDFOntologyFact represents an instance of an ontology class within an ontology data.
     /// </summary>
-    public class RDFSKOSConcept: RDFOntologyFact {
+    public class RDFOntologyFact: RDFOntologyResource {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a skos:Concept with the given name
+        /// Default-ctor to build an ontology fact with the given name
         /// </summary>
-        public RDFSKOSConcept(RDFResource conceptName): base(conceptName) { }
+        public RDFOntologyFact(RDFResource factName) {
+            if (factName  != null) {
+                this.Value           = factName;
+                this.PatternMemberID = factName.PatternMemberID;
+            }
+            else {
+                throw new RDFSemanticsException("Cannot create RDFOntologyFact because given \"factName\" parameter is null.");
+            }
+        }
         #endregion
 
     }

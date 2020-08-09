@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using RDFSharp.Semantics.OWL;
+
 namespace RDFSharp.Semantics.SKOS
 {
 

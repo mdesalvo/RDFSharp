@@ -15,21 +15,20 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Semantics.OWL;
 
-namespace RDFSharp.Semantics.SKOS
+namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFSKOSConcept represents an instance of skos:Concept within an instance of skos:ConceptScheme
+    /// RDFOntologyDatatypeProperty represents a datatype property definition within an ontology model.
     /// </summary>
-    public class RDFSKOSConcept: RDFOntologyFact {
+    public class RDFOntologyDatatypeProperty: RDFOntologyProperty {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a skos:Concept with the given name
+        /// Default-ctor to build an ontology datatype property from the given non-blank resource
         /// </summary>
-        public RDFSKOSConcept(RDFResource conceptName): base(conceptName) { }
+        public RDFOntologyDatatypeProperty(RDFResource propertyName): base(propertyName) { }
         #endregion
 
     }

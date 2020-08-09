@@ -15,21 +15,28 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Semantics.OWL;
 
-namespace RDFSharp.Semantics.SKOS
+namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFSKOSConcept represents an instance of skos:Concept within an instance of skos:ConceptScheme
+    /// RDFOntologyLiteral represents an instance of literal within an ontology data.
     /// </summary>
-    public class RDFSKOSConcept: RDFOntologyFact {
+    public class RDFOntologyLiteral: RDFOntologyResource {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a skos:Concept with the given name
+        /// Default-ctor to build an ontology literal from the given literal.
         /// </summary>
-        public RDFSKOSConcept(RDFResource conceptName): base(conceptName) { }
+        public RDFOntologyLiteral(RDFLiteral literal) {
+            if (literal != null) {
+                this.Value           = literal;
+                this.PatternMemberID = literal.PatternMemberID;
+            }
+            else {
+                throw new RDFSemanticsException("Cannot create RDFOntologyLiteral because given \"literal\" parameter is null.");
+            }
+        }
         #endregion
 
     }
