@@ -18,7 +18,7 @@ using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
 
-namespace RDFSharp.Semantics
+namespace RDFSharp.Semantics.SKOS
 {
 
     /// <summary>

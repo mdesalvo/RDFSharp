@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Semantics
+namespace RDFSharp.Semantics.SKOS
 {
 
     /// <summary>
