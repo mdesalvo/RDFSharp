@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyTitle>RDFSharp</AssemblyTitle>
@@ -11,34 +11,34 @@
     <TargetFramework>net5.0</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
-	<PackageId>RDFSharp</PackageId>
-    <PackageTags>rdf rdfs sparql shacl triplestore owl-dl ontology skos semantic-web</PackageTags>
-	<PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
-	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-	<RepositoryUrl>https://github.com/mdesalvo/RDFSharp.git</RepositoryUrl>
+    <PackageId>RDFSharp</PackageId>
+    <PackageTags>rdf sparql shacl triplestore rdfs owl-dl ontology skos semantic-web</PackageTags>
+    <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mdesalvo/RDFSharp.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-	<IncludeSymbols>true</IncludeSymbols>
+    <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>bin\Debug\netstandard2.0\RDFSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\net5.0\RDFSharp.xml</DocumentationFile>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-	<Optimize>false</Optimize>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DefineConstants>TRACE</DefineConstants>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\RDFSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\net5.0\RDFSharp.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <DebugType>portable</DebugType>
-	<DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
   </PropertyGroup>
 
