@@ -469,6 +469,22 @@ namespace RDFSharp.Semantics.OWL
             }
             return this;
         }
+
+        /// <summary>
+        /// Foreach of the given classes, adds the "ontologyUnionClass -> owl:unionOf -> ontologyClass" and the<br/>
+        /// "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations to the class model [OWL2]
+        /// </summary>
+        public RDFOntologyClassModel AddDisjointUnionRelation(RDFOntologyUnionClass ontologyUnionClass,
+                                                              List<RDFOntologyClass> ontologyClasses) {
+            //Union
+            this.AddUnionOfRelation(ontologyUnionClass, ontologyClasses);
+
+            //Disjointness
+            ontologyClasses?.ForEach(outerClass =>
+                ontologyClasses?.ForEach(innerClass => this.AddDisjointWithRelation(outerClass, innerClass)));
+
+            return this;
+        }
         #endregion
 
         #region Remove
@@ -698,6 +714,21 @@ namespace RDFSharp.Semantics.OWL
             if (ontologyUnionClass != null && ontologyClass != null) {
                 this.Relations.UnionOf.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyUnionClass, RDFVocabulary.OWL.UNION_OF.ToRDFOntologyObjectProperty(), ontologyClass));
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given classes, removes the "ontologyUnionClass -> owl:unionOf -> ontologyClass" and the<br/>
+        /// "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations from the class model [OWL2]
+        /// </summary>
+        public RDFOntologyClassModel RemoveDisjointUnionRelation(RDFOntologyUnionClass ontologyUnionClass,
+                                                                 List<RDFOntologyClass> ontologyClasses) {
+            ontologyClasses?.ForEach(outerClass => {
+                ontologyClasses?.ForEach(innerClass => {
+                    this.RemoveUnionOfRelation(ontologyUnionClass, innerClass);
+                    this.RemoveDisjointWithRelation(outerClass, innerClass);
+                });
+            });
             return this;
         }
         #endregion

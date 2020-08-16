@@ -250,6 +250,11 @@ namespace RDFSharp.Model
             /// owl:versionIRI
             /// </summary>
             public static readonly RDFResource VERSION_IRI = new RDFResource(OWL.BASE_URI + "versionIRI");
+
+            /// <summary>
+            /// owl:disjointUnionOf [OWL2]
+            /// </summary>
+            public static readonly RDFResource DISJOINT_UNION_OF = new RDFResource(OWL.BASE_URI + "disjointUnionOf");
             #endregion
 
         }
