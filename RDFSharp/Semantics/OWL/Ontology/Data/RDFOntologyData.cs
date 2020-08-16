@@ -281,8 +281,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "ontologyFact -> rdf:type -> ontologyClass" relation to the data.
         /// </summary>
-        public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, 
-                                                    RDFOntologyClass ontologyClass) {
+        public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass) {
             if (ontologyFact != null && ontologyClass != null) {
 
                 //Enforce preliminary check on usage of BASE classes
@@ -314,8 +313,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "aFact -> owl:sameAs -> bFact" relation to the data
         /// </summary>
-        public RDFOntologyData AddSameAsRelation(RDFOntologyFact aFact, 
-                                                 RDFOntologyFact bFact) {
+        public RDFOntologyData AddSameAsRelation(RDFOntologyFact aFact, RDFOntologyFact bFact) {
             if (aFact != null && bFact != null && !aFact.Equals(bFact)) {
 
                 //Enforce taxonomy checks before adding the SameAs relation
@@ -337,8 +335,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "aFact -> owl:differentFrom -> bFact" relation to the data
         /// </summary>
-        public RDFOntologyData AddDifferentFromRelation(RDFOntologyFact aFact, 
-                                                        RDFOntologyFact bFact) {
+        public RDFOntologyData AddDifferentFromRelation(RDFOntologyFact aFact, RDFOntologyFact bFact) {
             if (aFact != null && bFact != null && !aFact.Equals(bFact)) {
 
                //Enforce taxonomy checks before adding the DifferentFrom relation
@@ -354,6 +351,20 @@ namespace RDFSharp.Semantics.OWL
                 }
 
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given list of facts, adds the "aFact -> owl:differentFrom -> bFact" relation to the data [OWL2]
+        /// </summary>
+        public RDFOntologyData AddAllDifferentRelation(List<RDFOntologyFact> ontologyFacts) {
+            ontologyFacts?.ForEach(outerFact => {
+                this.AddFact(outerFact);
+                ontologyFacts?.ForEach(innerFact => {
+                    this.AddFact(innerFact);
+                    this.AddDifferentFromRelation(innerFact, outerFact);
+                });
+            });
             return this;
         }
 
@@ -576,8 +587,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyFact -> rdf:type -> ontologyClass" relation from the data
         /// </summary>
-        public RDFOntologyData RemoveClassTypeRelation(RDFOntologyFact ontologyFact, 
-                                                       RDFOntologyClass ontologyClass) {
+        public RDFOntologyData RemoveClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass) {
             if (ontologyFact != null && ontologyClass != null) {
                 this.Relations.ClassType.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass));
             }
@@ -587,8 +597,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aFact -> owl:sameAs -> bFact" relation from the data
         /// </summary>
-        public RDFOntologyData RemoveSameAsRelation(RDFOntologyFact aFact, 
-                                                    RDFOntologyFact bFact) {
+        public RDFOntologyData RemoveSameAsRelation(RDFOntologyFact aFact, RDFOntologyFact bFact) {
             if (aFact != null && bFact != null) {
                 this.Relations.SameAs.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), bFact));
                 this.Relations.SameAs.RemoveEntry(new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), aFact));
@@ -599,12 +608,23 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aFact -> owl:differentFrom -> bFact" relation from the data
         /// </summary>
-        public RDFOntologyData RemoveDifferentFromRelation(RDFOntologyFact aFact, 
-                                                           RDFOntologyFact bFact) {
+        public RDFOntologyData RemoveDifferentFromRelation(RDFOntologyFact aFact, RDFOntologyFact bFact) {
             if (aFact != null && bFact != null) {
                 this.Relations.DifferentFrom.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), bFact));
                 this.Relations.DifferentFrom.RemoveEntry(new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), aFact));
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given list of facts, removes the "aFact -> owl:differentFrom -> bFact" relation from the data [OWL2]
+        /// </summary>
+        public RDFOntologyData RemoveAllDifferentRelation(List<RDFOntologyFact> ontologyFacts) {
+            ontologyFacts?.ForEach(outerFact => {
+                ontologyFacts?.ForEach(innerFact => {
+                    this.RemoveDifferentFromRelation(innerFact, outerFact);
+                });
+            });
             return this;
         }
 

@@ -485,6 +485,20 @@ namespace RDFSharp.Semantics.OWL
 
             return this;
         }
+
+        /// <summary>
+        /// Foreach of the given classes, adds the "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations to the class model [OWL2]
+        /// </summary>
+        public RDFOntologyClassModel AddAllDisjointClassesRelation(List<RDFOntologyClass> ontologyClasses) {
+            ontologyClasses?.ForEach(outerClass => {
+                this.AddClass(outerClass);
+                ontologyClasses?.ForEach(innerClass => {
+                    this.AddClass(innerClass);
+                    this.AddDisjointWithRelation(outerClass, innerClass);
+                });
+            });
+            return this;
+        }
         #endregion
 
         #region Remove
@@ -726,6 +740,18 @@ namespace RDFSharp.Semantics.OWL
             ontologyClasses?.ForEach(outerClass => {
                 ontologyClasses?.ForEach(innerClass => {
                     this.RemoveUnionOfRelation(ontologyUnionClass, innerClass);
+                    this.RemoveDisjointWithRelation(outerClass, innerClass);
+                });
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given classes, removes the "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations from the class model [OWL2]
+        /// </summary>
+        public RDFOntologyClassModel RemoveAllDisjointClassesRelation(List<RDFOntologyClass> ontologyClasses) {
+            ontologyClasses?.ForEach(outerClass => {
+                ontologyClasses?.ForEach(innerClass => {
                     this.RemoveDisjointWithRelation(outerClass, innerClass);
                 });
             });

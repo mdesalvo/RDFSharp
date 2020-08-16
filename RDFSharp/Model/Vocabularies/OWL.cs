@@ -187,9 +187,9 @@ namespace RDFSharp.Model
             public static readonly RDFResource DIFFERENT_FROM = new RDFResource(OWL.BASE_URI + "differentFrom");
 
             /// <summary>
-            /// owl:AllDifferent
+            /// owl:members
             /// </summary>
-            public static readonly RDFResource ALL_DIFFERENT = new RDFResource(OWL.BASE_URI + "AllDifferent");
+            public static readonly RDFResource MEMBERS = new RDFResource(OWL.BASE_URI + "members");
 
             /// <summary>
             /// owl:distinctMembers
@@ -255,6 +255,16 @@ namespace RDFSharp.Model
             /// owl:disjointUnionOf [OWL2]
             /// </summary>
             public static readonly RDFResource DISJOINT_UNION_OF = new RDFResource(OWL.BASE_URI + "disjointUnionOf");
+
+            /// <summary>
+            /// owl:AllDisjointClasses [OWL2]
+            /// </summary>
+            public static readonly RDFResource ALL_DISJOINT_CLASSES = new RDFResource(OWL.BASE_URI + "AllDisjointClasses");
+
+            /// <summary>
+            /// owl:AllDifferent [OWL2]
+            /// </summary>
+            public static readonly RDFResource ALL_DIFFERENT = new RDFResource(OWL.BASE_URI + "AllDifferent");
             #endregion
 
         }

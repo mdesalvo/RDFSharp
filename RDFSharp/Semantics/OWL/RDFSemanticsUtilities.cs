@@ -80,6 +80,8 @@ namespace RDFSharp.Semantics.OWL
                 var maxcardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MAX_CARDINALITY);
                 var sameAs = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SAME_AS);
                 var differentFrom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DIFFERENT_FROM);
+                var members = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MEMBERS);
+                var distinctMembers = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISTINCT_MEMBERS);
 
                 var versionInfoAnn = RDFVocabulary.OWL.VERSION_INFO.ToRDFOntologyAnnotationProperty();
                 var commentAnn = RDFVocabulary.RDFS.COMMENT.ToRDFOntologyAnnotationProperty();
@@ -389,7 +391,7 @@ namespace RDFSharp.Semantics.OWL
 
                                 #region rdf:first
                                 var first = rdfFirst.SelectTriplesBySubject(itemRest)
-                                                     .FirstOrDefault();
+                                                    .FirstOrDefault();
                                 if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                                 {
                                     var compClass = ontology.Model.ClassModel.SelectClass(first.Object.ToString());
@@ -408,7 +410,7 @@ namespace RDFSharp.Semantics.OWL
 
                                     #region rdf:rest
                                     var rest = rdfRest.SelectTriplesBySubject(itemRest)
-                                                              .FirstOrDefault();
+                                                      .FirstOrDefault();
                                     if (rest != null)
                                     {
                                         if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
@@ -1149,7 +1151,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith]]
+                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses]]
                 foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)))
                 {
 
@@ -1219,10 +1221,72 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
+                    #region AllDisjointClasses
+                    foreach (var adjc in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES)) {
+                        var allDisjointClasses = new List<RDFOntologyClass>();
+                        foreach (var adjcMembers in members.SelectTriplesBySubject((RDFResource)adjc.Subject)) {
+                            if (adjcMembers.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                            {
+                                #region DeserializeCollection
+                                var nilFound = false;
+                                var itemRest = (RDFResource)adjcMembers.Object;
+                                while (!nilFound)
+                                {
+
+                                    #region rdf:first
+                                    var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                        .FirstOrDefault();
+                                    if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                    {
+                                        var disjointClass = ontology.Model.ClassModel.SelectClass(first.Object.ToString());
+                                        if (disjointClass != null)
+                                        {
+                                            allDisjointClasses.Add(disjointClass);
+                                        }
+                                        else
+                                        {
+
+                                            //Raise warning event to inform the user: all disjoint classes cannot be completely imported
+                                            //from graph, because definition of class is not found in the model
+                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDisjointClasses '{0}' cannot be completely imported from graph, because definition of class '{1}' is not found in the model.", adjc.Subject, first.Object));
+
+                                        }
+
+                                        #region rdf:rest
+                                        var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                          .FirstOrDefault();
+                                        if (rest != null)
+                                        {
+                                            if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                            {
+                                                nilFound = true;
+                                            }
+                                            else
+                                            {
+                                                itemRest = (RDFResource)rest.Object;
+                                            }
+                                        }
+                                        #endregion
+
+                                    }
+                                    else
+                                    {
+                                        nilFound = true;
+                                    }
+                                    #endregion
+
+                                }
+                                #endregion
+                            }
+                        }
+                        ontology.Model.ClassModel.AddAllDisjointClassesRelation(allDisjointClasses);
+                    }
+                    #endregion
+
                 }
                 #endregion
 
-                #region Step 6.7: Finalize Data [OWL:SameAs|OWL:DifferentFrom|SKOS:OrderedCollection|ASSERTIONS]
+                #region Step 6.7: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS]
 
                 #region SameAs
                 foreach (var t in sameAs)
@@ -1275,6 +1339,70 @@ namespace RDFSharp.Semantics.OWL
 
                         ontology.Data.AddDifferentFromRelation(subjFct, objFct);
                     }
+                }
+                #endregion
+
+                #region AllDifferent
+                foreach (var adif in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DIFFERENT))
+                {
+                    var allDifferentFacts = new List<RDFOntologyFact>();
+                    foreach (var adifMembers in distinctMembers.SelectTriplesBySubject((RDFResource)adif.Subject))
+                    {
+                        if (adifMembers.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        {
+                            #region DeserializeCollection
+                            var nilFound = false;
+                            var itemRest = (RDFResource)adifMembers.Object;
+                            while (!nilFound)
+                            {
+
+                                #region rdf:first
+                                var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                    .FirstOrDefault();
+                                if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                {
+                                    var differentMember = ontology.Data.SelectFact(first.Object.ToString());
+                                    if (differentMember != null)
+                                    {
+                                        allDifferentFacts.Add(differentMember);
+                                    }
+                                    else
+                                    {
+
+                                        //Raise warning event to inform the user: all different cannot be completely imported
+                                        //from graph, because definition of fact is not found in the data
+                                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDifferent '{0}' cannot be completely imported from graph, because definition of fact '{1}' is not found in the data.", adif.Subject, first.Object));
+
+                                    }
+
+                                    #region rdf:rest
+                                    var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                      .FirstOrDefault();
+                                    if (rest != null)
+                                    {
+                                        if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                        {
+                                            nilFound = true;
+                                        }
+                                        else
+                                        {
+                                            itemRest = (RDFResource)rest.Object;
+                                        }
+                                    }
+                                    #endregion
+
+                                }
+                                else
+                                {
+                                    nilFound = true;
+                                }
+                                #endregion
+
+                            }
+                            #endregion
+                        }
+                    }
+                    ontology.Data.AddAllDifferentRelation(allDifferentFacts);
                 }
                 #endregion
 
