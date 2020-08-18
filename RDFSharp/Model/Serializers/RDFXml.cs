@@ -939,6 +939,11 @@ namespace RDFSharp.Model
                         //Sanitize eventual blank node or relative value, depending on attribute found
                         elemUri.Value = ResolveRelativeNode(elemUri, xmlBase);
 
+                        //Detect implicit typing of elements (node is different from rdf:Description)
+                        if (!elem.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase))
+                            // res -> rdf:type -> elem
+                            result.AddTriple(new RDFTriple(new RDFResource(elemUri.Value), RDFVocabulary.RDF.TYPE, new RDFResource(elem.NamespaceURI + elem.LocalName)));
+
                         // obj -> rdf:type -> rdf:list
                         result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
