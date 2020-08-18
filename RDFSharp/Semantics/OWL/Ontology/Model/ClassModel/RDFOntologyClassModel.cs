@@ -490,13 +490,8 @@ namespace RDFSharp.Semantics.OWL
         /// Foreach of the given classes, adds the "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations to the class model [OWL2]
         /// </summary>
         public RDFOntologyClassModel AddAllDisjointClassesRelation(List<RDFOntologyClass> ontologyClasses) {
-            ontologyClasses?.ForEach(outerClass => {
-                this.AddClass(outerClass);
-                ontologyClasses?.ForEach(innerClass => {
-                    this.AddClass(innerClass);
-                    this.AddDisjointWithRelation(outerClass, innerClass);
-                });
-            });
+            ontologyClasses?.ForEach(outerClass =>
+                ontologyClasses?.ForEach(innerClass => this.AddDisjointWithRelation(outerClass, innerClass)));
             return this;
         }
         #endregion

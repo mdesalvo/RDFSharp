@@ -358,13 +358,8 @@ namespace RDFSharp.Semantics.OWL
         /// Foreach of the given list of facts, adds the "aFact -> owl:differentFrom -> bFact" relation to the data [OWL2]
         /// </summary>
         public RDFOntologyData AddAllDifferentRelation(List<RDFOntologyFact> ontologyFacts) {
-            ontologyFacts?.ForEach(outerFact => {
-                this.AddFact(outerFact);
-                ontologyFacts?.ForEach(innerFact => {
-                    this.AddFact(innerFact);
-                    this.AddDifferentFromRelation(innerFact, outerFact);
-                });
-            });
+            ontologyFacts?.ForEach(outerFact =>
+                ontologyFacts?.ForEach(innerFact => this.AddDifferentFromRelation(innerFact, outerFact)));
             return this;
         }
 
