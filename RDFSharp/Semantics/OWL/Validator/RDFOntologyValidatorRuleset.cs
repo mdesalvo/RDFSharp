@@ -669,6 +669,38 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:AsymmetricProperty
+        /// <summary>
+        /// Validation rule checking for consistency of owl:AsymmetricProperty axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport AsymmetricProperty(RDFOntology ontology) {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'AsymmetricProperty'...");
+
+            #region AsymmetricProperty
+            var report = new RDFOntologyValidatorReport();
+            foreach (var asymProp in ontology.Model.PropertyModel.Where(prop => prop.IsAsymmetricProperty())) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(asymProp))) {
+
+                    if (ontology.Data.Relations.Assertions.Any(x => x.TaxonomyPredicate.Equals(asn.TaxonomyPredicate)
+                                                                        && x.TaxonomySubject.Equals(asn.TaxonomyObject)
+                                                                            && x.TaxonomyObject.Equals(asn.TaxonomySubject))) {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "AsymmetricProperty",
+                            String.Format("Violation of 'owl:AsymmetricProperty' constraint on property '{0}'.", asymProp),
+                            String.Format("Remove the assertion '{0}->{1}->{2}' from the ontology data.", asn.TaxonomyObject, asn.TaxonomyPredicate, asn.TaxonomySubject)
+                        ));
+                    }
+
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'AsymmetricProperty': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms

@@ -115,6 +115,13 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Checks if this ontology resource represents an ontology asymmetric property [OWL2]
+        /// </summary>
+        internal Boolean IsAsymmetricProperty() {
+            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Asymmetric);
+        }
+
+        /// <summary>
         /// Checks if this ontology resource represents an ontology transitive property
         /// </summary>
         internal Boolean IsTransitiveProperty() {

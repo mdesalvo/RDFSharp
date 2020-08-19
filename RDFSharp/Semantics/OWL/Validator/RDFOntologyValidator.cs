@@ -72,6 +72,12 @@ namespace RDFSharp.Semantics.OWL
                     "This rule checks for consistency of owl:SymmetricProperty axioms",
                     RDFOntologyValidatorRuleset.SymmetricProperty),
 
+                //AsymmetricProperty [OWL2]
+                new RDFOntologyValidatorRule(
+                    "AsymmetricProperty",
+                    "This rule checks for consistency of owl:AsymmetricProperty axioms",
+                    RDFOntologyValidatorRuleset.AsymmetricProperty),
+
                 //ClassType
                 new RDFOntologyValidatorRule(
                     "ClassType", 
@@ -111,12 +117,10 @@ namespace RDFSharp.Semantics.OWL
                 RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator is going to be applied on Ontology '{0}'...", ontology.Value));
 
                 //STEP 1: Expand ontology
-                var expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
+                RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
 
                 //STEP 2: Execute rules                
-                Parallel.ForEach(Rules, rule => {
-                    report.MergeEvidences(rule.ExecuteRule(expOntology));
-                });
+                Parallel.ForEach(Rules, r => report.MergeEvidences(r.ExecuteRule(expOntology)));
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator has been applied on Ontology '{0}': found " + report.EvidencesCount + " evidences.", ontology.Value));
             }

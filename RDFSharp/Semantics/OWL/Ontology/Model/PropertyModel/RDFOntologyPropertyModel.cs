@@ -72,6 +72,13 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Count of the asymmetric properties composing the property model [OWL2]
+        /// </summary>
+        public Int64 AsymmetricPropertiesCount {
+            get { return this.Properties.Count(p => p.Value.IsAsymmetricProperty()); }
+        }
+
+        /// <summary>
         /// Count of the transitive properties composing the property model
         /// </summary>
         public Int64 TransitivePropertiesCount {
@@ -141,6 +148,17 @@ namespace RDFSharp.Semantics.OWL
         public IEnumerator<RDFOntologyObjectProperty> SymmetricPropertiesEnumerator {
             get {
                 return this.Properties.Values.Where(p => p.IsSymmetricProperty())
+                                             .OfType<RDFOntologyObjectProperty>()
+                                             .GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator on the property model's asymmetric properties for iteration [OWL2]
+        /// </summary>
+        public IEnumerator<RDFOntologyObjectProperty> AsymmetricPropertiesEnumerator {
+            get {
+                return this.Properties.Values.Where(p => p.IsAsymmetricProperty())
                                              .OfType<RDFOntologyObjectProperty>()
                                              .GetEnumerator();
             }
@@ -903,22 +921,25 @@ namespace RDFSharp.Semantics.OWL
             //Definitions
             foreach (var p in this.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop))) {
                 if  (p.IsAnnotationProperty()) {
-                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ANNOTATION_PROPERTY));
+                    result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ANNOTATION_PROPERTY));
                 }
                 else if (p.IsDatatypeProperty()) {
-                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATATYPE_PROPERTY));
+                    result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATATYPE_PROPERTY));
                 }
                 else if (p.IsObjectProperty()) {
-                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.OBJECT_PROPERTY));
-                     if (p.IsSymmetricProperty()) {
-                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.SYMMETRIC_PROPERTY));
-                     }
-                     if (p.IsTransitiveProperty()) {
-                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TRANSITIVE_PROPERTY));
-                     }
-                     if (p.IsInverseFunctionalProperty()) {
-                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY));
-                     }
+                    result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.OBJECT_PROPERTY));
+                    if (p.IsSymmetricProperty()) {
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.SYMMETRIC_PROPERTY));
+                    }
+                    if (p.IsAsymmetricProperty()) {
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ASYMMETRIC_PROPERTY));
+                    }
+                    if (p.IsTransitiveProperty()) {
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TRANSITIVE_PROPERTY));
+                    }
+                    if (p.IsInverseFunctionalProperty()) {
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY));
+                    }
                 }
                 else {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.PROPERTY));

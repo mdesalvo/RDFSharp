@@ -40,6 +40,11 @@ namespace RDFSharp.Semantics.OWL
         /// Flag indicating that the ontology property is "owl:InverseFunctionalProperty"
         /// </summary>
         public Boolean InverseFunctional { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology property is "owl:AsymmetricProperty" [OWL2]
+        /// </summary>
+        public Boolean Asymmetric { get; internal set; }
         #endregion
 
         #region Ctors
@@ -54,7 +59,19 @@ namespace RDFSharp.Semantics.OWL
         /// Sets or unsets this ontology object property as "owl:SymmetricProperty"
         /// </summary>
         public RDFOntologyObjectProperty SetSymmetric(Boolean symmetric) {
-            this.Symmetric         = symmetric;
+            this.Symmetric = symmetric;
+            if (symmetric)
+                this.Asymmetric = false; //Automatically switch-off eventual asymmetry
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this ontology object property as "owl:AsymmetricProperty" [OWL2]
+        /// </summary>
+        public RDFOntologyObjectProperty SetAsymmetric(Boolean asymmetric) {
+            this.Asymmetric = asymmetric;
+            if (asymmetric)
+                this.Symmetric = false; //Automatically switch-off eventual symmetry
             return this;
         }
 
@@ -62,7 +79,7 @@ namespace RDFSharp.Semantics.OWL
         /// Sets or unsets this ontology object property as "owl:TransitiveProperty"
         /// </summary>
         public RDFOntologyObjectProperty SetTransitive(Boolean transitive) {
-            this.Transitive        = transitive;
+            this.Transitive = transitive;
             return this;
         }
 

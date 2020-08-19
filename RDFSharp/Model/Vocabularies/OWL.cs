@@ -265,6 +265,11 @@ namespace RDFSharp.Model
             /// owl:AllDifferent [OWL2]
             /// </summary>
             public static readonly RDFResource ALL_DIFFERENT = new RDFResource(OWL.BASE_URI + "AllDifferent");
+
+            /// <summary>
+            /// owl:AsymmetricProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource ASYMMETRIC_PROPERTY = new RDFResource(OWL.BASE_URI + "AsymmetricProperty");
             #endregion
 
         }
