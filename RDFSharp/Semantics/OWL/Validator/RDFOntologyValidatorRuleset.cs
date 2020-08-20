@@ -669,7 +669,7 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
-        #region Rule:AsymmetricProperty
+        #region Rule:AsymmetricProperty [OWL2]
         /// <summary>
         /// Validation rule checking for consistency of owl:AsymmetricProperty axioms [OWL2]
         /// </summary>
