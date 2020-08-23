@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of rules contained in the BASE ruleset
         /// </summary>
-        public static readonly Int32 RulesCount = 15; 
+        public static readonly Int32 RulesCount = 16; 
 
 		#region RDFS
         /// <summary>
@@ -111,8 +111,15 @@ namespace RDFSharp.Semantics.OWL
         /// TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom
         /// </summary>
         public static RDFOntologyReasonerRule TransitivePropertyEntailment { get; internal set; }
-		#endregion
-		
+        #endregion
+
+        #region OWL2
+        /// <summary>
+        /// ReflexivePropertyEntailment implements data entailments based on 'owl:ReflexiveProperty' axiom [OWL2]
+        /// </summary>
+        public static RDFOntologyReasonerRule ReflexivePropertyEntailment { get; internal set; }
+        #endregion
+
         #endregion
 
         #region Ctors
@@ -238,14 +245,23 @@ namespace RDFSharp.Semantics.OWL
                                                                           "((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)",
                                                                           13,
                                                                           TransitivePropertyEntailmentExec).SetPriority(13);
-			#endregion
-			
+            #endregion
+
+            #region OWL2
+            //ReflexivePropertyEntailment
+            ReflexivePropertyEntailment = new RDFOntologyReasonerRule("ReflexivePropertyEntailment",
+                                                                      "(OWL2) ReflexivePropertyEntailment implements data entailments based on 'owl:ReflexiveProperty' axiom:" +
+                                                                      "((F1 P F2) AND (P TYPE REFLEXIVEPROPERTY)) => (F1 P F1)",
+                                                                      16,
+                                                                      ReflexivePropertyEntailmentExec).SetPriority(16);
+            #endregion
+
         }
         #endregion
 
         #region Methods
-		
-		#region RDFS
+
+        #region RDFS
         /// <summary>
         /// SubClassTransitivity (rdfs11) implements structural entailments based on 'rdfs:subClassOf' taxonomy:
         /// ((C1 SUBCLASSOF C2)      AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3);
@@ -817,9 +833,49 @@ namespace RDFSharp.Semantics.OWL
             }
             return report;
         }
-		#endregion
-		
-		#endregion
+        #endregion
+
+        #region OWL2
+        /// <summary>
+        /// (OWL2) ReflexivePropertyEntailment implements data entailments based on 'owl:ReflexiveProperty' axiom:
+        /// ((F1 P F2) AND (P TYPE REFLEXIVEPROPERTY)) => (F1 P F1)
+        /// </summary>
+        internal static RDFOntologyReasonerReport ReflexivePropertyEntailmentExec(RDFOntology ontology) {
+            var report = new RDFOntologyReasonerReport();
+
+            //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-reflexive properties)
+            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
+                                                                                 && prop.IsReflexiveProperty()).ToList();
+            foreach (var p in availableprops) {
+
+                //Filter the assertions using the current property (F1 P F2)
+                var pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                //Iterate those assertions
+                foreach (var pAsn in pAsns) {
+
+                    //Taxonomy-check for securing inference consistency
+                    if (true) { //TODO
+
+                        //Create the inference as a taxonomy entry
+                        var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                        //Add the inference to the ontology and to the report
+                        if (ontology.Data.Relations.Assertions.AddEntry(sem_inf)) {
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ReflexivePropertyEntailment", sem_inf));
+                        }
+
+                    }
+
+                }
+
+            }
+
+            return report;
+        }
+        #endregion
+
+        #endregion
 
     }
 

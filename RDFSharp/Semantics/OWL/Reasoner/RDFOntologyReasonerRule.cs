@@ -55,23 +55,20 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build a reasoner rule with the given name, description and priority (lower is better)
         /// </summary>
-        public RDFOntologyReasonerRule(String ruleName, 
-                                       String ruleDescription, 
-                                       UInt32 rulePriority, 
-                                       ReasonerRuleDelegate ruleDelegate) {
-            if (ruleName                     != null && ruleName.Trim()        != String.Empty) {
-                if (ruleDescription          != null && ruleDescription.Trim() != String.Empty) {
-                    if (ruleDelegate         != null) {
-                        this.RuleName         = ruleName.Trim();
-                        this.RuleDescription  = ruleDescription.Trim();
+        public RDFOntologyReasonerRule(String ruleName, String ruleDescription, UInt32 rulePriority, ReasonerRuleDelegate ruleDelegate) {
+            if (ruleName != null && ruleName.Trim() != String.Empty) {
+                if (ruleDescription != null && ruleDescription.Trim() != String.Empty) {
+                    if (ruleDelegate != null) {
+                        this.RuleName = ruleName.Trim();
+                        this.RuleDescription = ruleDescription.Trim();
 
                         //Shift-up rule priority to guarantee preliminar execution of BASE rules
-                        if (rulePriority     <= RDFOntologyReasonerRuleset.RulesCount)
+                        if (rulePriority <= RDFOntologyReasonerRuleset.RulesCount)
                             this.RulePriority = rulePriority + (UInt32)RDFOntologyReasonerRuleset.RulesCount + 1;
                         else
                             this.RulePriority = rulePriority;
 
-                        this.ExecuteRule      = ruleDelegate;
+                        this.ExecuteRule = ruleDelegate;
                     }
                     else {
                         throw new RDFSemanticsException("Cannot create RDFOntologyReasonerRule because given \"ruleDelegate\" parameter is null.");
@@ -99,7 +96,7 @@ namespace RDFSharp.Semantics.OWL
         /// Gives the full representation of the reasoner rule
         /// </summary>
         public String ToFullString() {
-            return this.RuleName + " (PRIORITY " + this.RulePriority + "): " + this.RuleDescription;
+            return this.RuleName + " [PRIORITY " + this.RulePriority + "]: " + this.RuleDescription;
         }
         #endregion
 

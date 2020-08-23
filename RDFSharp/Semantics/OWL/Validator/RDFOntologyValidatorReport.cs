@@ -112,6 +112,7 @@ namespace RDFSharp.Semantics.OWL
                 "Domain_Range",
                 "InverseOf",
                 "SymmetricProperty",
+                "IrreflexiveProperty",
                 "ClassType",
                 "GlobalCardinalityConstraint",
                 "LocalCardinalityConstraint",
