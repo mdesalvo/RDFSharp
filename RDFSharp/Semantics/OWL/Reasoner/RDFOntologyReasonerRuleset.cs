@@ -854,17 +854,12 @@ namespace RDFSharp.Semantics.OWL
                 //Iterate those assertions
                 foreach (var pAsn in pAsns) {
 
-                    //Taxonomy-check for securing inference consistency
-                    if (true) { //TODO
+                    //Create the inference as a taxonomy entry
+                    var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                        //Create the inference as a taxonomy entry
-                        var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
-
-                        //Add the inference to the ontology and to the report
-                        if (ontology.Data.Relations.Assertions.AddEntry(sem_inf)) {
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ReflexivePropertyEntailment", sem_inf));
-                        }
-
+                    //Add the inference to the ontology and to the report
+                    if (ontology.Data.Relations.Assertions.AddEntry(sem_inf)) {
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ReflexivePropertyEntailment", sem_inf));
                     }
 
                 }
