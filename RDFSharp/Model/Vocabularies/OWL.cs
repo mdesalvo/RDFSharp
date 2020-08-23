@@ -270,6 +270,16 @@ namespace RDFSharp.Model
             /// owl:AsymmetricProperty [OWL2]
             /// </summary>
             public static readonly RDFResource ASYMMETRIC_PROPERTY = new RDFResource(OWL.BASE_URI + "AsymmetricProperty");
+
+            /// <summary>
+            /// owl:ReflexiveProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource REFLEXIVE_PROPERTY = new RDFResource(OWL.BASE_URI + "ReflexiveProperty");
+
+            /// <summary>
+            /// owl:IrreflexiveProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource IRREFLEXIVE_PROPERTY = new RDFResource(OWL.BASE_URI + "IrreflexiveProperty");
             #endregion
 
         }
