@@ -78,6 +78,13 @@ namespace RDFSharp.Semantics.OWL
                     "This rule checks for consistency of owl:AsymmetricProperty axioms",
                     RDFOntologyValidatorRuleset.AsymmetricProperty),
 
+                
+                //IrreflexiveProperty [OWL2]
+                new RDFOntologyValidatorRule(
+                    "IrreflexiveProperty",
+                    "This rule checks for consistency of owl:IrreflexiveProperty axioms",
+                    RDFOntologyValidatorRuleset.IrreflexiveProperty),
+
                 //ClassType
                 new RDFOntologyValidatorRule(
                     "ClassType", 
@@ -112,8 +119,8 @@ namespace RDFSharp.Semantics.OWL
         /// Validate the given ontology against a set of RDFS/OWL-DL rules, detecting errors and inconsistencies affecting its model and data.
         /// </summary>
         public static RDFOntologyValidatorReport Validate(this RDFOntology ontology) {
-            var report          = new RDFOntologyValidatorReport();
-            if (ontology       != null) {
+            var report = new RDFOntologyValidatorReport();
+            if (ontology != null) {
                 RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator is going to be applied on Ontology '{0}'...", ontology.Value));
 
                 //STEP 1: Expand ontology

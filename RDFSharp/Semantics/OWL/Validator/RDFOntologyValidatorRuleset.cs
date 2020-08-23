@@ -701,6 +701,36 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:IrreflexiveProperty [OWL2]
+        /// <summary>
+        /// Validation rule checking for consistency of owl:IrreflexiveProperty axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport IrreflexiveProperty(RDFOntology ontology) {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'IrreflexiveProperty'...");
+
+            #region AsymmetricProperty
+            var report = new RDFOntologyValidatorReport();
+            foreach (var irrefProp in ontology.Model.PropertyModel.Where(prop => prop.IsIrreflexiveProperty())) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(irrefProp))) {
+
+                    if (asn.TaxonomySubject.Equals(asn.TaxonomyObject)) {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "IrreflexiveProperty",
+                            String.Format("Violation of 'owl:IrreflexiveProperty' constraint on property '{0}'.", irrefProp),
+                            String.Format("Remove the assertion '{0}->{1}->{2}' from the ontology data.", asn.TaxonomySubject, asn.TaxonomyPredicate, asn.TaxonomyObject)
+                        ));
+                    }
+
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'IrreflexiveProperty': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms
