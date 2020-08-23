@@ -122,6 +122,20 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Checks if this ontology resource represents an ontology reflexive property [OWL2]
+        /// </summary>
+        internal Boolean IsReflexiveProperty() {
+            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Reflexive);
+        }
+
+        /// <summary>
+        /// Checks if this ontology resource represents an ontology irreflexive property [OWL2]
+        /// </summary>
+        internal Boolean IsIrreflexiveProperty() {
+            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Irreflexive);
+        }
+
+        /// <summary>
         /// Checks if this ontology resource represents an ontology transitive property
         /// </summary>
         internal Boolean IsTransitiveProperty() {

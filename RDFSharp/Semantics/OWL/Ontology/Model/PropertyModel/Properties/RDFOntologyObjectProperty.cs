@@ -45,6 +45,16 @@ namespace RDFSharp.Semantics.OWL
         /// Flag indicating that the ontology property is "owl:AsymmetricProperty" [OWL2]
         /// </summary>
         public Boolean Asymmetric { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology property is "owl:ReflexiveProperty" [OWL2]
+        /// </summary>
+        public Boolean Reflexive { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology property is "owl:IrreflexiveProperty" [OWL2]
+        /// </summary>
+        public Boolean Irreflexive { get; internal set; }
         #endregion
 
         #region Ctors
@@ -66,9 +76,30 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Sets or unsets this ontology object property as "owl:ReflexiveProperty" [OWL2]
+        /// </summary>
+        public RDFOntologyObjectProperty SetReflexive(Boolean reflexive) {
+            this.Reflexive = reflexive;
+            if (reflexive)
+                this.Irreflexive = false; //Automatically switch-off eventual irreflexivity
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this ontology object property as "owl:IrreflexiveProperty"
+        /// </summary>
+        public RDFOntologyObjectProperty SetIrreflexive(Boolean irreflexive) {
+            this.Irreflexive = irreflexive;
+            if (irreflexive)
+                this.Reflexive = false; //Automatically switch-off eventual reflexivity
+            return this;
+        }
+
+        /// <summary>
         /// Sets or unsets this ontology object property as "owl:AsymmetricProperty" [OWL2]
         /// </summary>
-        public RDFOntologyObjectProperty SetAsymmetric(Boolean asymmetric) {
+        public RDFOntologyObjectProperty SetAsymmetric(Boolean asymmetric)
+        {
             this.Asymmetric = asymmetric;
             if (asymmetric)
                 this.Symmetric = false; //Automatically switch-off eventual symmetry

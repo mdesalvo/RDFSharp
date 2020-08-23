@@ -79,6 +79,20 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Count of the reflexive properties composing the property model [OWL2]
+        /// </summary>
+        public Int64 ReflexivePropertiesCount {
+            get { return this.Properties.Count(p => p.Value.IsReflexiveProperty()); }
+        }
+
+        /// <summary>
+        /// Count of the irreflexive properties composing the property model [OWL2]
+        /// </summary>
+        public Int64 IrreflexivePropertiesCount {
+            get { return this.Properties.Count(p => p.Value.IsIrreflexiveProperty()); }
+        }
+
+        /// <summary>
         /// Count of the transitive properties composing the property model
         /// </summary>
         public Int64 TransitivePropertiesCount {
@@ -159,6 +173,28 @@ namespace RDFSharp.Semantics.OWL
         public IEnumerator<RDFOntologyObjectProperty> AsymmetricPropertiesEnumerator {
             get {
                 return this.Properties.Values.Where(p => p.IsAsymmetricProperty())
+                                             .OfType<RDFOntologyObjectProperty>()
+                                             .GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator on the property model's reflexive properties for iteration [OWL2]
+        /// </summary>
+        public IEnumerator<RDFOntologyObjectProperty> ReflexivePropertiesEnumerator {
+            get {
+                return this.Properties.Values.Where(p => p.IsReflexiveProperty())
+                                             .OfType<RDFOntologyObjectProperty>()
+                                             .GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator on the property model's irreflexive properties for iteration [OWL2]
+        /// </summary>
+        public IEnumerator<RDFOntologyObjectProperty> IrreflexivePropertiesEnumerator {
+            get {
+                return this.Properties.Values.Where(p => p.IsIrreflexiveProperty())
                                              .OfType<RDFOntologyObjectProperty>()
                                              .GetEnumerator();
             }
@@ -933,6 +969,12 @@ namespace RDFSharp.Semantics.OWL
                     }
                     if (p.IsAsymmetricProperty()) {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ASYMMETRIC_PROPERTY));
+                    }
+                    if (p.IsReflexiveProperty()) {
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.REFLEXIVE_PROPERTY));
+                    }
+                    if (p.IsIrreflexiveProperty()) {
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY));
                     }
                     if (p.IsTransitiveProperty()) {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TRANSITIVE_PROPERTY));

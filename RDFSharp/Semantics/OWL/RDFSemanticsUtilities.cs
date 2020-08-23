@@ -157,9 +157,19 @@ namespace RDFSharp.Semantics.OWL
                         obp.SetSymmetric(true);
                     #endregion
 
-                    #region AsymmetricProperty
+                    #region AsymmetricProperty [OWL2]
                     if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ASYMMETRIC_PROPERTY)))
                         obp.SetAsymmetric(true);
+                    #endregion
+
+                    #region ReflexiveProperty [OWL2]
+                    if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.REFLEXIVE_PROPERTY)))
+                        obp.SetReflexive(true);
+                    #endregion
+
+                    #region IrreflexiveProperty [OWL2]
+                    if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY)))
+                        obp.SetIrreflexive(true);
                     #endregion
 
                     #region TransitiveProperty
@@ -196,7 +206,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region AsymmetricProperty
+                #region AsymmetricProperty [OWL2]
                 foreach (var ap in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ASYMMETRIC_PROPERTY))
                 {
                     var asyp = ontology.Model.PropertyModel.SelectProperty(ap.Subject.ToString());
@@ -216,6 +226,52 @@ namespace RDFSharp.Semantics.OWL
                         #endregion
                     }
                     ((RDFOntologyObjectProperty)asyp).SetAsymmetric(true);
+                }
+                #endregion
+
+                #region ReflexiveProperty [OWL2]
+                foreach (var rp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.REFLEXIVE_PROPERTY))
+                {
+                    var refp = ontology.Model.PropertyModel.SelectProperty(rp.Subject.ToString());
+                    if (refp == null)
+                    {
+                        refp = ((RDFResource)rp.Subject).ToRDFOntologyObjectProperty();
+                        ontology.Model.PropertyModel.AddProperty(refp);
+
+                        #region DeprecatedProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)refp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY)))
+                            refp.SetDeprecated(true);
+                        #endregion
+
+                        #region FunctionalProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)refp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
+                            refp.SetFunctional(true);
+                        #endregion
+                    }
+                    ((RDFOntologyObjectProperty)refp).SetReflexive(true);
+                }
+                #endregion
+
+                #region IrreflexiveProperty [OWL2]
+                foreach (var irp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY))
+                {
+                    var irrefp = ontology.Model.PropertyModel.SelectProperty(irp.Subject.ToString());
+                    if (irrefp == null)
+                    {
+                        irrefp = ((RDFResource)irp.Subject).ToRDFOntologyObjectProperty();
+                        ontology.Model.PropertyModel.AddProperty(irrefp);
+
+                        #region DeprecatedProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)irrefp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY)))
+                            irrefp.SetDeprecated(true);
+                        #endregion
+
+                        #region FunctionalProperty
+                        if (ontGraph.ContainsTriple(new RDFTriple((RDFResource)irrefp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
+                            irrefp.SetFunctional(true);
+                        #endregion
+                    }
+                    ((RDFOntologyObjectProperty)irrefp).SetIrreflexive(true);
                 }
                 #endregion
 
