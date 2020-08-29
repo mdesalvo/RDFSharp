@@ -708,7 +708,7 @@ namespace RDFSharp.Semantics.OWL
         internal static RDFOntologyValidatorReport IrreflexiveProperty(RDFOntology ontology) {
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'IrreflexiveProperty'...");
 
-            #region AsymmetricProperty
+            #region IrreflexiveProperty
             var report = new RDFOntologyValidatorReport();
             foreach (var irrefProp in ontology.Model.PropertyModel.Where(prop => prop.IsIrreflexiveProperty())) {
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(irrefProp))) {
