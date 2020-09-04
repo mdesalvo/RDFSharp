@@ -932,33 +932,47 @@ namespace RDFSharp.Semantics.OWL
                 if (c.IsRestrictionClass()) {
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.RESTRICTION));
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ON_PROPERTY, (RDFResource)((RDFOntologyRestriction)c).OnProperty.Value));
-                    if (c       is RDFOntologyAllValuesFromRestriction) {
-                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ALL_VALUES_FROM, (RDFResource)((RDFOntologyAllValuesFromRestriction)c).FromClass.Value));
+                    if (c      is RDFOntologyAllValuesFromRestriction allValuesFromRestriction) {
+                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ALL_VALUES_FROM, (RDFResource)allValuesFromRestriction.FromClass.Value));
                      }
-                     else if (c is RDFOntologySomeValuesFromRestriction) {
-                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.SOME_VALUES_FROM, (RDFResource)((RDFOntologySomeValuesFromRestriction)c).FromClass.Value));
+                    else if (c is RDFOntologySomeValuesFromRestriction someValuesFromRestriction) {
+                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.SOME_VALUES_FROM, (RDFResource)someValuesFromRestriction.FromClass.Value));
                      }
-                     else if (c is RDFOntologyHasValueRestriction) {
-                        if (((RDFOntologyHasValueRestriction)c).RequiredValue.IsLiteral()) {
-                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_VALUE, (RDFLiteral)((RDFOntologyHasValueRestriction)c).RequiredValue.Value));
+                    else if (c is RDFOntologyHasValueRestriction hasValueRestriction) {
+                        if (hasValueRestriction.RequiredValue.IsLiteral()) {
+                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_VALUE, (RDFLiteral)hasValueRestriction.RequiredValue.Value));
                         }
                         else {
-                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_VALUE, (RDFResource)((RDFOntologyHasValueRestriction)c).RequiredValue.Value));
+                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_VALUE, (RDFResource)hasValueRestriction.RequiredValue.Value));
                         }
                      }
-                     else if (c is RDFOntologyCardinalityRestriction) {
-                        if  (((RDFOntologyCardinalityRestriction)c).MinCardinality == ((RDFOntologyCardinalityRestriction)c).MaxCardinality) {
-                             result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.CARDINALITY, new RDFTypedLiteral(((RDFOntologyCardinalityRestriction)c).MinCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
+                    else if (c is RDFOntologyCardinalityRestriction cardinalityRestriction) {
+                        if  (cardinalityRestriction.MinCardinality == cardinalityRestriction.MaxCardinality) {
+                             result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.CARDINALITY, new RDFTypedLiteral(cardinalityRestriction.MinCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
                         }
                         else {
-                            if (((RDFOntologyCardinalityRestriction)c).MinCardinality > 0) {
-                                result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.MIN_CARDINALITY, new RDFTypedLiteral(((RDFOntologyCardinalityRestriction)c).MinCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
+                            if (cardinalityRestriction.MinCardinality > 0) {
+                                result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.MIN_CARDINALITY, new RDFTypedLiteral(cardinalityRestriction.MinCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
                             }
-                            if (((RDFOntologyCardinalityRestriction)c).MaxCardinality > 0) {
-                                result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.MAX_CARDINALITY, new RDFTypedLiteral(((RDFOntologyCardinalityRestriction)c).MaxCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
+                            if (cardinalityRestriction.MaxCardinality > 0) {
+                                result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.MAX_CARDINALITY, new RDFTypedLiteral(cardinalityRestriction.MaxCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
                             }
                         }
                      }
+                    else if (c is RDFOntologyQualifiedCardinalityRestriction qualifiedCardinalityRestriction) {
+                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ON_CLASS, (RDFResource)qualifiedCardinalityRestriction.OnClass.Value));
+                        if (qualifiedCardinalityRestriction.MinQualifiedCardinality == qualifiedCardinalityRestriction.MaxQualifiedCardinality) {
+                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.QUALIFIED_CARDINALITY, new RDFTypedLiteral(qualifiedCardinalityRestriction.MinQualifiedCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
+                        }
+                        else {
+                            if (qualifiedCardinalityRestriction.MinQualifiedCardinality > 0) {
+                                result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.MIN_QUALIFIED_CARDINALITY, new RDFTypedLiteral(qualifiedCardinalityRestriction.MinQualifiedCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
+                            }
+                            if (qualifiedCardinalityRestriction.MaxQualifiedCardinality > 0) {
+                                result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.MAX_QUALIFIED_CARDINALITY, new RDFTypedLiteral(qualifiedCardinalityRestriction.MaxQualifiedCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
+                            }
+                        }
+                    }
                 }
 
                 //Enumerate
