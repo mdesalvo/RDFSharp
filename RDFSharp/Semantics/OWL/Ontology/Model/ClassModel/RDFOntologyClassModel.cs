@@ -960,7 +960,12 @@ namespace RDFSharp.Semantics.OWL
                         }
                      }
                     else if (c is RDFOntologyQualifiedCardinalityRestriction qualifiedCardinalityRestriction) {
-                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ON_CLASS, (RDFResource)qualifiedCardinalityRestriction.OnClass.Value));
+                        if (qualifiedCardinalityRestriction.OnClass is RDFOntologyDataRangeClass) {
+                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ON_DATARANGE, (RDFResource)qualifiedCardinalityRestriction.OnClass.Value));
+                        }
+                        else {
+                            result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.ON_CLASS, (RDFResource)qualifiedCardinalityRestriction.OnClass.Value));
+                        }
                         if (qualifiedCardinalityRestriction.MinQualifiedCardinality == qualifiedCardinalityRestriction.MaxQualifiedCardinality) {
                             result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.QUALIFIED_CARDINALITY, new RDFTypedLiteral(qualifiedCardinalityRestriction.MinQualifiedCardinality.ToString(), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)));
                         }
