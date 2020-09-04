@@ -280,6 +280,31 @@ namespace RDFSharp.Model
             /// owl:IrreflexiveProperty [OWL2]
             /// </summary>
             public static readonly RDFResource IRREFLEXIVE_PROPERTY = new RDFResource(OWL.BASE_URI + "IrreflexiveProperty");
+
+            /// <summary>
+            /// owl:qualifiedCardinality [OWL2]
+            /// </summary>
+            public static readonly RDFResource QUALIFIED_CARDINALITY = new RDFResource(OWL.BASE_URI + "qualifiedCardinality");
+
+            /// <summary>
+            /// owl:minQualifiedCardinality [OWL2]
+            /// </summary>
+            public static readonly RDFResource MIN_QUALIFIED_CARDINALITY = new RDFResource(OWL.BASE_URI + "minQualifiedCardinality");
+
+            /// <summary>
+            /// owl:maxQualifiedCardinality [OWL2]
+            /// </summary>
+            public static readonly RDFResource MAX_QUALIFIED_CARDINALITY = new RDFResource(OWL.BASE_URI + "maxQualifiedCardinality");
+
+            /// <summary>
+            /// owl:onClass [OWL2]
+            /// </summary>
+            public static readonly RDFResource ON_CLASS = new RDFResource(OWL.BASE_URI + "onClass");
+
+            /// <summary>
+            /// owl:onDataRange [OWL2]
+            /// </summary>
+            public static readonly RDFResource ON_DATARANGE = new RDFResource(OWL.BASE_URI + "onDataRange");
             #endregion
 
         }

@@ -677,6 +677,11 @@ namespace RDFSharp.Semantics.OWL
 
             //OWL2
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.DISJOINT_UNION_OF.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.QUALIFIED_CARDINALITY.ToRDFOntologyDatatypeProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.MIN_QUALIFIED_CARDINALITY.ToRDFOntologyDatatypeProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.MAX_QUALIFIED_CARDINALITY.ToRDFOntologyDatatypeProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ON_CLASS.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ON_DATARANGE.ToRDFOntologyObjectProperty());
 
             #endregion
 
