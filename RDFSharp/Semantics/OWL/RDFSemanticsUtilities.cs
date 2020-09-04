@@ -67,6 +67,7 @@ namespace RDFSharp.Semantics.OWL
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
                 var inverseOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INVERSE_OF);
                 var onProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_PROPERTY);
+                var onClass = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_CLASS); //OWL2
                 var oneOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ONE_OF);
                 var unionOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.UNION_OF);
                 var disjointUnionOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_UNION_OF); //OWL2
@@ -78,6 +79,9 @@ namespace RDFSharp.Semantics.OWL
                 var cardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.CARDINALITY);
                 var mincardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MIN_CARDINALITY);
                 var maxcardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MAX_CARDINALITY);
+                var qualifiedCardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.QUALIFIED_CARDINALITY); //OWL2
+                var minQualifiedCardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MIN_QUALIFIED_CARDINALITY); //OWL2
+                var maxQualifiedCardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MAX_QUALIFIED_CARDINALITY); //OWL2
                 var sameAs = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SAME_AS);
                 var differentFrom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DIFFERENT_FROM);
                 var members = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MEMBERS);
@@ -829,6 +833,166 @@ namespace RDFSharp.Semantics.OWL
                         var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minC, maxC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
                         continue;
+                    }
+                    #endregion
+
+                    #region QualifiedCardinality
+                    Int32 exQC = 0;
+                    var crExQC = qualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                    if (crExQC != null && crExQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                    {
+                        if (crExQC.Object is RDFPlainLiteral)
+                        {
+                            if (Regex.IsMatch(crExQC.Object.ToString(), @"^[0-9]+$"))
+                            {
+                                exQC = Int32.Parse(crExQC.Object.ToString());
+                            }
+                        }
+                        else
+                        {
+                            if (((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
+                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            {
+                                if (Regex.IsMatch(((RDFTypedLiteral)crExQC.Object).Value, @"^[0-9]+$"))
+                                {
+                                    exQC = Int32.Parse(((RDFTypedLiteral)crExQC.Object).Value);
+                                }
+                            }
+                        }
+                    }
+                    if (exQC > 0)
+                    {
+                        var exQCCls = onClass.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                        if (exQCCls != null && exQCCls.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        {
+                            var exQCOnClass = ontology.Model.ClassModel.SelectClass(exQCCls.Object.ToString());
+                            if (exQCOnClass != null)
+                            {
+                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exQCOnClass, exQC, exQC);
+                                ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
+                                continue;
+                            }
+                            else
+                            {
+
+                                //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
+                                //from graph, because definition of its required onClass is not found in the model
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onClass '{1}' is not found in the model.", r.Value, exQCCls.Object));
+
+                            }
+                        }
+                    }
+
+                    Int32 minQC = 0;
+                    var crMinQC = minQualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                    if (crMinQC != null && crMinQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                    {
+                        if (crMinQC.Object is RDFPlainLiteral)
+                        {
+                            if (Regex.IsMatch(crMinQC.Object.ToString(), @"^[0-9]+$"))
+                            {
+                                minQC = Int32.Parse(crMinQC.Object.ToString());
+                            }
+                        }
+                        else
+                        {
+                            if (((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
+                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            {
+                                if (Regex.IsMatch(((RDFTypedLiteral)crMinQC.Object).Value, @"^[0-9]+$"))
+                                {
+                                    minQC = Int32.Parse(((RDFTypedLiteral)crMinQC.Object).Value);
+                                }
+                            }
+                        }
+                    }
+
+                    Int32 maxQC = 0;
+                    var crMaxQC = maxQualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                    if (crMaxQC != null && crMaxQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                    {
+                        if (crMaxQC.Object is RDFPlainLiteral)
+                        {
+                            if (Regex.IsMatch(crMaxQC.Object.ToString(), @"^[0-9]+$"))
+                            {
+                                maxQC = Int32.Parse(crMaxQC.Object.ToString());
+                            }
+                        }
+                        else
+                        {
+                            if (((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
+                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            {
+                                if (Regex.IsMatch(((RDFTypedLiteral)crMaxQC.Object).Value, @"^[0-9]+$"))
+                                {
+                                    maxQC = Int32.Parse(((RDFTypedLiteral)crMaxQC.Object).Value);
+                                }
+                            }
+                        }
+                    }
+                    if (minQC > 0 || maxQC > 0)
+                    {
+                        var minmaxQCCls = onClass.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                        if (minmaxQCCls != null && minmaxQCCls.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        {
+                            var minmaxQCOnClass = ontology.Model.ClassModel.SelectClass(minmaxQCCls.Object.ToString());
+                            if (minmaxQCOnClass != null)
+                            {
+                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minmaxQCOnClass, minQC, maxQC);
+                                ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
+                                continue;
+                            }
+                            else
+                            {
+
+                                //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
+                                //from graph, because definition of its required onClass is not found in the model
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onClass '{1}' is not found in the model.", r.Value, minmaxQCCls.Object));
+
+                            }
+                        }
                     }
                     #endregion
 
