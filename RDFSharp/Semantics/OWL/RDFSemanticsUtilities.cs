@@ -68,6 +68,7 @@ namespace RDFSharp.Semantics.OWL
                 var inverseOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INVERSE_OF);
                 var onProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_PROPERTY);
                 var onClass = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_CLASS); //OWL2
+                var onDataRange = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_DATARANGE); //OWL2
                 var oneOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ONE_OF);
                 var unionOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.UNION_OF);
                 var disjointUnionOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_UNION_OF); //OWL2
@@ -876,6 +877,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     if (exQC > 0)
                     {
+                        //OnClass
                         var exQCCls = onClass.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                         if (exQCCls != null && exQCCls.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
@@ -893,6 +895,29 @@ namespace RDFSharp.Semantics.OWL
                                 //from graph, because definition of its required onClass is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onClass '{1}' is not found in the model.", r.Value, exQCCls.Object));
 
+                            }
+                        }
+                        else
+                        {
+                            //OnDataRange
+                            var exQCDrn = onDataRange.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                            if (exQCDrn != null && exQCDrn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                            {
+                                var exQCOnDataRange = ontology.Model.ClassModel.SelectClass(exQCDrn.Object.ToString());
+                                if (exQCOnDataRange != null)
+                                {
+                                    var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exQCOnDataRange, exQC, exQC);
+                                    ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
+                                    continue;
+                                }
+                                else
+                                {
+
+                                    //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
+                                    //from graph, because definition of its required onDataRange is not found in the model
+                                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onDataRange '{1}' is not found in the model.", r.Value, exQCDrn.Object));
+
+                                }
                             }
                         }
                     }
@@ -974,6 +999,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     if (minQC > 0 || maxQC > 0)
                     {
+                        //OnClass
                         var minmaxQCCls = onClass.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                         if (minmaxQCCls != null && minmaxQCCls.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
@@ -991,6 +1017,29 @@ namespace RDFSharp.Semantics.OWL
                                 //from graph, because definition of its required onClass is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onClass '{1}' is not found in the model.", r.Value, minmaxQCCls.Object));
 
+                            }
+                        }
+                        else
+                        {
+                            //OnDataRange
+                            var minmaxQCDrn = onDataRange.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                            if (minmaxQCDrn != null && minmaxQCDrn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                            {
+                                var minmaxQCOnDataRange = ontology.Model.ClassModel.SelectClass(minmaxQCDrn.Object.ToString());
+                                if (minmaxQCOnDataRange != null)
+                                {
+                                    var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minmaxQCOnDataRange, minQC, maxQC);
+                                    ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
+                                    continue;
+                                }
+                                else
+                                {
+
+                                    //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
+                                    //from graph, because definition of its required onDataRange is not found in the model
+                                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onDataRange '{1}' is not found in the model.", r.Value, minmaxQCDrn.Object));
+
+                                }
                             }
                         }
                     }
