@@ -889,9 +889,9 @@ namespace RDFSharp.Semantics.OWL
                 var qualifiedCardinalityRestrictionRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
 
                 //Enlist the classes which are compatible with the restricted "OnClass"
-                var compClasses = ontology.Model.ClassModel.GetSubClassesOf(qualifiedCardinalityRestriction.OnClass)
-                                                           .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(qualifiedCardinalityRestriction.OnClass))
-                                                           .AddClass(qualifiedCardinalityRestriction.OnClass);
+                var onClasses = ontology.Model.ClassModel.GetSubClassesOf(qualifiedCardinalityRestriction.OnClass)
+                                                         .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(qualifiedCardinalityRestriction.OnClass))
+                                                         .AddClass(qualifiedCardinalityRestriction.OnClass);
 
                 //Iterate the compatible assertions
                 foreach (var assertion in restrictionAssertions) {                    
@@ -903,7 +903,7 @@ namespace RDFSharp.Semantics.OWL
                         var compObjFactClassTypes = ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject)
                                                                              .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject))
                                                                              .AddClass((RDFOntologyClass)objFactClassType.TaxonomyObject);
-                        if (compObjFactClassTypes.IntersectWith(compClasses).ClassesCount > 0) {
+                        if (compObjFactClassTypes.IntersectWith(onClasses).ClassesCount > 0) {
                             onClassFound = true;
                             break;
                         }
@@ -1037,7 +1037,7 @@ namespace RDFSharp.Semantics.OWL
                 else if (hasValueRestriction.RequiredValue.IsLiteral()) {
 
                     //Iterate the compatible assertions and track the occurrence informations
-                    foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsLiteral()) {
+                    foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsLiteral())) {
                         try {
                             var literalsCompare = RDFQueryUtilities.CompareRDFPatternMembers(hasValueRestriction.RequiredValue.Value, assertion.TaxonomyObject.Value);
                             if (literalsCompare == 0) {
