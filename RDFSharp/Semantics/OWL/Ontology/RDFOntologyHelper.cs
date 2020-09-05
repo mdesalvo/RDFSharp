@@ -824,24 +824,23 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the facts which are members of the given restriction within the given ontology
         /// </summary>
         internal static RDFOntologyData GetMembersOfRestriction(this RDFOntology ontology, RDFOntologyRestriction ontRestriction) {
-            var result          = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             //Enlist the properties which are compatible with the restriction's "OnProperty"
-            var compProps       = ontology.Model.PropertyModel.GetSubPropertiesOf(ontRestriction.OnProperty)
-                                                              .UnionWith(ontology.Model.PropertyModel.GetEquivalentPropertiesOf(ontRestriction.OnProperty))
-                                                              .AddProperty(ontRestriction.OnProperty);
+            var compProps = ontology.Model.PropertyModel.GetSubPropertiesOf(ontRestriction.OnProperty)
+                                                        .UnionWith(ontology.Model.PropertyModel.GetEquivalentPropertiesOf(ontRestriction.OnProperty))
+                                                        .AddProperty(ontRestriction.OnProperty);
 
             //Filter assertions made with enlisted compatible properties
-            var fTaxonomy       = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
-            foreach (var p     in compProps) {
-                fTaxonomy       = fTaxonomy.UnionWith(ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p));
-            }
+            var fTaxonomy = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            foreach (var p in compProps)
+                fTaxonomy = fTaxonomy.UnionWith(ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p));
 
             #region Cardinality
-            if (ontRestriction is RDFOntologyCardinalityRestriction) {
+            if (ontRestriction is RDFOntologyCardinalityRestriction cardinalityRestriction) {
 
                 //Item2 is a counter for occurrences of the restricted property within the subject fact
-                var fCount      = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
+                var fCount = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
 
                 //Iterate the compatible assertions
                 foreach (var tEntry in fTaxonomy) {
@@ -855,21 +854,21 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Apply the cardinality restriction on the tracked facts
-                var fCountEnum  = fCount.Values.GetEnumerator();
-                while (fCountEnum.MoveNext())    {
-                    var passesMinCardinality     = true;
-                    var passesMaxCardinality     = true;
+                var fCountEnum = fCount.Values.GetEnumerator();
+                while (fCountEnum.MoveNext()) {
+                    var passesMinCardinality = true;
+                    var passesMaxCardinality = true;
 
                     //MinCardinality: signal tracked facts having "#occurrences < MinCardinality"
-                    if (((RDFOntologyCardinalityRestriction)ontRestriction).MinCardinality > 0) {
-                        if (fCountEnum.Current.Item2 < ((RDFOntologyCardinalityRestriction)ontRestriction).MinCardinality) {
+                    if (cardinalityRestriction.MinCardinality > 0) {
+                        if (fCountEnum.Current.Item2 < cardinalityRestriction.MinCardinality) {
                             passesMinCardinality = false;
                         }
                     }
 
                     //MaxCardinality: signal tracked facts having "#occurrences > MaxCardinality"
-                    if (((RDFOntologyCardinalityRestriction)ontRestriction).MaxCardinality > 0) {
-                        if (fCountEnum.Current.Item2 > ((RDFOntologyCardinalityRestriction)ontRestriction).MaxCardinality) {
+                    if (cardinalityRestriction.MaxCardinality > 0) {
+                        if (fCountEnum.Current.Item2 > cardinalityRestriction.MaxCardinality) {
                             passesMaxCardinality = false;
                         }
                     }
@@ -888,7 +887,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Item2 is a counter for occurrences of the restricted property with a range member of the restricted "FromClass"
                 //Item3 is a counter for occurrences of the restricted property with a range member not of the restricted "FromClass"
-                var fCount      = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64, Int64>>();
+                var fCount = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64, Int64>>();
 
                 //Enlist the classes which are compatible with the restricted "FromClass"
                 var compClasses = ontRestriction is RDFOntologyAllValuesFromRestriction 
@@ -903,26 +902,25 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var tEntry in fTaxonomy) {
 
                     //Initialize the occurrence counters of the subject fact
-                    if (!fCount.ContainsKey(tEntry.TaxonomySubject.PatternMemberID)) {
+                    if (!fCount.ContainsKey(tEntry.TaxonomySubject.PatternMemberID))
                          fCount.Add(tEntry.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)tEntry.TaxonomySubject, 0, 0));
-                    }
 
                     //Iterate the class types of the object fact, checking presence of the restricted "FromClass"
-                    var fromClassFound             = false;
-                    var objFactClassTypes          = ontology.Data.Relations.ClassType.SelectEntriesBySubject(tEntry.TaxonomyObject);
+                    var fromClassFound = false;
+                    var objFactClassTypes = ontology.Data.Relations.ClassType.SelectEntriesBySubject(tEntry.TaxonomyObject);
                     foreach (var objFactClassType in objFactClassTypes) {
-                        var compObjFactClassTypes  = ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject)
-                                                                              .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject))
-                                                                              .AddClass((RDFOntologyClass)objFactClassType.TaxonomyObject);
+                        var compObjFactClassTypes = ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject)
+                                                                             .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject))
+                                                                             .AddClass((RDFOntologyClass)objFactClassType.TaxonomyObject);
                         if (compObjFactClassTypes.IntersectWith(compClasses).ClassesCount > 0) {
-                            fromClassFound         = true;
+                            fromClassFound = true;
                             break;
                         }
                     }
 
                     //Update the occurrence counters of the subject fact
-                    var equalityCounter            = fCount[tEntry.TaxonomySubject.PatternMemberID].Item2;
-                    var differenceCounter          = fCount[tEntry.TaxonomySubject.PatternMemberID].Item3;
+                    var equalityCounter = fCount[tEntry.TaxonomySubject.PatternMemberID].Item2;
+                    var differenceCounter = fCount[tEntry.TaxonomySubject.PatternMemberID].Item3;
                     if (fromClassFound) {
                         fCount[tEntry.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)tEntry.TaxonomySubject, equalityCounter + 1, differenceCounter);
                     }
@@ -933,8 +931,8 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Apply the restriction on the subject facts
-                var fCountEnum                     = fCount.Values.GetEnumerator();
-                while  (fCountEnum.MoveNext())     {
+                var fCountEnum = fCount.Values.GetEnumerator();
+                while  (fCountEnum.MoveNext()) {
                     //AllValuesFrom
                     if (ontRestriction is RDFOntologyAllValuesFromRestriction) {
                         if (fCountEnum.Current.Item2 >= 1 && fCountEnum.Current.Item3 == 0) {
@@ -953,12 +951,12 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             #region HasValue
-            else if (ontRestriction     is RDFOntologyHasValueRestriction) {
-                if (((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue.IsFact()) {
+            else if (ontRestriction     is RDFOntologyHasValueRestriction hasValueRestriction) {
+                if (hasValueRestriction.RequiredValue.IsFact()) {
 
                     //Enlist the same facts of the restriction's "RequiredValue"
-                    var compFacts        = ontology.Data.GetSameFactsAs((RDFOntologyFact)((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue)
-                                                        .AddFact((RDFOntologyFact)((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue);
+                    var compFacts        = ontology.Data.GetSameFactsAs((RDFOntologyFact)hasValueRestriction.RequiredValue)
+                                                        .AddFact((RDFOntologyFact)hasValueRestriction.RequiredValue);
 
                     //Iterate the compatible assertions
                     foreach (var tEntry in fTaxonomy) {
@@ -970,13 +968,13 @@ namespace RDFSharp.Semantics.OWL
                     }
 
                 }
-                else if (((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue.IsLiteral()) {
+                else if (hasValueRestriction.RequiredValue.IsLiteral()) {
 
                     //Iterate the compatible assertions and track the occurrence informations
                     foreach (var tEntry in fTaxonomy) {
                         if (tEntry.TaxonomyObject.IsLiteral()) {
                             try {
-                                var semanticLiteralsCompare  = RDFQueryUtilities.CompareRDFPatternMembers(((RDFOntologyHasValueRestriction)ontRestriction).RequiredValue.Value, tEntry.TaxonomyObject.Value);
+                                var semanticLiteralsCompare  = RDFQueryUtilities.CompareRDFPatternMembers(hasValueRestriction.RequiredValue.Value, tEntry.TaxonomyObject.Value);
                                 if (semanticLiteralsCompare == 0) {
                                     result.AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
                                 }
