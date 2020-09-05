@@ -886,8 +886,10 @@ namespace RDFSharp.Semantics.OWL
             #region LocalCardinalityConstraint
             //OWL-DL requires that for a transitive property no local cardinality constraints should
             //be declared on the property itself, or its super properties, or its inverse properties.
-            var report              = new RDFOntologyValidatorReport();
-            foreach (var cardRestr in ontology.Model.ClassModel.Where(c => c is RDFOntologyCardinalityRestriction).OfType<RDFOntologyCardinalityRestriction>()) {
+            var report = new RDFOntologyValidatorReport();
+            var restrictions = ontology.Model.ClassModel.Where(c => c is RDFOntologyCardinalityRestriction || c is RDFOntologyQualifiedCardinalityRestriction)
+                                                        .OfType<RDFOntologyRestriction>();
+            foreach (var cardRestr in restrictions) {
                 var  restrProp      = ontology.Model.PropertyModel.SelectProperty(cardRestr.OnProperty.ToString());
                 if  (restrProp     != null) {
                     if (restrProp.IsObjectProperty()) {
