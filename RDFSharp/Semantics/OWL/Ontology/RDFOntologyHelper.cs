@@ -1019,19 +1019,17 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             #region HasValue
-            else if (ontRestriction     is RDFOntologyHasValueRestriction hasValueRestriction) {
+            else if (ontRestriction is RDFOntologyHasValueRestriction hasValueRestriction) {
                 if (hasValueRestriction.RequiredValue.IsFact()) {
 
                     //Enlist the same facts of the restriction's "RequiredValue"
-                    var compFacts        = ontology.Data.GetSameFactsAs((RDFOntologyFact)hasValueRestriction.RequiredValue)
-                                                        .AddFact((RDFOntologyFact)hasValueRestriction.RequiredValue);
+                    var facts = ontology.Data.GetSameFactsAs((RDFOntologyFact)hasValueRestriction.RequiredValue)
+                                             .AddFact((RDFOntologyFact)hasValueRestriction.RequiredValue);
 
-                    //Iterate the compatible assertions
-                    foreach (var tEntry in restrictionAssertions) {
-                        if (tEntry.TaxonomyObject.IsFact()) {
-                            if (compFacts.SelectFact(tEntry.TaxonomyObject.ToString()) != null) {
-                                result.AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
-                            }
+                    //Iterate the compatible assertions and track the occurrence informations
+                    foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsFact())) {
+                        if (facts.SelectFact(assertion.TaxonomyObject.ToString()) != null) {
+                            result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
                         }
                     }
 
@@ -1039,16 +1037,14 @@ namespace RDFSharp.Semantics.OWL
                 else if (hasValueRestriction.RequiredValue.IsLiteral()) {
 
                     //Iterate the compatible assertions and track the occurrence informations
-                    foreach (var tEntry in restrictionAssertions) {
-                        if (tEntry.TaxonomyObject.IsLiteral()) {
-                            try {
-                                var semanticLiteralsCompare  = RDFQueryUtilities.CompareRDFPatternMembers(hasValueRestriction.RequiredValue.Value, tEntry.TaxonomyObject.Value);
-                                if (semanticLiteralsCompare == 0) {
-                                    result.AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
-                                }
+                    foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsLiteral()) {
+                        try {
+                            var literalsCompare = RDFQueryUtilities.CompareRDFPatternMembers(hasValueRestriction.RequiredValue.Value, assertion.TaxonomyObject.Value);
+                            if (literalsCompare == 0) {
+                                result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
                             }
-                            finally { }
                         }
+                        finally { }
                     }
 
                 }
