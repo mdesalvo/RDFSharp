@@ -430,7 +430,8 @@ namespace RDFSharp.Model
                         Uri xmlBase = null;
                         if (xmlnsAttrs != null && xmlnsAttrs.Count > 0)
                         {
-                            var xmlBaseAttr = (rdfRDF.Attributes["xml:base"] ?? rdfRDF.Attributes["xmlns"]);
+                            var xmlBaseAttr = (rdfRDF.Attributes?[RDFVocabulary.XML.PREFIX + ":base"] 
+                                                    ?? rdfRDF.Attributes?["xmlns"]);
                             if (xmlBaseAttr != null)
                             {
                                 xmlBase = RDFModelUtilities.GetUriFromString(xmlBaseAttr.Value);
@@ -851,12 +852,12 @@ namespace RDFSharp.Model
         {
             //rdf:about
             XmlAttribute rdfAbout =
-                (subjNode.Attributes[RDFVocabulary.RDF.PREFIX + ":about"] ??
-                    (subjNode.Attributes["about"] ??
-                        (subjNode.Attributes[RDFVocabulary.RDF.PREFIX + ":nodeID"] ??
-                            (subjNode.Attributes["nodeID"] ??
-                                (subjNode.Attributes[RDFVocabulary.RDF.PREFIX + ":ID"] ??
-                                    subjNode.Attributes["ID"])))));
+                (subjNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":about"] ??
+                    (subjNode.Attributes?["about"] ??
+                        (subjNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":nodeID"] ??
+                            (subjNode.Attributes?["nodeID"] ??
+                                (subjNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":ID"] ??
+                                    subjNode.Attributes?["ID"])))));
 
             return rdfAbout;
         }
@@ -868,10 +869,10 @@ namespace RDFSharp.Model
         {
             //rdf:Resource
             XmlAttribute rdfResource =
-                (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":resource"] ??
-                    (predNode.Attributes["resource"] ??
-                        (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":nodeID"] ??
-                            predNode.Attributes["nodeID"])));
+                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":resource"] ??
+                    (predNode.Attributes?["resource"] ??
+                        (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":nodeID"] ??
+                            predNode.Attributes?["nodeID"])));
 
             return rdfResource;
         }
@@ -883,8 +884,8 @@ namespace RDFSharp.Model
         {
             //rdf:datatype
             XmlAttribute rdfDatatype =
-                (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":datatype"] ??
-                    predNode.Attributes["datatype"]);
+                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":datatype"] ??
+                    predNode.Attributes?["datatype"]);
 
             return rdfDatatype;
         }
@@ -896,8 +897,8 @@ namespace RDFSharp.Model
         {
             //xml:lang
             XmlAttribute xmlLang =
-                (predNode.Attributes[RDFVocabulary.XML.PREFIX + ":lang"] ??
-                    predNode.Attributes["lang"]);
+                (predNode.Attributes?[RDFVocabulary.XML.PREFIX + ":lang"] ??
+                    predNode.Attributes?["lang"]);
 
             return xmlLang;
         }
@@ -908,8 +909,8 @@ namespace RDFSharp.Model
         private static XmlAttribute GetParseTypeCollectionAttribute(XmlNode predNode)
         {
             XmlAttribute rdfCollection =
-                (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
-                    predNode.Attributes["parseType"]);
+                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
+                    predNode.Attributes?["parseType"]);
 
             return ((rdfCollection != null && rdfCollection.Value.Equals("Collection", StringComparison.Ordinal)) ? rdfCollection : null);
         }
@@ -920,8 +921,8 @@ namespace RDFSharp.Model
         private static XmlAttribute GetParseTypeLiteralAttribute(XmlNode predNode)
         {
             XmlAttribute rdfLiteral =
-                (predNode.Attributes[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
-                    predNode.Attributes["parseType"]);
+                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
+                    predNode.Attributes?["parseType"]);
 
             return ((rdfLiteral != null && rdfLiteral.Value.Equals("Literal", StringComparison.Ordinal)) ? rdfLiteral : null);
         }
