@@ -742,8 +742,10 @@ namespace RDFSharp.Model
             if (subjNode.Attributes != null && subjNode.Attributes.Count > 0)
             {
 
-                //We are interested in finding the "rdf:about" node for the subj
-                XmlAttribute rdfAbout = GetRdfAboutAttribute(subjNode);
+                //We are interested in finding the "rdf:about" or "rdf:resource" node for the subj
+                XmlAttribute rdfAbout = 
+                    (GetRdfAboutAttribute(subjNode) 
+                        ?? GetRdfResourceAttribute(subjNode));
                 if (rdfAbout != null)
                 {
                     //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri: 
@@ -759,11 +761,11 @@ namespace RDFSharp.Model
                 {
                     RDFResource obj = null;
                     if (subjNode.NamespaceURI == String.Empty)
-                    {
+                    { 
                         obj = new RDFResource(xmlBase + subjNode.LocalName);
                     }
                     else
-                    {
+                    { 
                         obj = new RDFResource(subjNode.NamespaceURI + subjNode.LocalName);
                     }
                     result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
@@ -771,14 +773,26 @@ namespace RDFSharp.Model
 
             }
 
-            //There are no attributes, so there's only one way we can handle this element:
-            //if it is a standard rdf:Description, it is a blank Subject
+            //Otherwise make the subj a blank node
             else
             {
-                if (CheckIfRdfDescriptionNode(subjNode))
+                subj = new RDFResource();
+
+                //We must check if the node is not a standard "rdf:Description": this is
+                //the case we can directly build a triple with "rdf:type" pred
+                if (!CheckIfRdfDescriptionNode(subjNode))
                 {
-                    subj = new RDFResource();
-                }
+                    RDFResource obj = null;
+                    if (subjNode.NamespaceURI == String.Empty)
+                    { 
+                        obj = new RDFResource(xmlBase + subjNode.LocalName);
+                    }
+                    else
+                    { 
+                        obj = new RDFResource(subjNode.NamespaceURI + subjNode.LocalName);
+                    }
+                    result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
+                }                
             }
 
             return subj;
@@ -937,9 +951,9 @@ namespace RDFSharp.Model
                         continue;
 
                     //Try to get items as "rdf:about" attributes, or as "rdf:resource"
-                    XmlAttribute elemUri =
-                        (GetRdfAboutAttribute(elem) ??
-                             GetRdfResourceAttribute(elem));
+                    XmlAttribute elemUri = 
+                        (GetRdfAboutAttribute(elem) ?? 
+                            GetRdfResourceAttribute(elem));
                     if (elemUri != null)
                     {
 
