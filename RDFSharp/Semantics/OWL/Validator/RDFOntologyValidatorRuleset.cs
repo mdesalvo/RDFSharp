@@ -751,6 +751,54 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:PropertyDisjoint [OWL2]
+        /// <summary>
+        /// Validation rule checking for consistency of owl:propertyDisjointWith axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport PropertyDisjoint(RDFOntology ontology) {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'PropertyDisjoint'...");
+
+            #region PropertyDisjoint
+            var report = new RDFOntologyValidatorReport();
+            foreach (var disjwithProp in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(disjwithProp.TaxonomySubject))) {
+
+                    //Cannot connect the same individuals with two disjoint properties
+                    foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => a.TaxonomyPredicate.Equals(disjwithProp.TaxonomyObject)
+                                                                                            && a.TaxonomySubject.Equals(asn.TaxonomySubject) 
+                                                                                                && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "PropertyDisjoint",
+                            String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", disjwithProp.TaxonomySubject, disjwithProp.TaxonomyObject),
+                            String.Format("Remove assertion '{0}' from the ontology data, or review the disjointness relation between these properties.", disjAsn)
+                        ));
+                    }
+
+                }
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(disjwithProp.TaxonomyObject))) {
+
+                    //Cannot connect the same individuals with two disjoint properties
+                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => a.TaxonomyPredicate.Equals(disjwithProp.TaxonomyObject)
+                                                                                             && a.TaxonomySubject.Equals(asn.TaxonomySubject)
+                                                                                                 && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "PropertyDisjoint",
+                            String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", disjwithProp.TaxonomySubject, disjwithProp.TaxonomyObject),
+                            String.Format("Remove assertion '{0}' from the ontology data, or review the disjointness relation between these properties.", disjAsn)
+                        ));
+                    }
+
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'PropertyDisjoint': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms

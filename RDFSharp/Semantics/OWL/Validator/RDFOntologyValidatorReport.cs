@@ -114,6 +114,7 @@ namespace RDFSharp.Semantics.OWL
                 "InverseOf",
                 "IrreflexiveProperty",
                 "LocalCardinalityConstraint",
+                "PropertyDisjoint",
                 "SymmetricProperty",
                 "Vocabulary_Declaration",
                 "Vocabulary_Disjointness"

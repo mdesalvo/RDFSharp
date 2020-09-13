@@ -44,69 +44,74 @@ namespace RDFSharp.Semantics.OWL
                 #region BASE
                 //Vocabulary_Disjointness
                 new RDFOntologyValidatorRule(
-                    "Vocabulary_Disjointness", 
-                    "This rule checks for disjointness of vocabulary of classes, properties and facts",
+                    "Vocabulary_Disjointness",
+                    "This OWL-DL rule checks for disjointness of vocabulary of classes, properties and facts",
                     RDFOntologyValidatorRuleset.Vocabulary_Disjointness),
 
                 //Vocabulary_Declaration
                 new RDFOntologyValidatorRule(
-                    "Vocabulary_Declaration", 
-                    "This rule checks for complete declaration of classes, properties and facts",
+                    "Vocabulary_Declaration",
+                    "This OWL-DL rule checks for complete declaration of classes, properties and facts",
                     RDFOntologyValidatorRuleset.Vocabulary_Declaration),
 
                 //Domain_Range
                 new RDFOntologyValidatorRule(
                     "Domain_Range", 
-                    "This rule checks for consistency of rdfs:domain and rdfs:range axioms",
+                    "This RDFS rule checks for consistency of rdfs:domain and rdfs:range axioms",
                     RDFOntologyValidatorRuleset.Domain_Range),
 
                 //InverseOf
                 new RDFOntologyValidatorRule(
-                    "InverseOf", 
-                    "This rule checks for consistency of owl:inverseOf axioms",
+                    "InverseOf",
+                    "This OWL-DL rule checks for consistency of owl:inverseOf axioms",
                     RDFOntologyValidatorRuleset.InverseOf),
 
                 //SymmetricProperty
                 new RDFOntologyValidatorRule(
                     "SymmetricProperty",
-                    "This rule checks for consistency of owl:SymmetricProperty axioms",
+                    "This OWL-DL rule checks for consistency of owl:SymmetricProperty axioms",
                     RDFOntologyValidatorRuleset.SymmetricProperty),
 
                 //AsymmetricProperty [OWL2]
                 new RDFOntologyValidatorRule(
                     "AsymmetricProperty",
-                    "This rule checks for consistency of owl:AsymmetricProperty axioms",
+                    "This OWL2 rule checks for consistency of owl:AsymmetricProperty axioms",
                     RDFOntologyValidatorRuleset.AsymmetricProperty),
-
                 
                 //IrreflexiveProperty [OWL2]
                 new RDFOntologyValidatorRule(
                     "IrreflexiveProperty",
-                    "This rule checks for consistency of owl:IrreflexiveProperty axioms",
+                    "This OWL2 rule checks for consistency of owl:IrreflexiveProperty axioms",
                     RDFOntologyValidatorRuleset.IrreflexiveProperty),
+
+                //PropertyDisjoint [OWL2]
+                new RDFOntologyValidatorRule(
+                    "PropertyDisjoint",
+                    "This OWL2 rule checks for consistency of owl:propertyDisjointWith axioms",
+                    RDFOntologyValidatorRuleset.PropertyDisjoint),
 
                 //ClassType
                 new RDFOntologyValidatorRule(
-                    "ClassType", 
-                    "This rule checks for consistency of rdf:type axioms",
+                    "ClassType",
+                    "This OWL-DL rule checks for consistency of rdf:type axioms",
                     RDFOntologyValidatorRuleset.ClassType),
 
                 //GlobalCardinalityConstraint
                 new RDFOntologyValidatorRule(
-                    "GlobalCardinalityConstraint", 
-                    "This rule checks for consistency of global cardinality constraints",
+                    "GlobalCardinalityConstraint",
+                    "This OWL-DL rule checks for consistency of global cardinality constraints",
                     RDFOntologyValidatorRuleset.GlobalCardinalityConstraint),
 
                 //LocalCardinalityConstraint
                 new RDFOntologyValidatorRule(
-                    "LocalCardinalityConstraint", 
-                    "This rule checks for consistency of local cardinality constraints",
+                    "LocalCardinalityConstraint",
+                    "This OWL-DL rule checks for consistency of local cardinality constraints",
                     RDFOntologyValidatorRuleset.LocalCardinalityConstraint),
 
                 //Deprecation
                 new RDFOntologyValidatorRule(
                     "Deprecation", 
-                    "This rule checks for usage of deprecated classes and properties",
+                    "This OWL-DL rule checks for usage of deprecated classes and properties",
                     RDFOntologyValidatorRuleset.Deprecation)
                 #endregion
 
