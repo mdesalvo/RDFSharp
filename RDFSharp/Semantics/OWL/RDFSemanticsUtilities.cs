@@ -2644,16 +2644,16 @@ namespace RDFSharp.Semantics.OWL
                 #region Step 1: Export ontology
                 result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY));
                 result = result.UnionWith(ontology.Annotations.VersionInfo.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.VersionIRI.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.Comment.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.Label.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.SeeAlso.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.IsDefinedBy.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.BackwardCompatibleWith.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.IncompatibleWith.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.PriorVersion.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.Imports.ToRDFGraph(infexpBehavior))
-                                  .UnionWith(ontology.Annotations.CustomAnnotations.ToRDFGraph(infexpBehavior));
+                               .UnionWith(ontology.Annotations.VersionIRI.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.Comment.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.Label.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.SeeAlso.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.IsDefinedBy.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.BackwardCompatibleWith.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.IncompatibleWith.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.PriorVersion.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.Imports.ToRDFGraph(infexpBehavior))
+                               .UnionWith(ontology.Annotations.CustomAnnotations.ToRDFGraph(infexpBehavior));
                 #endregion
 
                 #region Step 2: Export model
