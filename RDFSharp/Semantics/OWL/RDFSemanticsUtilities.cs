@@ -687,7 +687,7 @@ namespace RDFSharp.Semantics.OWL
 
                 #region Step 5: Init Data
                 foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                            && !ontology.Model.ClassModel.CheckIsLiteralCompatible(cls)))
+                                                                            && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls)))
                 {
                     foreach (var t in rdfType.SelectTriplesByObject((RDFResource)c.Value))
                     {

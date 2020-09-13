@@ -81,7 +81,8 @@ namespace RDFSharp.Semantics.OWL
                                                                 RDFOntologyObjectProperty childProperty,
                                                                 RDFOntologyObjectProperty motherProperty) {
             return (!propertyModel.CheckIsSubPropertyOf(motherProperty, childProperty)
-                        && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty));
+                        && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty)
+                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty));
         }
 
         /// <summary>
@@ -91,7 +92,8 @@ namespace RDFSharp.Semantics.OWL
                                                                 RDFOntologyDatatypeProperty childProperty,
                                                                 RDFOntologyDatatypeProperty motherProperty) {
             return (!propertyModel.CheckIsSubPropertyOf(motherProperty, childProperty)
-                        && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty));
+                        && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty)
+                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty));
         }
 
         /// <summary>
@@ -101,7 +103,8 @@ namespace RDFSharp.Semantics.OWL
                                                                      RDFOntologyObjectProperty aProperty,
                                                                      RDFOntologyObjectProperty bProperty) {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
-                        && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty));
+                        && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
+                            && !propertyModel.CheckIsPropertyDisjointWith(aProperty, bProperty));
         }
 
         /// <summary>
@@ -111,7 +114,30 @@ namespace RDFSharp.Semantics.OWL
                                                                      RDFOntologyDatatypeProperty aProperty,
                                                                      RDFOntologyDatatypeProperty bProperty) {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
-                        && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty));
+                        && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
+                            && !propertyModel.CheckIsPropertyDisjointWith(aProperty, bProperty));
+        }
+
+        /// <summary>
+        /// Checks if the given aproperty can be set propertyDisjointwith the given bproperty
+        /// </summary>
+        internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                       RDFOntologyObjectProperty aProperty,
+                                                                       RDFOntologyObjectProperty bProperty) {
+            return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
+                        && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
+        }
+
+        /// <summary>
+        /// Checks if the given aproperty can be set propertyDisjointwith the given bproperty
+        /// </summary>
+        internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                       RDFOntologyDatatypeProperty aProperty,
+                                                                       RDFOntologyDatatypeProperty bProperty) {
+            return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
+                        && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
         }
 
         /// <summary>

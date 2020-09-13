@@ -334,7 +334,7 @@ namespace RDFSharp.Semantics.OWL
 
             //Calculate the set of available classes on which to perform the reasoning (exclude BASE classes and literal-compatible classes)
             var availableclasses = ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                             && !ontology.Model.ClassModel.CheckIsLiteralCompatible(cls));
+                                                                             && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls));
             foreach (var c      in availableclasses) {
 
                 //Enlist the members of the current class

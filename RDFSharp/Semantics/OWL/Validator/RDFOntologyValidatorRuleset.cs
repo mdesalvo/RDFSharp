@@ -492,7 +492,7 @@ namespace RDFSharp.Semantics.OWL
 
                     //Domain class cannot be a datarange or literal-compatible class
                     if (!litCheckCache.ContainsKey(domain.PatternMemberID)) {
-                         litCheckCache.Add(domain.PatternMemberID, ontology.Model.ClassModel.CheckIsLiteralCompatible(domain));
+                         litCheckCache.Add(domain.PatternMemberID, ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(domain));
                     }
                     if (litCheckCache[domain.PatternMemberID]) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
@@ -751,7 +751,7 @@ namespace RDFSharp.Semantics.OWL
                     var cTypeClass  = ontology.Model.ClassModel.SelectClass(cType.TaxonomyObject.ToString());
                     if (cTypeClass != null) {
                         if (!litCheckCache.ContainsKey(cTypeClass.PatternMemberID)) {
-                             litCheckCache.Add(cTypeClass.PatternMemberID, ontology.Model.ClassModel.CheckIsLiteralCompatible(cTypeClass));
+                             litCheckCache.Add(cTypeClass.PatternMemberID, ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cTypeClass));
                         }
                         if (litCheckCache[cTypeClass.PatternMemberID]) {
                             report.AddEvidence(new RDFOntologyValidatorEvidence(

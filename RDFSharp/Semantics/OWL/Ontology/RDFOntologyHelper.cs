@@ -37,22 +37,22 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given aClass is subClass of the given bClass within the given class model
         /// </summary>
         public static Boolean CheckIsSubClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass) {
-            return (aClass      != null && bClass != null && classModel != null ? classModel.GetSuperClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
+            return (aClass != null && bClass != null && classModel != null ? classModel.GetSuperClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the subClasses of the given class within the given class model
         /// </summary>
         public static RDFOntologyClassModel GetSubClassesOf(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result           = new RDFOntologyClassModel();
-            if (ontClass        != null && classModel != null) {
+            var result = new RDFOntologyClassModel();
+            if (ontClass != null && classModel != null) {
 
                 //Step 1: Reason on the given class
-                result           = classModel.GetSubClassesOfInternal(ontClass);
+                result = classModel.GetSubClassesOfInternal(ontClass);
 
                 //Step 2: Reason on the equivalent classes
                 foreach (var ec in classModel.GetEquivalentClassesOf(ontClass)) {
-                    result       = result.UnionWith(classModel.GetSubClassesOfInternal(ec));
+                    result = result.UnionWith(classModel.GetSubClassesOfInternal(ec));
                 }
 
             }
@@ -63,28 +63,28 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "rdfs:subClassOf" taxonomy to discover direct and indirect subClasses of the given class
         /// </summary>
         internal static RDFOntologyClassModel GetSubClassesOfInternalVisitor(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result           = new RDFOntologyClassModel();
+            var result = new RDFOntologyClassModel();
 
             // Transitivity of "rdfs:subClassOf" taxonomy: ((A SUBCLASSOF B)  &&  (B SUBCLASSOF C))  =>  (A SUBCLASSOF C)
-            foreach (var sc     in classModel.Relations.SubClassOf.SelectEntriesByObject(ontClass)) {
+            foreach (var sc in classModel.Relations.SubClassOf.SelectEntriesByObject(ontClass)) {
                 result.AddClass((RDFOntologyClass)sc.TaxonomySubject);
-                result           = result.UnionWith(classModel.GetSubClassesOfInternalVisitor((RDFOntologyClass)sc.TaxonomySubject));
+                result = result.UnionWith(classModel.GetSubClassesOfInternalVisitor((RDFOntologyClass)sc.TaxonomySubject));
             }
 
             return result;
         }
         internal static RDFOntologyClassModel GetSubClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result1          = new RDFOntologyClassModel();
-            var result2          = new RDFOntologyClassModel();
+            var result1 = new RDFOntologyClassModel();
+            var result2 = new RDFOntologyClassModel();
 
             // Step 1: Direct subsumption of "rdfs:subClassOf" taxonomy
-            result1              = classModel.GetSubClassesOfInternalVisitor(ontClass);
+            result1 = classModel.GetSubClassesOfInternalVisitor(ontClass);
 
             // Step 2: Enlist equivalent classes of subclasses
-            result2              = result2.UnionWith(result1);
-            foreach (var sc     in result1) {
-                result2          = result2.UnionWith(classModel.GetEquivalentClassesOf(sc)
-                                                               .UnionWith(classModel.GetSubClassesOf(sc)));
+            result2 = result2.UnionWith(result1);
+            foreach (var sc in result1) {
+                result2 = result2.UnionWith(classModel.GetEquivalentClassesOf(sc)
+                                                      .UnionWith(classModel.GetSubClassesOf(sc)));
             }
 
             return result2;
@@ -96,22 +96,22 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given aClass is superClass of the given bClass within the given class model
         /// </summary>
         public static Boolean CheckIsSuperClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass) {
-            return (aClass      != null && bClass != null && classModel != null ? classModel.GetSubClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
+            return (aClass != null && bClass != null && classModel != null ? classModel.GetSubClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the superClasses of the given class within the given class model
         /// </summary>
         public static RDFOntologyClassModel GetSuperClassesOf(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result           = new RDFOntologyClassModel();
-            if (ontClass        != null && classModel != null) {
+            var result = new RDFOntologyClassModel();
+            if (ontClass != null && classModel != null) {
 
                 //Step 1: Reason on the given class
-                result           = classModel.GetSuperClassesOfInternal(ontClass);
+                result = classModel.GetSuperClassesOfInternal(ontClass);
 
                 //Step 2: Reason on the equivalent classes
                 foreach (var ec in classModel.GetEquivalentClassesOf(ontClass)) {
-                    result       = result.UnionWith(classModel.GetSuperClassesOfInternal(ec));
+                    result = result.UnionWith(classModel.GetSuperClassesOfInternal(ec));
                 }
 
             }
@@ -122,28 +122,28 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "rdfs:subClassOf" taxonomy to discover direct and indirect superClasses of the given class
         /// </summary>
         internal static RDFOntologyClassModel GetSuperClassesOfInternalVisitor(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result           = new RDFOntologyClassModel();
+            var result = new RDFOntologyClassModel();
 
             // Transitivity of "rdfs:subClassOf" taxonomy: ((A SUPERCLASSOF B)  &&  (B SUPERCLASSOF C))  =>  (A SUPERCLASSOF C)
-            foreach (var sc     in classModel.Relations.SubClassOf.SelectEntriesBySubject(ontClass)) {
+            foreach (var sc in classModel.Relations.SubClassOf.SelectEntriesBySubject(ontClass)) {
                 result.AddClass((RDFOntologyClass)sc.TaxonomyObject);
-                result           = result.UnionWith(classModel.GetSuperClassesOfInternalVisitor((RDFOntologyClass)sc.TaxonomyObject));
+                result = result.UnionWith(classModel.GetSuperClassesOfInternalVisitor((RDFOntologyClass)sc.TaxonomyObject));
             }
 
             return result;
         }
         internal static RDFOntologyClassModel GetSuperClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result1          = new RDFOntologyClassModel();
-            var result2          = new RDFOntologyClassModel();
+            var result1 = new RDFOntologyClassModel();
+            var result2 = new RDFOntologyClassModel();
 
             // Step 1: Direct subsumption of "rdfs:subClassOf" taxonomy
-            result1              = classModel.GetSuperClassesOfInternalVisitor(ontClass);
+            result1 = classModel.GetSuperClassesOfInternalVisitor(ontClass);
 
             // Step 2: Enlist equivalent classes of superclasses
-            result2              = result2.UnionWith(result1);
-            foreach (var sc     in result1) {
-                result2          = result2.UnionWith(classModel.GetEquivalentClassesOf(sc)
-                                                               .UnionWith(classModel.GetSuperClassesOf(sc)));
+            result2 = result2.UnionWith(result1);
+            foreach (var sc in result1) {
+                result2 = result2.UnionWith(classModel.GetEquivalentClassesOf(sc)
+                                                      .UnionWith(classModel.GetSuperClassesOf(sc)));
             }
 
             return result2;
@@ -162,10 +162,10 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the equivalentClasses of the given class within the given class model
         /// </summary>
         public static RDFOntologyClassModel GetEquivalentClassesOf(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result      = new RDFOntologyClassModel();
-            if (ontClass   != null && classModel != null) {
-                result      = classModel.GetEquivalentClassesOfInternal(ontClass, null)
-                                        .RemoveClass(ontClass); //Safety deletion
+            var result = new RDFOntologyClassModel();
+            if (ontClass != null && classModel != null) {
+                result = classModel.GetEquivalentClassesOfInternal(ontClass, null)
+                                   .RemoveClass(ontClass); //Safety deletion
             }
             return result;
         }
@@ -174,11 +174,11 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "owl:equivalentClass" taxonomy to discover direct and indirect equivalentClasses of the given class
         /// </summary>
         internal static RDFOntologyClassModel GetEquivalentClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<Int64, RDFOntologyClass> visitContext) {
-            var result        = new RDFOntologyClassModel();
+            var result = new RDFOntologyClassModel();
 
             #region visitContext
             if (visitContext == null) {
-                visitContext  = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
+                visitContext = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
             }
             else {
                 if (!visitContext.ContainsKey(ontClass.PatternMemberID)) {
@@ -191,9 +191,9 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             // Transitivity of "owl:equivalentClass" taxonomy: ((A EQUIVALENTCLASSOF B)  &&  (B EQUIVALENTCLASS C))  =>  (A EQUIVALENTCLASS C)
-            foreach (var  ec in classModel.Relations.EquivalentClass.SelectEntriesBySubject(ontClass)) {
+            foreach (var ec in classModel.Relations.EquivalentClass.SelectEntriesBySubject(ontClass)) {
                 result.AddClass((RDFOntologyClass)ec.TaxonomyObject);
-                result        = result.UnionWith(classModel.GetEquivalentClassesOfInternal((RDFOntologyClass)ec.TaxonomyObject, visitContext));
+                result = result.UnionWith(classModel.GetEquivalentClassesOfInternal((RDFOntologyClass)ec.TaxonomyObject, visitContext));
             }
 
             return result;
@@ -212,10 +212,10 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the disjointClasses with the given class within the given class model
         /// </summary>
         public static RDFOntologyClassModel GetDisjointClassesWith(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result        = new RDFOntologyClassModel();
-            if (ontClass     != null && classModel != null) {
-                result        = classModel.GetDisjointClassesWithInternal(ontClass, null)
-                                          .RemoveClass(ontClass); //Safety deletion
+            var result = new RDFOntologyClassModel();
+            if (ontClass != null && classModel != null) {
+                result = classModel.GetDisjointClassesWithInternal(ontClass, null)
+                                   .RemoveClass(ontClass); //Safety deletion
             }
             return result;
         }
@@ -224,12 +224,12 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "owl:disjointWith" taxonomy to discover direct and indirect disjointClasses of the given class
         /// </summary>
         internal static RDFOntologyClassModel GetDisjointClassesWithInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<Int64, RDFOntologyClass> visitContext) {
-            var result1       = new RDFOntologyClassModel();
-            var result2       = new RDFOntologyClassModel();
+            var result1 = new RDFOntologyClassModel();
+            var result2 = new RDFOntologyClassModel();
 
             #region visitContext
             if (visitContext == null) {
-                visitContext  = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
+                visitContext = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
             }
             else {
                 if (!visitContext.ContainsKey(ontClass.PatternMemberID)) {
@@ -244,21 +244,21 @@ namespace RDFSharp.Semantics.OWL
             // Inference: ((A DISJOINTWITH B)   &&  (B EQUIVALENTCLASS C))  =>  (A DISJOINTWITH C)
             foreach (var  dw in classModel.Relations.DisjointWith.SelectEntriesBySubject(ontClass)) {
                 result1.AddClass((RDFOntologyClass)dw.TaxonomyObject);
-                result1       = result1.UnionWith(classModel.GetEquivalentClassesOfInternal((RDFOntologyClass)dw.TaxonomyObject, visitContext));
+                result1 = result1.UnionWith(classModel.GetEquivalentClassesOfInternal((RDFOntologyClass)dw.TaxonomyObject, visitContext));
             }
 
             // Inference: ((A DISJOINTWITH B)   &&  (B SUPERCLASS C))  =>  (A DISJOINTWITH C)
-            result2           = result2.UnionWith(result1);
-            foreach (var   c in result1) {
-                result2       = result2.UnionWith(classModel.GetSubClassesOfInternal(c));
+            result2 = result2.UnionWith(result1);
+            foreach (var c in result1) {
+                result2 = result2.UnionWith(classModel.GetSubClassesOfInternal(c));
             }
-            result1           = result1.UnionWith(result2);
+            result1 = result1.UnionWith(result2);
 
-            // Inference: ((A EQUIVALENTCLASS B || A SUBCLASSOF B)  &&  (B DISJOINTWITH C))     =>  (A DISJOINTWITH C)
+            // Inference: ((A EQUIVALENTCLASS B || A SUBCLASSOF B)  &&  (B DISJOINTWITH C))  =>  (A DISJOINTWITH C)
             var compatibleCls = classModel.GetSuperClassesOf(ontClass)
                                           .UnionWith(classModel.GetEquivalentClassesOf(ontClass));
-            foreach (var  ec in compatibleCls) {
-                result1       = result1.UnionWith(classModel.GetDisjointClassesWithInternal(ec, visitContext));
+            foreach (var ec in compatibleCls) {
+                result1 = result1.UnionWith(classModel.GetDisjointClassesWithInternal(ec, visitContext));
             }
 
             return result1;
@@ -270,19 +270,19 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given ontology class is domain of the given ontology property within the given ontology class model
         /// </summary>
         public static Boolean CheckIsDomainOf(this RDFOntologyClassModel classModel, RDFOntologyClass domainClass, RDFOntologyProperty ontProperty) {
-            return (domainClass        != null && ontProperty != null && classModel != null ? classModel.GetDomainOf(ontProperty).Classes.ContainsKey(domainClass.PatternMemberID) : false);
+            return (domainClass != null && ontProperty != null && classModel != null ? classModel.GetDomainOf(ontProperty).Classes.ContainsKey(domainClass.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the domain classes of the given property within the given ontology class model
         /// </summary>
         public static RDFOntologyClassModel GetDomainOf(this RDFOntologyClassModel classModel, RDFOntologyProperty ontProperty) {
-            var result                  = new RDFOntologyClassModel();
-            if (ontProperty            != null && classModel != null) {
+            var result = new RDFOntologyClassModel();
+            if (ontProperty != null && classModel != null) {
                 if (ontProperty.Domain != null) {
-                    result              = classModel.GetSubClassesOf(ontProperty.Domain)
-                                                    .UnionWith(classModel.GetEquivalentClassesOf(ontProperty.Domain))
-                                                    .AddClass(ontProperty.Domain);
+                    result = classModel.GetSubClassesOf(ontProperty.Domain)
+                                       .UnionWith(classModel.GetEquivalentClassesOf(ontProperty.Domain))
+                                       .AddClass(ontProperty.Domain);
                 }
             }
             return result;
@@ -294,19 +294,19 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given ontology class is range of the given ontology property within the given ontology class model
         /// </summary>
         public static Boolean CheckIsRangeOf(this RDFOntologyClassModel classModel, RDFOntologyClass rangeClass, RDFOntologyProperty ontProperty) {
-            return (rangeClass        != null && ontProperty != null && classModel != null ? classModel.GetRangeOf(ontProperty).Classes.ContainsKey(rangeClass.PatternMemberID) : false);
+            return (rangeClass != null && ontProperty != null && classModel != null ? classModel.GetRangeOf(ontProperty).Classes.ContainsKey(rangeClass.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the range classes of the given property within the given ontology class model
         /// </summary>
         public static RDFOntologyClassModel GetRangeOf(this RDFOntologyClassModel classModel, RDFOntologyProperty ontProperty) {
-            var result                 = new RDFOntologyClassModel();
-            if (ontProperty           != null && classModel != null) {
+            var result = new RDFOntologyClassModel();
+            if (ontProperty != null && classModel != null) {
                 if (ontProperty.Range != null) {
-                    result             = classModel.GetSubClassesOf(ontProperty.Range)
-                                                   .UnionWith(classModel.GetEquivalentClassesOf(ontProperty.Range))
-                                                   .AddClass(ontProperty.Range);
+                    result = classModel.GetSubClassesOf(ontProperty.Range)
+                                       .UnionWith(classModel.GetEquivalentClassesOf(ontProperty.Range))
+                                       .AddClass(ontProperty.Range);
                 }
             }
             return result;
@@ -317,12 +317,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is compatible with 'rdfs:Literal' within the given class model
         /// </summary>
-        public static Boolean CheckIsLiteralCompatible(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
-            var result    = false;
+        public static Boolean CheckIsLiteralCompatibleClass(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass) {
+            var result = false;
             if (ontClass != null && classModel != null) {
-                result    = (ontClass.IsDataRangeClass()
-                                || ontClass.Equals(RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass())
-                                    || classModel.CheckIsSubClassOf(ontClass, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()));
+                result = (ontClass.IsDataRangeClass()
+                             || ontClass.Equals(RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass())
+                                 || classModel.CheckIsSubClassOf(ontClass, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()));
             }
             return result;
         }
@@ -344,15 +344,15 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the sub properties of the given property within the given property model
         /// </summary>
         public static RDFOntologyPropertyModel GetSubPropertiesOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result         = new RDFOntologyPropertyModel();
-            if (ontProperty   != null && propertyModel != null) {
+            var result = new RDFOntologyPropertyModel();
+            if (ontProperty != null && propertyModel != null) {
 
                 //Step 1: Reason on the given property
-                result         = propertyModel.GetSubPropertiesOfInternal(ontProperty);
+                result = propertyModel.GetSubPropertiesOfInternal(ontProperty);
 
                 //Step 2: Reason on the equivalent properties
                 foreach (var  ep in propertyModel.GetEquivalentPropertiesOf(ontProperty)) {
-                    result     = result.UnionWith(propertyModel.GetSubPropertiesOfInternal(ep));
+                    result = result.UnionWith(propertyModel.GetSubPropertiesOfInternal(ep));
                 }
 
             }
@@ -363,28 +363,28 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "rdfs:subPropertyOf" taxonomy to discover direct and indirect subProperties of the given property
         /// </summary>
         internal static RDFOntologyPropertyModel GetSubPropertiesOfInternalVisitor(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result         = new RDFOntologyPropertyModel();
+            var result = new RDFOntologyPropertyModel();
 
             // Transitivity of "rdfs:subPropertyOf" taxonomy: ((A SUBPROPERTYOF B)  &&  (B SUBPROPERTYOF C))  =>  (A SUBPROPERTYOF C)
-            foreach (var   sp in propertyModel.Relations.SubPropertyOf.SelectEntriesByObject(ontProperty)) {
+            foreach (var sp in propertyModel.Relations.SubPropertyOf.SelectEntriesByObject(ontProperty)) {
                 result.AddProperty((RDFOntologyProperty)sp.TaxonomySubject);
-                result         = result.UnionWith(propertyModel.GetSubPropertiesOfInternalVisitor((RDFOntologyProperty)sp.TaxonomySubject));
+                result = result.UnionWith(propertyModel.GetSubPropertiesOfInternalVisitor((RDFOntologyProperty)sp.TaxonomySubject));
             }
 
             return result;
         }
         internal static RDFOntologyPropertyModel GetSubPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result1        = new RDFOntologyPropertyModel();
-            var result2        = new RDFOntologyPropertyModel();
+            var result1 = new RDFOntologyPropertyModel();
+            var result2 = new RDFOntologyPropertyModel();
 
             // Step 1: Direct subsumption of "rdfs:subPropertyOf" taxonomy
-            result1            = propertyModel.GetSubPropertiesOfInternalVisitor(ontProperty);
+            result1 = propertyModel.GetSubPropertiesOfInternalVisitor(ontProperty);
 
             // Step 2: Enlist equivalent properties of subproperties
-            result2            = result2.UnionWith(result1);
-            foreach (var   sp in result1) {
-                result2        = result2.UnionWith(propertyModel.GetEquivalentPropertiesOf(sp)
-                                                                .UnionWith(propertyModel.GetSubPropertiesOf(sp)));
+            result2 = result2.UnionWith(result1);
+            foreach (var sp in result1) {
+                result2 = result2.UnionWith(propertyModel.GetEquivalentPropertiesOf(sp)
+                                                         .UnionWith(propertyModel.GetSubPropertiesOf(sp)));
             }
 
             return result2;
@@ -403,15 +403,15 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the super properties of the given property within the given property model
         /// </summary>
         public static RDFOntologyPropertyModel GetSuperPropertiesOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result         = new RDFOntologyPropertyModel();
-            if (ontProperty   != null && propertyModel != null) {
+            var result = new RDFOntologyPropertyModel();
+            if (ontProperty != null && propertyModel != null) {
 
                 //Step 1: Reason on the given property
-                result         = propertyModel.GetSuperPropertiesOfInternal(ontProperty);
+                result = propertyModel.GetSuperPropertiesOfInternal(ontProperty);
 
                 //Step 2: Reason on the equivalent properties
                 foreach (var  ep in propertyModel.GetEquivalentPropertiesOf(ontProperty)) {
-                    result     = result.UnionWith(propertyModel.GetSuperPropertiesOfInternal(ep));
+                    result = result.UnionWith(propertyModel.GetSuperPropertiesOfInternal(ep));
                 }
 
             }
@@ -422,28 +422,28 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "rdfs:subPropertyOf" taxonomy to discover direct and indirect superProperties of the given property
         /// </summary>
         internal static RDFOntologyPropertyModel GetSuperPropertiesOfInternalVisitor(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result         = new RDFOntologyPropertyModel();
+            var result = new RDFOntologyPropertyModel();
 
             // Transitivity of "rdfs:subPropertyOf" taxonomy: ((A SUPERPROPERTYOF B)  &&  (B SUPERPROPERTYOF C))  =>  (A SUPERPROPERTYOF C)
-            foreach (var   sp in propertyModel.Relations.SubPropertyOf.SelectEntriesBySubject(ontProperty)) {
+            foreach (var sp in propertyModel.Relations.SubPropertyOf.SelectEntriesBySubject(ontProperty)) {
                 result.AddProperty((RDFOntologyProperty)sp.TaxonomyObject);
-                result         = result.UnionWith(propertyModel.GetSuperPropertiesOfInternalVisitor((RDFOntologyProperty)sp.TaxonomyObject));
+                result = result.UnionWith(propertyModel.GetSuperPropertiesOfInternalVisitor((RDFOntologyProperty)sp.TaxonomyObject));
             }
 
             return result;
         }
         internal static RDFOntologyPropertyModel GetSuperPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result1        = new RDFOntologyPropertyModel();
-            var result2        = new RDFOntologyPropertyModel();
+            var result1 = new RDFOntologyPropertyModel();
+            var result2 = new RDFOntologyPropertyModel();
 
             // Step 1: Direct subsumption of "rdfs:subPropertyOf" taxonomy
-            result1            = propertyModel.GetSuperPropertiesOfInternalVisitor(ontProperty);
+            result1 = propertyModel.GetSuperPropertiesOfInternalVisitor(ontProperty);
 
             // Step 2: Enlist equivalent properties of subproperties
-            result2            = result2.UnionWith(result1);
+            result2 = result2.UnionWith(result1);
             foreach (var sp in result1) {
-                result2        = result2.UnionWith(propertyModel.GetEquivalentPropertiesOf(sp)
-                                                                .UnionWith(propertyModel.GetSuperPropertiesOf(sp)));
+                result2 = result2.UnionWith(propertyModel.GetEquivalentPropertiesOf(sp)
+                                                         .UnionWith(propertyModel.GetSuperPropertiesOf(sp)));
             }
 
             return result2;
@@ -462,10 +462,10 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the equivalentProperties of the given property within the given property model
         /// </summary>
         public static RDFOntologyPropertyModel GetEquivalentPropertiesOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
-            var result         = new RDFOntologyPropertyModel();
-            if (ontProperty   != null && propertyModel != null) {
-                result         = propertyModel.GetEquivalentPropertiesOfInternal(ontProperty, null)
-                                              .RemoveProperty(ontProperty); //Safety deletion
+            var result = new RDFOntologyPropertyModel();
+            if (ontProperty != null && propertyModel != null) {
+                result = propertyModel.GetEquivalentPropertiesOfInternal(ontProperty, null)
+                                      .RemoveProperty(ontProperty); //Safety deletion
             }
             return result;
         }
@@ -474,11 +474,11 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "owl:equivalentProperty" taxonomy to discover direct and indirect equivalentProperties of the given property
         /// </summary>
         internal static RDFOntologyPropertyModel GetEquivalentPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext) {
-            var result         = new RDFOntologyPropertyModel();
+            var result = new RDFOntologyPropertyModel();
 
             #region visitContext
-            if (visitContext  == null) {
-                visitContext   = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+            if (visitContext == null) {
+                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
             }
             else {
                 if (!visitContext.ContainsKey(ontProperty.PatternMemberID)) {
@@ -491,12 +491,77 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             // Transitivity of "owl:equivalentProperty" taxonomy: ((A EQUIVALENTPROPERTY B)  &&  (B EQUIVALENTPROPERTY C))  =>  (A EQUIVALENTPROPERTY C)
-            foreach (var  ep  in propertyModel.Relations.EquivalentProperty.SelectEntriesBySubject(ontProperty)) {
+            foreach (var ep in propertyModel.Relations.EquivalentProperty.SelectEntriesBySubject(ontProperty)) {
                 result.AddProperty((RDFOntologyProperty)ep.TaxonomyObject);
-                result         = result.UnionWith(propertyModel.GetEquivalentPropertiesOfInternal((RDFOntologyProperty)ep.TaxonomyObject, visitContext));
+                result = result.UnionWith(propertyModel.GetEquivalentPropertiesOfInternal((RDFOntologyProperty)ep.TaxonomyObject, visitContext));
             }
 
             return result;
+        }
+        #endregion
+
+        #region DisjointPropertyWith
+        /// <summary>
+        /// Checks if the given aProperty is disjointProperty with the given bProperty within the given property model
+        /// </summary>
+        public static Boolean CheckIsPropertyDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty) {
+            return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetPropertiesDisjointWith(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+        }
+
+        /// <summary>
+        /// Enlists the disjointProperties of the given property within the given property model
+        /// </summary>
+        public static RDFOntologyPropertyModel GetPropertiesDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
+            var result = new RDFOntologyPropertyModel();
+            if (ontProperty != null && propertyModel != null) {
+                result = propertyModel.GetPropertiesDisjointWithInternal(ontProperty, null)
+                                      .RemoveProperty(ontProperty); //Safety deletion
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Subsumes the "owl:propertyDisjointWith" taxonomy to discover direct and indirect disjointProperties of the given property
+        /// </summary>
+        internal static RDFOntologyPropertyModel GetPropertiesDisjointWithInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext) {
+            var result1 = new RDFOntologyPropertyModel();
+            var result2 = new RDFOntologyPropertyModel();
+
+            #region visitContext
+            if (visitContext == null) {
+                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+            }
+            else {
+                if (!visitContext.ContainsKey(ontProperty.PatternMemberID)) {
+                    visitContext.Add(ontProperty.PatternMemberID, ontProperty);
+                }
+                else {
+                    return result1;
+                }
+            }
+            #endregion
+
+            // Inference: ((A DISJOINTWITH B)   &&  (B EQUIVALENTPROPERTY C))  =>  (A DISJOINTWITH C)
+            foreach (var dw in propertyModel.Relations.PropertyDisjointWith.SelectEntriesBySubject(ontProperty)) {
+                result1.AddProperty((RDFOntologyProperty)dw.TaxonomyObject);
+                result1 = result1.UnionWith(propertyModel.GetEquivalentPropertiesOfInternal((RDFOntologyProperty)dw.TaxonomyObject, visitContext));
+            }
+
+            // Inference: ((A DISJOINTWITH B)   &&  (B SUPERPROPERTY C))  =>  (A DISJOINTWITH C)
+            result2 = result2.UnionWith(result1);
+            foreach (var p in result1) {
+                result2 = result2.UnionWith(propertyModel.GetSubPropertiesOfInternal(p));
+            }
+            result1 = result1.UnionWith(result2);
+
+            // Inference: ((A EQUIVALENTPROPERTY B || A SUBPROPERTYOF B)  &&  (B DISJOINTWITH C))  =>  (A DISJOINTWITH C)
+            var compatiblePrp = propertyModel.GetSuperPropertiesOf(ontProperty)
+                                             .UnionWith(propertyModel.GetEquivalentPropertiesOf(ontProperty));
+            foreach (var ep in compatiblePrp) {
+                result1 = result1.UnionWith(propertyModel.GetPropertiesDisjointWithInternal(ep, visitContext));
+            }
+
+            return result1;
         }
         #endregion
 
@@ -512,8 +577,8 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the inverse properties of the given property within the given property model
         /// </summary>
         public static RDFOntologyPropertyModel GetInversePropertiesOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty ontProperty) {
-            var result         = new RDFOntologyPropertyModel();
-            if (ontProperty   != null && propertyModel != null) {
+            var result = new RDFOntologyPropertyModel();
+            if (ontProperty != null && propertyModel != null) {
 
                 //Step 1: Reason on the given property
                 //Subject-side inverseOf relation
@@ -542,17 +607,17 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given aFact is sameAs the given bFact within the given data
         /// </summary>
         public static Boolean CheckIsSameFactAs(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact) {
-            return (aFact     != null && bFact != null && data != null ? data.GetSameFactsAs(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
+            return (aFact != null && bFact != null && data != null ? data.GetSameFactsAs(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the sameFacts of the given fact within the given data
         /// </summary>
         public static RDFOntologyData GetSameFactsAs(this RDFOntologyData data, RDFOntologyFact ontFact) {
-            var result         = new RDFOntologyData();
-            if (ontFact       != null && data != null) {
-                result         = data.GetSameFactsAsInternal(ontFact, null)
-                                     .RemoveFact(ontFact); //Safety deletion
+            var result = new RDFOntologyData();
+            if (ontFact != null && data != null) {
+                result = data.GetSameFactsAsInternal(ontFact, null)
+                             .RemoveFact(ontFact); //Safety deletion
             }
             return result;
         }
@@ -561,11 +626,11 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "owl:sameAs" taxonomy to discover direct and indirect samefacts of the given facts
         /// </summary>
         internal static RDFOntologyData GetSameFactsAsInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<Int64, RDFOntologyFact> visitContext) {
-            var result         = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             #region visitContext
-            if (visitContext  == null) {
-                visitContext   = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+            if (visitContext == null) {
+                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else {
                 if (!visitContext.ContainsKey(ontFact.PatternMemberID)) {
@@ -578,9 +643,9 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             // Transitivity of "owl:sameAs" taxonomy: ((A SAMEAS B)  &&  (B SAMEAS C))  =>  (A SAMEAS C)
-            foreach (var   sf in data.Relations.SameAs.SelectEntriesBySubject(ontFact)) {
+            foreach (var sf in data.Relations.SameAs.SelectEntriesBySubject(ontFact)) {
                 result.AddFact((RDFOntologyFact)sf.TaxonomyObject);
-                result         = result.UnionWith(data.GetSameFactsAsInternal((RDFOntologyFact)sf.TaxonomyObject, visitContext));
+                result = result.UnionWith(data.GetSameFactsAsInternal((RDFOntologyFact)sf.TaxonomyObject, visitContext));
             }
 
             return result;
@@ -592,17 +657,17 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given aFact is differentFrom the given bFact within the given data
         /// </summary>
         public static Boolean CheckIsDifferentFactFrom(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact) {
-            return (aFact      != null && bFact != null && data != null ? data.GetDifferentFactsFrom(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
+            return (aFact != null && bFact != null && data != null ? data.GetDifferentFactsFrom(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the different facts of the given fact within the given data
         /// </summary>
         public static RDFOntologyData GetDifferentFactsFrom(this RDFOntologyData data, RDFOntologyFact ontFact) {
-            var result          = new RDFOntologyData();
-            if (ontFact        != null && data != null) {
-                result          = data.GetDifferentFactsFromInternal(ontFact, null)
-                                      .RemoveFact(ontFact); //Safety deletion
+            var result = new RDFOntologyData();
+            if (ontFact != null && data != null) {
+                result = data.GetDifferentFactsFromInternal(ontFact, null)
+                             .RemoveFact(ontFact); //Safety deletion
             }
             return result;
         }
@@ -611,11 +676,11 @@ namespace RDFSharp.Semantics.OWL
         /// Subsumes the "owl:differentFrom" taxonomy to discover direct and indirect differentFacts of the given facts
         /// </summary>
         internal static RDFOntologyData GetDifferentFactsFromInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<Int64, RDFOntologyFact> visitContext) {
-            var result         = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             #region visitContext
-            if (visitContext  == null) {
-                visitContext  = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+            if (visitContext == null) {
+                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else {
                 if (!visitContext.ContainsKey(ontFact.PatternMemberID)) {
@@ -628,14 +693,14 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             // Inference: (A DIFFERENTFROM B  &&  B SAMEAS C         =>  A DIFFERENTFROM C)
-            foreach (var   df in data.Relations.DifferentFrom.SelectEntriesBySubject(ontFact)) {
+            foreach (var df in data.Relations.DifferentFrom.SelectEntriesBySubject(ontFact)) {
                 result.AddFact((RDFOntologyFact)df.TaxonomyObject);
-                result         = result.UnionWith(data.GetSameFactsAsInternal((RDFOntologyFact)df.TaxonomyObject, visitContext));
+                result = result.UnionWith(data.GetSameFactsAsInternal((RDFOntologyFact)df.TaxonomyObject, visitContext));
             }
 
             // Inference: (A SAMEAS B         &&  B DIFFERENTFROM C  =>  A DIFFERENTFROM C)
-            foreach (var   sa in data.GetSameFactsAs(ontFact)) {
-                result         = result.UnionWith(data.GetDifferentFactsFromInternal(sa, visitContext));
+            foreach (var sa in data.GetSameFactsAs(ontFact)) {
+                result = result.UnionWith(data.GetDifferentFactsFromInternal(sa, visitContext));
             }
 
             return result;
@@ -647,16 +712,16 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given "aFact -> transProp" assertion links to the given bFact within the given data
         /// </summary>
         public static Boolean CheckIsTransitiveAssertionOf(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty transProp, RDFOntologyFact bFact) {
-            return (aFact  != null && transProp != null && transProp.IsTransitiveProperty() && bFact != null && data != null ? data.GetTransitiveAssertionsOf(aFact, transProp).Facts.ContainsKey(bFact.PatternMemberID) : false);
+            return (aFact != null && transProp != null && transProp.IsTransitiveProperty() && bFact != null && data != null ? data.GetTransitiveAssertionsOf(aFact, transProp).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the given "aFact -> transOntProp" assertions within the given data
         /// </summary>
         public static RDFOntologyData GetTransitiveAssertionsOf(this RDFOntologyData data, RDFOntologyFact ontFact, RDFOntologyObjectProperty transOntProp) {
-            var result     = new RDFOntologyData();
-            if (ontFact   != null && transOntProp != null && transOntProp.IsTransitiveProperty() && data != null) {
-                result       = data.GetTransitiveAssertionsOfInternal(ontFact, transOntProp, null);
+            var result = new RDFOntologyData();
+            if (ontFact != null && transOntProp != null && transOntProp.IsTransitiveProperty() && data != null) {
+                result = data.GetTransitiveAssertionsOfInternal(ontFact, transOntProp, null);
             }
             return result;
         }
@@ -665,11 +730,11 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the transitive assertions of the given fact and the given property within the given data
         /// </summary>
         internal static RDFOntologyData GetTransitiveAssertionsOfInternal(this RDFOntologyData data, RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, Dictionary<Int64, RDFOntologyFact> visitContext) {
-            var result        = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null) {
-                visitContext  = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else {
                 if (!visitContext.ContainsKey(ontFact.PatternMemberID)) {
@@ -682,10 +747,10 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             // ((F1 P F2)    &&  (F2 P F3))  =>  (F1 P F3)
-            foreach (var  ta in data.Relations.Assertions.SelectEntriesBySubject(ontFact)
-                                                         .SelectEntriesByPredicate(ontProp)) {
+            foreach (var ta in data.Relations.Assertions.SelectEntriesBySubject(ontFact)
+                                                        .SelectEntriesByPredicate(ontProp)) {
                 result.AddFact((RDFOntologyFact)ta.TaxonomyObject);
-                result        = result.UnionWith(data.GetTransitiveAssertionsOfInternal((RDFOntologyFact)ta.TaxonomyObject, ontProp, visitContext));
+                result = result.UnionWith(data.GetTransitiveAssertionsOfInternal((RDFOntologyFact)ta.TaxonomyObject, ontProp, visitContext));
             }
 
             return result;
@@ -704,20 +769,20 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the facts which are members of the given class within the given ontology
         /// </summary>
         public static RDFOntologyData GetMembersOf(this RDFOntology ontology, RDFOntologyClass ontClass) {
-            var result       = new RDFOntologyData();
-            if (ontClass    != null && ontology != null) {
+            var result = new RDFOntologyData();
+            if (ontClass != null && ontology != null) {
 
                 //Expand ontology
-                var expOnt   = ontology.UnionWith(RDFBASEOntology.Instance);
+                var expOnt = ontology.UnionWith(RDFBASEOntology.Instance);
 
                 //DataRange/Literal-Compatible
-                if (expOnt.Model.ClassModel.CheckIsLiteralCompatible(ontClass)) {
-                    result   = expOnt.GetMembersOfLiteralCompatibleClass(ontClass);
+                if (expOnt.Model.ClassModel.CheckIsLiteralCompatibleClass(ontClass)) {
+                    result = expOnt.GetMembersOfLiteralCompatibleClass(ontClass);
                 }
 
                 //Restriction/Composite/Enumerate/Class
                 else {
-                    result   = expOnt.GetMembersOfNonLiteralCompatibleClass(ontClass);
+                    result = expOnt.GetMembersOfNonLiteralCompatibleClass(ontClass);
                 }
 
             }
@@ -728,24 +793,24 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the facts which are members of the given class within the given ontology
         /// </summary>
         internal static RDFOntologyData GetMembersOfClass(this RDFOntology ontology, RDFOntologyClass ontClass) {
-            var result           = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             //Get the compatible classes
-            var compCls          = ontology.Model.ClassModel.GetSubClassesOf(ontClass)
-                                                            .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(ontClass))
-                                                            .AddClass(ontClass);
+            var compCls = ontology.Model.ClassModel.GetSubClassesOf(ontClass)
+                                                   .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(ontClass))
+                                                   .AddClass(ontClass);
 
             //Filter "classType" relations made with compatible classes
-            var fTaxonomy        = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
-            foreach (var c      in compCls) {
-                fTaxonomy        = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
+            var fTaxonomy = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            foreach (var c in compCls) {
+                fTaxonomy = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
             }
             foreach (var tEntry in fTaxonomy) {
 
                 //Add the fact and its synonyms
                 if (tEntry.TaxonomySubject.IsFact()) {
-                    result       = result.UnionWith(ontology.Data.GetSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject))
-                                         .AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
+                    result = result.UnionWith(ontology.Data.GetSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject))
+                                   .AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
                 }
 
             }
@@ -757,21 +822,21 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the facts which are members of the given composition within the given ontology
         /// </summary>
         internal static RDFOntologyData GetMembersOfComposite(this RDFOntology ontology, RDFOntologyClass ontCompClass) {
-            var result               = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             #region Intersection
-            if (ontCompClass        is RDFOntologyIntersectionClass) {
+            if (ontCompClass is RDFOntologyIntersectionClass) {
 
                 //Filter "intersectionOf" relations made with the given intersection class
-                var firstIter        = true;
-                var iTaxonomy        = ontology.Model.ClassModel.Relations.IntersectionOf.SelectEntriesBySubject(ontCompClass);
+                var firstIter = true;
+                var iTaxonomy = ontology.Model.ClassModel.Relations.IntersectionOf.SelectEntriesBySubject(ontCompClass);
                 foreach (var tEntry in iTaxonomy) {
-                    if (firstIter)   {
-                        result       = ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject);
-                        firstIter    = false;
+                    if (firstIter) {
+                        result = ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject);
+                        firstIter = false;
                     }
                     else {
-                        result       = result.IntersectWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+                        result = result.IntersectWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
                     }
                 }
 
@@ -779,20 +844,20 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             #region Union
-            else if (ontCompClass   is RDFOntologyUnionClass) {
+            else if (ontCompClass is RDFOntologyUnionClass) {
 
                 //Filter "unionOf" relations made with the given union class
-                var uTaxonomy        = ontology.Model.ClassModel.Relations.UnionOf.SelectEntriesBySubject(ontCompClass);
+                var uTaxonomy = ontology.Model.ClassModel.Relations.UnionOf.SelectEntriesBySubject(ontCompClass);
                 foreach (var tEntry in uTaxonomy) {
-                    result           = result.UnionWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+                    result = result.UnionWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
                 }
 
             }
             #endregion
 
             #region Complement
-            else if (ontCompClass   is RDFOntologyComplementClass) {
-                result               = ontology.Data.DifferenceWith(ontology.GetMembersOf(((RDFOntologyComplementClass)ontCompClass).ComplementOf));
+            else if (ontCompClass is RDFOntologyComplementClass) {
+                result = ontology.Data.DifferenceWith(ontology.GetMembersOf(((RDFOntologyComplementClass)ontCompClass).ComplementOf));
             }
             #endregion
 
@@ -803,16 +868,16 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the facts which are members of the given enumeration within the given ontology
         /// </summary>
         internal static RDFOntologyData GetMembersOfEnumerate(this RDFOntology ontology, RDFOntologyEnumerateClass ontEnumClass) {
-            var result           = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             //Filter "oneOf" relations made with the given enumerate class
-            var enTaxonomy       = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontEnumClass);
+            var enTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontEnumClass);
             foreach (var tEntry in enTaxonomy) {
 
                 //Add the fact and its synonyms
                 if (tEntry.TaxonomySubject.IsEnumerateClass() && tEntry.TaxonomyObject.IsFact()) {
-                    result       = result.UnionWith(ontology.Data.GetSameFactsAs((RDFOntologyFact)tEntry.TaxonomyObject))
-                                         .AddFact((RDFOntologyFact)tEntry.TaxonomyObject);
+                    result = result.UnionWith(ontology.Data.GetSameFactsAs((RDFOntologyFact)tEntry.TaxonomyObject))
+                                   .AddFact((RDFOntologyFact)tEntry.TaxonomyObject);
                 }
 
             }
@@ -1058,7 +1123,7 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the literals which are members of the given literal-compatible class within the given ontology
         /// </summary>
         internal static RDFOntologyData GetMembersOfLiteralCompatibleClass(this RDFOntology ontology, RDFOntologyClass ontClass) {
-            var result         = new RDFOntologyData();
+            var result = new RDFOntologyData();
 
             #region DataRange
             if (ontClass.IsDataRangeClass()) {
@@ -1089,8 +1154,8 @@ namespace RDFSharp.Semantics.OWL
             #region SubLiteral
             else {
                 foreach (var ontLit in ontology.Data.Literals.Values.Where(l => l.Value is RDFTypedLiteral)) {
-                    var dTypeClass   = ontology.Model.ClassModel.SelectClass(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ontLit.Value).Datatype));
-                    if (dTypeClass  != null) {
+                    var dTypeClass = ontology.Model.ClassModel.SelectClass(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ontLit.Value).Datatype));
+                    if (dTypeClass != null) {
                         if (dTypeClass.Equals(ontClass)
                                 || ontology.Model.ClassModel.CheckIsSubClassOf(dTypeClass, ontClass)
                                     || ontology.Model.ClassModel.CheckIsEquivalentClassOf(dTypeClass, ontClass)) {
@@ -1108,8 +1173,8 @@ namespace RDFSharp.Semantics.OWL
         /// Enlists the facts which are members of the given non literal-compatible class within the given ontology
         /// </summary>
         internal static RDFOntologyData GetMembersOfNonLiteralCompatibleClass(this RDFOntology ontology, RDFOntologyClass ontClass) {
-            var result     = new RDFOntologyData();
-            if (ontClass  != null && ontology != null) {
+            var result = new RDFOntologyData();
+            if (ontClass != null && ontology != null) {
 
                 //Restriction
                 if (ontClass.IsRestrictionClass()) {
@@ -1145,10 +1210,10 @@ namespace RDFSharp.Semantics.OWL
 		/// Gets an ontology made by semantic inferences found in the given one
 		/// </summary>
 		public static RDFOntology GetInferences(this RDFOntology ontology) {
-			var result       = new RDFOntology((RDFResource)ontology.Value);
-			if (ontology    != null) {
+			var result = new RDFOntology((RDFResource)ontology.Value);
+			if (ontology != null) {
 				result.Model = ontology.Model.GetInferences();
-				result.Data  = ontology.Data.GetInferences();
+				result.Data = ontology.Data.GetInferences();
 			}
 			return result;
 		}
@@ -1157,9 +1222,9 @@ namespace RDFSharp.Semantics.OWL
 		/// Gets an ontology model made by semantic inferences found in the given one
 		/// </summary>
 		public static RDFOntologyModel GetInferences(this RDFOntologyModel ontologyModel) {
-			var result               = new RDFOntologyModel();
-			if (ontologyModel       != null) {
-				result.ClassModel    = ontologyModel.ClassModel.GetInferences();
+			var result = new RDFOntologyModel();
+			if (ontologyModel != null) {
+				result.ClassModel = ontologyModel.ClassModel.GetInferences();
 				result.PropertyModel = ontologyModel.PropertyModel.GetInferences();
 			}
 			return result;
@@ -1169,7 +1234,7 @@ namespace RDFSharp.Semantics.OWL
 		/// Gets an ontology class model made by semantic inferences found in the given one
 		/// </summary>
 		public static RDFOntologyClassModel GetInferences(this RDFOntologyClassModel ontologyClassModel) {
-			var result              = new RDFOntologyClassModel();
+			var result = new RDFOntologyClassModel();
 			if (ontologyClassModel != null) {
 
 				//SubClassOf
@@ -1204,7 +1269,7 @@ namespace RDFSharp.Semantics.OWL
 		/// Gets an ontology property model made by semantic inferences found in the given one
 		/// </summary>
 		public static RDFOntologyPropertyModel GetInferences(this RDFOntologyPropertyModel ontologyPropertyModel) {
-			var result                 = new RDFOntologyPropertyModel();
+			var result = new RDFOntologyPropertyModel();
 			if (ontologyPropertyModel != null) {
 
 				//SubPropertyOf
@@ -1215,8 +1280,12 @@ namespace RDFSharp.Semantics.OWL
 				foreach (var entry in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
 					result.Relations.EquivalentProperty.AddEntry(entry);
 
-				//InverseOf
-				foreach (var entry in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                //PropertyDisjointWith
+                foreach (var entry in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.PropertyDisjointWith.AddEntry(entry);
+
+                //InverseOf
+                foreach (var entry in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
 					result.Relations.InverseOf.AddEntry(entry);
 
 			}
@@ -1227,8 +1296,8 @@ namespace RDFSharp.Semantics.OWL
 		/// Gets an ontology data made by semantic inferences found in the given one
 		/// </summary>
 		public static RDFOntologyData GetInferences(this RDFOntologyData ontologyData) {
-			var result              = new RDFOntologyData();
-			if (ontologyData       != null) {
+			var result = new RDFOntologyData();
+			if (ontologyData != null) {
 
 				//ClassType
 				foreach (var entry in ontologyData.Relations.ClassType.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
@@ -1277,48 +1346,48 @@ namespace RDFSharp.Semantics.OWL
 		/// </summary>
 		public static void ClearInferences(this RDFOntologyClassModel ontologyClassModel) {
 			if (ontologyClassModel != null) {
-				var cacheRemove     = new Dictionary<Int64, Object>();
+				var cacheRemove = new Dictionary<Int64, Object>();
 
 				//SubClassOf
-				foreach (var t     in ontologyClassModel.Relations.SubClassOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyClassModel.Relations.SubClassOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c     in cacheRemove.Keys) { ontologyClassModel.Relations.SubClassOf.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.SubClassOf.Entries.Remove(c); }
 				cacheRemove.Clear();
 
 				//EquivalentClass
-				foreach (var t     in ontologyClassModel.Relations.EquivalentClass.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyClassModel.Relations.EquivalentClass.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c     in cacheRemove.Keys) { ontologyClassModel.Relations.EquivalentClass.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.EquivalentClass.Entries.Remove(c); }
 				cacheRemove.Clear();
 
 				//DisjointWith
-				foreach (var t     in ontologyClassModel.Relations.DisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyClassModel.Relations.DisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c     in cacheRemove.Keys) { ontologyClassModel.Relations.DisjointWith.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.DisjointWith.Entries.Remove(c); }
 				cacheRemove.Clear();
 
 				//UnionOf
-				foreach (var t     in ontologyClassModel.Relations.UnionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyClassModel.Relations.UnionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c     in cacheRemove.Keys) { ontologyClassModel.Relations.UnionOf.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.UnionOf.Entries.Remove(c); }
 				cacheRemove.Clear();
 
 				//IntersectionOf
-				foreach (var t     in ontologyClassModel.Relations.IntersectionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyClassModel.Relations.IntersectionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c     in cacheRemove.Keys) { ontologyClassModel.Relations.IntersectionOf.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.IntersectionOf.Entries.Remove(c); }
 				cacheRemove.Clear();
 
 				//OneOf
-				foreach (var t     in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c     in cacheRemove.Keys) { ontologyClassModel.Relations.OneOf.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.OneOf.Entries.Remove(c); }
 				cacheRemove.Clear();
 			}
 		}
@@ -1328,27 +1397,34 @@ namespace RDFSharp.Semantics.OWL
 		/// </summary>
 		public static void ClearInferences(this RDFOntologyPropertyModel ontologyPropertyModel) {
 			if (ontologyPropertyModel != null) {
-				var cacheRemove        = new Dictionary<Int64, Object>();
+				var cacheRemove = new Dictionary<Int64, Object>();
 
 				//SubPropertyOf
-				foreach (var t        in ontologyPropertyModel.Relations.SubPropertyOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyPropertyModel.Relations.SubPropertyOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c        in cacheRemove.Keys) { ontologyPropertyModel.Relations.SubPropertyOf.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.SubPropertyOf.Entries.Remove(c); }
 				cacheRemove.Clear();
 
 				//EquivalentProperty
-				foreach (var t        in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+				foreach (var t in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c        in cacheRemove.Keys) { ontologyPropertyModel.Relations.EquivalentProperty.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.EquivalentProperty.Entries.Remove(c); }
 				cacheRemove.Clear();
 
-				//InverseOf
-				foreach (var t        in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+                //PropertyDisjointWith
+                foreach (var t in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+                    cacheRemove.Add(t.TaxonomyEntryID, null);
+                }
+                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.Remove(c); }
+                cacheRemove.Clear();
+
+                //InverseOf
+                foreach (var t in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
 					cacheRemove.Add(t.TaxonomyEntryID, null);
 				}
-				foreach (var c        in cacheRemove.Keys) { ontologyPropertyModel.Relations.InverseOf.Entries.Remove(c); }
+				foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.InverseOf.Entries.Remove(c); }
 				cacheRemove.Clear();
 			}
 		}
@@ -1357,7 +1433,7 @@ namespace RDFSharp.Semantics.OWL
 		/// Clears all the taxonomy entries marked as semantic inferences generated by a reasoner
 		/// </summary>
 		public static void ClearInferences(this RDFOntologyData ontologyData) {
-			if (ontologyData   != null) {
+			if (ontologyData != null) {
 				var cacheRemove = new Dictionary<Int64, Object>();
 
 				//ClassType
