@@ -106,17 +106,17 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public List<String> EnlistRuleNames() {
             return new List<String>() {
-                "Vocabulary_Reservation",
-                "Vocabulary_Disjointness",
-                "Vocabulary_Declaration",
-                "Domain_Range",
-                "InverseOf",
-                "SymmetricProperty",
-                "IrreflexiveProperty",
+                "AsymmetricProperty",
                 "ClassType",
+                "Deprecation",
+                "Domain_Range",
                 "GlobalCardinalityConstraint",
+                "InverseOf",
+                "IrreflexiveProperty",
                 "LocalCardinalityConstraint",
-                "Deprecation"
+                "SymmetricProperty",
+                "Vocabulary_Declaration",
+                "Vocabulary_Disjointness"
             };
         }
 
