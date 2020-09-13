@@ -761,11 +761,9 @@ namespace RDFSharp.Semantics.OWL
             #region PropertyDisjoint
             var report = new RDFOntologyValidatorReport();
             foreach (var propertyDisjointWithRelation in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
-
-                //Validate left-side of property disjointness relation
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomySubject))) {
 
-                    //Cannot connect the same individuals with right-side property (which is disjoint from left-side)
+                    //Cannot connect the same individuals with the property representing the right-side of disjointness relation
                     foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => a.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomyObject)
                                                                                             && a.TaxonomySubject.Equals(asn.TaxonomySubject) 
                                                                                                 && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
@@ -773,24 +771,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "PropertyDisjoint",
                             String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject),
-                            String.Format("Remove assertion '{0}' from the ontology data, or review the disjointness relation between these properties.", disjAsn)
-                        ));
-                    }
-
-                }
-
-                //Validate right-side of property disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomyObject))) {
-
-                    //Cannot connect the same individuals with left-side property (which is disjoint from right-side)
-                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => a.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomySubject)
-                                                                                             && a.TaxonomySubject.Equals(asn.TaxonomySubject)
-                                                                                                 && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
-                        report.AddEvidence(new RDFOntologyValidatorEvidence(
-                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
-                            "PropertyDisjoint",
-                            String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject),
-                            String.Format("Remove assertion '{0}' from the ontology data, or review the disjointness relation between these properties.", disjAsn)
+                            String.Format("Remove assertion '{0}' from the ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
                         ));
                     }
 
