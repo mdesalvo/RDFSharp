@@ -341,6 +341,26 @@ namespace RDFSharp.Semantics.OWL
                 }
             }
 
+            //PropertyDisjointWith
+            foreach (var p in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
+                if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomySubject.Value.PatternMemberID)) {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        String.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:PropertyDisjointWith' relation.", p.TaxonomySubject),
+                        String.Format("Add declaration of ontology property '{0}' to the property model.", p.TaxonomySubject)
+                   ));
+                }
+                if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomyObject.Value.PatternMemberID)) {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        String.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:PropertyDisjointWith' relation.", p.TaxonomyObject),
+                        String.Format("Add declaration of ontology property '{0}' to the property model.", p.TaxonomyObject)
+                    ));
+                }
+            }
+
             //InverseOf
             foreach (var   p in ontology.Model.PropertyModel.Relations.InverseOf) {
                 if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomySubject.Value.PatternMemberID)) {
