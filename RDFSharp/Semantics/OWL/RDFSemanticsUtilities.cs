@@ -65,6 +65,7 @@ namespace RDFSharp.Semantics.OWL
                 var equivclassOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_CLASS);
                 var disjclassWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_WITH);
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
+                var disjpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
                 var inverseOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INVERSE_OF);
                 var onProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_PROPERTY);
                 var onClass = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_CLASS); //OWL2
@@ -1320,7 +1321,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:InverseOf]
+                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:InverseOf]
                 foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
                                                                                   && !prop.IsAnnotationProperty()))
                 {
@@ -1377,6 +1378,29 @@ namespace RDFSharp.Semantics.OWL
                                 //Raise warning event to inform the user: equivalentproperty relation cannot be imported
                                 //from graph, because definition of property is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model.", p.Value, eqpr.Object));
+
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region PropertyDisjointWith
+                    foreach (var dwpr in disjpropOf.SelectTriplesBySubject((RDFResource)p.Value)) {
+                        if (dwpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                            var disjProp = ontology.Model.PropertyModel.SelectProperty(dwpr.Object.ToString());
+                            if (disjProp != null) {
+                                if (p.IsObjectProperty() && disjProp.IsObjectProperty()) {
+                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)disjProp);
+                                }
+                                else if (p.IsDatatypeProperty() && disjProp.IsDatatypeProperty()) {
+                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)p, (RDFOntologyDatatypeProperty)disjProp);
+                                }
+                            }
+                            else {
+
+                                //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported
+                                //from graph, because definition of property is not found in the model
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model.", p.Value, dwpr.Object));
 
                             }
                         }
