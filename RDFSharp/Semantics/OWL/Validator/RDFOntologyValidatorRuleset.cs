@@ -775,19 +775,20 @@ namespace RDFSharp.Semantics.OWL
                     var subjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject);
 
                     //Calculate facts/literals compatible with object of assertion
-                    var objects = asn.TaxonomyObject.IsFact() ? ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomyObject)
-                                                                  : new RDFOntologyData().AddLiteral((RDFOntologyLiteral)asn.TaxonomyObject);
+                    var objectIsFact = asn.TaxonomyObject.IsFact();
+                    var objects = objectIsFact ? ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomyObject)
+                                               : new RDFOntologyData().AddLiteral((RDFOntologyLiteral)asn.TaxonomyObject);
 
                     //Cannot connect same individuals with property being right-side of disjointness relation
                     foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProps.SelectProperty(a.TaxonomyPredicate.ToString()) != null
                                                                                             && subjects.SelectFact(a.TaxonomySubject.ToString()) != null 
-                                                                                                && (objects.SelectFact(a.TaxonomyObject.ToString()) != null 
-                                                                                                      || objects.SelectLiteral(a.TaxonomyObject.ToString()) != null))) {
+                                                                                                && ((objectIsFact && objects.SelectFact(a.TaxonomyObject.ToString()) != null)
+                                                                                                       || objects.SelectLiteral(a.TaxonomyObject.ToString()) != null))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "PropertyDisjoint",
                             String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject),
-                            String.Format("Remove assertion '{0}' from the ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
+                            String.Format("Remove assertion '{0}' from ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
                         ));
                     }
 
@@ -800,20 +801,21 @@ namespace RDFSharp.Semantics.OWL
                     var subjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject);
 
                     //Calculate facts/literals compatible with object of assertion
-                    var objects = asn.TaxonomyObject.IsFact() ? ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomyObject)
-                                                                  : new RDFOntologyData().AddLiteral((RDFOntologyLiteral)asn.TaxonomyObject);
+                    var objectIsFact = asn.TaxonomyObject.IsFact();
+                    var objects = objectIsFact ? ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomyObject)
+                                               : new RDFOntologyData().AddLiteral((RDFOntologyLiteral)asn.TaxonomyObject);
 
                     //Cannot connect same individuals with property being left-side of disjointness relation
                     foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProps.SelectProperty(a.TaxonomyPredicate.ToString()) != null
                                                                                             && subjects.SelectFact(a.TaxonomySubject.ToString()) != null
-                                                                                                && (objects.SelectFact(a.TaxonomyObject.ToString()) != null 
-                                                                                                      || objects.SelectLiteral(a.TaxonomyObject.ToString()) != null))) {
+                                                                                                && ((objectIsFact && objects.SelectFact(a.TaxonomyObject.ToString()) != null) 
+                                                                                                       || objects.SelectLiteral(a.TaxonomyObject.ToString()) != null))) {
 
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "PropertyDisjoint",
                             String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject),
-                            String.Format("Remove assertion '{0}' from the ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
+                            String.Format("Remove assertion '{0}' from ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
                         ));
                     }
 
