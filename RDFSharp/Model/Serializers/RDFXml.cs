@@ -120,13 +120,9 @@ namespace RDFSharp.Model
                     #endregion
 
                     #region linq
-                    //Group the graph's triples by subj
-                    var groupedList = (from triple in graph
-                                       orderby triple.Subject.ToString()
-                                       group triple by new
-                                       {
-                                           subj = triple.Subject.ToString()
-                                       });
+                    //Group the graph's triples by subject (containers must be handled first)
+                    var groupedList = graph.GroupBy(x => x.Subject.ToString())
+                                           .OrderByDescending(x => containers.Any(c => c.ContainerUri.ToString().Equals(x.Key)));
                     #endregion
 
                     #region graph
@@ -145,7 +141,7 @@ namespace RDFSharp.Model
                         //Check if the current subj is a container or a collection subj: if so, it must be
                         //serialized in abbreviation RDF/XML syntax instead of canonical "rdf:Description"
                         XmlNode subjNode = null;
-                        String subj = group.Key.subj;
+                        String subj = group.Key;
                         Int64 subjHash = RDFModelUtilities.CreateHash(subj);
                         var subjContainer = containers.Find(x => x.ContainerUri.PatternMemberID == subjHash);
                         var subjCollection = collections.Find(x => x.CollectionUri.PatternMemberID == subjHash);
@@ -181,8 +177,8 @@ namespace RDFSharp.Model
                             subjNode = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
                             //<rdf:Description rdf:nodeID="blankID">
                             XmlAttribute subjNodeDesc = null;
-                            XmlText subjNodeDescText = rdfDoc.CreateTextNode(group.Key.subj);
-                            if (group.Key.subj.StartsWith("bnode:"))
+                            XmlText subjNodeDescText = rdfDoc.CreateTextNode(group.Key);
+                            if (group.Key.StartsWith("bnode:"))
                             {
                                 subjNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
                             }
