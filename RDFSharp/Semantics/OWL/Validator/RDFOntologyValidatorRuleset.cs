@@ -763,22 +763,19 @@ namespace RDFSharp.Semantics.OWL
             foreach (var propertyDisjointWithRelation in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
 
                 //Calculate properties compatible with left-side of disjointness relation (equivalent properties / subproperties)
-                var leftSideProperty = ontology.Model.PropertyModel.SelectProperty(propertyDisjointWithRelation.TaxonomySubject.ToString());
-                var leftSideProperties = ontology.Model.PropertyModel.GetPropertiesDisjointWith(leftSideProperty);
+                var leftSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomySubject);
 
                 //Calculate properties compatible with right-side of disjointness relation (equivalent properties / subproperties)
-                var rightSideProperty = ontology.Model.PropertyModel.SelectProperty(propertyDisjointWithRelation.TaxonomyObject.ToString());
-                var rightSideProperties = ontology.Model.PropertyModel.GetPropertiesDisjointWith(rightSideProperty);
+                var rightSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomyObject);
 
                 //Validate left-side of disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProps.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
 
                     //Calculate facts compatible with subject of assertion
-                    var subjectFact = ontology.Data.SelectFact(asn.TaxonomySubject.ToString());
-                    var subjectFacts = ontology.Data.GetSameFactsAs(subjectFact);
+                    var subjectFacts = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject);
 
                     //Cannot connect same individuals with property being right-side of disjointness relation
-                    foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProperties.SelectProperty(a.TaxonomyPredicate.ToString()) != null
+                    foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProps.SelectProperty(a.TaxonomyPredicate.ToString()) != null
                                                                                             && subjectFacts.SelectFact(a.TaxonomySubject.ToString()) != null 
                                                                                                 && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
@@ -792,14 +789,13 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Validate right-side of disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => rightSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => rightSideProps.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
 
                     //Calculate facts compatible with subject of assertion
-                    var subjectFact = ontology.Data.SelectFact(asn.TaxonomySubject.ToString());
-                    var subjectFacts = ontology.Data.GetSameFactsAs(subjectFact);
+                    var subjectFacts = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject);
 
                     //Cannot connect same individuals with property being left-side of disjointness relation
-                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => leftSideProperties.SelectProperty(a.TaxonomyPredicate.ToString()) != null
+                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => leftSideProps.SelectProperty(a.TaxonomyPredicate.ToString()) != null
                                                                                               && subjectFacts.SelectFact(a.TaxonomySubject.ToString()) != null
                                                                                                  && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
