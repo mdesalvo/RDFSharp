@@ -934,60 +934,38 @@ namespace RDFSharp.Model
         private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj,
                                                      RDFResource pred, RDFGraph result)
         {
-
-            //Attach the collection as the blank object of the current pred
+            //Attach the collection as the blank object of the current predicate
             RDFResource obj = new RDFResource();
             result.AddTriple(new RDFTriple(subj, pred, obj));
 
-            //Iterate on the collection items to reify it
+            //Parse the collection items: since parseType="Collection" is a
+            //RDF/XML syntactic sugar available *only* for resource collections,
+            //we can iterate detected collection items as resources
             if (predNode.HasChildNodes)
             {
-                IEnumerator elems = predNode.ChildNodes.GetEnumerator();
-                while (elems != null && elems.MoveNext())
+                var elems = ParseNodeList(predNode.ChildNodes, result, xmlBase);
+                foreach (RDFResource elem in elems)
                 {
-                    XmlNode elem = (XmlNode)elems.Current;
+                    // obj -> rdf:type -> rdf:list
+                    result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
 
-                    //Skip comments
-                    if (elem.NodeType == XmlNodeType.Comment)
-                        continue;
+                    // obj -> rdf:first -> res
+                    result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.FIRST, elem));
 
-                    //Try to get items as "rdf:about" attributes, or as "rdf:resource"
-                    XmlAttribute elemUri = 
-                        (GetRdfAboutAttribute(elem) ?? 
-                            GetRdfResourceAttribute(elem));
-                    if (elemUri != null)
+                    //Last element of a collection must give a triple to a "rdf:nil" object
+                    RDFResource newObj;
+                    if (elem != elems.Last())
                     {
-
-                        //Sanitize eventual blank node or relative value, depending on attribute found
-                        elemUri.Value = ResolveRelativeNode(elemUri, xmlBase);
-
-                        //Detect implicit typing of elements (node is different from rdf:Description)
-                        if (!elem.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase))
-                            // res -> rdf:type -> elem
-                            result.AddTriple(new RDFTriple(new RDFResource(elemUri.Value), RDFVocabulary.RDF.TYPE, new RDFResource(elem.NamespaceURI + elem.LocalName)));
-
-                        // obj -> rdf:type -> rdf:list
-                        result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
-
-                        // obj -> rdf:first -> res
-                        result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.FIRST, new RDFResource(elemUri.Value)));
-
-                        //Last element of a collection must give a triple to a "rdf:nil" object
-                        RDFResource newObj;
-                        if (elem != predNode.ChildNodes.Item(predNode.ChildNodes.Count - 1))
-                        {
-                            // obj -> rdf:rest -> newObj
-                            newObj = new RDFResource();
-                        }
-                        else
-                        {
-                            // obj -> rdf:rest -> rdf:nil
-                            newObj = RDFVocabulary.RDF.NIL;
-                        }
-                        result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.REST, newObj));
-                        obj = newObj;
-
+                        // obj -> rdf:rest -> newObj
+                        newObj = new RDFResource();
                     }
+                    else
+                    {
+                        // obj -> rdf:rest -> rdf:nil
+                        newObj = RDFVocabulary.RDF.NIL;
+                    }
+                    result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.REST, newObj));
+                    obj = newObj;
                 }
             }
         }
