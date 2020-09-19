@@ -762,11 +762,19 @@ namespace RDFSharp.Semantics.OWL
             var report = new RDFOntologyValidatorReport();
             foreach (var propertyDisjointWithRelation in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
 
+                //Calculate properties compatible with left-side of disjointness relation (equivalent properties / subproperties)
+                var leftSideProperty = ontology.Model.PropertyModel.SelectProperty(propertyDisjointWithRelation.TaxonomySubject.ToString());
+                var leftSideProperties = ontology.Model.PropertyModel.GetPropertiesDisjointWith(leftSideProperty);
+
+                //Calculate properties compatible with right-side of disjointness relation (equivalent properties / subproperties)
+                var rightSideProperty = ontology.Model.PropertyModel.SelectProperty(propertyDisjointWithRelation.TaxonomyObject.ToString());
+                var rightSideProperties = ontology.Model.PropertyModel.GetPropertiesDisjointWith(rightSideProperty);
+
                 //Validate left-side of disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomySubject))) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) { 
 
                     //Cannot connect same individuals with property being right-side of disjointness relation
-                    foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => a.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomyObject)
+                    foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProperties.SelectProperty(a.TaxonomyPredicate.ToString()) != null
                                                                                             && a.TaxonomySubject.Equals(asn.TaxonomySubject) 
                                                                                                 && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
@@ -780,17 +788,17 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Validate right-side of disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomyObject))) {
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => rightSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
 
                     //Cannot connect same individuals with property being left-side of disjointness relation
-                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => a.TaxonomyPredicate.Equals(propertyDisjointWithRelation.TaxonomySubject)
-                                                                                             && a.TaxonomySubject.Equals(asn.TaxonomySubject)
+                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => leftSideProperties.SelectProperty(a.TaxonomyPredicate.ToString()) != null
+                                                                                              && a.TaxonomySubject.Equals(asn.TaxonomySubject)
                                                                                                  && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "PropertyDisjoint",
-                            String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomyObject, propertyDisjointWithRelation.TaxonomySubject),
-                            String.Format("Remove assertion '{0}' from the ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomyObject, propertyDisjointWithRelation.TaxonomySubject)
+                            String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject),
+                            String.Format("Remove assertion '{0}' from the ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
                         ));
                     }
 
