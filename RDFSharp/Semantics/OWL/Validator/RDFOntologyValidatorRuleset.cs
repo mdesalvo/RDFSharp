@@ -771,11 +771,15 @@ namespace RDFSharp.Semantics.OWL
                 var rightSideProperties = ontology.Model.PropertyModel.GetPropertiesDisjointWith(rightSideProperty);
 
                 //Validate left-side of disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) { 
+                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
+
+                    //Calculate facts compatible with subject of assertion
+                    var subjectFact = ontology.Data.SelectFact(asn.TaxonomySubject.ToString());
+                    var subjectFacts = ontology.Data.GetSameFactsAs(subjectFact);
 
                     //Cannot connect same individuals with property being right-side of disjointness relation
                     foreach(var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProperties.SelectProperty(a.TaxonomyPredicate.ToString()) != null
-                                                                                            && a.TaxonomySubject.Equals(asn.TaxonomySubject) 
+                                                                                            && subjectFacts.SelectFact(a.TaxonomySubject.ToString()) != null 
                                                                                                 && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
@@ -790,9 +794,13 @@ namespace RDFSharp.Semantics.OWL
                 //Validate right-side of disjointness relation
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => rightSideProperties.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
 
+                    //Calculate facts compatible with subject of assertion
+                    var subjectFact = ontology.Data.SelectFact(asn.TaxonomySubject.ToString());
+                    var subjectFacts = ontology.Data.GetSameFactsAs(subjectFact);
+
                     //Cannot connect same individuals with property being left-side of disjointness relation
                     foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => leftSideProperties.SelectProperty(a.TaxonomyPredicate.ToString()) != null
-                                                                                              && a.TaxonomySubject.Equals(asn.TaxonomySubject)
+                                                                                              && subjectFacts.SelectFact(a.TaxonomySubject.ToString()) != null
                                                                                                  && a.TaxonomyObject.Equals(asn.TaxonomyObject))) {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
