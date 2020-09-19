@@ -67,7 +67,7 @@ namespace RDFSharp.Semantics.OWL
                 var alldisjclasses = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES); //OWL2
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
                 var alldisjprops = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_PROPERTIES); //OWL2
-                var disjpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
+                var disjpropWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
                 var inverseOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INVERSE_OF);
                 var onProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_PROPERTY);
                 var onClass = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_CLASS); //OWL2
@@ -1388,7 +1388,7 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region PropertyDisjointWith [OWL2]
-                    foreach (var dwpr in disjpropOf.SelectTriplesBySubject((RDFResource)p.Value)) {
+                    foreach (var dwpr in disjpropWith.SelectTriplesBySubject((RDFResource)p.Value)) {
                         if (dwpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
                             var disjProp = ontology.Model.PropertyModel.SelectProperty(dwpr.Object.ToString());
                             if (disjProp != null) {
