@@ -763,20 +763,22 @@ namespace RDFSharp.Semantics.OWL
             foreach (var propertyDisjointWithRelation in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
 
                 //Calculate properties compatible with left-side of disjointness relation (equivalent properties / subproperties)
-                var leftSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomySubject);
+                var leftSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomyObject);
 
                 //Calculate properties compatible with right-side of disjointness relation (equivalent properties / subproperties)
-                var rightSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomyObject);
+                var rightSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomySubject);
 
                 //Validate left-side of disjointness relation
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProps.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
 
                     //Calculate facts compatible with subject of assertion
-                    var subjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject);
+                    var subjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject)
+                                                .AddFact((RDFOntologyFact)asn.TaxonomySubject);
 
                     //Calculate facts/literals compatible with object of assertion
                     var objectIsFact = asn.TaxonomyObject.IsFact();
                     var objects = objectIsFact ? ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomyObject)
+                                                              .AddFact((RDFOntologyFact)asn.TaxonomyObject)
                                                : new RDFOntologyData().AddLiteral((RDFOntologyLiteral)asn.TaxonomyObject);
 
                     //Cannot connect same individuals with property being right-side of disjointness relation
