@@ -22,7 +22,7 @@ namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFOntologyValidatorRuleset implements a subset of RDFS/OWL-DL validation rules
+    /// RDFOntologyValidatorRuleset implements a subset of RDFS/OWL-DL/OWL2 validation rules
     /// </summary>
     internal static class RDFOntologyValidatorRuleset {
 

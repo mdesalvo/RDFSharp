@@ -500,7 +500,7 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
-        #region DisjointPropertyWith
+        #region DisjointPropertyWith [OWL2]
         /// <summary>
         /// Checks if the given aProperty is disjointProperty with the given bProperty within the given property model
         /// </summary>

@@ -23,7 +23,7 @@ namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFOntologyReasonerRuleset implements a subset of RDFS/OWL-DL entailment rules
+    /// RDFOntologyReasonerRuleset implements a subset of RDFS/OWL-DL/OWL2 entailment rules
     /// </summary>
     public static class RDFOntologyReasonerRuleset {
 
