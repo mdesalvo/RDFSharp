@@ -634,7 +634,7 @@ namespace RDFSharp.Model
                 {
                     XmlAttribute attr = (XmlAttribute)iEnum.Current;
                     if (attr.LocalName.ToUpperInvariant() != "XMLNS" 
-                            && attr.LocalName.ToUpperInvariant() != "XML")
+                            && attr.Name.ToUpperInvariant() != "XML:LANG")
                     {
 
                         //Try to resolve the current namespace against the namespace register; 
