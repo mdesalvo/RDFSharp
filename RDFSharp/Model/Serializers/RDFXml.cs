@@ -446,8 +446,11 @@ namespace RDFSharp.Model
 
                         #region elements
                         //Parse resource elements, which are the children of root node
-                        if (rdfRDF.HasChildNodes) 
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase);
+                        if (rdfRDF.HasChildNodes)
+                        {
+                            XmlAttribute xmlLangRoot = GetXmlLangAttribute(rdfRDF);
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, xmlLangRoot);
+                        }
                         #endregion
 
                     }
@@ -468,7 +471,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the given list of nodes
         /// </summary>
-        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase)
+        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent)
         {
             var subjects = new List<RDFResource>();
             var subjNodesEnum = nodeList.GetEnumerator();
@@ -484,14 +487,15 @@ namespace RDFSharp.Model
                     continue;
 
                 //Assert resource as subject
+                XmlAttribute xmlLangSubj = GetXmlLangAttribute(subjNode) ?? xmlLangParent;
                 RDFResource subj = GetSubjectNode(subjNode, xmlBase, result);
                 if (subj == null)
                     subj = new RDFResource();
-                subjects.Add(subj);
+                subjects.Add(subj);                
                 #endregion
 
                 #region predObjList
-                //Parse pred elements, which are the childs of subj element
+                //Parse predicate elements (child nodes)
                 if (subjNode.HasChildNodes)
                 {
                     IEnumerator predNodesEnum = subjNode.ChildNodes.GetEnumerator();
@@ -508,11 +512,37 @@ namespace RDFSharp.Model
                             continue;
 
                         //Get the predicate
+                        XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
                         if (predNode.NamespaceURI == String.Empty)
                             pred = new RDFResource(xmlBase + predNode.LocalName);
                         else
-                            pred = (predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI)
+                            pred = (predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI) 
                                                                             : new RDFResource(predNode.NamespaceURI + predNode.LocalName));
+                        #endregion
+
+                        #region collection
+                        //Check if there is a "rdf:parseType=Collection" attribute
+                        XmlAttribute rdfCollect = GetParseTypeCollectionAttribute(predNode);
+                        if (rdfCollect != null)
+                        {
+                            ParseCollectionElements(xmlBase, predNode, subj, pred, result, xmlLangPred);
+                            continue;
+                        }
+                        #endregion
+
+                        #region container
+                        //Check if there is a "rdf:[Bag|Seq|Alt]" child node
+                        XmlNode container = GetContainerNode(predNode);
+                        if (container != null)
+                        {
+                            //Distinguish the right type of RDF container to build
+                            if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.Ordinal) || container.LocalName.Equals("Bag", StringComparison.Ordinal))
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
+                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.Ordinal) || container.LocalName.Equals("Seq", StringComparison.Ordinal))
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
+                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.Ordinal) || container.LocalName.Equals("Alt", StringComparison.Ordinal))
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
+                        }
                         #endregion
 
                         #region object
@@ -549,52 +579,59 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region plain literal
-                        //Check if there is a "xml:lang" attribute, or if a unique textual child
-                        XmlAttribute xmlLang = GetXmlLangAttribute(predNode);
-                        if (xmlLang != null || (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text))
+                        //Check if there is a "xml:lang" attribute (inherits from subject), or if a unique textual child
+                        if (xmlLangPred != null || (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text))
                         {
-                            RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), (xmlLang != null ? xmlLang.Value : String.Empty));
+                            RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), (xmlLangPred != null ? xmlLangPred.Value : String.Empty));
                             result.AddTriple(new RDFTriple(subj, pred, pLit));
                             continue;
                         }
                         #endregion
 
-                        #region collection
-                        //Check if there is a "rdf:parseType=Collection" attribute
-                        XmlAttribute rdfCollect = GetParseTypeCollectionAttribute(predNode);
-                        if (rdfCollect != null)
-                        {
-                            ParseCollectionElements(xmlBase, predNode, subj, pred, result);
-                            continue;
-                        }
-                        #endregion
-
-                        #region container
-                        //Check if there is a "rdf:[Bag|Seq|Alt]" child node
-                        XmlNode container = GetContainerNode(predNode);
-                        if (container != null)
-                        {
-                            //Distinguish the right type of RDF container to build
-                            if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.Ordinal) || container.LocalName.Equals("Bag", StringComparison.Ordinal))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
-                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.Ordinal) || container.LocalName.Equals("Seq", StringComparison.Ordinal))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
-                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.Ordinal) || container.LocalName.Equals("Alt", StringComparison.Ordinal))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
-                        }
-                        #endregion
-
                         #region nested description
                         //At last, check for nested resource descriptions
-                        if (predNode.HasChildNodes)
+                        if (predNode.HasChildNodes) 
                         {
-                            var nestedSubjects = ParseNodeList(predNode.ChildNodes, result, xmlBase);
+                            var nestedSubjects = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred);
                             foreach (var nestedSubject in nestedSubjects)
                                 result.AddTriple(new RDFTriple(subj, pred, nestedSubject));
                         }
                         #endregion
 
                     }
+                }
+
+                //Parse predicate elements (attributes)
+                if (subjNode.Attributes?.Count > 0)
+                {
+                    List<XmlAttribute> subjAttributes = subjNode.Attributes.OfType<XmlAttribute>().ToList();
+                    subjAttributes.ForEach(subjAttr => 
+                    {
+                        switch (subjAttr.Name.ToLower())
+                        {
+                            //Skip default attributes
+                            case "rdf:about": case "rdf:resource": case "rdf:id": case "rdf:nodeid": case "xml:lang":
+                                break;
+
+                            //Threat rdf:type attribute as SPO
+                            case "rdf:type":
+                                Uri rdfTypeValue = RDFModelUtilities.GetUriFromString(subjAttr.Value);
+                                if (rdfTypeValue != null)
+                                {
+                                    RDFResource obj = new RDFResource(rdfTypeValue.ToString());
+                                    result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
+                                }
+                                break;
+
+                            //Threat any other attributes as SPL
+                            default:
+                                RDFResource subjAttrPred = subjAttr.NamespaceURI == String.Empty ? new RDFResource(xmlBase + subjAttr.LocalName)
+                                                                                                 : new RDFResource(subjAttr.NamespaceURI + subjAttr.LocalName);
+                                RDFPlainLiteral plit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(subjAttr.Value)), xmlLangSubj?.Value);
+                                result.AddTriple(new RDFTriple(subj, subjAttrPred, plit));
+                                break;
+                        }
+                    });
                 }
                 #endregion
 
@@ -927,7 +964,7 @@ namespace RDFSharp.Model
         /// to build its standard reification triples. 
         /// </summary>
         private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj,
-                                                     RDFResource pred, RDFGraph result)
+                                                    RDFResource pred, RDFGraph result, XmlAttribute xmlLangSubj)
         {
             //Attach the collection as the blank object of the current predicate
             RDFResource obj = new RDFResource();
@@ -938,7 +975,8 @@ namespace RDFSharp.Model
             //we can iterate detected collection items as resources
             if (predNode.HasChildNodes)
             {
-                var elems = ParseNodeList(predNode.ChildNodes, result, xmlBase);
+                XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
+                List<RDFResource> elems = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred);
                 foreach (RDFResource elem in elems)
                 {
                     // obj -> rdf:type -> rdf:list
