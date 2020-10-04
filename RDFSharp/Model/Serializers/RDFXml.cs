@@ -486,9 +486,8 @@ namespace RDFSharp.Model
                 //Assert resource as subject
                 RDFResource subj = GetSubjectNode(subjNode, xmlBase, result);
                 if (subj == null)
-                    continue;
-                else
-                    subjects.Add(subj); //Collect the subject
+                    subj = new RDFResource();
+                subjects.Add(subj);
                 #endregion
 
                 #region predObjList
@@ -507,12 +506,12 @@ namespace RDFSharp.Model
                         //Skip comments
                         if (predNode.NodeType == XmlNodeType.Comment)
                             continue;
-                        
+
                         //Get the predicate
                         if (predNode.NamespaceURI == String.Empty)
                             pred = new RDFResource(xmlBase + predNode.LocalName);
                         else
-                            pred = (predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI) 
+                            pred = (predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI)
                                                                             : new RDFResource(predNode.NamespaceURI + predNode.LocalName));
                         #endregion
 
@@ -587,8 +586,8 @@ namespace RDFSharp.Model
 
                         #region nested description
                         //At last, check for nested resource descriptions
-                        if (predNode.HasChildNodes) 
-                        { 
+                        if (predNode.HasChildNodes)
+                        {
                             var nestedSubjects = ParseNodeList(predNode.ChildNodes, result, xmlBase);
                             foreach (var nestedSubject in nestedSubjects)
                                 result.AddTriple(new RDFTriple(subj, pred, nestedSubject));
