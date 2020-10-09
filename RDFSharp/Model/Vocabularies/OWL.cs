@@ -267,11 +267,6 @@ namespace RDFSharp.Model
             public static readonly RDFResource ALL_DIFFERENT = new RDFResource(OWL.BASE_URI + "AllDifferent");
 
             /// <summary>
-            /// owl:AllDisjointProperties [OWL2]
-            /// </summary>
-            public static readonly RDFResource ALL_DISJOINT_PROPERTIES = new RDFResource(OWL.BASE_URI + "AllDisjointProperties");
-
-            /// <summary>
             /// owl:AsymmetricProperty [OWL2]
             /// </summary>
             public static readonly RDFResource ASYMMETRIC_PROPERTY = new RDFResource(OWL.BASE_URI + "AsymmetricProperty");
@@ -310,11 +305,6 @@ namespace RDFSharp.Model
             /// owl:onDataRange [OWL2]
             /// </summary>
             public static readonly RDFResource ON_DATARANGE = new RDFResource(OWL.BASE_URI + "onDataRange");
-
-            /// <summary>
-            /// owl:propertyDisjointWith [OWL2]
-            /// </summary>
-            public static readonly RDFResource PROPERTY_DISJOINT_WITH = new RDFResource(OWL.BASE_URI + "propertyDisjointWith");
             #endregion
 
         }

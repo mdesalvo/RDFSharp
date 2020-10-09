@@ -341,26 +341,6 @@ namespace RDFSharp.Semantics.OWL
                 }
             }
 
-            //PropertyDisjointWith
-            foreach (var p in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
-                if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomySubject.Value.PatternMemberID)) {
-                    report.AddEvidence(new RDFOntologyValidatorEvidence(
-                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
-                        "Vocabulary_Declaration",
-                        String.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:PropertyDisjointWith' relation.", p.TaxonomySubject),
-                        String.Format("Add declaration of ontology property '{0}' to the property model.", p.TaxonomySubject)
-                   ));
-                }
-                if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomyObject.Value.PatternMemberID)) {
-                    report.AddEvidence(new RDFOntologyValidatorEvidence(
-                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
-                        "Vocabulary_Declaration",
-                        String.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:PropertyDisjointWith' relation.", p.TaxonomyObject),
-                        String.Format("Add declaration of ontology property '{0}' to the property model.", p.TaxonomyObject)
-                    ));
-                }
-            }
-
             //InverseOf
             foreach (var   p in ontology.Model.PropertyModel.Relations.InverseOf) {
                 if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomySubject.Value.PatternMemberID)) {
@@ -747,59 +727,6 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'IrreflexiveProperty': found " + report.EvidencesCount + " evidences.");
-            return report;
-        }
-        #endregion
-
-        #region Rule:PropertyDisjoint [OWL2]
-        /// <summary>
-        /// Validation rule checking for consistency of owl:propertyDisjointWith axioms [OWL2]
-        /// </summary>
-        internal static RDFOntologyValidatorReport PropertyDisjoint(RDFOntology ontology) {
-            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'PropertyDisjoint'...");
-
-            #region PropertyDisjoint
-            var report = new RDFOntologyValidatorReport();
-            foreach (var propertyDisjointWithRelation in ontology.Model.PropertyModel.Relations.PropertyDisjointWith) {
-
-                //Calculate properties compatible with left-side of disjointness relation (equivalent properties / subproperties)
-                var leftSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomyObject);
-
-                //Calculate properties compatible with right-side of disjointness relation (equivalent properties / subproperties)
-                var rightSideProps = ontology.Model.PropertyModel.GetPropertiesDisjointWith((RDFOntologyProperty)propertyDisjointWithRelation.TaxonomySubject);
-
-                //Validate disjointness relation
-                foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => leftSideProps.SelectProperty(asn.TaxonomyPredicate.ToString()) != null)) {
-
-                    //Calculate facts compatible with subject of assertion
-                    var subjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomySubject)
-                                                .AddFact((RDFOntologyFact)asn.TaxonomySubject);
-
-                    //Calculate facts/literals compatible with object of assertion
-                    var objectIsFact = asn.TaxonomyObject.IsFact();
-                    var objects = objectIsFact ? ontology.Data.GetSameFactsAs((RDFOntologyFact)asn.TaxonomyObject)
-                                                              .AddFact((RDFOntologyFact)asn.TaxonomyObject)
-                                               : new RDFOntologyData().AddLiteral((RDFOntologyLiteral)asn.TaxonomyObject);
-
-                    //Cannot connect same individuals with disjoint property
-                    foreach (var disjAsn in ontology.Data.Relations.Assertions.Where(a => rightSideProps.SelectProperty(a.TaxonomyPredicate.ToString()) != null
-                                                                                            && subjects.SelectFact(a.TaxonomySubject.ToString()) != null 
-                                                                                                && ((objectIsFact && objects.SelectFact(a.TaxonomyObject.ToString()) != null)
-                                                                                                       || objects.SelectLiteral(a.TaxonomyObject.ToString()) != null))) {
-                        report.AddEvidence(new RDFOntologyValidatorEvidence(
-                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
-                            "PropertyDisjoint",
-                            String.Format("Violation of disjointness between ontology properties '{0}' and '{1}'.", propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject),
-                            String.Format("Remove assertion '{0}' from ontology data, or review disjointness relation between properties '{1}' and '{2}'.", disjAsn, propertyDisjointWithRelation.TaxonomySubject, propertyDisjointWithRelation.TaxonomyObject)
-                        ));
-                    }
-
-                }
-
-            }
-            #endregion
-
-            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'PropertyDisjoint': found " + report.EvidencesCount + " evidences.");
             return report;
         }
         #endregion

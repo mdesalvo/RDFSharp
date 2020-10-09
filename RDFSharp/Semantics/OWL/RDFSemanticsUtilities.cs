@@ -66,8 +66,6 @@ namespace RDFSharp.Semantics.OWL
                 var disjclassWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_WITH);
                 var alldisjclasses = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES); //OWL2
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
-                var alldisjprops = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_PROPERTIES); //OWL2
-                var disjpropWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
                 var inverseOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INVERSE_OF);
                 var onProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_PROPERTY);
                 var onClass = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ON_CLASS); //OWL2
@@ -1324,7 +1322,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:InverseOf]
+                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:InverseOf]
                 foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
                                                                                   && !prop.IsAnnotationProperty()))
                 {
@@ -1384,103 +1382,6 @@ namespace RDFSharp.Semantics.OWL
 
                             }
                         }
-                    }
-                    #endregion
-
-                    #region PropertyDisjointWith [OWL2]
-                    foreach (var dwpr in disjpropWith.SelectTriplesBySubject((RDFResource)p.Value)) {
-                        if (dwpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
-                            var disjProp = ontology.Model.PropertyModel.SelectProperty(dwpr.Object.ToString());
-                            if (disjProp != null) {
-                                if (p.IsObjectProperty() && disjProp.IsObjectProperty()) {
-                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)disjProp);
-                                }
-                                else if (p.IsDatatypeProperty() && disjProp.IsDatatypeProperty()) {
-                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)p, (RDFOntologyDatatypeProperty)disjProp);
-                                }
-                            }
-                            else {
-
-                                //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported
-                                //from graph, because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model.", p.Value, dwpr.Object));
-
-                            }
-                        }
-                    }
-                    #endregion
-
-                    #region AllDisjointProperties [OWL2]
-                    foreach (var adjp in alldisjprops)
-                    {
-                        var allDisjointProperties = new List<RDFOntologyProperty>();
-                        foreach (var adjpMembers in members.SelectTriplesBySubject((RDFResource)adjp.Subject)) {
-                            if (adjpMembers.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) 
-                            {
-                                #region DeserializeCollection
-                                var nilFound = false;
-                                var itemRest = (RDFResource)adjpMembers.Object;
-                                while (!nilFound)
-                                {
-
-                                    #region rdf:first
-                                    var first = rdfFirst.SelectTriplesBySubject(itemRest)
-                                                        .FirstOrDefault();
-                                    if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                                    {
-                                        var disjointProperty = ontology.Model.PropertyModel.SelectProperty(first.Object.ToString());
-                                        if (disjointProperty != null)
-                                        {
-                                            allDisjointProperties.Add(disjointProperty);
-                                        }
-                                        else
-                                        {
-
-                                            //Raise warning event to inform the user: all disjoint properties cannot be completely imported
-                                            //from graph, because definition of property is not found in the model
-                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDisjointProperties '{0}' cannot be completely imported from graph, because definition of property '{1}' is not found in the model.", adjp.Subject, first.Object));
-
-                                        }
-
-                                        #region rdf:rest
-                                        var rest = rdfRest.SelectTriplesBySubject(itemRest)
-                                                          .FirstOrDefault();
-                                        if (rest != null)
-                                        {
-                                            if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
-                                            {
-                                                nilFound = true;
-                                            }
-                                            else
-                                            {
-                                                itemRest = (RDFResource)rest.Object;
-                                            }
-                                        }
-                                        #endregion
-
-                                    }
-                                    else
-                                    {
-                                        nilFound = true;
-                                    }
-                                    #endregion
-
-                                }
-                                #endregion
-                            }
-                        }
-
-                        //Replicate algorythm of AddAllDisjointProperties (it requires strong typing of properties)
-                        foreach (var outerProperty in allDisjointProperties)
-                        {
-                            foreach (var innerProperty in allDisjointProperties)
-                            {
-                                if (outerProperty.IsObjectProperty() && innerProperty.IsObjectProperty())
-                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)outerProperty, (RDFOntologyObjectProperty)innerProperty);
-                                else if (outerProperty.IsDatatypeProperty() && innerProperty.IsDatatypeProperty())
-                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)outerProperty, (RDFOntologyDatatypeProperty)innerProperty);
-                            }
-                        }   
                     }
                     #endregion
 
