@@ -445,12 +445,9 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region elements
-                        //Parse resource elements, which are the children of root node
+                        //Parse children of root node
                         if (rdfRDF.HasChildNodes)
-                        {
-                            XmlAttribute xmlLangRoot = GetXmlLangAttribute(rdfRDF);
-                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, xmlLangRoot);
-                        }
+                            ParseNodeList(rdfRDF.ChildNodes, result, xmlBase, GetXmlLangAttribute(rdfRDF));
                         #endregion
 
                     }
@@ -478,7 +475,7 @@ namespace RDFSharp.Model
             while (subjNodesEnum != null && subjNodesEnum.MoveNext())
             {
 
-                #region subj
+                #region subject
                 //Get the current resource node
                 XmlNode subjNode = (XmlNode)subjNodesEnum.Current;
 
@@ -495,7 +492,7 @@ namespace RDFSharp.Model
                 #endregion
 
                 #region predObjList
-                //Parse predicate elements (attributes)
+                //Parse subject attributes
                 if (subjNode.Attributes?.Count > 0)
                 {
                     List<XmlAttribute> subjAttributes = subjNode.Attributes.OfType<XmlAttribute>().ToList();
@@ -504,11 +501,7 @@ namespace RDFSharp.Model
                         switch (subjAttr.Name.ToLower())
                         {
                             //Skip reserved attributes
-                            case "rdf:about":
-                            case "rdf:resource":
-                            case "rdf:id":
-                            case "rdf:nodeid":
-                            case "xml:lang":
+                            case "rdf:about": case "rdf:resource": case "rdf:id": case "rdf:nodeid": case "xml:lang":
                                 break;
 
                             //Threat rdf:type attribute as SPO
@@ -532,7 +525,7 @@ namespace RDFSharp.Model
                     });
                 }
 
-                //Parse predicate elements (child nodes)
+                //Parse subject children (predicates)
                 if (subjNode.HasChildNodes)
                 {
                     IEnumerator predNodesEnum = subjNode.ChildNodes.GetEnumerator();
@@ -557,8 +550,10 @@ namespace RDFSharp.Model
                                                                             : new RDFResource(predNode.NamespaceURI + predNode.LocalName));
                         #endregion
 
+                        #region objList
+
                         #region collection
-                        //Check if there is a "rdf:parseType=Collection" attribute
+                        //Check if predicate has "rdf:parseType=Collection" attribute
                         XmlAttribute rdfCollect = GetParseTypeCollectionAttribute(predNode);
                         if (rdfCollect != null)
                         {
@@ -568,7 +563,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region container
-                        //Check if there is a "rdf:[Bag|Seq|Alt]" child node
+                        //Check if predicate has "rdf:[Bag|Seq|Alt]" child node
                         XmlNode container = GetContainerNode(predNode);
                         if (container != null)
                         {
@@ -583,8 +578,9 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        //Check if there is a "rdf:about" or a "rdf:resource" attribute
-                        XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode) ?? GetRdfResourceAttribute(predNode));
+                        //Check if predicate has "rdf:about" or "rdf:resource" attribute
+                        XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode) 
+                                                    ?? GetRdfResourceAttribute(predNode));
                         if (rdfObject != null)
                         {
                             //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri
@@ -596,7 +592,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region typed literal
-                        //Check if there is a "rdf:datatype" attribute
+                        //Check if predicate has "rdf:datatype" attribute
                         XmlAttribute rdfDatatype = GetRdfDatatypeAttribute(predNode);
                         if (rdfDatatype != null)
                         {
@@ -605,7 +601,7 @@ namespace RDFSharp.Model
                             result.AddTriple(new RDFTriple(subj, pred, tLit));
                             continue;
                         }
-                        //Check if there is a "rdf:parseType=Literal" attribute
+                        //Check if predicate has "rdf:parseType=Literal" attribute
                         XmlAttribute parseLiteral = GetParseTypeLiteralAttribute(predNode);
                         if (parseLiteral != null)
                         {
@@ -616,7 +612,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region plain literal
-                        //Check if there is a unique textual child
+                        //Check if predicate has a unique textual child
                         if (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text)
                         {
                             RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
@@ -626,13 +622,15 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region nested description
-                        //At last, check for nested resource descriptions
+                        //At last, check if predicate has children (nested resource descriptions)
                         if (predNode.HasChildNodes)
                         {
-                            var nestedSubjects = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred);
-                            foreach (var nestedSubject in nestedSubjects)
-                                result.AddTriple(new RDFTriple(subj, pred, nestedSubject));
+                            var nestedResources = ParseNodeList(predNode.ChildNodes, result, xmlBase, xmlLangPred);
+                            foreach (var nestedResource in nestedResources)
+                                result.AddTriple(new RDFTriple(subj, pred, nestedResource));
                         }
+                        #endregion
+
                         #endregion
 
                     }
