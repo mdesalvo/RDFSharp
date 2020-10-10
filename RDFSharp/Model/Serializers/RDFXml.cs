@@ -468,7 +468,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the given list of nodes
         /// </summary>
-        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent)
+        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent, RDFResource subjectParent=null)
         {
             var subjects = new List<RDFResource>();
             var subjNodesEnum = nodeList.GetEnumerator();
@@ -485,7 +485,7 @@ namespace RDFSharp.Model
 
                 //Assert resource as subject
                 XmlAttribute xmlLangSubj = GetXmlLangAttribute(subjNode) ?? xmlLangParent;
-                RDFResource subj = GetSubjectNode(subjNode, xmlBase, result);
+                RDFResource subj = subjectParent ?? GetSubjectNode(subjNode, xmlBase, result);
                 if (subj == null)
                     subj = new RDFResource();
                 subjects.Add(subj);
@@ -501,7 +501,12 @@ namespace RDFSharp.Model
                         switch (subjAttr.Name.ToLower())
                         {
                             //Skip reserved attributes
-                            case "rdf:about": case "rdf:resource": case "rdf:id": case "rdf:nodeid": case "xml:lang":
+                            case "rdf:about": 
+                            case "rdf:resource":
+                            case "rdf:parsetype":
+                            case "rdf:id": 
+                            case "rdf:nodeid": 
+                            case "xml:lang":                             
                                 break;
 
                             //Threat rdf:type attribute as SPO
@@ -578,29 +583,55 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        //Check if predicate has "rdf:about"/"rdf:resource"/"rdf:ID"/"rdf:nodeID" attribute
+                        //Check if predicate has one of these specific attributes:
+                        //"rdf:about", "rdf:resource", "rdf:nodeID", "rdf:ID", "rdf:parseType=Resource"
                         XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode) 
-                                                    ?? GetRdfResourceAttribute(predNode));
+                                                    ?? GetRdfResourceAttribute(predNode)
+                                                        ?? GetParseTypeResourceAttribute(predNode));
                         if (rdfObject != null)
                         {
-                            String rdfObjectValue = ResolveRelativeNode(rdfObject, xmlBase);
-                            RDFResource obj = new RDFResource(rdfObjectValue);
-                            RDFTriple objTriple = new RDFTriple(subj, pred, obj);
-
-                            //rdf:ID when found at predicate level appends a reified version of the triple
-                            if (rdfObject.Name.ToLower().Equals("rdf:id"))
+                            #region rdf:parseType=Resource
+                            if (rdfObject.Name.ToLower().Equals("rdf:parsetype"))
                             {
-                                foreach(RDFTriple reifTriple in objTriple.ReifyTriple())
-                                    result.AddTriple(reifTriple);
+                                //"rdf:parseType=Resource" appends a triple with blank object,
+                                //which represents the subject of nested resource descriptions
+                                RDFResource parsetypeResource = new RDFResource();
+                                RDFTriple parsetypeResourceTriple = new RDFTriple(subj, pred, parsetypeResource);
+                                result.AddTriple(parsetypeResourceTriple);
 
-                                //rdf:ID when found at predicate level also appends the triple as empty property attribute
-                                result.AddTriple(new RDFTriple(subj, pred, new RDFPlainLiteral("")));
+                                //Check if predicate has children (nested resource descriptions)
+                                if (predNode.HasChildNodes)
+                                    ParseNodeList(predNode.SelectNodes("."), result, xmlBase, xmlLangPred, parsetypeResource);
                             }
-                            //rdf:about/rdf:resource/rdf:nodeID regularly append the triple
+                            #endregion
+
+                            #region rdf:about,rdf:resource,rdf:ID,rdf:nodeID
                             else
-                            { 
-                                result.AddTriple(objTriple);
+                            {
+                                String rdfObjectValue = ResolveRelativeNode(rdfObject, xmlBase);
+                                RDFResource obj = new RDFResource(rdfObjectValue);
+                                RDFTriple objTriple = new RDFTriple(subj, pred, obj);
+
+                                #region rdf:ID
+                                if (rdfObject.Name.ToLower().Equals("rdf:id"))
+                                {
+                                    //"rdf:ID" at predicate appends reified triple and empty property attribute
+                                    foreach (RDFTriple reifTriple in objTriple.ReifyTriple())
+                                        result.AddTriple(reifTriple);
+
+                                    result.AddTriple(new RDFTriple(subj, pred, new RDFPlainLiteral("")));
+                                }
+                                #endregion
+
+                                #region rdf:about,rdf:resource,rdf:nodeID
+                                else
+                                {
+                                    result.AddTriple(objTriple);
+                                }
+                                #endregion
                             }
+                            #endregion
+
                             continue;
                         }
                         #endregion
@@ -974,6 +1005,18 @@ namespace RDFSharp.Model
                     predNode.Attributes?["parseType"]);
 
             return ((rdfLiteral != null && rdfLiteral.Value.Equals("Literal", StringComparison.Ordinal)) ? rdfLiteral : null);
+        }
+
+        /// <summary>
+        /// Given an element, return the attribute which can correspond to the RDF parseType "Resource"
+        /// </summary>
+        private static XmlAttribute GetParseTypeResourceAttribute(XmlNode predNode)
+        {
+            XmlAttribute rdfResource =
+                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
+                    predNode.Attributes?["parseType"]);
+
+            return ((rdfResource != null && rdfResource.Value.Equals("Resource", StringComparison.Ordinal)) ? rdfResource : null);
         }
 
         /// <summary>
