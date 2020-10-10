@@ -578,15 +578,29 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region object
-                        //Check if predicate has "rdf:about" or "rdf:resource" attribute
+                        //Check if predicate has "rdf:about"/"rdf:resource"/"rdf:ID"/"rdf:nodeID" attribute
                         XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode) 
                                                     ?? GetRdfResourceAttribute(predNode));
                         if (rdfObject != null)
                         {
-                            //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri
                             String rdfObjectValue = ResolveRelativeNode(rdfObject, xmlBase);
                             RDFResource obj = new RDFResource(rdfObjectValue);
-                            result.AddTriple(new RDFTriple(subj, pred, obj));
+                            RDFTriple objTriple = new RDFTriple(subj, pred, obj);
+
+                            //rdf:ID when found at predicate level appends a reified version of the triple
+                            if (rdfObject.Name.ToLower().Equals("rdf:id"))
+                            {
+                                foreach(RDFTriple reifTriple in objTriple.ReifyTriple())
+                                    result.AddTriple(reifTriple);
+
+                                //rdf:ID when found at predicate level also appends the triple as empty property attribute
+                                result.AddTriple(new RDFTriple(subj, pred, new RDFPlainLiteral("")));
+                            }
+                            //rdf:about/rdf:resource/rdf:nodeID regularly append the triple
+                            else
+                            { 
+                                result.AddTriple(objTriple);
+                            }
                             continue;
                         }
                         #endregion
