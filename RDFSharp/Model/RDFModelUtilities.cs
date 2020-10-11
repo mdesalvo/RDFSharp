@@ -803,7 +803,7 @@ namespace RDFSharp.Model
                 {
                     try
                     {
-                        XDocument.Parse(typedLiteral.Value);
+                        XDocument.Parse("<fakeroot>" + typedLiteral.Value + "</fakeroot>");
                         return true;
                     }
                     catch
