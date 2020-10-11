@@ -608,24 +608,23 @@ namespace RDFSharp.Model
                             #region rdf:about,rdf:resource,rdf:ID,rdf:nodeID
                             else
                             {
-                                String rdfObjectValue = ResolveRelativeNode(rdfObject, xmlBase);
-                                RDFResource obj = new RDFResource(rdfObjectValue);
-                                RDFTriple objTriple = new RDFTriple(subj, pred, obj);
+                                String objValue = ResolveRelativeNode(rdfObject, xmlBase);
+                                RDFResource obj = new RDFResource(objValue);
 
                                 #region rdf:ID
                                 if (rdfObject.Name.ToLower().Equals("rdf:id"))
                                 {
-                                    //"rdf:ID" at predicate appends reified triple and empty property attribute
-                                    foreach (RDFTriple reifTriple in objTriple.ReifyTriple())
-                                        result.AddTriple(reifTriple);
-
-                                    result.AddTriple(new RDFTriple(subj, pred, new RDFPlainLiteral("")));
+                                    //"rdf:ID" at predicate level appends reified triple represented by object
+                                    RDFTriple objTriple = new RDFTriple(obj, pred, new RDFPlainLiteral(String.Empty));
+                                    foreach (RDFTriple reifObjTriple in ReifyRdfIdPredicateTriple(obj, subj, objTriple))
+                                        result.AddTriple(reifObjTriple);
                                 }
                                 #endregion
 
                                 #region rdf:about,rdf:resource,rdf:nodeID
                                 else
-                                {
+                                {                                    
+                                    RDFTriple objTriple = new RDFTriple(subj, pred, obj);
                                     result.AddTriple(objTriple);
                                 }
                                 #endregion
@@ -1017,6 +1016,22 @@ namespace RDFSharp.Model
                     predNode.Attributes?["parseType"]);
 
             return ((rdfResource != null && rdfResource.Value.Equals("Resource", StringComparison.Ordinal)) ? rdfResource : null);
+        }
+
+        /// <summary>
+        /// Builds the reification graph of the special triple obtained from rdf:ID found at predicate level
+        /// </summary>
+        private static RDFGraph ReifyRdfIdPredicateTriple(RDFResource reificationSubject, RDFResource subject, RDFTriple triple)
+        {
+            var reifGraph = new RDFGraph();
+            var reifSubj = reificationSubject;
+
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.SUBJECT, subject));
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate));
+            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object));
+
+            return reifGraph;
         }
 
         /// <summary>
