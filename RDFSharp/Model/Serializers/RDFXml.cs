@@ -649,7 +649,7 @@ namespace RDFSharp.Model
                         XmlAttribute parseLiteral = GetParseTypeLiteralAttribute(predNode);
                         if (parseLiteral != null)
                         {
-                            RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerXml)), RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
+                            RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerXml)), RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL);
                             result.AddTriple(new RDFTriple(subj, pred, tLit));
                             continue;
                         }
