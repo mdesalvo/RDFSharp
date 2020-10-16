@@ -823,11 +823,11 @@ namespace RDFSharp.Model
         {
             RDFResource subj = null;
 
-            //If there are attributes, search them for the one representing the subj
+            //If there are attributes, search for the one describing the subject
             if (subjNode.Attributes != null && subjNode.Attributes.Count > 0)
             {
 
-                //We are interested in finding the "rdf:about" or "rdf:resource" node for the subj
+                //We are interested in finding the "rdf:about" or "rdf:resource"
                 XmlAttribute rdfAbout =
                     (GetRdfAboutAttribute(subjNode)
                         ?? GetRdfResourceAttribute(subjNode));
@@ -839,45 +839,24 @@ namespace RDFSharp.Model
                     subj = new RDFResource(rdfAboutValue);
                 }
 
-                //If "rdf:about" attribute has been found for the subj, we must
-                //check if the node is not a standard "rdf:Description": this is
-                //the case we can directly build a triple with "rdf:type" pred
-                if (subj != null && !CheckIfRdfDescriptionNode(subjNode))
-                {
-                    RDFResource obj = null;
-                    if (subjNode.NamespaceURI == String.Empty)
-                    {
-                        obj = new RDFResource(xmlBase + subjNode.LocalName);
-                    }
-                    else
-                    {
-                        obj = new RDFResource(subjNode.NamespaceURI + subjNode.LocalName);
-                    }
-                    result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
-                }
-
             }
-
-            //Otherwise make the subj a blank node
-            else
-            {
+            if (subj == null)
                 subj = new RDFResource();
 
-                //We must check if the node is not a standard "rdf:Description": this is
-                //the case we can directly build a triple with "rdf:type" pred
-                if (!CheckIfRdfDescriptionNode(subjNode))
+            //We must check if the node is not a standard "rdf:Description": this is
+            //the case we can directly build a triple with "rdf:type" pred
+            if (!CheckIfRdfDescriptionNode(subjNode))
+            {
+                RDFResource obj = null;
+                if (subjNode.NamespaceURI == String.Empty)
                 {
-                    RDFResource obj = null;
-                    if (subjNode.NamespaceURI == String.Empty)
-                    {
-                        obj = new RDFResource(xmlBase + subjNode.LocalName);
-                    }
-                    else
-                    {
-                        obj = new RDFResource(subjNode.NamespaceURI + subjNode.LocalName);
-                    }
-                    result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
+                    obj = new RDFResource(xmlBase + subjNode.LocalName);
                 }
+                else
+                {
+                    obj = new RDFResource(subjNode.NamespaceURI + subjNode.LocalName);
+                }
+                result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
             }
 
             return subj;
