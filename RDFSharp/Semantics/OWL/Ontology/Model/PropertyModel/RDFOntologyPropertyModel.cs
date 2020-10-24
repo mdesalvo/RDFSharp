@@ -561,6 +561,74 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Adds the "aproperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
+        /// </summary>
+        public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty,
+                                                                        RDFOntologyObjectProperty bProperty) {
+            if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty)) {
+
+                //Enforce preliminary checks on usage of BASE classes
+                if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty)) {
+
+                    //Enforce taxonomy checks before adding the propertyDisjointWith relation
+                    if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty)) {
+                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
+                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                    }
+                    else {
+
+                        //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+
+                    }
+
+                }
+                else {
+
+                    //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the "aproperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
+        /// </summary>
+        public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty,
+                                                                        RDFOntologyDatatypeProperty bProperty) {
+            if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty)) {
+
+                //Enforce preliminary checks on usage of BASE classes
+                if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty)) {
+
+                    //Enforce taxonomy checks before adding the propertyDisjointWith relation
+                    if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty)) {
+                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
+                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                    }
+                    else {
+
+                        //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
+
+                    }
+
+                }
+                else {
+
+                    //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
+
+                }
+
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Adds the "aProperty -> owl:inverseOf -> bProperty" relation to the property model 
         /// </summary>
         public RDFOntologyPropertyModel AddInverseOfRelation(RDFOntologyObjectProperty aProperty, 
@@ -591,6 +659,24 @@ namespace RDFSharp.Semantics.OWL
                 }
 
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given properties, adds the "ontologyPropertyA -> owl:propertyDisjointWith -> ontologyPropertyB" relations to the property model [OWL2]
+        /// </summary>
+        public RDFOntologyPropertyModel AddAllDisjointPropertiesRelation(List<RDFOntologyObjectProperty> ontologyProperties) {
+            ontologyProperties?.ForEach(outerProperty =>
+                ontologyProperties?.ForEach(innerProperty => this.AddPropertyDisjointWithRelation(outerProperty, innerProperty)));
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given properties, adds the "ontologyPropertyA -> owl:propertyDisjointWith -> ontologyPropertyB" relations to the property model [OWL2]
+        /// </summary>
+        public RDFOntologyPropertyModel AddAllDisjointPropertiesRelation(List<RDFOntologyDatatypeProperty> ontologyProperties) {
+            ontologyProperties?.ForEach(outerProperty =>
+                ontologyProperties?.ForEach(innerProperty => this.AddPropertyDisjointWithRelation(outerProperty, innerProperty)));
             return this;
         }
         #endregion
@@ -786,6 +872,31 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Removes the "aProperty -> owl:propertyDisjointWith -> bProperty" relation from the property model 
+        /// </summary>
+        public RDFOntologyPropertyModel RemovePropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty,
+                                                                           RDFOntologyObjectProperty bProperty) {
+            if (aProperty != null && bProperty != null) {
+                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
+                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty));
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the "aProperty -> owl:propertyDisjointWith -> bProperty" relation from the property model 
+        /// </summary>
+        public RDFOntologyPropertyModel RemovePropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty,
+                                                                           RDFOntologyDatatypeProperty bProperty) {
+            if (aProperty != null && bProperty != null) {
+                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
+                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty));
+            }
+            return this;
+        }
+
+
+        /// <summary>
         /// Removes the "aProperty -> owl:inverseOf -> bProperty" relation from the property model 
         /// </summary>
         public RDFOntologyPropertyModel RemoveInverseOfRelation(RDFOntologyObjectProperty aProperty, 
@@ -794,6 +905,30 @@ namespace RDFSharp.Semantics.OWL
                 this.Relations.InverseOf.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), bProperty));
                 this.Relations.InverseOf.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), aProperty));
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given properties, removes the "ontologyPropertyA -> owl:propertyDisjointWith -> ontologyPropertyB" relations from the property model [OWL2]
+        /// </summary>
+        public RDFOntologyPropertyModel RemoveAllDisjointPropertiesRelation(List<RDFOntologyObjectProperty> ontologyProperties) {
+            ontologyProperties?.ForEach(outerProperty => {
+                ontologyProperties?.ForEach(innerProperty => {
+                    this.RemovePropertyDisjointWithRelation(outerProperty, innerProperty);
+                });
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Foreach of the given properties, removes the "ontologyPropertyA -> owl:propertyDisjointWith -> ontologyPropertyB" relations from the property model [OWL2]
+        /// </summary>
+        public RDFOntologyPropertyModel RemoveAllDisjointPropertiesRelation(List<RDFOntologyDatatypeProperty> ontologyProperties) {
+            ontologyProperties?.ForEach(outerProperty => {
+                ontologyProperties?.ForEach(innerProperty => {
+                    this.RemovePropertyDisjointWithRelation(outerProperty, innerProperty);
+                });
+            });
             return this;
         }
         #endregion
@@ -831,6 +966,7 @@ namespace RDFSharp.Semantics.OWL
                 //Add intersection relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.IntersectWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.IntersectWith(propertyModel.Relations.EquivalentProperty);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = this.Relations.InverseOf.IntersectWith(propertyModel.Relations.InverseOf);
 
                 //Add intersection annotations
@@ -859,6 +995,7 @@ namespace RDFSharp.Semantics.OWL
             //Add relations from this property model
             result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
             result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
+            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith);
             result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
 
             //Add annotations from this property model
@@ -880,6 +1017,7 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from the given property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(propertyModel.Relations.EquivalentProperty);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(propertyModel.Relations.InverseOf);
 
                 //Add annotations from the given property model
@@ -911,6 +1049,7 @@ namespace RDFSharp.Semantics.OWL
                 //Add difference relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.DifferenceWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.DifferenceWith(propertyModel.Relations.EquivalentProperty);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = this.Relations.InverseOf.DifferenceWith(propertyModel.Relations.InverseOf);
 
                 //Add difference annotations
@@ -932,6 +1071,7 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from this property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
 
                 //Add annotations from this property model
@@ -1004,6 +1144,7 @@ namespace RDFSharp.Semantics.OWL
             //Relations
             result = result.UnionWith(this.Relations.SubPropertyOf.ToRDFGraph(infexpBehavior))
                            .UnionWith(this.Relations.EquivalentProperty.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Relations.PropertyDisjointWith.ToRDFGraph(infexpBehavior))
                            .UnionWith(this.Relations.InverseOf.ToRDFGraph(infexpBehavior));
 
             //Annotations

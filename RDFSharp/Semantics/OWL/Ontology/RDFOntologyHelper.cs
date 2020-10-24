@@ -500,6 +500,71 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region DisjointPropertyWith [OWL2]
+        /// <summary>
+        /// Checks if the given aProperty is disjointProperty with the given bProperty within the given property model
+        /// </summary>
+        public static Boolean CheckIsPropertyDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty) {
+            return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetPropertiesDisjointWith(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
+        }
+
+        /// <summary>
+        /// Enlists the disjointProperties of the given property within the given property model
+        /// </summary>
+        public static RDFOntologyPropertyModel GetPropertiesDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty) {
+            var result = new RDFOntologyPropertyModel();
+            if (ontProperty != null && propertyModel != null) {
+                result = propertyModel.GetPropertiesDisjointWithInternal(ontProperty, null)
+                                      .RemoveProperty(ontProperty); //Safety deletion
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Subsumes the "owl:propertyDisjointWith" taxonomy to discover direct and indirect disjointProperties of the given property
+        /// </summary>
+        internal static RDFOntologyPropertyModel GetPropertiesDisjointWithInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext) {
+            var result1 = new RDFOntologyPropertyModel();
+            var result2 = new RDFOntologyPropertyModel();
+
+            #region visitContext
+            if (visitContext == null) {
+                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+            }
+            else {
+                if (!visitContext.ContainsKey(ontProperty.PatternMemberID)) {
+                    visitContext.Add(ontProperty.PatternMemberID, ontProperty);
+                }
+                else {
+                    return result1;
+                }
+            }
+            #endregion
+
+            // Inference: ((A PROPERTYDISJOINTWITH B)   &&  (B EQUIVALENTPROPERTY C))  =>  (A PROPERTYDISJOINTWITH C)
+            foreach (var dw in propertyModel.Relations.PropertyDisjointWith.SelectEntriesBySubject(ontProperty)) {
+                result1.AddProperty((RDFOntologyProperty)dw.TaxonomyObject);
+                result1 = result1.UnionWith(propertyModel.GetEquivalentPropertiesOfInternal((RDFOntologyProperty)dw.TaxonomyObject, visitContext));
+            }
+
+            // Inference: ((A PROPERTYDISJOINTWITH B)   &&  (B SUPERPROPERTY C))  =>  (A PROPERTYDISJOINTWITH C)
+            result2 = result2.UnionWith(result1);
+            foreach (var p in result1) {
+                result2 = result2.UnionWith(propertyModel.GetSubPropertiesOfInternal(p));
+            }
+            result1 = result1.UnionWith(result2);
+
+            // Inference: ((A EQUIVALENTPROPERTY B || A SUBPROPERTYOF B)  &&  (B PROPERTYDISJOINTWITH C))  =>  (A PROPERTYDISJOINTWITH C)
+            var compatiblePrp = propertyModel.GetSuperPropertiesOf(ontProperty)
+                                             .UnionWith(propertyModel.GetEquivalentPropertiesOf(ontProperty));
+            foreach (var ep in compatiblePrp) {
+                result1 = result1.UnionWith(propertyModel.GetPropertiesDisjointWithInternal(ep, visitContext));
+            }
+
+            return result1;
+        }
+        #endregion
+
         #region InverseOf
         /// <summary>
         /// Checks if the given aProperty is inverse property of the given bProperty within the given property model
@@ -1215,6 +1280,10 @@ namespace RDFSharp.Semantics.OWL
 				foreach (var entry in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
 					result.Relations.EquivalentProperty.AddEntry(entry);
 
+                //PropertyDisjointWith
+                foreach (var entry in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.PropertyDisjointWith.AddEntry(entry);
+
                 //InverseOf
                 foreach (var entry in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
 					result.Relations.InverseOf.AddEntry(entry);
@@ -1343,6 +1412,13 @@ namespace RDFSharp.Semantics.OWL
 				}
 				foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.EquivalentProperty.Entries.Remove(c); }
 				cacheRemove.Clear();
+
+                //PropertyDisjointWith
+                foreach (var t in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
+                    cacheRemove.Add(t.TaxonomyEntryID, null);
+                }
+                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.Remove(c); }
+                cacheRemove.Clear();
 
                 //InverseOf
                 foreach (var t in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner)) {
