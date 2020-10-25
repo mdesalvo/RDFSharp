@@ -42,6 +42,11 @@ namespace RDFSharp.Semantics.OWL
         /// "ontology property -> ontology resource" custom relations
         /// </summary>
         public RDFOntologyTaxonomy Assertions { get; internal set; }
+
+        /// <summary>
+        /// "ontology property -> ontology resource" custom negative relations [OWL2]
+        /// </summary>
+        public RDFOntologyTaxonomy NegativeAssertions { get; internal set; }
         #endregion
 
         #region Ctors
@@ -49,10 +54,11 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build an empty ontology data metadata
         /// </summary>
         internal RDFOntologyDataMetadata() {
-            this.ClassType     = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
-            this.SameAs        = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            this.ClassType = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            this.SameAs = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
             this.DifferentFrom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
-            this.Assertions    = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            this.Assertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            this.NegativeAssertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
         }
         #endregion
 

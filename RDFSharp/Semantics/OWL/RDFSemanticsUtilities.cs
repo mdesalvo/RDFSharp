@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -2805,6 +2806,98 @@ namespace RDFSharp.Semantics.OWL
                 return describeQuery.ApplyToGraph(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
             return new RDFDescribeQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString());
+        }
+        #endregion
+
+        #region SemanticsExtensions
+        /// <summary>
+        /// Gets a graph representation of the given negative assertions taxonomy, exporting inferences according to the selected behavior [OWL2]
+        /// </summary>
+        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior) {
+            var result = new RDFGraph();
+
+            //Taxonomy entries
+            foreach (var te in taxonomy) {
+
+                //Build reification triples of taxonomy entry
+                RDFTriple teTriple = te.ToRDFTriple();
+
+                //Do not export semantic inferences
+                if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None) {
+                    if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None) {
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
+                        if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                        else
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                    }
+                }
+
+                //Export semantic inferences related only to ontology model
+                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyModel) {
+                    if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model ||
+                            taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation) {
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
+                        if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                        else
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                    }
+                    else {
+                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None) {
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
+                            if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                            else
+                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                        }
+                    }
+                }
+
+                //Export semantic inferences related only to ontology data
+                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData) {
+                    if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data ||
+                            taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation) {
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
+                        if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                        else
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                    }
+                    else {
+                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None) {
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
+                            if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                            else
+                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                        }
+                    }
+                }
+
+                //Export semantic inferences related both to ontology model and data
+                else {
+                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
+                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
+                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
+                    if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                    else
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                }
+
+            }
+            return result;
         }
         #endregion
 

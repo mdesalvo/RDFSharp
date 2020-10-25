@@ -699,17 +699,18 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Add intersection relations
-                result.Relations.ClassType           = this.Relations.ClassType.IntersectWith(ontologyData.Relations.ClassType);
-                result.Relations.SameAs              = this.Relations.SameAs.IntersectWith(ontologyData.Relations.SameAs);
-                result.Relations.DifferentFrom       = this.Relations.DifferentFrom.IntersectWith(ontologyData.Relations.DifferentFrom);
-                result.Relations.Assertions          = this.Relations.Assertions.IntersectWith(ontologyData.Relations.Assertions);
+                result.Relations.ClassType = this.Relations.ClassType.IntersectWith(ontologyData.Relations.ClassType);
+                result.Relations.SameAs = this.Relations.SameAs.IntersectWith(ontologyData.Relations.SameAs);
+                result.Relations.DifferentFrom = this.Relations.DifferentFrom.IntersectWith(ontologyData.Relations.DifferentFrom);
+                result.Relations.Assertions = this.Relations.Assertions.IntersectWith(ontologyData.Relations.Assertions);
+                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.IntersectWith(ontologyData.Relations.NegativeAssertions);
 
                 //Add intersection annotations
-                result.Annotations.VersionInfo       = this.Annotations.VersionInfo.IntersectWith(ontologyData.Annotations.VersionInfo);
-                result.Annotations.Comment           = this.Annotations.Comment.IntersectWith(ontologyData.Annotations.Comment);
-                result.Annotations.Label             = this.Annotations.Label.IntersectWith(ontologyData.Annotations.Label);
-                result.Annotations.SeeAlso           = this.Annotations.SeeAlso.IntersectWith(ontologyData.Annotations.SeeAlso);
-                result.Annotations.IsDefinedBy       = this.Annotations.IsDefinedBy.IntersectWith(ontologyData.Annotations.IsDefinedBy);
+                result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(ontologyData.Annotations.VersionInfo);
+                result.Annotations.Comment = this.Annotations.Comment.IntersectWith(ontologyData.Annotations.Comment);
+                result.Annotations.Label = this.Annotations.Label.IntersectWith(ontologyData.Annotations.Label);
+                result.Annotations.SeeAlso = this.Annotations.SeeAlso.IntersectWith(ontologyData.Annotations.SeeAlso);
+                result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.IntersectWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.IntersectWith(ontologyData.Annotations.CustomAnnotations);
 
             }
@@ -733,17 +734,18 @@ namespace RDFSharp.Semantics.OWL
             }
 
             //Add relations from this data
-            result.Relations.ClassType           = result.Relations.ClassType.UnionWith(this.Relations.ClassType);
-            result.Relations.SameAs              = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
-            result.Relations.DifferentFrom       = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
-            result.Relations.Assertions          = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
+            result.Relations.ClassType = result.Relations.ClassType.UnionWith(this.Relations.ClassType);
+            result.Relations.SameAs = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
+            result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
+            result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
+            result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions);
 
             //Add annotations from this data
-            result.Annotations.VersionInfo       = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
-            result.Annotations.Comment           = result.Annotations.Comment.UnionWith(this.Annotations.Comment);
-            result.Annotations.Label             = result.Annotations.Label.UnionWith(this.Annotations.Label);
-            result.Annotations.SeeAlso           = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
-            result.Annotations.IsDefinedBy       = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
+            result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
+            result.Annotations.Comment = result.Annotations.Comment.UnionWith(this.Annotations.Comment);
+            result.Annotations.Label = result.Annotations.Label.UnionWith(this.Annotations.Label);
+            result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
+            result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
             result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
 
             //Manage the given data
@@ -760,17 +762,18 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Add relations from the given data
-                result.Relations.ClassType           = result.Relations.ClassType.UnionWith(ontologyData.Relations.ClassType);
-                result.Relations.SameAs              = result.Relations.SameAs.UnionWith(ontologyData.Relations.SameAs);
-                result.Relations.DifferentFrom       = result.Relations.DifferentFrom.UnionWith(ontologyData.Relations.DifferentFrom);
-                result.Relations.Assertions          = result.Relations.Assertions.UnionWith(ontologyData.Relations.Assertions);
+                result.Relations.ClassType = result.Relations.ClassType.UnionWith(ontologyData.Relations.ClassType);
+                result.Relations.SameAs = result.Relations.SameAs.UnionWith(ontologyData.Relations.SameAs);
+                result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(ontologyData.Relations.DifferentFrom);
+                result.Relations.Assertions = result.Relations.Assertions.UnionWith(ontologyData.Relations.Assertions);
+                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(ontologyData.Relations.NegativeAssertions);
 
                 //Add annotations from the given data
-                result.Annotations.VersionInfo       = result.Annotations.VersionInfo.UnionWith(ontologyData.Annotations.VersionInfo);
-                result.Annotations.Comment           = result.Annotations.Comment.UnionWith(ontologyData.Annotations.Comment);
-                result.Annotations.Label             = result.Annotations.Label.UnionWith(ontologyData.Annotations.Label);
-                result.Annotations.SeeAlso           = result.Annotations.SeeAlso.UnionWith(ontologyData.Annotations.SeeAlso);
-                result.Annotations.IsDefinedBy       = result.Annotations.IsDefinedBy.UnionWith(ontologyData.Annotations.IsDefinedBy);
+                result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(ontologyData.Annotations.VersionInfo);
+                result.Annotations.Comment = result.Annotations.Comment.UnionWith(ontologyData.Annotations.Comment);
+                result.Annotations.Label = result.Annotations.Label.UnionWith(ontologyData.Annotations.Label);
+                result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(ontologyData.Annotations.SeeAlso);
+                result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(ontologyData.Annotations.CustomAnnotations);
 
             }
@@ -799,17 +802,18 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Add difference relations
-                result.Relations.ClassType           = this.Relations.ClassType.DifferenceWith(ontologyData.Relations.ClassType);
-                result.Relations.SameAs              = this.Relations.SameAs.DifferenceWith(ontologyData.Relations.SameAs);
-                result.Relations.DifferentFrom       = this.Relations.DifferentFrom.DifferenceWith(ontologyData.Relations.DifferentFrom);
-                result.Relations.Assertions          = this.Relations.Assertions.DifferenceWith(ontologyData.Relations.Assertions);
+                result.Relations.ClassType = this.Relations.ClassType.DifferenceWith(ontologyData.Relations.ClassType);
+                result.Relations.SameAs = this.Relations.SameAs.DifferenceWith(ontologyData.Relations.SameAs);
+                result.Relations.DifferentFrom = this.Relations.DifferentFrom.DifferenceWith(ontologyData.Relations.DifferentFrom);
+                result.Relations.Assertions = this.Relations.Assertions.DifferenceWith(ontologyData.Relations.Assertions);
+                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.DifferenceWith(ontologyData.Relations.NegativeAssertions);
 
                 //Add difference annotations
-                result.Annotations.VersionInfo       = this.Annotations.VersionInfo.DifferenceWith(ontologyData.Annotations.VersionInfo);
-                result.Annotations.Comment           = this.Annotations.Comment.DifferenceWith(ontologyData.Annotations.Comment);
-                result.Annotations.Label             = this.Annotations.Label.DifferenceWith(ontologyData.Annotations.Label);
-                result.Annotations.SeeAlso           = this.Annotations.SeeAlso.DifferenceWith(ontologyData.Annotations.SeeAlso);
-                result.Annotations.IsDefinedBy       = this.Annotations.IsDefinedBy.DifferenceWith(ontologyData.Annotations.IsDefinedBy);
+                result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(ontologyData.Annotations.VersionInfo);
+                result.Annotations.Comment = this.Annotations.Comment.DifferenceWith(ontologyData.Annotations.Comment);
+                result.Annotations.Label = this.Annotations.Label.DifferenceWith(ontologyData.Annotations.Label);
+                result.Annotations.SeeAlso = this.Annotations.SeeAlso.DifferenceWith(ontologyData.Annotations.SeeAlso);
+                result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.DifferenceWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.DifferenceWith(ontologyData.Annotations.CustomAnnotations);
 
             }
@@ -826,17 +830,18 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Add relations from this data
-                result.Relations.ClassType           = result.Relations.ClassType.UnionWith(this.Relations.ClassType);
-                result.Relations.SameAs              = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
-                result.Relations.DifferentFrom       = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
-                result.Relations.Assertions          = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
+                result.Relations.ClassType = result.Relations.ClassType.UnionWith(this.Relations.ClassType);
+                result.Relations.SameAs = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
+                result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
+                result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
+                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions);
 
                 //Add annotations from this data
-                result.Annotations.VersionInfo       = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
-                result.Annotations.Comment           = result.Annotations.Comment.UnionWith(this.Annotations.Comment);
-                result.Annotations.Label             = result.Annotations.Label.UnionWith(this.Annotations.Label);
-                result.Annotations.SeeAlso           = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
-                result.Annotations.IsDefinedBy       = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
+                result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
+                result.Annotations.Comment = result.Annotations.Comment.UnionWith(this.Annotations.Comment);
+                result.Annotations.Label = result.Annotations.Label.UnionWith(this.Annotations.Label);
+                result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
+                result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
 
             }
@@ -852,18 +857,19 @@ namespace RDFSharp.Semantics.OWL
             var result = new RDFGraph();
 
             //Relations
-            result     = result.UnionWith(this.Relations.SameAs.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Relations.DifferentFrom.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Relations.ClassType.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Relations.Assertions.ToRDFGraph(infexpBehavior));
+            result = result.UnionWith(this.Relations.SameAs.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Relations.DifferentFrom.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Relations.ClassType.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Relations.Assertions.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior));
 
             //Annotations
-            result     = result.UnionWith(this.Annotations.VersionInfo.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Annotations.Comment.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Annotations.Label.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Annotations.SeeAlso.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Annotations.IsDefinedBy.ToRDFGraph(infexpBehavior))
-                               .UnionWith(this.Annotations.CustomAnnotations.ToRDFGraph(infexpBehavior));
+            result = result.UnionWith(this.Annotations.VersionInfo.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Annotations.Comment.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Annotations.Label.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Annotations.SeeAlso.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Annotations.IsDefinedBy.ToRDFGraph(infexpBehavior))
+                           .UnionWith(this.Annotations.CustomAnnotations.ToRDFGraph(infexpBehavior));
 
             return result;        
         }
