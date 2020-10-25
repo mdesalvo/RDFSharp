@@ -2829,7 +2829,7 @@ namespace RDFSharp.Semantics.OWL
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
                         if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                         else
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                     }
@@ -2843,7 +2843,7 @@ namespace RDFSharp.Semantics.OWL
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
                         if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                         else
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                     }
@@ -2853,7 +2853,7 @@ namespace RDFSharp.Semantics.OWL
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
                             if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                             else
                                 result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                         }
@@ -2868,7 +2868,7 @@ namespace RDFSharp.Semantics.OWL
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
                         if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                         else
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                     }
@@ -2878,7 +2878,7 @@ namespace RDFSharp.Semantics.OWL
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
                             if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                             else
                                 result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                         }
@@ -2891,7 +2891,7 @@ namespace RDFSharp.Semantics.OWL
                     result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                     result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
                     if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFLiteral)teTriple.Object));
+                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                     else
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                 }
