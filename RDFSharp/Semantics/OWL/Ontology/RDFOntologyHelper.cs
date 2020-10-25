@@ -1083,6 +1083,25 @@ namespace RDFSharp.Semantics.OWL
             }
             #endregion
 
+            #region HasSelf
+            else if (ontRestriction is RDFOntologyHasSelfRestriction hasSelfRestriction) {
+
+                //Iterate the compatible assertions
+                foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsFact())) {
+
+                    //Enlist the same facts of the restriction subject
+                    var facts = ontology.Data.GetSameFactsAs((RDFOntologyFact)assertion.TaxonomySubject)
+                                             .AddFact((RDFOntologyFact)assertion.TaxonomySubject);
+                    if (facts.SelectFact(assertion.TaxonomySubject.ToString()) != null
+                            && facts.SelectFact(assertion.TaxonomyObject.ToString()) != null) {
+                        result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
+                    }
+
+                }
+
+            }
+            #endregion
+
             #region HasValue
             else if (ontRestriction is RDFOntologyHasValueRestriction hasValueRestriction) {
                 if (hasValueRestriction.RequiredValue.IsFact()) {

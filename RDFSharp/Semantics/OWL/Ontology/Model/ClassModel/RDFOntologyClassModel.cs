@@ -938,6 +938,9 @@ namespace RDFSharp.Semantics.OWL
                     else if (c is RDFOntologySomeValuesFromRestriction someValuesFromRestriction) {
                         result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.SOME_VALUES_FROM, (RDFResource)someValuesFromRestriction.FromClass.Value));
                      }
+                    else if (c is RDFOntologyHasSelfRestriction hasSelfRestriction) {
+                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_SELF, new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                    }
                     else if (c is RDFOntologyHasValueRestriction hasValueRestriction) {
                         if (hasValueRestriction.RequiredValue.IsLiteral()) {
                             result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_VALUE, (RDFLiteral)hasValueRestriction.RequiredValue.Value));

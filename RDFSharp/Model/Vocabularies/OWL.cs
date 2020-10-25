@@ -315,6 +315,11 @@ namespace RDFSharp.Model
             /// owl:propertyDisjointWith [OWL2]
             /// </summary>
             public static readonly RDFResource PROPERTY_DISJOINT_WITH = new RDFResource(OWL.BASE_URI + "propertyDisjointWith");
+
+            /// <summary>
+            /// owl:hasSelf [OWL2]
+            /// </summary>
+            public static readonly RDFResource HAS_SELF = new RDFResource(OWL.BASE_URI + "hasSelf");
             #endregion
 
         }

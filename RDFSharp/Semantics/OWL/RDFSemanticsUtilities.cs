@@ -79,6 +79,7 @@ namespace RDFSharp.Semantics.OWL
                 var complementOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.COMPLEMENT_OF);
                 var allvaluesFrom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ALL_VALUES_FROM);
                 var somevaluesFrom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SOME_VALUES_FROM);
+                var hasself = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.HAS_SELF); //OWL2
                 var hasvalue = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.HAS_VALUE);
                 var cardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.CARDINALITY);
                 var mincardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MIN_CARDINALITY);
@@ -1045,6 +1046,20 @@ namespace RDFSharp.Semantics.OWL
 
                                 }
                             }
+                        }
+                    }
+                    #endregion
+
+                    #region HasSelf
+                    var hsRes = hasself.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
+                    if (hsRes != null)
+                    {
+                        if (hsRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
+                                && hsRes.Object.Equals(new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN))) 
+                        {
+                            var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty);
+                            ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasselfRestr;
+                            continue;
                         }
                     }
                     #endregion
