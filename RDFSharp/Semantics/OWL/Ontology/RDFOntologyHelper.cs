@@ -1089,7 +1089,7 @@ namespace RDFSharp.Semantics.OWL
                 //Iterate the compatible assertions
                 foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsFact())) {
 
-                    //Enlist the same facts of the restriction subject
+                    //Enlist the same facts of the assertion subject
                     var facts = ontology.Data.GetSameFactsAs((RDFOntologyFact)assertion.TaxonomySubject)
                                              .AddFact((RDFOntologyFact)assertion.TaxonomySubject);
                     if (facts.SelectFact(assertion.TaxonomySubject.ToString()) != null
