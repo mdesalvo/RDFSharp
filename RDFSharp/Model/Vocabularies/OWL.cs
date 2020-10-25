@@ -320,6 +320,31 @@ namespace RDFSharp.Model
             /// owl:hasSelf [OWL2]
             /// </summary>
             public static readonly RDFResource HAS_SELF = new RDFResource(OWL.BASE_URI + "hasSelf");
+
+            /// <summary>
+            /// owl:NegativePropertyAssertion [OWL2]
+            /// </summary>
+            public static readonly RDFResource NEGATIVE_PROPERTY_ASSERTION = new RDFResource(OWL.BASE_URI + "NegativePropertyAssertion");
+
+            /// <summary>
+            /// owl:sourceIndividual [OWL2]
+            /// </summary>
+            public static readonly RDFResource SOURCE_INDIVIDUAL = new RDFResource(OWL.BASE_URI + "sourceIndividual");
+
+            /// <summary>
+            /// owl:assertionProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource ASSERTION_PROPERTY = new RDFResource(OWL.BASE_URI + "assertionProperty");
+
+            /// <summary>
+            /// owl:targetIndividual [OWL2]
+            /// </summary>
+            public static readonly RDFResource TARGET_INDIVIDUAL = new RDFResource(OWL.BASE_URI + "targetIndividual");
+
+            /// <summary>
+            /// owl:targetValue [OWL2]
+            /// </summary>
+            public static readonly RDFResource TARGET_VALUE = new RDFResource(OWL.BASE_URI + "targetValue");
             #endregion
 
         }
