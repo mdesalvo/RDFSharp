@@ -36,7 +36,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a datatype constraint with the given datatype
         /// </summary>
-        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) : base() {
+        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) : base()
+        {
             this.Datatype = datatype;
         }
         #endregion
@@ -45,12 +46,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                switch (valueNode) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                switch (valueNode)
+                {
 
                     //Resource
                     case RDFResource valueNodeResource:
@@ -65,8 +69,9 @@ namespace RDFSharp.Model
 
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
-                        if (this.Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING 
-                                || !string.IsNullOrEmpty(valueNodePlainLiteral.Language)) {
+                        if (this.Datatype != RDFModelEnums.RDFDatatypes.XSD_STRING
+                                || !string.IsNullOrEmpty(valueNodePlainLiteral.Language))
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -79,7 +84,8 @@ namespace RDFSharp.Model
 
                     //TypedLiteral
                     case RDFTypedLiteral valueNodeTypedLiteral:
-                        if (this.Datatype != valueNodeTypedLiteral.Datatype) {
+                        if (this.Datatype != valueNodeTypedLiteral.Datatype)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.DATATYPE_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -100,9 +106,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:datatype
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DATATYPE, new RDFResource(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype))));

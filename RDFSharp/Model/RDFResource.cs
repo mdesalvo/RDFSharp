@@ -50,7 +50,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource) 
+        /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
         /// </summary>
         public RDFResource(String uriString)
         {

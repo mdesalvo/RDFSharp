@@ -23,16 +23,20 @@ namespace RDFSharp.Model
     /// RDFValidationEngine analyzes a given data graph by applying the given SHACL shapes graph,
     /// in order to find error and inconsistency evidences affecting its structure.
     /// </summary>
-    public static class RDFValidationEngine {
+    public static class RDFValidationEngine
+    {
 
         #region Methods
         /// <summary>
         /// Validates the given data graph against the given SHACL shapes graph
         /// </summary>
-        public static RDFValidationReport Validate(this RDFShapesGraph shapesGraph, RDFGraph dataGraph) {
+        public static RDFValidationReport Validate(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
+        {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (dataGraph != null) { 
-                foreach (RDFShape shape in shapesGraph) { 
+            if (dataGraph != null)
+            {
+                foreach (RDFShape shape in shapesGraph)
+                {
                     report.MergeResults(ValidateShape(shapesGraph, dataGraph, shape));
                 }
             }
@@ -42,14 +46,17 @@ namespace RDFSharp.Model
         /// <summary>
         /// Validates the given data graph against the given SHACL shape
         /// </summary>
-        internal static RDFValidationReport ValidateShape(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, List<RDFPatternMember> focusNodes = null) {
+        internal static RDFValidationReport ValidateShape(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, List<RDFPatternMember> focusNodes = null)
+        {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
-            if (!shape.Deactivated) {
+            if (!shape.Deactivated)
+            {
 
                 //Resolve focus nodes
                 if (focusNodes == null)
                     focusNodes = dataGraph.GetFocusNodesOf(shape);
-                foreach (RDFPatternMember focusNode in focusNodes) {
+                foreach (RDFPatternMember focusNode in focusNodes)
+                {
 
                     //Resolve value nodes
                     List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(shape, focusNode);

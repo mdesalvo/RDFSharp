@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyValidatorRule represents a rule which analyzes a specific syntactic/semantic aspect of an ontology.
     /// </summary>
-    internal class RDFOntologyValidatorRule {
+    internal class RDFOntologyValidatorRule
+    {
 
         #region Properties
         /// <summary>
@@ -52,10 +53,11 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyValidatorRule(String ruleName,
                                           String ruleDescription,
-                                          ValidationRuleDelegate ruleDelegate) {
-            this.RuleName        = ruleName;
+                                          ValidationRuleDelegate ruleDelegate)
+        {
+            this.RuleName = ruleName;
             this.RuleDescription = ruleDescription;
-            this.ExecuteRule     = ruleDelegate;
+            this.ExecuteRule = ruleDelegate;
         }
         #endregion
 

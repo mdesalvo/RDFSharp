@@ -100,7 +100,7 @@ namespace RDFSharp.Model
 
         #region Write
         /// <summary>
-        /// Serializes the given graph to the given filepath using N-Triples data format. 
+        /// Serializes the given graph to the given filepath using N-Triples data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath)
         {
@@ -108,7 +108,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Serializes the given graph to the given stream using N-Triples data format. 
+        /// Serializes the given graph to the given stream using N-Triples data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, Stream outputStream)
         {
@@ -217,7 +217,7 @@ namespace RDFSharp.Model
 
         #region Read
         /// <summary>
-        /// Deserializes the given N-Triples filepath to a graph. 
+        /// Deserializes the given N-Triples filepath to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(String filepath)
         {
@@ -225,7 +225,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Deserializes the given N-Triples stream to a graph. 
+        /// Deserializes the given N-Triples stream to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream)
         {
@@ -266,7 +266,7 @@ namespace RDFSharp.Model
                             continue;
                         }
 
-                        //Tokenizes the sanitized triple 
+                        //Tokenizes the sanitized triple
                         tokens = TokenizeNTriple(ntriple);
                         #endregion
 

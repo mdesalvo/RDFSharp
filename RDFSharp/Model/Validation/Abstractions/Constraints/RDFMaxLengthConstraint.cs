@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxLengthConstraint represents a SHACL constraint on the maximum allowed length for a given RDF term
     /// </summary>
-    public class RDFMaxLengthConstraint: RDFConstraint {
+    public class RDFMaxLengthConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -35,7 +36,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named maxLength constraint with the given maxLength
         /// </summary>
-        public RDFMaxLengthConstraint(int maxLength) : base() {
+        public RDFMaxLengthConstraint(int maxLength) : base()
+        {
             this.MaxLength = maxLength < 0 ? 0 : maxLength;
         }
         #endregion
@@ -44,17 +46,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                switch (valueNode) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                switch (valueNode)
+                {
 
                     //Resource
                     case RDFResource valueNodeResource:
-                        if (valueNodeResource.IsBlank 
-                                || valueNodeResource.ToString().Length > this.MaxLength) {
+                        if (valueNodeResource.IsBlank
+                                || valueNodeResource.ToString().Length > this.MaxLength)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -67,7 +73,8 @@ namespace RDFSharp.Model
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
-                        if (valueNodeLiteral.Value.Length > this.MaxLength) {
+                        if (valueNodeLiteral.Value.Length > this.MaxLength)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -88,9 +95,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:maxLength
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_LENGTH, new RDFTypedLiteral(this.MaxLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));

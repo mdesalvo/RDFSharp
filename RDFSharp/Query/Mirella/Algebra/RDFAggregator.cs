@@ -87,7 +87,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the aggregator function 
+        /// Gives the string representation of the aggregator function
         /// </summary>
         public override String ToString()
         {
@@ -107,7 +107,7 @@ namespace RDFSharp.Query
         internal abstract DataTable ExecuteProjection(List<RDFVariable> partitionVariables);
 
         /// <summary>
-        /// Helps in finalization step by updating the projection's result table 
+        /// Helps in finalization step by updating the projection's result table
         /// </summary>
         internal abstract void UpdateProjectionTable(String partitionKey, DataTable projFuncTable);
 
@@ -213,7 +213,7 @@ namespace RDFSharp.Query
             if (comparisonValue != null)
             {
                 this.HavingClause = (true, comparisonFlavor, comparisonValue);
-            }            
+            }
             return this;
         }
         #endregion

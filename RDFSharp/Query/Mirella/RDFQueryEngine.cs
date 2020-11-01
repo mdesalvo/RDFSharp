@@ -83,7 +83,7 @@ namespace RDFSharp.Query
                         RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm => 
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
                         {
                             if (gm is RDFExistsFilter)
                                 ((RDFExistsFilter)gm).PatternResults?.Clear();
@@ -94,7 +94,7 @@ namespace RDFSharp.Query
                         {
                             //Ensure to skip tricky empty federations
                             if (((RDFFederation)datasource).DataSourcesCount == 0)
-                            { 
+                            {
                                 fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
                                 QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
                             }
@@ -146,21 +146,21 @@ namespace RDFSharp.Query
                             QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
                             //Populate its metadata (IsOptional)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                            { 
+                            {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
                             }
                             else
-                            { 
+                            {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
                                                                                                                                         || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                            { 
+                            {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
                             }
                             else
-                            { 
+                            {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
                             }
                         }
@@ -606,7 +606,7 @@ namespace RDFSharp.Query
                 //Step 4: Get the result table of the query
                 DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
 
-                //Step 5: Transform the result into a boolean response 
+                //Step 5: Transform the result into a boolean response
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
 
             }
@@ -707,7 +707,7 @@ namespace RDFSharp.Query
 
                         //Set name and metadata of result datatable
                         existsFilterResultsTable.TableName = ((RDFExistsFilter)evaluablePGMember).Pattern.ToString();
-                        existsFilterResultsTable.ExtendedProperties.Add("IsOptional",  false);
+                        existsFilterResultsTable.ExtendedProperties.Add("IsOptional", false);
                         existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
 
                         //Initialize result datatable if needed
@@ -827,10 +827,12 @@ namespace RDFSharp.Query
 
                     #region PROJECTION
                     ((RDFSelectQuery)query).ProjectionVars.Clear();
-                    ((RDFGroupByModifier)grbModifier).PartitionVariables.ForEach(pv => {
+                    ((RDFGroupByModifier)grbModifier).PartitionVariables.ForEach(pv =>
+                    {
                         ((RDFSelectQuery)query).AddProjectionVariable(pv);
                     });
-                    ((RDFGroupByModifier)grbModifier).Aggregators.ForEach(ag => {
+                    ((RDFGroupByModifier)grbModifier).Aggregators.ForEach(ag =>
+                    {
                         ((RDFSelectQuery)query).AddProjectionVariable(ag.ProjectionVariable);
                     });
                     #endregion
@@ -1028,7 +1030,7 @@ namespace RDFSharp.Query
             result.Columns.Add("?OBJECT", Type.GetType("System.String"));
             result.AcceptChanges();
 
-            //Query IS empty, so does not have evaluable members to fetch data from. 
+            //Query IS empty, so does not have evaluable members to fetch data from.
             //We can only proceed by searching for resources in the describe terms.
             IEnumerable<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers();
             if (!evaluableQueryMembers.Any())
@@ -1404,7 +1406,7 @@ namespace RDFSharp.Query
             switch (dataSource)
             {
                 case RDFGraph dataSourceGraph:
-                   return ApplyPattern(pattern, dataSourceGraph);
+                    return ApplyPattern(pattern, dataSourceGraph);
 
                 case RDFStore dataSourceStore:
                     return ApplyPattern(pattern, dataSourceStore);
@@ -2077,7 +2079,7 @@ namespace RDFSharp.Query
         internal DataTable ApplyPattern(RDFPattern pattern, RDFSPARQLEndpoint sparqlEndpoint)
         {
             //Transform the pattern into an equivalent "SELECT *" query
-            RDFSelectQuery selectQuery = 
+            RDFSelectQuery selectQuery =
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup("FEDQUERY")
                         .AddPattern(pattern));
@@ -2087,7 +2089,8 @@ namespace RDFSharp.Query
 
             //Eventually adjust variable names (should start with "?")
             Int32 columnsCount = selectQueryResult.SelectResults.Columns.Count;
-            for (Int32 i = 0; i < columnsCount; i++) { 
+            for (Int32 i = 0; i < columnsCount; i++)
+            {
                 if (!selectQueryResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                     selectQueryResult.SelectResults.Columns[i].ColumnName = "?" + selectQueryResult.SelectResults.Columns[i].ColumnName;
             }
@@ -2174,7 +2177,7 @@ namespace RDFSharp.Query
         internal static readonly DataColumnComparer dtComparer = new DataColumnComparer();
 
         /// <summary>
-        /// Adds a new column to the given table, avoiding duplicates 
+        /// Adds a new column to the given table, avoiding duplicates
         /// </summary>
         internal static void AddColumn(DataTable table, String columnName)
         {
@@ -2185,7 +2188,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Adds a new row to the given table 
+        /// Adds a new row to the given table
         /// </summary>
         internal static void AddRow(DataTable table, Dictionary<String, String> bindings)
         {
@@ -2754,7 +2757,7 @@ namespace RDFSharp.Query
             }
             return finalTable;
         }
-        
+
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables
         /// </summary>

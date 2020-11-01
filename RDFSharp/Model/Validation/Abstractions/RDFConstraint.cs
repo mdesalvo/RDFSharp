@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFConstraint represents a generic SHACL constraint definition within a shape.
     /// </summary>
-    public abstract class RDFConstraint: RDFResource {
+    public abstract class RDFConstraint : RDFResource
+    {
 
         #region Ctors
         /// <summary>

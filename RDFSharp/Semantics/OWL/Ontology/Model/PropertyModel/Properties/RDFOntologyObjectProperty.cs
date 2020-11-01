@@ -23,7 +23,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyObjectProperty represents an object property definition within an ontology model.
     /// </summary>
-    public class RDFOntologyObjectProperty: RDFOntologyProperty {
+    public class RDFOntologyObjectProperty : RDFOntologyProperty
+    {
 
         #region Properties
         /// <summary>
@@ -61,14 +62,15 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an ontology object property from the given non-blank resource
         /// </summary>
-        public RDFOntologyObjectProperty(RDFResource propertyName): base(propertyName) { }
+        public RDFOntologyObjectProperty(RDFResource propertyName) : base(propertyName) { }
         #endregion
 
         #region Methods
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:SymmetricProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetSymmetric(Boolean symmetric) {
+        public RDFOntologyObjectProperty SetSymmetric(Boolean symmetric)
+        {
             this.Symmetric = symmetric;
             if (symmetric)
                 this.Asymmetric = false; //Automatically switch-off eventual asymmetry
@@ -78,7 +80,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:ReflexiveProperty" [OWL2]
         /// </summary>
-        public RDFOntologyObjectProperty SetReflexive(Boolean reflexive) {
+        public RDFOntologyObjectProperty SetReflexive(Boolean reflexive)
+        {
             this.Reflexive = reflexive;
             if (reflexive)
                 this.Irreflexive = false; //Automatically switch-off eventual irreflexivity
@@ -88,7 +91,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:IrreflexiveProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetIrreflexive(Boolean irreflexive) {
+        public RDFOntologyObjectProperty SetIrreflexive(Boolean irreflexive)
+        {
             this.Irreflexive = irreflexive;
             if (irreflexive)
                 this.Reflexive = false; //Automatically switch-off eventual reflexivity
@@ -109,7 +113,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:TransitiveProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetTransitive(Boolean transitive) {
+        public RDFOntologyObjectProperty SetTransitive(Boolean transitive)
+        {
             this.Transitive = transitive;
             return this;
         }
@@ -117,7 +122,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:InverseFunctionalProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetInverseFunctional(Boolean inverseFunctional) {
+        public RDFOntologyObjectProperty SetInverseFunctional(Boolean inverseFunctional)
+        {
             this.InverseFunctional = inverseFunctional;
             return this;
         }

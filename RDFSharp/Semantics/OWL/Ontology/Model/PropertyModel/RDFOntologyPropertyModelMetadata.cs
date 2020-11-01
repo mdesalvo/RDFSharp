@@ -20,7 +20,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyPropertyModelMetadata represents a collector for relations describing ontology properties.
     /// </summary>
-    public class RDFOntologyPropertyModelMetadata {
+    public class RDFOntologyPropertyModelMetadata
+    {
 
         #region Properties
         /// <summary>
@@ -48,7 +49,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an empty ontology property model metadata
         /// </summary>
-        internal RDFOntologyPropertyModelMetadata() {
+        internal RDFOntologyPropertyModelMetadata()
+        {
             this.SubPropertyOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.EquivalentProperty = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.PropertyDisjointWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);

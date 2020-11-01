@@ -81,7 +81,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter 
+        /// Gives the string representation of the filter
         /// </summary>
         public override String ToString()
         {

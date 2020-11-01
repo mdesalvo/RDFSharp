@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAvgAggregator represents an AVG aggregation function applied by a GroupBy modifier
     /// </summary>
-    public class RDFAvgAggregator: RDFAggregator
+    public class RDFAvgAggregator : RDFAggregator
     {
 
         #region Ctors
@@ -108,7 +108,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Helps in finalization step by updating the projection's result table 
+        /// Helps in finalization step by updating the projection's result table
         /// </summary>
         internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
         {

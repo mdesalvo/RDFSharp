@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFDisjointConstraint represents a SHACL constraint on absence of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFDisjointConstraint : RDFConstraint {
+    public class RDFDisjointConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -36,11 +37,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a disjoint constraint with the given predicate
         /// </summary>
-        public RDFDisjointConstraint(RDFResource disjointPredicate) : base() {
-            if (disjointPredicate != null) {
+        public RDFDisjointConstraint(RDFResource disjointPredicate) : base()
+        {
+            if (disjointPredicate != null)
+            {
                 this.DisjointPredicate = disjointPredicate;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFDisjointConstraint because given \"disjointPredicate\" parameter is null.");
             }
         }
@@ -50,22 +54,25 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                if (dataGraph.Any(t => t.Subject.Equals(focusNode) 
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                if (dataGraph.Any(t => t.Subject.Equals(focusNode)
                                            && t.Predicate.Equals(this.DisjointPredicate)
-                                               && t.Object.Equals(valueNode))) {
-                        report.AddResult(new RDFValidationResult(shape,
-                                                                 RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
-                                                                 focusNode,
-                                                                 shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
-                                                                 valueNode,
-                                                                 shape.Messages,
-                                                                 shape.Severity));
-                
+                                               && t.Object.Equals(valueNode)))
+                {
+                    report.AddResult(new RDFValidationResult(shape,
+                                                             RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
+                                                             focusNode,
+                                                             shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
+                                                             valueNode,
+                                                             shape.Messages,
+                                                             shape.Severity));
+
                 }
             }
             #endregion
@@ -76,9 +83,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:disjoint
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, this.DisjointPredicate));

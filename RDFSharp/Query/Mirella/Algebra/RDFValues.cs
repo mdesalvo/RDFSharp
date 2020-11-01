@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// Dictionary of bindings representing the SPARQL values
         /// </summary>
         internal Dictionary<String, List<RDFPatternMember>> Bindings { get; set; }
-        
+
         /// <summary>
         /// Represents the current max length of the bindings
         /// </summary>
@@ -45,7 +45,7 @@ namespace RDFSharp.Query
                 return this.Bindings?.Select(x => x.Value.Count).Max() ?? 0;
             }
         }
-        
+
         /// <summary>
         /// Flag indicating that the SPARQL values has been injected by Mirella
         /// </summary>
@@ -104,7 +104,7 @@ namespace RDFSharp.Query
             }
             return this;
         }
-        
+
         /// <summary>
         /// Gets the datatable representing the SPARQL values
         /// </summary>
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
 
             //Create the columns of the SPARQL values
             this.Bindings.ToList()
-                         .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));            
+                         .ForEach(b => RDFQueryEngine.AddColumn(result, b.Key));
             result.AcceptChanges();
 
             //Create the rows of the SPARQL values
@@ -125,7 +125,7 @@ namespace RDFSharp.Query
             {
                 Dictionary<String, String> bindings = new Dictionary<String, String>();
                 this.Bindings.ToList()
-                             .ForEach(b => 
+                             .ForEach(b =>
                              {
                                  RDFPatternMember bindingValue = b.Value.ElementAtOrDefault(i);
                                  bindings.Add(b.Key, bindingValue?.ToString());
@@ -133,12 +133,12 @@ namespace RDFSharp.Query
                                      result.ExtendedProperties["IsOptional"] = true;
                              });
                 RDFQueryEngine.AddRow(result, bindings);
-            }                
+            }
             result.EndLoadData();
 
             return result;
         }
-        
+
         /// <summary>
         /// Gets the filter representation of the SPARQL values
         /// </summary>

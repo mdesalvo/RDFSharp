@@ -21,7 +21,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyHasValueRestriction represents an "owl:HasSelf" restriction class definition within an ontology model.
     /// </summary>
-    public class RDFOntologyHasSelfRestriction : RDFOntologyRestriction {
+    public class RDFOntologyHasSelfRestriction : RDFOntologyRestriction
+    {
 
         #region Ctors
         /// <summary>

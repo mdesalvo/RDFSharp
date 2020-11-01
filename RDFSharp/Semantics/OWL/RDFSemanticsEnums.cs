@@ -20,12 +20,14 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFSemanticsEnums represents a collector for all the enumerations used by the "RDFSharp.Semantics" namespace
     /// </summary>
-    public static class RDFSemanticsEnums {
+    public static class RDFSemanticsEnums
+    {
 
         /// <summary>
         /// RDFOntologyStandardAnnotation represents an enumeration for predefined ontology annotation properties
         /// </summary>
-        public enum RDFOntologyStandardAnnotation {
+        public enum RDFOntologyStandardAnnotation
+        {
             /// <summary>
             /// owl:versionInfo
             /// </summary>
@@ -71,7 +73,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// RDFOntologyValidatorEvidenceCategory represents an enumeration for possible categories of ontology validation evidence
         /// </summary>
-        public enum RDFOntologyValidatorEvidenceCategory {
+        public enum RDFOntologyValidatorEvidenceCategory
+        {
             /// <summary>
             /// Specifications have not been violated: ontology may contain semantic inconsistencies
             /// </summary>
@@ -85,7 +88,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// RDFOntologyReasonerEvidenceCategory represents an enumeration for possible categories of ontology reasoner evidence
         /// </summary>
-        public enum RDFOntologyReasonerEvidenceCategory {
+        public enum RDFOntologyReasonerEvidenceCategory
+        {
             /// <summary>
             /// Semantic inference has been generated within the ontology class model
             /// </summary>
@@ -103,7 +107,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// RDFOntologyInferenceType represents an enumeration for possible types of a semantic inference
         /// </summary>
-        public enum RDFOntologyInferenceType {
+        public enum RDFOntologyInferenceType
+        {
             /// <summary>
             /// Not a semantic inference
             /// </summary>
@@ -121,7 +126,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// RDFOntologyInferenceExportBehavior represents an enumeration for supported inference export behaviors
         /// </summary>
-        public enum RDFOntologyInferenceExportBehavior {
+        public enum RDFOntologyInferenceExportBehavior
+        {
             /// <summary>
             /// Does not export any semantic inference
             /// </summary>
@@ -135,7 +141,7 @@ namespace RDFSharp.Semantics.OWL
             /// </summary>
             OnlyData = 2,
             /// <summary>
-            /// Exports both semantic inferences of ontology model and ontology data 
+            /// Exports both semantic inferences of ontology model and ontology data
             /// </summary>
             ModelAndData = 3
         };
@@ -143,7 +149,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// RDFOntologyTaxonomyCategory represents an enumeration for supported types of taxonomy
         /// </summary>
-        public enum RDFOntologyTaxonomyCategory {
+        public enum RDFOntologyTaxonomyCategory
+        {
             /// <summary>
             /// Annotation taxonomy
             /// </summary>
@@ -161,7 +168,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// RDFOntologyClassNature represents an enumeration for possible nature of an ontology class (RDFS/OWL)
         /// </summary>
-        public enum RDFOntologyClassNature {
+        public enum RDFOntologyClassNature
+        {
             /// <summary>
             /// rdfs:Class
             /// </summary>

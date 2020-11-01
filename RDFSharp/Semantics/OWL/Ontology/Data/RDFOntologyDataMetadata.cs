@@ -20,7 +20,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyDataMetadata represents a collector for relations connecting ontology facts.
     /// </summary>
-    public class RDFOntologyDataMetadata {
+    public class RDFOntologyDataMetadata
+    {
 
         #region Properties
         /// <summary>
@@ -53,7 +54,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an empty ontology data metadata
         /// </summary>
-        internal RDFOntologyDataMetadata() {
+        internal RDFOntologyDataMetadata()
+        {
             this.ClassType = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
             this.SameAs = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
             this.DifferentFrom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);

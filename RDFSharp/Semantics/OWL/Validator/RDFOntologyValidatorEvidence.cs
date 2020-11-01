@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyValidatorEvidence represents an evidence reported by a validation rule.
     /// </summary>
-    public class RDFOntologyValidatorEvidence {
+    public class RDFOntologyValidatorEvidence
+    {
 
         #region Properties
         /// <summary>
@@ -53,10 +54,11 @@ namespace RDFSharp.Semantics.OWL
         internal RDFOntologyValidatorEvidence(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory evidenceCategory,
                                               String evidenceProvenance,
                                               String evidenceMessage,
-                                              String evidenceSuggestion) {
-            this.EvidenceCategory   = evidenceCategory;
+                                              String evidenceSuggestion)
+        {
+            this.EvidenceCategory = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;
-            this.EvidenceMessage    = evidenceMessage;
+            this.EvidenceMessage = evidenceMessage;
             this.EvidenceSuggestion = evidenceSuggestion;
         }
         #endregion

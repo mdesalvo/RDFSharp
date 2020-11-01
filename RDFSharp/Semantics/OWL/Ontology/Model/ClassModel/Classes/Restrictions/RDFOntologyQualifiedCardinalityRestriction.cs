@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyQualifiedCardinalityRestriction represents an "owl:QualifiedCardinality" restriction class definition within an ontology model [OWL2].
     /// </summary>
-    public class RDFOntologyQualifiedCardinalityRestriction : RDFOntologyRestriction {
+    public class RDFOntologyQualifiedCardinalityRestriction : RDFOntologyRestriction
+    {
 
         #region Properties
         /// <summary>
@@ -49,47 +50,61 @@ namespace RDFSharp.Semantics.OWL
                                                           RDFOntologyProperty onProperty,
                                                           RDFOntologyClass onClass,
                                                           Int32 minQualifiedCardinality,
-                                                          Int32 maxQualifiedCardinality) : base(restrictionName, onProperty) {
+                                                          Int32 maxQualifiedCardinality) : base(restrictionName, onProperty)
+        {
 
             //OnClass
-            if (onClass != null) {
+            if (onClass != null)
+            {
                 this.OnClass = onClass;
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyQualifiedCardinalityRestriction because given \"onClass\" parameter is null.");
             }
 
             //MinQualifiedCardinality
-            if (minQualifiedCardinality > 0) {
-                if (maxQualifiedCardinality > 0) {
-                    if (minQualifiedCardinality <= maxQualifiedCardinality) {
+            if (minQualifiedCardinality > 0)
+            {
+                if (maxQualifiedCardinality > 0)
+                {
+                    if (minQualifiedCardinality <= maxQualifiedCardinality)
+                    {
                         this.MinQualifiedCardinality = minQualifiedCardinality;
                     }
-                    else {
+                    else
+                    {
                         throw new RDFSemanticsException("Cannot create RDFOntologyQualifiedCardinalityRestriction because given \"minQualifiedCardinality\" parameter (" + minQualifiedCardinality + ") must be less or equal than given \"maxQualifiedCardinality\" parameter (" + maxQualifiedCardinality + ")");
                     }
                 }
-                else {
+                else
+                {
                     this.MinQualifiedCardinality = minQualifiedCardinality;
                 }
             }
 
             //MaxQualifiedCardinality
-            if (maxQualifiedCardinality > 0) {
-                if (minQualifiedCardinality > 0) {
-                    if (maxQualifiedCardinality >= minQualifiedCardinality) {
+            if (maxQualifiedCardinality > 0)
+            {
+                if (minQualifiedCardinality > 0)
+                {
+                    if (maxQualifiedCardinality >= minQualifiedCardinality)
+                    {
                         this.MaxQualifiedCardinality = maxQualifiedCardinality;
                     }
-                    else {
+                    else
+                    {
                         throw new RDFSemanticsException("Cannot create RDFOntologyQualifiedCardinalityRestriction because given \"maxQualifiedCardinality\" parameter (" + maxQualifiedCardinality + ") must be greater or equal than given \"minQualifiedCardinality\" parameter (" + minQualifiedCardinality + ")");
                     }
                 }
-                else {
+                else
+                {
                     this.MaxQualifiedCardinality = maxQualifiedCardinality;
                 }
             }
 
-            if (this.MinQualifiedCardinality == 0 && this.MaxQualifiedCardinality == 0) {
+            if (this.MinQualifiedCardinality == 0 && this.MaxQualifiedCardinality == 0)
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyQualifiedCardinalityRestriction because at least one of the given \"minQualifiedCardinality\" and \"maxQualifiedCardinality\" parameters must be greater than 0.");
             }
 

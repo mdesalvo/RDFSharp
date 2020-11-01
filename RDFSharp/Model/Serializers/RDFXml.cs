@@ -20,9 +20,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
-using System.Web;
 using System.Text.RegularExpressions;
+using System.Web;
+using System.Xml;
 
 namespace RDFSharp.Model
 {
@@ -37,7 +37,7 @@ namespace RDFSharp.Model
 
         #region Write
         /// <summary>
-        /// Serializes the given graph to the given filepath using XML data format. 
+        /// Serializes the given graph to the given filepath using XML data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath)
         {
@@ -45,7 +45,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Serializes the given graph to the given stream using XML data format. 
+        /// Serializes the given graph to the given stream using XML data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, Stream outputStream)
         {
@@ -76,7 +76,7 @@ namespace RDFSharp.Model
                     var autoNamespaces = GetAutomaticNamespaces(graph);
                     graphNamespaces.Union(autoNamespaces).ToList().ForEach(p =>
                     {
-                        if (!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.OrdinalIgnoreCase) 
+                        if (!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.OrdinalIgnoreCase)
                                 && !p.NamespacePrefix.Equals("base", StringComparison.OrdinalIgnoreCase))
                         {
                             XmlAttribute pfRootNS = rdfDoc.CreateAttribute("xmlns:" + p.NamespacePrefix);
@@ -165,7 +165,7 @@ namespace RDFSharp.Model
                             containersXML.Add(subjHash, subjNode);
                         }
 
-                        //It is a collection subj (of resources), so do not append its triples because 
+                        //It is a collection subj (of resources), so do not append its triples because
                         //we will reconstruct the collection and append it as "rdf:parseType=Collections"
                         else if (subjCollection != null && subjCollection.CollectionValue is RDFResource && !floatingCollections)
                         {
@@ -198,10 +198,10 @@ namespace RDFSharp.Model
                         foreach (var triple in group)
                         {
 
-                            //Do not append the triple if it is "SUBJECT rdf:type rdf:[Bag|Seq|Alt]" 
+                            //Do not append the triple if it is "SUBJECT rdf:type rdf:[Bag|Seq|Alt]"
                             if (!(triple.Predicate.Equals(RDFVocabulary.RDF.TYPE) &&
-                                  (subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase) 
-                                    || subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase) 
+                                  (subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
+                                    || subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
                                        || subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase))))
                             {
 
@@ -352,8 +352,8 @@ namespace RDFSharp.Model
 
                         //Raw containers must not be written as-is, instead they have to be saved
                         //and attached when their subj is found later as object of a triple
-                        if (!subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase) 
-                                && !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase) 
+                        if (!subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
+                                && !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
                                     && !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase))
                         {
                             rdfRoot.AppendChild(subjNode);
@@ -380,7 +380,7 @@ namespace RDFSharp.Model
 
         #region Read
         /// <summary>
-        /// Deserializes the given Xml filepath to a graph. 
+        /// Deserializes the given Xml filepath to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(String filepath)
         {
@@ -388,7 +388,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Deserializes the given Xml stream to a graph. 
+        /// Deserializes the given Xml stream to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream)
         {
@@ -469,7 +469,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the given list of nodes
         /// </summary>
-        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent, RDFResource subjectParent=null)
+        private static List<RDFResource> ParseNodeList(XmlNodeList nodeList, RDFGraph result, Uri xmlBase, XmlAttribute xmlLangParent, RDFResource subjectParent = null)
         {
             var subjects = new List<RDFResource>();
             var subjNodesEnum = nodeList.GetEnumerator();
@@ -502,12 +502,12 @@ namespace RDFSharp.Model
                         switch (subjAttr.Name.ToLower())
                         {
                             //Skip reserved attributes
-                            case "rdf:about": 
+                            case "rdf:about":
                             case "rdf:resource":
                             case "rdf:parsetype":
-                            case "rdf:id": 
-                            case "rdf:nodeid": 
-                            case "xml:lang":                             
+                            case "rdf:id":
+                            case "rdf:nodeid":
+                            case "xml:lang":
                                 break;
 
                             //Threat rdf:type attribute as SPO
@@ -574,13 +574,13 @@ namespace RDFSharp.Model
                         if (container != null)
                         {
                             //Distinguish the right type of RDF container to build
-                            if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase) 
+                            if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
                                     || container.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase))
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
-                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase) 
+                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
                                     || container.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase))
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
-                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase) 
+                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase)
                                     || container.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase))
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
                             continue;
@@ -590,7 +590,7 @@ namespace RDFSharp.Model
                         #region object
                         //Check if predicate has one of these specific attributes:
                         //"rdf:about", "rdf:resource", "rdf:nodeID", "rdf:ID", "rdf:parseType=Resource"
-                        XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode) 
+                        XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode)
                                                     ?? GetRdfResourceAttribute(predNode)
                                                         ?? GetParseTypeResourceAttribute(predNode));
                         if (rdfObject != null)
@@ -628,7 +628,7 @@ namespace RDFSharp.Model
 
                                 #region rdf:about,rdf:resource,rdf:nodeID
                                 else
-                                {                                    
+                                {
                                     RDFTriple objTriple = new RDFTriple(subj, pred, obj);
                                     result.AddTriple(objTriple);
                                 }
@@ -721,11 +721,11 @@ namespace RDFSharp.Model
                 while (iEnum != null && iEnum.MoveNext())
                 {
                     XmlAttribute attr = (XmlAttribute)iEnum.Current;
-                    if (attr.LocalName.ToUpperInvariant() != "XMLNS" 
+                    if (attr.LocalName.ToUpperInvariant() != "XMLNS"
                             && attr.Name.ToUpperInvariant() != "XML:LANG")
                     {
 
-                        //Try to resolve the current namespace against the namespace register; 
+                        //Try to resolve the current namespace against the namespace register;
                         //if not resolved, create new namespace with scope limited to actual node
                         RDFNamespace ns =
                         (RDFNamespaceRegister.GetByPrefix(attr.LocalName) ??
@@ -817,7 +817,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Gives the subj node extracted from the attribute list of the current element 
+        /// Gives the subj node extracted from the attribute list of the current element
         /// </summary>
         private static RDFResource GetSubjectNode(XmlNode subjNode, Uri xmlBase, RDFGraph result)
         {
@@ -833,7 +833,7 @@ namespace RDFSharp.Model
                         ?? GetRdfResourceAttribute(subjNode));
                 if (rdfAbout != null)
                 {
-                    //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri: 
+                    //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri:
                     //in this case it must be resolved against the xmlBase namespace, or else it remains the same
                     String rdfAboutValue = ResolveRelativeNode(rdfAbout, xmlBase);
                     subj = new RDFResource(rdfAboutValue);
@@ -872,14 +872,14 @@ namespace RDFSharp.Model
                 String attrValue = attr.Value;
 
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
-                if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":ID", StringComparison.OrdinalIgnoreCase) 
+                if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":ID", StringComparison.OrdinalIgnoreCase)
                         || attr.LocalName.Equals("ID", StringComparison.OrdinalIgnoreCase))
                 {
                     attrValue = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
                 }
 
                 //"rdf:nodeID" relative Uri: must be resolved against the "bnode:" prefix
-                else if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":nodeID", StringComparison.OrdinalIgnoreCase) 
+                else if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":nodeID", StringComparison.OrdinalIgnoreCase)
                             || attr.LocalName.Equals("nodeID", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!attrValue.StartsWith("bnode:"))
@@ -904,7 +904,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static Boolean CheckIfRdfDescriptionNode(XmlNode subjNode)
         {
-            Boolean result = subjNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase) 
+            Boolean result = subjNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase)
                                 || subjNode.LocalName.Equals("Description", StringComparison.OrdinalIgnoreCase);
 
             return result;
@@ -1022,7 +1022,7 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Given an attribute representing a RDF collection, iterates on its constituent elements
-        /// to build its standard reification triples. 
+        /// to build its standard reification triples.
         /// </summary>
         private static void ParseCollectionElements(Uri xmlBase, XmlNode predNode, RDFResource subj,
                                                     RDFResource pred, RDFGraph result, XmlAttribute xmlLangSubj)
@@ -1069,11 +1069,11 @@ namespace RDFSharp.Model
         /// </summary>
         private static Boolean CheckIfRdfContainerNode(XmlNode containerNode)
         {
-            Boolean result = containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase) 
-                                || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase) 
-                                    || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase) 
-                                        || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase) 
-                                            || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase) 
+            Boolean result = containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
+                                || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase)
+                                    || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
+                                        || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase)
+                                            || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase)
                                                 || containerNode.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase);
 
             return result;
@@ -1099,7 +1099,7 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Given an element representing a RDF container, iterates on its constituent elements
-        /// to build its standard reification triples. 
+        /// to build its standard reification triples.
         /// </summary>
         private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container,
                                                     RDFResource subj, RDFResource pred, RDFGraph result)
@@ -1152,7 +1152,7 @@ namespace RDFSharp.Model
                             }
                         }
 
-                        //obj -> rdf:_N -> VALUE 
+                        //obj -> rdf:_N -> VALUE
                         if (contType == RDFModelEnums.RDFContainerTypes.Alt)
                         {
                             if (!elemVals.Contains(elemUri.Value))
@@ -1187,7 +1187,7 @@ namespace RDFSharp.Model
                             literal = new RDFPlainLiteral(elem.InnerText, (attr != null ? attr.InnerText : String.Empty));
                         }
 
-                        //obj -> rdf:_N -> VALUE 
+                        //obj -> rdf:_N -> VALUE
                         if (contType == RDFModelEnums.RDFContainerTypes.Alt)
                         {
                             if (!elemVals.Contains(literal.ToString()))

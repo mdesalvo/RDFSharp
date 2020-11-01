@@ -22,13 +22,14 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyAnnotationProperty represents an annotation property definition within an ontology model.
     /// </summary>
-    public class RDFOntologyAnnotationProperty: RDFOntologyProperty {
+    public class RDFOntologyAnnotationProperty : RDFOntologyProperty
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an ontology annotation property from the given non-blank resource
         /// </summary>
-        public RDFOntologyAnnotationProperty(RDFResource propertyName): base(propertyName) { }
+        public RDFOntologyAnnotationProperty(RDFResource propertyName) : base(propertyName) { }
         #endregion
 
     }

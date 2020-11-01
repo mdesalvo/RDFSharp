@@ -25,34 +25,39 @@ namespace RDFSharp.Semantics.SKOS
     /// <summary>
     /// RDFSKOSCollection represents an instance of skos:Collection within an instance of skos:ConceptScheme
     /// </summary>
-    public class RDFSKOSCollection : RDFOntologyFact {
+    public class RDFSKOSCollection : RDFOntologyFact
+    {
 
         #region Properties
         /// <summary>
         /// Count of the concepts of the collection
         /// </summary>
-        public Int64 ConceptsCount {
+        public Int64 ConceptsCount
+        {
             get { return this.Concepts.Count; }
         }
 
         /// <summary>
         /// Count of the collections of the collection
         /// </summary>
-        public Int64 CollectionsCount {
+        public Int64 CollectionsCount
+        {
             get { return this.Collections.Count; }
         }
 
         /// <summary>
         /// Gets the enumerator on the concepts of the collection
         /// </summary>
-        public IEnumerator<RDFSKOSConcept> ConceptsEnumerator {
+        public IEnumerator<RDFSKOSConcept> ConceptsEnumerator
+        {
             get { return this.Concepts.Values.GetEnumerator(); }
         }
 
         /// <summary>
         /// Gets the enumerator on the collections of the collection
         /// </summary>
-        public IEnumerator<RDFSKOSCollection> CollectionsEnumerator {
+        public IEnumerator<RDFSKOSCollection> CollectionsEnumerator
+        {
             get { return this.Collections.Values.GetEnumerator(); }
         }
 
@@ -71,8 +76,9 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Default-ctor to build a skos:Collection with the given name
         /// </summary>
-        public RDFSKOSCollection(RDFResource collectionName) : base(collectionName) {
-            this.Concepts    = new Dictionary<Int64, RDFSKOSConcept>();
+        public RDFSKOSCollection(RDFResource collectionName) : base(collectionName)
+        {
+            this.Concepts = new Dictionary<Int64, RDFSKOSConcept>();
             this.Collections = new Dictionary<Int64, RDFSKOSCollection>();
         }
         #endregion
@@ -83,10 +89,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given concept to the collection
         /// </summary>
-        public RDFSKOSCollection AddConcept(RDFSKOSConcept concept) {
-            if (concept != null) {
+        public RDFSKOSCollection AddConcept(RDFSKOSConcept concept)
+        {
+            if (concept != null)
+            {
                 if (!this.Concepts.ContainsKey(concept.PatternMemberID))
-                     this.Concepts.Add(concept.PatternMemberID, concept);
+                    this.Concepts.Add(concept.PatternMemberID, concept);
             }
             return this;
         }
@@ -94,10 +102,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given collection to the collection
         /// </summary>
-        public RDFSKOSCollection AddCollection(RDFSKOSCollection collection) {
-            if (collection != null) {
+        public RDFSKOSCollection AddCollection(RDFSKOSCollection collection)
+        {
+            if (collection != null)
+            {
                 if (!this.Collections.ContainsKey(collection.PatternMemberID))
-                     this.Collections.Add(collection.PatternMemberID, collection);
+                    this.Collections.Add(collection.PatternMemberID, collection);
             }
             return this;
         }
@@ -107,8 +117,10 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Removes the given concept from the collection
         /// </summary>
-        public RDFSKOSCollection RemoveConcept(RDFSKOSConcept concept) {
-            if (concept != null) {
+        public RDFSKOSCollection RemoveConcept(RDFSKOSConcept concept)
+        {
+            if (concept != null)
+            {
                 if (this.Concepts.ContainsKey(concept.PatternMemberID))
                     this.Concepts.Remove(concept.PatternMemberID);
             }
@@ -118,8 +130,10 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Removes the given collection from the collection
         /// </summary>
-        public RDFSKOSCollection RemoveCollection(RDFSKOSCollection collection) {
-            if (collection != null) {
+        public RDFSKOSCollection RemoveCollection(RDFSKOSCollection collection)
+        {
+            if (collection != null)
+            {
                 if (this.Collections.ContainsKey(collection.PatternMemberID))
                     this.Collections.Remove(collection.PatternMemberID);
             }
@@ -131,10 +145,13 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the concept represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSConcept SelectConcept(String concept) {
-            if (concept        != null) {
+        public RDFSKOSConcept SelectConcept(String concept)
+        {
+            if (concept != null)
+            {
                 Int64 conceptID = RDFModelUtilities.CreateHash(concept);
-                if (this.Concepts.ContainsKey(conceptID)) {
+                if (this.Concepts.ContainsKey(conceptID))
+                {
                     return this.Concepts[conceptID];
                 }
             }
@@ -144,10 +161,13 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSCollection SelectCollection(String collection) {
-            if (collection        != null) {
+        public RDFSKOSCollection SelectCollection(String collection)
+        {
+            if (collection != null)
+            {
                 Int64 collectionID = RDFModelUtilities.CreateHash(collection);
-                if (this.Collections.ContainsKey(collectionID)) {
+                if (this.Collections.ContainsKey(collectionID))
+                {
                     return this.Collections[collectionID];
                 }
             }
@@ -157,18 +177,21 @@ namespace RDFSharp.Semantics.SKOS
 
         #region Get
         /// <summary>
-        /// Gets the complete list of concepts contained in the collection 
+        /// Gets the complete list of concepts contained in the collection
         /// </summary>
-        public List<RDFSKOSConcept> GetMembers() {
-            var result               = new List<RDFSKOSConcept>();
+        public List<RDFSKOSConcept> GetMembers()
+        {
+            var result = new List<RDFSKOSConcept>();
 
             //Concepts
-            foreach(var concept     in this.Concepts.Values) {
+            foreach (var concept in this.Concepts.Values)
+            {
                 result.Add(concept);
             }
 
             //Collections
-            foreach (var collection in this.Collections.Values) {
+            foreach (var collection in this.Collections.Values)
+            {
                 result.AddRange(collection.GetMembers());
             }
 
@@ -180,31 +203,35 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Gets a graph representation of this collection, exporting inferences according to the selected behavior
         /// </summary>
-        public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior) {
+        public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        {
             return this.ToRDFOntologyData().ToRDFGraph(infexpBehavior);
         }
 
         /// <summary>
         /// Gets an ontology data representation of this collection
         /// </summary>
-        public RDFOntologyData ToRDFOntologyData() {
-            var result       = new RDFOntologyData();
+        public RDFOntologyData ToRDFOntologyData()
+        {
+            var result = new RDFOntologyData();
 
             //Collection
             result.AddFact(this);
             result.AddClassTypeRelation(this, RDFVocabulary.SKOS.COLLECTION.ToRDFOntologyClass());
 
             //Concepts
-            foreach (var cn in this.Concepts.Values) {
+            foreach (var cn in this.Concepts.Values)
+            {
                 result.AddFact(cn);
                 result.AddClassTypeRelation(cn, RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass());
                 result.AddAssertionRelation(this, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), cn);
             }
 
             //Collections
-            foreach (var cl in this.Collections.Values) {
+            foreach (var cl in this.Collections.Values)
+            {
                 result.AddAssertionRelation(this, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), cl);
-                result       = result.UnionWith(cl.ToRDFOntologyData());
+                result = result.UnionWith(cl.ToRDFOntologyData());
             }
 
             return result;

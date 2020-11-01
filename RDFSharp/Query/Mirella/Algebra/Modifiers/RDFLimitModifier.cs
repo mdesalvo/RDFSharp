@@ -22,7 +22,7 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFLimitModifier is a modifier which applies an upper-bound counter to the number of query results to be considered. 
+    /// RDFLimitModifier is a modifier which applies an upper-bound counter to the number of query results to be considered.
     /// </summary>
     public class RDFLimitModifier : RDFModifier
     {
@@ -36,7 +36,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a Limit modifier on a query 
+        /// Default-ctor to build a Limit modifier on a query
         /// </summary>
         public RDFLimitModifier(Int32 limit)
         {
@@ -53,7 +53,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the modifier 
+        /// Gives the string representation of the modifier
         /// </summary>
         public override String ToString()
         {
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable 
+        /// Applies the modifier on the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {

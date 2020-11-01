@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxCountConstraint represents a SHACL constraint on the maximum required occurrences for a given RDF term
     /// </summary>
-    public class RDFMaxCountConstraint : RDFConstraint {
+    public class RDFMaxCountConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -35,7 +36,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a maxCount constraint with the given maxCount
         /// </summary>
-        public RDFMaxCountConstraint(int maxCount) : base() {
+        public RDFMaxCountConstraint(int maxCount) : base()
+        {
             this.MaxCount = maxCount < 0 ? 0 : maxCount;
         }
         #endregion
@@ -44,11 +46,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            if (valueNodes.Count > this.MaxCount) {
+            if (valueNodes.Count > this.MaxCount)
+            {
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -65,9 +69,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:maxCount
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_COUNT, new RDFTypedLiteral(this.MaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));

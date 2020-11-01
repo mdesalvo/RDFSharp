@@ -43,7 +43,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a filter on the given variable for the given language 
+        /// Default-ctor to build a filter on the given variable for the given language
         /// </summary>
         public RDFLangMatchesFilter(RDFVariable variable, String language)
         {
@@ -75,7 +75,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter 
+        /// Gives the string representation of the filter
         /// </summary>
         public override String ToString()
         {
@@ -89,7 +89,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the filter on the column corresponding to the variable in the given datarow 
+        /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
         internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
         {
@@ -103,15 +103,15 @@ namespace RDFSharp.Query
                 //NO language is found in the variable
                 if (this.Language == String.Empty)
                     keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
-                
+
                 //ANY language is found in the variable
                 else if (this.Language == "*")
                     keepRow = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
-                
+
                 //GIVEN language is found in the variable
                 else
                     keepRow = Regex.IsMatch(variableValue, "@" + this.Language + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
-                
+
                 //Apply the eventual negation
                 if (applyNegation)
                     keepRow = !keepRow;

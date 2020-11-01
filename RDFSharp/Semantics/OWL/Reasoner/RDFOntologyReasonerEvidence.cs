@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerEvidence represents an inference evidence generated during execution of a rule
     /// </summary>
-    public class RDFOntologyReasonerEvidence {
+    public class RDFOntologyReasonerEvidence
+    {
 
         #region Properties
         /// <summary>
@@ -47,10 +48,11 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory,
                                              String evidenceProvenance,
-                                             RDFOntologyTaxonomyEntry evidenceContent) {
-            this.EvidenceCategory   = evidenceCategory;
+                                             RDFOntologyTaxonomyEntry evidenceContent)
+        {
+            this.EvidenceCategory = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;
-            this.EvidenceContent    = evidenceContent;
+            this.EvidenceContent = evidenceContent;
         }
         #endregion
 

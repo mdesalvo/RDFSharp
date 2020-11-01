@@ -19,17 +19,21 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTargetClass represents a SHACL target of type "Class" within a shape.
     /// </summary>
-    public class RDFTargetClass : RDFTarget {
+    public class RDFTargetClass : RDFTarget
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a class target on the given resource
         /// </summary>
-        public RDFTargetClass(RDFResource targetClass) : base() {
-            if (targetClass != null) {
+        public RDFTargetClass(RDFResource targetClass) : base()
+        {
+            if (targetClass != null)
+            {
                 this.TargetValue = targetClass;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
             }
         }
@@ -39,7 +43,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this target
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             var result = new RDFGraph();
 
             //sh:targetClass

@@ -24,7 +24,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFLessThanConstraint represents a SHACL constraint on minority comparison of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFLessThanConstraint : RDFConstraint {
+    public class RDFLessThanConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -37,11 +38,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a lessThan constraint with the given predicate
         /// </summary>
-        public RDFLessThanConstraint(RDFResource lessThanPredicate) : base() {
-            if (lessThanPredicate != null) {
+        public RDFLessThanConstraint(RDFResource lessThanPredicate) : base()
+        {
+            if (lessThanPredicate != null)
+            {
                 this.LessThanPredicate = lessThanPredicate;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFLessThanConstraint because given \"lessThanPredicate\" parameter is null.");
             }
         }
@@ -51,19 +55,23 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
-            #region Evaluation            
+            #region Evaluation
             List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
                                                                             && t.Predicate.Equals(this.LessThanPredicate))
                                                              .Select(x => x.Object)
                                                              .ToList();
 
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                foreach (RDFPatternMember predicateNode in predicateNodes) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                foreach (RDFPatternMember predicateNode in predicateNodes)
+                {
                     Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(valueNode, predicateNode);
-                    if (comparison == -99 || comparison >= 0) {
+                    if (comparison == -99 || comparison >= 0)
+                    {
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.LESS_THAN_CONSTRAINT_COMPONENT,
                                                                  focusNode,
@@ -82,9 +90,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:lessThan
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN, this.LessThanPredicate));

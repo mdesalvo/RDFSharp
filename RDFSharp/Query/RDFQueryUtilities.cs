@@ -205,7 +205,7 @@ namespace RDFSharp.Query
             #endregion
 
         }
-        
+
         /// <summary>
         /// Tries to abbreviate the string representation of the given pattern member by searching for it in the given list of namespaces
         /// </summary>
@@ -255,16 +255,20 @@ namespace RDFSharp.Query
             return (abbrev, pmString);
             #endregion
         }
-        
+
         /// <summary>
         /// Removes the duplicates from the given list of T elements
         /// </summary>
-        internal static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember {
+        internal static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember
+        {
             List<T> results = new List<T>();
-            if (elements?.Count > 0) {
+            if (elements?.Count > 0)
+            {
                 HashSet<Int64> lookup = new HashSet<Int64>();
-                elements.ForEach(element => {
-                    if (!lookup.Contains(element.PatternMemberID)) {
+                elements.ForEach(element =>
+                {
+                    if (!lookup.Contains(element.PatternMemberID))
+                    {
                         lookup.Add(element.PatternMemberID);
                         results.Add(element);
                     }

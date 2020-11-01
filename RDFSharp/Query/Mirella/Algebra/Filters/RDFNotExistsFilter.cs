@@ -32,12 +32,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a filter on the given pattern
         /// </summary>
-        public RDFNotExistsFilter(RDFPattern pattern): base(pattern) { }
+        public RDFNotExistsFilter(RDFPattern pattern) : base(pattern) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter 
+        /// Gives the string representation of the filter
         /// </summary>
         public override String ToString()
         {

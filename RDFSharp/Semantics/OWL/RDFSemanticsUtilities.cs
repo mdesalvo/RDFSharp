@@ -18,7 +18,6 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -396,7 +395,7 @@ namespace RDFSharp.Semantics.OWL
                             else
                             {
 
-                                //Raise warning event to inform the user: restriction cannot be imported from 
+                                //Raise warning event to inform the user: restriction cannot be imported from
                                 //graph, because its applied property is reserved and cannot be restricted
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Restriction '{0}' cannot be imported from graph, because its applied property '{1}' represents an annotation property or is a reserved (RDF/RDFS/XSD/OWL) property.", r.Subject, op.Object));
 
@@ -406,7 +405,7 @@ namespace RDFSharp.Semantics.OWL
                         else
                         {
 
-                            //Raise warning event to inform the user: restriction cannot be imported from 
+                            //Raise warning event to inform the user: restriction cannot be imported from
                             //graph, because definition of its applied property is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Restriction '{0}' cannot be imported from graph, because definition of its applied property '{1}' is not found in the model.", r.Subject, op.Object));
 
@@ -678,7 +677,7 @@ namespace RDFSharp.Semantics.OWL
                         else
                         {
 
-                            //Raise warning event to inform the user: complement class cannot be imported 
+                            //Raise warning event to inform the user: complement class cannot be imported
                             //from graph, because its definition is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Class '{0}' cannot be imported from graph, because its definition is not found in the model.", c.Subject));
 
@@ -1056,7 +1055,7 @@ namespace RDFSharp.Semantics.OWL
                     if (hsRes != null)
                     {
                         if (hsRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
-                                && hsRes.Object.Equals(new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN))) 
+                                && hsRes.Object.Equals(new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)))
                         {
                             var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasselfRestr;
@@ -1309,7 +1308,7 @@ namespace RDFSharp.Semantics.OWL
                         else
                         {
 
-                            //Raise warning event to inform the user: domain constraint cannot be imported from graph, 
+                            //Raise warning event to inform the user: domain constraint cannot be imported from graph,
                             //because definition of required class is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Domain constraint on property '{0}' cannot be imported from graph, because definition of required class '{1}' is not found in the model.", p.Value, d.Object));
 
@@ -1329,7 +1328,7 @@ namespace RDFSharp.Semantics.OWL
                         else
                         {
 
-                            //Raise warning event to inform the user: range constraint cannot be imported from graph, 
+                            //Raise warning event to inform the user: range constraint cannot be imported from graph,
                             //because definition of required class is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Range constraint on property '{0}' cannot be imported from graph, because definition of required class '{1}' is not found in the model.", p.Value, r.Object));
 
@@ -1404,18 +1403,24 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region PropertyDisjointWith [OWL2]
-                    foreach (var dwpr in disjpropWith.SelectTriplesBySubject((RDFResource)p.Value)) {
-                        if (dwpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                    foreach (var dwpr in disjpropWith.SelectTriplesBySubject((RDFResource)p.Value))
+                    {
+                        if (dwpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        {
                             var disjProp = ontology.Model.PropertyModel.SelectProperty(dwpr.Object.ToString());
-                            if (disjProp != null) {
-                                if (p.IsObjectProperty() && disjProp.IsObjectProperty()) {
+                            if (disjProp != null)
+                            {
+                                if (p.IsObjectProperty() && disjProp.IsObjectProperty())
+                                {
                                     ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)disjProp);
                                 }
-                                else if (p.IsDatatypeProperty() && disjProp.IsDatatypeProperty()) {
+                                else if (p.IsDatatypeProperty() && disjProp.IsDatatypeProperty())
+                                {
                                     ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)p, (RDFOntologyDatatypeProperty)disjProp);
                                 }
                             }
-                            else {
+                            else
+                            {
 
                                 //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported
                                 //from graph, because definition of property is not found in the model
@@ -1430,8 +1435,9 @@ namespace RDFSharp.Semantics.OWL
                     foreach (var adjp in alldisjprops)
                     {
                         var allDisjointProperties = new List<RDFOntologyProperty>();
-                        foreach (var adjpMembers in members.SelectTriplesBySubject((RDFResource)adjp.Subject)) {
-                            if (adjpMembers.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO) 
+                        foreach (var adjpMembers in members.SelectTriplesBySubject((RDFResource)adjp.Subject))
+                        {
+                            if (adjpMembers.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
                                 #region DeserializeCollection
                                 var nilFound = false;
@@ -1496,7 +1502,7 @@ namespace RDFSharp.Semantics.OWL
                                 else if (outerProperty.IsDatatypeProperty() && innerProperty.IsDatatypeProperty())
                                     ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)outerProperty, (RDFOntologyDatatypeProperty)innerProperty);
                             }
-                        }   
+                        }
                     }
                     #endregion
 
@@ -1599,9 +1605,11 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region AllDisjointClasses [OWL2]
-                    foreach (var adjc in alldisjclasses) {
+                    foreach (var adjc in alldisjclasses)
+                    {
                         var allDisjointClasses = new List<RDFOntologyClass>();
-                        foreach (var adjcMembers in members.SelectTriplesBySubject((RDFResource)adjc.Subject)) {
+                        foreach (var adjcMembers in members.SelectTriplesBySubject((RDFResource)adjc.Subject))
+                        {
                             if (adjcMembers.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
                                 #region DeserializeCollection
@@ -2813,18 +2821,22 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets a graph representation of the given negative assertions taxonomy, exporting inferences according to the selected behavior [OWL2]
         /// </summary>
-        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior) {
+        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        {
             var result = new RDFGraph();
 
             //Taxonomy entries
-            foreach (var te in taxonomy) {
+            foreach (var te in taxonomy)
+            {
 
                 //Build reification triples of taxonomy entry
                 RDFTriple teTriple = te.ToRDFTriple();
 
                 //Do not export semantic inferences
-                if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None) {
-                    if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None) {
+                if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
+                {
+                    if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
+                    {
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
@@ -2836,9 +2848,11 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Export semantic inferences related only to ontology model
-                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyModel) {
+                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyModel)
+                {
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model ||
-                            taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation) {
+                            taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
+                    {
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
@@ -2847,8 +2861,10 @@ namespace RDFSharp.Semantics.OWL
                         else
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                     }
-                    else {
-                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None) {
+                    else
+                    {
+                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
+                        {
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
@@ -2861,9 +2877,11 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Export semantic inferences related only to ontology data
-                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData) {
+                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData)
+                {
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data ||
-                            taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation) {
+                            taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
+                    {
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
@@ -2872,8 +2890,10 @@ namespace RDFSharp.Semantics.OWL
                         else
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
                     }
-                    else {
-                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None) {
+                    else
+                    {
+                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
+                        {
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                             result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
@@ -2886,7 +2906,8 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Export semantic inferences related both to ontology model and data
-                else {
+                else
+                {
                     result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
                     result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
                     result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));

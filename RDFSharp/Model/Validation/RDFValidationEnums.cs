@@ -19,7 +19,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFValidationEnums represents a collector for all the enumerations used for SHACL modeling and validation
     /// </summary>
-    public static class RDFValidationEnums {
+    public static class RDFValidationEnums
+    {
 
         /// <summary>
         /// RDFShapeSeverity represents an enumeration for possible severity levels of shape validation evidence

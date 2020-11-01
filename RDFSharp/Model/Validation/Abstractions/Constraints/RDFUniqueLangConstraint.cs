@@ -24,7 +24,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFUniqueLangConstraint represents a SHACL constraint on the uniqueness of language tags for a given RDF term
     /// </summary>
-    public class RDFUniqueLangConstraint : RDFConstraint {
+    public class RDFUniqueLangConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -37,7 +38,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a uniqueLang constraint with the given behavior
         /// </summary>
-        public RDFUniqueLangConstraint(Boolean uniqueLang) : base() {
+        public RDFUniqueLangConstraint(Boolean uniqueLang) : base()
+        {
             this.UniqueLang = uniqueLang;
         }
         #endregion
@@ -46,23 +48,29 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            if (this.UniqueLang) {
+            if (this.UniqueLang)
+            {
                 HashSet<string> reportedLangs = new HashSet<string>();
                 List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
                                                                     .Where(vn => !string.IsNullOrEmpty(vn.Language))
                                                                     .ToList();
 
-                foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes) {
-                    foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes) {
-                        if (!innerlanglitValueNode.Equals(outerlanglitValueNode) 
-                                && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language)) {
+                foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes)
+                {
+                    foreach (RDFPlainLiteral outerlanglitValueNode in langlitValueNodes)
+                    {
+                        if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
+                                && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
+                        {
 
                             //Ensure to not report twice the same language tag
-                            if (!reportedLangs.Contains(innerlanglitValueNode.Language)) {
+                            if (!reportedLangs.Contains(innerlanglitValueNode.Language))
+                            {
                                 reportedLangs.Add(innerlanglitValueNode.Language);
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.UNIQUE_LANG_CONSTRAINT_COMPONENT,
@@ -85,9 +93,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:uniqueLang
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, new RDFTypedLiteral(this.UniqueLang.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));

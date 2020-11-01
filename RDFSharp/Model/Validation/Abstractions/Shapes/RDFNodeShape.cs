@@ -19,7 +19,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNodeShape represents a SHACL node shape definition
     /// </summary>
-    public class RDFNodeShape : RDFShape {
+    public class RDFNodeShape : RDFShape
+    {
 
         #region Ctors
         /// <summary>
@@ -37,7 +38,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this node shape
         /// </summary>
-        public override RDFGraph ToRDFGraph() {
+        public override RDFGraph ToRDFGraph()
+        {
             var result = base.ToRDFGraph();
 
             //NodeShape

@@ -42,7 +42,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an equality filter between the given variable and the given RDF term 
+        /// Default-ctor to build an equality filter between the given variable and the given RDF term
         /// </summary>
         public RDFSameTermFilter(RDFVariable variable, RDFPatternMember rdfTerm)
         {
@@ -67,7 +67,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter 
+        /// Gives the string representation of the filter
         /// </summary>
         public override String ToString()
         {

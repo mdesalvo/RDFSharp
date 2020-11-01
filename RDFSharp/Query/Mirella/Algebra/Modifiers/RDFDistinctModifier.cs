@@ -23,21 +23,21 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query. 
+    /// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query.
     /// </summary>
     public class RDFDistinctModifier : RDFModifier
     {
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a Distinct modifier on a query 
+        /// Default-ctor to build a Distinct modifier on a query
         /// </summary>
         public RDFDistinctModifier() { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the modifier 
+        /// Gives the string representation of the modifier
         /// </summary>
         public override String ToString()
         {
@@ -47,7 +47,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable 
+        /// Applies the modifier on the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {

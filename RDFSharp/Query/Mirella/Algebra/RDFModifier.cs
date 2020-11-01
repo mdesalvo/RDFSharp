@@ -38,7 +38,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable 
+        /// Applies the modifier on the given datatable
         /// </summary>
         internal abstract DataTable ApplyModifier(DataTable tableToFilter);
 

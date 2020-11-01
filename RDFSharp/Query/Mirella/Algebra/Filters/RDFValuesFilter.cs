@@ -75,7 +75,7 @@ namespace RDFSharp.Query
                 EnumerableRowCollection<DataRow> bindingsTable = this.Values.GetDataTable().AsEnumerable();
 
                 //Perform the iterative check on the filter columns
-                filterColumns.ForEach(filterColumn => 
+                filterColumns.ForEach(filterColumn =>
                 {
 
                     //Take the value of the column

@@ -43,7 +43,7 @@ namespace RDFSharp.Model
 
         #region Write
         /// <summary>
-        /// Serializes the given graph to the given filepath using Turtle data format. 
+        /// Serializes the given graph to the given filepath using Turtle data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath)
         {
@@ -51,7 +51,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Serializes the given graph to the given stream using Turtle data format. 
+        /// Serializes the given graph to the given stream using Turtle data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, Stream outputStream)
         {
@@ -233,7 +233,7 @@ namespace RDFSharp.Model
 
         #region Read
         /// <summary>
-        /// Deserializes the given Turtle filepath to a graph. 
+        /// Deserializes the given Turtle filepath to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(String filepath)
         {
@@ -869,7 +869,7 @@ namespace RDFSharp.Model
             // Store and report this namespace mapping
             String prefixStr = prefixID.ToString();
             String namespaceStr = nspace.ToString();
-            // If prefix is empty it must be considered default context of the graph 
+            // If prefix is empty it must be considered default context of the graph
             if (String.IsNullOrEmpty(prefixStr))
             {
                 prefixStr = String.Format("AutoNS{0}{1}", DateTime.Now.Minute, DateTime.Now.Second);

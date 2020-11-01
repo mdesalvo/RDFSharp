@@ -25,7 +25,8 @@ namespace RDFSharp.Semantics.OWL
     /// RDFOntologyValidator analyzes a given ontology through a set of RDFS/OWL-DL rules
     /// in order to find error and inconsistency evidences affecting its model and data.
     /// </summary>
-    public static class RDFOntologyValidator {
+    public static class RDFOntologyValidator
+    {
 
         #region Properties
         /// <summary>
@@ -38,7 +39,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Static-ctor to build an ontology validator
         /// </summary>
-        static RDFOntologyValidator() {
+        static RDFOntologyValidator()
+        {
             Rules = new List<RDFOntologyValidatorRule>() {
 
                 #region BASE
@@ -56,7 +58,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Domain_Range
                 new RDFOntologyValidatorRule(
-                    "Domain_Range", 
+                    "Domain_Range",
                     "This RDFS rule checks for consistency of rdfs:domain and rdfs:range axioms",
                     RDFOntologyValidatorRuleset.Domain_Range),
 
@@ -77,7 +79,7 @@ namespace RDFSharp.Semantics.OWL
                     "AsymmetricProperty",
                     "This OWL2 rule checks for consistency of owl:AsymmetricProperty axioms",
                     RDFOntologyValidatorRuleset.AsymmetricProperty),
-                
+
                 //IrreflexiveProperty [OWL2]
                 new RDFOntologyValidatorRule(
                     "IrreflexiveProperty",
@@ -110,7 +112,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Deprecation
                 new RDFOntologyValidatorRule(
-                    "Deprecation", 
+                    "Deprecation",
                     "This OWL-DL rule checks for usage of deprecated classes and properties",
                     RDFOntologyValidatorRuleset.Deprecation)
                 #endregion
@@ -123,15 +125,17 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Validate the given ontology against a set of RDFS/OWL-DL rules, detecting errors and inconsistencies affecting its model and data.
         /// </summary>
-        public static RDFOntologyValidatorReport Validate(this RDFOntology ontology) {
+        public static RDFOntologyValidatorReport Validate(this RDFOntology ontology)
+        {
             var report = new RDFOntologyValidatorReport();
-            if (ontology != null) {
+            if (ontology != null)
+            {
                 RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator is going to be applied on Ontology '{0}'...", ontology.Value));
 
                 //STEP 1: Expand ontology
                 RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
 
-                //STEP 2: Execute rules                
+                //STEP 2: Execute rules
                 Parallel.ForEach(Rules, r => report.MergeEvidences(r.ExecuteRule(expOntology)));
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator has been applied on Ontology '{0}': found " + report.EvidencesCount + " evidences.", ontology.Value));

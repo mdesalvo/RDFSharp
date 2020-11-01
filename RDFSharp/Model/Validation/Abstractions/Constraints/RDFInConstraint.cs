@@ -24,7 +24,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFInConstraint represents a SHACL constraint on the allowed values for a given RDF term
     /// </summary>
-    public class RDFInConstraint : RDFConstraint {
+    public class RDFInConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -42,7 +43,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a in constraint of the given type (Resource/Literal)
         /// </summary>
-        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base() {
+        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base()
+        {
             this.InValues = new Dictionary<Int64, RDFPatternMember>();
             this.ItemType = itemType;
         }
@@ -52,9 +54,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given resource to the values of this constraint (if ItemType has been set to Resource)
         /// </summary>
-        public RDFInConstraint AddValue(RDFResource resource) {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource) {
-                if (resource != null && !this.InValues.ContainsKey(resource.PatternMemberID)) {
+        public RDFInConstraint AddValue(RDFResource resource)
+        {
+            if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+            {
+                if (resource != null && !this.InValues.ContainsKey(resource.PatternMemberID))
+                {
                     this.InValues.Add(resource.PatternMemberID, resource);
                 }
             }
@@ -64,9 +69,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given literal to the values of this constraint (if ItemType has been set to Literal)
         /// </summary>
-        public RDFInConstraint AddValue(RDFLiteral literal) {
-            if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal) {
-                if (literal != null && !this.InValues.ContainsKey(literal.PatternMemberID)) {
+        public RDFInConstraint AddValue(RDFLiteral literal)
+        {
+            if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                if (literal != null && !this.InValues.ContainsKey(literal.PatternMemberID))
+                {
                     this.InValues.Add(literal.PatternMemberID, literal);
                 }
             }
@@ -76,12 +84,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                if (!this.InValues.Any(v => v.Value.Equals(valueNode))) { 
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                if (!this.InValues.Any(v => v.Value.Equals(valueNode)))
+                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -99,13 +110,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //Get collection from inValues
                 RDFCollection inValues = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
-                foreach (RDFPatternMember inValue in this.InValues.Values) {
+                foreach (RDFPatternMember inValue in this.InValues.Values)
+                {
                     if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
                         inValues.AddItem((RDFLiteral)inValue);
                     else

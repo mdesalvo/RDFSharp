@@ -17,8 +17,8 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Web;
+using System.Xml;
 
 namespace RDFSharp.Model
 {
@@ -33,7 +33,7 @@ namespace RDFSharp.Model
 
         #region Write
         /// <summary>
-        /// Serializes the given graph to the given filepath using TriX data format. 
+        /// Serializes the given graph to the given filepath using TriX data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, String filepath)
         {
@@ -41,7 +41,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Serializes the given graph to the given stream using TriX data format. 
+        /// Serializes the given graph to the given stream using TriX data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, Stream outputStream)
         {
@@ -166,7 +166,7 @@ namespace RDFSharp.Model
 
         #region Read
         /// <summary>
-        /// Deserializes the given TriX filepath to a graph. 
+        /// Deserializes the given TriX filepath to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(String filepath)
         {
@@ -174,7 +174,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Deserializes the given TriX stream to a graph. 
+        /// Deserializes the given TriX stream to a graph.
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream)
         {

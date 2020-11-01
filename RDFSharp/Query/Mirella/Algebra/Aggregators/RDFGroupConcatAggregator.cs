@@ -105,7 +105,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Helps in finalization step by updating the projection's result table 
+        /// Helps in finalization step by updating the projection's result table
         /// </summary>
         internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
         {

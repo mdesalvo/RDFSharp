@@ -36,7 +36,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an Offset modifier on a query 
+        /// Default-ctor to build an Offset modifier on a query
         /// </summary>
         public RDFOffsetModifier(Int32 offset)
         {
@@ -53,7 +53,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the modifier 
+        /// Gives the string representation of the modifier
         /// </summary>
         public override String ToString()
         {
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable 
+        /// Applies the modifier on the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {

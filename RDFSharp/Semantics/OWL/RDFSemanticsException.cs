@@ -24,28 +24,29 @@ namespace RDFSharp.Semantics.OWL
     /// RDFSemanticsException represents an exception thrown during creation and execution of RDF semantics.
     /// </summary>
     [Serializable]
-    public class RDFSemanticsException: Exception {
+    public class RDFSemanticsException : Exception
+    {
 
         #region Ctors
         /// <summary>
         /// Basic ctor to throw an empty RDFSemanticsException
         /// </summary>
-        public RDFSemanticsException(): base() { }
+        public RDFSemanticsException() : base() { }
 
         /// <summary>
         /// Basic ctor to throw an RDFSemanticsException with message
         /// </summary>
-        public RDFSemanticsException(String message): base(message) { }
+        public RDFSemanticsException(String message) : base(message) { }
 
         /// <summary>
         /// Basic ctor to throw an RDFSemanticsException with message and inner exception
         /// </summary>
-        public RDFSemanticsException(String message, Exception innerException): base(message, innerException) { }
+        public RDFSemanticsException(String message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>
         /// Basic ctor to support serialization of a remotely thrown RDFSemanticsException
         /// </summary>
-        protected RDFSemanticsException(SerializationInfo info, StreamingContext context): base(info, context) { }
+        protected RDFSemanticsException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
 
     }

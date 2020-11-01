@@ -23,7 +23,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyResource represents a generic resource definition within an ontology.
     /// </summary>
-    public class RDFOntologyResource: RDFPatternMember {
+    public class RDFOntologyResource : RDFPatternMember
+    {
 
         #region Properties
         /// <summary>
@@ -36,7 +37,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the string representation of the ontology resource
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.Value.ToString();
         }
         #endregion
@@ -45,29 +47,33 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if this ontology resource represents an ontology class
         /// </summary>
-        internal Boolean IsClass() {
+        internal Boolean IsClass()
+        {
             return (this is RDFOntologyClass);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology deprecated class
         /// </summary>
-        internal Boolean IsDeprecatedClass() {
+        internal Boolean IsDeprecatedClass()
+        {
             return (this is RDFOntologyClass && ((RDFOntologyClass)this).Deprecated);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology restriction class
         /// </summary>
-        internal Boolean IsRestrictionClass() {
+        internal Boolean IsRestrictionClass()
+        {
             return (this is RDFOntologyRestriction);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology composite class (union/intersection/complement)
         /// </summary>
-        internal Boolean IsCompositeClass() {
-            return (this is RDFOntologyUnionClass        ||
+        internal Boolean IsCompositeClass()
+        {
+            return (this is RDFOntologyUnionClass ||
                     this is RDFOntologyIntersectionClass ||
                     this is RDFOntologyComplementClass);
         }
@@ -75,119 +81,136 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if this ontology resource represents an ontology enumerate class
         /// </summary>
-        internal Boolean IsEnumerateClass() {
+        internal Boolean IsEnumerateClass()
+        {
             return (this is RDFOntologyEnumerateClass);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology datarange class
         /// </summary>
-        internal Boolean IsDataRangeClass() {
+        internal Boolean IsDataRangeClass()
+        {
             return (this is RDFOntologyDataRangeClass);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology property
         /// </summary>
-        internal Boolean IsProperty() {
+        internal Boolean IsProperty()
+        {
             return (this is RDFOntologyProperty);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology deprecated property
         /// </summary>
-        internal Boolean IsDeprecatedProperty() {
+        internal Boolean IsDeprecatedProperty()
+        {
             return (this is RDFOntologyProperty && ((RDFOntologyProperty)this).Deprecated);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology functional property
         /// </summary>
-        internal Boolean IsFunctionalProperty() {
+        internal Boolean IsFunctionalProperty()
+        {
             return (this is RDFOntologyProperty && ((RDFOntologyProperty)this).Functional);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology symmetric property
         /// </summary>
-        internal Boolean IsSymmetricProperty() {
+        internal Boolean IsSymmetricProperty()
+        {
             return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Symmetric);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology asymmetric property [OWL2]
         /// </summary>
-        internal Boolean IsAsymmetricProperty() {
+        internal Boolean IsAsymmetricProperty()
+        {
             return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Asymmetric);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology reflexive property [OWL2]
         /// </summary>
-        internal Boolean IsReflexiveProperty() {
+        internal Boolean IsReflexiveProperty()
+        {
             return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Reflexive);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology irreflexive property [OWL2]
         /// </summary>
-        internal Boolean IsIrreflexiveProperty() {
+        internal Boolean IsIrreflexiveProperty()
+        {
             return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Irreflexive);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology transitive property
         /// </summary>
-        internal Boolean IsTransitiveProperty() {
+        internal Boolean IsTransitiveProperty()
+        {
             return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Transitive);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology inverse functional property
         /// </summary>
-        internal Boolean IsInverseFunctionalProperty() {
+        internal Boolean IsInverseFunctionalProperty()
+        {
             return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).InverseFunctional);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology annotation property
         /// </summary>
-        internal Boolean IsAnnotationProperty() {
+        internal Boolean IsAnnotationProperty()
+        {
             return (this is RDFOntologyAnnotationProperty);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology datatype property
         /// </summary>
-        internal Boolean IsDatatypeProperty() {
+        internal Boolean IsDatatypeProperty()
+        {
             return (this is RDFOntologyDatatypeProperty);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology object property
         /// </summary>
-        internal Boolean IsObjectProperty() {
+        internal Boolean IsObjectProperty()
+        {
             return (this is RDFOntologyObjectProperty);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology fact
         /// </summary>
-        internal Boolean IsFact() {
+        internal Boolean IsFact()
+        {
             return (this is RDFOntologyFact);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology literal
         /// </summary>
-        internal Boolean IsLiteral() {
+        internal Boolean IsLiteral()
+        {
             return (this is RDFOntologyLiteral);
         }
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology
         /// </summary>
-        internal Boolean IsOntology() {
+        internal Boolean IsOntology()
+        {
             return (this is RDFOntology);
         }
         #endregion

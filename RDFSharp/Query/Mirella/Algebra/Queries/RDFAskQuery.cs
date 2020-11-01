@@ -95,7 +95,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the query to the given graph 
+        /// Applies the query to the given graph
         /// </summary>
         public RDFAskQueryResult ApplyToGraph(RDFGraph graph)
         {
@@ -110,7 +110,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the query to the given store 
+        /// Applies the query to the given store
         /// </summary>
         public RDFAskQueryResult ApplyToStore(RDFStore store)
         {

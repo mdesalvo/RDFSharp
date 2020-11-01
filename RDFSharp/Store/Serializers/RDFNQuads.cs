@@ -86,7 +86,7 @@ namespace RDFSharp.Store
 
         #region Write
         /// <summary>
-        /// Serializes the given store to the given filepath using N-Quads data format. 
+        /// Serializes the given store to the given filepath using N-Quads data format.
         /// </summary>
         internal static void Serialize(RDFStore store, String filepath)
         {
@@ -94,7 +94,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Serializes the given store to the given filepath using N-Quads data format. 
+        /// Serializes the given store to the given filepath using N-Quads data format.
         /// </summary>
         internal static void Serialize(RDFStore store, Stream outputStream)
         {
@@ -207,7 +207,7 @@ namespace RDFSharp.Store
 
         #region Read
         /// <summary>
-        /// Deserializes the given N-Quads filepath to a memory store. 
+        /// Deserializes the given N-Quads filepath to a memory store.
         /// </summary>
         internal static RDFMemoryStore Deserialize(String filepath)
         {
@@ -215,7 +215,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Deserializes the given N-Quads stream to a memory store. 
+        /// Deserializes the given N-Quads stream to a memory store.
         /// </summary>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
@@ -259,7 +259,7 @@ namespace RDFSharp.Store
                             continue;
                         }
 
-                        //Tokenizes the sanitized quad 
+                        //Tokenizes the sanitized quad
                         tokens = TokenizeNQuad(nquad);
                         #endregion
 

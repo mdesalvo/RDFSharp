@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal override void ExecutePartition(String partitionKey, DataRow tableRow)
         {
-            switch(this.AggregatorFlavor)
+            switch (this.AggregatorFlavor)
             {
                 case RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric:
                     ExecutePartitionNumeric(partitionKey, tableRow);
@@ -147,7 +147,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Helps in finalization step by updating the projection's result table 
+        /// Helps in finalization step by updating the projection's result table
         /// </summary>
         internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
         {

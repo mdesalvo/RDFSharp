@@ -23,7 +23,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFSemanticsEvents represents a collector for all the events generated within the "RDFSharp.Semantics" namespace
     /// </summary>
-    public static class RDFSemanticsEvents {
+    public static class RDFSemanticsEvents
+    {
 
         #region OnSemanticsInfo
         /// <summary>
@@ -39,7 +40,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseSemanticsInfo(String eventMessage) {
+        internal static void RaiseSemanticsInfo(String eventMessage)
+        {
             Parallel.Invoke(() => OnSemanticsInfo(DateTime.Now.ToString() + ";SEMANTICS_INFO;" + eventMessage));
         }
         #endregion
@@ -58,7 +60,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
-        internal static void RaiseSemanticsWarning(String eventMessage) {
+        internal static void RaiseSemanticsWarning(String eventMessage)
+        {
             Parallel.Invoke(() => OnSemanticsWarning(DateTime.Now.ToString() + ";SEMANTICS_WARNING;" + eventMessage));
         }
         #endregion

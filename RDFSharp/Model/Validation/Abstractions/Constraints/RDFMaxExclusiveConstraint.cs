@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMaxExclusiveConstraint represents a SHACL constraint on an exclusive upper-bound value for a given RDF term
     /// </summary>
-    public class RDFMaxExclusiveConstraint : RDFConstraint {
+    public class RDFMaxExclusiveConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -36,11 +37,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a maxExclusive constraint with the given resource value
         /// </summary>
-        public RDFMaxExclusiveConstraint(RDFResource value) : base() {
-            if (value != null) {
+        public RDFMaxExclusiveConstraint(RDFResource value) : base()
+        {
+            if (value != null)
+            {
                 this.Value = value;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
             }
         }
@@ -48,11 +52,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a maxExclusive constraint with the given literal value
         /// </summary>
-        public RDFMaxExclusiveConstraint(RDFLiteral value) : base() {
-            if (value != null) {
+        public RDFMaxExclusiveConstraint(RDFLiteral value) : base()
+        {
+            if (value != null)
+            {
                 this.Value = value;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFMaxExclusiveConstraint because given \"value\" parameter is null.");
             }
         }
@@ -62,13 +69,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
                 Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
-                if (comparison == -99 || comparison <= 0) {
+                if (comparison == -99 || comparison <= 0)
+                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.MAX_EXCLUSIVE_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -86,9 +96,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:maxExclusive
                 if (this.Value is RDFResource)

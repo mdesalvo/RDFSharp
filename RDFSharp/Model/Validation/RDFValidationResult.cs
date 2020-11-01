@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
@@ -23,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     ///  RDFValidationResult represents an evidence reported by a shape's validation.
     /// </summary>
-    public class RDFValidationResult: RDFResource {
+    public class RDFValidationResult : RDFResource
+    {
 
         #region Properties
         /// <summary>
@@ -72,7 +72,8 @@ namespace RDFSharp.Model
                                      RDFResource resultPath,
                                      RDFPatternMember resultValue,
                                      List<RDFLiteral> resultMessages,
-                                     RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation) : base() {
+                                     RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation) : base()
+        {
             this.SourceShape = sourceShape;
             this.SourceConstraintComponent = sourceConstraintComponent;
             this.FocusNode = focusNode;
@@ -87,14 +88,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this validation result
         /// </summary>
-        public RDFGraph ToRDFGraph() {
+        public RDFGraph ToRDFGraph()
+        {
             var result = new RDFGraph();
 
             //ValidationResult
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT));
 
             //Severity
-            switch (this.Severity) {
+            switch (this.Severity)
+            {
                 case RDFValidationEnums.RDFShapeSeverity.Info:
                     result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.INFO));
                     break;
@@ -123,7 +126,8 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, this.ResultPath));
 
             //Value
-            if (this.ResultValue != null) {
+            if (this.ResultValue != null)
+            {
                 if (this.ResultValue is RDFLiteral)
                     result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFLiteral)this.ResultValue));
                 else

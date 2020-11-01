@@ -34,7 +34,7 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and given datatype. 
+        /// Default-ctor to build a typed literal with given value and given datatype.
         /// Semantic validation of given value against given datatype is performed.
         /// </summary>
         public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatypes datatype)

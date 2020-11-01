@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyAllValuesFromRestriction represents an "owl:AllValuesFrom" restriction class definition within an ontology model.
     /// </summary>
-    public class RDFOntologyAllValuesFromRestriction: RDFOntologyRestriction {
+    public class RDFOntologyAllValuesFromRestriction : RDFOntologyRestriction
+    {
 
         #region Properties
         /// <summary>
@@ -35,13 +36,16 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an "owl:AllValuesFrom" ontology restriction with the given name on the given property and the given fromClass
         /// </summary>
-        public RDFOntologyAllValuesFromRestriction(RDFResource restrictionName, 
-                                                   RDFOntologyProperty onProperty, 
-                                                   RDFOntologyClass fromClass): base(restrictionName, onProperty) {
-            if (fromClass     != null) {
+        public RDFOntologyAllValuesFromRestriction(RDFResource restrictionName,
+                                                   RDFOntologyProperty onProperty,
+                                                   RDFOntologyClass fromClass) : base(restrictionName, onProperty)
+        {
+            if (fromClass != null)
+            {
                 this.FromClass = fromClass;
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyAllValuesFromRestriction because given \"fromClass\" parameter is null.");
             }
         }

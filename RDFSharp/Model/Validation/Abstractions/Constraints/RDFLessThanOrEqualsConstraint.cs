@@ -40,10 +40,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFLessThanOrEqualsConstraint(RDFResource lessThanOrEqualsPredicate) : base()
         {
-            if (lessThanOrEqualsPredicate != null) {
+            if (lessThanOrEqualsPredicate != null)
+            {
                 this.LessThanOrEqualsPredicate = lessThanOrEqualsPredicate;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFLessThanOrEqualsConstraint because given \"lessThanOrEqualsPredicate\" parameter is null.");
             }
         }
@@ -53,19 +55,23 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
-            #region Evaluation            
+            #region Evaluation
             List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
                                                                             && t.Predicate.Equals(this.LessThanOrEqualsPredicate))
                                                              .Select(x => x.Object)
                                                              .ToList();
 
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                foreach (RDFPatternMember predicateNode in predicateNodes) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                foreach (RDFPatternMember predicateNode in predicateNodes)
+                {
                     Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(valueNode, predicateNode);
-                    if (comparison == -99 || comparison > 0) {
+                    if (comparison == -99 || comparison > 0)
+                    {
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT,
                                                                  focusNode,
@@ -84,9 +90,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:lessThanOrEquals
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS, this.LessThanOrEqualsPredicate));

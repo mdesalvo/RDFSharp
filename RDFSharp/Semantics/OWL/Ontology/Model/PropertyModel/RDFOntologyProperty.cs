@@ -23,7 +23,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyProperty represents a property definition within an ontology model.
     /// </summary>
-    public class RDFOntologyProperty: RDFOntologyResource {
+    public class RDFOntologyProperty : RDFOntologyResource
+    {
 
         #region Properties
         /// <summary>
@@ -51,17 +52,22 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an ontology RDF property with the given non-blank name
         /// </summary>
-        internal RDFOntologyProperty(RDFResource propertyName) {
-            if (propertyName != null) {
-                if (!propertyName.IsBlank) {
-                     this.Value           = propertyName;
-                     this.PatternMemberID = propertyName.PatternMemberID;
+        internal RDFOntologyProperty(RDFResource propertyName)
+        {
+            if (propertyName != null)
+            {
+                if (!propertyName.IsBlank)
+                {
+                    this.Value = propertyName;
+                    this.PatternMemberID = propertyName.PatternMemberID;
                 }
-                else {
+                else
+                {
                     throw new RDFSemanticsException("Cannot create RDFOntologyProperty because given \"propertyName\" parameter is a blank resource.");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyProperty because given \"propertyName\" parameter is null.");
             }
         }
@@ -71,19 +77,23 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets the domain of this ontology property to the given ontology class
         /// </summary>
-        public RDFOntologyProperty SetDomain(RDFOntologyClass domainClass) {
-            if (!this.IsAnnotationProperty()) {
-                 this.Domain = domainClass;
-            }            
+        public RDFOntologyProperty SetDomain(RDFOntologyClass domainClass)
+        {
+            if (!this.IsAnnotationProperty())
+            {
+                this.Domain = domainClass;
+            }
             return this;
         }
 
         /// <summary>
         /// Sets the range of this ontology property to the given ontology class
         /// </summary>
-        public RDFOntologyProperty SetRange(RDFOntologyClass rangeClass) {
-            if (!this.IsAnnotationProperty()) {
-                 this.Range = rangeClass;
+        public RDFOntologyProperty SetRange(RDFOntologyClass rangeClass)
+        {
+            if (!this.IsAnnotationProperty())
+            {
+                this.Range = rangeClass;
             }
             return this;
         }
@@ -91,9 +101,11 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology property as "owl:FunctionalProperty"
         /// </summary>
-        public RDFOntologyProperty SetFunctional(Boolean functional) {
-            if (!this.IsAnnotationProperty()) {
-                 this.Functional = functional;
+        public RDFOntologyProperty SetFunctional(Boolean functional)
+        {
+            if (!this.IsAnnotationProperty())
+            {
+                this.Functional = functional;
             }
             return this;
         }
@@ -101,9 +113,11 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology property as "owl:DeprecatedProperty"
         /// </summary>
-        public RDFOntologyProperty SetDeprecated(Boolean deprecated) {
-            if (!this.IsAnnotationProperty()) {
-                 this.Deprecated = deprecated;
+        public RDFOntologyProperty SetDeprecated(Boolean deprecated)
+        {
+            if (!this.IsAnnotationProperty())
+            {
+                this.Deprecated = deprecated;
             }
             return this;
         }

@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyComplementClass represents a complement class definition within an ontology model.
     /// </summary>
-    public class RDFOntologyComplementClass: RDFOntologyClass {
+    public class RDFOntologyComplementClass : RDFOntologyClass
+    {
 
         #region Properties
         /// <summary>
@@ -35,11 +36,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an ontology complement class of the given class and with the given name
         /// </summary>
-        public RDFOntologyComplementClass(RDFResource className, RDFOntologyClass complementOf): base(className) {
-            if (complementOf     != null) {
+        public RDFOntologyComplementClass(RDFResource className, RDFOntologyClass complementOf) : base(className)
+        {
+            if (complementOf != null)
+            {
                 this.ComplementOf = complementOf;
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyComplementClass because given \"complementOf\" parameter is null.");
             }
         }

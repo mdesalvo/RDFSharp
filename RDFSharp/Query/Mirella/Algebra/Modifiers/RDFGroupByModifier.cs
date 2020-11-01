@@ -15,10 +15,10 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
 using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace RDFSharp.Query
 {
@@ -50,7 +50,8 @@ namespace RDFSharp.Query
             {
                 this.PartitionVariables = new List<RDFVariable>();
                 this.Aggregators = new List<RDFAggregator>();
-                partitionVariables.ForEach(pv1 => {
+                partitionVariables.ForEach(pv1 =>
+                {
                     if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
                     {
                         this.PartitionVariables.Add(pv1);
@@ -100,7 +101,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the modifier on the given datatable 
+        /// Applies the modifier on the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {
@@ -227,7 +228,8 @@ namespace RDFSharp.Query
         private String GetPartitionKey(DataRow tableRow)
         {
             List<String> partitionKey = new List<String>();
-            this.PartitionVariables.ForEach(pv => {
+            this.PartitionVariables.ForEach(pv =>
+            {
                 if (tableRow.IsNull(pv.VariableName))
                     partitionKey.Add(pv.VariableName + "§PV§" + String.Empty);
                 else

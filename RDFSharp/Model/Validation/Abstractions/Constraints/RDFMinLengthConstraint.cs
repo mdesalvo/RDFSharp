@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinLengthConstraint represents a SHACL constraint on the minimum allowed length for a given RDF term
     /// </summary>
-    public class RDFMinLengthConstraint : RDFConstraint {
+    public class RDFMinLengthConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -35,7 +36,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a minLength constraint with the given minLength
         /// </summary>
-        public RDFMinLengthConstraint(int minLength) : base() {
+        public RDFMinLengthConstraint(int minLength) : base()
+        {
             this.MinLength = minLength < 0 ? 0 : minLength;
         }
         #endregion
@@ -44,17 +46,21 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                switch (valueNode) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                switch (valueNode)
+                {
 
                     //Resource
                     case RDFResource valueNodeResource:
-                        if (valueNodeResource.IsBlank 
-                                || (this.MinLength > 0 && valueNodeResource.ToString().Length < this.MinLength)) {
+                        if (valueNodeResource.IsBlank
+                                || (this.MinLength > 0 && valueNodeResource.ToString().Length < this.MinLength))
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -67,7 +73,8 @@ namespace RDFSharp.Model
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
-                        if (this.MinLength > 0 && valueNodeLiteral.Value.Length < this.MinLength) {
+                        if (this.MinLength > 0 && valueNodeLiteral.Value.Length < this.MinLength)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -88,9 +95,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:minLength
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(this.MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));

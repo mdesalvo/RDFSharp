@@ -17,14 +17,14 @@
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFAndConstraint represents a SHACL constraint requiring all the given shapes for a given RDF term
     /// </summary>
-    public class RDFAndConstraint : RDFConstraint {
+    public class RDFAndConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -37,7 +37,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build an and constraint
         /// </summary>
-        public RDFAndConstraint() : base() {
+        public RDFAndConstraint() : base()
+        {
             this.AndShapes = new Dictionary<Int64, RDFResource>();
         }
         #endregion
@@ -46,8 +47,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given shape to the required shapes of this constraint
         /// </summary>
-        public RDFAndConstraint AddShape(RDFResource shapeUri) {
-            if (shapeUri != null && !this.AndShapes.ContainsKey(shapeUri.PatternMemberID)) {
+        public RDFAndConstraint AddShape(RDFResource shapeUri)
+        {
+            if (shapeUri != null && !this.AndShapes.ContainsKey(shapeUri.PatternMemberID))
+            {
                 this.AndShapes.Add(shapeUri.PatternMemberID, shapeUri);
             }
             return this;
@@ -56,26 +59,31 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given and shapes
             List<RDFShape> andShapes = new List<RDFShape>();
-            foreach (RDFResource andShapeUri in this.AndShapes.Values) {
+            foreach (RDFResource andShapeUri in this.AndShapes.Values)
+            {
                 RDFShape andShape = shapesGraph.SelectShape(andShapeUri.ToString());
                 if (andShape != null)
                     andShapes.Add(andShape);
             }
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
                 Boolean valueNodeConforms = true;
-                foreach (RDFShape andShape in andShapes) {
+                foreach (RDFShape andShape in andShapes)
+                {
                     RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember>() { valueNode });
-                    if (!andShapeReport.Conforms) {
-						valueNodeConforms = false;
-						break;
-					}
+                    if (!andShapeReport.Conforms)
+                    {
+                        valueNodeConforms = false;
+                        break;
+                    }
                 }
 
                 if (!valueNodeConforms)
@@ -95,9 +103,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //Get collection from andShapes
                 RDFCollection andShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };

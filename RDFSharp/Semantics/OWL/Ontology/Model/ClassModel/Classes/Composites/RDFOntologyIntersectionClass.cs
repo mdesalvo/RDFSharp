@@ -22,13 +22,14 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyIntersectionClass represents an intersection class definition within an ontology model.
     /// </summary>
-    public class RDFOntologyIntersectionClass: RDFOntologyClass {
+    public class RDFOntologyIntersectionClass : RDFOntologyClass
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty ontology intersection class with the given className
         /// </summary>
-        public RDFOntologyIntersectionClass(RDFResource className): base(className) { }
+        public RDFOntologyIntersectionClass(RDFResource className) : base(className) { }
         #endregion
 
     }

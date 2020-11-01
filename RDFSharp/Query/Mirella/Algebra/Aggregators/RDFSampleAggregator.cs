@@ -92,7 +92,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Helps in finalization step by updating the projection's result table 
+        /// Helps in finalization step by updating the projection's result table
         /// </summary>
         internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
         {
@@ -103,7 +103,7 @@ namespace RDFSharp.Query
                 String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
-        
+
             //Add aggregator value to bindings
             String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty);
             bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue);

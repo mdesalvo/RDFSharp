@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using System.Security.Cryptography;
 
 namespace RDFSharp.Model
 {
@@ -80,7 +80,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Turns back ASCII-encoded Unicodes into Unicodes. 
+        /// Turns back ASCII-encoded Unicodes into Unicodes.
         /// </summary>
         public static String ASCII_To_Unicode(String asciiString)
         {
@@ -93,7 +93,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Turns Unicodes into ASCII-encoded Unicodes. 
+        /// Turns Unicodes into ASCII-encoded Unicodes.
         /// </summary>
         public static String Unicode_To_ASCII(String unicodeString)
         {
@@ -322,8 +322,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Rebuilds the collection represented by the given resource within the given graph
         /// </summary>
-        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, 
-                                                                     RDFResource collRepresentative, 
+        internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph,
+                                                                     RDFResource collRepresentative,
                                                                      RDFModelEnums.RDFTripleFlavors expectedFlavor)
         {
             RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource :
@@ -334,20 +334,25 @@ namespace RDFSharp.Model
             #region Deserialization
             Boolean nilFound = false;
             RDFResource itemRest = collRepresentative;
-            while (!nilFound) {
+            while (!nilFound)
+            {
 
                 #region rdf:first
                 RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest)
                                           .FirstOrDefault();
-                if (first != null && first.TripleFlavor == expectedFlavor) {
-                    if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO) {
+                if (first != null && first.TripleFlavor == expectedFlavor)
+                {
+                    if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                    {
                         collection.AddItem((RDFResource)first.Object);
                     }
-                    else {
+                    else
+                    {
                         collection.AddItem((RDFLiteral)first.Object);
                     }
                 }
-                else {
+                else
+                {
                     nilFound = true;
                 }
                 #endregion
@@ -355,11 +360,14 @@ namespace RDFSharp.Model
                 #region rdf:rest
                 RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest)
                                         .FirstOrDefault();
-                if (rest != null) {
-                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL)) {
+                if (rest != null)
+                {
+                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                    {
                         nilFound = true;
                     }
-                    else {
+                    else
+                    {
                         itemRest = (RDFResource)rest.Object;
                     }
                 }
@@ -375,7 +383,8 @@ namespace RDFSharp.Model
         /// Detects the flavor (SPO/SPL) of the collection represented by the given resource within the given graph
         /// </summary>
         internal static RDFModelEnums.RDFTripleFlavors DetectCollectionFlavorFromGraph(RDFGraph graph,
-                                                                                       RDFResource collRepresentative) {
+                                                                                       RDFResource collRepresentative)
+        {
             return graph.SelectTriplesBySubject(collRepresentative)
                         .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
                         .FirstOrDefault()
@@ -383,7 +392,7 @@ namespace RDFSharp.Model
         }
         #endregion
 
-        #region Namespaces        
+        #region Namespaces
         /// <summary>
         /// Gets the list of namespaces used within the triples of the given graph
         /// </summary>

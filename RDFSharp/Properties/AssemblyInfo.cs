@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("1EF76FD3-C935-4965-9621-6CA0CBC275BF")]
 //Internals

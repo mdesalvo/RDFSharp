@@ -31,7 +31,7 @@ namespace RDFSharp.Store
 
         #region Select
         /// <summary>
-        /// Parses the current quadruple of the data reader 
+        /// Parses the current quadruple of the data reader
         /// </summary>
         internal static RDFQuadruple ParseQuadruple(IDataReader fetchedQuadruples)
         {

@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFNodeConstraint represents a SHACL constraint requiring the specified node shape for a given RDF term
     /// </summary>
-    public class RDFNodeConstraint : RDFConstraint {
+    public class RDFNodeConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -35,11 +36,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a node constraint with the given node shape identifier
         /// </summary>
-        public RDFNodeConstraint(RDFResource nodeShapeUri) : base() {
-            if (nodeShapeUri != null) {
+        public RDFNodeConstraint(RDFResource nodeShapeUri) : base()
+        {
+            if (nodeShapeUri != null)
+            {
                 this.NodeShapeUri = nodeShapeUri;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFNodeConstraint because given \"nodeShapeUri\" parameter is null.");
             }
         }
@@ -49,7 +53,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given node shape
@@ -58,7 +63,8 @@ namespace RDFSharp.Model
                 return report;
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
                 RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, new List<RDFPatternMember>() { valueNode });
                 if (!nodeShapeReport.Conforms)
                     report.AddResult(new RDFValidationResult(shape,
@@ -68,7 +74,7 @@ namespace RDFSharp.Model
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-            }               
+            }
             #endregion
 
             return report;
@@ -77,9 +83,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:node
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, this.NodeShapeUri));

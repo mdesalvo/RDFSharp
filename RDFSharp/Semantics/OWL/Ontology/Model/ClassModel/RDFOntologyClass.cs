@@ -23,7 +23,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyClass represents a class definition within an ontology model.
     /// </summary>
-    public class RDFOntologyClass: RDFOntologyResource {
+    public class RDFOntologyClass : RDFOntologyResource
+    {
 
         #region Properties
         /// <summary>
@@ -41,13 +42,16 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an ontology class with the given name and nature
         /// </summary>
-        public RDFOntologyClass(RDFResource className, RDFSemanticsEnums.RDFOntologyClassNature nature=RDFSemanticsEnums.RDFOntologyClassNature.OWL) {
-            if (className != null) {
-                this.Value           = className;
-                this.Nature          = nature;
+        public RDFOntologyClass(RDFResource className, RDFSemanticsEnums.RDFOntologyClassNature nature = RDFSemanticsEnums.RDFOntologyClassNature.OWL)
+        {
+            if (className != null)
+            {
+                this.Value = className;
+                this.Nature = nature;
                 this.PatternMemberID = className.PatternMemberID;
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyClass because given \"className\" parameter is null.");
             }
         }
@@ -57,9 +61,11 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology class as "owl:DeprecatedClass"
         /// </summary>
-        public RDFOntologyClass SetDeprecated(Boolean deprecated) {
-            if (!this.IsRestrictionClass() && !this.IsCompositeClass() && !this.IsDataRangeClass() && !this.IsEnumerateClass()) {
-                 this.Deprecated = deprecated;
+        public RDFOntologyClass SetDeprecated(Boolean deprecated)
+        {
+            if (!this.IsRestrictionClass() && !this.IsCompositeClass() && !this.IsDataRangeClass() && !this.IsEnumerateClass())
+            {
+                this.Deprecated = deprecated;
             }
             return this;
         }

@@ -24,27 +24,31 @@ namespace RDFSharp.Model
     /// <summary>
     ///  RDFValidationReport represents a detailed report of a shapes graph's validation.
     /// </summary>
-    public class RDFValidationReport: RDFResource, IEnumerable<RDFValidationResult> {
+    public class RDFValidationReport : RDFResource, IEnumerable<RDFValidationResult>
+    {
 
         #region Properties
         /// <summary>
         /// Indicates that the validation was successful (sh:conforms)
         /// </summary>
-        public Boolean Conforms {
+        public Boolean Conforms
+        {
             get { return this.ResultsCount == 0; }
         }
 
         /// <summary>
         /// Counter of the validator results
         /// </summary>
-        public Int32 ResultsCount {
+        public Int32 ResultsCount
+        {
             get { return this.Results.Count; }
         }
 
         /// <summary>
         /// Gets an enumerator on the validator results for iteration
         /// </summary>
-        public IEnumerator<RDFValidationResult> ResultsEnumerator {
+        public IEnumerator<RDFValidationResult> ResultsEnumerator
+        {
             get { return this.Results.GetEnumerator(); }
         }
 
@@ -58,7 +62,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named validation report
         /// </summary>
-        internal RDFValidationReport(RDFResource reportName): base(reportName.ToString()) {
+        internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
+        {
             this.Results = new List<RDFValidationResult>();
         }
 
@@ -72,14 +77,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the validation report's results
         /// </summary>
-        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() {
+        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator()
+        {
             return this.ResultsEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the validation report's results
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return this.ResultsEnumerator;
         }
         #endregion
@@ -90,7 +97,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given result to this validation report
         /// </summary>
-        internal void AddResult(RDFValidationResult result) {
+        internal void AddResult(RDFValidationResult result)
+        {
             if (result != null)
                 this.Results.Add(result);
         }
@@ -98,7 +106,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Merges the results of the given validation report to this validation report
         /// </summary>
-        internal void MergeResults(RDFValidationReport report) {
+        internal void MergeResults(RDFValidationReport report)
+        {
             if (report != null && report.Results != null)
                 this.Results.AddRange(report.Results);
         }
@@ -108,7 +117,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this validation report
         /// </summary>
-        public RDFGraph ToRDFGraph() {
+        public RDFGraph ToRDFGraph()
+        {
             var result = new RDFGraph();
 
             //ValidationReport
@@ -121,7 +131,8 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
 
             //Results
-            this.Results.ForEach(res => {
+            this.Results.ForEach(res =>
+            {
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT, res));
                 result = result.UnionWith(res.ToRDFGraph());
             });

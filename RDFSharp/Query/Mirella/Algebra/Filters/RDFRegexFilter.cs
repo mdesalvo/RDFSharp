@@ -44,7 +44,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a filter on the given variable for the given regular expression 
+        /// Default-ctor to build a filter on the given variable for the given regular expression
         /// </summary>
         public RDFRegexFilter(RDFVariable variable, Regex regex)
         {
@@ -69,7 +69,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter 
+        /// Gives the string representation of the filter
         /// </summary>
         public override String ToString()
         {

@@ -41,7 +41,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the filter on the given datarow 
+        /// Applies the filter on the given datarow
         /// </summary>
         internal abstract Boolean ApplyFilter(DataRow row, Boolean applyNegation);
         #endregion

@@ -54,7 +54,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter 
+        /// Gives the string representation of the filter
         /// </summary>
         public override String ToString()
         {
@@ -68,7 +68,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the filter on the column corresponding to the variable in the given datarow 
+        /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
         internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
         {

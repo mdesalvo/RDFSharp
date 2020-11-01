@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerRule represents an inference rule executed by a reasoner
     /// </summary>
-    public class RDFOntologyReasonerRule {
+    public class RDFOntologyReasonerRule
+    {
 
         #region Properties
         /// <summary>
@@ -55,10 +56,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build a reasoner rule with the given name, description and priority (lower is better)
         /// </summary>
-        public RDFOntologyReasonerRule(String ruleName, String ruleDescription, UInt32 rulePriority, ReasonerRuleDelegate ruleDelegate) {
-            if (ruleName != null && ruleName.Trim() != String.Empty) {
-                if (ruleDescription != null && ruleDescription.Trim() != String.Empty) {
-                    if (ruleDelegate != null) {
+        public RDFOntologyReasonerRule(String ruleName, String ruleDescription, UInt32 rulePriority, ReasonerRuleDelegate ruleDelegate)
+        {
+            if (ruleName != null && ruleName.Trim() != String.Empty)
+            {
+                if (ruleDescription != null && ruleDescription.Trim() != String.Empty)
+                {
+                    if (ruleDelegate != null)
+                    {
                         this.RuleName = ruleName.Trim();
                         this.RuleDescription = ruleDescription.Trim();
 
@@ -70,15 +75,18 @@ namespace RDFSharp.Semantics.OWL
 
                         this.ExecuteRule = ruleDelegate;
                     }
-                    else {
+                    else
+                    {
                         throw new RDFSemanticsException("Cannot create RDFOntologyReasonerRule because given \"ruleDelegate\" parameter is null.");
                     }
                 }
-                else {
+                else
+                {
                     throw new RDFSemanticsException("Cannot create RDFOntologyReasonerRule because given \"ruleDescription\" parameter is null or empty.");
                 }
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyReasonerRule because given \"ruleName\" parameter is null or empty.");
             }
         }
@@ -88,14 +96,16 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gives the name of the reasoner rule
         /// </summary>
-        public override String ToString() {
+        public override String ToString()
+        {
             return this.RuleName;
         }
 
         /// <summary>
         /// Gives the full representation of the reasoner rule
         /// </summary>
-        public String ToFullString() {
+        public String ToFullString()
+        {
             return this.RuleName + " [PRIORITY " + this.RulePriority + "]: " + this.RuleDescription;
         }
         #endregion
@@ -104,7 +114,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Redefines the execution priority of the reasoner rule
         /// </summary>
-        internal RDFOntologyReasonerRule SetPriority(UInt32 priority) {
+        internal RDFOntologyReasonerRule SetPriority(UInt32 priority)
+        {
             this.RulePriority = priority;
             return this;
         }

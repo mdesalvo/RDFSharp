@@ -21,7 +21,7 @@ namespace RDFSharp.Query
 {
 
     /// <summary>
-    /// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable. 
+    /// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable.
     /// </summary>
     public class RDFOrderByModifier : RDFModifier
     {
@@ -40,7 +40,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an OrderBy modifier of the given flavor on the given variable 
+        /// Default-ctor to build an OrderBy modifier of the given flavor on the given variable
         /// </summary>
         public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
         {
@@ -58,7 +58,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the modifier 
+        /// Gives the string representation of the modifier
         /// </summary>
         public override String ToString()
         {
@@ -68,7 +68,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the column corresponding to the variable in the given datatable 
+        /// Applies the modifier on the column corresponding to the variable in the given datatable
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {

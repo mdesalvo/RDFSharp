@@ -15,16 +15,15 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFQualifiedValueShapeConstraint represents a SHACL constraint requiring min/max occurrencies of the specified shape for a given RDF term
     /// </summary>
-    public class RDFQualifiedValueShapeConstraint : RDFConstraint {
+    public class RDFQualifiedValueShapeConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -47,8 +46,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a qualified value shape constraint with the given property shape identifier and min/max counters
         /// </summary>
-        public RDFQualifiedValueShapeConstraint(RDFResource qualifiedValueShapeUri, int? qualifiedValueMinCount, int? qualifiedValueMaxCount) : base() {
-            if (qualifiedValueShapeUri != null) {
+        public RDFQualifiedValueShapeConstraint(RDFResource qualifiedValueShapeUri, int? qualifiedValueMinCount, int? qualifiedValueMaxCount) : base()
+        {
+            if (qualifiedValueShapeUri != null)
+            {
                 this.QualifiedValueShapeUri = qualifiedValueShapeUri;
 
                 if (qualifiedValueMinCount.HasValue)
@@ -57,7 +58,8 @@ namespace RDFSharp.Model
                 if (qualifiedValueMaxCount.HasValue)
                     this.QualifiedValueMaxCount = qualifiedValueMaxCount < 0 ? 0 : qualifiedValueMaxCount;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFQualifiedValueShapeConstraint because given \"qualifiedValueShapeUri\" parameter is null.");
             }
         }
@@ -67,7 +69,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given qualified value shape
@@ -76,9 +79,11 @@ namespace RDFSharp.Model
                 return report;
 
             #region Evaluation
-            if (this.QualifiedValueMinCount.HasValue || this.QualifiedValueMaxCount.HasValue) {
+            if (this.QualifiedValueMinCount.HasValue || this.QualifiedValueMaxCount.HasValue)
+            {
                 int conformingValues = 0;
-                foreach (RDFPatternMember valueNode in valueNodes) {
+                foreach (RDFPatternMember valueNode in valueNodes)
+                {
                     RDFValidationReport qualifiedValueShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, qualifiedValueShape, new List<RDFPatternMember>() { valueNode });
                     if (qualifiedValueShapeReport.Conforms)
                         conformingValues++;
@@ -110,9 +115,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:qualifiedValueShape
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, this.QualifiedValueShapeUri));

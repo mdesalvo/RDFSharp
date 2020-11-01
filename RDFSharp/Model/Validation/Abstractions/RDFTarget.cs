@@ -19,7 +19,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTarget represents a generic SHACL target definition within a shape.
     /// </summary>
-    public abstract class RDFTarget : RDFResource {
+    public abstract class RDFTarget : RDFResource
+    {
 
         #region Properties
         /// <summary>
@@ -32,7 +33,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a generic target
         /// </summary>
-        internal RDFTarget(): base() { }
+        internal RDFTarget() : base() { }
         #endregion
 
         #region Properties

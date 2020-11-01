@@ -22,7 +22,8 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyModel represents the model component (T-BOX) of an ontology.
     /// </summary>
-    public class RDFOntologyModel {
+    public class RDFOntologyModel
+    {
 
         #region Properties
         /// <summary>
@@ -40,8 +41,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an empty ontology model
         /// </summary>
-        public RDFOntologyModel() {
-            this.ClassModel    = new RDFOntologyClassModel();
+        public RDFOntologyModel()
+        {
+            this.ClassModel = new RDFOntologyClassModel();
             this.PropertyModel = new RDFOntologyPropertyModel();
         }
         #endregion
@@ -52,12 +54,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Builds a new intersection model from this model and a given one
         /// </summary>
-        public RDFOntologyModel IntersectWith(RDFOntologyModel model) {
-            var result               = new RDFOntologyModel();
-            if (model               != null) {
+        public RDFOntologyModel IntersectWith(RDFOntologyModel model)
+        {
+            var result = new RDFOntologyModel();
+            if (model != null)
+            {
 
                 //Intersect the class models
-                result.ClassModel    = this.ClassModel.IntersectWith(model.ClassModel);
+                result.ClassModel = this.ClassModel.IntersectWith(model.ClassModel);
 
                 //Intersect the property models
                 result.PropertyModel = this.PropertyModel.IntersectWith(model.PropertyModel);
@@ -69,20 +73,22 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Builds a new union model from this model and a given one
         /// </summary>
-        public RDFOntologyModel UnionWith(RDFOntologyModel model) {
-            var result               = new RDFOntologyModel();
+        public RDFOntologyModel UnionWith(RDFOntologyModel model)
+        {
+            var result = new RDFOntologyModel();
 
             //Use this class model
-            result.ClassModel        = result.ClassModel.UnionWith(this.ClassModel);
+            result.ClassModel = result.ClassModel.UnionWith(this.ClassModel);
 
             //Use this property model
-            result.PropertyModel     = result.PropertyModel.UnionWith(this.PropertyModel);
+            result.PropertyModel = result.PropertyModel.UnionWith(this.PropertyModel);
 
             //Manage the given model
-            if (model               != null) {
+            if (model != null)
+            {
 
                 //Union with the given class model
-                result.ClassModel    = result.ClassModel.UnionWith(model.ClassModel);
+                result.ClassModel = result.ClassModel.UnionWith(model.ClassModel);
 
                 //Union with the given property model
                 result.PropertyModel = result.PropertyModel.UnionWith(model.PropertyModel);
@@ -94,20 +100,22 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Builds a new difference model from this model and a given one
         /// </summary>
-        public RDFOntologyModel DifferenceWith(RDFOntologyModel model) {
-            var result               = new RDFOntologyModel();
+        public RDFOntologyModel DifferenceWith(RDFOntologyModel model)
+        {
+            var result = new RDFOntologyModel();
 
             //Use this class model
-            result.ClassModel        = result.ClassModel.UnionWith(this.ClassModel);
+            result.ClassModel = result.ClassModel.UnionWith(this.ClassModel);
 
             //Use this property model
-            result.PropertyModel     = result.PropertyModel.UnionWith(this.PropertyModel);
+            result.PropertyModel = result.PropertyModel.UnionWith(this.PropertyModel);
 
             //Manage the given model
-            if (model               != null) {
+            if (model != null)
+            {
 
                 //Difference with the given class model
-                result.ClassModel    = result.ClassModel.DifferenceWith(model.ClassModel);
+                result.ClassModel = result.ClassModel.DifferenceWith(model.ClassModel);
 
                 //Difference with the given property model
                 result.PropertyModel = result.PropertyModel.DifferenceWith(model.PropertyModel);
@@ -121,7 +129,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets a graph representation of this ontology model, exporting inferences according to the selected behavior
         /// </summary>
-        public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior) {
+        public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        {
             return this.ClassModel.ToRDFGraph(infexpBehavior)
                                   .UnionWith(this.PropertyModel.ToRDFGraph(infexpBehavior));
         }

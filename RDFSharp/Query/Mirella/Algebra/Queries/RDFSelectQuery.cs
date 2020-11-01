@@ -164,7 +164,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the query to the given graph 
+        /// Applies the query to the given graph
         /// </summary>
         public RDFSelectQueryResult ApplyToGraph(RDFGraph graph)
         {
@@ -179,7 +179,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the query to the given store 
+        /// Applies the query to the given store
         /// </summary>
         public RDFSelectQueryResult ApplyToStore(RDFStore store)
         {
@@ -248,7 +248,8 @@ namespace RDFSharp.Query
 
                 //Eventually adjust column names (should start with "?")
                 Int32 columnsCount = selResult.SelectResults.Columns.Count;
-                for (Int32 i = 0; i < columnsCount; i++) {
+                for (Int32 i = 0; i < columnsCount; i++)
+                {
                     if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                         selResult.SelectResults.Columns[i].ColumnName = "?" + selResult.SelectResults.Columns[i].ColumnName;
                 }

@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPropertyShape represents a SHACL property shape definition
     /// </summary>
-    public class RDFPropertyShape : RDFShape {
+    public class RDFPropertyShape : RDFShape
+    {
 
         #region Properties
         /// <summary>
@@ -55,13 +56,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named property shape on the given property
         /// </summary>
-        public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName) {
-            if (path != null) {
+        public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName)
+        {
+            if (path != null)
+            {
                 this.Path = path;
                 this.Descriptions = new List<RDFLiteral>();
                 this.Names = new List<RDFLiteral>();
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
             }
         }
@@ -76,17 +80,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given human-readable description to this property shape's path
         /// </summary>
-        public RDFPropertyShape AddDescription(RDFLiteral description) {
-            if (description != null) {
+        public RDFPropertyShape AddDescription(RDFLiteral description)
+        {
+            if (description != null)
+            {
 
                 //Plain Literal
                 if (description is RDFPlainLiteral)
-                        this.Descriptions.Add(description);
+                    this.Descriptions.Add(description);
 
                 //Typed Literal
                 else
                     if (((RDFTypedLiteral)description).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                        this.Descriptions.Add(description);
+                    this.Descriptions.Add(description);
 
             }
             return this;
@@ -95,8 +101,10 @@ namespace RDFSharp.Model
         /// <summary>
         /// Adds the given human-readable label to this property shape's path
         /// </summary>
-        public RDFPropertyShape AddName(RDFLiteral name) {
-            if (name != null) {
+        public RDFPropertyShape AddName(RDFLiteral name)
+        {
+            if (name != null)
+            {
 
                 //Plain Literal
                 if (name is RDFPlainLiteral)
@@ -105,7 +113,7 @@ namespace RDFSharp.Model
                 //Typed Literal
                 else
                     if (((RDFTypedLiteral)name).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                        this.Names.Add(name);
+                    this.Names.Add(name);
 
             }
             return this;
@@ -114,7 +122,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Sets the relative order of this property shape compared to its siblings
         /// </summary>
-        public RDFPropertyShape SetOrder(Int32 order) {
+        public RDFPropertyShape SetOrder(Int32 order)
+        {
             this.Order = new RDFTypedLiteral(order.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
             return this;
         }
@@ -122,7 +131,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Sets the group of property shapes to which this SHACL property shape belongs
         /// </summary>
-        public RDFPropertyShape SetGroup(RDFResource group) {
+        public RDFPropertyShape SetGroup(RDFResource group)
+        {
             this.Group = group;
             return this;
         }
@@ -130,7 +140,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this property shape
         /// </summary>
-        public override RDFGraph ToRDFGraph() {
+        public override RDFGraph ToRDFGraph()
+        {
             var result = base.ToRDFGraph();
 
             //PropertyShape

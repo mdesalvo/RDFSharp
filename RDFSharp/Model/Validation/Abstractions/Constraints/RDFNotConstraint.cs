@@ -15,16 +15,15 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFNotConstraint represents a SHACL constraint not allowing the given shape for a given RDF term
     /// </summary>
-    public class RDFNotConstraint : RDFConstraint {
+    public class RDFNotConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -37,11 +36,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a not constraint with the given shape
         /// </summary>
-        public RDFNotConstraint(RDFResource notShape) : base() {
-            if (notShape != null) {
+        public RDFNotConstraint(RDFResource notShape) : base()
+        {
+            if (notShape != null)
+            {
                 this.NotShape = notShape;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFNotConstraint because given \"notShape\" parameter is null.");
             }
         }
@@ -51,18 +53,20 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given not shape
             RDFShape notShape = shapesGraph.SelectShape(this.NotShape.ToString());
             if (notShape == null)
-				return report;
-            
+                return report;
+
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
                 RDFValidationReport notShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, notShape, new List<RDFPatternMember>() { valueNode });
-				if (notShapeReport.Conforms)
+                if (notShapeReport.Conforms)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.NOT_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -79,9 +83,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:not
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NOT, this.NotShape));

@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFHasValueConstraint represents a SHACL constraint on a required value for a given RDF term
     /// </summary>
-    public class RDFHasValueConstraint : RDFConstraint {
+    public class RDFHasValueConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -37,11 +37,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a hasValue constraint with the given resource value
         /// </summary>
-        public RDFHasValueConstraint(RDFResource value) : base() {
-            if (value != null) {
+        public RDFHasValueConstraint(RDFResource value) : base()
+        {
+            if (value != null)
+            {
                 this.Value = value;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
             }
         }
@@ -49,11 +52,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a hasValue constraint with the given literal value
         /// </summary>
-        public RDFHasValueConstraint(RDFLiteral value) : base() {
-            if (value != null) {
+        public RDFHasValueConstraint(RDFLiteral value) : base()
+        {
+            if (value != null)
+            {
                 this.Value = value;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
             }
         }
@@ -63,11 +69,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            if (!valueNodes.Any(v => v.Equals(this.Value))) {
+            if (!valueNodes.Any(v => v.Equals(this.Value)))
+            {
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -80,13 +88,15 @@ namespace RDFSharp.Model
 
             return report;
         }
-        
+
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:hasValue
                 if (this.Value is RDFResource)

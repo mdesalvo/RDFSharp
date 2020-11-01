@@ -23,13 +23,14 @@ namespace RDFSharp.Semantics.SKOS
     /// <summary>
     /// RDFSKOSConcept represents an instance of skos:Concept within an instance of skos:ConceptScheme
     /// </summary>
-    public class RDFSKOSConcept: RDFOntologyFact {
+    public class RDFSKOSConcept : RDFOntologyFact
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a skos:Concept with the given name
         /// </summary>
-        public RDFSKOSConcept(RDFResource conceptName): base(conceptName) { }
+        public RDFSKOSConcept(RDFResource conceptName) : base(conceptName) { }
         #endregion
 
     }

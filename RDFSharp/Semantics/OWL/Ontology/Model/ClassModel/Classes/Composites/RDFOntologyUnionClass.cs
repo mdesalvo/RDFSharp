@@ -22,13 +22,14 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyUnionClass represents a union class definition within an ontology model.
     /// </summary>
-    public class RDFOntologyUnionClass: RDFOntologyClass {
+    public class RDFOntologyUnionClass : RDFOntologyClass
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty ontology union class with the given name
         /// </summary>
-        public RDFOntologyUnionClass(RDFResource className): base(className) { }
+        public RDFOntologyUnionClass(RDFResource className) : base(className) { }
         #endregion
 
     }

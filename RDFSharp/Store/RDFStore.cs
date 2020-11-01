@@ -184,7 +184,7 @@ namespace RDFSharp.Store
         public abstract void ClearQuadruples();
 
         /// <summary>
-        /// Compacts the reified quadruples by removing their 4 standard statements 
+        /// Compacts the reified quadruples by removing their 4 standard statements
         /// </summary>
         public void UnreifyQuadruples()
         {
@@ -369,7 +369,7 @@ namespace RDFSharp.Store
 
         #region Export
         /// <summary>
-        /// Writes the store into a file in the given RDF format. 
+        /// Writes the store into a file in the given RDF format.
         /// </summary>
         public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath)
         {
@@ -392,7 +392,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Writes the store into a stream in the given RDF format. 
+        /// Writes the store into a stream in the given RDF format.
         /// </summary>
         public void ToStream(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
         {

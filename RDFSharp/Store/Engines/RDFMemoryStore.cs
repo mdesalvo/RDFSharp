@@ -91,7 +91,7 @@ namespace RDFSharp.Store
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the Memory store 
+        /// Gives the string representation of the Memory store
         /// </summary>
         public override String ToString()
         {
@@ -722,7 +722,7 @@ namespace RDFSharp.Store
 
         #region Import
         /// <summary>
-        /// Creates a memory store from a file of the given RDF format. 
+        /// Creates a memory store from a file of the given RDF format.
         /// </summary>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath)
         {
@@ -744,7 +744,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Creates a memory store from a stream of the given RDF format. 
+        /// Creates a memory store from a stream of the given RDF format.
         /// </summary>
         public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
         {
@@ -771,9 +771,9 @@ namespace RDFSharp.Store
             //Check the structure of the datatable for consistency against the "C-S-P-O" RDF model
             if (table != null && table.Columns.Count == 4)
             {
-                if (table.Columns.Contains("?CONTEXT") 
-                        && table.Columns.Contains("?SUBJECT") 
-                            && table.Columns.Contains("?PREDICATE") 
+                if (table.Columns.Contains("?CONTEXT")
+                        && table.Columns.Contains("?SUBJECT")
+                            && table.Columns.Contains("?PREDICATE")
                                 && table.Columns.Contains("?OBJECT"))
                 {
 

@@ -36,7 +36,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a nodeKind constraint of the given kind
         /// </summary>
-        public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind) : base() {
+        public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind) : base()
+        {
             this.NodeKind = nodeKind;
         }
         #endregion
@@ -45,19 +46,24 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                switch (valueNode) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                switch (valueNode)
+                {
 
                     //Resource
                     case RDFResource valueNodeResource:
-                        if (valueNodeResource.IsBlank) {
+                        if (valueNodeResource.IsBlank)
+                        {
                             if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI
                                     || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRIOrLiteral
-                                        || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal) {
+                                        || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
+                            {
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
                                                                          focusNode,
@@ -67,10 +73,12 @@ namespace RDFSharp.Model
                                                                          shape.Severity));
                             }
                         }
-                        else {
+                        else
+                        {
                             if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                                     || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral
-                                        || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal) {
+                                        || this.NodeKind == RDFValidationEnums.RDFNodeKinds.Literal)
+                            {
                                 report.AddResult(new RDFValidationResult(shape,
                                                                          RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
                                                                          focusNode,
@@ -86,7 +94,8 @@ namespace RDFSharp.Model
                     case RDFLiteral valueNodeLiteral:
                         if (this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNode
                                 || this.NodeKind == RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI
-                                    || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI) {
+                                    || this.NodeKind == RDFValidationEnums.RDFNodeKinds.IRI)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -107,12 +116,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:nodeKind
-                switch (this.NodeKind) {
+                switch (this.NodeKind)
+                {
                     case RDFValidationEnums.RDFNodeKinds.BlankNode:
                         result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE_KIND, RDFVocabulary.SHACL.BLANK_NODE));
                         break;

@@ -482,7 +482,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Gets the subgraph containing triples with the specified resource as subject 
+        /// Gets the subgraph containing triples with the specified resource as subject
         /// </summary>
         public RDFGraph SelectTriplesBySubject(RDFResource subjectResource)
         {
@@ -498,7 +498,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Gets the subgraph containing triples with the specified resource as object 
+        /// Gets the subgraph containing triples with the specified resource as object
         /// </summary>
         public RDFGraph SelectTriplesByObject(RDFResource objectResource)
         {
@@ -506,7 +506,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Gets the subgraph containing triples with the specified literal as object 
+        /// Gets the subgraph containing triples with the specified literal as object
         /// </summary>
         public RDFGraph SelectTriplesByLiteral(RDFLiteral objectLiteral)
         {
@@ -602,7 +602,7 @@ namespace RDFSharp.Model
 
         #region Export
         /// <summary>
-        /// Writes the graph into a file in the given RDF format. 
+        /// Writes the graph into a file in the given RDF format.
         /// </summary>
         public void ToFile(RDFModelEnums.RDFFormats rdfFormat, String filepath)
         {
@@ -631,7 +631,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Writes the graph into a stream in the given RDF format. 
+        /// Writes the graph into a stream in the given RDF format.
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
         {
@@ -691,7 +691,7 @@ namespace RDFSharp.Model
 
         #region Import
         /// <summary>
-        /// Creates a graph from a file of the given RDF format. 
+        /// Creates a graph from a file of the given RDF format.
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, String filepath)
         {
@@ -717,7 +717,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Creates a graph from a stream of the given RDF format. 
+        /// Creates a graph from a stream of the given RDF format.
         /// </summary>
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream)
         {
@@ -748,8 +748,8 @@ namespace RDFSharp.Model
             //Check the structure of the datatable for consistency against the "S-P-O" RDF model
             if (table != null && table.Columns.Count == 3)
             {
-                if (table.Columns.Contains("?SUBJECT") 
-                        && table.Columns.Contains("?PREDICATE") 
+                if (table.Columns.Contains("?SUBJECT")
+                        && table.Columns.Contains("?PREDICATE")
                             && table.Columns.Contains("?OBJECT"))
                 {
 

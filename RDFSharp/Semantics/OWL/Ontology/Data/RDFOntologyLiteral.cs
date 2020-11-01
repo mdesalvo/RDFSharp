@@ -22,18 +22,22 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyLiteral represents an instance of literal within an ontology data.
     /// </summary>
-    public class RDFOntologyLiteral: RDFOntologyResource {
+    public class RDFOntologyLiteral : RDFOntologyResource
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an ontology literal from the given literal.
         /// </summary>
-        public RDFOntologyLiteral(RDFLiteral literal) {
-            if (literal != null) {
-                this.Value           = literal;
+        public RDFOntologyLiteral(RDFLiteral literal)
+        {
+            if (literal != null)
+            {
+                this.Value = literal;
                 this.PatternMemberID = literal.PatternMemberID;
             }
-            else {
+            else
+            {
                 throw new RDFSemanticsException("Cannot create RDFOntologyLiteral because given \"literal\" parameter is null.");
             }
         }

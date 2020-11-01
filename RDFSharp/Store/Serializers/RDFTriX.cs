@@ -35,7 +35,7 @@ namespace RDFSharp.Store
 
         #region Write
         /// <summary>
-        /// Serializes the given store to the given filepath using TriX data format. 
+        /// Serializes the given store to the given filepath using TriX data format.
         /// </summary>
         internal static void Serialize(RDFStore store, String filepath)
         {
@@ -43,7 +43,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Serializes the given store to the given stream using TriX data format. 
+        /// Serializes the given store to the given stream using TriX data format.
         /// </summary>
         internal static void Serialize(RDFStore store, Stream outputStream)
         {
@@ -171,7 +171,7 @@ namespace RDFSharp.Store
 
         #region Read
         /// <summary>
-        /// Deserializes the given TriX filepath to a memory store. 
+        /// Deserializes the given TriX filepath to a memory store.
         /// </summary>
         internal static RDFMemoryStore Deserialize(String filepath)
         {
@@ -179,7 +179,7 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Deserializes the given TriX stream to a memory store. 
+        /// Deserializes the given TriX stream to a memory store.
         /// </summary>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {

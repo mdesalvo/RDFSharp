@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFPropertyConstraint represents a SHACL constraint requiring the specified property shape for a given RDF term
     /// </summary>
-    public class RDFPropertyConstraint : RDFConstraint {
+    public class RDFPropertyConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -35,11 +36,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a property constraint with the given property shape identifier
         /// </summary>
-        public RDFPropertyConstraint(RDFResource propertyShapeUri) : base() {
-            if (propertyShapeUri != null) {
+        public RDFPropertyConstraint(RDFResource propertyShapeUri) : base()
+        {
+            if (propertyShapeUri != null)
+            {
                 this.PropertyShapeUri = propertyShapeUri;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFPropertyConstraint because given \"propertyShapeUri\" parameter is null.");
             }
         }
@@ -49,7 +53,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             //Search for given property shape
@@ -69,9 +74,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:property
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, this.PropertyShapeUri));

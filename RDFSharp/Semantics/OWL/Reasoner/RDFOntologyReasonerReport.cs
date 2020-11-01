@@ -25,20 +25,23 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerReport represents a detailed report of an ontology reasoner's activity.
     /// </summary>
-    public sealed class RDFOntologyReasonerReport: IEnumerable<RDFOntologyReasonerEvidence> {
+    public sealed class RDFOntologyReasonerReport : IEnumerable<RDFOntologyReasonerEvidence>
+    {
 
         #region Properties
         /// <summary>
         /// Counter of the evidences
         /// </summary>
-        public Int32 EvidencesCount {
+        public Int32 EvidencesCount
+        {
             get { return this.Evidences.Count; }
         }
 
         /// <summary>
         /// Gets an enumerator on the evidences for iteration
         /// </summary>
-        public IEnumerator<RDFOntologyReasonerEvidence> EvidencesEnumerator {
+        public IEnumerator<RDFOntologyReasonerEvidence> EvidencesEnumerator
+        {
             get { return this.Evidences.Values.GetEnumerator(); }
         }
 
@@ -57,9 +60,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an empty reasoner report
         /// </summary>
-        internal RDFOntologyReasonerReport() {
+        internal RDFOntologyReasonerReport()
+        {
             this.Evidences = new Dictionary<Int64, RDFOntologyReasonerEvidence>();
-            this.SyncLock  = new Object();
+            this.SyncLock = new Object();
         }
         #endregion
 
@@ -67,14 +71,16 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the reasoner report's evidences
         /// </summary>
-        IEnumerator<RDFOntologyReasonerEvidence> IEnumerable<RDFOntologyReasonerEvidence>.GetEnumerator() {
+        IEnumerator<RDFOntologyReasonerEvidence> IEnumerable<RDFOntologyReasonerEvidence>.GetEnumerator()
+        {
             return this.EvidencesEnumerator;
         }
 
         /// <summary>
         /// Exposes an untyped enumerator on the reasoner report's evidences
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return this.EvidencesEnumerator;
         }
         #endregion
@@ -85,19 +91,24 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given evidence to the reasoner report
         /// </summary>
-        internal void AddEvidence(RDFOntologyReasonerEvidence evidence) {
-            lock (this.SyncLock) { 
-                  if (!this.Evidences.ContainsKey(evidence.EvidenceContent.TaxonomyEntryID)) { 
-                       this.Evidences.Add(evidence.EvidenceContent.TaxonomyEntryID, evidence);
-                  }
+        internal void AddEvidence(RDFOntologyReasonerEvidence evidence)
+        {
+            lock (this.SyncLock)
+            {
+                if (!this.Evidences.ContainsKey(evidence.EvidenceContent.TaxonomyEntryID))
+                {
+                    this.Evidences.Add(evidence.EvidenceContent.TaxonomyEntryID, evidence);
+                }
             }
         }
 
         /// <summary>
         /// Merges the evidences of the given report
         /// </summary>
-        internal void Merge(RDFOntologyReasonerReport report) {
-            foreach(var evidence in report) {
+        internal void Merge(RDFOntologyReasonerReport report)
+        {
+            foreach (var evidence in report)
+            {
                 this.AddEvidence(evidence);
             }
         }
@@ -107,35 +118,40 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the evidences having the given category
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByCategory(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory) {
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByCategory(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory)
+        {
             return this.Evidences.Values.Where(e => e.EvidenceCategory.Equals(evidenceCategory)).ToList();
         }
 
         /// <summary>
         /// Gets the evidences having the given provenance rule
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(String evidenceProvenance = "") {
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(String evidenceProvenance = "")
+        {
             return this.Evidences.Values.Where(e => e.EvidenceProvenance.ToUpper().Equals(evidenceProvenance.Trim().ToUpperInvariant(), StringComparison.Ordinal)).ToList();
         }
 
         /// <summary>
         /// Gets the evidences having the given content subject
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentSubject(RDFOntologyResource evidenceContentSubject) {
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentSubject(RDFOntologyResource evidenceContentSubject)
+        {
             return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomySubject.Equals(evidenceContentSubject)).ToList();
         }
 
         /// <summary>
         /// Gets the evidences having the given content predicate
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentPredicate(RDFOntologyResource evidenceContentPredicate) {
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentPredicate(RDFOntologyResource evidenceContentPredicate)
+        {
             return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyPredicate.Equals(evidenceContentPredicate)).ToList();
         }
 
         /// <summary>
         /// Gets the evidences having the given content object
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentObject(RDFOntologyResource evidenceContentObject) {
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentObject(RDFOntologyResource evidenceContentObject)
+        {
             return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyObject.Equals(evidenceContentObject)).ToList();
         }
         #endregion

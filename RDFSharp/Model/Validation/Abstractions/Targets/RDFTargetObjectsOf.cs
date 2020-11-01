@@ -19,17 +19,21 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFTargetObjectsOf represents a SHACL target of type "ObjectsOf" within a shape.
     /// </summary>
-    public class RDFTargetObjectsOf : RDFTarget {
+    public class RDFTargetObjectsOf : RDFTarget
+    {
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an objectsOf target on the given property
         /// </summary>
-        public RDFTargetObjectsOf(RDFResource targetProperty) : base() {
-            if (targetProperty != null) {
+        public RDFTargetObjectsOf(RDFResource targetProperty) : base()
+        {
+            if (targetProperty != null)
+            {
                 this.TargetValue = targetProperty;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFTargetObjectsOf because given \"targetProperty\" parameter is null.");
             }
         }
@@ -39,7 +43,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this target
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             var result = new RDFGraph();
 
             //sh:targetObjectsOf

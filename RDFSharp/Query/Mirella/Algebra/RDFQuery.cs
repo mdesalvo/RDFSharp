@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQuery is the foundation class for modeling SPARQL queries
     /// </summary>
-    public abstract class RDFQuery: RDFQueryMember
+    public abstract class RDFQuery : RDFQueryMember
     {
 
         #region Properties
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
         internal List<RDFNamespace> GetPrefixes()
         {
             List<RDFNamespace> result = new List<RDFNamespace>(this.Prefixes);
-            foreach(RDFQuery subQuery in this.GetSubQueries())
+            foreach (RDFQuery subQuery in this.GetSubQueries())
                 result.AddRange(subQuery.GetPrefixes());
             return result.Distinct().ToList();
         }

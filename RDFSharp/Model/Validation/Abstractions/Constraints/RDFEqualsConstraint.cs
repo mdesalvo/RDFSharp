@@ -23,7 +23,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFEqualsConstraint represents a SHACL constraint on presence of a given RDF term for the specified predicate
     /// </summary>
-    public class RDFEqualsConstraint : RDFConstraint {
+    public class RDFEqualsConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -36,11 +37,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build an equals constraint with the given predicate
         /// </summary>
-        public RDFEqualsConstraint(RDFResource equalsPredicate) : base() {
-            if (equalsPredicate != null) {
+        public RDFEqualsConstraint(RDFResource equalsPredicate) : base()
+        {
+            if (equalsPredicate != null)
+            {
                 this.EqualsPredicate = equalsPredicate;
             }
-            else {
+            else
+            {
                 throw new RDFModelException("Cannot create RDFEqualsConstraint because given \"equalsPredicate\" parameter is null.");
             }
         }
@@ -50,7 +54,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
@@ -59,8 +64,10 @@ namespace RDFSharp.Model
                                                              .Select(x => x.Object)
                                                              .ToList();
 
-            foreach (RDFPatternMember predicateNode in predicateNodes) {
-                if (!valueNodes.Any(v => v.Equals(predicateNode))) {
+            foreach (RDFPatternMember predicateNode in predicateNodes)
+            {
+                if (!valueNodes.Any(v => v.Equals(predicateNode)))
+                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -71,8 +78,10 @@ namespace RDFSharp.Model
                 }
             }
 
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                if (!predicateNodes.Any(p => p.Equals(valueNode))) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                if (!predicateNodes.Any(p => p.Equals(valueNode)))
+                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -90,9 +99,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:equals
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, this.EqualsPredicate));

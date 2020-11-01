@@ -17,7 +17,6 @@
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
@@ -25,7 +24,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFLanguageInConstraint represents a SHACL constraint on the allowed language tags for a given RDF term
     /// </summary>
-    public class RDFLanguageInConstraint : RDFConstraint {
+    public class RDFLanguageInConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -38,13 +38,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a languageIn constraint with the given list of language tags
         /// </summary>
-        public RDFLanguageInConstraint(List<string> languageTags) : base() {
+        public RDFLanguageInConstraint(List<string> languageTags) : base()
+        {
             this.LanguageTags = new HashSet<string>();
 
             //Accept only language tags compatible with langMatches filter
-            languageTags?.ForEach(lt => {
+            languageTags?.ForEach(lt =>
+            {
                 string languageTag = lt?.Trim() ?? string.Empty;
-                if (languageTag == string.Empty || languageTag == "*" || Regex.IsMatch(languageTag, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$")) {
+                if (languageTag == string.Empty || languageTag == "*" || Regex.IsMatch(languageTag, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
+                {
                     this.LanguageTags.Add(languageTag.ToUpperInvariant());
                 }
             });
@@ -55,25 +58,29 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
 
             #region Evaluation
-            foreach (RDFPatternMember valueNode in valueNodes) {
-                switch (valueNode) {
+            foreach (RDFPatternMember valueNode in valueNodes)
+            {
+                switch (valueNode)
+                {
 
                     //PlainLiteral
                     case RDFPlainLiteral valueNodePlainLiteral:
                         bool langMatches = false;
                         var langTagsEnumerator = this.LanguageTags.GetEnumerator();
-                        while (langTagsEnumerator.MoveNext() && !langMatches) {
+                        while (langTagsEnumerator.MoveNext() && !langMatches)
+                        {
 
                             //NO language is found in the variable
-                            if (langTagsEnumerator.Current == String.Empty) 
+                            if (langTagsEnumerator.Current == String.Empty)
                                 langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
                             //ANY language is found in the variable
-                            else if (langTagsEnumerator.Current == "*") 
+                            else if (langTagsEnumerator.Current == "*")
                                 langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
                             //GIVEN language is found in the variable
@@ -81,7 +88,8 @@ namespace RDFSharp.Model
                                 langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@" + langTagsEnumerator.Current + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
                         }
-                        if (!langMatches) {
+                        if (!langMatches)
+                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.LANGUAGE_IN_CONSTRAINT_COMPONENT,
                                                                      focusNode,
@@ -113,9 +121,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //Get collection from language tags
                 RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };

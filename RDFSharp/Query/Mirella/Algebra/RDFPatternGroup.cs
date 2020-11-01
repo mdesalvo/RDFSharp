@@ -77,7 +77,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// List-ctor to build a named pattern group with the given list of patterns 
+        /// List-ctor to build a named pattern group with the given list of patterns
         /// </summary>
         public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns) : this(patternGroupName)
         {

@@ -25,7 +25,8 @@ namespace RDFSharp.Semantics.SKOS
     /// <summary>
     ///  RDFSKOSHelper contains utility methods supporting SKOS modeling and reasoning
     /// </summary>
-    public static class RDFSKOSHelper {
+    public static class RDFSKOSHelper
+    {
 
         #region Modeling
 
@@ -35,9 +36,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given concept to the conceptScheme as top concept of the hierarchy
         /// </summary>
-        public static RDFSKOSConceptScheme AddTopConceptRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                 RDFSKOSConcept concept) {
-            if (conceptScheme != null && concept != null && !conceptScheme.Equals(concept)) {
+        public static RDFSKOSConceptScheme AddTopConceptRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                 RDFSKOSConcept concept)
+        {
+            if (conceptScheme != null && concept != null && !conceptScheme.Equals(concept))
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -54,10 +57,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:semanticRelation' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddSemanticRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                               RDFSKOSConcept aConcept, 
-                                                               RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
+        public static RDFSKOSConceptScheme AddSemanticRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                               RDFSKOSConcept aConcept,
+                                                               RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
 
                 //Add concepts to the scheme
                 conceptScheme.AddConcept(aConcept);
@@ -73,11 +78,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:related' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddRelatedRelation(this RDFSKOSConceptScheme conceptScheme, 
+        public static RDFSKOSConceptScheme AddRelatedRelation(this RDFSKOSConceptScheme conceptScheme,
                                                               RDFSKOSConcept aConcept,
-                                                              RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckRelatedRelation(conceptScheme, aConcept, bConcept)) {
+                                                              RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckRelatedRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -96,11 +104,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:broader' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddBroaderRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                              RDFSKOSConcept aConcept, 
-                                                              RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept)) {
+        public static RDFSKOSConceptScheme AddBroaderRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                              RDFSKOSConcept aConcept,
+                                                              RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -117,11 +128,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:broaderTransitive' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddBroaderTransitiveRelation(this RDFSKOSConceptScheme conceptScheme, 
+        public static RDFSKOSConceptScheme AddBroaderTransitiveRelation(this RDFSKOSConceptScheme conceptScheme,
                                                                         RDFSKOSConcept aConcept,
-                                                                        RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept)) {
+                                                                        RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -140,9 +154,12 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public static RDFSKOSConceptScheme AddNarrowerRelation(this RDFSKOSConceptScheme conceptScheme,
                                                                RDFSKOSConcept aConcept,
-                                                               RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept)) {
+                                                               RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -161,9 +178,12 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public static RDFSKOSConceptScheme AddNarrowerTransitiveRelation(this RDFSKOSConceptScheme conceptScheme,
                                                                          RDFSKOSConcept aConcept,
-                                                                         RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept)) {
+                                                                         RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -184,8 +204,10 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public static RDFSKOSConceptScheme AddMappingRelation(this RDFSKOSConceptScheme conceptScheme,
                                                               RDFSKOSConcept aConcept,
-                                                              RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
+                                                              RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
 
                 //Add concepts to the scheme
                 conceptScheme.AddConcept(aConcept);
@@ -201,11 +223,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:closeMatch' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddCloseMatchRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                 RDFSKOSConcept aConcept, 
-                                                                 RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckCloseOrExactMatchRelation(conceptScheme, aConcept, bConcept)) {
+        public static RDFSKOSConceptScheme AddCloseMatchRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                 RDFSKOSConcept aConcept,
+                                                                 RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckCloseOrExactMatchRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -224,11 +249,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:exactMatch' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddExactMatchRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                 RDFSKOSConcept aConcept, 
-                                                                 RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckCloseOrExactMatchRelation(conceptScheme, aConcept, bConcept)) {
+        public static RDFSKOSConceptScheme AddExactMatchRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                 RDFSKOSConcept aConcept,
+                                                                 RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckCloseOrExactMatchRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -247,11 +275,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:broadMatch' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddBroadMatchRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                 RDFSKOSConcept aConcept, 
-                                                                 RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept)) {
+        public static RDFSKOSConceptScheme AddBroadMatchRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                 RDFSKOSConcept aConcept,
+                                                                 RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -268,11 +299,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:narrowMatch' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddNarrowMatchRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                  RDFSKOSConcept aConcept, 
-                                                                  RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept)) {
+        public static RDFSKOSConceptScheme AddNarrowMatchRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                  RDFSKOSConcept aConcept,
+                                                                  RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -289,11 +323,14 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skos:relatedMatch' relation between the given concepts within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddRelatedMatchAssertion(this RDFSKOSConceptScheme conceptScheme, 
-                                                                    RDFSKOSConcept aConcept, 
-                                                                    RDFSKOSConcept bConcept) {
-            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept)) {
-                if (RDFSKOSChecker.CheckRelatedRelation(conceptScheme, aConcept, bConcept)) {
+        public static RDFSKOSConceptScheme AddRelatedMatchAssertion(this RDFSKOSConceptScheme conceptScheme,
+                                                                    RDFSKOSConcept aConcept,
+                                                                    RDFSKOSConcept bConcept)
+        {
+            if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
+            {
+                if (RDFSKOSChecker.CheckRelatedRelation(conceptScheme, aConcept, bConcept))
+                {
 
                     //Add concepts to the scheme
                     conceptScheme.AddConcept(aConcept);
@@ -314,10 +351,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given notation to the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddNotationRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                               RDFSKOSConcept concept, 
-                                                               RDFOntologyLiteral notationLiteral) {
-            if (conceptScheme != null && concept != null && notationLiteral != null) {
+        public static RDFSKOSConceptScheme AddNotationRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                               RDFSKOSConcept concept,
+                                                               RDFOntologyLiteral notationLiteral)
+        {
+            if (conceptScheme != null && concept != null && notationLiteral != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -334,15 +373,19 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given label as preferred label of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddPrefLabelRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                RDFSKOSConcept concept, 
-                                                                RDFSKOSLabel label, 
-                                                                RDFOntologyLiteral prefLabelLiteral) {
-            if (conceptScheme != null && concept != null && label != null && prefLabelLiteral != null) {
+        public static RDFSKOSConceptScheme AddPrefLabelRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                RDFSKOSConcept concept,
+                                                                RDFSKOSLabel label,
+                                                                RDFOntologyLiteral prefLabelLiteral)
+        {
+            if (conceptScheme != null && concept != null && label != null && prefLabelLiteral != null)
+            {
 
                 //Only plain literals are allowed as skosxl:prefLabel assertions
-                if (prefLabelLiteral.Value  is RDFPlainLiteral) {
-                    if (RDFSKOSChecker.CheckPrefLabel(conceptScheme, concept, prefLabelLiteral)) {
+                if (prefLabelLiteral.Value is RDFPlainLiteral)
+                {
+                    if (RDFSKOSChecker.CheckPrefLabel(conceptScheme, concept, prefLabelLiteral))
+                    {
 
                         //Add concept to the scheme
                         conceptScheme.AddConcept(concept);
@@ -366,15 +409,19 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given label as alternative label of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddAltLabelRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                               RDFSKOSConcept concept, 
-                                                               RDFSKOSLabel label, 
-                                                               RDFOntologyLiteral altLabelLiteral) {
-            if (conceptScheme != null && concept != null && label != null && altLabelLiteral != null) {
+        public static RDFSKOSConceptScheme AddAltLabelRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                               RDFSKOSConcept concept,
+                                                               RDFSKOSLabel label,
+                                                               RDFOntologyLiteral altLabelLiteral)
+        {
+            if (conceptScheme != null && concept != null && label != null && altLabelLiteral != null)
+            {
 
                 //Only plain literals are allowed as skosxl:altLabel assertions
-                if (altLabelLiteral.Value  is RDFPlainLiteral) {
-                    if (RDFSKOSChecker.CheckAltLabel(conceptScheme, concept, altLabelLiteral)) {
+                if (altLabelLiteral.Value is RDFPlainLiteral)
+                {
+                    if (RDFSKOSChecker.CheckAltLabel(conceptScheme, concept, altLabelLiteral))
+                    {
 
                         //Add concept to the scheme
                         conceptScheme.AddConcept(concept);
@@ -398,15 +445,19 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given label as hidden label of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddHiddenLabelRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                  RDFSKOSConcept concept, 
-                                                                  RDFSKOSLabel label, 
-                                                                  RDFOntologyLiteral hiddenLabelLiteral) {
-            if (conceptScheme != null && concept != null && label != null && hiddenLabelLiteral != null) {
+        public static RDFSKOSConceptScheme AddHiddenLabelRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                                  RDFSKOSConcept concept,
+                                                                  RDFSKOSLabel label,
+                                                                  RDFOntologyLiteral hiddenLabelLiteral)
+        {
+            if (conceptScheme != null && concept != null && label != null && hiddenLabelLiteral != null)
+            {
 
                 //Only plain literals are allowed as skosxl:hiddenLabel assertions
-                if (hiddenLabelLiteral.Value  is RDFPlainLiteral) {
-                    if (RDFSKOSChecker.CheckHiddenLabel(conceptScheme, concept, hiddenLabelLiteral)) {
+                if (hiddenLabelLiteral.Value is RDFPlainLiteral)
+                {
+                    if (RDFSKOSChecker.CheckHiddenLabel(conceptScheme, concept, hiddenLabelLiteral))
+                    {
 
                         //Add concept to the scheme
                         conceptScheme.AddConcept(concept);
@@ -431,10 +482,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds a 'skosxl:labelRelation' relation between the given labels within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddLabelRelation(this RDFSKOSConceptScheme conceptScheme, 
-                                                            RDFSKOSLabel aLabel, 
-                                                            RDFSKOSLabel bLabel) {
-            if (conceptScheme != null && aLabel != null && bLabel != null && !aLabel.Equals(bLabel)) {
+        public static RDFSKOSConceptScheme AddLabelRelation(this RDFSKOSConceptScheme conceptScheme,
+                                                            RDFSKOSLabel aLabel,
+                                                            RDFSKOSLabel bLabel)
+        {
+            if (conceptScheme != null && aLabel != null && bLabel != null && !aLabel.Equals(bLabel))
+            {
 
                 //Add labels to the scheme
                 conceptScheme.AddLabel(aLabel);
@@ -452,10 +505,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal form of the given label within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddLiteralFormAssertion(this RDFSKOSConceptScheme conceptScheme, 
-                                                                   RDFSKOSLabel label, 
-                                                                   RDFOntologyLiteral literal) {
-            if (conceptScheme != null && label != null && literal != null) {
+        public static RDFSKOSConceptScheme AddLiteralFormAssertion(this RDFSKOSConceptScheme conceptScheme,
+                                                                   RDFSKOSLabel label,
+                                                                   RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && label != null && literal != null)
+            {
 
                 //Add label to the scheme
                 conceptScheme.AddLabel(label);
@@ -476,14 +531,18 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as preferred label annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddPrefLabelAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                  RDFSKOSConcept concept, 
-                                                                  RDFOntologyLiteral prefLabelLiteral) {
-            if (conceptScheme != null && concept != null && prefLabelLiteral != null) {
+        public static RDFSKOSConceptScheme AddPrefLabelAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                  RDFSKOSConcept concept,
+                                                                  RDFOntologyLiteral prefLabelLiteral)
+        {
+            if (conceptScheme != null && concept != null && prefLabelLiteral != null)
+            {
 
                 //Only plain literals are allowed as skos:prefLabel annotations
-                if (prefLabelLiteral.Value  is RDFPlainLiteral) {
-                    if (RDFSKOSChecker.CheckPrefLabel(conceptScheme, concept, prefLabelLiteral)) {
+                if (prefLabelLiteral.Value is RDFPlainLiteral)
+                {
+                    if (RDFSKOSChecker.CheckPrefLabel(conceptScheme, concept, prefLabelLiteral))
+                    {
 
                         //Add concept to the scheme
                         conceptScheme.AddConcept(concept);
@@ -501,14 +560,18 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as alternative label annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddAltLabelAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                 RDFSKOSConcept concept, 
-                                                                 RDFOntologyLiteral altLabelLiteral) {
-            if (conceptScheme != null && concept != null && altLabelLiteral != null) {
+        public static RDFSKOSConceptScheme AddAltLabelAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                 RDFSKOSConcept concept,
+                                                                 RDFOntologyLiteral altLabelLiteral)
+        {
+            if (conceptScheme != null && concept != null && altLabelLiteral != null)
+            {
 
                 //Only plain literals are allowed as skos:altLabel annotations
-                if (altLabelLiteral.Value is RDFPlainLiteral) {
-                    if (RDFSKOSChecker.CheckAltLabel(conceptScheme, concept, altLabelLiteral)) {
+                if (altLabelLiteral.Value is RDFPlainLiteral)
+                {
+                    if (RDFSKOSChecker.CheckAltLabel(conceptScheme, concept, altLabelLiteral))
+                    {
 
                         //Add concept to the scheme
                         conceptScheme.AddConcept(concept);
@@ -526,14 +589,18 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the "concept -> skos:hiddenLabel -> hiddenLabelLiteral" annotation to the concept scheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddHiddenLabelAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                    RDFSKOSConcept concept, 
-                                                                    RDFOntologyLiteral hiddenLabelLiteral) {
-            if (conceptScheme != null && concept != null && hiddenLabelLiteral != null) {
+        public static RDFSKOSConceptScheme AddHiddenLabelAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                    RDFSKOSConcept concept,
+                                                                    RDFOntologyLiteral hiddenLabelLiteral)
+        {
+            if (conceptScheme != null && concept != null && hiddenLabelLiteral != null)
+            {
 
                 //Only plain literals are allowed as skos:hiddenLabel annotations
-                if (hiddenLabelLiteral.Value is RDFPlainLiteral) {
-                    if (RDFSKOSChecker.CheckHiddenLabel(conceptScheme, concept, hiddenLabelLiteral)) {
+                if (hiddenLabelLiteral.Value is RDFPlainLiteral)
+                {
+                    if (RDFSKOSChecker.CheckHiddenLabel(conceptScheme, concept, hiddenLabelLiteral))
+                    {
 
                         //Add concept to the scheme
                         conceptScheme.AddConcept(concept);
@@ -553,10 +620,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as 'skos:note' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddNoteAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                             RDFSKOSConcept concept, 
-                                                             RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddNoteAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                             RDFSKOSConcept concept,
+                                                             RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -571,10 +640,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as 'skos:changeNote' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddChangeNoteAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                   RDFSKOSConcept concept, 
-                                                                   RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddChangeNoteAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                   RDFSKOSConcept concept,
+                                                                   RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -589,10 +660,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as 'skos:editorialNote' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddEditorialNoteAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                      RDFSKOSConcept concept, 
-                                                                      RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddEditorialNoteAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                      RDFSKOSConcept concept,
+                                                                      RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -607,10 +680,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         ///Adds the given literal as 'skos:historyNote' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddHistoryNoteAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                    RDFSKOSConcept concept, 
-                                                                    RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddHistoryNoteAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                    RDFSKOSConcept concept,
+                                                                    RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -625,10 +700,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as 'skos:scopeNote' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddScopeNoteAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                  RDFSKOSConcept concept, 
-                                                                  RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddScopeNoteAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                  RDFSKOSConcept concept,
+                                                                  RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -643,10 +720,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as 'skos:definition' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddDefinitionAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                   RDFSKOSConcept concept, 
-                                                                   RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddDefinitionAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                   RDFSKOSConcept concept,
+                                                                   RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -661,10 +740,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Adds the given literal as 'skos:example' annotation of the given concept within the conceptScheme
         /// </summary>
-        public static RDFSKOSConceptScheme AddExampleAnnotation(this RDFSKOSConceptScheme conceptScheme, 
-                                                                RDFSKOSConcept concept, 
-                                                                RDFOntologyLiteral literal) {
-            if (conceptScheme != null && concept != null && literal != null) {
+        public static RDFSKOSConceptScheme AddExampleAnnotation(this RDFSKOSConceptScheme conceptScheme,
+                                                                RDFSKOSConcept concept,
+                                                                RDFOntologyLiteral literal)
+        {
+            if (conceptScheme != null && concept != null && literal != null)
+            {
 
                 //Add concept to the scheme
                 conceptScheme.AddConcept(concept);
@@ -689,27 +770,31 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has broader/broaderTransitive concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasBroaderConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                     RDFSKOSConcept aConcept, 
-                                                     RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasBroaderConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                     RDFSKOSConcept aConcept,
+                                                     RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetBroaderConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the broader/broaderTransitive concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetBroaderConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                RDFSKOSConcept concept) {
-            var result         = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept       != null && conceptScheme != null) {
+        public static RDFSKOSConceptScheme GetBroaderConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
 
                 //Get skos:broader concepts
-                foreach (var broaderConcept in conceptScheme.Relations.Broader.SelectEntriesBySubject(concept)) {
+                foreach (var broaderConcept in conceptScheme.Relations.Broader.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)broaderConcept.TaxonomyObject);
                 }
 
                 //Get skos:broaderTransitive concepts
-                result         = result.UnionWith(conceptScheme.GetBroaderConceptsOfInternal(concept, null))
+                result = result.UnionWith(conceptScheme.GetBroaderConceptsOfInternal(concept, null))
                                        .RemoveConcept(concept); //Safety deletion
 
             }
@@ -719,32 +804,38 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Subsumes the "skos:broaderTransitive" taxonomy to discover direct and indirect broader concepts of the given scheme
         /// </summary>
-        internal static RDFSKOSConceptScheme GetBroaderConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme, 
-                                                                          RDFSKOSConcept concept, 
-                                                                          Dictionary<Int64, RDFSKOSConcept> visitContext) {
-            var result        = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+        internal static RDFSKOSConceptScheme GetBroaderConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
+                                                                          RDFSKOSConcept concept,
+                                                                          Dictionary<Int64, RDFSKOSConcept> visitContext)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
-            if (visitContext == null) {
-                visitContext  = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+            if (visitContext == null)
+            {
+                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
-            else {
-                if (!visitContext.ContainsKey(concept.PatternMemberID)) {
-                     visitContext.Add(concept.PatternMemberID, concept);
+            else
+            {
+                if (!visitContext.ContainsKey(concept.PatternMemberID))
+                {
+                    visitContext.Add(concept.PatternMemberID, concept);
                 }
-                else {
-                     return result;
+                else
+                {
+                    return result;
                 }
             }
             #endregion
 
-            //Transitivity of "skos:broaderTransitive" taxonomy: 
+            //Transitivity of "skos:broaderTransitive" taxonomy:
             //((A SKOS:BROADERTRANSITIVE B)  &&  (B SKOS:BROADERTRANSITIVE C))  =>  (A SKOS:BROADERTRANSITIVE C)
-            foreach (var bt  in conceptScheme.Relations.BroaderTransitive.SelectEntriesBySubject(concept)) {
+            foreach (var bt in conceptScheme.Relations.BroaderTransitive.SelectEntriesBySubject(concept))
+            {
                 result.AddConcept((RDFSKOSConcept)bt.TaxonomyObject);
 
                 //Exploit skos:broaderTransitive taxonomy
-                result        = result.UnionWith(conceptScheme.GetBroaderConceptsOfInternal((RDFSKOSConcept)bt.TaxonomyObject, visitContext));
+                result = result.UnionWith(conceptScheme.GetBroaderConceptsOfInternal((RDFSKOSConcept)bt.TaxonomyObject, visitContext));
             }
 
             return result;
@@ -755,27 +846,31 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has narrower/narrowerTransitive concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasNarrowerConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                      RDFSKOSConcept aConcept, 
-                                                      RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasNarrowerConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                      RDFSKOSConcept aConcept,
+                                                      RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetNarrowerConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the narrower/narrowerTransitive concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetNarrowerConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                 RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
+        public static RDFSKOSConceptScheme GetNarrowerConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                 RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
 
                 //Get skos:narrower concepts
-                foreach (var narrowerConcept in conceptScheme.Relations.Narrower.SelectEntriesBySubject(concept)) {
+                foreach (var narrowerConcept in conceptScheme.Relations.Narrower.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)narrowerConcept.TaxonomyObject);
                 }
 
                 //Get skos:narrowerTransitive concepts
-                result   = result.UnionWith(conceptScheme.GetNarrowerConceptsOfInternal(concept, null))
+                result = result.UnionWith(conceptScheme.GetNarrowerConceptsOfInternal(concept, null))
                                  .RemoveConcept(concept); //Safety deletion
 
             }
@@ -785,32 +880,38 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Subsumes the "skos:narrowerTransitive" taxonomy to discover direct and indirect narrower concepts of the given scheme
         /// </summary>
-        internal static RDFSKOSConceptScheme GetNarrowerConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme, 
-                                                                           RDFSKOSConcept concept, 
-                                                                           Dictionary<Int64, RDFSKOSConcept> visitContext) {
-            var result         = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+        internal static RDFSKOSConceptScheme GetNarrowerConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
+                                                                           RDFSKOSConcept concept,
+                                                                           Dictionary<Int64, RDFSKOSConcept> visitContext)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
-            if (visitContext  == null) {
-                visitContext   = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+            if (visitContext == null)
+            {
+                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
-            else {
-                if (!visitContext.ContainsKey(concept.PatternMemberID)) {
-                     visitContext.Add(concept.PatternMemberID, concept);
+            else
+            {
+                if (!visitContext.ContainsKey(concept.PatternMemberID))
+                {
+                    visitContext.Add(concept.PatternMemberID, concept);
                 }
-                else {
-                     return result;
+                else
+                {
+                    return result;
                 }
             }
             #endregion
 
             //Transitivity of "skos:narrowerTransitive" taxonomy:
             //((A SKOS:NARROWERTRANSITIVE B)  &&  (B SKOS:NARROWERTRANSITIVE C))  =>  (A SKOS:NARROWERTRANSITIVE C)
-            foreach (var nt   in conceptScheme.Relations.NarrowerTransitive.SelectEntriesBySubject(concept)) {
+            foreach (var nt in conceptScheme.Relations.NarrowerTransitive.SelectEntriesBySubject(concept))
+            {
                 result.AddConcept((RDFSKOSConcept)nt.TaxonomyObject);
 
                 //Exploit skos:narrowerTransitive taxonomy
-                result         = result.UnionWith(conceptScheme.GetNarrowerConceptsOfInternal((RDFSKOSConcept)nt.TaxonomyObject, visitContext));
+                result = result.UnionWith(conceptScheme.GetNarrowerConceptsOfInternal((RDFSKOSConcept)nt.TaxonomyObject, visitContext));
             }
 
             return result;
@@ -821,20 +922,24 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has related concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasRelatedConcept(this RDFSKOSConceptScheme data, 
-                                                     RDFSKOSConcept aConcept, 
-                                                     RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasRelatedConcept(this RDFSKOSConceptScheme data,
+                                                     RDFSKOSConcept aConcept,
+                                                     RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && data != null ? data.GetRelatedConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the related concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetRelatedConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
-                foreach (var relatedConcept in conceptScheme.Relations.Related.SelectEntriesBySubject(concept)) {
+        public static RDFSKOSConceptScheme GetRelatedConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
+                foreach (var relatedConcept in conceptScheme.Relations.Related.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)relatedConcept.TaxonomyObject);
                 }
             }
@@ -850,20 +955,24 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has broadMatch concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasBroadMatchConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                        RDFSKOSConcept aConcept, 
-                                                        RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasBroadMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                        RDFSKOSConcept aConcept,
+                                                        RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetBroadMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the broadMatch concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetBroadMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                   RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
-                foreach (var broadMatchConcept in conceptScheme.Relations.BroadMatch.SelectEntriesBySubject(concept)) {
+        public static RDFSKOSConceptScheme GetBroadMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                   RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
+                foreach (var broadMatchConcept in conceptScheme.Relations.BroadMatch.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)broadMatchConcept.TaxonomyObject);
                 }
             }
@@ -875,20 +984,24 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has narrowMatch concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasNarrowMatchConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                         RDFSKOSConcept aConcept, 
-                                                         RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasNarrowMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                         RDFSKOSConcept aConcept,
+                                                         RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetNarrowMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the narrowMatch concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetNarrowMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                    RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
-                foreach (var narrowMatchConcept in conceptScheme.Relations.NarrowMatch.SelectEntriesBySubject(concept)) {
+        public static RDFSKOSConceptScheme GetNarrowMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                    RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
+                foreach (var narrowMatchConcept in conceptScheme.Relations.NarrowMatch.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)narrowMatchConcept.TaxonomyObject);
                 }
             }
@@ -900,20 +1013,24 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has relatedMatch concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasRelatedMatchConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                          RDFSKOSConcept aConcept, 
-                                                          RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasRelatedMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                          RDFSKOSConcept aConcept,
+                                                          RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetRelatedMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the relatedMatch concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetRelatedMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                     RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
-                foreach (var relatedMatchConcept in conceptScheme.Relations.RelatedMatch.SelectEntriesBySubject(concept)) {
+        public static RDFSKOSConceptScheme GetRelatedMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                     RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
+                foreach (var relatedMatchConcept in conceptScheme.Relations.RelatedMatch.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)relatedMatchConcept.TaxonomyObject);
                 }
             }
@@ -925,20 +1042,24 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept skos:closeMatch the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasCloseMatchConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                        RDFSKOSConcept aConcept, 
-                                                        RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasCloseMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                        RDFSKOSConcept aConcept,
+                                                        RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetCloseMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the skos:closeMatch concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetCloseMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                   RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
-                foreach (var closeMatchConcept in conceptScheme.Relations.CloseMatch.SelectEntriesBySubject(concept)) {
+        public static RDFSKOSConceptScheme GetCloseMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                   RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
+                foreach (var closeMatchConcept in conceptScheme.Relations.CloseMatch.SelectEntriesBySubject(concept))
+                {
                     result.AddConcept((RDFSKOSConcept)closeMatchConcept.TaxonomyObject);
                 }
             }
@@ -950,20 +1071,23 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept skos:exactMatch the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasExactMatchConcept(this RDFSKOSConceptScheme conceptScheme, 
-                                                        RDFSKOSConcept aConcept, 
-                                                        RDFSKOSConcept bConcept) {
+        public static Boolean CheckHasExactMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+                                                        RDFSKOSConcept aConcept,
+                                                        RDFSKOSConcept bConcept)
+        {
             return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetExactMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
         }
 
         /// <summary>
         /// Enlists the skos:exactMatch concepts of the given concept within the given scheme
         /// </summary>
-        public static RDFSKOSConceptScheme GetExactMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme, 
-                                                                   RDFSKOSConcept concept) {
-            var result   = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
-            if (concept != null && conceptScheme != null) {
-                result   = conceptScheme.GetExactMatchConceptsOfInternal(concept, null)
+        public static RDFSKOSConceptScheme GetExactMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
+                                                                   RDFSKOSConcept concept)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            if (concept != null && conceptScheme != null)
+            {
+                result = conceptScheme.GetExactMatchConceptsOfInternal(concept, null)
                                         .RemoveConcept(concept); //Safety deletion
             }
             return result;
@@ -972,30 +1096,36 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Subsumes the "skos:exactMatch" taxonomy to discover direct and indirect exactmatches of the given concept
         /// </summary>
-        internal static RDFSKOSConceptScheme GetExactMatchConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme, 
-                                                                             RDFSKOSConcept concept, 
-                                                                             Dictionary<Int64, RDFSKOSConcept> visitContext) {
-            var result         = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+        internal static RDFSKOSConceptScheme GetExactMatchConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
+                                                                             RDFSKOSConcept concept,
+                                                                             Dictionary<Int64, RDFSKOSConcept> visitContext)
+        {
+            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
-            if (visitContext  == null) {
-                visitContext   = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+            if (visitContext == null)
+            {
+                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
-            else {
-                if (!visitContext.ContainsKey(concept.PatternMemberID)) {
-                     visitContext.Add(concept.PatternMemberID, concept);
+            else
+            {
+                if (!visitContext.ContainsKey(concept.PatternMemberID))
+                {
+                    visitContext.Add(concept.PatternMemberID, concept);
                 }
-                else {
-                     return result;
+                else
+                {
+                    return result;
                 }
             }
             #endregion
 
-            // Transitivity of "skos:exactMatch" taxonomy: 
+            // Transitivity of "skos:exactMatch" taxonomy:
             //((A SKOS:EXACTMATCH B)  &&  (B SKOS:EXACTMATCH C))  =>  (A SKOS:EXACTMATCH C)
-            foreach (var em   in conceptScheme.Relations.ExactMatch.SelectEntriesBySubject(concept)) {
+            foreach (var em in conceptScheme.Relations.ExactMatch.SelectEntriesBySubject(concept))
+            {
                 result.AddConcept((RDFSKOSConcept)em.TaxonomyObject);
-                result         = result.UnionWith(conceptScheme.GetExactMatchConceptsOfInternal((RDFSKOSConcept)em.TaxonomyObject, visitContext));
+                result = result.UnionWith(conceptScheme.GetExactMatchConceptsOfInternal((RDFSKOSConcept)em.TaxonomyObject, visitContext));
             }
 
             return result;

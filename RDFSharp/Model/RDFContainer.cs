@@ -188,14 +188,14 @@ namespace RDFSharp.Model
         #region Reify
         /// <summary>
         /// Builds the reification graph of the container:
-        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt] 
+        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
         /// Subject -> rdf:_N   -> RDFContainer.ITEM(N)
         /// </summary>
         public RDFGraph ReifyContainer()
         {
             RDFGraph reifCont = new RDFGraph();
 
-            //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt] 
+            //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
             switch (this.ContainerType)
             {
                 case RDFModelEnums.RDFContainerTypes.Bag:

@@ -22,7 +22,8 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFMinCountConstraint represents a SHACL constraint on the minimum required occurrences for a given RDF term
     /// </summary>
-    public class RDFMinCountConstraint : RDFConstraint {
+    public class RDFMinCountConstraint : RDFConstraint
+    {
 
         #region Properties
         /// <summary>
@@ -35,7 +36,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a minCount constraint with the given minCount
         /// </summary>
-        public RDFMinCountConstraint(int minCount) : base() {
+        public RDFMinCountConstraint(int minCount) : base()
+        {
             this.MinCount = minCount < 0 ? 0 : minCount;
         }
         #endregion
@@ -44,11 +46,13 @@ namespace RDFSharp.Model
         /// <summary>
         /// Evaluates this constraint against the given data graph
         /// </summary>
-        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes) {
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
             RDFValidationReport report = new RDFValidationReport();
 
             #region Evaluation
-            if (valueNodes.Count < this.MinCount) {
+            if (valueNodes.Count < this.MinCount)
+            {
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -65,9 +69,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets a graph representation of this constraint
         /// </summary>
-        internal override RDFGraph ToRDFGraph(RDFShape shape) {
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
             RDFGraph result = new RDFGraph();
-            if (shape != null) {
+            if (shape != null)
+            {
 
                 //sh:minCount
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_COUNT, new RDFTypedLiteral(this.MinCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
