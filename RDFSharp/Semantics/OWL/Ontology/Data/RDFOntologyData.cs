@@ -429,10 +429,23 @@ namespace RDFSharp.Semantics.OWL
                 {
 
                     //Enforce taxonomy checks before adding the assertion
-                    //Creation of transitive cycles is not allowed (OWL-DL)
+                    //Creation of transitive cycles is not allowed [OWL-DL]
                     if (RDFOntologyChecker.CheckTransitiveAssertionCompatibility(this, aFact, objectProperty, bFact))
                     {
-                        this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+
+                        //Collision with negative assertions must be avoided [OWL2]
+                        if (RDFOntologyChecker.CheckAssertionCompatibility(this, aFact, objectProperty, bFact))
+                        {
+                            this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                        }
+                        else
+                        {
+
+                            //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", aFact, bFact, objectProperty));
+
+                        }
+
                     }
                     else
                     {
@@ -468,8 +481,21 @@ namespace RDFSharp.Semantics.OWL
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(datatypeProperty))
                 {
-                    this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-                    this.AddLiteral(ontologyLiteral);
+
+                    //Collision with negative assertions must be avoided [OWL2]
+                    if (RDFOntologyChecker.CheckAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
+                    {
+                        this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
+                        this.AddLiteral(ontologyLiteral);
+                    }
+                    else
+                    {
+
+                        //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
+
+                    }
+
                 }
                 else
                 {
@@ -484,7 +510,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aFact -> objectProperty -> bFact" negative relation to the data
+        /// Adds the "aFact -> objectProperty -> bFact" negative relation to the data [OWL2]
         /// </summary>
         public RDFOntologyData AddNegativeAssertionRelation(RDFOntologyFact aFact,
                                                             RDFOntologyObjectProperty objectProperty,
@@ -496,7 +522,19 @@ namespace RDFSharp.Semantics.OWL
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(objectProperty))
                 {
-                    this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+
+                    //Collision with assertions must be avoided [OWL2]
+                    if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, aFact, objectProperty, bFact))
+                    {
+                        this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                    }
+                    else
+                    {
+
+                        //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", aFact, bFact, objectProperty));
+
+                    }
                 }
                 else
                 {
@@ -511,7 +549,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" negative relation to the data
+        /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" negative relation to the data [OWL2]
         /// </summary>
         public RDFOntologyData AddNegativeAssertionRelation(RDFOntologyFact ontologyFact,
                                                             RDFOntologyDatatypeProperty datatypeProperty,
@@ -523,8 +561,20 @@ namespace RDFSharp.Semantics.OWL
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(datatypeProperty))
                 {
-                    this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-                    this.AddLiteral(ontologyLiteral);
+
+                    //Collision with assertions must be avoided [OWL2]
+                    if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
+                    {
+                        this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
+                        this.AddLiteral(ontologyLiteral);
+                    }
+                    else
+                    {
+
+                        //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
+
+                    }
                 }
                 else
                 {
@@ -799,7 +849,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Removes the "aFact -> objectProperty -> bFact" negative relation from the data
+        /// Removes the "aFact -> objectProperty -> bFact" negative relation from the data [OWL2]
         /// </summary>
         public RDFOntologyData RemoveNegativeAssertionRelation(RDFOntologyFact aFact,
                                                                RDFOntologyObjectProperty objectProperty,
@@ -813,7 +863,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Removes the "ontologyFact -> datatypeProperty -> ontologyLiteral" negative relation from the data
+        /// Removes the "ontologyFact -> datatypeProperty -> ontologyLiteral" negative relation from the data [OWL2]
         /// </summary>
         public RDFOntologyData RemoveNegativeAssertionRelation(RDFOntologyFact ontologyFact,
                                                                RDFOntologyDatatypeProperty datatypeProperty,
