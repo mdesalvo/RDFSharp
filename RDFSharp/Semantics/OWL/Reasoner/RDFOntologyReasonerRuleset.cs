@@ -397,8 +397,8 @@ namespace RDFSharp.Semantics.OWL
                     {
 
                         //Taxonomy-check for securing inference consistency
-                        if ((p2.IsObjectProperty() && p1Asn.TaxonomyObject.IsFact()) ||
-                           (p2.IsDatatypeProperty() && p1Asn.TaxonomyObject.IsLiteral()))
+                        if ((p2.IsObjectProperty() && p1Asn.TaxonomyObject.IsFact())
+                                || (p2.IsDatatypeProperty() && p1Asn.TaxonomyObject.IsLiteral()))
                         {
 
                             //Create the inference as a taxonomy entry
