@@ -8,7 +8,7 @@
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>Lightweight and friendly .NET framework for modeling Semantic Web applications</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
     <PackageId>RDFSharp</PackageId>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>bin\Debug\netstandard2.0\RDFSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\$(TargetFramework)\RDFSharp.xml</DocumentationFile>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -35,16 +35,19 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DefineConstants>TRACE</DefineConstants>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>bin\Release\netstandard2.0\RDFSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\$(TargetFramework)\RDFSharp.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>true</Optimize>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-	<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 
 </Project>
