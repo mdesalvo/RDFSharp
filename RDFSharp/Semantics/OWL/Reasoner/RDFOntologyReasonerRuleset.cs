@@ -406,9 +406,7 @@ namespace RDFSharp.Semantics.OWL
 
                             //Add the inference to the ontology and to the report
                             if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                            {
                                 report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyEntailment", sem_inf));
-                            }
 
                         }
 
@@ -730,9 +728,7 @@ namespace RDFSharp.Semantics.OWL
 
                             //Add the inference to the ontology and to the report
                             if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                            {
                                 report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "InverseOfEntailment", sem_inf));
-                            }
 
                         }
 
@@ -782,9 +778,7 @@ namespace RDFSharp.Semantics.OWL
 
                                 //Add the inference to the ontology and to the report
                                 if (ontology.Data.Relations.Assertions.AddEntry(sem_infA))
-                                {
                                     report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsEntailment", sem_infA));
-                                }
 
                             }
 
@@ -805,9 +799,7 @@ namespace RDFSharp.Semantics.OWL
 
                                 //Add the inference to the ontology and to the report
                                 if (ontology.Data.Relations.Assertions.AddEntry(sem_infB))
-                                {
                                     report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsEntailment", sem_infB));
-                                }
 
                             }
 
@@ -852,9 +844,7 @@ namespace RDFSharp.Semantics.OWL
 
                         //Add the inference to the ontology and to the report
                         if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                        {
                             report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SymmetricPropertyEntailment", sem_inf));
-                        }
 
                     }
 
@@ -903,9 +893,7 @@ namespace RDFSharp.Semantics.OWL
 
                             //Add the inference to the ontology and to the report
                             if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                            {
                                 report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "TransitivePropertyEntailment", sem_inf));
-                            }
 
                         }
 
@@ -946,9 +934,7 @@ namespace RDFSharp.Semantics.OWL
 
                     //Add the inference to the ontology and to the report
                     if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                    {
                         report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ReflexivePropertyEntailment", sem_inf));
-                    }
 
                 }
 
