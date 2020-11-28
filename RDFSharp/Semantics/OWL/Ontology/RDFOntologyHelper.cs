@@ -1326,7 +1326,7 @@ namespace RDFSharp.Semantics.OWL
             }
             #endregion
 
-            #region HasSelf
+            #region HasSelf [OWL2]
             else if (ontRestriction is RDFOntologyHasSelfRestriction hasSelfRestriction)
             {
 
