@@ -105,7 +105,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aproperty can be set equivalentpropertyof the given bproperty
+        /// Checks if the given aProperty can be set equivalentpropertyof the given bProperty
         /// </summary>
         internal static Boolean CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                      RDFOntologyObjectProperty aProperty,
@@ -117,7 +117,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aproperty can be set equivalentpropertyof the given bproperty
+        /// Checks if the given aProperty can be set equivalentpropertyof the given bProperty
         /// </summary>
         internal static Boolean CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                      RDFOntologyDatatypeProperty aProperty,
@@ -129,7 +129,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aproperty can be set propertyDisjointwith the given bproperty
+        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty
         /// </summary>
         internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                        RDFOntologyObjectProperty aProperty,
@@ -141,7 +141,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aproperty can be set propertyDisjointwith the given bproperty
+        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty
         /// </summary>
         internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                        RDFOntologyDatatypeProperty aProperty,
@@ -153,7 +153,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aproperty can be set inverseof the given bproperty
+        /// Checks if the given aProperty can be set inverseof the given bProperty
         /// </summary>
         internal static Boolean CheckInverseOfPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                     RDFOntologyObjectProperty aProperty,

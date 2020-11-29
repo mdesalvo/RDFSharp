@@ -646,7 +646,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aproperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
+        /// Adds the "aProperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
         /// </summary>
         public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty,
                                                                         RDFOntologyObjectProperty bProperty)
@@ -686,7 +686,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aproperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
+        /// Adds the "aProperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
         /// </summary>
         public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty,
                                                                         RDFOntologyDatatypeProperty bProperty)
