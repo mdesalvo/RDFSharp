@@ -913,6 +913,44 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:NegativeAssertions [OWL2]
+        /// <summary>
+        /// Validation rule checking for consistency of owl:NegativePropertyAssertion axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport NegativeAssertions(RDFOntology ontology)
+        {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'NegativeAssertions'...");
+
+            #region NegativeAssertions
+            var report = new RDFOntologyValidatorReport();
+            foreach (var negativeAssertion in ontology.Data.Relations.NegativeAssertions)
+            {
+                //Check if negative assertion is violated by any existing assertions
+                bool violationDetected =
+                    negativeAssertion.TaxonomyObject is RDFOntologyFact
+                        ? ontology.Data.CheckIsAssertion((RDFOntologyFact)negativeAssertion.TaxonomySubject,
+                                                         (RDFOntologyObjectProperty)negativeAssertion.TaxonomyPredicate,
+                                                         (RDFOntologyFact)negativeAssertion.TaxonomyObject)
+                        : ontology.Data.CheckIsAssertion((RDFOntologyFact)negativeAssertion.TaxonomySubject,
+                                                         (RDFOntologyDatatypeProperty)negativeAssertion.TaxonomyPredicate,
+                                                         (RDFOntologyLiteral)negativeAssertion.TaxonomyObject);
+                if (violationDetected)
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                        "NegativeAssertions",
+                        String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
+                        String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (may be an inference) violating it.", negativeAssertion)
+                    ));
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'NegativeAssertions': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms

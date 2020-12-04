@@ -92,6 +92,12 @@ namespace RDFSharp.Semantics.OWL
                     "This OWL2 rule checks for consistency of owl:propertyDisjointWith axioms",
                     RDFOntologyValidatorRuleset.PropertyDisjoint),
 
+                //NegativeAssertions [OWL2]
+                new RDFOntologyValidatorRule(
+                    "NegativeAssertions",
+                    "This OWL2 rule checks for consistency of owl:NegativePropertyAssertion axioms",
+                    RDFOntologyValidatorRuleset.NegativeAssertions),
+
                 //ClassType
                 new RDFOntologyValidatorRule(
                     "ClassType",
