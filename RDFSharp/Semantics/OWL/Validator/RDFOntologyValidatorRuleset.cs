@@ -36,7 +36,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'Vocabulary_Disjointness'...");
 
             #region ClassModel
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var c in ontology.Model.ClassModel)
             {
                 if (ontology.Model.PropertyModel.Properties.ContainsKey(c.PatternMemberID))
@@ -91,7 +91,7 @@ namespace RDFSharp.Semantics.OWL
             #region Classes
 
             //SubClassOf
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var c in ontology.Model.ClassModel.Relations.SubClassOf)
             {
                 if (!ontology.Model.ClassModel.Classes.ContainsKey(c.TaxonomySubject.PatternMemberID))
@@ -568,7 +568,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'Domain_Range'...");
 
             #region Domain_Range
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             var classCache = new Dictionary<Int64, RDFOntologyData>();
             var litCheckCache = new Dictionary<Int64, Boolean>();
 
@@ -688,7 +688,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'InverseOf'...");
 
             #region InverseOf
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var invOf in ontology.Model.PropertyModel.Relations.InverseOf)
             {
 
@@ -741,7 +741,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'SymmetricProperty'...");
 
             #region SymmetricProperty
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var symProp in ontology.Model.PropertyModel.Where(prop => prop.IsSymmetricProperty() && (prop.Domain != null || prop.Range != null)))
             {
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(symProp)))
@@ -795,7 +795,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'AsymmetricProperty'...");
 
             #region AsymmetricProperty
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var asymProp in ontology.Model.PropertyModel.Where(prop => prop.IsAsymmetricProperty()))
             {
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(asymProp)))
@@ -831,7 +831,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'IrreflexiveProperty'...");
 
             #region IrreflexiveProperty
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var irrefProp in ontology.Model.PropertyModel.Where(prop => prop.IsIrreflexiveProperty()))
             {
                 foreach (var asn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate.Equals(irrefProp)))
@@ -865,7 +865,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'PropertyDisjoint'...");
 
             #region PropertyDisjoint
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var propertyDisjointWithRelation in ontology.Model.PropertyModel.Relations.PropertyDisjointWith)
             {
 
@@ -922,26 +922,51 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'NegativeAssertions'...");
 
             #region NegativeAssertions
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var negativeAssertion in ontology.Data.Relations.NegativeAssertions)
             {
-                //Check if negative assertion is violated by any existing assertions
-                bool violationDetected =
-                    negativeAssertion.TaxonomyObject is RDFOntologyFact
-                        ? ontology.Data.CheckIsAssertion((RDFOntologyFact)negativeAssertion.TaxonomySubject,
-                                                         (RDFOntologyObjectProperty)negativeAssertion.TaxonomyPredicate,
-                                                         (RDFOntologyFact)negativeAssertion.TaxonomyObject)
-                        : ontology.Data.CheckIsAssertion((RDFOntologyFact)negativeAssertion.TaxonomySubject,
-                                                         (RDFOntologyDatatypeProperty)negativeAssertion.TaxonomyPredicate,
-                                                         (RDFOntologyLiteral)negativeAssertion.TaxonomyObject);
-                if (violationDetected)
+                //Enlist the facts which are compatible with negative assertion subject
+                RDFOntologyData compatibleSubjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)negativeAssertion.TaxonomySubject)
+                                                                  .AddFact((RDFOntologyFact)negativeAssertion.TaxonomySubject);
+
+                //Enlist the properties which are compatible with negative assertion predicate
+                RDFOntologyPropertyModel compatibleProperties = ontology.Model.PropertyModel.GetSubPropertiesOf((RDFOntologyProperty)negativeAssertion.TaxonomyPredicate)
+                                                                                            .UnionWith(ontology.Model.PropertyModel.GetEquivalentPropertiesOf((RDFOntologyProperty)negativeAssertion.TaxonomyPredicate))
+                                                                                            .AddProperty((RDFOntologyProperty)negativeAssertion.TaxonomyPredicate);
+
+                if (negativeAssertion.TaxonomyObject is RDFOntologyFact)
                 {
-                    report.AddEvidence(new RDFOntologyValidatorEvidence(
-                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
-                        "NegativeAssertions",
-                        String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
-                        String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (may be an inference) violating it.", negativeAssertion)
-                    ));
+                    //Enlist the facts which are compatible with negative assertion object
+                    RDFOntologyData compatibleObjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)negativeAssertion.TaxonomyObject)
+                                                                      .AddFact((RDFOntologyFact)negativeAssertion.TaxonomySubject);
+
+                    //Check if negative assertion is violated by any existing assertions
+                    if (ontology.Data.Relations.Assertions.Any(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
+                                                                        && compatibleProperties.Any(pred => pred.Equals(asn.TaxonomyPredicate))
+                                                                            && compatibleObjects.Any(obj => obj.Equals(asn.TaxonomyObject))))
+                    {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "NegativeAssertions",
+                            String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
+                            String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (may be an inference) violating it.", negativeAssertion)
+                        ));
+                    }
+                }
+                else
+                {
+                    //Check if negative assertion is violated by any existing assertions
+                    if (ontology.Data.Relations.Assertions.Any(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
+                                                                        && compatibleProperties.Any(pred => pred.Equals(asn.TaxonomyPredicate))
+                                                                            && negativeAssertion.TaxonomyObject.Equals(asn.TaxonomyObject)))
+                    {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "NegativeAssertions",
+                            String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
+                            String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (maybe an A-BOX inference) violating it.", negativeAssertion)
+                        ));
+                    }
                 }
             }
             #endregion
@@ -960,7 +985,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'ClassType'...");
 
             #region Facts
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             var disjWithCache = new Dictionary<Int64, RDFOntologyClassModel>();
             var litCheckCache = new Dictionary<Int64, Boolean>();
 
@@ -1030,7 +1055,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'GlobalCardinalityConstraint'...");
 
             #region GlobalCardinalityConstraint
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var prop in ontology.Model.PropertyModel.Where(p => p.Functional || (p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).InverseFunctional)))
             {
                 var assertions = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(prop);
@@ -1128,7 +1153,7 @@ namespace RDFSharp.Semantics.OWL
             #region LocalCardinalityConstraint
             //OWL-DL requires that for a transitive property no local cardinality constraints should
             //be declared on the property itself, or its super properties, or its inverse properties.
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             var restrictions = ontology.Model.ClassModel.Where(c => c is RDFOntologyCardinalityRestriction || c is RDFOntologyQualifiedCardinalityRestriction)
                                                         .OfType<RDFOntologyRestriction>();
             foreach (var cardRestr in restrictions)
@@ -1193,7 +1218,7 @@ namespace RDFSharp.Semantics.OWL
             RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'Deprecation'...");
 
             #region Class
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             foreach (var deprCls in ontology.Data.Relations.ClassType.Where(c => c.TaxonomyObject.IsDeprecatedClass()))
             {
                 report.AddEvidence(new RDFOntologyValidatorEvidence(
