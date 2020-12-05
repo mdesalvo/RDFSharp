@@ -941,30 +941,32 @@ namespace RDFSharp.Semantics.OWL
                                                                      .AddFact((RDFOntologyFact)negativeAssertion.TaxonomyObject);
 
                     //Check if negative assertion is violated by any existing assertions
-                    if (ontology.Data.Relations.Assertions.Any(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
-                                                                        && compatibleProperties.Any(pred => pred.Equals(asn.TaxonomyPredicate))
-                                                                            && compatibleObjects.Any(obj => obj.Equals(asn.TaxonomyObject))))
+                    var violatingAssertions = ontology.Data.Relations.Assertions.Where(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
+                                                                                                && compatibleProperties.Any(pred => pred.Equals(asn.TaxonomyPredicate))
+                                                                                                    && compatibleObjects.Any(obj => obj.Equals(asn.TaxonomyObject)));
+                    if (violatingAssertions.Any())
                     {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "NegativeAssertions",
                             String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
-                            String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (maybe an A-BOX inference) violating it.", negativeAssertion)
+                            String.Format("Review negative assertion '{0}' because ontology data contains assertion '{1}' violating it (this may be an inference).", negativeAssertion, violatingAssertions.First())
                         ));
                     }
                 }
                 else
                 {
                     //Check if negative assertion is violated by any existing assertions
-                    if (ontology.Data.Relations.Assertions.Any(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
-                                                                        && compatibleProperties.Any(pred => pred.Equals(asn.TaxonomyPredicate))
-                                                                            && negativeAssertion.TaxonomyObject.Equals(asn.TaxonomyObject)))
+                    var violatingAssertions = ontology.Data.Relations.Assertions.Where(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
+                                                                                                && compatibleProperties.Any(pred => pred.Equals(asn.TaxonomyPredicate))
+                                                                                                    && negativeAssertion.TaxonomyObject.Equals(asn.TaxonomyObject));
+                    if (violatingAssertions.Any())
                     {
                         report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "NegativeAssertions",
                             String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
-                            String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (maybe an A-BOX inference) violating it.", negativeAssertion)
+                            String.Format("Review negative assertion '{0}' because ontology data contains assertion '{1}' violating it (this may be an inference).", negativeAssertion, violatingAssertions.First())
                         ));
                     }
                 }
