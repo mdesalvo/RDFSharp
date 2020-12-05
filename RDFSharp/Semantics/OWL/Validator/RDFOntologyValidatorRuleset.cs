@@ -949,7 +949,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "NegativeAssertions",
                             String.Format("Violation of negative assertion '{0}'.", negativeAssertion),
-                            String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (may be an inference) violating it.", negativeAssertion)
+                            String.Format("Review negative assertion '{0}' because ontology data contains at least one assertion (maybe an A-BOX inference) violating it.", negativeAssertion)
                         ));
                     }
                 }
