@@ -938,7 +938,7 @@ namespace RDFSharp.Semantics.OWL
                 {
                     //Enlist the facts which are compatible with negative assertion object
                     RDFOntologyData compatibleObjects = ontology.Data.GetSameFactsAs((RDFOntologyFact)negativeAssertion.TaxonomyObject)
-                                                                      .AddFact((RDFOntologyFact)negativeAssertion.TaxonomyObject);
+                                                                     .AddFact((RDFOntologyFact)negativeAssertion.TaxonomyObject);
 
                     //Check if negative assertion is violated by any existing assertions
                     if (ontology.Data.Relations.Assertions.Any(asn => compatibleSubjects.Any(subj => subj.Equals(asn.TaxonomySubject))
