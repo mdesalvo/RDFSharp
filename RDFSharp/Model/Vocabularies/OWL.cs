@@ -345,6 +345,11 @@ namespace RDFSharp.Model
             /// owl:targetValue [OWL2]
             /// </summary>
             public static readonly RDFResource TARGET_VALUE = new RDFResource(OWL.BASE_URI + "targetValue");
+
+            /// <summary>
+            /// owl:hasKey [OWL2]
+            /// </summary>
+            public static readonly RDFResource HAS_KEY = new RDFResource(OWL.BASE_URI + "hasKey");
             #endregion
 
         }
