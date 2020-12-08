@@ -92,6 +92,11 @@ namespace RDFSharp.Semantics.OWL
                 var alldifferent = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ALL_DIFFERENT); //OWL2
                 var members = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MEMBERS);
                 var distinctMembers = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISTINCT_MEMBERS);
+                var negativeAssertions = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION); //OWL2
+                var sourceIndividual = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SOURCE_INDIVIDUAL); //OWL2
+                var assertionProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ASSERTION_PROPERTY); //OWL2
+                var targetValue = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.TARGET_VALUE); //OWL2
+                var targetIndividual = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.TARGET_INDIVIDUAL); //OWL2
 
                 var versionInfoAnn = RDFVocabulary.OWL.VERSION_INFO.ToRDFOntologyAnnotationProperty();
                 var commentAnn = RDFVocabulary.RDFS.COMMENT.ToRDFOntologyAnnotationProperty();
@@ -1671,7 +1676,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.7: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS]
+                #region Step 6.7: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS|NEGATIVE ASSERTIONS]
 
                 #region SameAs
                 foreach (var t in sameAs)
@@ -1851,13 +1856,116 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
+                #region NegativeAssertions [OWL2]
+                foreach (var nAsn in negativeAssertions)
+                {
+                    #region owl:SourceIndividual
+                    RDFPatternMember sIndividual = sourceIndividual.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
+                    if (sIndividual == null || sIndividual is RDFLiteral)
+                    {
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because source individual is not available
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:SourceIndividual is not available.", nAsn.Subject));
+                        continue;
+                    }
+
+                    //Create the source individual fact even if not explicitly classtyped
+                    var sIndividualFact = ontology.Data.SelectFact(sIndividual.ToString());
+                    if (sIndividualFact == null)
+                    {
+                        sIndividualFact = ((RDFResource)sIndividual).ToRDFOntologyFact();
+                        ontology.Data.AddFact(sIndividualFact);
+                    }
+                    #endregion
+
+                    #region owl:AssertionProperty
+                    RDFPatternMember asnProperty = assertionProperty.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
+                    if (asnProperty == null || asnProperty is RDFLiteral)
+                    {
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because assertion property is not available
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty is not available.", nAsn.Subject));
+                        continue;
+                    }
+
+                    //Check if property exists in the property model
+                    var apProperty = ontology.Model.PropertyModel.SelectProperty(asnProperty.ToString());
+                    if (apProperty == null)
+                    {
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because definition of assertion property is not found in the model
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because definition of assertion property '{1}' is not found in the model.", nAsn.Subject, asnProperty));
+                        continue;
+                    }
+                    #endregion
+
+                    #region owl:TargetIndividual
+                    RDFPatternMember tIndividual = targetIndividual.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
+                    if (tIndividual != null)
+                    {
+                        //We found owl:TargetIndividual, so we can accept it only if it's a resource
+                        //and the negative assertion's property is effectively an object property
+                        if (tIndividual is RDFResource && apProperty is RDFOntologyObjectProperty)
+                        {
+                            //Create the target individual fact even if not explicitly classtyped
+                            var tIndividualFact = ontology.Data.SelectFact(tIndividual.ToString());
+                            if (tIndividualFact == null)
+                            {
+                                tIndividualFact = ((RDFResource)tIndividual).ToRDFOntologyFact();
+                                ontology.Data.AddFact(tIndividualFact);
+                            }
+
+                            //Finally, add negative assertion with all retrieved informations (SPO)
+                            ontology.Data.AddNegativeAssertionRelation(sIndividualFact, (RDFOntologyObjectProperty)apProperty, tIndividualFact);
+                            continue;
+                        }
+                        else
+                        {
+                            //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because target individual is not available
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:TargetIndividual is not available.", nAsn.Subject));
+                            continue;
+                        }
+                    }
+                    #endregion
+
+                    #region owl:TargetValue
+                    RDFPatternMember tValue = targetValue.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
+                    if (tValue != null)
+                    {
+                        //We found owl:TargetValue, so we can accept it only if it's a literal
+                        //and the negative assertion's property is effectively a datatype property
+                        if (tValue is RDFLiteral && apProperty is RDFOntologyDatatypeProperty)
+                        {
+                            //Create the target value literal even if not explicitly declared
+                            var tValueLit = ontology.Data.SelectLiteral(tValue.ToString());
+                            if (tValueLit == null)
+                            {
+                                tValueLit = ((RDFLiteral)tValue).ToRDFOntologyLiteral();
+                                ontology.Data.AddLiteral(tValueLit);
+                            }
+
+                            //Finally, add negative assertion with all retrieved informations (SPL)
+                            ontology.Data.AddNegativeAssertionRelation(sIndividualFact, (RDFOntologyDatatypeProperty)apProperty, tValueLit);
+                            continue;
+                        }
+                        else
+                        {
+                            //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because target value is not available
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:TargetValue is not available.", nAsn.Subject));
+                            continue;
+                        }
+                    }
+                    #endregion
+
+                    //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because neither target individual or target value are available
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because neither owl:TargetIndividual or owl:TargetValue are available.", nAsn.Subject));
+                }
+                #endregion
+
                 #region Assertions
                 foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
                                                                                   && !prop.IsAnnotationProperty()))
                 {
                     foreach (var t in ontGraph.SelectTriplesByPredicate((RDFResource)p.Value).Where(triple => !triple.Subject.Equals(ontology)
                                                                                                                  && !ontology.Model.ClassModel.Classes.ContainsKey(triple.Subject.PatternMemberID)
-                                                                                                                 && !ontology.Model.PropertyModel.Properties.ContainsKey(triple.Subject.PatternMemberID)))
+                                                                                                                    && !ontology.Model.PropertyModel.Properties.ContainsKey(triple.Subject.PatternMemberID)))
                     {
 
                         //Create the fact even if not explicitly classtyped
