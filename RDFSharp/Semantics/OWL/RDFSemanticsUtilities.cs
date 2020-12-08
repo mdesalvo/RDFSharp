@@ -65,6 +65,7 @@ namespace RDFSharp.Semantics.OWL
                 var equivclassOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_CLASS);
                 var disjclassWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_WITH);
                 var alldisjclasses = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES); //OWL2
+                var hasKey = rdfType.SelectTriplesByPredicate(RDFVocabulary.OWL.HAS_KEY); //OWL2
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
                 var alldisjprops = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_PROPERTIES); //OWL2
                 var disjpropWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
@@ -1534,7 +1535,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses]]
+                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses|OWL:HasKey]]
                 foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)))
                 {
 
@@ -1665,6 +1666,79 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                         ontology.Model.ClassModel.AddAllDisjointClassesRelation(allDisjointClasses);
+                    }
+                    #endregion
+
+                    #region HasKey [OWL2]
+                    foreach (var haskey in hasKey.SelectTriplesBySubject((RDFResource)c.Value))
+                    {
+                        var haskeyClass = ontology.Model.ClassModel.SelectClass(haskey.Subject.ToString());
+                        if (haskeyClass != null)
+                        {
+                            var keyProps = new List<RDFOntologyProperty>();
+                            if (haskey.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                            {
+                                #region DeserializeCollection
+                                var nilFound = false;
+                                var itemRest = (RDFResource)haskey.Object;
+                                while (!nilFound)
+                                {
+
+                                    #region rdf:first
+                                    var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                        .FirstOrDefault();
+                                    if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                    {
+                                        var keyProp = ontology.Model.PropertyModel.SelectProperty(first.Object.ToString());
+                                        if (keyProp != null)
+                                        {
+                                            keyProps.Add(keyProp);
+                                        }
+                                        else
+                                        {
+
+                                            //Raise warning event to inform the user: hasKey cannot be completely imported
+                                            //from graph, because definition of property is not found in the model
+                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation '{0}' cannot be completely imported from graph, because definition of property '{1}' is not found in the model.", haskey.Subject, first.Object));
+
+                                        }
+
+                                        #region rdf:rest
+                                        var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                          .FirstOrDefault();
+                                        if (rest != null)
+                                        {
+                                            if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                            {
+                                                nilFound = true;
+                                            }
+                                            else
+                                            {
+                                                itemRest = (RDFResource)rest.Object;
+                                            }
+                                        }
+                                        #endregion
+
+                                    }
+                                    else
+                                    {
+                                        nilFound = true;
+                                    }
+                                    #endregion
+
+                                }
+                                #endregion
+                            }
+                            ontology.Model.ClassModel.AddHasKeyRelation(haskeyClass, keyProps);
+                        }
+                        else
+                        {
+
+                            //Raise warning event to inform the user: hasKey relation cannot be imported
+                            //from graph, because definition of class is not found in the model
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation on class '{0}' cannot be imported from graph, because definition of the class is not found in the model.", haskey.Subject));
+
+                        }
                     }
                     #endregion
 
