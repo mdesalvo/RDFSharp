@@ -1863,8 +1863,8 @@ namespace RDFSharp.Semantics.OWL
                     RDFPatternMember sIndividual = sourceIndividual.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
                     if (sIndividual == null || sIndividual is RDFLiteral)
                     {
-                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because source individual is not available
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:SourceIndividual is not available.", nAsn.Subject));
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because owl:SourceIndividual triple is not found in the graph or it does not link a resource
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:SourceIndividual triple is not found in the graph or it does not link a resource.", nAsn.Subject));
                         continue;
                     }
 
@@ -1881,8 +1881,8 @@ namespace RDFSharp.Semantics.OWL
                     RDFPatternMember asnProperty = assertionProperty.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
                     if (asnProperty == null || asnProperty is RDFLiteral)
                     {
-                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because assertion property is not available
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty is not available.", nAsn.Subject));
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because owl:AssertionProperty triple is not found in the graph or it does not link a resource
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty triple is not found in the graph or it does not link a resource.", nAsn.Subject));
                         continue;
                     }
 
@@ -1890,8 +1890,8 @@ namespace RDFSharp.Semantics.OWL
                     var apProperty = ontology.Model.PropertyModel.SelectProperty(asnProperty.ToString());
                     if (apProperty == null)
                     {
-                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because definition of assertion property is not found in the model
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because definition of assertion property '{1}' is not found in the model.", nAsn.Subject, asnProperty));
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because owl:AssertionProperty links an undeclared property
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty '{1}' links an undeclared property.", nAsn.Subject, asnProperty));
                         continue;
                     }
                     #endregion
@@ -1918,8 +1918,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because use of target individual is incorrect
-                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetIndividual is incorrect.", nAsn.Subject));
+                            //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because use of target individual is not correct
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetIndividual is not correct.", nAsn.Subject));
                             continue;
                         }
                     }
@@ -1947,15 +1947,15 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because use of target value is incorrect
-                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetValue is incorrect.", nAsn.Subject));
+                            //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because use of target value is not correct
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetValue is not correct.", nAsn.Subject));
                             continue;
                         }
                     }
                     #endregion
 
-                    //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because neither target individual or target value are available
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because neither owl:TargetIndividual or owl:TargetValue are available.", nAsn.Subject));
+                    //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because neither owl:TargetIndividual or owl:TargetValue triples are found in the graph
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because neither owl:TargetIndividual or owl:TargetValue triples are found in the graph.", nAsn.Subject));
                 }
                 #endregion
 
