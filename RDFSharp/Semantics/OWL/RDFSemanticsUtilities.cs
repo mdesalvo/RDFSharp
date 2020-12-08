@@ -1890,8 +1890,8 @@ namespace RDFSharp.Semantics.OWL
                     var apProperty = ontology.Model.PropertyModel.SelectProperty(asnProperty.ToString());
                     if (apProperty == null)
                     {
-                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because owl:AssertionProperty links an undeclared property
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty '{1}' links an undeclared property.", nAsn.Subject, asnProperty));
+                        //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because owl:AssertionProperty is not a declared property
+                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty '{1}' is not a declared property.", nAsn.Subject, asnProperty));
                         continue;
                     }
                     #endregion
