@@ -1114,19 +1114,19 @@ namespace RDFSharp.Semantics.OWL
             var result = new RDFGraph();
 
             //Relations
-            result = result.UnionWith(this.Relations.SameAs.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Relations.DifferentFrom.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Relations.ClassType.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Relations.Assertions.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior));
+            result = result.UnionWith(this.Relations.SameAs.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SameAs)))
+                           .UnionWith(this.Relations.DifferentFrom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.DifferentFrom)))
+                           .UnionWith(this.Relations.ClassType.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.ClassType)))
+                           .UnionWith(this.Relations.Assertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.Assertions)))
+                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions)));
 
             //Annotations
-            result = result.UnionWith(this.Annotations.VersionInfo.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Annotations.Comment.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Annotations.Label.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Annotations.SeeAlso.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Annotations.IsDefinedBy.ToRDFGraph(infexpBehavior))
-                           .UnionWith(this.Annotations.CustomAnnotations.ToRDFGraph(infexpBehavior));
+            result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))
+                           .UnionWith(this.Annotations.Comment.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.Comment)))
+                           .UnionWith(this.Annotations.Label.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.Label)))
+                           .UnionWith(this.Annotations.SeeAlso.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.SeeAlso)))
+                           .UnionWith(this.Annotations.IsDefinedBy.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.IsDefinedBy)))
+                           .UnionWith(this.Annotations.CustomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.CustomAnnotations)));
 
             return result;
         }
