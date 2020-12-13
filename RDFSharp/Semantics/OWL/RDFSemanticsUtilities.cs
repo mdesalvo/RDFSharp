@@ -3125,9 +3125,13 @@ namespace RDFSharp.Semantics.OWL
         private static RDFGraph ReifyHasKeyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
             RDFGraph result = new RDFGraph();
-
-            //TODO
-
+            foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
+            {
+                RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
+                    tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
+                result.AddCollection(tgroupColl);
+            }
             return result;
         }
         private static RDFGraph ReifyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
