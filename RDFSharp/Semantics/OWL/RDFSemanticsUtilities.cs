@@ -3005,9 +3005,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior, string taxonomyName)
         {
-            var result = new RDFGraph();
-
-            //Applies taxonomy-specific reification algorythms for exporting to graph
+            RDFGraph result = new RDFGraph();
             switch (taxonomyName)
             {
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
@@ -3022,7 +3020,6 @@ namespace RDFSharp.Semantics.OWL
                     result = ReifyTaxonomyToGraph(taxonomy, infexpBehavior);
                     break;
             }
-
             return result;
         }
         private static RDFGraph ReifyNegativeAssertionsTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
