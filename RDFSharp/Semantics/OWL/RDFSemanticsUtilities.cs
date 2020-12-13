@@ -3128,6 +3128,7 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
                     tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
                 result.AddCollection(tgroupColl);
+                result.AddTriple(new RDFTriple((RDFResource)tgroup.Key.Value, RDFVocabulary.OWL.HAS_KEY, tgroupColl.ReificationSubject));
             }
             return result;
         }
