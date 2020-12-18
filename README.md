@@ -33,3 +33,5 @@ RDFSharp has a modular API made up of four layers ([RDF/SPARQL docs](https://git
         <li>Create and manage <i>SKOS glossaries, thesauri and classification schemes</i> with a friendly and powerful API</li>
     </ul>
 </ul>
+<hr>
+Feel free to explore and join our [discussions](https://github.com/mdesalvo/RDFSharp/discussions) :D
