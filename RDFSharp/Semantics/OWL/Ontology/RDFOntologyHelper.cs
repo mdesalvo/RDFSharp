@@ -29,8 +29,6 @@ namespace RDFSharp.Semantics.OWL
     public static class RDFOntologyHelper
     {
 
-        #region Model
-
         #region ClassModel
 
         #region SubClassOf
@@ -299,6 +297,41 @@ namespace RDFSharp.Semantics.OWL
             }
 
             return result1;
+        }
+        #endregion
+
+        #region HasKey [OWL2]
+        /// <summary>
+        /// Gets the owl:hasKey values for the members of the given ontology class [OWL2]
+        /// </summary>
+        public static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass)
+        {
+            Dictionary<string, List<RDFOntologyResource>> result = new Dictionary<string, List<RDFOntologyResource>>();
+
+            RDFOntologyTaxonomy hasKeyClassTaxonomy = ontology.Model.ClassModel.Relations.HasKey.SelectEntriesBySubject(ontologyClass);
+            if (hasKeyClassTaxonomy.Any())
+            {
+                //Enlist members of hasKey class
+                RDFOntologyData hasKeyClassMembers = GetMembersOf(ontology, ontologyClass);
+
+                //Fetch hasKey property values for each of haskey class members
+                foreach (RDFOntologyTaxonomyEntry hasKeyClassTaxonomyEntry in hasKeyClassTaxonomy)
+                {
+                    foreach (RDFOntologyFact hasKeyClassMember in hasKeyClassMembers)
+                    {
+                        List<RDFOntologyResource> keyPropertyValues = ontology.Data.Relations.Assertions.SelectEntriesBySubject(hasKeyClassMember)
+                                                                                                        .SelectEntriesByPredicate(hasKeyClassTaxonomyEntry.TaxonomyObject)
+                                                                                                        .Select(te => te.TaxonomyObject)
+                                                                                                        .ToList();
+                        if (!result.ContainsKey(hasKeyClassMember.ToString()))
+                            result.Add(hasKeyClassMember.ToString(), keyPropertyValues);
+                        else
+                            result[hasKeyClassMember.ToString()].AddRange(keyPropertyValues);
+                    }
+                }
+            }
+
+            return result;
         }
         #endregion
 
@@ -682,8 +715,6 @@ namespace RDFSharp.Semantics.OWL
             }
             return result;
         }
-        #endregion
-
         #endregion
 
         #endregion
