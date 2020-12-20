@@ -323,6 +323,9 @@ namespace RDFSharp.Semantics.OWL
                                                                                                         .SelectEntriesByPredicate(hasKeyClassTaxonomyEntry.TaxonomyObject)
                                                                                                         .Select(te => te.TaxonomyObject)
                                                                                                         .ToList();
+                        if (keyPropertyValues.Count == 0)
+                            keyPropertyValues.Add(null);
+
                         if (!result.ContainsKey(hasKeyClassMember.ToString()))
                             result.Add(hasKeyClassMember.ToString(), keyPropertyValues);
                         else
