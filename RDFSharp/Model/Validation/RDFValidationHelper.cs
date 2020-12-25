@@ -327,6 +327,22 @@ namespace RDFSharp.Model
                 if (shapeDatatypeConstraint.Object is RDFResource shapeDatatypeConstraintResource)
                     shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapeDatatypeConstraintResource.ToString())));
             }
+
+            //shacl:disjoint
+            RDFTriple shapeDisjointConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DISJOINT).FirstOrDefault();
+            if (shapeDisjointConstraint != null)
+            {
+                if (shapeDisjointConstraint.Object is RDFResource shapeDisjointConstraintResource)
+                    shape.AddConstraint(new RDFDisjointConstraint(shapeDisjointConstraintResource));
+            }
+
+            //shacl:equals
+            RDFTriple shapeEqualsConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.EQUALS).FirstOrDefault();
+            if (shapeEqualsConstraint != null)
+            {
+                if (shapeEqualsConstraint.Object is RDFResource shapeEqualsConstraintResource)
+                    shape.AddConstraint(new RDFEqualsConstraint(shapeEqualsConstraintResource));
+            }
         }
         #endregion
 
