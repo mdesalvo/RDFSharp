@@ -195,7 +195,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedPropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-
+            //TODO
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectInlinePropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-
+            //TODO
         }
 
         /// <summary>
@@ -371,6 +371,82 @@ namespace RDFSharp.Model
             RDFGraph shapeLessThanOrEqualsConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS);
             foreach (RDFTriple shapeLessThanOrEqualsConstraint in shapeLessThanOrEqualsConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFLessThanOrEqualsConstraint((RDFResource)shapeLessThanOrEqualsConstraint.Object));
+
+            //shacl:maxCount (accepted occurrences: 1)
+            RDFTriple shapeMaxCountConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MAX_COUNT).FirstOrDefault();
+            if (shapeMaxCountConstraint != null)
+            {
+                if (shapeMaxCountConstraint.Object is RDFTypedLiteral shaclMaxCountConstraintLiteral
+                        && shaclMaxCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                    shape.AddConstraint(new RDFMaxCountConstraint(int.Parse(shaclMaxCountConstraintLiteral.Value)));
+            }
+
+            //shacl:maxExclusive (accepted occurrences: 1)
+            RDFTriple shapeMaxExclusiveConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MAX_EXCLUSIVE).FirstOrDefault();
+            if (shapeMaxExclusiveConstraint != null)
+            {
+                if (shapeMaxExclusiveConstraint.Object is RDFResource)
+                    shape.AddConstraint(new RDFMaxExclusiveConstraint((RDFResource)shapeMaxExclusiveConstraint.Object));
+                else if (shapeMaxExclusiveConstraint.Object is RDFLiteral)
+                    shape.AddConstraint(new RDFMaxExclusiveConstraint((RDFLiteral)shapeMaxExclusiveConstraint.Object));
+            }
+
+            //shacl:maxInclusive (accepted occurrences: 1)
+            RDFTriple shapeMaxInclusiveConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MAX_INCLUSIVE).FirstOrDefault();
+            if (shapeMaxInclusiveConstraint != null)
+            {
+                if (shapeMaxInclusiveConstraint.Object is RDFResource)
+                    shape.AddConstraint(new RDFMaxInclusiveConstraint((RDFResource)shapeMaxInclusiveConstraint.Object));
+                else if (shapeMaxInclusiveConstraint.Object is RDFLiteral)
+                    shape.AddConstraint(new RDFMaxInclusiveConstraint((RDFLiteral)shapeMaxInclusiveConstraint.Object));
+            }
+
+            //shacl:maxLength (accepted occurrences: 1)
+            RDFTriple shapeMaxLengthConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MAX_LENGTH).FirstOrDefault();
+            if (shapeMaxLengthConstraint != null)
+            {
+                if (shapeMaxLengthConstraint.Object is RDFTypedLiteral shaclMaxLengthConstraintLiteral
+                        && shaclMaxLengthConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                    shape.AddConstraint(new RDFMaxLengthConstraint(int.Parse(shaclMaxLengthConstraintLiteral.Value)));
+            }
+
+            //shacl:minCount (accepted occurrences: 1)
+            RDFTriple shapeMinCountConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MIN_COUNT).FirstOrDefault();
+            if (shapeMinCountConstraint != null)
+            {
+                if (shapeMinCountConstraint.Object is RDFTypedLiteral shaclMinCountConstraintLiteral
+                        && shaclMinCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                    shape.AddConstraint(new RDFMinCountConstraint(int.Parse(shaclMinCountConstraintLiteral.Value)));
+            }
+
+            //shacl:minExclusive (accepted occurrences: 1)
+            RDFTriple shapeMinExclusiveConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MIN_EXCLUSIVE).FirstOrDefault();
+            if (shapeMinExclusiveConstraint != null)
+            {
+                if (shapeMinExclusiveConstraint.Object is RDFResource)
+                    shape.AddConstraint(new RDFMinExclusiveConstraint((RDFResource)shapeMinExclusiveConstraint.Object));
+                else if (shapeMinExclusiveConstraint.Object is RDFLiteral)
+                    shape.AddConstraint(new RDFMinExclusiveConstraint((RDFLiteral)shapeMinExclusiveConstraint.Object));
+            }
+
+            //shacl:minInclusive (accepted occurrences: 1)
+            RDFTriple shapeMinInclusiveConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MIN_INCLUSIVE).FirstOrDefault();
+            if (shapeMinInclusiveConstraint != null)
+            {
+                if (shapeMinInclusiveConstraint.Object is RDFResource)
+                    shape.AddConstraint(new RDFMinInclusiveConstraint((RDFResource)shapeMinInclusiveConstraint.Object));
+                else if (shapeMinInclusiveConstraint.Object is RDFLiteral)
+                    shape.AddConstraint(new RDFMinInclusiveConstraint((RDFLiteral)shapeMinInclusiveConstraint.Object));
+            }
+
+            //shacl:minLength (accepted occurrences: 1)
+            RDFTriple shapeMinLengthConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MIN_LENGTH).FirstOrDefault();
+            if (shapeMinLengthConstraint != null)
+            {
+                if (shapeMinLengthConstraint.Object is RDFTypedLiteral shaclMinLengthConstraintLiteral
+                        && shaclMinLengthConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                    shape.AddConstraint(new RDFMinLengthConstraint(int.Parse(shaclMinLengthConstraintLiteral.Value)));
+            }
         }
         #endregion
 
