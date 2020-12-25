@@ -514,6 +514,60 @@ namespace RDFSharp.Model
                     shape.AddConstraint(new RDFPatternConstraint(new Regex(shapePatternConstraintLiteral.Value, regexOptions)));
                 }
             }
+
+            //sh:property (accepted occurrences: N)
+            RDFGraph shapePropertyConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.PROPERTY);
+            foreach (RDFTriple shapePropertyConstraint in shapePropertyConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFPropertyConstraint((RDFResource)shapePropertyConstraint.Object));
+
+            //sh:qualifiedValueShape (accepted occurrences: 1)
+            RDFTriple shapeQualifiedValueConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE).FirstOrDefault();
+            if (shapeQualifiedValueConstraint != null)
+            {
+                if (shapeQualifiedValueConstraint.Object is RDFResource)
+                {
+                    //sh:qualifiedMinCount (accepted occurrences: 1)
+                    int? qualifiedMinCountValue = null;
+                    RDFTriple shapeQualifiedMinCountConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT).FirstOrDefault();
+                    if (shapeQualifiedMinCountConstraint != null)
+                    {
+                        if (shapeQualifiedMinCountConstraint.Object is RDFTypedLiteral shapeQualifiedMinCountConstraintLiteral
+                                && shapeQualifiedMinCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                            qualifiedMinCountValue = int.Parse(shapeQualifiedMinCountConstraintLiteral.Value);
+                    }
+
+                    //sh:qualifiedMaxCount (accepted occurrences: 1)
+                    int? qualifiedMaxCountValue = null;
+                    RDFTriple shapeQualifiedMaxCountConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT).FirstOrDefault();
+                    if (shapeQualifiedMaxCountConstraint != null)
+                    {
+                        if (shapeQualifiedMaxCountConstraint.Object is RDFTypedLiteral shapeQualifiedMaxCountConstraintLiteral
+                                && shapeQualifiedMaxCountConstraintLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                            qualifiedMaxCountValue = int.Parse(shapeQualifiedMaxCountConstraintLiteral.Value);
+                    }
+
+                    shape.AddConstraint(new RDFQualifiedValueShapeConstraint((RDFResource)shapeQualifiedValueConstraint.Object, qualifiedMinCountValue, qualifiedMaxCountValue));
+                }
+            }
+
+            //sh:uniqueLang (accepted occurrences: 1)
+            RDFTriple shapeUniqueLangConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.UNIQUE_LANG).FirstOrDefault();
+            if (shapeUniqueLangConstraint != null)
+            {
+                if (shapeUniqueLangConstraint.Object is RDFTypedLiteral shapeUniqueLangConstraintLiteral
+                        && shapeUniqueLangConstraintLiteral.HasBooleanDatatype() && bool.Parse(shapeUniqueLangConstraintLiteral.Value))
+                    shape.AddConstraint(new RDFUniqueLangConstraint(true));
+            }
+
+            //sh:xone (accepted occurrences: N)
+            RDFGraph shapeXoneConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.XONE);
+            foreach (RDFTriple shapeXoneConstraint in shapeXoneConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            {
+                RDFXoneConstraint xoneConstraint = new RDFXoneConstraint();
+                RDFCollection xoneConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeXoneConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPO);
+                xoneConstraintCollection.Items.ForEach(item => xoneConstraint.AddShape((RDFResource)item));
+                shape.AddConstraint(xoneConstraint);
+            }
         }
         #endregion
 
