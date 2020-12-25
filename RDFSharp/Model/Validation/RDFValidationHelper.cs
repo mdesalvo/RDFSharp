@@ -213,22 +213,22 @@ namespace RDFSharp.Model
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(shape);
 
-            //shacl:TargetClass
+            //shacl:TargetClass (accepted occurrences: N)
             RDFGraph targetClasses = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_CLASS);
             foreach (RDFTriple targetClass in targetClasses.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetClass((RDFResource)targetClass.Object));
 
-            //shacl:TargetNode
+            //shacl:TargetNode (accepted occurrences: N)
             RDFGraph targetNodes = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_NODE);
             foreach (RDFTriple targetNode in targetNodes.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetNode((RDFResource)targetNode.Object));
 
-            //shacl:TargetSubjectsOf
+            //shacl:TargetSubjectsOf (accepted occurrences: N)
             RDFGraph targetSubjectsOf = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_SUBJECTS_OF);
             foreach (RDFTriple targetSubjectOf in targetSubjectsOf.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetSubjectsOf((RDFResource)targetSubjectOf.Object));
 
-            //shacl:TargetObjectsOf
+            //shacl:TargetObjectsOf (accepted occurrences: N)
             RDFGraph targetObjectsOf = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.TARGET_OBJECTS_OF);
             foreach (RDFTriple targetObjectOf in targetObjectsOf.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetObjectsOf((RDFResource)targetObjectOf.Object));
@@ -241,8 +241,7 @@ namespace RDFSharp.Model
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(shape);
 
-            //shacl:severity
-            shape.SetSeverity(RDFValidationEnums.RDFShapeSeverity.Violation);
+            //shacl:severity (accepted occurrences: 1)
             RDFTriple shapeSeverity = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.SEVERITY_PROPERTY).FirstOrDefault();
             if (shapeSeverity != null)
             {
@@ -252,8 +251,7 @@ namespace RDFSharp.Model
                     shape.SetSeverity(RDFValidationEnums.RDFShapeSeverity.Warning);
             }
 
-            //shacl:deactivated
-            shape.Activate();
+            //shacl:deactivated (accepted occurrences: 1)
             RDFTriple shapeDeactivated = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DEACTIVATED).FirstOrDefault();
             if (shapeDeactivated != null)
             {
@@ -262,7 +260,7 @@ namespace RDFSharp.Model
                     shape.Deactivate();
             }
 
-            //shacl:message
+            //shacl:message (accepted occurrences: N)
             RDFGraph shapeMessages = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MESSAGE);
             foreach (RDFTriple shapeMessage in shapeMessages.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                 shape.AddMessage((RDFLiteral)shapeMessage.Object);
@@ -275,28 +273,22 @@ namespace RDFSharp.Model
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(shape);
 
-            //shacl:and
-            RDFTriple shapeAndConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.AND).FirstOrDefault();
-            if (shapeAndConstraint != null)
+            //shacl:and (accepted occurrences: N)
+            RDFGraph shapeAndConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.AND);
+            foreach (RDFTriple shapeAndConstraint in shapeAndConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
-                if (shapeAndConstraint.Object is RDFResource shapeAndConstraintResource)
-                {
-                    RDFAndConstraint andConstraint = new RDFAndConstraint();
-                    RDFCollection andConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, shapeAndConstraintResource, RDFModelEnums.RDFTripleFlavors.SPO);
-                    andConstraintCollection.Items.ForEach(item => andConstraint.AddShape((RDFResource)item));
-                    shape.AddConstraint(andConstraint);
-                }
+                RDFAndConstraint andConstraint = new RDFAndConstraint();
+                RDFCollection andConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeAndConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPO);
+                andConstraintCollection.Items.ForEach(item => andConstraint.AddShape((RDFResource)item));
+                shape.AddConstraint(andConstraint);
             }
 
-            //shacl:class
-            RDFTriple shapeClassConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.CLASS).FirstOrDefault();
-            if (shapeClassConstraint != null)
-            {
-                if (shapeClassConstraint.Object is RDFResource shapeClassConstraintResource)
-                    shape.AddConstraint(new RDFClassConstraint(shapeClassConstraintResource);
-            }
+            //shacl:class (accepted occurrences: N)
+            RDFGraph shapeClassConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.CLASS);
+            foreach (RDFTriple shapeClassConstraint in shapeClassConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFClassConstraint((RDFResource)shapeClassConstraint.Object));
 
-            //shacl:closed
+            //shacl:closed (accepted occurrences: 1)
             RDFTriple shapeClosedConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.CLOSED).FirstOrDefault();
             if (shapeClosedConstraint != null)
             {
@@ -305,7 +297,7 @@ namespace RDFSharp.Model
                 {
                     RDFClosedConstraint closedConstraint = new RDFClosedConstraint(true);
 
-                    //shacl:ignoredProperties
+                    //shacl:ignoredProperties (accepted occurrences: 1)
                     RDFTriple shapeIgnoredPropertiesConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.IGNORED_PROPERTIES).FirstOrDefault();
                     if (shapeIgnoredPropertiesConstraint != null)
                     {
@@ -320,86 +312,65 @@ namespace RDFSharp.Model
                 }
             }
 
-            //shacl:datatype
-            RDFTriple shapeDatatypeConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DATATYPE).FirstOrDefault();
-            if (shapeDatatypeConstraint != null)
+            //shacl:datatype (accepted occurrences: N)
+            RDFGraph shapeDatatypeConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DATATYPE);
+            foreach (RDFTriple shapeDatatypeConstraint in shapeDatatypeConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapeDatatypeConstraint.Object.ToString())));
+
+            //shacl:disjoint (accepted occurrences: N)
+            RDFGraph shapeDisjointConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DISJOINT);
+            foreach (RDFTriple shapeDisjointConstraint in shapeDisjointConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFDisjointConstraint((RDFResource)shapeDisjointConstraint.Object));
+
+            //shacl:equals (accepted occurrences: N)
+            RDFGraph shapeEqualsConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.EQUALS);
+            foreach (RDFTriple shapeEqualsConstraint in shapeEqualsConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFEqualsConstraint((RDFResource)shapeEqualsConstraint.Object));
+
+            //shacl:hasValue (accepted occurrences: N)
+            RDFGraph shapeHasValueConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.HAS_VALUE);
+            foreach (RDFTriple shapeHasValueConstraint in shapeHasValueConstraints)
             {
-                if (shapeDatatypeConstraint.Object is RDFResource shapeDatatypeConstraintResource)
-                    shape.AddConstraint(new RDFDatatypeConstraint(RDFModelUtilities.GetDatatypeFromString(shapeDatatypeConstraintResource.ToString())));
+                if (shapeHasValueConstraint.Object is RDFResource)
+                    shape.AddConstraint(new RDFHasValueConstraint((RDFResource)shapeHasValueConstraint.Object));
+                else if (shapeHasValueConstraint.Object is RDFLiteral)
+                    shape.AddConstraint(new RDFHasValueConstraint((RDFLiteral)shapeHasValueConstraint.Object));
             }
 
-            //shacl:disjoint
-            RDFTriple shapeDisjointConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DISJOINT).FirstOrDefault();
-            if (shapeDisjointConstraint != null)
+            //shacl:in (accepted occurrences: N)
+            RDFGraph shapeInConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.IN);
+            foreach (RDFTriple shapeInConstraint in shapeInConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
-                if (shapeDisjointConstraint.Object is RDFResource shapeDisjointConstraintResource)
-                    shape.AddConstraint(new RDFDisjointConstraint(shapeDisjointConstraintResource));
-            }
-
-            //shacl:equals
-            RDFTriple shapeEqualsConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.EQUALS).FirstOrDefault();
-            if (shapeEqualsConstraint != null)
-            {
-                if (shapeEqualsConstraint.Object is RDFResource shapeEqualsConstraintResource)
-                    shape.AddConstraint(new RDFEqualsConstraint(shapeEqualsConstraintResource));
-            }
-
-            //shacl:hasValue
-            RDFTriple shapeHasValueConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.HAS_VALUE).FirstOrDefault();
-            if (shapeHasValueConstraint != null)
-            {
-                if (shapeHasValueConstraint.Object is RDFResource shapeHasValueConstraintResource)
-                    shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintResource));
-                else if (shapeHasValueConstraint.Object is RDFLiteral shapeHasValueConstraintLiteral)
-                    shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintLiteral));
-            }
-
-            //shacl:in
-            RDFTriple shapeInConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.IN).FirstOrDefault();
-            if (shapeInConstraint != null)
-            {
-                if (shapeInConstraint.Object is RDFResource shapeInConstraintResource)
+                RDFModelEnums.RDFTripleFlavors shapeInConstraintCollectionFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, (RDFResource)shapeInConstraint.Object);
+                RDFCollection shapeInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeInConstraint.Object, shapeInConstraintCollectionFlavor);
+                RDFInConstraint inConstraint = new RDFInConstraint(shapeInConstraintCollection.ItemType);
+                shapeInConstraintCollection.Items.ForEach(item =>
                 {
-                    RDFModelEnums.RDFTripleFlavors shapeInConstraintCollectionFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, shapeInConstraintResource);
-                    RDFCollection shapeInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, shapeInConstraintResource, shapeInConstraintCollectionFlavor);
-                    RDFInConstraint inConstraint = new RDFInConstraint(shapeInConstraintCollection.ItemType);
-                    shapeInConstraintCollection.Items.ForEach(item =>
-                    {
-                        if (item is RDFResource itemResource)
-                            inConstraint.AddValue(itemResource);
-                        else if (item is RDFLiteral itemLiteral)
-                            inConstraint.AddValue(itemLiteral);
-                    });
-                    shape.AddConstraint(inConstraint);
-                }
+                    if (item is RDFResource)
+                        inConstraint.AddValue((RDFResource)item);
+                    else if (item is RDFLiteral)
+                        inConstraint.AddValue((RDFLiteral)item);
+                });
+                shape.AddConstraint(inConstraint);
             }
 
-            //shacl:languageIn
-            RDFTriple shapeLanguageInConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LANGUAGE_IN).FirstOrDefault();
-            if (shapeLanguageInConstraint != null)
+            //shacl:languageIn (accepted occurrences: N)
+            RDFGraph shapeLanguageInConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LANGUAGE_IN);
+            foreach (RDFTriple shapeLanguageInConstraint in shapeLanguageInConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
-                if (shapeLanguageInConstraint.Object is RDFResource shapeLanguageInConstraintResource)
-                {
-                    RDFCollection shapeLanguageInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, shapeLanguageInConstraintResource, RDFModelEnums.RDFTripleFlavors.SPL);
-                    shape.AddConstraint(new RDFLanguageInConstraint(shapeLanguageInConstraintCollection.Select(x => x.ToString()).ToList()));
-                }
+                RDFCollection shapeLanguageInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeLanguageInConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPL);
+                shape.AddConstraint(new RDFLanguageInConstraint(shapeLanguageInConstraintCollection.Select(x => x.ToString()).ToList()));
             }
 
-            //shacl:lessThan
-            RDFTriple shapeLessThanConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN).FirstOrDefault();
-            if (shapeLessThanConstraint != null)
-            {
-                if (shapeLessThanConstraint.Object is RDFResource shapeLessThanConstraintResource)
-                    shape.AddConstraint(new RDFLessThanConstraint(shapeLessThanConstraintResource));
-            }
+            //shacl:lessThan (accepted occurrences: N)
+            RDFGraph shapeLessThanConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN);
+            foreach (RDFTriple shapeLessThanConstraint in shapeLessThanConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFLessThanConstraint((RDFResource)shapeLessThanConstraint.Object));
 
-            //shacl:lessThanOrEquals
-            RDFTriple shapeLessThanOrEqualsConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS).FirstOrDefault();
-            if (shapeLessThanOrEqualsConstraint != null)
-            {
-                if (shapeLessThanOrEqualsConstraint.Object is RDFResource shapeLessThanOrEqualsConstraintResource)
-                    shape.AddConstraint(new RDFLessThanOrEqualsConstraint(shapeLessThanOrEqualsConstraintResource));
-            }
+            //shacl:lessThanOrEquals (accepted occurrences: N)
+            RDFGraph shapeLessThanOrEqualsConstraints = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS);
+            foreach (RDFTriple shapeLessThanOrEqualsConstraint in shapeLessThanOrEqualsConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+                shape.AddConstraint(new RDFLessThanOrEqualsConstraint((RDFResource)shapeLessThanOrEqualsConstraint.Object));
         }
         #endregion
 
