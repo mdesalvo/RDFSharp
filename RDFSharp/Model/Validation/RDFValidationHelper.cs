@@ -343,6 +343,63 @@ namespace RDFSharp.Model
                 if (shapeEqualsConstraint.Object is RDFResource shapeEqualsConstraintResource)
                     shape.AddConstraint(new RDFEqualsConstraint(shapeEqualsConstraintResource));
             }
+
+            //shacl:hasValue
+            RDFTriple shapeHasValueConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.HAS_VALUE).FirstOrDefault();
+            if (shapeHasValueConstraint != null)
+            {
+                if (shapeHasValueConstraint.Object is RDFResource shapeHasValueConstraintResource)
+                    shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintResource));
+                else if (shapeHasValueConstraint.Object is RDFLiteral shapeHasValueConstraintLiteral)
+                    shape.AddConstraint(new RDFHasValueConstraint(shapeHasValueConstraintLiteral));
+            }
+
+            //shacl:in
+            RDFTriple shapeInConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.IN).FirstOrDefault();
+            if (shapeInConstraint != null)
+            {
+                if (shapeInConstraint.Object is RDFResource shapeInConstraintResource)
+                {
+                    RDFModelEnums.RDFTripleFlavors shapeInConstraintCollectionFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, shapeInConstraintResource);
+                    RDFCollection shapeInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, shapeInConstraintResource, shapeInConstraintCollectionFlavor);
+                    RDFInConstraint inConstraint = new RDFInConstraint(shapeInConstraintCollection.ItemType);
+                    shapeInConstraintCollection.Items.ForEach(item =>
+                    {
+                        if (item is RDFResource itemResource)
+                            inConstraint.AddValue(itemResource);
+                        else if (item is RDFLiteral itemLiteral)
+                            inConstraint.AddValue(itemLiteral);
+                    });
+                    shape.AddConstraint(inConstraint);
+                }
+            }
+
+            //shacl:languageIn
+            RDFTriple shapeLanguageInConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LANGUAGE_IN).FirstOrDefault();
+            if (shapeLanguageInConstraint != null)
+            {
+                if (shapeLanguageInConstraint.Object is RDFResource shapeLanguageInConstraintResource)
+                {
+                    RDFCollection shapeLanguageInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, shapeLanguageInConstraintResource, RDFModelEnums.RDFTripleFlavors.SPL);
+                    shape.AddConstraint(new RDFLanguageInConstraint(shapeLanguageInConstraintCollection.Select(x => x.ToString()).ToList()));
+                }
+            }
+
+            //shacl:lessThan
+            RDFTriple shapeLessThanConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN).FirstOrDefault();
+            if (shapeLessThanConstraint != null)
+            {
+                if (shapeLessThanConstraint.Object is RDFResource shapeLessThanConstraintResource)
+                    shape.AddConstraint(new RDFLessThanConstraint(shapeLessThanConstraintResource));
+            }
+
+            //shacl:lessThanOrEquals
+            RDFTriple shapeLessThanOrEqualsConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS).FirstOrDefault();
+            if (shapeLessThanOrEqualsConstraint != null)
+            {
+                if (shapeLessThanOrEqualsConstraint.Object is RDFResource shapeLessThanOrEqualsConstraintResource)
+                    shape.AddConstraint(new RDFLessThanOrEqualsConstraint(shapeLessThanOrEqualsConstraintResource));
+            }
         }
         #endregion
 
