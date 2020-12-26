@@ -212,11 +212,38 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Detects the inlined instances of shacl:PropertyShape and populates the shapes graph with their definition
+        /// Detects the inline instances of shacl:PropertyShape and populates the shapes graph with their definition
         /// </summary>
         private static void DetectInlinePropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            //TODO
+            RDFGraph inlinePropertyShapes = graph.SelectTriplesByPredicate(RDFVocabulary.SHACL.PROPERTY);
+
+            foreach (RDFTriple inlinePropertyShape in inlinePropertyShapes)
+            {
+                //Inline property shapes are blank objects of "sh:property" constraints:
+                //we wont find their explicit shape definition within the shapes graph.
+                if (inlinePropertyShape.Object is RDFResource inlinePropertyShapeResource
+                        && inlinePropertyShapeResource.IsBlank
+                            && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
+                {
+                    RDFTriple inlinePropertyShapePath = graph.SelectTriplesBySubject(inlinePropertyShapeResource)
+                                                             .SelectTriplesByPredicate(RDFVocabulary.SHACL.PATH)
+                                                             .FirstOrDefault();
+
+                    if (inlinePropertyShapePath != null
+                            && inlinePropertyShapePath.Object is RDFResource)
+                    {
+                        RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)inlinePropertyShape.Subject, (RDFResource)inlinePropertyShapePath.Object);
+
+                        DetectShapeTargets(graph, propertyShape);
+                        DetectShapeAttributes(graph, propertyShape);
+                        DetectShapeNonValidatingAttributes(graph, propertyShape);
+                        DetectShapeConstraints(graph, propertyShape);
+
+                        shapesGraph.AddShape(propertyShape);
+                    }
+                }
+            }
         }
 
         /// <summary>
