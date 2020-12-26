@@ -175,8 +175,10 @@ namespace RDFSharp.Model
             //sh:NodeShape
             RDFGraph declaredNodeShapes = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
                                                .SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE);
+
             foreach (RDFTriple declaredNodeShape in declaredNodeShapes)
             {
+                //Definition
                 RDFNodeShape nodeShape = new RDFNodeShape((RDFResource)declaredNodeShape.Subject);
 
                 //Targets
@@ -195,7 +197,33 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedPropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            //TODO
+            //sh:PropertyShape
+            RDFGraph declaredPropertyShapes = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+                                                   .SelectTriplesByObject(RDFVocabulary.SHACL.PROPERTY_SHAPE);
+
+            foreach (RDFTriple declaredPropertyShape in declaredPropertyShapes)
+            {
+                RDFTriple declaredPropertyShapePath = graph.SelectTriplesBySubject((RDFResource)declaredPropertyShape.Subject)
+                                                           .SelectTriplesByPredicate(RDFVocabulary.SHACL.PATH)
+                                                           .FirstOrDefault();
+                if (declaredPropertyShapePath != null && declaredPropertyShapePath.Object is RDFResource)
+                {
+                    //Definition
+                    RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, (RDFResource)declaredPropertyShapePath.Object);
+
+                    //Targets
+                    DetectShapeTargets(graph, shapesGraph, propertyShape);
+
+                    //Attributes
+                    DetectShapeAttributes(graph, shapesGraph, propertyShape);
+
+                    //NonValidating
+                    DetectShapeNonValidatingAttributes(graph, shapesGraph, propertyShape);
+
+                    //Constraints
+                    DetectShapeConstraints(graph, shapesGraph, propertyShape);
+                }
+            }
         }
 
         /// <summary>
@@ -264,6 +292,41 @@ namespace RDFSharp.Model
             RDFGraph shapeMessages = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.MESSAGE);
             foreach (RDFTriple shapeMessage in shapeMessages.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                 shape.AddMessage((RDFLiteral)shapeMessage.Object);
+        }
+
+        /// <summary>
+        /// Detects the non validating attributes of the given property shape
+        /// </summary>
+        private static void DetectShapeNonValidatingAttributes(RDFGraph graph, RDFShapesGraph shapesGraph, RDFPropertyShape propertyShape)
+        {
+            RDFGraph shapeDefinition = graph.SelectTriplesBySubject(propertyShape);
+
+            //sh:description (accepted occurrences: N)
+            RDFGraph shapeDescriptions = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.DESCRIPTION);
+            foreach (RDFTriple shapeDescription in shapeDescriptions.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+                propertyShape.AddDescription((RDFLiteral)shapeDescription.Object);
+
+            //sh:name (accepted occurrences: N)
+            RDFGraph shapeNames = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.NAME);
+            foreach (RDFTriple shapeName in shapeNames.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+                propertyShape.AddName((RDFLiteral)shapeName.Object);
+
+            //sh:group (accepted occurrences: 1)
+            RDFTriple shapeGroup = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.GROUP).FirstOrDefault();
+            if (shapeGroup != null)
+            {
+                if (shapeGroup.Object is RDFResource)
+                    propertyShape.SetGroup((RDFResource)shapeGroup.Object);
+            }
+
+            //sh:order (accepted occurrences: 1)
+            RDFTriple shapeOrder = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.ORDER).FirstOrDefault();
+            if (shapeOrder != null)
+            {
+                if (shapeOrder.Object is RDFTypedLiteral shapeOrderLiteral
+                        && shapeOrderLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                    propertyShape.SetOrder(int.Parse(shapeOrderLiteral.Value));
+            }
         }
 
         /// <summary>
