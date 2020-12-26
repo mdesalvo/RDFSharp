@@ -368,9 +368,9 @@ namespace RDFSharp.Model
             if (shapeClosedConstraint != null)
             {
                 if (shapeClosedConstraint.Object is RDFTypedLiteral shapeClosedConstraintLiteral
-                        && shapeClosedConstraintLiteral.HasBooleanDatatype() && bool.Parse(shapeClosedConstraintLiteral.Value))
+                        && shapeClosedConstraintLiteral.HasBooleanDatatype())
                 {
-                    RDFClosedConstraint closedConstraint = new RDFClosedConstraint(true);
+                    RDFClosedConstraint closedConstraint = new RDFClosedConstraint(bool.Parse(shapeClosedConstraintLiteral.Value));
 
                     //sh:ignoredProperties (accepted occurrences: 1)
                     RDFTriple shapeIgnoredPropertiesConstraint = shapeDefinition.SelectTriplesByPredicate(RDFVocabulary.SHACL.IGNORED_PROPERTIES).FirstOrDefault();
@@ -630,8 +630,8 @@ namespace RDFSharp.Model
             if (shapeUniqueLangConstraint != null)
             {
                 if (shapeUniqueLangConstraint.Object is RDFTypedLiteral shapeUniqueLangConstraintLiteral
-                        && shapeUniqueLangConstraintLiteral.HasBooleanDatatype() && bool.Parse(shapeUniqueLangConstraintLiteral.Value))
-                    shape.AddConstraint(new RDFUniqueLangConstraint(true));
+                        && shapeUniqueLangConstraintLiteral.HasBooleanDatatype())
+                    shape.AddConstraint(new RDFUniqueLangConstraint(bool.Parse(shapeUniqueLangConstraintLiteral.Value)));
             }
 
             //sh:xone (accepted occurrences: N)
