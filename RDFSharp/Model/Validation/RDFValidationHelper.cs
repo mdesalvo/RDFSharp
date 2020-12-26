@@ -153,13 +153,8 @@ namespace RDFSharp.Model
             {
                 RDFShapesGraph result = new RDFShapesGraph(new RDFResource(graph.Context.ToString()));
 
-                //Step 1: Detect declared node shapes
                 DetectTypedNodeShapes(graph, result);
-
-                //Step 2: Detect declared property shapes
                 DetectTypedPropertyShapes(graph, result);
-
-                //Step 3: Detect inline property shapes
                 DetectInlinePropertyShapes(graph, result);
 
                 return result;
@@ -172,23 +167,18 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedNodeShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            //sh:NodeShape
             RDFGraph declaredNodeShapes = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
                                                .SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE);
 
             foreach (RDFTriple declaredNodeShape in declaredNodeShapes)
             {
-                //Definition
                 RDFNodeShape nodeShape = new RDFNodeShape((RDFResource)declaredNodeShape.Subject);
 
-                //Targets
-                DetectShapeTargets(graph, shapesGraph, nodeShape);
+                DetectShapeTargets(graph, nodeShape);
+                DetectShapeAttributes(graph, nodeShape);
+                DetectShapeConstraints(graph, nodeShape);
 
-                //Attributes
-                DetectShapeAttributes(graph, shapesGraph, nodeShape);
-
-                //Constraints
-                DetectShapeConstraints(graph, shapesGraph, nodeShape);
+                shapesGraph.AddShape(nodeShape);
             }
         }
 
@@ -197,7 +187,6 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedPropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            //sh:PropertyShape
             RDFGraph declaredPropertyShapes = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
                                                    .SelectTriplesByObject(RDFVocabulary.SHACL.PROPERTY_SHAPE);
 
@@ -206,22 +195,18 @@ namespace RDFSharp.Model
                 RDFTriple declaredPropertyShapePath = graph.SelectTriplesBySubject((RDFResource)declaredPropertyShape.Subject)
                                                            .SelectTriplesByPredicate(RDFVocabulary.SHACL.PATH)
                                                            .FirstOrDefault();
-                if (declaredPropertyShapePath != null && declaredPropertyShapePath.Object is RDFResource)
+
+                if (declaredPropertyShapePath != null
+                        && declaredPropertyShapePath.Object is RDFResource)
                 {
-                    //Definition
                     RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, (RDFResource)declaredPropertyShapePath.Object);
 
-                    //Targets
-                    DetectShapeTargets(graph, shapesGraph, propertyShape);
+                    DetectShapeTargets(graph, propertyShape);
+                    DetectShapeAttributes(graph, propertyShape);
+                    DetectShapeNonValidatingAttributes(graph, propertyShape);
+                    DetectShapeConstraints(graph, propertyShape);
 
-                    //Attributes
-                    DetectShapeAttributes(graph, shapesGraph, propertyShape);
-
-                    //NonValidating
-                    DetectShapeNonValidatingAttributes(graph, shapesGraph, propertyShape);
-
-                    //Constraints
-                    DetectShapeConstraints(graph, shapesGraph, propertyShape);
+                    shapesGraph.AddShape(propertyShape);
                 }
             }
         }
@@ -237,7 +222,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Detects the targets of the given shape
         /// </summary>
-        private static void DetectShapeTargets(RDFGraph graph, RDFShapesGraph shapesGraph, RDFShape shape)
+        private static void DetectShapeTargets(RDFGraph graph, RDFShape shape)
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(shape);
 
@@ -265,7 +250,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Detects the attributes of the given shape
         /// </summary>
-        private static void DetectShapeAttributes(RDFGraph graph, RDFShapesGraph shapesGraph, RDFShape shape)
+        private static void DetectShapeAttributes(RDFGraph graph, RDFShape shape)
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(shape);
 
@@ -297,7 +282,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Detects the non validating attributes of the given property shape
         /// </summary>
-        private static void DetectShapeNonValidatingAttributes(RDFGraph graph, RDFShapesGraph shapesGraph, RDFPropertyShape propertyShape)
+        private static void DetectShapeNonValidatingAttributes(RDFGraph graph, RDFPropertyShape propertyShape)
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(propertyShape);
 
@@ -332,7 +317,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Detects the constraints of the given shape
         /// </summary>
-        private static void DetectShapeConstraints(RDFGraph graph, RDFShapesGraph shapesGraph, RDFShape shape)
+        private static void DetectShapeConstraints(RDFGraph graph, RDFShape shape)
         {
             RDFGraph shapeDefinition = graph.SelectTriplesBySubject(shape);
 
