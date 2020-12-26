@@ -233,7 +233,7 @@ namespace RDFSharp.Model
                     if (inlinePropertyShapePath != null
                             && inlinePropertyShapePath.Object is RDFResource)
                     {
-                        RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)inlinePropertyShape.Subject, (RDFResource)inlinePropertyShapePath.Object);
+                        RDFPropertyShape propertyShape = new RDFPropertyShape(inlinePropertyShapeResource, (RDFResource)inlinePropertyShapePath.Object);
 
                         DetectShapeTargets(graph, propertyShape);
                         DetectShapeAttributes(graph, propertyShape);
