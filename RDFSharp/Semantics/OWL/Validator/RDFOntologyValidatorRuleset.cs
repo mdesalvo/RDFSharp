@@ -993,12 +993,25 @@ namespace RDFSharp.Semantics.OWL
                 RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
                 Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = RDFOntologyHelper.GetKeyValuesOf(ontology, hasKeyRelationClass);
 
-                //Detect and signal owl:hasKey collisions
+                //Reverse owl:hasKey member values in a lookup for detecting collisions
+                Dictionary<string, List<string>> hasKeyRelationLookup = new Dictionary<string, List<string>>();
                 foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues)
                 {
-                    //TODO
-
+                    string hasKeyRelationMemberValueKey = string.Join("§§", hasKeyRelationMemberValue.Value);
+                    if (!hasKeyRelationLookup.ContainsKey(hasKeyRelationMemberValueKey))
+                        hasKeyRelationLookup.Add(hasKeyRelationMemberValueKey, new List<string>() { hasKeyRelationMemberValue.Key });
+                    else
+                        hasKeyRelationLookup[hasKeyRelationMemberValueKey].Add(hasKeyRelationMemberValue.Key);
                 }
+
+                //Signal owl:hasKey entries having collisions
+                foreach (var hasKeyRelationLookupEntry in hasKeyRelationLookup.Where(hkrl => hkrl.Value.Count > 1))
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                            "HasKey",
+                            String.Format("Collision detected for key definition of class '{0}' with predicates '{1}'.", hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject))),
+                            String.Format("Review assertions on facts '{0}' in order to ensure uniqueness of key definition of class '{1}'.", string.Join(" ", hasKeyRelationLookupEntry.Value), hasKeyRelation.Key)
+                        ));
             }
             #endregion
 
