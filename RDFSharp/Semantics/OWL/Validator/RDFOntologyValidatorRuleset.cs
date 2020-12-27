@@ -978,6 +978,25 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:HasKey [OWL2]
+        /// <summary>
+        /// Validation rule checking for consistency of owl:hasKey axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport HasKey(RDFOntology ontology)
+        {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'HasKey'...");
+
+            #region HasKey
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
+            //TODO
+
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'HasKey': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms
