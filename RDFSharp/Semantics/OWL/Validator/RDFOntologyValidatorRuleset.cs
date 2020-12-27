@@ -993,9 +993,10 @@ namespace RDFSharp.Semantics.OWL
                 RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
                 Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = RDFOntologyHelper.GetKeyValuesOf(ontology, hasKeyRelationClass);
 
-                //Reverse owl:hasKey member values in a lookup for detecting collisions
+                //Reverse owl:hasKey member values in a lookup for enabling collision detection:
+                //consider only fully defined key values, so that partially defined ones are discarded
                 Dictionary<string, List<string>> hasKeyRelationLookup = new Dictionary<string, List<string>>();
-                foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues)
+                foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues.Where(hkrmv => hkrmv.Value.TrueForAll(x => x != null)))
                 {
                     string hasKeyRelationMemberValueKey = string.Join("§§", hasKeyRelationMemberValue.Value);
                     if (!hasKeyRelationLookup.ContainsKey(hasKeyRelationMemberValueKey))
@@ -1004,7 +1005,7 @@ namespace RDFSharp.Semantics.OWL
                         hasKeyRelationLookup[hasKeyRelationMemberValueKey].Add(hasKeyRelationMemberValue.Key);
                 }
 
-                //Signal owl:hasKey entries having collisions
+                //Signal entries for which collisions have been detected
                 foreach (var hasKeyRelationLookupEntry in hasKeyRelationLookup.Where(hkrl => hkrl.Value.Count > 1))
                     report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
