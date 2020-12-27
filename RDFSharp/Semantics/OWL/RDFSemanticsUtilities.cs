@@ -502,7 +502,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region DisjointUnion
+                #region DisjointUnion [OWL2]
                 foreach (var du in disjointUnionOf)
                 {
                     if (du.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -848,7 +848,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
-                    #region QualifiedCardinality
+                    #region QualifiedCardinality [OWL2]
                     Int32 exQC = 0;
                     var crExQC = qualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crExQC != null && crExQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -1056,7 +1056,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
-                    #region HasSelf
+                    #region HasSelf [OWL2]
                     var hsRes = hasself.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (hsRes != null)
                     {
