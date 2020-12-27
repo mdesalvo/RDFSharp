@@ -988,8 +988,18 @@ namespace RDFSharp.Semantics.OWL
 
             #region HasKey
             RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
-            //TODO
+            foreach (var hasKeyRelation in ontology.Model.ClassModel.Relations.HasKey.GroupBy(te => te.TaxonomySubject.ToString()))
+            {
+                RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
+                Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = RDFOntologyHelper.GetKeyValuesOf(ontology, hasKeyRelationClass);
 
+                //Detect and signal owl:hasKey collisions
+                foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues)
+                {
+                    //TODO
+
+                }
+            }
             #endregion
 
             RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'HasKey': found " + report.EvidencesCount + " evidences.");

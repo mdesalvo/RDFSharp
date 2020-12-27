@@ -311,10 +311,10 @@ namespace RDFSharp.Semantics.OWL
             RDFOntologyTaxonomy hasKeyClassTaxonomy = ontology.Model.ClassModel.Relations.HasKey.SelectEntriesBySubject(ontologyClass);
             if (hasKeyClassTaxonomy.Any())
             {
-                //Enlist members of hasKey class
+                //Enlist members of owl:hasKey class
                 RDFOntologyData hasKeyClassMembers = GetMembersOf(ontology, ontologyClass);
 
-                //Fetch hasKey property values for each of haskey class members
+                //Fetch owl:hasKey property values for each of owl:haskey class members
                 foreach (RDFOntologyTaxonomyEntry hasKeyClassTaxonomyEntry in hasKeyClassTaxonomy)
                 {
                     foreach (RDFOntologyFact hasKeyClassMember in hasKeyClassMembers)
