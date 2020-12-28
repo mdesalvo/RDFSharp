@@ -81,7 +81,6 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
 
-        #region Create
         /// <summary>
         /// Adds the given rule to the reasoner
         /// </summary>
@@ -96,9 +95,7 @@ namespace RDFSharp.Semantics.OWL
             }
             return this;
         }
-        #endregion
 
-        #region Select
         /// <summary>
         /// Selects the given rule from the resoner
         /// </summary>
@@ -109,9 +106,7 @@ namespace RDFSharp.Semantics.OWL
             else
                 return null;
         }
-        #endregion
 
-        #region Reason
         /// <summary>
         /// Applies the reasoner on the given ontology, producing a reasoning report.
         /// </summary>
@@ -129,7 +124,7 @@ namespace RDFSharp.Semantics.OWL
                 //STEP 2: Execute BASE rules
                 #region BASE rules
                 var baseRules = this.Rules.Where(x => x.RulePriority <= RDFOntologyReasonerRuleset.RulesCount)
-                                                .OrderBy(x => x.RulePriority);
+                                          .OrderBy(x => x.RulePriority);
                 foreach (var bRule in baseRules)
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of BASE reasoning rule '{0}'...", bRule));
@@ -142,7 +137,7 @@ namespace RDFSharp.Semantics.OWL
                 //STEP 3: Execute custom rules
                 #region Custom rules
                 var customRules = this.Rules.Where(x => x.RulePriority > RDFOntologyReasonerRuleset.RulesCount)
-                                                .OrderBy(x => x.RulePriority);
+                                            .OrderBy(x => x.RulePriority);
                 foreach (var cRule in customRules)
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'...", cRule));
@@ -160,7 +155,6 @@ namespace RDFSharp.Semantics.OWL
             }
             return report;
         }
-        #endregion
 
         #endregion
 
