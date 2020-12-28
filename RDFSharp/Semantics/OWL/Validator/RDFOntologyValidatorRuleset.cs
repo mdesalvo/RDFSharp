@@ -991,12 +991,12 @@ namespace RDFSharp.Semantics.OWL
             foreach (var hasKeyRelation in ontology.Model.ClassModel.Relations.HasKey.GroupBy(te => te.TaxonomySubject.ToString()))
             {
                 RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
-                Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = RDFOntologyHelper.GetKeyValuesOf(ontology, hasKeyRelationClass);
+                Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = ontology.GetKeyValuesOf(hasKeyRelationClass, false);
 
                 //Reverse owl:hasKey member values in a lookup for enabling collision detection:
                 //consider only fully defined key values, so that partially defined ones are discarded
                 Dictionary<string, List<string>> hasKeyRelationLookup = new Dictionary<string, List<string>>();
-                foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues.Where(hkrmv => hkrmv.Value.TrueForAll(x => x != null)))
+                foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues)
                 {
                     string hasKeyRelationMemberValueKey = string.Join("§§", hasKeyRelationMemberValue.Value);
                     if (!hasKeyRelationLookup.ContainsKey(hasKeyRelationMemberValueKey))
