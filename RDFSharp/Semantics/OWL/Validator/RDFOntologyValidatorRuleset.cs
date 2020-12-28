@@ -1011,8 +1011,8 @@ namespace RDFSharp.Semantics.OWL
                     report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "HasKey",
-                            String.Format("Collision detected for key definition of class '{0}' with predicates '{1}'.", hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject))),
-                            String.Format("Review assertions of facts '{0}' for ensuring uniqueness of key definition of class '{1}'.", string.Join(" ", hasKeyRelationLookupEntry.Value), hasKeyRelation.Key)
+                            String.Format("Violation of key defined on class '{0}' with predicates '{1}'.", hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject))),
+                            String.Format("Review assertions of facts '{0}' in order to respect uniqueness of key defined on class '{1}'.", string.Join(" ", hasKeyRelationLookupEntry.Value), hasKeyRelation.Key)
                         ));
                 }
             }
