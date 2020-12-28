@@ -575,7 +575,11 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyClass != null && ontologyProperties != null)
             {
-                ontologyProperties.ForEach(p => this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), p)));
+                ontologyProperties.ForEach(p =>
+                {
+                    if (p != null)
+                        this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), p));
+                });
             }
             return this;
         }
