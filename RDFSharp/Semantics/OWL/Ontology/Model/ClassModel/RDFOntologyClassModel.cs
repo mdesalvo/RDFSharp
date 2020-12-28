@@ -568,7 +568,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Foreach of the given properties, adds the "ontologyClass -> owl:hasKey -> ontologyProperty" relation to the class model [OWL2]
+        /// For each of the given properties, adds the "ontologyClass -> owl:hasKey -> ontologyProperty" relation to the class model [OWL2]
         /// </summary>
         public RDFOntologyClassModel AddHasKeyRelation(RDFOntologyClass ontologyClass,
                                                        List<RDFOntologyProperty> ontologyProperties)
