@@ -28,7 +28,7 @@ RDFSharp has a modular API made up of four layers ([RDF/SHACL/SPARQL docs](https
     <li><b>RDFSharp.Semantics</b></li> 
     <ul>
         <li>Create and manage <i>OWL-DL ontologies</i> (classes, restrictions, properties, facts, assertions, annotations, ...)</li>
-        <li>Validate ontology <i>T-BOX</i> and <i>A-BOX</i> against a customizable set of <i>RDFS/OWL-DL</i> constraint rules</li>
+        <li>Validate ontology <i>T-BOX</i> and <i>A-BOX</i> against a standard set of <i>RDFS/OWL-DL</i> constraint rules</li>
         <li>Create <i>OWL-DL reasoners</i> exploiting an extensible set of <i>RDFS/OWL-DL</i> inference rules</li>
         <li>Create and manage <i>SKOS glossaries, thesauri and classification schemes</i> with a friendly and powerful API</li>
     </ul>
