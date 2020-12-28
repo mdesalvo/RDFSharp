@@ -1007,12 +1007,14 @@ namespace RDFSharp.Semantics.OWL
 
                 //Signal entries for which collisions have been detected
                 foreach (var hasKeyRelationLookupEntry in hasKeyRelationLookup.Where(hkrl => hkrl.Value.Count > 1))
+                {
                     report.AddEvidence(new RDFOntologyValidatorEvidence(
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                             "HasKey",
                             String.Format("Collision detected for key definition of class '{0}' with predicates '{1}'.", hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject))),
                             String.Format("Review assertions of facts '{0}' for ensuring uniqueness of key definition of class '{1}'.", string.Join(" ", hasKeyRelationLookupEntry.Value), hasKeyRelation.Key)
                         ));
+                }
             }
             #endregion
 
