@@ -302,7 +302,7 @@ namespace RDFSharp.Semantics.OWL
 
         #region HasKey [OWL2]
         /// <summary>
-        /// Gets the owl:hasKey values for the members of the given ontology class [OWL2]
+        /// Gets the owl:hasKey values for each of the members of the given ontology class [OWL2]
         /// </summary>
         public static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass)
         {
