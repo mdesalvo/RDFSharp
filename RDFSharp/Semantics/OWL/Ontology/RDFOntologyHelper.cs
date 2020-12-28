@@ -323,6 +323,8 @@ namespace RDFSharp.Semantics.OWL
                                                                                                         .SelectEntriesByPredicate(hasKeyClassTaxonomyEntry.TaxonomyObject)
                                                                                                         .Select(te => te.TaxonomyObject)
                                                                                                         .ToList();
+
+                        //We use null to represent a partial owl:hasKey property value
                         if (keyPropertyValues.Count == 0)
                             keyPropertyValues.Add(null);
 
