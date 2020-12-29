@@ -53,6 +53,11 @@ namespace RDFSharp.Semantics.OWL
         /// "owl:unionOf" relations (specific for union classes)
         /// </summary>
         public RDFOntologyTaxonomy UnionOf { get; internal set; }
+
+        /// <summary>
+        /// "owl:hasKey" relations [OWL2]
+        /// </summary>
+        public RDFOntologyTaxonomy HasKey { get; internal set; }
         #endregion
 
         #region Ctors
@@ -67,6 +72,7 @@ namespace RDFSharp.Semantics.OWL
             this.OneOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.IntersectionOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.UnionOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
+            this.HasKey = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
         }
         #endregion
 

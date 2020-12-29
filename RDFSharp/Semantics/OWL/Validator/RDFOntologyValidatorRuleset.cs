@@ -978,6 +978,60 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:HasKey [OWL2]
+        /// <summary>
+        /// Validation rule checking for consistency of owl:hasKey axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport HasKey(RDFOntology ontology)
+        {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'HasKey'...");
+
+            #region HasKey
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
+            foreach (var hasKeyRelation in ontology.Model.ClassModel.Relations.HasKey.GroupBy(te => te.TaxonomySubject.ToString()))
+            {
+                RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
+
+                //Calculate key values for members of the constrained class
+                Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = ontology.GetKeyValuesOf(hasKeyRelationClass, false);
+
+                //Reverse key values in order to detect eventual collisions between members
+                Dictionary<string, List<string>> hasKeyRelationLookup = new Dictionary<string, List<string>>();
+                foreach (var hasKeyRelationMemberValue in hasKeyRelationMemberValues)
+                {
+                    string hasKeyRelationMemberValueKey = string.Join("§§", hasKeyRelationMemberValue.Value);
+                    if (!hasKeyRelationLookup.ContainsKey(hasKeyRelationMemberValueKey))
+                        hasKeyRelationLookup.Add(hasKeyRelationMemberValueKey, new List<string>() { hasKeyRelationMemberValue.Key });
+                    else
+                        hasKeyRelationLookup[hasKeyRelationMemberValueKey].Add(hasKeyRelationMemberValue.Key);
+                }
+                hasKeyRelationLookup = hasKeyRelationLookup.Where(hkrl => hkrl.Value.Count > 1)
+                                                           .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+                //Analyze detected collisions in order to decide if they can be tolerate or not,
+                //depending on semantic compatibility between facts (they must not be different)
+                foreach (var hasKeyRelationLookupEntry in hasKeyRelationLookup)
+                {
+                    for (int i = 0; i < hasKeyRelationLookupEntry.Value.Count; i++)
+                        for (int j = i + 1; j < hasKeyRelationLookupEntry.Value.Count; j++)
+                            if (!RDFOntologyChecker.CheckSameAsCompatibility(ontology.Data, ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[i]), ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[j])))
+                            {
+                                report.AddEvidence(new RDFOntologyValidatorEvidence(
+                                    RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                                    "HasKey",
+                                    String.Format("Violation of key defined on class '{0}' with properties '{1}'.", hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject))),
+                                    String.Format("Facts '{0}' and '{1}' are different: they cannot have the same values for key defined on class '{2}' with properties '{3}'.", hasKeyRelationLookupEntry.Value[i], hasKeyRelationLookupEntry.Value[j], hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject)))
+                                ));
+                            }
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'HasKey': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
         #region Rule:ClassType
         /// <summary>
         /// Validation rule checking for consistency of rdf:type axioms

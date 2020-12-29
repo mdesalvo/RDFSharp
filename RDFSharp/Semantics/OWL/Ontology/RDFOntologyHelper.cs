@@ -29,8 +29,6 @@ namespace RDFSharp.Semantics.OWL
     public static class RDFOntologyHelper
     {
 
-        #region Model
-
         #region ClassModel
 
         #region SubClassOf
@@ -299,6 +297,48 @@ namespace RDFSharp.Semantics.OWL
             }
 
             return result1;
+        }
+        #endregion
+
+        #region HasKey [OWL2]
+        /// <summary>
+        /// Gets the key values for each member of the given class having a complete (or partial, if allowed) key representation [OWL2]
+        /// </summary>
+        public static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass, bool allowPartialKeyValues)
+        {
+            Dictionary<string, List<RDFOntologyResource>> result = new Dictionary<string, List<RDFOntologyResource>>();
+
+            RDFOntologyTaxonomy hasKeyClassTaxonomy = ontology.Model.ClassModel.Relations.HasKey.SelectEntriesBySubject(ontologyClass);
+            if (hasKeyClassTaxonomy.Any())
+            {
+                //Enlist members of owl:hasKey class
+                RDFOntologyData hasKeyClassMembers = GetMembersOf(ontology, ontologyClass);
+
+                //Fetch owl:hasKey property values for each of owl:haskey class members
+                foreach (RDFOntologyTaxonomyEntry hasKeyClassTaxonomyEntry in hasKeyClassTaxonomy)
+                {
+                    foreach (RDFOntologyFact hasKeyClassMember in hasKeyClassMembers)
+                    {
+                        List<RDFOntologyResource> keyPropertyValues = ontology.Data.Relations.Assertions.SelectEntriesBySubject(hasKeyClassMember)
+                                                                                                        .SelectEntriesByPredicate(hasKeyClassTaxonomyEntry.TaxonomyObject)
+                                                                                                        .Select(te => te.TaxonomyObject)
+                                                                                                        .ToList();
+
+                        //This is to signal partial owl:hasKey property value
+                        if (keyPropertyValues.Count == 0)
+                            keyPropertyValues.Add(null);
+
+                        if (!result.ContainsKey(hasKeyClassMember.ToString()))
+                            result.Add(hasKeyClassMember.ToString(), keyPropertyValues);
+                        else
+                            result[hasKeyClassMember.ToString()].AddRange(keyPropertyValues);
+                    }
+                }
+            }
+
+            //If partial key values are not allowed, remove them from result
+            return allowPartialKeyValues ? result : result.Where(res => res.Value.TrueForAll(x => x != null))
+                                                          .ToDictionary(kv => kv.Key, kv => kv.Value);
         }
         #endregion
 
@@ -682,8 +722,6 @@ namespace RDFSharp.Semantics.OWL
             }
             return result;
         }
-        #endregion
-
         #endregion
 
         #endregion

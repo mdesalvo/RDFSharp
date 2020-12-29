@@ -98,6 +98,12 @@ namespace RDFSharp.Semantics.OWL
                     "This OWL2 rule checks for consistency of owl:NegativePropertyAssertion axioms",
                     RDFOntologyValidatorRuleset.NegativeAssertions),
 
+                //HasKey [OWL2]
+                new RDFOntologyValidatorRule(
+                    "HasKey",
+                    "This OWL2 rule checks for consistency of owl:HasKey axioms",
+                    RDFOntologyValidatorRuleset.HasKey),
+
                 //ClassType
                 new RDFOntologyValidatorRule(
                     "ClassType",

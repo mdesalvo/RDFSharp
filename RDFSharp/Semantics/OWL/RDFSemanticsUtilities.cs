@@ -57,7 +57,7 @@ namespace RDFSharp.Semantics.OWL
                 var rdfType = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
                 var rdfFirst = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
                 var rdfRest = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
-                var skosMemberList = ontGraph.SelectTriplesByPredicate(RDFVocabulary.SKOS.MEMBER_LIST);
+                var skosMemberList = ontGraph.SelectTriplesByPredicate(RDFVocabulary.SKOS.MEMBER_LIST); //SKOS
                 var subclassOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF);
                 var subpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_PROPERTY_OF);
                 var domain = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.DOMAIN);
@@ -65,6 +65,7 @@ namespace RDFSharp.Semantics.OWL
                 var equivclassOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_CLASS);
                 var disjclassWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_WITH);
                 var alldisjclasses = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES); //OWL2
+                var hasKey = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.HAS_KEY); //OWL2
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
                 var alldisjprops = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_PROPERTIES); //OWL2
                 var disjpropWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
@@ -1539,7 +1540,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses]]
+                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses|OWL:HasKey]]
                 foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)))
                 {
 
@@ -1673,6 +1674,79 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
+                    #region HasKey [OWL2]
+                    foreach (var haskey in hasKey.SelectTriplesBySubject((RDFResource)c.Value))
+                    {
+                        var haskeyClass = ontology.Model.ClassModel.SelectClass(haskey.Subject.ToString());
+                        if (haskeyClass != null)
+                        {
+                            var keyProps = new List<RDFOntologyProperty>();
+                            if (haskey.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                            {
+                                #region DeserializeCollection
+                                var nilFound = false;
+                                var itemRest = (RDFResource)haskey.Object;
+                                while (!nilFound)
+                                {
+
+                                    #region rdf:first
+                                    var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                        .FirstOrDefault();
+                                    if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                    {
+                                        var keyProp = ontology.Model.PropertyModel.SelectProperty(first.Object.ToString());
+                                        if (keyProp != null)
+                                        {
+                                            keyProps.Add(keyProp);
+                                        }
+                                        else
+                                        {
+
+                                            //Raise warning event to inform the user: hasKey cannot be completely imported
+                                            //from graph, because definition of property is not found in the model
+                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation '{0}' cannot be completely imported from graph, because definition of key property '{1}' is not found in the model.", haskey.Subject, first.Object));
+
+                                        }
+
+                                        #region rdf:rest
+                                        var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                          .FirstOrDefault();
+                                        if (rest != null)
+                                        {
+                                            if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                            {
+                                                nilFound = true;
+                                            }
+                                            else
+                                            {
+                                                itemRest = (RDFResource)rest.Object;
+                                            }
+                                        }
+                                        #endregion
+
+                                    }
+                                    else
+                                    {
+                                        nilFound = true;
+                                    }
+                                    #endregion
+
+                                }
+                                #endregion
+                            }
+                            ontology.Model.ClassModel.AddHasKeyRelation(haskeyClass, keyProps);
+                        }
+                        else
+                        {
+
+                            //Raise warning event to inform the user: hasKey relation cannot be imported
+                            //from graph, because definition of class is not found in the model
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation on class '{0}' cannot be imported from graph, because definition of the class is not found in the model.", haskey.Subject));
+
+                        }
+                    }
+                    #endregion
+
                 }
                 #endregion
 
@@ -1796,7 +1870,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region OrderedCollection (SKOS)
+                #region OrderedCollection [SKOS]
                 foreach (var ordCol in skosMemberList)
                 {
                     if (ordCol.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -2775,17 +2849,17 @@ namespace RDFSharp.Semantics.OWL
 
                 #region Step 1: Export ontology
                 result.AddTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY));
-                result = result.UnionWith(ontology.Annotations.VersionInfo.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.VersionIRI.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.Comment.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.Label.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.SeeAlso.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.IsDefinedBy.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.BackwardCompatibleWith.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.IncompatibleWith.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.PriorVersion.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.Imports.ToRDFGraph(infexpBehavior))
-                               .UnionWith(ontology.Annotations.CustomAnnotations.ToRDFGraph(infexpBehavior));
+                result = result.UnionWith(ontology.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.VersionInfo)))
+                               .UnionWith(ontology.Annotations.VersionIRI.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.VersionIRI)))
+                               .UnionWith(ontology.Annotations.Comment.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.Comment)))
+                               .UnionWith(ontology.Annotations.Label.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.Label)))
+                               .UnionWith(ontology.Annotations.SeeAlso.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.SeeAlso)))
+                               .UnionWith(ontology.Annotations.IsDefinedBy.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.IsDefinedBy)))
+                               .UnionWith(ontology.Annotations.BackwardCompatibleWith.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.BackwardCompatibleWith)))
+                               .UnionWith(ontology.Annotations.IncompatibleWith.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.IncompatibleWith)))
+                               .UnionWith(ontology.Annotations.PriorVersion.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.PriorVersion)))
+                               .UnionWith(ontology.Annotations.Imports.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.Imports)))
+                               .UnionWith(ontology.Annotations.CustomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(ontology.Annotations.CustomAnnotations)));
                 #endregion
 
                 #region Step 2: Export model
@@ -2927,14 +3001,31 @@ namespace RDFSharp.Semantics.OWL
 
         #region SemanticsExtensions
         /// <summary>
-        /// Gets a graph representation of the given negative assertions taxonomy, exporting inferences according to the selected behavior [OWL2]
+        /// Gets a graph representation of the given taxonomy, exporting inferences according to the selected behavior [OWL2]
         /// </summary>
-        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior, string taxonomyName)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
+            switch (taxonomyName)
+            {
+                case nameof(RDFOntologyDataMetadata.NegativeAssertions):
+                    result = ReifyNegativeAssertionsTaxonomyToGraph(taxonomy, infexpBehavior);
+                    break;
 
-            //Taxonomy entries
-            foreach (var te in taxonomy)
+                case nameof(RDFOntologyClassModelMetadata.HasKey):
+                    result = ReifyHasKeyTaxonomyToGraph(taxonomy, infexpBehavior);
+                    break;
+
+                default:
+                    result = ReifyTaxonomyToGraph(taxonomy, infexpBehavior);
+                    break;
+            }
+            return result;
+        }
+        private static RDFGraph ReifyNegativeAssertionsTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        {
+            RDFGraph result = new RDFGraph();
+            foreach (RDFOntologyTaxonomyEntry te in taxonomy)
             {
 
                 //Build reification triples of taxonomy entry
@@ -3023,6 +3114,77 @@ namespace RDFSharp.Semantics.OWL
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
                     else
                         result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                }
+
+            }
+            return result;
+        }
+        private static RDFGraph ReifyHasKeyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        {
+            RDFGraph result = new RDFGraph();
+            foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
+            {
+                RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
+                    tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
+                result.AddCollection(tgroupColl);
+                result.AddTriple(new RDFTriple((RDFResource)tgroup.Key.Value, RDFVocabulary.OWL.HAS_KEY, tgroupColl.ReificationSubject));
+            }
+            return result;
+        }
+        private static RDFGraph ReifyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        {
+            RDFGraph result = new RDFGraph();
+            foreach (RDFOntologyTaxonomyEntry te in taxonomy)
+            {
+
+                //Do not export semantic inferences
+                if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
+                {
+                    if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
+                    {
+                        result.AddTriple(te.ToRDFTriple());
+                    }
+                }
+
+                //Export semantic inferences related only to ontology model
+                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyModel)
+                {
+                    if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model
+                            || taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
+                    {
+                        result.AddTriple(te.ToRDFTriple());
+                    }
+                    else
+                    {
+                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
+                        {
+                            result.AddTriple(te.ToRDFTriple());
+                        }
+                    }
+                }
+
+                //Export semantic inferences related only to ontology data
+                else if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData)
+                {
+                    if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data
+                            || taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
+                    {
+                        result.AddTriple(te.ToRDFTriple());
+                    }
+                    else
+                    {
+                        if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
+                        {
+                            result.AddTriple(te.ToRDFTriple());
+                        }
+                    }
+                }
+
+                //Export semantic inferences related both to ontology model and data
+                else
+                {
+                    result.AddTriple(te.ToRDFTriple());
                 }
 
             }
