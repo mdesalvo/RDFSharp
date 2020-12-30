@@ -992,6 +992,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
 
+                #region Collision Detection
                 //Calculate key values for members of the constrained class
                 Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = ontology.GetKeyValuesOf(hasKeyRelationClass, false);
 
@@ -1007,14 +1008,20 @@ namespace RDFSharp.Semantics.OWL
                 }
                 hasKeyRelationLookup = hasKeyRelationLookup.Where(hkrl => hkrl.Value.Count > 1)
                                                            .ToDictionary(kv => kv.Key, kv => kv.Value);
+                #endregion
 
                 //Analyze detected collisions in order to decide if they can be tolerate or not,
                 //depending on semantic compatibility between facts (they must not be different)
                 foreach (var hasKeyRelationLookupEntry in hasKeyRelationLookup)
                 {
+                    #region Collision Analysis
                     for (int i = 0; i < hasKeyRelationLookupEntry.Value.Count; i++)
+                    {
+                        RDFOntologyFact outerFact = ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[i]);
                         for (int j = i + 1; j < hasKeyRelationLookupEntry.Value.Count; j++)
-                            if (!RDFOntologyChecker.CheckSameAsCompatibility(ontology.Data, ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[i]), ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[j])))
+                        {
+                            RDFOntologyFact innerFact = ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[j]);
+                            if (!RDFOntologyChecker.CheckSameAsCompatibility(ontology.Data, outerFact, innerFact))
                             {
                                 report.AddEvidence(new RDFOntologyValidatorEvidence(
                                     RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
@@ -1023,6 +1030,9 @@ namespace RDFSharp.Semantics.OWL
                                     String.Format("Facts '{0}' and '{1}' are different: they cannot have the same values for key defined on class '{2}' with properties '{3}'.", hasKeyRelationLookupEntry.Value[i], hasKeyRelationLookupEntry.Value[j], hasKeyRelation.Key, string.Join(" ", hasKeyRelation.Select(x => x.TaxonomyObject)))
                                 ));
                             }
+                        }
+                    }
+                    #endregion
                 }
             }
             #endregion
