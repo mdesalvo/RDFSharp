@@ -67,43 +67,36 @@ namespace RDFSharp.Model
         /// </summary>
         static RDFNamespaceRegister()
         {
-            Instance = new RDFNamespaceRegister();
-            Instance.Register = new List<RDFNamespace>();
-            SetDefaultNamespace(new RDFNamespace("rdfsharp", "https://rdfsharp.codeplex.com/"));
+            RDFNamespace rdfsharp = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI);
 
-            #region Basic Namespaces
-            //xsd
-            AddNamespace(new RDFNamespace(RDFVocabulary.XSD.PREFIX, RDFVocabulary.XSD.BASE_URI));
-            //xml
-            AddNamespace(new RDFNamespace(RDFVocabulary.XML.PREFIX, RDFVocabulary.XML.BASE_URI));
-            //rdf
-            AddNamespace(new RDFNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI));
-            //rdfs
-            AddNamespace(new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI));
-            //owl
-            AddNamespace(new RDFNamespace(RDFVocabulary.OWL.PREFIX, RDFVocabulary.OWL.BASE_URI));
-            //sh
-            AddNamespace(new RDFNamespace(RDFVocabulary.SHACL.PREFIX, RDFVocabulary.SHACL.BASE_URI));
-            #endregion
+            Instance = new RDFNamespaceRegister()
+            {
+                Register = new List<RDFNamespace>()
+                {
+                    rdfsharp,
+                    //Basic
+                    new RDFNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.OWL.PREFIX, RDFVocabulary.OWL.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.SHACL.PREFIX, RDFVocabulary.SHACL.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.XSD.PREFIX, RDFVocabulary.XSD.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.XML.PREFIX, RDFVocabulary.XML.BASE_URI),
+                    //Extended
+                    new RDFNamespace(RDFVocabulary.DC.PREFIX, RDFVocabulary.DC.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX, RDFVocabulary.DC.DCAM.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX, RDFVocabulary.DC.DCTERMS.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX, RDFVocabulary.DC.DCTYPE.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.FOAF.PREFIX, RDFVocabulary.FOAF.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.GEO.PREFIX, RDFVocabulary.GEO.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.SIOC.PREFIX, RDFVocabulary.SIOC.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.SKOS.PREFIX, RDFVocabulary.SKOS.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.CRM.PREFIX, RDFVocabulary.CRM.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.EARL.PREFIX, RDFVocabulary.EARL.BASE_URI)
+                }
+            };
 
-            #region Extended Namespaces
-            //dc
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.PREFIX, RDFVocabulary.DC.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX, RDFVocabulary.DC.DCAM.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX, RDFVocabulary.DC.DCTERMS.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX, RDFVocabulary.DC.DCTYPE.BASE_URI));
-            //foaf
-            AddNamespace(new RDFNamespace(RDFVocabulary.FOAF.PREFIX, RDFVocabulary.FOAF.BASE_URI));
-            //earl
-            AddNamespace(new RDFNamespace(RDFVocabulary.EARL.PREFIX, RDFVocabulary.EARL.BASE_URI));
-            //geo
-            AddNamespace(new RDFNamespace(RDFVocabulary.GEO.PREFIX, RDFVocabulary.GEO.BASE_URI));
-            //sioc
-            AddNamespace(new RDFNamespace(RDFVocabulary.SIOC.PREFIX, RDFVocabulary.SIOC.BASE_URI));
-            //skos
-            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.PREFIX, RDFVocabulary.SKOS.BASE_URI));
-            AddNamespace(new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI));
-            #endregion
+            DefaultNamespace = rdfsharp;
         }
         #endregion
 
