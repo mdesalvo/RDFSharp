@@ -686,6 +686,7 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.ASYMMETRIC_PROPERTY.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.REFLEXIVE_PROPERTY.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY.ToRDFOntologyClass());
+            Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION.ToRDFOntologyClass());
 
             #endregion
 
@@ -738,12 +739,20 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.PRIOR_VERSION.ToRDFOntologyAnnotationProperty());
 
             //OWL2
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.DISJOINT_UNION_OF.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.HAS_SELF.ToRDFOntologyDatatypeProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.QUALIFIED_CARDINALITY.ToRDFOntologyDatatypeProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.MIN_QUALIFIED_CARDINALITY.ToRDFOntologyDatatypeProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.MAX_QUALIFIED_CARDINALITY.ToRDFOntologyDatatypeProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ON_CLASS.ToRDFOntologyObjectProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ON_DATARANGE.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.SOURCE_INDIVIDUAL.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ASSERTION_PROPERTY.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.TARGET_INDIVIDUAL.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.TARGET_VALUE.ToRDFOntologyDatatypeProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty());
 
             #endregion
 
