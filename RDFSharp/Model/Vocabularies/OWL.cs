@@ -350,6 +350,11 @@ namespace RDFSharp.Model
             /// owl:hasKey [OWL2]
             /// </summary>
             public static readonly RDFResource HAS_KEY = new RDFResource(OWL.BASE_URI + "hasKey");
+
+            /// <summary>
+            /// owl:propertyChainAxiom [OWL2]
+            /// </summary>
+            public static readonly RDFResource PROPERTY_CHAIN_AXIOM = new RDFResource(OWL.BASE_URI + "propertyChainAxiom");
             #endregion
 
         }
