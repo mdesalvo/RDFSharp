@@ -40,6 +40,11 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyTaxonomy PropertyDisjointWith { get; internal set; }
 
         /// <summary>
+        /// "owl:propertyChainAxiom" relations [OWL2]
+        /// </summary>
+        public RDFOntologyTaxonomy PropertyChainAxiom { get; internal set; }
+
+        /// <summary>
         /// "owl:inverseOf" relations
         /// </summary>
         public RDFOntologyTaxonomy InverseOf { get; internal set; }
@@ -54,6 +59,7 @@ namespace RDFSharp.Semantics.OWL
             this.SubPropertyOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.EquivalentProperty = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.PropertyDisjointWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
+            this.PropertyChainAxiom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
             this.InverseOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
         }
         #endregion

@@ -3008,14 +3008,18 @@ namespace RDFSharp.Semantics.OWL
             RDFGraph result = new RDFGraph();
             switch (taxonomyName)
             {
+                //Semantic-based reification
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
                     result = ReifyNegativeAssertionsTaxonomyToGraph(taxonomy, infexpBehavior);
                     break;
 
+                //List-based reification
                 case nameof(RDFOntologyClassModelMetadata.HasKey):
-                    result = ReifyHasKeyTaxonomyToGraph(taxonomy, infexpBehavior);
+                case nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom):
+                    result = ReifyListTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior);
                     break;
 
+                //Triple-based reification
                 default:
                     result = ReifyTaxonomyToGraph(taxonomy, infexpBehavior);
                     break;
@@ -3119,17 +3123,24 @@ namespace RDFSharp.Semantics.OWL
             }
             return result;
         }
-        private static RDFGraph ReifyHasKeyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        private static RDFGraph ReifyListTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
             RDFGraph result = new RDFGraph();
+
+            RDFResource taxonomyPredicate = taxonomyName.Equals(nameof(RDFOntologyClassModelMetadata.HasKey))
+                                                ? RDFVocabulary.OWL.HAS_KEY : RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM;
             foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
             {
+                //Build collection corresponding to the current subject of the given taxonomy
                 RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
                 foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
                     tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
                 result.AddCollection(tgroupColl);
-                result.AddTriple(new RDFTriple((RDFResource)tgroup.Key.Value, RDFVocabulary.OWL.HAS_KEY, tgroupColl.ReificationSubject));
+
+                //Attach collection with taxonomy-specific predicate
+                result.AddTriple(new RDFTriple((RDFResource)tgroup.Key.Value, taxonomyPredicate, tgroupColl.ReificationSubject));
             }
+
             return result;
         }
         private static RDFGraph ReifyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)

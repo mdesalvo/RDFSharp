@@ -944,7 +944,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = this.Relations.SameAs.IntersectWith(ontologyData.Relations.SameAs);
                 result.Relations.DifferentFrom = this.Relations.DifferentFrom.IntersectWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = this.Relations.Assertions.IntersectWith(ontologyData.Relations.Assertions);
-                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.IntersectWith(ontologyData.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.IntersectWith(ontologyData.Relations.NegativeAssertions); //OWL2
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(ontologyData.Annotations.VersionInfo);
@@ -982,7 +982,7 @@ namespace RDFSharp.Semantics.OWL
             result.Relations.SameAs = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
             result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
             result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
-            result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions);
+            result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions); //OWL2
 
             //Add annotations from this data
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1013,7 +1013,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = result.Relations.SameAs.UnionWith(ontologyData.Relations.SameAs);
                 result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = result.Relations.Assertions.UnionWith(ontologyData.Relations.Assertions);
-                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(ontologyData.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(ontologyData.Relations.NegativeAssertions); //OWL2
 
                 //Add annotations from the given data
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(ontologyData.Annotations.VersionInfo);
@@ -1059,7 +1059,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = this.Relations.SameAs.DifferenceWith(ontologyData.Relations.SameAs);
                 result.Relations.DifferentFrom = this.Relations.DifferentFrom.DifferenceWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = this.Relations.Assertions.DifferenceWith(ontologyData.Relations.Assertions);
-                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.DifferenceWith(ontologyData.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.DifferenceWith(ontologyData.Relations.NegativeAssertions); //OWL2
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(ontologyData.Annotations.VersionInfo);
@@ -1090,7 +1090,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
                 result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
                 result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
-                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions); //OWL2
 
                 //Add annotations from this data
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1118,7 +1118,7 @@ namespace RDFSharp.Semantics.OWL
                            .UnionWith(this.Relations.DifferentFrom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.DifferentFrom)))
                            .UnionWith(this.Relations.ClassType.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.ClassType)))
                            .UnionWith(this.Relations.Assertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.Assertions)))
-                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions)));
+                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions))); //OWL2
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))

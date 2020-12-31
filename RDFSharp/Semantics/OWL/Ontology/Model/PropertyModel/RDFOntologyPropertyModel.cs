@@ -784,6 +784,51 @@ namespace RDFSharp.Semantics.OWL
                 ontologyProperties?.ForEach(innerProperty => this.AddPropertyDisjointWithRelation(outerProperty, innerProperty)));
             return this;
         }
+
+        /// <summary>
+        /// For each of the given properties, adds the "ontologyProperty -> owl:propertyChainAxiom -> chainProperty" relation to the property model [OWL2]
+        /// </summary>
+        public RDFOntologyPropertyModel AddPropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty,
+                                                                      List<RDFOntologyObjectProperty> chainProperties)
+        {
+            if (ontologyProperty != null && chainProperties != null)
+            {
+
+                //Enforce preliminary checks on usage of BASE properties
+                if (!RDFOntologyChecker.CheckReservedProperty(ontologyProperty))
+                {
+                    chainProperties.ForEach(chainProperty =>
+                    {
+                        if (chainProperty != null && !chainProperty.Equals(ontologyProperty))
+                        {
+
+                            //Enforce taxonomy checks before adding the propertyChainAxiom relation
+                            if (RDFOntologyChecker.CheckPropertyChainAxiomCompatibility(this, ontologyProperty, chainProperty))
+                            {
+                                this.Relations.PropertyChainAxiom.AddEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty));
+                            }
+                            else
+                            {
+
+                                //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation between property '{0}' and chain property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", ontologyProperty, chainProperty));
+
+                            }
+
+                        }
+                    });
+                }
+                else
+                {
+
+                    //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation on property '{0}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyProperty));
+
+                }
+
+            }
+            return this;
+        }
         #endregion
 
         #region Remove
@@ -1117,8 +1162,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add intersection relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.IntersectWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.IntersectWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = this.Relations.InverseOf.IntersectWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyChainAxiom = this.Relations.PropertyChainAxiom.IntersectWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(propertyModel.Annotations.VersionInfo);
@@ -1148,8 +1194,9 @@ namespace RDFSharp.Semantics.OWL
             //Add relations from this property model
             result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
             result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
-            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith);
+            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
             result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
+            result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(this.Relations.PropertyChainAxiom); //OWL2
 
             //Add annotations from this property model
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1172,8 +1219,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from the given property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add annotations from the given property model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(propertyModel.Annotations.VersionInfo);
@@ -1208,8 +1256,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add difference relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.DifferenceWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.DifferenceWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = this.Relations.InverseOf.DifferenceWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyChainAxiom = this.Relations.PropertyChainAxiom.DifferenceWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(propertyModel.Annotations.VersionInfo);
@@ -1232,8 +1281,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from this property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
+                result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(this.Relations.PropertyChainAxiom); //OWL2
 
                 //Add annotations from this property model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1321,8 +1371,9 @@ namespace RDFSharp.Semantics.OWL
             //Relations
             result = result.UnionWith(this.Relations.SubPropertyOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SubPropertyOf)))
                            .UnionWith(this.Relations.EquivalentProperty.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.EquivalentProperty)))
-                           .UnionWith(this.Relations.PropertyDisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyDisjointWith)))
-                           .UnionWith(this.Relations.InverseOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.InverseOf)));
+                           .UnionWith(this.Relations.PropertyDisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyDisjointWith))) //OWL2
+                           .UnionWith(this.Relations.InverseOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.InverseOf)))
+                           .UnionWith(this.Relations.PropertyChainAxiom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyChainAxiom))); //OWL2
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))

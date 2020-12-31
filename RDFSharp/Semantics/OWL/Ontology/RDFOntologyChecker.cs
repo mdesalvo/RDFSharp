@@ -129,7 +129,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty
+        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty [OWL2]
         /// </summary>
         internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                        RDFOntologyObjectProperty aProperty,
@@ -141,7 +141,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty
+        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty [OWL2]
         /// </summary>
         internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                        RDFOntologyDatatypeProperty aProperty,
@@ -162,6 +162,17 @@ namespace RDFSharp.Semantics.OWL
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
                             && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
+        }
+
+        /// <summary>
+        /// CHecks if the given chainProperty can be set propertyChainAxiom of the given ontologyproperty
+        /// </summary>
+        internal static Boolean CheckPropertyChainAxiomCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                     RDFOntologyObjectProperty ontologyProperty,
+                                                                     RDFOntologyObjectProperty chainProperty)
+        {
+            //TODO
+            throw new NotImplementedException();
         }
         #endregion
 

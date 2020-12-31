@@ -568,17 +568,17 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// For each of the given properties, adds the "ontologyClass -> owl:hasKey -> ontologyProperty" relation to the class model [OWL2]
+        /// For each of the given properties, adds the "ontologyClass -> owl:hasKey -> keyProperty" relation to the class model [OWL2]
         /// </summary>
         public RDFOntologyClassModel AddHasKeyRelation(RDFOntologyClass ontologyClass,
-                                                       List<RDFOntologyProperty> ontologyProperties)
+                                                       List<RDFOntologyProperty> keyProperties)
         {
-            if (ontologyClass != null && ontologyProperties != null)
+            if (ontologyClass != null && keyProperties != null)
             {
-                ontologyProperties.ForEach(p =>
+                keyProperties.ForEach(kp =>
                 {
-                    if (p != null)
-                        this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), p));
+                    if (kp != null)
+                        this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), kp));
                 });
             }
             return this;
@@ -883,14 +883,14 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Removes the "ontologyClass -> owl:hasKey -> ontologyProperty" relation from the class model [OWL2]
+        /// Removes the "ontologyClass -> owl:hasKey -> keyProperty" relation from the class model [OWL2]
         /// </summary>
         public RDFOntologyClassModel RemoveHasKeyRelation(RDFOntologyClass ontologyClass,
-                                                          RDFOntologyProperty ontologyProperty)
+                                                          RDFOntologyProperty keyProperty)
         {
-            if (ontologyClass != null && ontologyProperty != null)
+            if (ontologyClass != null && keyProperty != null)
             {
-                this.Relations.HasKey.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), ontologyProperty));
+                this.Relations.HasKey.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), keyProperty));
             }
             return this;
         }
@@ -940,7 +940,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = this.Relations.OneOf.IntersectWith(classModel.Relations.OneOf);
                 result.Relations.IntersectionOf = this.Relations.IntersectionOf.IntersectWith(classModel.Relations.IntersectionOf);
                 result.Relations.UnionOf = this.Relations.UnionOf.IntersectWith(classModel.Relations.UnionOf);
-                result.Relations.HasKey = this.Relations.HasKey.IntersectWith(classModel.Relations.HasKey);
+                result.Relations.HasKey = this.Relations.HasKey.IntersectWith(classModel.Relations.HasKey); //OWL2
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(classModel.Annotations.VersionInfo);
@@ -974,7 +974,7 @@ namespace RDFSharp.Semantics.OWL
             result.Relations.OneOf = result.Relations.OneOf.UnionWith(this.Relations.OneOf);
             result.Relations.IntersectionOf = result.Relations.IntersectionOf.UnionWith(this.Relations.IntersectionOf);
             result.Relations.UnionOf = result.Relations.UnionOf.UnionWith(this.Relations.UnionOf);
-            result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey);
+            result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey); //OWL2
 
             //Add annotations from this class model
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1001,7 +1001,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = result.Relations.OneOf.UnionWith(classModel.Relations.OneOf);
                 result.Relations.IntersectionOf = result.Relations.IntersectionOf.UnionWith(classModel.Relations.IntersectionOf);
                 result.Relations.UnionOf = result.Relations.UnionOf.UnionWith(classModel.Relations.UnionOf);
-                result.Relations.HasKey = result.Relations.HasKey.UnionWith(classModel.Relations.HasKey);
+                result.Relations.HasKey = result.Relations.HasKey.UnionWith(classModel.Relations.HasKey); //OWL2
 
                 //Add annotations from the given class model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(classModel.Annotations.VersionInfo);
@@ -1040,7 +1040,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = this.Relations.OneOf.DifferenceWith(classModel.Relations.OneOf);
                 result.Relations.IntersectionOf = this.Relations.IntersectionOf.DifferenceWith(classModel.Relations.IntersectionOf);
                 result.Relations.UnionOf = this.Relations.UnionOf.DifferenceWith(classModel.Relations.UnionOf);
-                result.Relations.HasKey = this.Relations.HasKey.DifferenceWith(classModel.Relations.HasKey);
+                result.Relations.HasKey = this.Relations.HasKey.DifferenceWith(classModel.Relations.HasKey); //OWL2
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(classModel.Annotations.VersionInfo);
@@ -1067,7 +1067,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = result.Relations.OneOf.UnionWith(this.Relations.OneOf);
                 result.Relations.IntersectionOf = result.Relations.IntersectionOf.UnionWith(this.Relations.IntersectionOf);
                 result.Relations.UnionOf = result.Relations.UnionOf.UnionWith(this.Relations.UnionOf);
-                result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey);
+                result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey); //OWL2
 
                 //Add annotations from this class model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1288,7 +1288,7 @@ namespace RDFSharp.Semantics.OWL
             result = result.UnionWith(this.Relations.SubClassOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SubClassOf)))
                            .UnionWith(this.Relations.EquivalentClass.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.EquivalentClass)))
                            .UnionWith(this.Relations.DisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.DisjointWith)))
-                           .UnionWith(this.Relations.HasKey.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.HasKey)));
+                           .UnionWith(this.Relations.HasKey.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.HasKey))); //OWL2
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))
