@@ -93,7 +93,8 @@ namespace RDFSharp.Model
                     new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI),
                     new RDFNamespace(RDFVocabulary.EARL.PREFIX, RDFVocabulary.EARL.BASE_URI),
                     new RDFNamespace(RDFVocabulary.CRM.PREFIX, RDFVocabulary.CRM.BASE_URI),
-                    new RDFNamespace(RDFVocabulary.DOAP.PREFIX, RDFVocabulary.DOAP.BASE_URI)
+                    new RDFNamespace(RDFVocabulary.DOAP.PREFIX, RDFVocabulary.DOAP.BASE_URI),
+                    new RDFNamespace(RDFVocabulary.VS.PREFIX, RDFVocabulary.VS.BASE_URI)
                 }
             };
 
