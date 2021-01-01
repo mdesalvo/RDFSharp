@@ -688,6 +688,28 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region PropertyChainAxiom [OWL2]
+        /// <summary>
+        /// Gets the property chain axioms of the given property [OWL2]
+        /// </summary>
+        public static Dictionary<string, RDFPropertyPath> GetPropertyChainAxiomsOf(this RDFOntology ontology, RDFOntologyObjectProperty ontologyProperty)
+        {
+            Dictionary<string, RDFPropertyPath> result = new Dictionary<string, RDFPropertyPath>();
+
+            RDFOntologyTaxonomy propertyChainAxiomTaxonomy = ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(ontologyProperty);
+            if (propertyChainAxiomTaxonomy.Any())
+            {
+                RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyChainAxiomTaxonomy)
+                    propertyPath.AddSequenceStep(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
+
+                result.Add(ontologyProperty.ToString(), propertyPath);
+            }
+
+            return result;
+        }
+        #endregion
+
         #region InverseOf
         /// <summary>
         /// Checks if the given aProperty is inverse property of the given bProperty within the given property model
