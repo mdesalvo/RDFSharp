@@ -377,11 +377,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (childClass != null && motherClass != null && !childClass.Equals(motherClass))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(childClass) && !RDFOntologyChecker.CheckReservedClass(motherClass))
                 {
-
                     //Enforce taxonomy checks before adding the subClassOf relation
                     if (RDFOntologyChecker.CheckSubClassOfCompatibility(this, childClass, motherClass))
                     {
@@ -389,21 +387,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: SubClassOf relation cannot be added to the class model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SubClassOf relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", childClass, motherClass));
-
                 }
-
             }
             return this;
         }
@@ -416,11 +408,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aClass != null && bClass != null && !aClass.Equals(bClass))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(aClass) && !RDFOntologyChecker.CheckReservedClass(bClass))
                 {
-
                     //Enforce taxonomy checks before adding the equivalentClass relation
                     if (RDFOntologyChecker.CheckEquivalentClassCompatibility(this, aClass, bClass))
                     {
@@ -429,21 +419,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: EquivalentClass relation cannot be added to the class model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: EquivalentClass relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
-
                 }
-
             }
             return this;
         }
@@ -456,11 +440,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aClass != null && bClass != null && !aClass.Equals(bClass))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(aClass) && !RDFOntologyChecker.CheckReservedClass(bClass))
                 {
-
                     //Enforce taxonomy checks before adding the disjointWith relation
                     if (RDFOntologyChecker.CheckDisjointWithCompatibility(this, aClass, bClass))
                     {
@@ -469,21 +451,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: DisjointWith relation cannot be added to the class model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: DisjointWith relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
-
                 }
-
             }
             return this;
         }

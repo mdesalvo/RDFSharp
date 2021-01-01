@@ -172,7 +172,7 @@ namespace RDFSharp.Semantics.OWL
                                                                      RDFOntologyObjectProperty chainProperty)
         {
             //TODO
-            throw new NotImplementedException();
+            return true;
         }
         #endregion
 

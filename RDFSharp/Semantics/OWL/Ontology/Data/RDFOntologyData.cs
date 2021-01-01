@@ -321,11 +321,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && ontologyClass != null)
             {
-
                 //Enforce preliminary check on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(ontologyClass))
                 {
-
                     //Enforce taxonomy checks before adding the ClassType relation
                     if (RDFOntologyChecker.CheckClassTypeCompatibility(ontologyClass))
                     {
@@ -333,21 +331,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: ClassType relation cannot be added to the data because only plain classes can be explicitly assigned as class types of facts
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because only plain classes can be explicitly assigned as class types of facts.", ontologyFact, ontologyClass));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: ClassType relation cannot be added to the data because usage of BASE reserved classes compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because because usage of BASE reserved classes compromises the taxonomy consistency.", ontologyFact, ontologyClass));
-
                 }
-
             }
             return this;
         }
@@ -359,7 +351,6 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && bFact != null && !aFact.Equals(bFact))
             {
-
                 //Enforce taxonomy checks before adding the SameAs relation
                 if (RDFOntologyChecker.CheckSameAsCompatibility(this, aFact, bFact))
                 {
@@ -368,12 +359,9 @@ namespace RDFSharp.Semantics.OWL
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SameAs relation cannot be added to the data because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SameAs relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
-
                 }
-
             }
             return this;
         }
@@ -385,7 +373,6 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && bFact != null && !aFact.Equals(bFact))
             {
-
                 //Enforce taxonomy checks before adding the DifferentFrom relation
                 if (RDFOntologyChecker.CheckDifferentFromCompatibility(this, aFact, bFact))
                 {
@@ -394,12 +381,9 @@ namespace RDFSharp.Semantics.OWL
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: DifferentFrom relation cannot be added to the data because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DifferentFrom relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
-
                 }
-
             }
             return this;
         }
@@ -423,16 +407,13 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(objectProperty))
                 {
-
                     //Enforce taxonomy checks before adding the assertion
                     //Creation of transitive cycles is not allowed [OWL-DL]
                     if (RDFOntologyChecker.CheckTransitiveAssertionCompatibility(this, aFact, objectProperty, bFact))
                     {
-
                         //Collision with negative assertions must be avoided [OWL2]
                         if (RDFOntologyChecker.CheckAssertionCompatibility(this, aFact, objectProperty, bFact))
                         {
@@ -440,30 +421,21 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", aFact, bFact, objectProperty));
-
                         }
-
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy transitive consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with transitive property '{2}' cannot be added to the data because it would violate the taxonomy consistency (transitive cycle detected).", aFact, bFact, objectProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: Assertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", aFact, bFact));
-
                 }
-
             }
             return this;
         }
@@ -477,11 +449,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(datatypeProperty))
                 {
-
                     //Collision with negative assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
                     {
@@ -490,21 +460,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: Assertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
-
                 }
-
             }
             return this;
         }
@@ -518,11 +482,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(objectProperty))
                 {
-
                     //Collision with assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, aFact, objectProperty, bFact))
                     {
@@ -530,20 +492,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", aFact, bFact, objectProperty));
-
                     }
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", aFact, bFact));
-
                 }
-
             }
             return this;
         }
@@ -557,11 +514,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(datatypeProperty))
                 {
-
                     //Collision with assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
                     {
@@ -570,20 +525,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
-
                     }
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
-
                 }
-
             }
             return this;
         }

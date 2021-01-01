@@ -495,11 +495,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(childProperty) && !RDFOntologyChecker.CheckReservedProperty(motherProperty))
                 {
-
                     //Enforce taxonomy checks before adding the subPropertyOf relation
                     if (RDFOntologyChecker.CheckSubPropertyOfCompatibility(this, childProperty, motherProperty))
                     {
@@ -507,21 +505,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", childProperty, motherProperty));
-
                 }
-
             }
             return this;
         }
@@ -534,11 +526,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(childProperty) && !RDFOntologyChecker.CheckReservedProperty(motherProperty))
                 {
-
                     //Enforce taxonomy checks before adding the subPropertyOf relation
                     if (RDFOntologyChecker.CheckSubPropertyOfCompatibility(this, childProperty, motherProperty))
                     {
@@ -546,21 +536,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", childProperty, motherProperty));
-
                 }
-
             }
             return this;
         }
@@ -573,11 +557,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the equivalentProperty relation
                     if (RDFOntologyChecker.CheckEquivalentPropertyCompatibility(this, aProperty, bProperty))
                     {
@@ -586,21 +568,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
-
                 }
-
             }
             return this;
         }
@@ -613,11 +589,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the equivalentProperty relation
                     if (RDFOntologyChecker.CheckEquivalentPropertyCompatibility(this, aProperty, bProperty))
                     {
@@ -626,21 +600,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
-
                 }
-
             }
             return this;
         }
@@ -653,11 +621,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the propertyDisjointWith relation
                     if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty))
                     {
@@ -666,21 +632,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
-
                 }
-
             }
             return this;
         }
@@ -693,11 +653,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the propertyDisjointWith relation
                     if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty))
                     {
@@ -706,21 +664,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
-
                 }
-
             }
             return this;
         }
@@ -733,11 +685,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the inverseOf relation
                     if (RDFOntologyChecker.CheckInverseOfPropertyCompatibility(this, aProperty, bProperty))
                     {
@@ -746,21 +696,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: InverseOf relation cannot be added to the property model because it violates the taxonomy consistency
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: InverseOf relation cannot be added to the property model because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
-
                 }
-
             }
             return this;
         }
@@ -793,7 +737,6 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyProperty != null && chainProperties != null)
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(ontologyProperty))
                 {
@@ -801,7 +744,6 @@ namespace RDFSharp.Semantics.OWL
                     {
                         if (chainProperty != null && !chainProperty.Equals(ontologyProperty))
                         {
-
                             //Enforce taxonomy checks before adding the propertyChainAxiom relation
                             if (RDFOntologyChecker.CheckPropertyChainAxiomCompatibility(this, ontologyProperty, chainProperty))
                             {
@@ -809,23 +751,17 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
                                 //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation between property '{0}' and chain property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", ontologyProperty, chainProperty));
-
                             }
-
                         }
                     });
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation on property '{0}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyProperty));
-
                 }
-
             }
             return this;
         }
