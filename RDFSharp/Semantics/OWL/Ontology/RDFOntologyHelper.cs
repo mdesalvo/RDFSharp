@@ -1076,7 +1076,7 @@ namespace RDFSharp.Semantics.OWL
                                                    .AddClass(ontClass);
 
             //Filter "classType" relations made with compatible classes
-            var fTaxonomy = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            var fTaxonomy = new RDFOntologyTaxonomy(ontology.Data.Relations.ClassType.Category, ontology.Data.Relations.ClassType.AcceptDuplicates);
             foreach (var c in compCls)
             {
                 fTaxonomy = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
@@ -1187,7 +1187,7 @@ namespace RDFSharp.Semantics.OWL
                                                                     .AddProperty(ontRestriction.OnProperty);
 
             //Filter assertions made with enlisted compatible properties
-            var restrictionAssertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            var restrictionAssertions = new RDFOntologyTaxonomy(ontology.Data.Relations.Assertions.Category, ontology.Data.Relations.Assertions.AcceptDuplicates);
             foreach (var property in restrictionProperties)
                 restrictionAssertions = restrictionAssertions.UnionWith(ontology.Data.Relations.Assertions.SelectEntriesByPredicate(property));
 
@@ -1732,55 +1732,26 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyClassModel != null)
             {
-                var cacheRemove = new Dictionary<Int64, Object>();
-
                 //SubClassOf
-                foreach (var t in ontologyClassModel.Relations.SubClassOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.SubClassOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.SubClassOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //EquivalentClass
-                foreach (var t in ontologyClassModel.Relations.EquivalentClass.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.EquivalentClass.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.EquivalentClass.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //DisjointWith
-                foreach (var t in ontologyClassModel.Relations.DisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.DisjointWith.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.DisjointWith.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //UnionOf
-                foreach (var t in ontologyClassModel.Relations.UnionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.UnionOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.UnionOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //IntersectionOf
-                foreach (var t in ontologyClassModel.Relations.IntersectionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.IntersectionOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.IntersectionOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //OneOf
-                foreach (var t in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.OneOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.OneOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //HasKey
+                ontologyClassModel.Relations.HasKey.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
 
@@ -1791,39 +1762,20 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyPropertyModel != null)
             {
-                var cacheRemove = new Dictionary<Int64, Object>();
-
                 //SubPropertyOf
-                foreach (var t in ontologyPropertyModel.Relations.SubPropertyOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.SubPropertyOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyPropertyModel.Relations.SubPropertyOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //EquivalentProperty
-                foreach (var t in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.EquivalentProperty.Entries.Remove(c); }
-                cacheRemove.Clear();
-
-                //PropertyDisjointWith
-                foreach (var t in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyPropertyModel.Relations.EquivalentProperty.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //InverseOf
-                foreach (var t in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.InverseOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyPropertyModel.Relations.InverseOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //PropertyDisjointWith
+                ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //PropertyChainAxiom
+                ontologyPropertyModel.Relations.PropertyChainAxiom.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
 
@@ -1834,39 +1786,20 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyData != null)
             {
-                var cacheRemove = new Dictionary<Int64, Object>();
-
                 //ClassType
-                foreach (var t in ontologyData.Relations.ClassType.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.ClassType.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.ClassType.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //SameAs
-                foreach (var t in ontologyData.Relations.SameAs.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.SameAs.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.SameAs.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //DifferentFrom
-                foreach (var t in ontologyData.Relations.DifferentFrom.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.DifferentFrom.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.DifferentFrom.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //Assertions
-                foreach (var t in ontologyData.Relations.Assertions.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.Assertions.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.Assertions.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //NegativeAssertions
+                ontologyData.Relations.NegativeAssertions.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
         #endregion
