@@ -61,6 +61,11 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Flag indicating that this collection exceptionally accepts duplicates
+        /// </summary>
+        internal Boolean AcceptDuplicates { get; set; }
+
+        /// <summary>
         /// List of the items collected by the collection
         /// </summary>
         internal List<RDFPatternMember> Items { get; set; }
@@ -71,11 +76,13 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty collection of the given type
         /// (initial configuration of the collection is "rdf:Nil")
         /// </summary>
-        public RDFCollection(RDFModelEnums.RDFItemTypes itemType)
+        public RDFCollection(RDFModelEnums.RDFItemTypes itemType) : this(itemType, false) { }
+        internal RDFCollection(RDFModelEnums.RDFItemTypes itemType, Boolean acceptDuplicates)
         {
             this.ItemType = itemType;
             this.ReificationSubject = RDFVocabulary.RDF.NIL;
             this.InternalReificationSubject = new RDFResource();
+            this.AcceptDuplicates = acceptDuplicates;
             this.Items = new List<RDFPatternMember>();
         }
         #endregion
@@ -108,8 +115,7 @@ namespace RDFSharp.Model
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
             {
-                //Avoid duplicates
-                if (this.Items.Find(x => x.Equals(item)) == null)
+                if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
                 {
                     //Add item to collection
                     this.Items.Add(item);
@@ -128,8 +134,7 @@ namespace RDFSharp.Model
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
             {
-                //Avoid duplicates
-                if (this.Items.Find(x => x.Equals(item)) == null)
+                if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
                 {
                     //Add item to collection
                     this.Items.Add(item);
@@ -211,13 +216,9 @@ namespace RDFSharp.Model
 
                     //  Subject -> rdf:first -> RDFCollection.ITEM[i]
                     if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
-                    }
                     else
-                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)listEnum));
-                    }
 
                     //Not the last one: Subject -> rdf:rest  -> NEWBLANK
                     if (itemCount < this.ItemsCount)

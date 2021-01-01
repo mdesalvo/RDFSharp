@@ -3076,7 +3076,7 @@ namespace RDFSharp.Semantics.OWL
             foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
             {
                 //Build collection corresponding to the current subject of the given taxonomy
-                RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource, taxonomy.AcceptDuplicates);
                 foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
                     tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
                 result.AddCollection(tgroupColl);
