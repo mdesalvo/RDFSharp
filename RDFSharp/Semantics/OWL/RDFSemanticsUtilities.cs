@@ -66,6 +66,7 @@ namespace RDFSharp.Semantics.OWL
                 var disjclassWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISJOINT_WITH);
                 var alldisjclasses = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES); //OWL2
                 var hasKey = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.HAS_KEY); //OWL2
+                var propertyChainAxiom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM); //OWL2
                 var equivpropOf = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.EQUIVALENT_PROPERTY);
                 var alldisjprops = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DISJOINT_PROPERTIES); //OWL2
                 var disjpropWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH); //OWL2
@@ -1345,7 +1346,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:InverseOf]
+                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:PropertyChainAxiom|OWL:InverseOf]
                 foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
                                                                                   && !prop.IsAnnotationProperty()))
                 {
@@ -1508,6 +1509,89 @@ namespace RDFSharp.Semantics.OWL
                                 else if (outerProperty.IsDatatypeProperty() && innerProperty.IsDatatypeProperty())
                                     ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)outerProperty, (RDFOntologyDatatypeProperty)innerProperty);
                             }
+                        }
+                    }
+                    #endregion
+
+                    #region PropertyChainAxiom [OWL2]
+                    foreach (var pca in propertyChainAxiom.SelectTriplesBySubject((RDFResource)p.Value))
+                    {
+                        var pcaProperty = ontology.Model.PropertyModel.SelectProperty(pca.Subject.ToString());
+                        if (pcaProperty != null)
+                        {
+                            if (pcaProperty is RDFOntologyObjectProperty)
+                            {
+                                var pcaProperties = new List<RDFOntologyObjectProperty>();
+                                if (pca.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                {
+                                    #region DeserializeCollection
+                                    var nilFound = false;
+                                    var itemRest = (RDFResource)pca.Object;
+                                    while (!nilFound)
+                                    {
+
+                                        #region rdf:first
+                                        var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                            .FirstOrDefault();
+                                        if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                        {
+                                            var pcaProp = ontology.Model.PropertyModel.SelectProperty(first.Object.ToString());
+                                            if (pcaProp != null)
+                                            {
+                                                if (pcaProp is RDFOntologyObjectProperty)
+                                                {
+                                                    pcaProperties.Add((RDFOntologyObjectProperty)pcaProp);
+                                                }
+                                                else
+                                                {
+                                                    //Raise warning event to inform the user: PropertyChainAxiom cannot be completely imported from graph, because chain property is not an object property
+                                                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation '{0}' cannot be completely imported from graph, because chain property '{1}' is not an object property.", pca, first.Object));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //Raise warning event to inform the user: PropertyChainAxiom cannot be completely imported from graph, because definition of chain property is not found in the model
+                                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation '{0}' cannot be completely imported from graph, because definition of chain property '{1}' is not found in the model.", pca, first.Object));
+                                            }
+
+                                            #region rdf:rest
+                                            var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                              .FirstOrDefault();
+                                            if (rest != null)
+                                            {
+                                                if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                                {
+                                                    nilFound = true;
+                                                }
+                                                else
+                                                {
+                                                    itemRest = (RDFResource)rest.Object;
+                                                }
+                                            }
+                                            #endregion
+
+                                        }
+                                        else
+                                        {
+                                            nilFound = true;
+                                        }
+                                        #endregion
+
+                                    }
+                                    #endregion
+                                }
+                                ontology.Model.PropertyModel.AddPropertyChainAxiomRelation((RDFOntologyObjectProperty)pcaProperty, pcaProperties);
+                            }
+                            else
+                            {
+                                //Raise warning event to inform the user: PropertyChainAxiom relation cannot be imported from graph, because property is not an object property
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation on property '{0}' cannot be imported from graph, because the property is not an object property.", pca.Subject));
+                            }
+                        }
+                        else
+                        {
+                            //Raise warning event to inform the user: PropertyChainAxiom relation cannot be imported from graph, because definition of property is not found in the model
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyChainAxiom relation on property '{0}' cannot be imported from graph, because definition of the property is not found in the model.", pca.Subject));
                         }
                     }
                     #endregion
