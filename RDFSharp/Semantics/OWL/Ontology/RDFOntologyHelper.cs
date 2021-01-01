@@ -691,7 +691,7 @@ namespace RDFSharp.Semantics.OWL
 
         #region PropertyChainAxiom [OWL2]
         /// <summary>
-        /// Gets the assertions for each property declaring a property chain axiom in the given ontology [OWL2]
+        /// Gets the assertions for each property which represents a property chain axiom in the given ontology [OWL2]
         /// </summary>
         public static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
         {
