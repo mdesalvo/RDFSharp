@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace RDFSharp.Semantics.OWL
@@ -690,22 +691,39 @@ namespace RDFSharp.Semantics.OWL
 
         #region PropertyChainAxiom [OWL2]
         /// <summary>
-        /// Gets the property chain axioms of the given property [OWL2]
+        /// Gets the assertions for each property declaring a property chain axiom in the given ontology [OWL2]
         /// </summary>
-        public static Dictionary<string, RDFPropertyPath> GetPropertyChainAxiomsOf(this RDFOntology ontology, RDFOntologyObjectProperty ontologyProperty)
+        public static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
         {
-            Dictionary<string, RDFPropertyPath> result = new Dictionary<string, RDFPropertyPath>();
+            Dictionary<string, RDFOntologyData> result = new Dictionary<string, RDFOntologyData>();
 
-            RDFOntologyTaxonomy propertyChainAxiomTaxonomy = ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(ontologyProperty);
-            if (propertyChainAxiomTaxonomy.Any())
+            //Materialize graph representation of the given ontology
+            RDFGraph ontologyGraph = ontology.ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData);
+
+            //Iterate property chain axiom taxonomy of the given ontology
+            foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> propertyChainAxiomTaxonomy in ontology.Model.PropertyModel.Relations.PropertyChainAxiom.GroupBy(t => t.TaxonomySubject))
             {
-                RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyChainAxiomTaxonomy)
-                    propertyPath.AddSequenceStep(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
+                result.Add(propertyChainAxiomTaxonomy.Key.ToString(), new RDFOntologyData());
 
-                result.Add(ontologyProperty.ToString(), propertyPath);
+                //Transform property chain axiom of current property into equivalent property path
+                RDFPropertyPath propertyChainAxiomPath = new RDFPropertyPath(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), new RDFVariable("?PROPERTY_CHAIN_AXIOM_END"));
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyChainAxiomTaxonomy.ToList())
+                    propertyChainAxiomPath.AddSequenceStep(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
+
+                //Execute construct query for getting property chain axiom data from ontology
+                RDFConstructQueryResult queryResult =
+                    new RDFConstructQuery()
+                        .AddPatternGroup(new RDFPatternGroup("PROPERTY_CHAIN_AXIOM")
+                            .AddPropertyPath(propertyChainAxiomPath))
+                        .AddTemplate(new RDFPattern(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), (RDFResource)propertyChainAxiomTaxonomy.Key.Value, new RDFVariable("?PROPERTY_CHAIN_AXIOM_END")))
+                        .ApplyToGraph(ontologyGraph);
+
+                //Populate result with corresponding ontology assertions
+                foreach (RDFTriple queryResultTriple in queryResult.ToRDFGraph())
+                {
+
+                }
             }
-
             return result;
         }
         #endregion
