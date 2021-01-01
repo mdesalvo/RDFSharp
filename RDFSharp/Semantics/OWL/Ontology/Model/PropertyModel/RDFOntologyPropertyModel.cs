@@ -1120,6 +1120,19 @@ namespace RDFSharp.Semantics.OWL
             });
             return this;
         }
+
+        /// <summary>
+        /// Removes the "ontologyProperty -> owl:propertyChainAxiom -> chainProperty" relation from the property model
+        /// </summary>
+        public RDFOntologyPropertyModel RemovePropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty,
+                                                                         RDFOntologyObjectProperty chainProperty)
+        {
+            if (ontologyProperty != null && chainProperty != null)
+            {
+                this.Relations.PropertyChainAxiom.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty));
+            }
+            return this;
+        }
         #endregion
 
         #region Select
