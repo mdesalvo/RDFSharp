@@ -1175,8 +1175,8 @@ namespace RDFSharp.Semantics.OWL
                 //Add intersection relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.IntersectWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.IntersectWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = this.Relations.InverseOf.IntersectWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.PropertyChainAxiom = this.Relations.PropertyChainAxiom.IntersectWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add intersection annotations
@@ -1207,8 +1207,8 @@ namespace RDFSharp.Semantics.OWL
             //Add relations from this property model
             result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
             result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
-            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
             result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
+            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
             result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(this.Relations.PropertyChainAxiom); //OWL2
 
             //Add annotations from this property model
@@ -1232,8 +1232,8 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from the given property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add annotations from the given property model
@@ -1269,8 +1269,8 @@ namespace RDFSharp.Semantics.OWL
                 //Add difference relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.DifferenceWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.DifferenceWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = this.Relations.InverseOf.DifferenceWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.PropertyChainAxiom = this.Relations.PropertyChainAxiom.DifferenceWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add difference annotations
@@ -1294,8 +1294,8 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from this property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
                 result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(this.Relations.PropertyChainAxiom); //OWL2
 
                 //Add annotations from this property model
@@ -1384,8 +1384,8 @@ namespace RDFSharp.Semantics.OWL
             //Relations
             result = result.UnionWith(this.Relations.SubPropertyOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SubPropertyOf)))
                            .UnionWith(this.Relations.EquivalentProperty.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.EquivalentProperty)))
-                           .UnionWith(this.Relations.PropertyDisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyDisjointWith))) //OWL2
                            .UnionWith(this.Relations.InverseOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.InverseOf)))
+                           .UnionWith(this.Relations.PropertyDisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyDisjointWith))) //OWL2
                            .UnionWith(this.Relations.PropertyChainAxiom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyChainAxiom))); //OWL2
 
             //Annotations
