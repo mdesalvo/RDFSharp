@@ -721,7 +721,10 @@ namespace RDFSharp.Semantics.OWL
                 //Populate result with corresponding ontology assertions
                 foreach (RDFTriple queryResultTriple in queryResult.ToRDFGraph())
                 {
-
+                    RDFOntologyFact assertionSubject = ontology.Data.SelectFact(queryResultTriple.Subject.ToString());
+                    RDFOntologyObjectProperty assertionPredicate = (RDFOntologyObjectProperty)ontology.Model.PropertyModel.SelectProperty(queryResultTriple.Predicate.ToString());
+                    RDFOntologyFact assertionObject = ontology.Data.SelectFact(queryResultTriple.Object.ToString());
+                    result[propertyChainAxiomTaxonomy.Key.ToString()].AddAssertionRelation(assertionSubject, assertionPredicate, assertionObject);
                 }
             }
             return result;
