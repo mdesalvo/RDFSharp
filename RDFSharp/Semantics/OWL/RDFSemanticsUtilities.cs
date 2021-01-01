@@ -392,7 +392,6 @@ namespace RDFSharp.Semantics.OWL
                         var onProp = ontology.Model.PropertyModel.SelectProperty(op.Object.ToString());
                         if (onProp != null)
                         {
-
                             //Ensure to not try creating a restriction over an annotation property
                             if (!onProp.IsAnnotationProperty() && !RDFOntologyChecker.CheckReservedProperty(onProp))
                             {
@@ -401,21 +400,14 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: restriction cannot be imported from
-                                //graph, because its applied property is reserved and cannot be restricted
+                                //Raise warning event to inform the user: restriction cannot be imported from graph, because its applied property is reserved and cannot be restricted
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Restriction '{0}' cannot be imported from graph, because its applied property '{1}' represents an annotation property or is a reserved (RDF/RDFS/XSD/OWL) property.", r.Subject, op.Object));
-
                             }
-
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: restriction cannot be imported from
-                            //graph, because definition of its applied property is not found in the model
+                            //Raise warning event to inform the user: restriction cannot be imported from graph, because definition of its applied property is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Restriction '{0}' cannot be imported from graph, because definition of its applied property '{1}' is not found in the model.", r.Subject, op.Object));
-
                         }
                     }
                     #endregion
@@ -465,11 +457,8 @@ namespace RDFSharp.Semantics.OWL
                                     }
                                     else
                                     {
-
-                                        //Raise warning event to inform the user: union class cannot be completely imported
-                                        //from graph, because definition of its compositing class is not found in the model
+                                        //Raise warning event to inform the user: union class cannot be completely imported from graph, because definition of its compositing class is not found in the model
                                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("UnionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", u.Subject, first.Object));
-
                                     }
 
                                     #region rdf:rest
@@ -541,11 +530,8 @@ namespace RDFSharp.Semantics.OWL
                                     }
                                     else
                                     {
-
-                                        //Raise warning event to inform the user: union class cannot be completely imported
-                                        //from graph, because definition of its compositing class is not found in the model
+                                        //Raise warning event to inform the user: union class cannot be completely imported from graph, because definition of its compositing class is not found in the model
                                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("UnionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", du.Subject, first.Object));
-
                                     }
 
                                     #region rdf:rest
@@ -563,7 +549,6 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                     }
                                     #endregion
-
                                 }
                                 else
                                 {
@@ -619,13 +604,9 @@ namespace RDFSharp.Semantics.OWL
                                     }
                                     else
                                     {
-
-                                        //Raise warning event to inform the user: intersection class cannot be completely imported
-                                        //from graph, because definition of its compositing class is not found in the model
+                                        //Raise warning event to inform the user: intersection class cannot be completely imported from graph, because definition of its compositing class is not found in the model
                                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("IntersectionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", i.Subject, first.Object));
-
                                     }
-
 
                                     #region rdf:rest
                                     var rest = rdfRest.SelectTriplesBySubject(itemRest)
@@ -642,7 +623,6 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                     }
                                     #endregion
-
                                 }
                                 else
                                 {
@@ -674,20 +654,14 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: complement class cannot be imported
-                                //from graph, because definition of its complemented class is not found in the model
+                                //Raise warning event to inform the user: complement class cannot be imported from graph, because definition of its complemented class is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Class '{0}' cannot be imported from graph, because definition of its complement class '{1}' is not found in the model.", c.Subject, c.Object));
-
                             }
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: complement class cannot be imported
-                            //from graph, because its definition is not found in the model
+                            //Raise warning event to inform the user: complement class cannot be imported from graph, because its definition is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Class '{0}' cannot be imported from graph, because its definition is not found in the model.", c.Subject));
-
                         }
                     }
                 }
@@ -902,11 +876,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
-                                //from graph, because definition of its required onClass is not found in the model
+                                //Raise warning event to inform the user: qualified cardinality restriction cannot be imported from graph, because definition of its required onClass is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onClass '{1}' is not found in the model.", r.Value, exQCCls.Object));
-
                             }
                         }
                         else
@@ -924,11 +895,8 @@ namespace RDFSharp.Semantics.OWL
                                 }
                                 else
                                 {
-
-                                    //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
-                                    //from graph, because definition of its required onDataRange is not found in the model
+                                    //Raise warning event to inform the user: qualified cardinality restriction cannot be imported from graph, because definition of its required onDataRange is not found in the model
                                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onDataRange '{1}' is not found in the model.", r.Value, exQCDrn.Object));
-
                                 }
                             }
                         }
@@ -1024,11 +992,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
-                                //from graph, because definition of its required onClass is not found in the model
+                                //Raise warning event to inform the user: qualified cardinality restriction cannot be imported from graph, because definition of its required onClass is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onClass '{1}' is not found in the model.", r.Value, minmaxQCCls.Object));
-
                             }
                         }
                         else
@@ -1046,11 +1011,8 @@ namespace RDFSharp.Semantics.OWL
                                 }
                                 else
                                 {
-
-                                    //Raise warning event to inform the user: qualified cardinality restriction cannot be imported
-                                    //from graph, because definition of its required onDataRange is not found in the model
+                                    //Raise warning event to inform the user: qualified cardinality restriction cannot be imported from graph, because definition of its required onDataRange is not found in the model
                                     RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("QualifiedCardinalityRestriction '{0}' cannot be imported from graph, because definition of its required onDataRange '{1}' is not found in the model.", r.Value, minmaxQCDrn.Object));
-
                                 }
                             }
                         }
@@ -1112,11 +1074,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: allvaluesfrom restriction cannot be imported
-                            //from graph, because definition of its required class is not found in the model
+                            //Raise warning event to inform the user: allvaluesfrom restriction cannot be imported from graph, because definition of its required class is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Restriction '{0}' cannot be imported from graph, because definition of its required class '{1}' is not found in the model.", r.Value, avfRes.Object));
-
                         }
                     }
                     #endregion
@@ -1134,11 +1093,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: somevaluesfrom restriction cannot be imported
-                            //from graph, because definition of its required class is not found in the model
+                            //Raise warning event to inform the user: somevaluesfrom restriction cannot be imported from graph, because definition of its required class is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Restriction '{0}' cannot be imported from graph, because definition of its required class '{1}' is not found in the model.", r.Value, svfRes.Object));
-
                         }
                     }
                     #endregion
@@ -1215,11 +1171,8 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (ec == null)
                             {
-
-                                //Raise warning event to inform the user: enumerate class cannot be imported
-                                //from graph, because its definition is not found in the model
+                                //Raise warning event to inform the user: enumerate class cannot be imported from graph, because its definition is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EnumerateClass '{0}' cannot be imported from graph, because its definition is not found in the model.", e.Subject));
-
                             }
                         }
                     }
@@ -1287,11 +1240,8 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (dr == null)
                             {
-
-                                //Raise warning event to inform the user: datarange class cannot be imported from
-                                //graph, because its definition is not found in the model
+                                //Raise warning event to inform the user: datarange class cannot be imported from graph, because its definition is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DataRangeClass '{0}' cannot be imported from graph, because its definition is not found in the model.", d.Subject));
-
                             }
                         }
                     }
@@ -1314,11 +1264,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: domain constraint cannot be imported from graph,
-                            //because definition of required class is not found in the model
-                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Domain constraint on property '{0}' cannot be imported from graph, because definition of required class '{1}' is not found in the model.", p.Value, d.Object));
-
+                            //Raise warning event to inform the user: domain constraint cannot be imported from graph because definition of required class is not found in the model
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Domain constraint on property '{0}' cannot be imported from graph because definition of required class '{1}' is not found in the model.", p.Value, d.Object));
                         }
                     }
                     #endregion
@@ -1334,11 +1281,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: range constraint cannot be imported from graph,
-                            //because definition of required class is not found in the model
-                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Range constraint on property '{0}' cannot be imported from graph, because definition of required class '{1}' is not found in the model.", p.Value, r.Object));
-
+                            //Raise warning event to inform the user: range constraint cannot be imported from graph because definition of required class is not found in the model
+                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Range constraint on property '{0}' cannot be imported from graph because definition of required class '{1}' is not found in the model.", p.Value, r.Object));
                         }
                     }
                     #endregion
@@ -1370,11 +1314,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: subpropertyof relation cannot be imported
-                                //from graph, because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model or represents an annotation property.", p.Value, spof.Object));
-
+                                //Raise warning event to inform the user: subpropertyof relation cannot be imported from graph because definition of property is not found in the model
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model or represents an annotation property.", p.Value, spof.Object));
                             }
                         }
                     }
@@ -1399,11 +1340,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: equivalentproperty relation cannot be imported
-                                //from graph, because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model.", p.Value, eqpr.Object));
-
+                                //Raise warning event to inform the user: equivalentproperty relation cannot be imported from graph, because definition of property is not found in the model
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", p.Value, eqpr.Object));
                             }
                         }
                     }
@@ -1428,11 +1366,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported
-                                //from graph, because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model.", p.Value, dwpr.Object));
-
+                                //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported from graph because definition of property is not found in the model
+                                RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", p.Value, dwpr.Object));
                             }
                         }
                     }
@@ -1464,11 +1399,8 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                         else
                                         {
-
-                                            //Raise warning event to inform the user: all disjoint properties cannot be completely imported
-                                            //from graph, because definition of property is not found in the model
-                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDisjointProperties '{0}' cannot be completely imported from graph, because definition of property '{1}' is not found in the model.", adjp.Subject, first.Object));
-
+                                            //Raise warning event to inform the user: all disjoint properties cannot be completely imported from graph because definition of property is not found in the model
+                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDisjointProperties '{0}' cannot be completely imported from graph because definition of property '{1}' is not found in the model.", adjp.Subject, first.Object));
                                         }
 
                                         #region rdf:rest
@@ -1486,7 +1418,6 @@ namespace RDFSharp.Semantics.OWL
                                             }
                                         }
                                         #endregion
-
                                     }
                                     else
                                     {
@@ -1569,7 +1500,6 @@ namespace RDFSharp.Semantics.OWL
                                                 }
                                             }
                                             #endregion
-
                                         }
                                         else
                                         {
@@ -1610,11 +1540,8 @@ namespace RDFSharp.Semantics.OWL
                                 }
                                 else
                                 {
-
-                                    //Raise warning event to inform the user: inverseof relation cannot be imported
-                                    //from graph, because definition of property is not found in the model
-                                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation on property '{0}' cannot be imported from graph, because definition of property '{1}' is not found in the model.", p.Value, inof.Object));
-
+                                    //Raise warning event to inform the user: inverseof relation cannot be imported from graph because definition of property is not found in the model
+                                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", p.Value, inof.Object));
                                 }
                             }
                         }
@@ -1640,11 +1567,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: subclassof relation cannot be imported
-                                //from graph, because definition of class is not found in the model
+                                //Raise warning event to inform the user: subclassof relation cannot be imported from graph, because definition of class is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", c.Value, scof.Object));
-
                             }
                         }
                     }
@@ -1662,11 +1586,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: equivalentclass relation cannot be imported
-                                //from graph, because definition of class is not found in the model
+                                //Raise warning event to inform the user: equivalentclass relation cannot be imported from graph, because definition of class is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", c.Value, eqcl.Object));
-
                             }
                         }
                     }
@@ -1684,11 +1605,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: disjointwith relation cannot be imported
-                                //from graph, because definition of class is not found in the model
+                                //Raise warning event to inform the user: disjointwith relation cannot be imported from graph, because definition of class is not found in the model
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", c.Value, djwt.Object));
-
                             }
                         }
                     }
@@ -1720,11 +1638,8 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                         else
                                         {
-
-                                            //Raise warning event to inform the user: all disjoint classes cannot be completely imported
-                                            //from graph, because definition of class is not found in the model
-                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDisjointClasses '{0}' cannot be completely imported from graph, because definition of class '{1}' is not found in the model.", adjc.Subject, first.Object));
-
+                                            //Raise warning event to inform the user: all disjoint classes cannot be completely imported from graph because definition of class is not found in the model
+                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDisjointClasses '{0}' cannot be completely imported from graph because definition of class '{1}' is not found in the model.", adjc.Subject, first.Object));
                                         }
 
                                         #region rdf:rest
@@ -1742,7 +1657,6 @@ namespace RDFSharp.Semantics.OWL
                                             }
                                         }
                                         #endregion
-
                                     }
                                     else
                                     {
@@ -1785,11 +1699,8 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                         else
                                         {
-
-                                            //Raise warning event to inform the user: hasKey cannot be completely imported
-                                            //from graph, because definition of property is not found in the model
-                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation '{0}' cannot be completely imported from graph, because definition of key property '{1}' is not found in the model.", haskey.Subject, first.Object));
-
+                                            //Raise warning event to inform the user: hasKey cannot be completely imported from graph because definition of property is not found in the model
+                                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation '{0}' cannot be completely imported from graph because definition of key property '{1}' is not found in the model.", haskey.Subject, first.Object));
                                         }
 
                                         #region rdf:rest
@@ -1807,7 +1718,6 @@ namespace RDFSharp.Semantics.OWL
                                             }
                                         }
                                         #endregion
-
                                     }
                                     else
                                     {
@@ -1822,11 +1732,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
-                            //Raise warning event to inform the user: hasKey relation cannot be imported
-                            //from graph, because definition of class is not found in the model
+                            //Raise warning event to inform the user: hasKey relation cannot be imported from graph, because definition of class is not found in the model
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("HasKey relation on class '{0}' cannot be imported from graph, because definition of the class is not found in the model.", haskey.Subject));
-
                         }
                     }
                     #endregion
@@ -1916,11 +1823,8 @@ namespace RDFSharp.Semantics.OWL
                                     }
                                     else
                                     {
-
-                                        //Raise warning event to inform the user: all different cannot be completely imported
-                                        //from graph, because definition of fact is not found in the data
-                                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDifferent '{0}' cannot be completely imported from graph, because definition of fact '{1}' is not found in the data.", adif.Subject, first.Object));
-
+                                        //Raise warning event to inform the user: all different cannot be completely imported from graph because definition of fact is not found in the data
+                                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("AllDifferent '{0}' cannot be completely imported from graph because definition of fact '{1}' is not found in the data.", adif.Subject, first.Object));
                                     }
 
                                     #region rdf:rest
@@ -1938,7 +1842,6 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                     }
                                     #endregion
-
                                 }
                                 else
                                 {
@@ -2125,7 +2028,6 @@ namespace RDFSharp.Semantics.OWL
                                                                                                                  && !ontology.Model.ClassModel.Classes.ContainsKey(triple.Subject.PatternMemberID)
                                                                                                                     && !ontology.Model.PropertyModel.Properties.ContainsKey(triple.Subject.PatternMemberID)))
                     {
-
                         //Create the fact even if not explicitly classtyped
                         var subjFct = ontology.Data.SelectFact(t.Subject.ToString());
                         if (subjFct == null)
@@ -2139,7 +2041,6 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
-
                                 //Create the fact even if not explicitly classtyped
                                 var objFct = ontology.Data.SelectFact(t.Object.ToString());
                                 if (objFct == null)
@@ -2152,11 +2053,8 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: assertion relation cannot be imported
-                                //from graph, because object property links to a literal
+                                //Raise warning event to inform the user: assertion relation cannot be imported from graph, because object property links to a literal
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation on fact '{0}' cannot be imported from graph, because object property '{1}' links to a literal.", t.Subject, p));
-
                             }
                         }
 
@@ -2169,14 +2067,10 @@ namespace RDFSharp.Semantics.OWL
                             }
                             else
                             {
-
-                                //Raise warning event to inform the user: assertion relation cannot be imported
-                                //from graph, because datatype property links to a fact
+                                //Raise warning event to inform the user: assertion relation cannot be imported from graph, because datatype property links to a fact
                                 RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation on fact '{0}' cannot be imported from graph, because datatype property '{1}' links to a fact.", t.Subject, p));
-
                             }
                         }
-
                     }
                 }
                 #endregion
@@ -2196,10 +2090,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: versioninfo annotation on ontology cannot be imported from graph, because it does not link a literal
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("VersionInfo annotation on ontology '{0}' cannot be imported from graph, because it does not link a literal.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2213,10 +2105,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: versioniri annotation on ontology cannot be imported from graph, because it does not link a resource
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("VersionIRI annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2230,10 +2120,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: comment annotation on ontology cannot be imported from graph, because it does not link a literal
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Comment annotation on ontology '{0}' cannot be imported from graph, because it does not link a literal.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2247,10 +2135,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: label annotation on ontology cannot be imported from graph, because it does not link a literal
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Label annotation on ontology '{0}' cannot be imported from graph, because it does not link a literal.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2322,10 +2208,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: backwardcompatiblewith annotation on ontology cannot be imported from graph, because it does not link a resource
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("BackwardCompatibleWith annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2339,10 +2223,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: incompatiblewith annotation on ontology cannot be imported from graph, because it does not link a resource
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("IncompatibleWith annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2356,10 +2238,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: priorversion annotation on ontology cannot be imported from graph, because it does not link a resource
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PriorVersion annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2373,10 +2253,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: imports annotation on ontology cannot be imported from graph, because it does not link a resource
                         RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Imports annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
-
                     }
                 }
                 #endregion
@@ -2441,10 +2319,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: versioninfo annotation on class cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("VersionInfo annotation on class '{0}' cannot be imported from graph, because it does not link a literal.", c.Value));
-
                         }
                     }
                     #endregion
@@ -2458,10 +2334,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: comment annotation on class cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Comment annotation on class '{0}' cannot be imported from graph, because it does not link a literal.", c.Value));
-
                         }
                     }
                     #endregion
@@ -2475,10 +2349,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: label annotation on class cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Label annotation on class '{0}' cannot be imported from graph, because it does not link a literal.", c.Value));
-
                         }
                     }
                     #endregion
@@ -2601,10 +2473,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: versioninfo annotation on property cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("VersionInfo annotation on property '{0}' cannot be imported from graph, because it does not link a literal.", p.Value));
-
                         }
                     }
                     #endregion
@@ -2618,10 +2488,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: comment annotation on property cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Comment annotation on property '{0}' cannot be imported from graph, because it does not link a literal.", p.Value));
-
                         }
                     }
                     #endregion
@@ -2635,10 +2503,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: label annotation on property cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Label annotation on property '{0}' cannot be imported from graph, because it does not link a literal.", p.Value));
-
                         }
                     }
                     #endregion
@@ -2761,10 +2627,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: versioninfo annotation on fact cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("VersionInfo annotation on fact '{0}' cannot be imported from graph, because it does not link a literal.", f.Value));
-
                         }
                     }
                     #endregion
@@ -2778,10 +2642,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: comment annotation on fact cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Comment annotation on fact '{0}' cannot be imported from graph, because it does not link a literal.", f.Value));
-
                         }
                     }
                     #endregion
@@ -2795,10 +2657,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: label annotation on fact cannot be imported from graph, because it does not link a literal
                             RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Label annotation on fact '{0}' cannot be imported from graph, because it does not link a literal.", f.Value));
-
                         }
                     }
                     #endregion
