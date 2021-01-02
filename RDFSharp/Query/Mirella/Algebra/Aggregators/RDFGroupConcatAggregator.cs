@@ -32,16 +32,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Separator of the group values
         /// </summary>
-        public String Separator { get; internal set; }
+        public string Separator { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a GROUP_CONCAT aggregator on the given variable, with the given projection name and given separator
         /// </summary>
-        public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, String separator) : base(aggrVariable, projVariable)
+        public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, string separator) : base(aggrVariable, projVariable)
         {
-            if (String.IsNullOrEmpty(separator))
+            if (string.IsNullOrEmpty(separator))
                 this.Separator = " ";
             else
                 this.Separator = separator;
@@ -52,10 +52,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the GROUP_CONCAT aggregator
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
-            return (this.IsDistinct ? String.Format("(GROUP_CONCAT(DISTINCT {0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable)
-                                    : String.Format("(GROUP_CONCAT({0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable));
+            return (this.IsDistinct ? string.Format("(GROUP_CONCAT(DISTINCT {0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable)
+                                    : string.Format("(GROUP_CONCAT({0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable));
         }
         #endregion
 
@@ -63,23 +63,23 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
-        internal override void ExecutePartition(String partitionKey, DataRow tableRow)
+        internal override void ExecutePartition(string partitionKey, DataRow tableRow)
         {
             //Get row value
-            String rowValue = GetRowValueAsString(tableRow);
+            string rowValue = GetRowValueAsString(tableRow);
             if (this.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<String>(partitionKey, rowValue))
+                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<String>(partitionKey, rowValue);
+                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
             }
             //Get aggregator value
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty) ?? String.Empty;
+            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (group_concat)
-            this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, aggregatorValue + rowValue + this.Separator);
+            this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, aggregatorValue + rowValue + this.Separator);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (String partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 this.UpdateProjectionTable(partitionKey, projFuncTable);
@@ -107,18 +107,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
+        internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
         {
             //Get bindings from context
-            Dictionary<String, String> bindings = new Dictionary<String, String>();
-            foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty);
+            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
             bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue.TrimEnd(this.Separator));
 
             //Add bindings to result's table

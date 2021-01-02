@@ -207,7 +207,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the constraint represented by the given string from this shape
         /// </summary>
-        public RDFConstraint SelectConstraint(String constraintName)
+        public RDFConstraint SelectConstraint(string constraintName)
         {
             if (constraintName != null)
             {
@@ -220,7 +220,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the target represented by the given string from this shape
         /// </summary>
-        public RDFTarget SelectTarget(String targetName)
+        public RDFTarget SelectTarget(string targetName)
         {
             if (targetName != null)
             {

@@ -103,7 +103,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
         /// </summary>
-        public void ToSparqlXmlResult(String filepath)
+        public void ToSparqlXmlResult(string filepath)
         {
             ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
         }
@@ -196,7 +196,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
         /// </summary>
-        public static RDFAskQueryResult FromSparqlXmlResult(String filepath)
+        public static RDFAskQueryResult FromSparqlXmlResult(string filepath)
         {
             return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
         }

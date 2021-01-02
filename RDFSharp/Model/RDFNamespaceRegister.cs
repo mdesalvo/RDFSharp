@@ -152,7 +152,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the namespace having the given Uri.
         /// </summary>
-        public static void RemoveByUri(String uri)
+        public static void RemoveByUri(string uri)
         {
             if (uri != null)
             {
@@ -163,7 +163,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the namespace having the given prefix.
         /// </summary>
-        public static void RemoveByPrefix(String prefix)
+        public static void RemoveByPrefix(string prefix)
         {
             if (prefix != null)
             {
@@ -174,7 +174,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its Uri.
         /// </summary>
-        public static RDFNamespace GetByUri(String uri, bool enablePrefixCCService = false)
+        public static RDFNamespace GetByUri(string uri, bool enablePrefixCCService = false)
         {
             if (uri != null)
             {
@@ -191,7 +191,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its prefix.
         /// </summary>
-        public static RDFNamespace GetByPrefix(String prefix, bool enablePrefixCCService = false)
+        public static RDFNamespace GetByPrefix(string prefix, bool enablePrefixCCService = false)
         {
             if (prefix != null)
             {
@@ -208,7 +208,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Looksup the given prefix or namespace into the prefix.cc service
         /// </summary>
-        internal static RDFNamespace LookupPrefixCC(String data, int lookupMode)
+        internal static RDFNamespace LookupPrefixCC(string data, int lookupMode)
         {
             var lookupString = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
                                                       "http://prefix.cc/reverse?uri=" + data + "&format=txt");

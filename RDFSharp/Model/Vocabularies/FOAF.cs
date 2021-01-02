@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// foaf
             /// </summary>
-            public static readonly String PREFIX = "foaf";
+            public static readonly string PREFIX = "foaf";
 
             /// <summary>
             /// http://xmlns.com/foaf/0.1/
             /// </summary>
-            public static readonly String BASE_URI = "http://xmlns.com/foaf/0.1/";
+            public static readonly string BASE_URI = "http://xmlns.com/foaf/0.1/";
 
             /// <summary>
             /// foaf:Agent

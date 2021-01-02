@@ -86,7 +86,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -98,7 +98,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with owl:versionIRI value '{0}' because it is an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with owl:versionIRI value '{0}' because it is an ontology literal", annotationValue));
                         }
                         break;
 
@@ -110,7 +110,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -122,7 +122,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -144,7 +144,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with owl:priorVersion value '{0}' because it is an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with owl:priorVersion value '{0}' because it is an ontology literal", annotationValue));
                         }
                         break;
 
@@ -156,7 +156,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with owl:imports value '{0}' because it is an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with owl:imports value '{0}' because it is an ontology literal", annotationValue));
                         }
                         break;
 
@@ -168,7 +168,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with owl:backwardCompatibleWith value '{0}' because it is an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with owl:backwardCompatibleWith value '{0}' because it is an ontology literal", annotationValue));
                         }
                         break;
 
@@ -180,7 +180,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology with owl:incompatibleWith value '{0}' because it is an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology with owl:incompatibleWith value '{0}' because it is an ontology literal", annotationValue));
                         }
                         break;
 

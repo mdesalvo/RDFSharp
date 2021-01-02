@@ -62,7 +62,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             selectQuery.InjectValues(selectQuery.GetValues());
@@ -80,7 +80,7 @@ namespace RDFSharp.Query
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -176,7 +176,7 @@ namespace RDFSharp.Query
                 queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
 
             }
-            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
 
             queryResult.SelectResults.TableName = selectQuery.ToString();
             return queryResult;
@@ -187,7 +187,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             describeQuery.InjectValues(describeQuery.GetValues());
@@ -205,7 +205,7 @@ namespace RDFSharp.Query
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -357,7 +357,7 @@ namespace RDFSharp.Query
                 }
 
             }
-            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated SPARQL DESCRIBE query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.DescribeResultsCount));
+            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluated SPARQL DESCRIBE query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.DescribeResultsCount));
 
             queryResult.DescribeResults.TableName = describeQuery.ToString();
             return queryResult;
@@ -368,7 +368,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             constructQuery.InjectValues(constructQuery.GetValues());
@@ -386,7 +386,7 @@ namespace RDFSharp.Query
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -485,7 +485,7 @@ namespace RDFSharp.Query
                 constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
 
             }
-            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated SPARQL CONSTRUCT query on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
+            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluated SPARQL CONSTRUCT query on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
 
             constructResult.ConstructResults.TableName = constructQuery.ToString();
             return constructResult;
@@ -496,7 +496,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseASKQueryEvaluation(string.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             askQuery.InjectValues(askQuery.GetValues());
@@ -514,7 +514,7 @@ namespace RDFSharp.Query
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseASKQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -610,7 +610,7 @@ namespace RDFSharp.Query
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
 
             }
-            RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated SPARQL ASK query on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));
+            RDFQueryEvents.RaiseASKQueryEvaluation(string.Format("Evaluated SPARQL ASK query on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));
 
             return askResult;
         }
@@ -636,7 +636,7 @@ namespace RDFSharp.Query
 
                     #region Events
                     //Raise query event messages
-                    String eventMsg = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, dataSource, patternResultsTable.Rows.Count);
+                    string eventMsg = string.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, dataSource, patternResultsTable.Rows.Count);
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -664,7 +664,7 @@ namespace RDFSharp.Query
 
                     #region Events
                     //Raise query event messages
-                    String eventMsg = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, dataSource, pPathResultsTable.Rows.Count));
+                    string eventMsg = string.Format(string.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, dataSource, pPathResultsTable.Rows.Count));
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -896,7 +896,7 @@ namespace RDFSharp.Query
             result.AcceptChanges();
 
             //Initialize working variables
-            var constructRow = new Dictionary<String, String>();
+            var constructRow = new Dictionary<string, string>();
             constructRow.Add("?SUBJECT", null);
             constructRow.Add("?PREDICATE", null);
             constructRow.Add("?OBJECT", null);
@@ -2179,7 +2179,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a new column to the given table, avoiding duplicates
         /// </summary>
-        internal static void AddColumn(DataTable table, String columnName)
+        internal static void AddColumn(DataTable table, string columnName)
         {
             if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant()))
             {
@@ -2190,7 +2190,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a new row to the given table
         /// </summary>
-        internal static void AddRow(DataTable table, Dictionary<String, String> bindings)
+        internal static void AddRow(DataTable table, Dictionary<string, string> bindings)
         {
             bool rowAdded = false;
             DataRow resultRow = table.NewRow();
@@ -2213,7 +2213,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
-            var bindings = new Dictionary<String, String>();
+            var bindings = new Dictionary<string, string>();
 
             //Iterate result graph's triples
             foreach (var t in triples)
@@ -2279,7 +2279,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
-            var bindings = new Dictionary<String, String>();
+            var bindings = new Dictionary<string, string>();
 
             //Iterate result store's quadruples
             foreach (var q in store)
@@ -2496,7 +2496,7 @@ namespace RDFSharp.Query
                     ds.Relations.Add(r);
 
                     //Create the structure of the join table
-                    List<String> duplicateCols = new List<String>();
+                    List<string> duplicateCols = new List<string>();
                     for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
                     {
                         result.Columns.Add(ds.Tables[0].Columns[i].ColumnName, ds.Tables[0].Columns[i].DataType);
@@ -2562,7 +2562,7 @@ namespace RDFSharp.Query
             bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
             bool joinInvalidationFlag = false;
             bool foundAnyResult = false;
-            String strResCol = String.Empty;
+            string strResCol = string.Empty;
 
 
             //Step 1: Determine common columns

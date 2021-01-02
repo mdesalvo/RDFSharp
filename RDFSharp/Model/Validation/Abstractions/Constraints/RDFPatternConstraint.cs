@@ -124,7 +124,7 @@ namespace RDFSharp.Model
                     regexFlags.Append("m");
                 if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                     regexFlags.Append("x");
-                if (regexFlags.ToString() != String.Empty)
+                if (regexFlags.ToString() != string.Empty)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
             }

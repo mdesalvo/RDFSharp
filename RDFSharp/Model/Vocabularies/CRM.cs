@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -34,12 +32,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// crm
             /// </summary>
-            public static readonly String PREFIX = "crm";
+            public static readonly string PREFIX = "crm";
 
             /// <summary>
             /// http://www.cidoc-crm.org/cidoc-crm/
             /// </summary>
-            public static readonly String BASE_URI = "http://www.cidoc-crm.org/cidoc-crm/";
+            public static readonly string BASE_URI = "http://www.cidoc-crm.org/cidoc-crm/";
 
             /// <summary>
             /// crm:E1_CRM_Entity

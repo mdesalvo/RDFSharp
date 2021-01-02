@@ -143,7 +143,7 @@ namespace RDFSharp.Query
                                     XmlNode litElement = sparqlDoc.CreateNode(XmlNodeType.Element, "literal", null);
                                     if (rdfTerm is RDFPlainLiteral)
                                     {
-                                        if (((RDFPlainLiteral)rdfTerm).Language != String.Empty)
+                                        if (((RDFPlainLiteral)rdfTerm).Language != string.Empty)
                                         {
                                             XmlAttribute xmlLang = sparqlDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":lang", RDFVocabulary.XML.BASE_URI);
                                             XmlText xmlLangText = sparqlDoc.CreateTextNode(((RDFPlainLiteral)rdfTerm).Language);
@@ -191,7 +191,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the SELECT query result
         /// </summary>
-        public void ToSparqlXmlResult(String filepath)
+        public void ToSparqlXmlResult(string filepath)
         {
             ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
         }
@@ -201,7 +201,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Reads the given "SPARQL Query Results XML Format" file into a SELECT query result
         /// </summary>
-        public static RDFSelectQueryResult FromSparqlXmlResult(String filepath)
+        public static RDFSelectQueryResult FromSparqlXmlResult(string filepath)
         {
             return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
         }
@@ -253,7 +253,7 @@ namespace RDFSharp.Query
                                             if (varNode.Attributes.Count > 0)
                                             {
                                                 XmlAttribute varAttr = varNode.Attributes["name"];
-                                                if (varAttr != null && varAttr.Value != String.Empty)
+                                                if (varAttr != null && varAttr.Value != string.Empty)
                                                 {
                                                     RDFQueryEngine.AddColumn(result.SelectResults, varAttr.Value);
                                                 }
@@ -294,7 +294,7 @@ namespace RDFSharp.Query
                                         {
                                             if (resNode.HasChildNodes)
                                             {
-                                                var results = new Dictionary<String, String>();
+                                                var results = new Dictionary<string, string>();
                                                 var bdgEnum = resNode.ChildNodes.GetEnumerator();
                                                 while (bdgEnum != null && bdgEnum.MoveNext())
                                                 {
@@ -308,7 +308,7 @@ namespace RDFSharp.Query
                                                         if (bdgNode.Attributes != null && bdgNode.Attributes.Count > 0)
                                                         {
                                                             XmlAttribute varAttr = bdgNode.Attributes["name"];
-                                                            if (varAttr != null && varAttr.Value != String.Empty)
+                                                            if (varAttr != null && varAttr.Value != string.Empty)
                                                             {
                                                                 if (bdgNode.HasChildNodes)
                                                                 {
@@ -336,14 +336,14 @@ namespace RDFSharp.Query
                                                                         if (bdgNode.FirstChild.Attributes != null && bdgNode.FirstChild.Attributes.Count > 0)
                                                                         {
                                                                             XmlAttribute litAttr = bdgNode.FirstChild.Attributes["datatype"];
-                                                                            if (litAttr != null && litAttr.Value != String.Empty)
+                                                                            if (litAttr != null && litAttr.Value != string.Empty)
                                                                             {
                                                                                 results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "^^" + litAttr.Value);
                                                                             }
                                                                             else
                                                                             {
                                                                                 litAttr = bdgNode.FirstChild.Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
-                                                                                if (litAttr != null && litAttr.Value != String.Empty)
+                                                                                if (litAttr != null && litAttr.Value != string.Empty)
                                                                                 {
                                                                                     results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "@" + litAttr.Value);
                                                                                 }

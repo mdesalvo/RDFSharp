@@ -75,14 +75,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            String leftValue = RDFQueryPrinter.PrintPatternMember(this.LeftMember, prefixes);
-            String rightValue = RDFQueryPrinter.PrintPatternMember(this.RightMember, prefixes);
+            string leftValue = RDFQueryPrinter.PrintPatternMember(this.LeftMember, prefixes);
+            string rightValue = RDFQueryPrinter.PrintPatternMember(this.RightMember, prefixes);
             switch (this.ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:

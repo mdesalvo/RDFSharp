@@ -155,7 +155,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the strin representation of the query member
         /// </summary>
-        internal override String GetQueryMemberString()
+        internal override string GetQueryMemberString()
         {
             return this.ToString();
         }

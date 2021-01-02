@@ -140,7 +140,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the shape represented by the given string from this shapes graph
         /// </summary>
-        public RDFShape SelectShape(String shapeName)
+        public RDFShape SelectShape(string shapeName)
         {
             if (shapeName != null)
             {

@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -39,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return "DISTINCT";
         }
@@ -51,13 +50,13 @@ namespace RDFSharp.Query
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {
-            List<String> colNames = new List<String>();
+            List<string> colNames = new List<string>();
             int columnsCount = table.Columns.Count;
             for (int i = 0; i < columnsCount; i++)
             {
                 colNames.Add(table.Columns[i].ColumnName);
             }
-            table = table.DefaultView.ToTable(true, colNames.ToArray<String>());
+            table = table.DefaultView.ToTable(true, colNames.ToArray<string>());
             return table;
         }
         #endregion

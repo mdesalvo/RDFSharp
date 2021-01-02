@@ -149,20 +149,20 @@ namespace RDFSharp.Semantics.SKOS
             var prefLabelLiteralLang = ((RDFPlainLiteral)literal.Value).Language;
 
             //Plain literal without language tag: only one occurrence of this information is allowed
-            if (String.IsNullOrEmpty(prefLabelLiteralLang))
+            if (string.IsNullOrEmpty(prefLabelLiteralLang))
             {
 
                 //Check skos:prefLabel annotation
                 canAddPrefLabelInfo = !(conceptScheme.Annotations.PrefLabel.SelectEntriesBySubject(concept)
                                                                                .Any(x => x.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                           && String.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)));
+                                                                                           && string.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)));
                 //Check skosxl:prefLabel relation
                 if (canAddPrefLabelInfo)
                 {
                     canAddPrefLabelInfo = !(conceptScheme.Relations.PrefLabel.SelectEntriesBySubject(concept)
                                                                              .Any(x => conceptScheme.Relations.LiteralForm.SelectEntriesBySubject(x.TaxonomyObject)
                                                                                                                           .Any(y => y.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                                                                      && String.IsNullOrEmpty(((RDFPlainLiteral)y.TaxonomyObject.Value).Language))));
+                                                                                                                                      && string.IsNullOrEmpty(((RDFPlainLiteral)y.TaxonomyObject.Value).Language))));
                 }
 
             }
@@ -174,7 +174,7 @@ namespace RDFSharp.Semantics.SKOS
                 //Check skos:prefLabel annotation
                 canAddPrefLabelInfo = !(conceptScheme.Annotations.PrefLabel.SelectEntriesBySubject(concept)
                                                                                .Any(x => x.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                           && !String.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
+                                                                                           && !string.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
                                                                                            && (((RDFPlainLiteral)x.TaxonomyObject.Value).Language).Equals(prefLabelLiteralLang, StringComparison.OrdinalIgnoreCase)));
 
                 //Check skosxl:prefLabel relation
@@ -183,7 +183,7 @@ namespace RDFSharp.Semantics.SKOS
                     canAddPrefLabelInfo = !(conceptScheme.Relations.PrefLabel.SelectEntriesBySubject(concept)
                                                                              .Any(x => conceptScheme.Relations.LiteralForm.SelectEntriesBySubject(x.TaxonomyObject)
                                                                                                                           .Any(y => y.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                                                                      && !String.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
+                                                                                                                                      && !string.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
                                                                                                                                       && (((RDFPlainLiteral)x.TaxonomyObject.Value).Language).Equals(prefLabelLiteralLang, StringComparison.OrdinalIgnoreCase))));
                 }
 

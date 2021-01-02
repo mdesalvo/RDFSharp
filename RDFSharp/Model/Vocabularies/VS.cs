@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// vs
             /// </summary>
-            public static readonly String PREFIX = "vs";
+            public static readonly string PREFIX = "vs";
 
             /// <summary>
             /// http://www.w3.org/2003/06/sw-vocab-status/ns#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/2003/06/sw-vocab-status/ns#";
+            public static readonly string BASE_URI = "http://www.w3.org/2003/06/sw-vocab-status/ns#";
 
             /// <summary>
             /// vs:term_status

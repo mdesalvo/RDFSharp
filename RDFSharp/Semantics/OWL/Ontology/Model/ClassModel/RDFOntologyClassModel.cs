@@ -221,7 +221,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology class with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology class with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -238,7 +238,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology class with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology class with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -250,7 +250,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology class with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology class with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -388,13 +388,13 @@ namespace RDFSharp.Semantics.OWL
                     else
                     {
                         //Raise warning event to inform the user: SubClassOf relation cannot be added to the class model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
                     }
                 }
                 else
                 {
                     //Raise warning event to inform the user: SubClassOf relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", childClass, motherClass));
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", childClass, motherClass));
                 }
             }
             return this;
@@ -420,13 +420,13 @@ namespace RDFSharp.Semantics.OWL
                     else
                     {
                         //Raise warning event to inform the user: EquivalentClass relation cannot be added to the class model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
                     }
                 }
                 else
                 {
                     //Raise warning event to inform the user: EquivalentClass relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
                 }
             }
             return this;
@@ -452,13 +452,13 @@ namespace RDFSharp.Semantics.OWL
                     else
                     {
                         //Raise warning event to inform the user: DisjointWith relation cannot be added to the class model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
                     }
                 }
                 else
                 {
                     //Raise warning event to inform the user: DisjointWith relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
                 }
             }
             return this;
@@ -876,7 +876,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Selects the ontology class represented by the given string from the ontology class model
         /// </summary>
-        public RDFOntologyClass SelectClass(String ontClass)
+        public RDFOntologyClass SelectClass(string ontClass)
         {
             if (ontClass != null)
             {

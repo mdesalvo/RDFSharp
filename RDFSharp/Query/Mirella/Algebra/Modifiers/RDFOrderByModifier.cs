@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.OrderByFlavor + "(" + this.Variable + ")";
         }
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         {
             if (table.Columns.Contains(this.Variable.ToString()))
             {
-                if (table.DefaultView.Sort != String.Empty)
+                if (table.DefaultView.Sort != string.Empty)
                 {
                     table.DefaultView.Sort = table.DefaultView.Sort + ", " + this.Variable + " " + this.OrderByFlavor;
                 }

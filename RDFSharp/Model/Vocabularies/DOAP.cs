@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// doap
             /// </summary>
-            public static readonly String PREFIX = "doap";
+            public static readonly string PREFIX = "doap";
 
             /// <summary>
             /// http://usefulinc.com/ns/doap#
             /// </summary>
-            public static readonly String BASE_URI = "http://usefulinc.com/ns/doap#";
+            public static readonly string BASE_URI = "http://usefulinc.com/ns/doap#";
 
             /// <summary>
             /// doap:Project

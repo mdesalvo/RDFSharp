@@ -48,7 +48,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// String-based ctor to build a context from the given string
         /// </summary>
-        public RDFContext(String ctxUri)
+        public RDFContext(string ctxUri)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri);
             if (tempUri != null)
@@ -105,7 +105,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the store context
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Context.ToString();
         }

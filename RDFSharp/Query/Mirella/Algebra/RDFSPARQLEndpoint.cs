@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the variable
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.BaseAddress.ToString();
         }
@@ -70,18 +70,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a "default-graph-uri" parameter to be sent to the SPARQL endpoint
         /// </summary>
-        public RDFSPARQLEndpoint AddDefaultGraphUri(String defaultGraphUri)
+        public RDFSPARQLEndpoint AddDefaultGraphUri(string defaultGraphUri)
         {
-            this.QueryParams.Add("default-graph-uri", defaultGraphUri ?? String.Empty);
+            this.QueryParams.Add("default-graph-uri", defaultGraphUri ?? string.Empty);
             return this;
         }
 
         /// <summary>
         /// Adds a "named-graph-uri" parameter to be sent to the SPARQL endpoint
         /// </summary>
-        public RDFSPARQLEndpoint AddNamedGraphUri(String namedGraphUri)
+        public RDFSPARQLEndpoint AddNamedGraphUri(string namedGraphUri)
         {
-            this.QueryParams.Add("named-graph-uri", namedGraphUri ?? String.Empty);
+            this.QueryParams.Add("named-graph-uri", namedGraphUri ?? string.Empty);
             return this;
         }
         #endregion

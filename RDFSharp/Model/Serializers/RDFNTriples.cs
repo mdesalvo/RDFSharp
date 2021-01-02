@@ -102,7 +102,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Serializes the given graph to the given filepath using N-Triples data format.
         /// </summary>
-        internal static void Serialize(RDFGraph graph, String filepath)
+        internal static void Serialize(RDFGraph graph, string filepath)
         {
             Serialize(graph, new FileStream(filepath, FileMode.Create));
         }
@@ -118,7 +118,7 @@ namespace RDFSharp.Model
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
-                    String tripleTemplate = String.Empty;
+                    string tripleTemplate = string.Empty;
                     foreach (var t in graph)
                     {
 
@@ -181,13 +181,13 @@ namespace RDFSharp.Model
                             #region plain literal
                             if (t.Object is RDFPlainLiteral)
                             {
-                                if (((RDFPlainLiteral)t.Object).Language != String.Empty)
+                                if (((RDFPlainLiteral)t.Object).Language != string.Empty)
                                 {
                                     tripleTemplate = tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language);
                                 }
                                 else
                                 {
-                                    tripleTemplate = tripleTemplate.Replace("@{LANG}", String.Empty);
+                                    tripleTemplate = tripleTemplate.Replace("@{LANG}", string.Empty);
                                 }
                             }
                             #endregion
@@ -219,7 +219,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the given N-Triples filepath to a graph.
         /// </summary>
-        internal static RDFGraph Deserialize(String filepath)
+        internal static RDFGraph Deserialize(string filepath)
         {
             return Deserialize(new FileStream(filepath, FileMode.Open));
         }
@@ -237,8 +237,8 @@ namespace RDFSharp.Model
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
                     RDFGraph result = new RDFGraph();
-                    String ntriple = String.Empty;
-                    String[] tokens = new String[3];
+                    string ntriple = string.Empty;
+                    string[] tokens = new string[3];
                     RDFResource S = null;
                     RDFResource P = null;
                     RDFResource O = null;
@@ -250,18 +250,18 @@ namespace RDFSharp.Model
                         #region sanitize  & tokenize
                         //Cleanup previous data
                         S = null;
-                        tokens[0] = String.Empty;
+                        tokens[0] = string.Empty;
                         P = null;
-                        tokens[1] = String.Empty;
+                        tokens[1] = string.Empty;
                         O = null;
                         L = null;
-                        tokens[2] = String.Empty;
+                        tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
                         ntriple = ntriple.Trim(new Char[] { ' ', '\t', '\r', '\n' });
 
                         //Skip empty or comment lines
-                        if (ntriple == String.Empty || ntriple.StartsWith("#"))
+                        if (ntriple == string.Empty || ntriple.StartsWith("#"))
                         {
                             continue;
                         }
@@ -271,14 +271,14 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region subj
-                        String subj = tokens[0].TrimStart(new Char[] { '<' })
+                        string subj = tokens[0].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new Char[] { '>' })
                                                   .Replace("_:", "bnode:");
                         S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
-                        String pred = tokens[1].TrimStart(new Char[] { '<' })
+                        string pred = tokens[1].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new Char[] { '>' });
                         P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
@@ -288,7 +288,7 @@ namespace RDFSharp.Model
                             tokens[2].StartsWith("bnode:") ||
                             tokens[2].StartsWith("_:"))
                         {
-                            String obj = tokens[2].TrimStart(new Char[] { '<' })
+                            string obj = tokens[2].TrimStart(new Char[] { '<' })
                                                   .TrimEnd(new Char[] { '>' })
                                                   .Replace("_:", "bnode:")
                                                   .Trim(new Char[] { ' ', '\n', '\t', '\r' });
@@ -301,8 +301,8 @@ namespace RDFSharp.Model
                         {
 
                             #region sanitize
-                            tokens[2] = regexSqt.Replace(tokens[2], String.Empty);
-                            tokens[2] = regexEqt.Replace(tokens[2], String.Empty);
+                            tokens[2] = regexSqt.Replace(tokens[2], string.Empty);
+                            tokens[2] = regexEqt.Replace(tokens[2], string.Empty);
                             tokens[2] = tokens[2].Replace("\\\\", "\\")
                                                   .Replace("\\\"", "\"")
                                                   .Replace("\\n", "\n")
@@ -319,8 +319,8 @@ namespace RDFSharp.Model
                                 if (regexLPL.Match(tokens[2]).Success)
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
-                                    String pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
-                                    String pLitLang = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
+                                    string pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
+                                    string pLitLang = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
                                 }
                                 else
@@ -334,8 +334,8 @@ namespace RDFSharp.Model
                             else
                             {
                                 tokens[2] = tokens[2].Replace("\"^^", "^^");
-                                String tLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
-                                String tLitDatatype = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
+                                string tLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
+                                string tLitDatatype = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
                                                                         .TrimStart(new Char[] { '<' })
                                                                         .TrimEnd(new Char[] { '>' });
                                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
@@ -374,9 +374,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Tries to tokenize the given N-Triple
         /// </summary>
-        private static String[] TokenizeNTriple(String ntriple)
+        private static string[] TokenizeNTriple(string ntriple)
         {
-            String[] tokens = new String[3];
+            string[] tokens = new string[3];
 
             //A legal N-Triple starts with "_:" of blanks or "<" of non-blanks
             if (ntriple.StartsWith("_:") || ntriple.StartsWith("<"))

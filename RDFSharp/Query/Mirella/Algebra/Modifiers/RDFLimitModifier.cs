@@ -55,7 +55,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return "LIMIT " + this.Limit;
         }
@@ -67,8 +67,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal override DataTable ApplyModifier(DataTable table)
         {
-            String tableName = table.TableName;
-            String tableSort = table.DefaultView.Sort;
+            string tableName = table.TableName;
+            string tableSort = table.DefaultView.Sort;
             if (table.Rows.Count == 0 || this.Limit == 0)
             {
                 table = table.Clone();

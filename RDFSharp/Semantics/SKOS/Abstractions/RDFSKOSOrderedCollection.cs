@@ -110,7 +110,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the concept represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSConcept SelectConcept(String concept)
+        public RDFSKOSConcept SelectConcept(string concept)
         {
             if (concept != null)
             {

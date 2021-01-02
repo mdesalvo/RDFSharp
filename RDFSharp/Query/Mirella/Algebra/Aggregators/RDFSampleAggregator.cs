@@ -38,10 +38,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the SAMPLE aggregator
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
-            return (this.IsDistinct ? String.Format("(SAMPLE(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                                    : String.Format("(SAMPLE({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
+            return (this.IsDistinct ? string.Format("(SAMPLE(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
+                                    : string.Format("(SAMPLE({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
         }
         #endregion
 
@@ -49,24 +49,24 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
-        internal override void ExecutePartition(String partitionKey, DataRow tableRow)
+        internal override void ExecutePartition(string partitionKey, DataRow tableRow)
         {
             //Get row value
-            String rowValue = GetRowValueAsString(tableRow);
+            string rowValue = GetRowValueAsString(tableRow);
             if (this.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<String>(partitionKey, rowValue))
+                if (this.AggregatorContext.CheckPartitionKeyRowValueCache<string>(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
                 else
-                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<String>(partitionKey, rowValue);
+                    this.AggregatorContext.UpdatePartitionKeyRowValueCache<string>(partitionKey, rowValue);
             }
             //Get aggregator value
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty) ?? String.Empty;
+            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (sample)
-            if (String.IsNullOrEmpty(aggregatorValue))
-                this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, rowValue);
+            if (string.IsNullOrEmpty(aggregatorValue))
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, rowValue);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (String partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 this.UpdateProjectionTable(partitionKey, projFuncTable);
@@ -94,18 +94,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
+        internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
         {
             //Get bindings from context
-            Dictionary<String, String> bindings = new Dictionary<String, String>();
-            foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty);
+            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
             bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table

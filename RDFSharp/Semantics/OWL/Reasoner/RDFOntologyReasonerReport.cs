@@ -126,7 +126,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the evidences having the given provenance rule
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(String evidenceProvenance = "")
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(string evidenceProvenance = "")
         {
             return this.Evidences.Values.Where(e => e.EvidenceProvenance.ToUpper().Equals(evidenceProvenance.Trim().ToUpperInvariant(), StringComparison.Ordinal)).ToList();
         }

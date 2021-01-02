@@ -123,7 +123,7 @@ namespace RDFSharp.Model
             }
 
             //Object
-            this.Object = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object = (lit ?? new RDFPlainLiteral(string.Empty));
 
             //TripleID
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
@@ -135,7 +135,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the triple
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Subject + " " + this.Predicate + " " + this.Object;
         }

@@ -37,7 +37,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
-        public static long CreateHash(String input)
+        public static long CreateHash(string input)
         {
             if (input != null)
             {
@@ -63,7 +63,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
-        internal static Uri GetUriFromString(String uriString)
+        internal static Uri GetUriFromString(string uriString)
         {
             Uri tempUri = null;
             if (uriString != null)
@@ -82,7 +82,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Turns back ASCII-encoded Unicodes into Unicodes.
         /// </summary>
-        public static String ASCII_To_Unicode(String asciiString)
+        public static string ASCII_To_Unicode(string asciiString)
         {
             if (asciiString != null)
             {
@@ -95,7 +95,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Turns Unicodes into ASCII-encoded Unicodes.
         /// </summary>
-        public static String Unicode_To_ASCII(String unicodeString)
+        public static string Unicode_To_ASCII(string unicodeString)
         {
             if (unicodeString != null)
             {
@@ -126,7 +126,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Replaces character controls for XML compatibility
         /// </summary>
-        internal static String EscapeControlCharsForXML(String data)
+        internal static string EscapeControlCharsForXML(string data)
         {
             if (data != null)
             {
@@ -150,7 +150,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Trims the end of the given source string searching for the given value
         /// </summary>
-        internal static String TrimEnd(this String source, String value)
+        internal static string TrimEnd(this string source, string value)
         {
             if (!source.EndsWith(value))
                 return source;
@@ -404,7 +404,7 @@ namespace RDFSharp.Model
                 var subj = t.Subject.ToString();
                 var pred = t.Predicate.ToString();
                 var obj = t.Object is RDFResource ? t.Object.ToString() :
-                                (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : String.Empty);
+                                (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : string.Empty);
 
                 //Resolve subject Uri
                 var subjNS = RDFNamespaceRegister.Instance.Register.Where(x => subj.StartsWith(x.ToString()));
@@ -427,7 +427,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parse the given string in order to give the corresponding RDF/RDFS/XSD datatype
         /// </summary>
-        internal static RDFModelEnums.RDFDatatypes GetDatatypeFromString(String datatypeString)
+        internal static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
         {
             if (datatypeString != null)
             {
@@ -618,7 +618,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the given RDF/RDFS/XSD datatype
         /// </summary>
-        internal static String GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
+        internal static string GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
         {
             if (datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL))
             {
@@ -1376,7 +1376,7 @@ namespace RDFSharp.Model
                     }
                 }
 
-                //NON-POSITIVE INTEGER [Decimal.MinValue, 0]
+                //NON-POSITIVE INTEGER [decimal.MinValue, 0]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER))
                 {
                     if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNPInteger))
@@ -1394,7 +1394,7 @@ namespace RDFSharp.Model
                     return true;
                 }
 
-                //NEGATIVE INTEGER [Decimal.MinValue, -1]
+                //NEGATIVE INTEGER [decimal.MinValue, -1]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER))
                 {
                     if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNInteger))
@@ -1412,7 +1412,7 @@ namespace RDFSharp.Model
                     return true;
                 }
 
-                //NON-NEGATIVE INTEGER [0, Decimal.MaxValue]
+                //NON-NEGATIVE INTEGER [0, decimal.MaxValue]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER))
                 {
                     if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNNInteger))
@@ -1430,7 +1430,7 @@ namespace RDFSharp.Model
                     return true;
                 }
 
-                //POSITIVE INTEGER [1, Decimal.MaxValue]
+                //POSITIVE INTEGER [1, decimal.MaxValue]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER))
                 {
                     if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outPInteger))

@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdf
             /// </summary>
-            public static readonly String PREFIX = "rdf";
+            public static readonly string PREFIX = "rdf";
 
             /// <summary>
             /// http://www.w3.org/1999/02/22-rdf-syntax-ns#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+            public static readonly string BASE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
             /// <summary>
             /// rdf:Bag

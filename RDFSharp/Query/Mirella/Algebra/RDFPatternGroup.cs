@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Name of the pattern group, which must be unique in a query
         /// </summary>
-        public String PatternGroupName { get; internal set; }
+        public string PatternGroupName { get; internal set; }
 
         /// <summary>
         /// Flag indicating the pattern group to be joined as Optional
@@ -59,9 +59,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty named pattern group
         /// </summary>
-        public RDFPatternGroup(String patternGroupName)
+        public RDFPatternGroup(string patternGroupName)
         {
-            if (patternGroupName != null && patternGroupName.Trim() != String.Empty)
+            if (patternGroupName != null && patternGroupName.Trim() != string.Empty)
             {
                 this.PatternGroupName = patternGroupName.Trim().ToUpperInvariant();
                 this.IsEvaluable = true;
@@ -79,7 +79,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns
         /// </summary>
-        public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns) : this(patternGroupName)
+        public RDFPatternGroup(string patternGroupName, List<RDFPattern> patterns) : this(patternGroupName)
         {
             if (patterns != null)
             {
@@ -90,7 +90,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// List-ctor to build a named pattern group with the given list of patterns and filters
         /// </summary>
-        public RDFPatternGroup(String patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters) : this(patternGroupName, patterns)
+        public RDFPatternGroup(string patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters) : this(patternGroupName, patterns)
         {
             if (filters != null)
             {
@@ -103,11 +103,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the patternGroup
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal String ToString(List<RDFNamespace> prefixes)
+        internal string ToString(List<RDFNamespace> prefixes)
         {
             return RDFQueryPrinter.PrintPatternGroup(this, 0, false, prefixes);
         }
@@ -296,7 +296,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the query member
         /// </summary>
-        internal override String GetQueryMemberString()
+        internal override string GetQueryMemberString()
         {
             return this.PatternGroupName;
         }

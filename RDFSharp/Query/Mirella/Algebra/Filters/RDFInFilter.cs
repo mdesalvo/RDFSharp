@@ -65,13 +65,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            return $"FILTER ( {RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes)} IN ({String.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes)))}) )";
+            return $"FILTER ( {RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes)} IN ({string.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes)))}) )";
         }
         #endregion
 

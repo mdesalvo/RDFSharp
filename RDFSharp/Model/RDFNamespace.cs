@@ -40,7 +40,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Prefix representation of the namespace
         /// </summary>
-        public String NamespacePrefix { get; internal set; }
+        public string NamespacePrefix { get; internal set; }
 
         /// <summary>
         /// Uri representation of the namespace
@@ -52,11 +52,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a namespace with given prefix and Uri
         /// </summary>
-        public RDFNamespace(String prefix, String uri)
+        public RDFNamespace(string prefix, string uri)
         {
 
             //Validate prefix: must contain only letters/numbers and cannot be "bnode" or "xmlns"
-            if (prefix != null && prefix.Trim() != String.Empty)
+            if (prefix != null && prefix.Trim() != string.Empty)
             {
                 prefix = prefix.Trim();
 
@@ -79,7 +79,7 @@ namespace RDFSharp.Model
             }
 
             //Validate uri: must be an absolute Uri and cannot start with "bnode:" or "xmlns:"
-            if (uri != null && uri.Trim() != String.Empty)
+            if (uri != null && uri.Trim() != string.Empty)
             {
                 uri = uri.Trim();
 
@@ -115,7 +115,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the namespace
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.NamespaceUri.ToString();
         }

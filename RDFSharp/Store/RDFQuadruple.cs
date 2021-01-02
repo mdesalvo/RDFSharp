@@ -135,7 +135,7 @@ namespace RDFSharp.Store
             }
 
             //Object
-            this.Object = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object = (lit ?? new RDFPlainLiteral(string.Empty));
 
             //QuadrupleID
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
@@ -147,7 +147,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the quadruple
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Context + " " + this.Subject + " " + this.Predicate + " " + this.Object;
         }

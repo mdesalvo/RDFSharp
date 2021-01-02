@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// skos
             /// </summary>
-            public static readonly String PREFIX = "skos";
+            public static readonly string PREFIX = "skos";
 
             /// <summary>
             /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/2004/02/skos/core#";
+            public static readonly string BASE_URI = "http://www.w3.org/2004/02/skos/core#";
 
             /// <summary>
             /// skos:Concept
@@ -218,12 +218,12 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// skosxl
                 /// </summary>
-                public static readonly String PREFIX = "skosxl";
+                public static readonly string PREFIX = "skosxl";
 
                 /// <summary>
                 /// http://www.w3.org/2008/05/skos-xl#
                 /// </summary>
-                public static readonly String BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
+                public static readonly string BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
 
                 /// <summary>
                 /// skosxl:Label

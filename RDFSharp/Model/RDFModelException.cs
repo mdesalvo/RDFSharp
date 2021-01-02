@@ -36,12 +36,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Basic ctor to throw an RDFModelException with message
         /// </summary>
-        public RDFModelException(String message) : base(message) { }
+        public RDFModelException(string message) : base(message) { }
 
         /// <summary>
         /// Basic ctor to throw an RDFModelException with message and inner exception
         /// </summary>
-        public RDFModelException(String message, Exception innerException) : base(message, innerException) { }
+        public RDFModelException(string message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>
         /// Basic ctor to support serialization of a remotely thrown RDFModelException

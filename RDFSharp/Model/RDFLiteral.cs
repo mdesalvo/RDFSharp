@@ -30,14 +30,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Value of the literal
         /// </summary>
-        public String Value { get; internal set; }
+        public string Value { get; internal set; }
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the literal
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Value;
         }

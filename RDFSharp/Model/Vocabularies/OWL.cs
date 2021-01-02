@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// owl
             /// </summary>
-            public static readonly String PREFIX = "owl";
+            public static readonly string PREFIX = "owl";
 
             /// <summary>
             /// http://www.w3.org/2002/07/owl#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/2002/07/owl#";
+            public static readonly string BASE_URI = "http://www.w3.org/2002/07/owl#";
 
             /// <summary>
             /// owl:Ontology

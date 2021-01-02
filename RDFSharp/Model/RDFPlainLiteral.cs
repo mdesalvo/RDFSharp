@@ -30,24 +30,24 @@ namespace RDFSharp.Model
         /// <summary>
         /// Optional language of the plain literal
         /// </summary>
-        public String Language { get; internal set; }
+        public string Language { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a plain literal without language
         /// </summary>
-        public RDFPlainLiteral(String value)
+        public RDFPlainLiteral(string value)
         {
-            this.Value = (value ?? String.Empty);
-            this.Language = String.Empty;
+            this.Value = (value ?? string.Empty);
+            this.Language = string.Empty;
             this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
 
         /// <summary>
         /// Default-ctor to build a plain literal with language
         /// </summary>
-        public RDFPlainLiteral(String value, String language) : this(value)
+        public RDFPlainLiteral(string value, string language) : this(value)
         {
             if (language != null && Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
             {
@@ -61,9 +61,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the plain literal
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
-            if (this.Language != String.Empty)
+            if (this.Language != string.Empty)
             {
                 return base.ToString() + "@" + this.Language;
             }

@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Parses the given string to return an instance of pattern member
         /// </summary>
-        internal static RDFPatternMember ParseRDFPatternMember(String pMember)
+        internal static RDFPatternMember ParseRDFPatternMember(string pMember)
         {
 
             if (pMember != null)
@@ -56,8 +56,8 @@ namespace RDFSharp.Query
                     RDFPlainLiteral pLit = null;
                     if (RDFNTriples.regexLPL.Match(pMember).Success)
                     {
-                        String pLitVal = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
-                        String pLitLng = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                        string pLitVal = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
+                        string pLitLng = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
                         pLit = new RDFPlainLiteral(pLitVal, pLitLng);
                     }
                     else
@@ -69,8 +69,8 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Typed Literal
-                String tLitValue = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
-                String tLitDatatype = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                string tLitValue = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
+                string tLitDatatype = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
                 RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
                 return tLit;
@@ -109,7 +109,7 @@ namespace RDFSharp.Query
                 //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                 {
-                    return String.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
+                    return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
                 }
 
                 //RESOURCE/CONTEXT VS TYPEDLITERAL
@@ -117,7 +117,7 @@ namespace RDFSharp.Query
                 {
                     if (((RDFTypedLiteral)right).HasStringDatatype())
                     {
-                        return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+                        return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                     }
                     return -99; //Type Error
                 }
@@ -132,7 +132,7 @@ namespace RDFSharp.Query
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                 {
-                    return String.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
+                    return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
                 }
 
                 //PLAINLITERAL VS TYPEDLITERAL
@@ -140,7 +140,7 @@ namespace RDFSharp.Query
                 {
                     if (((RDFTypedLiteral)right).HasStringDatatype())
                     {
-                        return String.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
+                        return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
                     }
                     return -99; //Type Error
                 }
@@ -157,7 +157,7 @@ namespace RDFSharp.Query
                 {
                     if (((RDFTypedLiteral)left).HasStringDatatype())
                     {
-                        return String.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
+                        return string.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
                     }
                     return -99; //Type Error
                 }
@@ -185,8 +185,8 @@ namespace RDFSharp.Query
                     }
                     else if (((RDFTypedLiteral)left).HasStringDatatype() && ((RDFTypedLiteral)right).HasStringDatatype())
                     {
-                        String leftValueString = ((RDFTypedLiteral)left).Value;
-                        String rightValueString = ((RDFTypedLiteral)right).Value;
+                        string leftValueString = ((RDFTypedLiteral)left).Value;
+                        string rightValueString = ((RDFTypedLiteral)right).Value;
                         return leftValueString.CompareTo(rightValueString);
                     }
                     else if (((RDFTypedLiteral)left).HasTimespanDatatype() && ((RDFTypedLiteral)right).HasTimespanDatatype())
@@ -209,7 +209,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Tries to abbreviate the string representation of the given pattern member by searching for it in the given list of namespaces
         /// </summary>
-        internal static (bool, String) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
+        internal static (bool, string) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
             #region Prefix Search
             //Check if the pattern member starts with a known prefix, if so just return it
@@ -224,13 +224,13 @@ namespace RDFSharp.Query
 
             #region Namespace Search
             //Check if the pattern member starts with a known namespace, if so replace it with its prefix
-            String pmString = patternMember.ToString();
+            string pmString = patternMember.ToString();
             bool abbrev = false;
             prefixes.ForEach(ns =>
             {
                 if (!abbrev)
                 {
-                    String nS = ns.ToString();
+                    string nS = ns.ToString();
                     if (!pmString.Equals(nS, StringComparison.OrdinalIgnoreCase))
                     {
                         if (pmString.StartsWith(nS))

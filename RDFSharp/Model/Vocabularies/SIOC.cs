@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// sioc
             /// </summary>
-            public static readonly String PREFIX = "sioc";
+            public static readonly string PREFIX = "sioc";
 
             /// <summary>
             /// http://rdfs.org/sioc/ns#
             /// </summary>
-            public static readonly String BASE_URI = "http://rdfs.org/sioc/ns#";
+            public static readonly string BASE_URI = "http://rdfs.org/sioc/ns#";
 
             /// <summary>
             /// sioc:Community

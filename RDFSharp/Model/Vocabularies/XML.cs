@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// xml
             /// </summary>
-            public static readonly String PREFIX = "xml";
+            public static readonly string PREFIX = "xml";
 
             /// <summary>
             /// http://www.w3.org/XML/1998/namespace
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/XML/1998/namespace";
+            public static readonly string BASE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// xml:lang

@@ -37,7 +37,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the string representation of the ontology resource
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Value.ToString();
         }

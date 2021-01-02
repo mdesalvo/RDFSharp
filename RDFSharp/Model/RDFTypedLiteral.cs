@@ -37,9 +37,9 @@ namespace RDFSharp.Model
         /// Default-ctor to build a typed literal with given value and given datatype.
         /// Semantic validation of given value against given datatype is performed.
         /// </summary>
-        public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatypes datatype)
+        public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
         {
-            this.Value = (value ?? String.Empty);
+            this.Value = (value ?? string.Empty);
             this.Datatype = datatype;
 
             //Validation against semantic of given datatype
@@ -54,7 +54,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the typed literal
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return base.ToString() + "^^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype);
         }

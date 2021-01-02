@@ -45,7 +45,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the query member
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return base.ToString();
         }
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the query member
         /// </summary>
-        internal abstract String GetQueryMemberString();
+        internal abstract string GetQueryMemberString();
         #endregion
 
     }

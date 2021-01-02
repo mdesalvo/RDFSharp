@@ -298,7 +298,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the concept represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSConcept SelectConcept(String concept)
+        public RDFSKOSConcept SelectConcept(string concept)
         {
             if (concept != null)
             {
@@ -314,7 +314,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSCollection SelectCollection(String collection)
+        public RDFSKOSCollection SelectCollection(string collection)
         {
             if (collection != null)
             {
@@ -330,7 +330,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the ordered collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSOrderedCollection SelectOrderedCollection(String orderedCollection)
+        public RDFSKOSOrderedCollection SelectOrderedCollection(string orderedCollection)
         {
             if (orderedCollection != null)
             {
@@ -346,7 +346,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the label represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSLabel SelectLabel(String label)
+        public RDFSKOSLabel SelectLabel(string label)
         {
             if (label != null)
             {

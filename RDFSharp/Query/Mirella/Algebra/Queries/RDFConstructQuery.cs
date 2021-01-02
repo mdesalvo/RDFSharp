@@ -59,7 +59,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the CONSTRUCT query
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return RDFQueryPrinter.PrintConstructQuery(this);
         }
@@ -246,7 +246,7 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
             if (sparqlEndpoint != null)
             {
-                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluating CONSTRUCT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
 
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
@@ -285,7 +285,7 @@ namespace RDFSharp.Query
                         constructResult.ConstructResults.Columns[i].ColumnName = "?" + constructResult.ConstructResults.Columns[i].ColumnName;
                 }
 
-                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated CONSTRUCT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));
+                RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluated CONSTRUCT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));
             }
             return constructResult;
         }

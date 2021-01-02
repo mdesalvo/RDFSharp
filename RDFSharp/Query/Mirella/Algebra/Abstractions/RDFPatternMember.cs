@@ -36,7 +36,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the pattern member
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return base.ToString();
         }

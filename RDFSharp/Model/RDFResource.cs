@@ -52,7 +52,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
         /// </summary>
-        public RDFResource(String uriString)
+        public RDFResource(string uriString)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
             if (tempUri != null)
@@ -72,7 +72,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the resource
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.URI.ToString();
         }

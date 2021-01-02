@@ -41,14 +41,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Type of the store
         /// </summary>
-        public String StoreType { get; set; }
+        public string StoreType { get; set; }
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the store
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.StoreType;
         }
@@ -371,9 +371,9 @@ namespace RDFSharp.Store
         /// <summary>
         /// Writes the store into a file in the given RDF format.
         /// </summary>
-        public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath)
+        public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!String.IsNullOrEmpty(filepath))
+            if (!string.IsNullOrEmpty(filepath))
             {
                 switch (rdfFormat)
                 {

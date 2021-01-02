@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Serializes the given graph to the given filepath using TriX data format.
         /// </summary>
-        internal static void Serialize(RDFGraph graph, String filepath)
+        internal static void Serialize(RDFGraph graph, string filepath)
         {
             Serialize(graph, new FileStream(filepath, FileMode.Create));
         }
@@ -112,7 +112,7 @@ namespace RDFSharp.Model
                             if (t.Object is RDFPlainLiteral)
                             {
                                 XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
-                                if (((RDFPlainLiteral)t.Object).Language != String.Empty)
+                                if (((RDFPlainLiteral)t.Object).Language != string.Empty)
                                 {
                                     XmlAttribute xmlLang = trixDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":lang", RDFVocabulary.XML.BASE_URI);
                                     XmlText xmlLangText = trixDoc.CreateTextNode(((RDFPlainLiteral)t.Object).Language);
@@ -168,7 +168,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the given TriX filepath to a graph.
         /// </summary>
-        internal static RDFGraph Deserialize(String filepath)
+        internal static RDFGraph Deserialize(string filepath)
         {
             return Deserialize(new FileStream(filepath, FileMode.Open));
         }
@@ -245,7 +245,7 @@ namespace RDFSharp.Model
                                             {
                                                 if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:"))
                                                 {
-                                                    triple.ChildNodes[0].InnerText = "bnode:" + triple.ChildNodes[0].InnerText.Replace("_:", String.Empty);
+                                                    triple.ChildNodes[0].InnerText = "bnode:" + triple.ChildNodes[0].InnerText.Replace("_:", string.Empty);
                                                 }
                                             }
                                         }
@@ -274,7 +274,7 @@ namespace RDFSharp.Model
                                             {
                                                 if (!triple.ChildNodes[2].InnerText.StartsWith("bnode:"))
                                                 {
-                                                    triple.ChildNodes[2].InnerText = "bnode:" + triple.ChildNodes[2].InnerText.Replace("_:", String.Empty);
+                                                    triple.ChildNodes[2].InnerText = "bnode:" + triple.ChildNodes[2].InnerText.Replace("_:", string.Empty);
                                                 }
                                             }
                                             result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),

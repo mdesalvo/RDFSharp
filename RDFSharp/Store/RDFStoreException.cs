@@ -36,12 +36,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Basic ctor to throw an RDFStoreException with message
         /// </summary>
-        public RDFStoreException(String message) : base(message) { }
+        public RDFStoreException(string message) : base(message) { }
 
         /// <summary>
         /// Basic ctor to throw an RDFStoreException with message and inner exception
         /// </summary>
-        public RDFStoreException(String message, Exception innerException) : base(message, innerException) { }
+        public RDFStoreException(string message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>
         /// Basic ctor to support serialization of a remotely thrown RDFStoreException

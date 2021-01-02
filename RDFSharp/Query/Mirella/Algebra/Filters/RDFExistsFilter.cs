@@ -70,11 +70,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
             return "FILTER ( EXISTS { " + this.Pattern.ToString(prefixes) + " } )";
         }
@@ -120,7 +120,7 @@ namespace RDFSharp.Query
                             RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Subject.ToString()].ToString());
 
                             //Apply subject filter on the pattern resultset
-                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Subject.ToString())).Equals(rowMember));
+                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<string>(this.Pattern.Subject.ToString())).Equals(rowMember));
                         }
                         subjectCompared = true;
                     }
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
                             RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Predicate.ToString()].ToString());
 
                             //Apply predicate filter on the pattern resultset
-                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Predicate.ToString())).Equals(rowMember));
+                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<string>(this.Pattern.Predicate.ToString())).Equals(rowMember));
                         }
                         predicateCompared = true;
                     }
@@ -158,7 +158,7 @@ namespace RDFSharp.Query
                             RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[this.Pattern.Object.ToString()].ToString());
 
                             //Apply object filter on the pattern resultset
-                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<String>(this.Pattern.Object.ToString())).Equals(rowMember));
+                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<string>(this.Pattern.Object.ToString())).Equals(rowMember));
                         }
                         objectCompared = true;
                     }

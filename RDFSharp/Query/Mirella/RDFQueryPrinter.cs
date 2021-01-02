@@ -34,19 +34,19 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Double indentLevel, bool fromUnion)
+        internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnion)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
             {
 
                 #region INDENT
-                int subqueryHeaderSpacesFunc(Double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
-                int subqueryBodySpacesFunc(Double indLevel) { return Convert.ToInt32(4 * indentLevel); }
+                int subqueryHeaderSpacesFunc(double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
+                int subqueryBodySpacesFunc(double indLevel) { return Convert.ToInt32(4 * indentLevel); }
                 int subqueryUnionSpacesFunc(bool union) { return union ? 2 : 0; }
 
-                String subquerySpaces = new String(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
-                String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+                string subquerySpaces = new string(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
+                string subqueryBodySpaces = new string(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
                 #endregion
 
                 #region PREFIX
@@ -95,9 +95,9 @@ namespace RDFSharp.Query
                          .ForEach(gm =>
                          {
                              sb.Append(" ");
-                             sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).PartitionVariables));
+                             sb.Append(string.Join(" ", ((RDFGroupByModifier)gm).PartitionVariables));
                              sb.Append(" ");
-                             sb.Append(String.Join(" ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
+                             sb.Append(string.Join(" ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
                          });
                 }
                 //Query hasn't groupby modifier
@@ -274,7 +274,7 @@ namespace RDFSharp.Query
                                  if (((RDFGroupByModifier)gm).Aggregators.Any(ag => ag.HavingClause.Item1))
                                  {
                                      sb.Append("\n");
-                                     sb.Append(String.Format(subqueryBodySpaces + "HAVING ({0})", String.Join(" && ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
+                                     sb.Append(string.Format(subqueryBodySpaces + "HAVING ({0})", string.Join(" && ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
                                  }
                              });
                 }
@@ -316,7 +316,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL DESCRIBE query
         /// </summary>
-        internal static String PrintDescribeQuery(RDFDescribeQuery describeQuery)
+        internal static string PrintDescribeQuery(RDFDescribeQuery describeQuery)
         {
             StringBuilder sb = new StringBuilder();
             if (describeQuery != null)
@@ -518,7 +518,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL CONSTRUCT query
         /// </summary>
-        internal static String PrintConstructQuery(RDFConstructQuery constructQuery)
+        internal static string PrintConstructQuery(RDFConstructQuery constructQuery)
         {
             StringBuilder sb = new StringBuilder();
             if (constructQuery != null)
@@ -543,18 +543,18 @@ namespace RDFSharp.Query
                 sb.Append("\n{\n");
                 constructQuery.Templates.ForEach(tp =>
                 {
-                    String tpString = PrintPattern(tp, constructQuery.Prefixes);
+                    string tpString = PrintPattern(tp, constructQuery.Prefixes);
 
                     //Remove the Context from the template print (since it is not supported by CONSTRUCT query)
                     if (tp.Context != null)
                     {
-                        tpString = tpString.Replace("GRAPH " + tp.Context + " { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
+                        tpString = tpString.Replace("GRAPH " + tp.Context + " { ", string.Empty).TrimEnd(new Char[] { ' ', '}' });
                     }
 
                     //Remove the Optional indicator from the template print (since it is not supported by CONSTRUCT query)
                     if (tp.IsOptional)
                     {
-                        tpString = tpString.Replace("OPTIONAL { ", String.Empty).TrimEnd(new Char[] { ' ', '}' });
+                        tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new Char[] { ' ', '}' });
                     }
 
                     sb.Append("  " + tpString + " .\n");
@@ -728,7 +728,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL ASK query
         /// </summary>
-        internal static String PrintAskQuery(RDFAskQuery askQuery)
+        internal static string PrintAskQuery(RDFAskQuery askQuery)
         {
             StringBuilder sb = new StringBuilder();
             if (askQuery != null)
@@ -896,9 +896,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a pattern group
         /// </summary>
-        internal static String PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
+        internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
-            String spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
+            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
             #region HEADER
             StringBuilder result = new StringBuilder();
@@ -1019,16 +1019,16 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a pattern
         /// </summary>
-        internal static String PrintPattern(RDFPattern pattern, List<RDFNamespace> prefixes)
+        internal static string PrintPattern(RDFPattern pattern, List<RDFNamespace> prefixes)
         {
-            String subj = PrintPatternMember(pattern.Subject, prefixes);
-            String pred = PrintPatternMember(pattern.Predicate, prefixes);
-            String obj = PrintPatternMember(pattern.Object, prefixes);
+            string subj = PrintPatternMember(pattern.Subject, prefixes);
+            string pred = PrintPatternMember(pattern.Predicate, prefixes);
+            string obj = PrintPatternMember(pattern.Object, prefixes);
 
             //CSPO pattern
             if (pattern.Context != null)
             {
-                String ctx = PrintPatternMember(pattern.Context, prefixes);
+                string ctx = PrintPatternMember(pattern.Context, prefixes);
                 if (pattern.IsOptional)
                 {
                     return "OPTIONAL { GRAPH " + ctx + " { " + subj + " " + pred + " " + obj + " } }";
@@ -1047,7 +1047,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a property path
         /// </summary>
-        internal static String PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
+        internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
             StringBuilder result = new StringBuilder();
             result.Append(PrintPatternMember(propertyPath.Start, prefixes));
@@ -1153,14 +1153,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL values
         /// </summary>
-        internal static String PrintValues(RDFValues values, List<RDFNamespace> prefixes, String spaces)
+        internal static string PrintValues(RDFValues values, List<RDFNamespace> prefixes, string spaces)
         {
             StringBuilder result = new StringBuilder();
 
             //Compact representation
             if (values.Bindings.Keys.Count == 1)
             {
-                result.Append(String.Format("VALUES {0}", values.Bindings.Keys.ElementAt(0)));
+                result.Append(string.Format("VALUES {0}", values.Bindings.Keys.ElementAt(0)));
                 result.Append(" { ");
                 foreach (RDFPatternMember binding in values.Bindings.ElementAt(0).Value)
                 {
@@ -1176,7 +1176,7 @@ namespace RDFSharp.Query
             //Extended representation
             else
             {
-                result.Append(String.Format("VALUES ({0})", String.Join(" ", values.Bindings.Keys)));
+                result.Append(string.Format("VALUES ({0})", string.Join(" ", values.Bindings.Keys)));
                 result.Append(" {\n");
                 for (int i = 0; i < values.MaxBindingsLength; i++)
                 {
@@ -1201,7 +1201,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a pattern member
         /// </summary>
-        internal static String PrintPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
+        internal static string PrintPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
             if (patternMember != null)
             {
@@ -1243,7 +1243,7 @@ namespace RDFSharp.Query
                     #region PlainLiteral
                     if (patternMember is RDFPlainLiteral)
                     {
-                        if (((RDFPlainLiteral)patternMember).Language != String.Empty)
+                        if (((RDFPlainLiteral)patternMember).Language != string.Empty)
                         {
                             return "\"" + ((RDFPlainLiteral)patternMember).Value + "\"@" + ((RDFPlainLiteral)patternMember).Language;
                         }

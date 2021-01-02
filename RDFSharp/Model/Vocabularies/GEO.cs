@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// geo
             /// </summary>
-            public static readonly String PREFIX = "geo";
+            public static readonly string PREFIX = "geo";
 
             /// <summary>
             /// http://www.w3.org/2003/01/geo/wgs84_pos#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+            public static readonly string BASE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 
             /// <summary>
             /// geo:lat

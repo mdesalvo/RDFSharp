@@ -337,7 +337,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the string representation of the taxonomy entry
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.TaxonomySubject + " " + this.TaxonomyPredicate + " " + this.TaxonomyObject;
         }

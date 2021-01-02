@@ -71,11 +71,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder regexFlags = new StringBuilder();
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
@@ -94,7 +94,7 @@ namespace RDFSharp.Query
             {
                 regexFlags.Append("x");
             }
-            if (regexFlags.ToString() != String.Empty)
+            if (regexFlags.ToString() != string.Empty)
             {
                 return "FILTER ( REGEX(STR(" + this.Variable + "), \"" + this.RegEx + "\", \"" + regexFlags + "\") )";
             }

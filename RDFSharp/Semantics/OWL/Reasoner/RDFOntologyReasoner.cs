@@ -99,9 +99,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Selects the given rule from the resoner
         /// </summary>
-        public RDFOntologyReasonerRule SelectRule(String ruleName)
+        public RDFOntologyReasonerRule SelectRule(string ruleName)
         {
-            if (ruleName != null && ruleName.Trim() != String.Empty)
+            if (ruleName != null && ruleName.Trim() != string.Empty)
                 return this.Rules.FirstOrDefault(r => r.RuleName.Equals(ruleName.Trim(), StringComparison.OrdinalIgnoreCase));
             else
                 return null;
@@ -115,7 +115,7 @@ namespace RDFSharp.Semantics.OWL
             var report = new RDFOntologyReasonerReport();
             if (ontology != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Reasoner is going to be applied on Ontology '{0}'...", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}'...", ontology.Value));
 
                 //STEP 1: Expand ontology
                 var ontologyValue = ontology.Value;
@@ -127,10 +127,10 @@ namespace RDFSharp.Semantics.OWL
                                           .OrderBy(x => x.RulePriority);
                 foreach (var bRule in baseRules)
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of BASE reasoning rule '{0}'...", bRule));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of BASE reasoning rule '{0}'...", bRule));
                     var bRuleReport = bRule.ExecuteRule(ontology);
                     report.Merge(bRuleReport);
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of BASE reasoning rule '{0}': found {1} evidences.", bRule, bRuleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of BASE reasoning rule '{0}': found {1} evidences.", bRule, bRuleReport.EvidencesCount));
                 }
                 #endregion
 
@@ -140,10 +140,10 @@ namespace RDFSharp.Semantics.OWL
                                             .OrderBy(x => x.RulePriority);
                 foreach (var cRule in customRules)
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Launching execution of reasoning rule '{0}'...", cRule));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of reasoning rule '{0}'...", cRule));
                     var cRuleReport = cRule.ExecuteRule(ontology);
                     report.Merge(cRuleReport);
-                    RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Completed execution of reasoning rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of reasoning rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
                 }
                 #endregion
 
@@ -151,7 +151,7 @@ namespace RDFSharp.Semantics.OWL
                 ontology = ontology.DifferenceWith(RDFBASEOntology.Instance);
                 ontology.Value = ontologyValue;
 
-                RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " evidences.", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " evidences.", ontology.Value));
             }
             return report;
         }

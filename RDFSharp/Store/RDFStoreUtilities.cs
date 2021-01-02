@@ -50,7 +50,7 @@ namespace RDFSharp.Store
                 }
 
                 //SPL-flavour quadruple
-                String literal = fetchedQuadruples["Object"].ToString();
+                string literal = fetchedQuadruples["Object"].ToString();
 
                 //PlainLiteral
                 if (!literal.Contains("^^") ||
@@ -60,8 +60,8 @@ namespace RDFSharp.Store
                     RDFPlainLiteral pLit = null;
                     if (RDFNTriples.regexLPL.Match(literal).Success)
                     {
-                        String pLitValue = literal.Substring(0, literal.LastIndexOf("@", StringComparison.Ordinal));
-                        String pLitLang = literal.Substring(literal.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                        string pLitValue = literal.Substring(0, literal.LastIndexOf("@", StringComparison.Ordinal));
+                        string pLitLang = literal.Substring(literal.LastIndexOf("@", StringComparison.Ordinal) + 1);
                         pLit = new RDFPlainLiteral(pLitValue, pLitLang);
                     }
                     else
@@ -72,8 +72,8 @@ namespace RDFSharp.Store
                 }
 
                 //TypedLiteral
-                String tLitValue = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
-                String tLitDatatype = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                string tLitValue = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
+                string tLitDatatype = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
                 RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
                 return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);

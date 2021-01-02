@@ -145,7 +145,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the concept represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSConcept SelectConcept(String concept)
+        public RDFSKOSConcept SelectConcept(string concept)
         {
             if (concept != null)
             {
@@ -161,7 +161,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSCollection SelectCollection(String collection)
+        public RDFSKOSCollection SelectCollection(string collection)
         {
             if (collection != null)
             {
