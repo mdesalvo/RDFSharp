@@ -707,8 +707,9 @@ namespace RDFSharp.Semantics.OWL
 
                 //Transform property chain axiom of current property into equivalent property path
                 RDFPropertyPath propertyChainAxiomPath = new RDFPropertyPath(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), new RDFVariable("?PROPERTY_CHAIN_AXIOM_END"));
-                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyChainAxiomTaxonomy.ToList())
-                    propertyChainAxiomPath.AddSequenceStep(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
+                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomy.Key);
+                foreach (RDFPropertyPathStep propertyChainAxiomPathStep in propertyChainAxiomPathSteps)
+                    propertyChainAxiomPath.AddSequenceStep(propertyChainAxiomPathStep);
 
                 //Execute construct query for getting property chain axiom data from ontology
                 RDFConstructQueryResult queryResult =
@@ -726,6 +727,46 @@ namespace RDFSharp.Semantics.OWL
                     RDFOntologyFact assertionObject = ontology.Data.SelectFact(queryResultTriple.Object.ToString());
                     result[propertyChainAxiomTaxonomy.Key.ToString()].AddAssertionRelation(assertionSubject, assertionPredicate, assertionObject);
                 }
+            }
+            return result;
+        }
+        /// <summary>
+        /// Gets the direct and indirect steps for the given subject of property chain axiom taxonomy [OWL2]
+        /// </summary>
+        internal static List<RDFPropertyPathStep> GetStepsForPropertyChainAxiom(this RDFOntology ontology, RDFOntologyResource propertyName, HashSet<Int64> visitContext = null)
+        {
+            List<RDFPropertyPathStep> result = new List<RDFPropertyPathStep>();
+            if (propertyName != null && ontology != null)
+            {
+
+                #region visitContext
+                if (visitContext == null)
+                {
+                    visitContext = new HashSet<Int64>() { { propertyName.Value.PatternMemberID } };
+                }
+                else
+                {
+                    if (!visitContext.Contains(propertyName.Value.PatternMemberID))
+                    {
+                        visitContext.Add(propertyName.Value.PatternMemberID);
+                    }
+                    else
+                    {
+                        return result;
+                    }
+                }
+                #endregion
+
+                //owl:propertyChainAxiom
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyName))
+                {
+                    bool containsPropertyChainAxiom = ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomTaxonomyEntry.TaxonomyObject).EntriesCount > 0;
+                    if (containsPropertyChainAxiom)
+                        result.AddRange(ontology.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
+                    else
+                        result.Add(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
+                }
+
             }
             return result;
         }
