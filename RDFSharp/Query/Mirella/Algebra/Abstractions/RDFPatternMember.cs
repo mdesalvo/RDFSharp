@@ -29,7 +29,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern member
         /// </summary>
-        public Int64 PatternMemberID { get; internal set; }
+        public long PatternMemberID { get; internal set; }
         #endregion
 
         #region Interfaces

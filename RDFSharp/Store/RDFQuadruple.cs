@@ -31,7 +31,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Unique representation of the quadruple
         /// </summary>
-        public Int64 QuadrupleID { get; internal set; }
+        public long QuadrupleID { get; internal set; }
 
         /// <summary>
         /// Flavor of the triple nested into the quadruple

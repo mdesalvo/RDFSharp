@@ -33,7 +33,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the concepts of the collection
         /// </summary>
-        public Int64 ConceptsCount
+        public long ConceptsCount
         {
             get { return this.Concepts.Count; }
         }
@@ -54,7 +54,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Dictionary of concepts contained in the collection
         /// </summary>
-        internal Dictionary<Int64, Tuple<int, RDFSKOSConcept>> Concepts { get; set; }
+        internal Dictionary<long, Tuple<int, RDFSKOSConcept>> Concepts { get; set; }
 
         /// <summary>
         /// Reification representative of the collection
@@ -69,7 +69,7 @@ namespace RDFSharp.Semantics.SKOS
         public RDFSKOSOrderedCollection(RDFResource collectionName) : base(collectionName)
         {
             this.ConceptsSequentialCounter = 0;
-            this.Concepts = new Dictionary<Int64, Tuple<int, RDFSKOSConcept>>();
+            this.Concepts = new Dictionary<long, Tuple<int, RDFSKOSConcept>>();
             this.Representative = new RDFOntologyFact(new RDFResource("bnode:" + this.PatternMemberID));
         }
         #endregion
@@ -114,7 +114,7 @@ namespace RDFSharp.Semantics.SKOS
         {
             if (concept != null)
             {
-                Int64 conceptID = RDFModelUtilities.CreateHash(concept);
+                long conceptID = RDFModelUtilities.CreateHash(concept);
                 if (this.Concepts.ContainsKey(conceptID))
                 {
                     return this.Concepts[conceptID].Item2;

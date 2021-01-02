@@ -31,27 +31,27 @@ namespace RDFSharp.Store
         /// <summary>
         /// Index on the contexts of the store's quadruples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Contexts { get; set; }
+        internal Dictionary<long, HashSet<long>> Contexts { get; set; }
 
         /// <summary>
         /// Index on the subjects of the store's quadruples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Subjects { get; set; }
+        internal Dictionary<long, HashSet<long>> Subjects { get; set; }
 
         /// <summary>
         /// Index on the predicates of the store's quadruples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Predicates { get; set; }
+        internal Dictionary<long, HashSet<long>> Predicates { get; set; }
 
         /// <summary>
         /// Index on the objects of the store's quadruples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Objects { get; set; }
+        internal Dictionary<long, HashSet<long>> Objects { get; set; }
 
         /// <summary>
         /// Index on the literals of the store's quadruples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Literals { get; set; }
+        internal Dictionary<long, HashSet<long>> Literals { get; set; }
         #endregion
 
         #region Ctors
@@ -60,11 +60,11 @@ namespace RDFSharp.Store
         /// </summary>
         internal RDFStoreIndex()
         {
-            this.Contexts = new Dictionary<Int64, HashSet<Int64>>();
-            this.Subjects = new Dictionary<Int64, HashSet<Int64>>();
-            this.Predicates = new Dictionary<Int64, HashSet<Int64>>();
-            this.Objects = new Dictionary<Int64, HashSet<Int64>>();
-            this.Literals = new Dictionary<Int64, HashSet<Int64>>();
+            this.Contexts = new Dictionary<long, HashSet<long>>();
+            this.Subjects = new Dictionary<long, HashSet<long>>();
+            this.Predicates = new Dictionary<long, HashSet<long>>();
+            this.Objects = new Dictionary<long, HashSet<long>>();
+            this.Literals = new Dictionary<long, HashSet<long>>();
         }
         #endregion
 
@@ -82,7 +82,7 @@ namespace RDFSharp.Store
                 //Context
                 if (!this.Contexts.ContainsKey(quadruple.Context.PatternMemberID))
                 {
-                    this.Contexts.Add(quadruple.Context.PatternMemberID, new HashSet<Int64>() { quadruple.QuadrupleID });
+                    this.Contexts.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace RDFSharp.Store
                 //Subject
                 if (!this.Subjects.ContainsKey(quadruple.Subject.PatternMemberID))
                 {
-                    this.Subjects.Add(quadruple.Subject.PatternMemberID, new HashSet<Int64>() { quadruple.QuadrupleID });
+                    this.Subjects.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace RDFSharp.Store
                 //Predicate
                 if (!this.Predicates.ContainsKey(quadruple.Predicate.PatternMemberID))
                 {
-                    this.Predicates.Add(quadruple.Predicate.PatternMemberID, new HashSet<Int64>() { quadruple.QuadrupleID });
+                    this.Predicates.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
                 }
                 else
                 {
@@ -123,7 +123,7 @@ namespace RDFSharp.Store
                 {
                     if (!this.Objects.ContainsKey(quadruple.Object.PatternMemberID))
                     {
-                        this.Objects.Add(quadruple.Object.PatternMemberID, new HashSet<Int64>() { quadruple.QuadrupleID });
+                        this.Objects.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
                     }
                     else
                     {
@@ -139,7 +139,7 @@ namespace RDFSharp.Store
                 {
                     if (!this.Literals.ContainsKey(quadruple.Object.PatternMemberID))
                     {
-                        this.Literals.Add(quadruple.Object.PatternMemberID, new HashSet<Int64>() { quadruple.QuadrupleID });
+                        this.Literals.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
                     }
                     else
                     {
@@ -256,7 +256,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Selects the quadruples indexed by the given context
         /// </summary>
-        internal HashSet<Int64> SelectIndexByContext(RDFContext contextResource)
+        internal HashSet<long> SelectIndexByContext(RDFContext contextResource)
         {
             if (contextResource != null)
             {
@@ -265,13 +265,13 @@ namespace RDFSharp.Store
                     return this.Contexts[contextResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the quadruples indexed by the given subject
         /// </summary>
-        internal HashSet<Int64> SelectIndexBySubject(RDFResource subjectResource)
+        internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
         {
             if (subjectResource != null)
             {
@@ -280,13 +280,13 @@ namespace RDFSharp.Store
                     return this.Subjects[subjectResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the quadruples indexed by the given predicate
         /// </summary>
-        internal HashSet<Int64> SelectIndexByPredicate(RDFResource predicateResource)
+        internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
         {
             if (predicateResource != null)
             {
@@ -295,13 +295,13 @@ namespace RDFSharp.Store
                     return this.Predicates[predicateResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the quadruples indexed by the given object
         /// </summary>
-        internal HashSet<Int64> SelectIndexByObject(RDFResource objectResource)
+        internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
         {
             if (objectResource != null)
             {
@@ -310,13 +310,13 @@ namespace RDFSharp.Store
                     return this.Objects[objectResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the quadruples indexed by the given literal
         /// </summary>
-        internal HashSet<Int64> SelectIndexByLiteral(RDFLiteral objectLiteral)
+        internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
         {
             if (objectLiteral != null)
             {
@@ -325,7 +325,7 @@ namespace RDFSharp.Store
                     return this.Literals[objectLiteral.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
         #endregion
 

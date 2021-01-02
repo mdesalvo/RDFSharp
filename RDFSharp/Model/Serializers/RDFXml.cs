@@ -127,7 +127,7 @@ namespace RDFSharp.Model
                     #endregion
 
                     #region graph
-                    Dictionary<Int64, XmlNode> containersXML = new Dictionary<Int64, XmlNode>();
+                    Dictionary<long, XmlNode> containersXML = new Dictionary<long, XmlNode>();
 
                     //Floating containers have reification subject which is never object of any graph's triple
                     bool floatingContainers = containers.Any(k => !graph.Triples.Any(v => v.Value.Object.Equals(k.ContainerUri)));
@@ -143,7 +143,7 @@ namespace RDFSharp.Model
                         //serialized in abbreviation RDF/XML syntax instead of canonical "rdf:Description"
                         XmlNode subjNode = null;
                         String subj = group.Key;
-                        Int64 subjHash = RDFModelUtilities.CreateHash(subj);
+                        long subjHash = RDFModelUtilities.CreateHash(subj);
                         var subjContainer = containers.Find(x => x.ContainerUri.PatternMemberID == subjHash);
                         var subjCollection = collections.Find(x => x.CollectionUri.PatternMemberID == subjHash);
 

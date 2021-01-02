@@ -40,7 +40,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the human-readable messages of this shape
         /// </summary>
-        public Int64 MessagesCount
+        public long MessagesCount
         {
             get { return this.Messages.Count; }
         }
@@ -56,7 +56,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the targets of this shape
         /// </summary>
-        public Int64 TargetsCount
+        public long TargetsCount
         {
             get { return this.Targets.Count; }
         }
@@ -72,7 +72,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the constraints of this shape
         /// </summary>
-        public Int64 ConstraintsCount
+        public long ConstraintsCount
         {
             get { return this.Constraints.Count; }
         }
@@ -211,7 +211,7 @@ namespace RDFSharp.Model
         {
             if (constraintName != null)
             {
-                Int64 constraintID = RDFModelUtilities.CreateHash(constraintName);
+                long constraintID = RDFModelUtilities.CreateHash(constraintName);
                 return this.Constraints.Find(c => c.PatternMemberID.Equals(constraintID));
             }
             return null;
@@ -224,7 +224,7 @@ namespace RDFSharp.Model
         {
             if (targetName != null)
             {
-                Int64 targetID = RDFModelUtilities.CreateHash(targetName);
+                long targetID = RDFModelUtilities.CreateHash(targetName);
                 return this.Targets.Find(t => t.PatternMemberID.Equals(targetID));
             }
             return null;

@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Unique representation of the triple
         /// </summary>
-        internal Int64 TripleID { get; set; }
+        internal long TripleID { get; set; }
 
         /// <summary>
         /// Flavor of the triple

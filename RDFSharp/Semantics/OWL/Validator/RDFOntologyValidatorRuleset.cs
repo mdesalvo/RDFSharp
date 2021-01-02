@@ -569,8 +569,8 @@ namespace RDFSharp.Semantics.OWL
 
             #region Domain_Range
             RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
-            var classCache = new Dictionary<Int64, RDFOntologyData>();
-            var litCheckCache = new Dictionary<Int64, bool>();
+            var classCache = new Dictionary<long, RDFOntologyData>();
+            var litCheckCache = new Dictionary<long, bool>();
 
             foreach (var assertion in ontology.Data.Relations.Assertions.Where(asn => ((RDFOntologyProperty)asn.TaxonomyPredicate).Domain != null
                                                                                         || ((RDFOntologyProperty)asn.TaxonomyPredicate).Range != null))
@@ -1051,8 +1051,8 @@ namespace RDFSharp.Semantics.OWL
 
             #region Facts
             RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
-            var disjWithCache = new Dictionary<Int64, RDFOntologyClassModel>();
-            var litCheckCache = new Dictionary<Int64, bool>();
+            var disjWithCache = new Dictionary<long, RDFOntologyClassModel>();
+            var litCheckCache = new Dictionary<long, bool>();
 
             foreach (var fact in ontology.Data)
             {
@@ -1124,8 +1124,8 @@ namespace RDFSharp.Semantics.OWL
             foreach (var prop in ontology.Model.PropertyModel.Where(p => p.Functional || (p.IsObjectProperty() && ((RDFOntologyObjectProperty)p).InverseFunctional)))
             {
                 var assertions = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(prop);
-                var subjCache = new Dictionary<Int64, RDFOntologyResource>();
-                var objCache = new Dictionary<Int64, RDFOntologyResource>();
+                var subjCache = new Dictionary<long, RDFOntologyResource>();
+                var objCache = new Dictionary<long, RDFOntologyResource>();
                 foreach (var asn in assertions)
                 {
 

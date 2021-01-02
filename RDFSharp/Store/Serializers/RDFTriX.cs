@@ -188,7 +188,7 @@ namespace RDFSharp.Store
 
                 #region deserialize
                 RDFMemoryStore result = new RDFMemoryStore();
-                Dictionary<Int64, RDFGraph> graphs = new Dictionary<Int64, RDFGraph>();
+                Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
                 using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
                 {
                     using (XmlTextReader trixReader = new XmlTextReader(streamReader))
@@ -215,7 +215,7 @@ namespace RDFSharp.Store
                                     throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
                                 }
                                 Uri graphUri = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-                                Int64 graphID = RDFNamespaceRegister.DefaultNamespace.NamespaceID;
+                                long graphID = RDFNamespaceRegister.DefaultNamespace.NamespaceID;
                                 if (!graphs.ContainsKey(graphID))
                                 {
                                     graphs.Add(graphID, new RDFGraph().SetContext(graphUri));

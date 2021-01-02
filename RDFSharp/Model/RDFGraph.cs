@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public Int64 TriplesCount
+        public long TriplesCount
         {
             get { return this.Triples.Count; }
         }
@@ -60,7 +60,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// List of triples embedded into the graph
         /// </summary>
-        internal Dictionary<Int64, RDFTriple> Triples { get; set; }
+        internal Dictionary<long, RDFTriple> Triples { get; set; }
         #endregion
 
         #region Ctors
@@ -71,7 +71,7 @@ namespace RDFSharp.Model
         {
             this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.GraphIndex = new RDFGraphIndex();
-            this.Triples = new Dictionary<Int64, RDFTriple>();
+            this.Triples = new Dictionary<long, RDFTriple>();
         }
 
         /// <summary>

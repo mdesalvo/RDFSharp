@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the number of results produced by the query
         /// </summary>
-        public Int64 DescribeResultsCount
+        public long DescribeResultsCount
         {
             get
             {

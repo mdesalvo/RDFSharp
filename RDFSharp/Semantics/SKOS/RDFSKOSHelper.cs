@@ -806,14 +806,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         internal static RDFSKOSConceptScheme GetBroaderConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
                                                                           RDFSKOSConcept concept,
-                                                                          Dictionary<Int64, RDFSKOSConcept> visitContext)
+                                                                          Dictionary<long, RDFSKOSConcept> visitContext)
         {
             var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+                visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
             else
             {
@@ -882,14 +882,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         internal static RDFSKOSConceptScheme GetNarrowerConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
                                                                            RDFSKOSConcept concept,
-                                                                           Dictionary<Int64, RDFSKOSConcept> visitContext)
+                                                                           Dictionary<long, RDFSKOSConcept> visitContext)
         {
             var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+                visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
             else
             {
@@ -1098,14 +1098,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         internal static RDFSKOSConceptScheme GetExactMatchConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
                                                                              RDFSKOSConcept concept,
-                                                                             Dictionary<Int64, RDFSKOSConcept> visitContext)
+                                                                             Dictionary<long, RDFSKOSConcept> visitContext)
         {
             var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+                visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
             else
             {

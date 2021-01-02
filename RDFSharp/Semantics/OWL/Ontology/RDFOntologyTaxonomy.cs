@@ -38,7 +38,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the taxonomy entries
         /// </summary>
-        public Int64 EntriesCount
+        public long EntriesCount
         {
             get { return this.Entries.Count; }
         }
@@ -59,7 +59,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Lookup for ontology entries composing the taxonomy
         /// </summary>
-        internal HashSet<Int64> EntriesLookup { get; set; }
+        internal HashSet<long> EntriesLookup { get; set; }
 
         /// <summary>
         /// Flag indicating that this taxonomy exceptionally accepts duplicate entries
@@ -75,7 +75,7 @@ namespace RDFSharp.Semantics.OWL
         {
             this.Category = category;
             this.Entries = new List<RDFOntologyTaxonomyEntry>();
-            this.EntriesLookup = new HashSet<Int64>();
+            this.EntriesLookup = new HashSet<long>();
             this.AcceptDuplicates = acceptDuplicates;
         }
         #endregion
@@ -273,7 +273,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Unique representation of the taxonomy entry
         /// </summary>
-        public Int64 TaxonomyEntryID { get; internal set; }
+        public long TaxonomyEntryID { get; internal set; }
 
         /// <summary>
         /// Ontology resource acting as subject of the taxonomy relationship

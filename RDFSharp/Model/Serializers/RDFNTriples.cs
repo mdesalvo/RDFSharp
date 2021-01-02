@@ -229,7 +229,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFGraph Deserialize(Stream inputStream)
         {
-            Int64 ntripleIndex = 0;
+            long ntripleIndex = 0;
             try
             {
 

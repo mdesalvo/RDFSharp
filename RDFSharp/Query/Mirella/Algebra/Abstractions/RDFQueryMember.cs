@@ -30,7 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the query member
         /// </summary>
-        public Int64 QueryMemberID
+        public long QueryMemberID
         {
             get { return RDFModelUtilities.CreateHash(this.GetQueryMemberString()); }
         }

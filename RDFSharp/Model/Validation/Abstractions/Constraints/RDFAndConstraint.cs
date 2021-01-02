@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
@@ -30,7 +29,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Shapes required for the given RDF term
         /// </summary>
-        internal Dictionary<Int64, RDFResource> AndShapes { get; set; }
+        internal Dictionary<long, RDFResource> AndShapes { get; set; }
         #endregion
 
         #region Ctors
@@ -39,7 +38,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFAndConstraint() : base()
         {
-            this.AndShapes = new Dictionary<Int64, RDFResource>();
+            this.AndShapes = new Dictionary<long, RDFResource>();
         }
         #endregion
 

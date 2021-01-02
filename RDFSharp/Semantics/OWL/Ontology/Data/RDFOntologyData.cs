@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the facts composing the data
         /// </summary>
-        public Int64 FactsCount
+        public long FactsCount
         {
             get { return this.Facts.Count; }
         }
@@ -40,7 +40,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the literals composing the data
         /// </summary>
-        public Int64 LiteralsCount
+        public long LiteralsCount
         {
             get { return this.Literals.Count; }
         }
@@ -74,12 +74,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of facts composing the data
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyFact> Facts { get; set; }
+        internal Dictionary<long, RDFOntologyFact> Facts { get; set; }
 
         /// <summary>
         /// Dictionary of literals composing the data
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyLiteral> Literals { get; set; }
+        internal Dictionary<long, RDFOntologyLiteral> Literals { get; set; }
         #endregion
 
         #region Ctors
@@ -88,8 +88,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyData()
         {
-            this.Facts = new Dictionary<Int64, RDFOntologyFact>();
-            this.Literals = new Dictionary<Int64, RDFOntologyLiteral>();
+            this.Facts = new Dictionary<long, RDFOntologyFact>();
+            this.Literals = new Dictionary<long, RDFOntologyLiteral>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyDataMetadata();
         }
@@ -835,7 +835,7 @@ namespace RDFSharp.Semantics.OWL
         {
             if (fact != null)
             {
-                Int64 factID = RDFModelUtilities.CreateHash(fact);
+                long factID = RDFModelUtilities.CreateHash(fact);
                 if (this.Facts.ContainsKey(factID))
                 {
                     return this.Facts[factID];
@@ -851,7 +851,7 @@ namespace RDFSharp.Semantics.OWL
         {
             if (literal != null)
             {
-                Int64 literalID = RDFModelUtilities.CreateHash(literal);
+                long literalID = RDFModelUtilities.CreateHash(literal);
                 if (this.Literals.ContainsKey(literalID))
                 {
                     return this.Literals[literalID];

@@ -35,12 +35,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of temporary result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<Int64, List<DataTable>> QueryMemberTemporaryResultTables { get; set; }
+        internal Dictionary<long, List<DataTable>> QueryMemberTemporaryResultTables { get; set; }
 
         /// <summary>
         /// Dictionary of final result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<Int64, DataTable> QueryMemberFinalResultTables { get; set; }
+        internal Dictionary<long, DataTable> QueryMemberFinalResultTables { get; set; }
         #endregion
 
         #region Ctors
@@ -49,8 +49,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            this.QueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-            this.QueryMemberFinalResultTables = new Dictionary<Int64, DataTable>();
+            this.QueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+            this.QueryMemberFinalResultTables = new Dictionary<long, DataTable>();
         }
         #endregion
 
@@ -73,7 +73,7 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
@@ -198,7 +198,7 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
@@ -379,7 +379,7 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
@@ -507,7 +507,7 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 

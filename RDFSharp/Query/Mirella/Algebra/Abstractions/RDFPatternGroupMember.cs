@@ -30,7 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern group member
         /// </summary>
-        public Int64 PatternGroupMemberID
+        public long PatternGroupMemberID
         {
             get { return RDFModelUtilities.CreateHash(this.ToString()); }
         }

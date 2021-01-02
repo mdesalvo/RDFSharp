@@ -33,7 +33,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the classes composing the class model
         /// </summary>
-        public Int64 ClassesCount
+        public long ClassesCount
         {
             get { return this.Classes.Count; }
         }
@@ -41,7 +41,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the restrictions classes composing the class model
         /// </summary>
-        public Int64 RestrictionsCount
+        public long RestrictionsCount
         {
             get { return this.Classes.Count(c => c.Value.IsRestrictionClass()); }
         }
@@ -49,7 +49,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the enumerate classes composing the class model
         /// </summary>
-        public Int64 EnumeratesCount
+        public long EnumeratesCount
         {
             get { return this.Classes.Count(c => c.Value.IsEnumerateClass()); }
         }
@@ -57,7 +57,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the datarange classes composing the class model
         /// </summary>
-        public Int64 DataRangesCount
+        public long DataRangesCount
         {
             get { return this.Classes.Count(c => c.Value.IsDataRangeClass()); }
         }
@@ -65,7 +65,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the composite classes composing the class model
         /// </summary>
-        public Int64 CompositesCount
+        public long CompositesCount
         {
             get { return this.Classes.Count(c => c.Value.IsCompositeClass()); }
         }
@@ -142,7 +142,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of classes composing the class model
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyClass> Classes { get; set; }
+        internal Dictionary<long, RDFOntologyClass> Classes { get; set; }
         #endregion
 
         #region Ctors
@@ -151,7 +151,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyClassModel()
         {
-            this.Classes = new Dictionary<Int64, RDFOntologyClass>();
+            this.Classes = new Dictionary<long, RDFOntologyClass>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyClassModelMetadata();
         }
@@ -880,7 +880,7 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontClass != null)
             {
-                Int64 classID = RDFModelUtilities.CreateHash(ontClass);
+                long classID = RDFModelUtilities.CreateHash(ontClass);
                 if (this.Classes.ContainsKey(classID))
                 {
                     return this.Classes[classID];

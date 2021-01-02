@@ -36,7 +36,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Unique representation of the store
         /// </summary>
-        public Int64 StoreID { get; set; }
+        public long StoreID { get; set; }
 
         /// <summary>
         /// Type of the store
@@ -251,7 +251,7 @@ namespace RDFSharp.Store
         /// </summary>
         public List<RDFGraph> ExtractGraphs()
         {
-            Dictionary<Int64, RDFGraph> graphs = new Dictionary<Int64, RDFGraph>();
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
             foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
             {
 

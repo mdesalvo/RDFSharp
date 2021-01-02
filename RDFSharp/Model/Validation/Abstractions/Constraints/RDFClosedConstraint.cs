@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Properties allowed on the given RDF term
         /// </summary>
-        internal Dictionary<Int64, RDFResource> IgnoredProperties { get; set; }
+        internal Dictionary<long, RDFResource> IgnoredProperties { get; set; }
         #endregion
 
         #region Ctors
@@ -46,7 +46,7 @@ namespace RDFSharp.Model
         public RDFClosedConstraint(bool closed) : base()
         {
             this.Closed = closed;
-            this.IgnoredProperties = new Dictionary<Int64, RDFResource>();
+            this.IgnoredProperties = new Dictionary<long, RDFResource>();
         }
         #endregion
 

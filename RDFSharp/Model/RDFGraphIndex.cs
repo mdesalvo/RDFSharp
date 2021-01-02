@@ -30,22 +30,22 @@ namespace RDFSharp.Model
         /// <summary>
         /// Index on the subjects of the graph's triples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Subjects { get; set; }
+        internal Dictionary<long, HashSet<long>> Subjects { get; set; }
 
         /// <summary>
         /// Index on the predicates of the graph's triples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Predicates { get; set; }
+        internal Dictionary<long, HashSet<long>> Predicates { get; set; }
 
         /// <summary>
         /// Index on the objects of the graph's triples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Objects { get; set; }
+        internal Dictionary<long, HashSet<long>> Objects { get; set; }
 
         /// <summary>
         /// Index on the literals of the graph's triples
         /// </summary>
-        internal Dictionary<Int64, HashSet<Int64>> Literals { get; set; }
+        internal Dictionary<long, HashSet<long>> Literals { get; set; }
         #endregion
 
         #region Ctors
@@ -54,10 +54,10 @@ namespace RDFSharp.Model
         /// </summary>
         internal RDFGraphIndex()
         {
-            this.Subjects = new Dictionary<Int64, HashSet<Int64>>();
-            this.Predicates = new Dictionary<Int64, HashSet<Int64>>();
-            this.Objects = new Dictionary<Int64, HashSet<Int64>>();
-            this.Literals = new Dictionary<Int64, HashSet<Int64>>();
+            this.Subjects = new Dictionary<long, HashSet<long>>();
+            this.Predicates = new Dictionary<long, HashSet<long>>();
+            this.Objects = new Dictionary<long, HashSet<long>>();
+            this.Literals = new Dictionary<long, HashSet<long>>();
         }
         #endregion
 
@@ -75,7 +75,7 @@ namespace RDFSharp.Model
                 //Subject
                 if (!this.Subjects.ContainsKey(triple.Subject.PatternMemberID))
                 {
-                    this.Subjects.Add(triple.Subject.PatternMemberID, new HashSet<Int64>() { triple.TripleID });
+                    this.Subjects.Add(triple.Subject.PatternMemberID, new HashSet<long>() { triple.TripleID });
                 }
                 else
                 {
@@ -88,7 +88,7 @@ namespace RDFSharp.Model
                 //Predicate
                 if (!this.Predicates.ContainsKey(triple.Predicate.PatternMemberID))
                 {
-                    this.Predicates.Add(triple.Predicate.PatternMemberID, new HashSet<Int64>() { triple.TripleID });
+                    this.Predicates.Add(triple.Predicate.PatternMemberID, new HashSet<long>() { triple.TripleID });
                 }
                 else
                 {
@@ -103,7 +103,7 @@ namespace RDFSharp.Model
                 {
                     if (!this.Objects.ContainsKey(triple.Object.PatternMemberID))
                     {
-                        this.Objects.Add(triple.Object.PatternMemberID, new HashSet<Int64>() { triple.TripleID });
+                        this.Objects.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
                     }
                     else
                     {
@@ -119,7 +119,7 @@ namespace RDFSharp.Model
                 {
                     if (!this.Literals.ContainsKey(triple.Object.PatternMemberID))
                     {
-                        this.Literals.Add(triple.Object.PatternMemberID, new HashSet<Int64>() { triple.TripleID });
+                        this.Literals.Add(triple.Object.PatternMemberID, new HashSet<long>() { triple.TripleID });
                     }
                     else
                     {
@@ -222,7 +222,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the triples indexed by the given subject
         /// </summary>
-        internal HashSet<Int64> SelectIndexBySubject(RDFResource subjectResource)
+        internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
         {
             if (subjectResource != null)
             {
@@ -231,13 +231,13 @@ namespace RDFSharp.Model
                     return this.Subjects[subjectResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the triples indexed by the given predicate
         /// </summary>
-        internal HashSet<Int64> SelectIndexByPredicate(RDFResource predicateResource)
+        internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
         {
             if (predicateResource != null)
             {
@@ -246,13 +246,13 @@ namespace RDFSharp.Model
                     return this.Predicates[predicateResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the triples indexed by the given object
         /// </summary>
-        internal HashSet<Int64> SelectIndexByObject(RDFResource objectResource)
+        internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
         {
             if (objectResource != null)
             {
@@ -261,13 +261,13 @@ namespace RDFSharp.Model
                     return this.Objects[objectResource.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
 
         /// <summary>
         /// Selects the triples indexed by the given literal
         /// </summary>
-        internal HashSet<Int64> SelectIndexByLiteral(RDFLiteral objectLiteral)
+        internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
         {
             if (objectLiteral != null)
             {
@@ -276,7 +276,7 @@ namespace RDFSharp.Model
                     return this.Literals[objectLiteral.PatternMemberID];
                 }
             }
-            return new HashSet<Int64>();
+            return new HashSet<long>();
         }
         #endregion
 

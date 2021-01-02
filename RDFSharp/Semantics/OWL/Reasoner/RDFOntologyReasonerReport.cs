@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of evidences
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyReasonerEvidence> Evidences { get; set; }
+        internal Dictionary<long, RDFOntologyReasonerEvidence> Evidences { get; set; }
 
         /// <summary>
         /// SyncLock for evidences
@@ -62,7 +62,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyReasonerReport()
         {
-            this.Evidences = new Dictionary<Int64, RDFOntologyReasonerEvidence>();
+            this.Evidences = new Dictionary<long, RDFOntologyReasonerEvidence>();
             this.SyncLock = new Object();
         }
         #endregion

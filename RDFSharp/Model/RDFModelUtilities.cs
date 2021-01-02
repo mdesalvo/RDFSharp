@@ -37,7 +37,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
-        public static Int64 CreateHash(String input)
+        public static long CreateHash(String input)
         {
             if (input != null)
             {
@@ -86,7 +86,7 @@ namespace RDFSharp.Model
         {
             if (asciiString != null)
             {
-                asciiString = regexU8.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU8.Replace(asciiString, match => ((Char)long.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
                 asciiString = regexU4.Replace(asciiString, match => ((Char)int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
             }
             return asciiString;
@@ -1271,8 +1271,7 @@ namespace RDFSharp.Model
                 //LONG
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG))
                 {
-                    Int64 outLong;
-                    if (Int64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outLong))
+                    if (long.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong))
                     {
                         typedLiteral.Value = Convert.ToString(outLong, CultureInfo.InvariantCulture);
                         return true;

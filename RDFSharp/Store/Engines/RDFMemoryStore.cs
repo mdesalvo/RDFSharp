@@ -35,7 +35,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public Int64 QuadruplesCount
+        public long QuadruplesCount
         {
             get { return this.Quadruples.Count; }
         }
@@ -61,7 +61,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// List of quadruples embedded into the store
         /// </summary>
-        internal Dictionary<Int64, RDFQuadruple> Quadruples { get; set; }
+        internal Dictionary<long, RDFQuadruple> Quadruples { get; set; }
         #endregion
 
         #region Ctors
@@ -74,7 +74,7 @@ namespace RDFSharp.Store
             this.StoreGUID = Guid.NewGuid().ToString();
             this.StoreIndex = new RDFStoreIndex();
             this.StoreID = RDFModelUtilities.CreateHash(this.ToString());
-            this.Quadruples = new Dictionary<Int64, RDFQuadruple>();
+            this.Quadruples = new Dictionary<long, RDFQuadruple>();
         }
 
         /// <summary>

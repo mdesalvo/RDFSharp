@@ -33,7 +33,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the properties composing the property model
         /// </summary>
-        public Int64 PropertiesCount
+        public long PropertiesCount
         {
             get { return this.Properties.Count; }
         }
@@ -41,7 +41,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the annotation properties composing the property model
         /// </summary>
-        public Int64 AnnotationPropertiesCount
+        public long AnnotationPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsAnnotationProperty()); }
         }
@@ -49,7 +49,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the datatype properties composing the property model
         /// </summary>
-        public Int64 DatatypePropertiesCount
+        public long DatatypePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsDatatypeProperty()); }
         }
@@ -57,7 +57,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the object properties composing the property model
         /// </summary>
-        public Int64 ObjectPropertiesCount
+        public long ObjectPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsObjectProperty()); }
         }
@@ -65,7 +65,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the functional properties composing the property model
         /// </summary>
-        public Int64 FunctionalPropertiesCount
+        public long FunctionalPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsFunctionalProperty()); }
         }
@@ -73,7 +73,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the symmetric properties composing the property model
         /// </summary>
-        public Int64 SymmetricPropertiesCount
+        public long SymmetricPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsSymmetricProperty()); }
         }
@@ -81,7 +81,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the asymmetric properties composing the property model [OWL2]
         /// </summary>
-        public Int64 AsymmetricPropertiesCount
+        public long AsymmetricPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsAsymmetricProperty()); }
         }
@@ -89,7 +89,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the reflexive properties composing the property model [OWL2]
         /// </summary>
-        public Int64 ReflexivePropertiesCount
+        public long ReflexivePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsReflexiveProperty()); }
         }
@@ -97,7 +97,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the irreflexive properties composing the property model [OWL2]
         /// </summary>
-        public Int64 IrreflexivePropertiesCount
+        public long IrreflexivePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsIrreflexiveProperty()); }
         }
@@ -105,7 +105,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the transitive properties composing the property model
         /// </summary>
-        public Int64 TransitivePropertiesCount
+        public long TransitivePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsTransitiveProperty()); }
         }
@@ -113,7 +113,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the inverse functional properties composing the property model
         /// </summary>
-        public Int64 InverseFunctionalPropertiesCount
+        public long InverseFunctionalPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsInverseFunctionalProperty()); }
         }
@@ -268,7 +268,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of properties composing the property model
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyProperty> Properties { get; set; }
+        internal Dictionary<long, RDFOntologyProperty> Properties { get; set; }
         #endregion
 
         #region Ctors
@@ -277,7 +277,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyPropertyModel()
         {
-            this.Properties = new Dictionary<Int64, RDFOntologyProperty>();
+            this.Properties = new Dictionary<long, RDFOntologyProperty>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyPropertyModelMetadata();
         }
@@ -1079,7 +1079,7 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontProperty != null)
             {
-                Int64 propertyID = RDFModelUtilities.CreateHash(ontProperty);
+                long propertyID = RDFModelUtilities.CreateHash(ontProperty);
                 if (this.Properties.ContainsKey(propertyID))
                 {
                     return this.Properties[propertyID];

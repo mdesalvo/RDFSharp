@@ -192,14 +192,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:equivalentClass" taxonomy to discover direct and indirect equivalentClasses of the given class
         /// </summary>
-        internal static RDFOntologyClassModel GetEquivalentClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<Int64, RDFOntologyClass> visitContext)
+        internal static RDFOntologyClassModel GetEquivalentClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<long, RDFOntologyClass> visitContext)
         {
             var result = new RDFOntologyClassModel();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
+                visitContext = new Dictionary<long, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
             }
             else
             {
@@ -251,7 +251,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:disjointWith" taxonomy to discover direct and indirect disjointClasses of the given class
         /// </summary>
-        internal static RDFOntologyClassModel GetDisjointClassesWithInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<Int64, RDFOntologyClass> visitContext)
+        internal static RDFOntologyClassModel GetDisjointClassesWithInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<long, RDFOntologyClass> visitContext)
         {
             var result1 = new RDFOntologyClassModel();
             var result2 = new RDFOntologyClassModel();
@@ -259,7 +259,7 @@ namespace RDFSharp.Semantics.OWL
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
+                visitContext = new Dictionary<long, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
             }
             else
             {
@@ -580,14 +580,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:equivalentProperty" taxonomy to discover direct and indirect equivalentProperties of the given property
         /// </summary>
-        internal static RDFOntologyPropertyModel GetEquivalentPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext)
+        internal static RDFOntologyPropertyModel GetEquivalentPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<long, RDFOntologyProperty> visitContext)
         {
             var result = new RDFOntologyPropertyModel();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+                visitContext = new Dictionary<long, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
             }
             else
             {
@@ -639,7 +639,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:propertyDisjointWith" taxonomy to discover direct and indirect disjointProperties of the given property
         /// </summary>
-        internal static RDFOntologyPropertyModel GetPropertiesDisjointWithInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext)
+        internal static RDFOntologyPropertyModel GetPropertiesDisjointWithInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<long, RDFOntologyProperty> visitContext)
         {
             var result1 = new RDFOntologyPropertyModel();
             var result2 = new RDFOntologyPropertyModel();
@@ -647,7 +647,7 @@ namespace RDFSharp.Semantics.OWL
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+                visitContext = new Dictionary<long, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
             }
             else
             {
@@ -733,7 +733,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the direct and indirect steps for the given subject of property chain axiom taxonomy [OWL2]
         /// </summary>
-        internal static List<RDFPropertyPathStep> GetStepsForPropertyChainAxiom(this RDFOntology ontology, RDFOntologyResource propertyName, HashSet<Int64> visitContext = null)
+        internal static List<RDFPropertyPathStep> GetStepsForPropertyChainAxiom(this RDFOntology ontology, RDFOntologyResource propertyName, HashSet<long> visitContext = null)
         {
             List<RDFPropertyPathStep> result = new List<RDFPropertyPathStep>();
             if (propertyName != null && ontology != null)
@@ -742,7 +742,7 @@ namespace RDFSharp.Semantics.OWL
                 #region visitContext
                 if (visitContext == null)
                 {
-                    visitContext = new HashSet<Int64>() { { propertyName.Value.PatternMemberID } };
+                    visitContext = new HashSet<long>() { { propertyName.Value.PatternMemberID } };
                 }
                 else
                 {
@@ -838,14 +838,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:sameAs" taxonomy to discover direct and indirect samefacts of the given facts
         /// </summary>
-        internal static RDFOntologyData GetSameFactsAsInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<Int64, RDFOntologyFact> visitContext)
+        internal static RDFOntologyData GetSameFactsAsInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<long, RDFOntologyFact> visitContext)
         {
             var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<long, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else
             {
@@ -897,14 +897,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:differentFrom" taxonomy to discover direct and indirect differentFacts of the given facts
         /// </summary>
-        internal static RDFOntologyData GetDifferentFactsFromInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<Int64, RDFOntologyFact> visitContext)
+        internal static RDFOntologyData GetDifferentFactsFromInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<long, RDFOntologyFact> visitContext)
         {
             var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<long, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else
             {
@@ -961,14 +961,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlists the transitive assertions of the given fact and the given property within the given data
         /// </summary>
-        internal static RDFOntologyData GetTransitiveAssertionsOfInternal(this RDFOntologyData data, RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, Dictionary<Int64, RDFOntologyFact> visitContext)
+        internal static RDFOntologyData GetTransitiveAssertionsOfInternal(this RDFOntologyData data, RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, Dictionary<long, RDFOntologyFact> visitContext)
         {
             var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<long, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else
             {
@@ -1237,19 +1237,19 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Item2 is a counter for occurrences of the restricted property within the subject fact
-                var cardinalityRestrictionRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
+                var cardinalityRestrictionRegistry = new Dictionary<long, Tuple<RDFOntologyFact, long>>();
 
                 //Iterate the compatible assertions
                 foreach (var assertion in restrictionAssertions)
                 {
                     if (!cardinalityRestrictionRegistry.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
                     {
-                        cardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, 1));
+                        cardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, 1));
                     }
                     else
                     {
                         var occurrencyCounter = cardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID].Item2;
-                        cardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
+                        cardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
                     }
                 }
 
@@ -1293,7 +1293,7 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Item2 is a counter for occurrences of the restricted property within the subject fact
-                var qualifiedCardinalityRestrictionRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
+                var qualifiedCardinalityRestrictionRegistry = new Dictionary<long, Tuple<RDFOntologyFact, long>>();
 
                 //Enlist the classes which are compatible with the restricted "OnClass"
                 var onClasses = ontology.Model.ClassModel.GetSubClassesOf(qualifiedCardinalityRestriction.OnClass)
@@ -1324,12 +1324,12 @@ namespace RDFSharp.Semantics.OWL
                     {
                         if (!qualifiedCardinalityRestrictionRegistry.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
                         {
-                            qualifiedCardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, 1));
+                            qualifiedCardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, 1));
                         }
                         else
                         {
                             var occurrencyCounter = qualifiedCardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID].Item2;
-                            qualifiedCardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
+                            qualifiedCardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
                         }
                     }
                 }
@@ -1375,7 +1375,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Item2 is a counter for occurrences of the restricted property with a range member of the restricted "FromClass"
                 //Item3 is a counter for occurrences of the restricted property with a range member not of the restricted "FromClass"
-                var valuesFromRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64, Int64>>();
+                var valuesFromRegistry = new Dictionary<long, Tuple<RDFOntologyFact, long, long>>();
 
                 //Enlist the classes which are compatible with the restricted "FromClass"
                 var classes = ontRestriction is RDFOntologyAllValuesFromRestriction
@@ -1392,7 +1392,7 @@ namespace RDFSharp.Semantics.OWL
 
                     //Initialize the occurrence counters of the subject fact
                     if (!valuesFromRegistry.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
-                        valuesFromRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)assertion.TaxonomySubject, 0, 0));
+                        valuesFromRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, long, long>((RDFOntologyFact)assertion.TaxonomySubject, 0, 0));
 
                     //Iterate the class types of the object fact, checking presence of the restricted "FromClass"
                     var fromClassFound = false;
@@ -1414,11 +1414,11 @@ namespace RDFSharp.Semantics.OWL
                     var differenceCounter = valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID].Item3;
                     if (fromClassFound)
                     {
-                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter + 1, differenceCounter);
+                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long, long>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter + 1, differenceCounter);
                     }
                     else
                     {
-                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter, differenceCounter + 1);
+                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long, long>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter, differenceCounter + 1);
                     }
 
                 }

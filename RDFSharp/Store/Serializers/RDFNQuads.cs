@@ -219,7 +219,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
-            Int64 nquadIndex = 0;
+            long nquadIndex = 0;
             try
             {
 

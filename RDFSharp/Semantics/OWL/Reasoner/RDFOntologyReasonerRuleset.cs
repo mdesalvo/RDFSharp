@@ -874,7 +874,7 @@ namespace RDFSharp.Semantics.OWL
         internal static RDFOntologyReasonerReport TransitivePropertyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
-            var transPropCache = new Dictionary<Int64, RDFOntologyData>();
+            var transPropCache = new Dictionary<long, RDFOntologyData>();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-transitive properties)
             var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
