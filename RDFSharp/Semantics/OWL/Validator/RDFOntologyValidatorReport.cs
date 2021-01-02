@@ -31,7 +31,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of the evidences
         /// </summary>
-        public Int32 EvidencesCount
+        public int EvidencesCount
         {
             get { return this.Evidences.Count; }
         }

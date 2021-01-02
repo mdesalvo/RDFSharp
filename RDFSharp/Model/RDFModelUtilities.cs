@@ -87,7 +87,7 @@ namespace RDFSharp.Model
             if (asciiString != null)
             {
                 asciiString = regexU8.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-                asciiString = regexU4.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU4.Replace(asciiString, match => ((Char)int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
             }
             return asciiString;
         }
@@ -110,11 +110,11 @@ namespace RDFSharp.Model
                     {
                         if (c <= 65535)
                         {
-                            b.Append("\\u" + ((Int32)c).ToString("X4"));
+                            b.Append("\\u" + ((int)c).ToString("X4"));
                         }
                         else
                         {
-                            b.Append("\\U" + ((Int32)c).ToString("X8"));
+                            b.Append("\\U" + ((int)c).ToString("X8"));
                         }
                     }
                 }
@@ -135,7 +135,7 @@ namespace RDFSharp.Model
                 {
                     if (Char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
                     {
-                        b.Append("\\u" + ((Int32)c).ToString("X4"));
+                        b.Append("\\u" + ((int)c).ToString("X4"));
                     }
                     else
                     {
@@ -1286,8 +1286,8 @@ namespace RDFSharp.Model
                 //INT
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INT))
                 {
-                    Int32 outInt;
-                    if (Int32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInt))
+                    int outInt;
+                    if (int.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInt))
                     {
                         typedLiteral.Value = Convert.ToString(outInt, CultureInfo.InvariantCulture);
                         return true;

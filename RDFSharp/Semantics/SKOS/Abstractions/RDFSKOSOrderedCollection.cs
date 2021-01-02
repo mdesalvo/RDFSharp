@@ -41,7 +41,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Gets the ordered enumerator on the concepts of the collection
         /// </summary>
-        public IEnumerator<Tuple<Int32, RDFSKOSConcept>> ConceptsEnumerator
+        public IEnumerator<Tuple<int, RDFSKOSConcept>> ConceptsEnumerator
         {
             get { return this.Concepts.Values.OrderBy(x => x.Item1).GetEnumerator(); }
         }
@@ -49,12 +49,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Internal sequential counter of the concepts of the collection
         /// </summary>
-        internal Int32 ConceptsSequentialCounter { get; set; }
+        internal int ConceptsSequentialCounter { get; set; }
 
         /// <summary>
         /// Dictionary of concepts contained in the collection
         /// </summary>
-        internal Dictionary<Int64, Tuple<Int32, RDFSKOSConcept>> Concepts { get; set; }
+        internal Dictionary<Int64, Tuple<int, RDFSKOSConcept>> Concepts { get; set; }
 
         /// <summary>
         /// Reification representative of the collection
@@ -69,7 +69,7 @@ namespace RDFSharp.Semantics.SKOS
         public RDFSKOSOrderedCollection(RDFResource collectionName) : base(collectionName)
         {
             this.ConceptsSequentialCounter = 0;
-            this.Concepts = new Dictionary<Int64, Tuple<Int32, RDFSKOSConcept>>();
+            this.Concepts = new Dictionary<Int64, Tuple<int, RDFSKOSConcept>>();
             this.Representative = new RDFOntologyFact(new RDFResource("bnode:" + this.PatternMemberID));
         }
         #endregion
@@ -85,7 +85,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null)
             {
                 if (!this.Concepts.ContainsKey(concept.PatternMemberID))
-                    this.Concepts.Add(concept.PatternMemberID, new Tuple<Int32, RDFSKOSConcept>(this.ConceptsSequentialCounter++, concept));
+                    this.Concepts.Add(concept.PatternMemberID, new Tuple<int, RDFSKOSConcept>(this.ConceptsSequentialCounter++, concept));
             }
             return this;
         }

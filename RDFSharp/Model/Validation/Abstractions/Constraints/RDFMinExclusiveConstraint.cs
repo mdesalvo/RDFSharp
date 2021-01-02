@@ -76,7 +76,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                Int32 comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
+                int comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
                 if (comparison == -99 || comparison >= 0)
                 {
                     report.AddResult(new RDFValidationResult(shape,

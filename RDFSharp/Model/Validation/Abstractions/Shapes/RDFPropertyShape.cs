@@ -122,7 +122,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Sets the relative order of this property shape compared to its siblings
         /// </summary>
-        public RDFPropertyShape SetOrder(Int32 order)
+        public RDFPropertyShape SetOrder(int order)
         {
             this.Order = new RDFTypedLiteral(order.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
             return this;

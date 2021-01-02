@@ -84,7 +84,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Compares the given pattern members, throwing a "Type Error" whenever the comparison operator detects sematically incompatible members;
         /// </summary>
-        internal static Int32 CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
+        internal static int CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
         {
 
             #region NULLS

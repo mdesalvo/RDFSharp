@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the rules composing the reasoner
         /// </summary>
-        public Int32 RulesCount
+        public int RulesCount
         {
             get { return this.Rules.Count; }
         }

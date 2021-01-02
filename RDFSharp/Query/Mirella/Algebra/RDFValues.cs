@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Represents the current max length of the bindings
         /// </summary>
-        internal Int32 MaxBindingsLength
+        internal int MaxBindingsLength
         {
             get
             {

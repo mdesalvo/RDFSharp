@@ -47,7 +47,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the register's namespaces
         /// </summary>
-        public static Int32 NamespacesCount
+        public static int NamespacesCount
         {
             get { return Instance.Register.Count; }
         }
@@ -208,7 +208,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Looksup the given prefix or namespace into the prefix.cc service
         /// </summary>
-        internal static RDFNamespace LookupPrefixCC(String data, Int32 lookupMode)
+        internal static RDFNamespace LookupPrefixCC(String data, int lookupMode)
         {
             var lookupString = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
                                                       "http://prefix.cc/reverse?uri=" + data + "&format=txt");

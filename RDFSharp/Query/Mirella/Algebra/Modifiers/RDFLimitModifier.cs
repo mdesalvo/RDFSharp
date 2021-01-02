@@ -31,14 +31,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Maximum number of results taken from the query
         /// </summary>
-        public Int32 Limit { get; internal set; }
+        public int Limit { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a Limit modifier on a query
         /// </summary>
-        public RDFLimitModifier(Int32 limit)
+        public RDFLimitModifier(int limit)
         {
             if (limit >= 0)
             {

@@ -36,7 +36,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of projection variables and associated ordinals
         /// </summary>
-        internal Dictionary<RDFVariable, Int32> ProjectionVars { get; set; }
+        internal Dictionary<RDFVariable, int> ProjectionVars { get; set; }
         #endregion
 
         #region Ctors
@@ -45,7 +45,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery()
         {
-            this.ProjectionVars = new Dictionary<RDFVariable, Int32>();
+            this.ProjectionVars = new Dictionary<RDFVariable, int>();
         }
         #endregion
 
@@ -247,8 +247,8 @@ namespace RDFSharp.Query
                 }
 
                 //Eventually adjust column names (should start with "?")
-                Int32 columnsCount = selResult.SelectResults.Columns.Count;
-                for (Int32 i = 0; i < columnsCount; i++)
+                int columnsCount = selResult.SelectResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
                 {
                     if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                         selResult.SelectResults.Columns[i].ColumnName = "?" + selResult.SelectResults.Columns[i].ColumnName;

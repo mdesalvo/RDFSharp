@@ -261,8 +261,8 @@ namespace RDFSharp.Query
                 }
 
                 //Eventually adjust column names (should start with "?")
-                Int32 columnsCount = describeResult.DescribeResults.Columns.Count;
-                for (Int32 i = 0; i < columnsCount; i++)
+                int columnsCount = describeResult.DescribeResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
                 {
                     if (!describeResult.DescribeResults.Columns[i].ColumnName.StartsWith("?"))
                         describeResult.DescribeResults.Columns[i].ColumnName = "?" + describeResult.DescribeResults.Columns[i].ColumnName;

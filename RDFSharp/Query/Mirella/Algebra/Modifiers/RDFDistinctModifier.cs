@@ -52,8 +52,8 @@ namespace RDFSharp.Query
         internal override DataTable ApplyModifier(DataTable table)
         {
             List<String> colNames = new List<String>();
-            Int32 columnsCount = table.Columns.Count;
-            for (Int32 i = 0; i < columnsCount; i++)
+            int columnsCount = table.Columns.Count;
+            for (int i = 0; i < columnsCount; i++)
             {
                 colNames.Add(table.Columns[i].ColumnName);
             }

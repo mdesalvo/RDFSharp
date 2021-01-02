@@ -2088,8 +2088,8 @@ namespace RDFSharp.Query
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToSPARQLEndpoint(sparqlEndpoint);
 
             //Eventually adjust variable names (should start with "?")
-            Int32 columnsCount = selectQueryResult.SelectResults.Columns.Count;
-            for (Int32 i = 0; i < columnsCount; i++)
+            int columnsCount = selectQueryResult.SelectResults.Columns.Count;
+            for (int i = 0; i < columnsCount; i++)
             {
                 if (!selectQueryResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                     selectQueryResult.SelectResults.Columns[i].ColumnName = "?" + selectQueryResult.SelectResults.Columns[i].ColumnName;
@@ -2164,7 +2164,7 @@ namespace RDFSharp.Query
                 return column2 == null;
             }
 
-            public Int32 GetHashCode(DataColumn column)
+            public int GetHashCode(DataColumn column)
             {
                 return column.Caption.GetHashCode();
             }
@@ -2480,13 +2480,13 @@ namespace RDFSharp.Query
 
                     //Identify join columns from dt1
                     DataColumn[] parentColumns = new DataColumn[commonColumns.Length];
-                    for (Int32 i = 0; i < parentColumns.Length; i++)
+                    for (int i = 0; i < parentColumns.Length; i++)
                     {
                         parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
                     }
                     //Identify join columns from dt2
                     DataColumn[] childColumns = new DataColumn[commonColumns.Length];
-                    for (Int32 i = 0; i < childColumns.Length; i++)
+                    for (int i = 0; i < childColumns.Length; i++)
                     {
                         childColumns[i] = ds.Tables[1].Columns[commonColumns[i].ColumnName];
                     }
@@ -2497,11 +2497,11 @@ namespace RDFSharp.Query
 
                     //Create the structure of the join table
                     List<String> duplicateCols = new List<String>();
-                    for (Int32 i = 0; i < ds.Tables[0].Columns.Count; i++)
+                    for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
                     {
                         result.Columns.Add(ds.Tables[0].Columns[i].ColumnName, ds.Tables[0].Columns[i].DataType);
                     }
-                    for (Int32 i = 0; i < ds.Tables[1].Columns.Count; i++)
+                    for (int i = 0; i < ds.Tables[1].Columns.Count; i++)
                     {
                         if (!result.Columns.Contains(ds.Tables[1].Columns[i].ColumnName))
                         {
@@ -2713,7 +2713,7 @@ namespace RDFSharp.Query
             {
 
                 //Process Unions
-                for (Int32 i = 1; i < dataTables.Count; i++)
+                for (int i = 1; i < dataTables.Count; i++)
                 {
                     if (isMerge || (dataTables[i - 1].ExtendedProperties.ContainsKey("JoinAsUnion") && dataTables[i - 1].ExtendedProperties["JoinAsUnion"].Equals(true)))
                     {
@@ -2734,7 +2734,7 @@ namespace RDFSharp.Query
 
                 //Process Joins
                 finalTable = dataTables[0];
-                for (Int32 i = 1; i < dataTables.Count; i++)
+                for (int i = 1; i < dataTables.Count; i++)
                 {
 
                     //Set automatic switch to OuterJoin in case of relevant "Optional" detected

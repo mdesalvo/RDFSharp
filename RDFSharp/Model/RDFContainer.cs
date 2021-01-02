@@ -47,7 +47,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the container's items
         /// </summary>
-        public Int32 ItemsCount
+        public int ItemsCount
         {
             get { return this.Items.Count; }
         }
@@ -210,7 +210,7 @@ namespace RDFSharp.Model
             }
 
             //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
-            Int32 index = 0;
+            int index = 0;
             foreach (Object item in this)
             {
                 RDFResource ordPred = new RDFResource(RDFVocabulary.RDF.BASE_URI + "_" + (++index));

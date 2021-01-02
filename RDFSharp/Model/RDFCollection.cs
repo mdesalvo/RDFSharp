@@ -47,7 +47,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the collection's items
         /// </summary>
-        public Int32 ItemsCount
+        public int ItemsCount
         {
             get { return this.Items.Count; }
         }
@@ -200,7 +200,7 @@ namespace RDFSharp.Model
         {
             RDFGraph reifColl = new RDFGraph();
             RDFResource reifSubj = this.ReificationSubject;
-            Int32 itemCount = 0;
+            int itemCount = 0;
 
             //Collection can be reified only if it has at least one item
             if (this.ItemsCount > 0)

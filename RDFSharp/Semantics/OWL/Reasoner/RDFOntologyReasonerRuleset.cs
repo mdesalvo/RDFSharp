@@ -33,7 +33,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of rules contained in the BASE ruleset
         /// </summary>
-        public static readonly Int32 RulesCount = 17;
+        public static readonly int RulesCount = 17;
 
         #region RDFS
         /// <summary>

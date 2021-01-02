@@ -696,7 +696,7 @@ namespace RDFSharp.Semantics.OWL
                 {
 
                     #region Cardinality
-                    Int32 exC = 0;
+                    int exC = 0;
                     var crEx = cardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crEx != null && crEx.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                     {
@@ -704,7 +704,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (Regex.IsMatch(crEx.Object.ToString(), @"^[0-9]+$"))
                             {
-                                exC = Int32.Parse(crEx.Object.ToString());
+                                exC = int.Parse(crEx.Object.ToString());
                             }
                         }
                         else
@@ -728,7 +728,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crEx.Object).Value, @"^[0-9]+$"))
                                 {
-                                    exC = Int32.Parse(((RDFTypedLiteral)crEx.Object).Value);
+                                    exC = int.Parse(((RDFTypedLiteral)crEx.Object).Value);
                                 }
                             }
                         }
@@ -740,7 +740,7 @@ namespace RDFSharp.Semantics.OWL
                         continue;
                     }
 
-                    Int32 minC = 0;
+                    int minC = 0;
                     var crMin = mincardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crMin != null && crMin.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                     {
@@ -748,7 +748,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (Regex.IsMatch(crMin.Object.ToString(), @"^[0-9]+$"))
                             {
-                                minC = Int32.Parse(crMin.Object.ToString());
+                                minC = int.Parse(crMin.Object.ToString());
                             }
                         }
                         else
@@ -772,13 +772,13 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMin.Object).Value, @"^[0-9]+$"))
                                 {
-                                    minC = Int32.Parse(((RDFTypedLiteral)crMin.Object).Value);
+                                    minC = int.Parse(((RDFTypedLiteral)crMin.Object).Value);
                                 }
                             }
                         }
                     }
 
-                    Int32 maxC = 0;
+                    int maxC = 0;
                     var crMax = maxcardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crMax != null && crMax.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                     {
@@ -786,7 +786,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (Regex.IsMatch(crMax.Object.ToString(), @"^[0-9]+$"))
                             {
-                                maxC = Int32.Parse(crMax.Object.ToString());
+                                maxC = int.Parse(crMax.Object.ToString());
                             }
                         }
                         else
@@ -810,7 +810,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMax.Object).Value, @"^[0-9]+$"))
                                 {
-                                    maxC = Int32.Parse(((RDFTypedLiteral)crMax.Object).Value);
+                                    maxC = int.Parse(((RDFTypedLiteral)crMax.Object).Value);
                                 }
                             }
                         }
@@ -824,7 +824,7 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region QualifiedCardinality [OWL2]
-                    Int32 exQC = 0;
+                    int exQC = 0;
                     var crExQC = qualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crExQC != null && crExQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                     {
@@ -832,7 +832,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (Regex.IsMatch(crExQC.Object.ToString(), @"^[0-9]+$"))
                             {
-                                exQC = Int32.Parse(crExQC.Object.ToString());
+                                exQC = int.Parse(crExQC.Object.ToString());
                             }
                         }
                         else
@@ -856,7 +856,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crExQC.Object).Value, @"^[0-9]+$"))
                                 {
-                                    exQC = Int32.Parse(((RDFTypedLiteral)crExQC.Object).Value);
+                                    exQC = int.Parse(((RDFTypedLiteral)crExQC.Object).Value);
                                 }
                             }
                         }
@@ -902,7 +902,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                     }
 
-                    Int32 minQC = 0;
+                    int minQC = 0;
                     var crMinQC = minQualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crMinQC != null && crMinQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                     {
@@ -910,7 +910,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (Regex.IsMatch(crMinQC.Object.ToString(), @"^[0-9]+$"))
                             {
-                                minQC = Int32.Parse(crMinQC.Object.ToString());
+                                minQC = int.Parse(crMinQC.Object.ToString());
                             }
                         }
                         else
@@ -934,13 +934,13 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMinQC.Object).Value, @"^[0-9]+$"))
                                 {
-                                    minQC = Int32.Parse(((RDFTypedLiteral)crMinQC.Object).Value);
+                                    minQC = int.Parse(((RDFTypedLiteral)crMinQC.Object).Value);
                                 }
                             }
                         }
                     }
 
-                    Int32 maxQC = 0;
+                    int maxQC = 0;
                     var crMaxQC = maxQualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crMaxQC != null && crMaxQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                     {
@@ -948,7 +948,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (Regex.IsMatch(crMaxQC.Object.ToString(), @"^[0-9]+$"))
                             {
-                                maxQC = Int32.Parse(crMaxQC.Object.ToString());
+                                maxQC = int.Parse(crMaxQC.Object.ToString());
                             }
                         }
                         else
@@ -972,7 +972,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMaxQC.Object).Value, @"^[0-9]+$"))
                                 {
-                                    maxQC = Int32.Parse(((RDFTypedLiteral)crMaxQC.Object).Value);
+                                    maxQC = int.Parse(((RDFTypedLiteral)crMaxQC.Object).Value);
                                 }
                             }
                         }

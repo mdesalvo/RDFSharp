@@ -31,14 +31,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Number of results not considered from the query
         /// </summary>
-        public Int32 Offset { get; internal set; }
+        public int Offset { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build an Offset modifier on a query
         /// </summary>
-        public RDFOffsetModifier(Int32 offset)
+        public RDFOffsetModifier(int offset)
         {
             if (offset >= 0)
             {

@@ -41,9 +41,9 @@ namespace RDFSharp.Query
             {
 
                 #region INDENT
-                Int32 subqueryHeaderSpacesFunc(Double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
-                Int32 subqueryBodySpacesFunc(Double indLevel) { return Convert.ToInt32(4 * indentLevel); }
-                Int32 subqueryUnionSpacesFunc(bool union) { return union ? 2 : 0; }
+                int subqueryHeaderSpacesFunc(Double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
+                int subqueryBodySpacesFunc(Double indLevel) { return Convert.ToInt32(4 * indentLevel); }
+                int subqueryUnionSpacesFunc(bool union) { return union ? 2 : 0; }
 
                 String subquerySpaces = new String(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
                 String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
@@ -896,7 +896,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a pattern group
         /// </summary>
-        internal static String PrintPatternGroup(RDFPatternGroup patternGroup, Int32 spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
+        internal static String PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
             String spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 

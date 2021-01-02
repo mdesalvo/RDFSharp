@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Count of the federation's data sources
         /// </summary>
-        public Int32 DataSourcesCount
+        public int DataSourcesCount
         {
             get { return this.DataSources.Count; }
         }

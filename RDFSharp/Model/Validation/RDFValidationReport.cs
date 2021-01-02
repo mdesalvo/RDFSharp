@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Counter of the validator results
         /// </summary>
-        public Int32 ResultsCount
+        public int ResultsCount
         {
             get { return this.Results.Count; }
         }

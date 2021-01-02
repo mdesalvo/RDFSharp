@@ -42,7 +42,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Depth of the path
         /// </summary>
-        internal Int32 Depth { get; set; }
+        internal int Depth { get; set; }
 
         /// <summary>
         /// End of the path
@@ -355,7 +355,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Ordinal of the step
         /// </summary>
-        internal Int32 StepOrdinal { get; set; }
+        internal int StepOrdinal { get; set; }
         #endregion
 
         #region Ctors
@@ -388,7 +388,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Sets the ordinal of the step
         /// </summary>
-        internal RDFPropertyPathStep SetOrdinal(Int32 stepOrdinal)
+        internal RDFPropertyPathStep SetOrdinal(int stepOrdinal)
         {
             this.StepOrdinal = stepOrdinal;
             return this;

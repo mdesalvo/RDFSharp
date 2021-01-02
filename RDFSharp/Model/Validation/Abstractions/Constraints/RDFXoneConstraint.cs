@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                Int32 valueNodeConformsCounter = 0;
+                int valueNodeConformsCounter = 0;
                 foreach (RDFShape xoneShape in xoneShapes)
                 {
                     RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember>() { valueNode });

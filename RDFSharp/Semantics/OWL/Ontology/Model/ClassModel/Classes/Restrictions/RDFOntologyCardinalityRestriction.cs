@@ -30,12 +30,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Minimum accepted cardinality for the restriction to be satisfied
         /// </summary>
-        public Int32 MinCardinality { get; internal set; }
+        public int MinCardinality { get; internal set; }
 
         /// <summary>
         /// Maximum accepted cardinality for the restriction to be satisfied
         /// </summary>
-        public Int32 MaxCardinality { get; internal set; }
+        public int MaxCardinality { get; internal set; }
         #endregion
 
         #region Ctors
@@ -44,8 +44,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyCardinalityRestriction(RDFResource restrictionName,
                                                  RDFOntologyProperty onProperty,
-                                                 Int32 minCardinality,
-                                                 Int32 maxCardinality) : base(restrictionName, onProperty)
+                                                 int minCardinality,
+                                                 int maxCardinality) : base(restrictionName, onProperty)
         {
 
             //MinCardinality
