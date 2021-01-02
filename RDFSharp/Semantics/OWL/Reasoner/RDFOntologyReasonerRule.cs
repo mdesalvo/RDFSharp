@@ -39,7 +39,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Execution priority of the rule (less is more priority)
         /// </summary>
-        public UInt32 RulePriority { get; internal set; }
+        public uint RulePriority { get; internal set; }
 
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
@@ -56,7 +56,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build a reasoner rule with the given name, description and priority (lower is better)
         /// </summary>
-        public RDFOntologyReasonerRule(String ruleName, String ruleDescription, UInt32 rulePriority, ReasonerRuleDelegate ruleDelegate)
+        public RDFOntologyReasonerRule(String ruleName, String ruleDescription, uint rulePriority, ReasonerRuleDelegate ruleDelegate)
         {
             if (ruleName != null && ruleName.Trim() != String.Empty)
             {
@@ -69,7 +69,7 @@ namespace RDFSharp.Semantics.OWL
 
                         //Shift-up rule priority to guarantee preliminar execution of BASE rules
                         if (rulePriority <= RDFOntologyReasonerRuleset.RulesCount)
-                            this.RulePriority = rulePriority + (UInt32)RDFOntologyReasonerRuleset.RulesCount + 1;
+                            this.RulePriority = rulePriority + (uint)RDFOntologyReasonerRuleset.RulesCount + 1;
                         else
                             this.RulePriority = rulePriority;
 
@@ -114,7 +114,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Redefines the execution priority of the reasoner rule
         /// </summary>
-        internal RDFOntologyReasonerRule SetPriority(UInt32 priority)
+        internal RDFOntologyReasonerRule SetPriority(uint priority)
         {
             this.RulePriority = priority;
             return this;

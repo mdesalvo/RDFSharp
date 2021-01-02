@@ -179,8 +179,8 @@ namespace RDFSharp.Query
                     }
                     else if (((RDFTypedLiteral)left).HasDecimalDatatype() && ((RDFTypedLiteral)right).HasDecimalDatatype())
                     {
-                        Decimal leftValueDecimal = Decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
-                        Decimal rightValueDecimal = Decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                        decimal leftValueDecimal = decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
+                        decimal rightValueDecimal = decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                         return leftValueDecimal.CompareTo(rightValueDecimal);
                     }
                     else if (((RDFTypedLiteral)left).HasStringDatatype() && ((RDFTypedLiteral)right).HasStringDatatype())
