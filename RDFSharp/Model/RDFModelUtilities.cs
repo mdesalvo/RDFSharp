@@ -86,8 +86,8 @@ namespace RDFSharp.Model
         {
             if (asciiString != null)
             {
-                asciiString = regexU8.Replace(asciiString, match => ((Char)long.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-                asciiString = regexU4.Replace(asciiString, match => ((Char)int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU8.Replace(asciiString, match => ((char)long.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU4.Replace(asciiString, match => ((char)int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
             }
             return asciiString;
         }
@@ -100,7 +100,7 @@ namespace RDFSharp.Model
             if (unicodeString != null)
             {
                 StringBuilder b = new StringBuilder();
-                foreach (Char c in unicodeString)
+                foreach (char c in unicodeString)
                 {
                     if (c <= 127)
                     {
@@ -131,9 +131,9 @@ namespace RDFSharp.Model
             if (data != null)
             {
                 StringBuilder b = new StringBuilder();
-                foreach (Char c in data)
+                foreach (char c in data)
                 {
-                    if (Char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
+                    if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
                     {
                         b.Append("\\u" + ((int)c).ToString("X4"));
                     }
@@ -928,7 +928,7 @@ namespace RDFSharp.Model
                 //NORMALIZED_STRING
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING))
                 {
-                    if (typedLiteral.Value.IndexOfAny(new Char[] { '\n', '\r', '\t' }) == -1)
+                    if (typedLiteral.Value.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1)
                     {
                         return true;
                     }

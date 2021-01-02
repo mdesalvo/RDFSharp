@@ -181,7 +181,7 @@ namespace RDFSharp.Model
                 var result = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                 {
-                    result = LookupPrefixCC(uri.Trim().TrimEnd(new Char[] { '#' }), 2);
+                    result = LookupPrefixCC(uri.Trim().TrimEnd(new char[] { '#' }), 2);
                 }
                 return result;
             }
@@ -219,7 +219,7 @@ namespace RDFSharp.Model
                 {
                     var response = webclient.DownloadString(lookupString);
                     var prefix = response.Split('\t')[0];
-                    var nspace = response.Split('\t')[1].TrimEnd(new Char[] { '\n' });
+                    var nspace = response.Split('\t')[1].TrimEnd(new char[] { '\n' });
                     var result = new RDFNamespace(prefix, nspace);
 
                     //Also add the namespace to the register, to avoid future lookups

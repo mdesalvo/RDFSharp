@@ -53,7 +53,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// SyncLock for evidences
         /// </summary>
-        internal Object SyncLock { get; set; }
+        internal object SyncLock { get; set; }
         #endregion
 
         #region Ctors
@@ -63,7 +63,7 @@ namespace RDFSharp.Semantics.OWL
         internal RDFOntologyReasonerReport()
         {
             this.Evidences = new Dictionary<long, RDFOntologyReasonerEvidence>();
-            this.SyncLock = new Object();
+            this.SyncLock = new object();
         }
         #endregion
 

@@ -2450,13 +2450,13 @@ namespace RDFSharp.Query
                 result.BeginLoadData();
                 foreach (DataRow parentRow in dt1.Rows)
                 {
-                    Object[] firstArray = parentRow.ItemArray;
+                    object[] firstArray = parentRow.ItemArray;
 
                     //Loop through dt2 table
                     foreach (DataRow childRow in dt2.Rows)
                     {
-                        Object[] secondArray = childRow.ItemArray;
-                        Object[] productArray = new Object[firstArray.Length + secondArray.Length];
+                        object[] secondArray = childRow.ItemArray;
+                        object[] productArray = new object[firstArray.Length + secondArray.Length];
                         Array.Copy(firstArray, 0, productArray, 0, firstArray.Length);
                         Array.Copy(secondArray, 0, productArray, firstArray.Length, secondArray.Length);
                         result.LoadDataRow(productArray, true);
@@ -2525,11 +2525,11 @@ namespace RDFSharp.Query
                         DataRow[] childRows = firstRow.GetChildRows(r);
                         if (childRows.Length > 0)
                         {
-                            Object[] parentArray = firstRow.ItemArray;
+                            object[] parentArray = firstRow.ItemArray;
                             foreach (DataRow secondRow in childRows)
                             {
-                                Object[] secondArray = secondRow.ItemArray;
-                                Object[] joinArray = new Object[parentArray.Length + secondArray.Length];
+                                object[] secondArray = secondRow.ItemArray;
+                                object[] joinArray = new object[parentArray.Length + secondArray.Length];
                                 Array.Copy(parentArray, 0, joinArray, 0, parentArray.Length);
                                 Array.Copy(secondArray, 0, joinArray, parentArray.Length, secondArray.Length);
                                 result.LoadDataRow(joinArray, true);

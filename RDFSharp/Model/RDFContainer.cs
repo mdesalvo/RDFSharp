@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -211,7 +210,7 @@ namespace RDFSharp.Model
 
             //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
             int index = 0;
-            foreach (Object item in this)
+            foreach (object item in this)
             {
                 RDFResource ordPred = new RDFResource(RDFVocabulary.RDF.BASE_URI + "_" + (++index));
                 if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)

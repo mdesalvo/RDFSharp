@@ -39,9 +39,9 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFVariable(string variableName)
         {
-            if (variableName != null && variableName.Trim(new Char[] { ' ', '?', '$' }) != string.Empty)
+            if (variableName != null && variableName.Trim(new char[] { ' ', '?', '$' }) != string.Empty)
             {
-                this.VariableName = "?" + variableName.Trim(new Char[] { ' ', '?', '$' }).ToUpperInvariant();
+                this.VariableName = "?" + variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant();
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else

@@ -231,12 +231,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Registry to keep track of aggregator execution flow
         /// </summary>
-        internal Dictionary<string, Dictionary<string, Object>> ExecutionRegistry { get; set; }
+        internal Dictionary<string, Dictionary<string, object>> ExecutionRegistry { get; set; }
 
         /// <summary>
         /// Cache to keep track of aggregator execution values
         /// </summary>
-        internal Dictionary<string, HashSet<Object>> ExecutionCache { get; set; }
+        internal Dictionary<string, HashSet<object>> ExecutionCache { get; set; }
         #endregion
 
         #region Ctors
@@ -245,8 +245,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregatorContext()
         {
-            this.ExecutionRegistry = new Dictionary<string, Dictionary<string, Object>>();
-            this.ExecutionCache = new Dictionary<string, HashSet<Object>>();
+            this.ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>();
+            this.ExecutionCache = new Dictionary<string, HashSet<object>>();
         }
         #endregion
 
@@ -258,7 +258,7 @@ namespace RDFSharp.Query
         {
             if (!this.ExecutionRegistry.ContainsKey(partitionKey))
             {
-                this.ExecutionRegistry.Add(partitionKey, new Dictionary<string, Object>()
+                this.ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>()
                 {
                     { "ExecutionResult", initValue },
                     { "ExecutionCounter", 0d }
@@ -307,7 +307,7 @@ namespace RDFSharp.Query
         internal bool CheckPartitionKeyRowValueCache<T>(string partitionKey, T value)
         {
             if (!this.ExecutionCache.ContainsKey(partitionKey))
-                this.ExecutionCache.Add(partitionKey, new HashSet<Object>());
+                this.ExecutionCache.Add(partitionKey, new HashSet<object>());
             return this.ExecutionCache[partitionKey].Any(x => ((T)x).Equals(value));
         }
 

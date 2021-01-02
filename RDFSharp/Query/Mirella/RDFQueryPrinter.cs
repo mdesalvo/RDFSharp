@@ -548,13 +548,13 @@ namespace RDFSharp.Query
                     //Remove the Context from the template print (since it is not supported by CONSTRUCT query)
                     if (tp.Context != null)
                     {
-                        tpString = tpString.Replace("GRAPH " + tp.Context + " { ", string.Empty).TrimEnd(new Char[] { ' ', '}' });
+                        tpString = tpString.Replace("GRAPH " + tp.Context + " { ", string.Empty).TrimEnd(new char[] { ' ', '}' });
                     }
 
                     //Remove the Optional indicator from the template print (since it is not supported by CONSTRUCT query)
                     if (tp.IsOptional)
                     {
-                        tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new Char[] { ' ', '}' });
+                        tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new char[] { ' ', '}' });
                     }
 
                     sb.Append("  " + tpString + " .\n");
@@ -1101,7 +1101,7 @@ namespace RDFSharp.Query
                         if (i < propertyPath.Steps.Count - 1)
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append((Char)propertyPath.Steps[i].StepFlavor);
+                            result.Append((char)propertyPath.Steps[i].StepFlavor);
                         }
                         else
                         {
@@ -1130,7 +1130,7 @@ namespace RDFSharp.Query
                         if (i < propertyPath.Steps.Count - 1)
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append((Char)propertyPath.Steps[i].StepFlavor);
+                            result.Append((char)propertyPath.Steps[i].StepFlavor);
                         }
                         else
                         {

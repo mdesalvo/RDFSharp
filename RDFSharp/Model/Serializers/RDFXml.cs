@@ -213,7 +213,7 @@ namespace RDFSharp.Model
                                                             predString.Replace(predNS.ToString(), autoNamespaces.Find(ns => ns.NamespaceUri.Equals(predNS.NamespaceUri)).NamespacePrefix + ":") :
                                                             predString.Replace(predNS.ToString(), predNS.NamespacePrefix + ":"))
                                                         .Replace(":#", ":")
-                                                        .TrimEnd(new Char[] { ':', '/' });
+                                                        .TrimEnd(new char[] { ':', '/' });
                                 try
                                 {
                                     var predUriQName = new RDFTypedLiteral(predUri, RDFModelEnums.RDFDatatypes.XSD_QNAME);
