@@ -57,14 +57,14 @@ namespace RDFSharp.Semantics.OWL
         internal List<RDFOntologyTaxonomyEntry> Entries { get; set; }
 
         /// <summary>
+        /// Lookup for ontology entries composing the taxonomy
+        /// </summary>
+        internal HashSet<Int64> EntriesLookup { get; set; }
+
+        /// <summary>
         /// Flag indicating that this taxonomy exceptionally accepts duplicate entries
         /// </summary>
         internal bool AcceptDuplicates { get; set; }
-
-        /// <summary>
-        /// SyncLock for entries
-        /// </summary>
-        internal object SyncLock { get; set; }
         #endregion
 
         #region Ctors
@@ -75,8 +75,8 @@ namespace RDFSharp.Semantics.OWL
         {
             this.Category = category;
             this.Entries = new List<RDFOntologyTaxonomyEntry>();
+            this.EntriesLookup = new HashSet<Int64>();
             this.AcceptDuplicates = acceptDuplicates;
-            this.SyncLock = new object();
         }
         #endregion
 
@@ -109,13 +109,12 @@ namespace RDFSharp.Semantics.OWL
         {
             if (taxonomyEntry != null)
             {
-                lock (this.SyncLock)
+                if (this.AcceptDuplicates || !this.ContainsEntry(taxonomyEntry))
                 {
-                    if (this.AcceptDuplicates || !this.ContainsEntry(taxonomyEntry))
-                    {
-                        this.Entries.Add(taxonomyEntry);
-                        return true;
-                    }
+                    this.Entries.Add(taxonomyEntry);
+                    if (!this.EntriesLookup.Contains(taxonomyEntry.TaxonomyEntryID))
+                        this.EntriesLookup.Add(taxonomyEntry.TaxonomyEntryID);
+                    return true;
                 }
             }
             return false;
@@ -131,13 +130,11 @@ namespace RDFSharp.Semantics.OWL
         {
             if (taxonomyEntry != null)
             {
-                lock (this.SyncLock)
+                if (this.ContainsEntry(taxonomyEntry))
                 {
-                    if (this.ContainsEntry(taxonomyEntry))
-                    {
-                        this.Entries.RemoveAll(te => te.Equals(taxonomyEntry));
-                        return true;
-                    }
+                    this.Entries.RemoveAll(te => te.Equals(taxonomyEntry));
+                    this.EntriesLookup.Remove(taxonomyEntry.TaxonomyEntryID);
+                    return true;
                 }
             }
             return false;
@@ -150,7 +147,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal Boolean ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
         {
-            return taxonomyEntry != null && this.Entries.Any(te => te.Equals(taxonomyEntry));
+            return taxonomyEntry != null && this.EntriesLookup.Contains(taxonomyEntry.TaxonomyEntryID);
         }
 
         /// <summary>
