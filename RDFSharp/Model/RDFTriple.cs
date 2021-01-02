@@ -143,7 +143,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs the equality comparison between two triples
         /// </summary>
-        public Boolean Equals(RDFTriple other)
+        public bool Equals(RDFTriple other)
         {
             return (other != null && this.TripleID.Equals(other.TripleID));
         }

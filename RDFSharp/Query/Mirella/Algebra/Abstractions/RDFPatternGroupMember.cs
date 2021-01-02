@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the pattern group member is evaluable by the engine
         /// </summary>
-        public Boolean IsEvaluable { get; internal set; }
+        public bool IsEvaluable { get; internal set; }
         #endregion
 
         #region Interfaces
@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs the equality comparison between two pattern group members
         /// </summary>
-        public Boolean Equals(RDFPatternGroupMember other)
+        public bool Equals(RDFPatternGroupMember other)
         {
             return (other != null && this.PatternGroupMemberID.Equals(other.PatternGroupMemberID));
         }

@@ -45,12 +45,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the aggregator discards duplicates
         /// </summary>
-        public Boolean IsDistinct { get; internal set; }
+        public bool IsDistinct { get; internal set; }
 
         /// <summary>
         /// Tuple indicating that the aggregator is also an having-clause
         /// </summary>
-        public (Boolean, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
+        public (bool, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
 
         /// <summary>
         /// Context for keeping track of aggregator's execution
@@ -304,7 +304,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache
         /// </summary>
-        internal Boolean CheckPartitionKeyRowValueCache<T>(String partitionKey, T value)
+        internal bool CheckPartitionKeyRowValueCache<T>(String partitionKey, T value)
         {
             if (!this.ExecutionCache.ContainsKey(partitionKey))
                 this.ExecutionCache.Add(partitionKey, new HashSet<Object>());

@@ -84,20 +84,20 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the pattern in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = false;
+            bool keepRow = false;
             EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
             if (patternResultsEnumerable?.Any() ?? false)
             {
 
                 #region Disjoint Evaluation
                 //In case of disjointess between the query and the filter's pattern, all solutions are compatible
-                Boolean disjointSubject = this.Pattern.Subject is RDFVariable ?
+                bool disjointSubject = this.Pattern.Subject is RDFVariable ?
                                             !row.Table.Columns.Contains(this.Pattern.Subject.ToString()) : true;
-                Boolean disjointPredicate = this.Pattern.Predicate is RDFVariable ?
+                bool disjointPredicate = this.Pattern.Predicate is RDFVariable ?
                                               !row.Table.Columns.Contains(this.Pattern.Predicate.ToString()) : true;
-                Boolean disjointObject = this.Pattern.Object is RDFVariable ?
+                bool disjointObject = this.Pattern.Object is RDFVariable ?
                                            !row.Table.Columns.Contains(this.Pattern.Object.ToString()) : true;
                 if (disjointSubject && disjointPredicate && disjointObject)
                     keepRow = true;
@@ -108,7 +108,7 @@ namespace RDFSharp.Query
                 {
 
                     #region Subject
-                    Boolean subjectCompared = false;
+                    bool subjectCompared = false;
                     if (this.Pattern.Subject is RDFVariable
                             && this.PatternResults.Columns.Contains(this.Pattern.Subject.ToString())
                                 && row.Table.Columns.Contains(this.Pattern.Subject.ToString()))
@@ -127,7 +127,7 @@ namespace RDFSharp.Query
                     #endregion
 
                     #region Predicate
-                    Boolean predicateCompared = false;
+                    bool predicateCompared = false;
                     if (this.Pattern.Predicate is RDFVariable
                             && this.PatternResults.Columns.Contains(this.Pattern.Predicate.ToString())
                                 && row.Table.Columns.Contains(this.Pattern.Predicate.ToString()))
@@ -146,7 +146,7 @@ namespace RDFSharp.Query
                     #endregion
 
                     #region Object
-                    Boolean objectCompared = false;
+                    bool objectCompared = false;
                     if (this.Pattern.Object is RDFVariable
                             && this.PatternResults.Columns.Contains(this.Pattern.Object.ToString())
                                 && row.Table.Columns.Contains(this.Pattern.Object.ToString()))

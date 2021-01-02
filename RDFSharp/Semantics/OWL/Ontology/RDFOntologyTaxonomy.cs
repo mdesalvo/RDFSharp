@@ -105,7 +105,7 @@ namespace RDFSharp.Semantics.OWL
         /// Adds the given taxonomy entry to the taxonomy.
         /// Returns true if the insertion has been made.
         /// </summary>
-        internal Boolean AddEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
+        internal bool AddEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
         {
             if (taxonomyEntry != null)
             {
@@ -126,7 +126,7 @@ namespace RDFSharp.Semantics.OWL
         /// Removes the given taxonomy entry from the taxonomy.
         /// Returns true if the deletion has been made.
         /// </summary>
-        internal Boolean RemoveEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
+        internal bool RemoveEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
         {
             if (taxonomyEntry != null)
             {
@@ -145,7 +145,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the taxonomy contains the given taxonomy entry
         /// </summary>
-        internal Boolean ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
+        internal bool ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
         {
             return taxonomyEntry != null && this.EntriesLookup.Contains(taxonomyEntry.TaxonomyEntryID);
         }

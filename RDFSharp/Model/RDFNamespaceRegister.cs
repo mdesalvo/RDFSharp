@@ -174,7 +174,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its Uri.
         /// </summary>
-        public static RDFNamespace GetByUri(String uri, Boolean enablePrefixCCService = false)
+        public static RDFNamespace GetByUri(String uri, bool enablePrefixCCService = false)
         {
             if (uri != null)
             {
@@ -191,7 +191,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its prefix.
         /// </summary>
-        public static RDFNamespace GetByPrefix(String prefix, Boolean enablePrefixCCService = false)
+        public static RDFNamespace GetByPrefix(String prefix, bool enablePrefixCCService = false)
         {
             if (prefix != null)
             {

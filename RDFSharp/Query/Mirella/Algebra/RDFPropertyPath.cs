@@ -350,7 +350,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the step has inverse evaluation
         /// </summary>
-        public Boolean IsInverseStep { get; internal set; }
+        public bool IsInverseStep { get; internal set; }
 
         /// <summary>
         /// Ordinal of the step

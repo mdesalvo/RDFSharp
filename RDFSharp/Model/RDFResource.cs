@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating the resource is blank or not
         /// </summary>
-        public Boolean IsBlank { get; internal set; }
+        public bool IsBlank { get; internal set; }
         #endregion
 
         #region Ctors

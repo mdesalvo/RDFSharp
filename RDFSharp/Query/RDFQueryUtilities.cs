@@ -167,8 +167,8 @@ namespace RDFSharp.Query
                 {
                     if (((RDFTypedLiteral)left).HasBooleanDatatype() && ((RDFTypedLiteral)right).HasBooleanDatatype())
                     {
-                        Boolean leftValueBoolean = Boolean.Parse(((RDFTypedLiteral)left).Value);
-                        Boolean rightValueBoolean = Boolean.Parse(((RDFTypedLiteral)right).Value);
+                        bool leftValueBoolean = bool.Parse(((RDFTypedLiteral)left).Value);
+                        bool rightValueBoolean = bool.Parse(((RDFTypedLiteral)right).Value);
                         return leftValueBoolean.CompareTo(rightValueBoolean);
                     }
                     else if (((RDFTypedLiteral)left).HasDatetimeDatatype() && ((RDFTypedLiteral)right).HasDatetimeDatatype())
@@ -209,7 +209,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Tries to abbreviate the string representation of the given pattern member by searching for it in the given list of namespaces
         /// </summary>
-        internal static (Boolean, String) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
+        internal static (bool, String) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
             #region Prefix Search
             //Check if the pattern member starts with a known prefix, if so just return it
@@ -225,7 +225,7 @@ namespace RDFSharp.Query
             #region Namespace Search
             //Check if the pattern member starts with a known namespace, if so replace it with its prefix
             String pmString = patternMember.ToString();
-            Boolean abbrev = false;
+            bool abbrev = false;
             prefixes.ForEach(ns =>
             {
                 if (!abbrev)

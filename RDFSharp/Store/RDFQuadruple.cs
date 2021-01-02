@@ -155,7 +155,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Performs the equality comparison between two quadruples
         /// </summary>
-        public Boolean Equals(RDFQuadruple other)
+        public bool Equals(RDFQuadruple other)
         {
             return (other != null && this.QuadrupleID.Equals(other.QuadrupleID));
         }

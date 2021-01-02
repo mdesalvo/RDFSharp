@@ -30,7 +30,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Flag indicating that this ontology class is "owl:DeprecatedClass"
         /// </summary>
-        public Boolean Deprecated { get; internal set; }
+        public bool Deprecated { get; internal set; }
 
         /// <summary>
         /// Nature of the ontology class (RDFS/OWL)
@@ -61,7 +61,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology class as "owl:DeprecatedClass"
         /// </summary>
-        public RDFOntologyClass SetDeprecated(Boolean deprecated)
+        public RDFOntologyClass SetDeprecated(bool deprecated)
         {
             if (!this.IsRestrictionClass() && !this.IsCompositeClass() && !this.IsDataRangeClass() && !this.IsEnumerateClass())
             {

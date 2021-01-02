@@ -332,7 +332,7 @@ namespace RDFSharp.Model
             RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
 
             #region Deserialization
-            Boolean nilFound = false;
+            bool nilFound = false;
             RDFResource itemRest = collRepresentative;
             while (!nilFound)
             {
@@ -794,7 +794,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
         /// </summary>
-        internal static Boolean ValidateTypedLiteral(RDFTypedLiteral typedLiteral)
+        internal static bool ValidateTypedLiteral(RDFTypedLiteral typedLiteral)
         {
             if (typedLiteral != null)
             {
@@ -982,8 +982,7 @@ namespace RDFSharp.Model
                 #region BOOLEAN CATEGORY
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN))
                 {
-                    Boolean outBool;
-                    if (Boolean.TryParse(typedLiteral.Value, out outBool))
+                    if (bool.TryParse(typedLiteral.Value, out bool outBool))
                     {
                         typedLiteral.Value = (outBool ? "true" : "false");
                     }

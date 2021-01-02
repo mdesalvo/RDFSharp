@@ -193,7 +193,7 @@ namespace RDFSharp.Query
                                                                                                                        ag.ProjectionVariable,
                                                                                                                        ag.HavingClause.Item3));
                 #region ExecuteFilters
-                Boolean keepRow = false;
+                bool keepRow = false;
                 while (rowsEnum.MoveNext())
                 {
 

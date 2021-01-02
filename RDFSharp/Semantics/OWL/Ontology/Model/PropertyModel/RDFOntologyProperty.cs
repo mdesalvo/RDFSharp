@@ -30,12 +30,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Flag indicating that this ontology property is "owl:DeprecatedProperty"
         /// </summary>
-        public Boolean Deprecated { get; internal set; }
+        public bool Deprecated { get; internal set; }
 
         /// <summary>
         /// Flag indicating that this ontology property is "owl:FunctionalProperty"
         /// </summary>
-        public Boolean Functional { get; internal set; }
+        public bool Functional { get; internal set; }
 
         /// <summary>
         /// Domain class of the ontology property
@@ -101,7 +101,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology property as "owl:FunctionalProperty"
         /// </summary>
-        public RDFOntologyProperty SetFunctional(Boolean functional)
+        public RDFOntologyProperty SetFunctional(bool functional)
         {
             if (!this.IsAnnotationProperty())
             {
@@ -113,7 +113,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology property as "owl:DeprecatedProperty"
         /// </summary>
-        public RDFOntologyProperty SetDeprecated(Boolean deprecated)
+        public RDFOntologyProperty SetDeprecated(bool deprecated)
         {
             if (!this.IsAnnotationProperty())
             {

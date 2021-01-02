@@ -54,12 +54,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating the pattern as optional
         /// </summary>
-        internal Boolean IsOptional { get; set; }
+        internal bool IsOptional { get; set; }
 
         /// <summary>
         /// Flag indicating the pattern to be joined as union
         /// </summary>
-        internal Boolean JoinAsUnion { get; set; }
+        internal bool JoinAsUnion { get; set; }
 
         /// <summary>
         /// List of variables carried by the pattern

@@ -31,7 +31,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates that the validation was successful (sh:conforms)
         /// </summary>
-        public Boolean Conforms
+        public bool Conforms
         {
             get { return this.ResultsCount == 0; }
         }

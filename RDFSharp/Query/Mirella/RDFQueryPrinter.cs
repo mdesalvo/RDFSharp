@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
         /// </summary>
-        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Double indentLevel, Boolean fromUnion)
+        internal static String PrintSelectQuery(RDFSelectQuery selectQuery, Double indentLevel, bool fromUnion)
         {
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
@@ -43,7 +43,7 @@ namespace RDFSharp.Query
                 #region INDENT
                 Int32 subqueryHeaderSpacesFunc(Double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
                 Int32 subqueryBodySpacesFunc(Double indLevel) { return Convert.ToInt32(4 * indentLevel); }
-                Int32 subqueryUnionSpacesFunc(Boolean union) { return union ? 2 : 0; }
+                Int32 subqueryUnionSpacesFunc(bool union) { return union ? 2 : 0; }
 
                 String subquerySpaces = new String(' ', subqueryHeaderSpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
                 String subqueryBodySpaces = new String(' ', subqueryBodySpacesFunc(indentLevel) + subqueryUnionSpacesFunc(fromUnion));
@@ -123,7 +123,7 @@ namespace RDFSharp.Query
                 sb.Append(subqueryBodySpaces + "WHERE {\n");
 
                 #region MEMBERS
-                Boolean printingUnion = false;
+                bool printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = selectQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
@@ -358,7 +358,7 @@ namespace RDFSharp.Query
                 sb.Append("WHERE {\n");
 
                 #region MEMBERS
-                Boolean printingUnion = false;
+                bool printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
@@ -568,7 +568,7 @@ namespace RDFSharp.Query
                 sb.Append("WHERE {\n");
 
                 #region MEMBERS
-                Boolean printingUnion = false;
+                bool printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
@@ -755,7 +755,7 @@ namespace RDFSharp.Query
                 sb.Append("\nWHERE {\n");
 
                 #region MEMBERS
-                Boolean printingUnion = false;
+                bool printingUnion = false;
                 List<RDFQueryMember> evaluableQueryMembers = askQuery.GetEvaluableQueryMembers().ToList();
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
@@ -896,7 +896,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints the string representation of a pattern group
         /// </summary>
-        internal static String PrintPatternGroup(RDFPatternGroup patternGroup, Int32 spaceIndent, Boolean skipOptional, List<RDFNamespace> prefixes)
+        internal static String PrintPatternGroup(RDFPatternGroup patternGroup, Int32 spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
             String spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
@@ -912,7 +912,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region MEMBERS
-            Boolean printingUnion = false;
+            bool printingUnion = false;
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
             RDFPatternGroupMember lastPGMember = evaluablePGMembers.LastOrDefault();
             foreach (RDFPatternGroupMember pgMember in evaluablePGMembers)
@@ -1076,7 +1076,7 @@ namespace RDFSharp.Query
             {
 
                 //Initialize printing
-                Boolean openedParenthesis = false;
+                bool openedParenthesis = false;
 
                 //Iterate properties
                 for (int i = 0; i < propertyPath.Steps.Count; i++)

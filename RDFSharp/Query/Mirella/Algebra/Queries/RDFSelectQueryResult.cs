@@ -229,8 +229,8 @@ namespace RDFSharp.Query
                         #endregion
 
                         #region results
-                        Boolean foundHead = false;
-                        Boolean foundResults = false;
+                        bool foundHead = false;
+                        bool foundResults = false;
                         var nodesEnum = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
                         while (nodesEnum != null && nodesEnum.MoveNext())
                         {
@@ -299,8 +299,8 @@ namespace RDFSharp.Query
                                                 while (bdgEnum != null && bdgEnum.MoveNext())
                                                 {
                                                     XmlNode bdgNode = (XmlNode)bdgEnum.Current;
-                                                    Boolean foundUri = false;
-                                                    Boolean foundLit = false;
+                                                    bool foundUri = false;
+                                                    bool foundLit = false;
 
                                                     #region BINDING
                                                     if (bdgNode.Name.ToUpperInvariant().Equals("BINDING", StringComparison.Ordinal))

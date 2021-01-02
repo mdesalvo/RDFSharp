@@ -53,9 +53,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the pattern in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = base.ApplyFilter(row, true);
+            bool keepRow = base.ApplyFilter(row, true);
 
             //Apply the eventual negation
             if (applyNegation)

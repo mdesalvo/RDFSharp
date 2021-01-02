@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                Boolean valueNodeConforms = true;
+                bool valueNodeConforms = true;
                 foreach (RDFShape andShape in andShapes)
                 {
                     RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember>() { valueNode });

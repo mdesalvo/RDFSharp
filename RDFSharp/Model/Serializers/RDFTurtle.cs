@@ -99,7 +99,7 @@ namespace RDFSharp.Model
 
                         #region subj
                         //Reset the flag of subj printing for the new iteration
-                        Boolean subjPrint = false;
+                        bool subjPrint = false;
                         //New subj found: write the finished Turtle token to the file, then start collecting the new one
                         if (!actualSubj.Equals(group.Key.subj, StringComparison.Ordinal))
                         {
@@ -1747,7 +1747,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a whitespace character
         /// </summary>
-        private static Boolean IsWhitespace(Int32 codePoint)
+        private static bool IsWhitespace(Int32 codePoint)
         {
             // Whitespace character are space, tab, newline and carriage return:
             return codePoint == 0x20 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD;
@@ -1756,7 +1756,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a numeric character
         /// </summary>
-        private static Boolean IsNumber(Int32 codePoint)
+        private static bool IsNumber(Int32 codePoint)
         {
             return Char.IsNumber((char)codePoint);
         }
@@ -1765,7 +1765,7 @@ namespace RDFSharp.Model
         /// Determines whether the given scalar value is in the supplementary plane and thus
         /// requires 2 characters to be represented in UTF-16 (as a surrogate pair).
         /// </summary>
-        private static Boolean IsSupplementaryCodePoint(Int32 codePoint)
+        private static bool IsSupplementaryCodePoint(Int32 codePoint)
         {
             return (codePoint & ~((Int32)Char.MaxValue)) != 0;
         }
@@ -1773,7 +1773,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid name start character
         /// </summary>
-        private static Boolean IsNameStartChar(Int32 codePoint)
+        private static bool IsNameStartChar(Int32 codePoint)
         {
             return IsPN_CHARS_U(codePoint)
                     || codePoint == ':'
@@ -1785,7 +1785,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid name character
         /// </summary>
-        private static Boolean IsNameChar(Int32 codePoint)
+        private static bool IsNameChar(Int32 codePoint)
         {
             return IsPN_CHARS(codePoint)
                     || codePoint == '.'
@@ -1797,7 +1797,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name start character
         /// </summary>
-        private static Boolean IsPrefixStartChar(Int32 codePoint)
+        private static bool IsPrefixStartChar(Int32 codePoint)
         {
             return IsPN_CHARS_BASE(codePoint);
         }
@@ -1805,7 +1805,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid prefix character
         /// </summary>
-        private static Boolean IsPrefixChar(Int32 codePoint)
+        private static bool IsPrefixChar(Int32 codePoint)
         {
             return IsPN_CHARS_BASE(codePoint)
                     || IsPN_CHARS(codePoint)
@@ -1833,7 +1833,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid local escaped character.
         /// </summary>
-        private static Boolean IsLocalEscapedChar(Int32 codePoint)
+        private static bool IsLocalEscapedChar(Int32 codePoint)
         {
             return "_~.-!$&\'()*+,;=/?#@%".IndexOf((char)codePoint) > -1;
         }
@@ -1841,7 +1841,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name start character
         /// </summary>
-        private static Boolean IsBLANK_NODE_LABEL_StartChar(Int32 codePoint)
+        private static bool IsBLANK_NODE_LABEL_StartChar(Int32 codePoint)
         {
             return IsPN_CHARS_U(codePoint) || Char.IsNumber((char)codePoint);
         }
@@ -1849,7 +1849,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid blank node label character
         /// </summary>
-        private static Boolean IsBLANK_NODE_LABEL_Char(Int32 codePoint)
+        private static bool IsBLANK_NODE_LABEL_Char(Int32 codePoint)
         {
             return IsPN_CHARS(codePoint) || codePoint == '.';
         }
@@ -1857,7 +1857,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name character
         /// </summary>
-        private static Boolean IsPN_CHARS(Int32 codePoint)
+        private static bool IsPN_CHARS(Int32 codePoint)
         {
             return IsPN_CHARS_U(codePoint)
                     || Char.IsNumber((char)codePoint)
@@ -1870,7 +1870,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents either a valid prefixed name base character or an underscore
         /// </summary>
-        private static Boolean IsPN_CHARS_U(Int32 codePoint)
+        private static bool IsPN_CHARS_U(Int32 codePoint)
         {
             return IsPN_CHARS_BASE(codePoint) || codePoint == '_';
         }
@@ -1878,7 +1878,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name base character
         /// </summary>
-        private static Boolean IsPN_CHARS_BASE(Int32 codePoint)
+        private static bool IsPN_CHARS_BASE(Int32 codePoint)
         {
             return Char.IsLetter((char)codePoint)
                 || codePoint >= 0x00C0 && codePoint <= 0x00D6

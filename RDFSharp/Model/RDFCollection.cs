@@ -63,7 +63,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating that this collection exceptionally accepts duplicates
         /// </summary>
-        internal Boolean AcceptDuplicates { get; set; }
+        internal bool AcceptDuplicates { get; set; }
 
         /// <summary>
         /// List of the items collected by the collection
@@ -77,7 +77,7 @@ namespace RDFSharp.Model
         /// (initial configuration of the collection is "rdf:Nil")
         /// </summary>
         public RDFCollection(RDFModelEnums.RDFItemTypes itemType) : this(itemType, false) { }
-        internal RDFCollection(RDFModelEnums.RDFItemTypes itemType, Boolean acceptDuplicates)
+        internal RDFCollection(RDFModelEnums.RDFItemTypes itemType, bool acceptDuplicates)
         {
             this.ItemType = itemType;
             this.ReificationSubject = RDFVocabulary.RDF.NIL;

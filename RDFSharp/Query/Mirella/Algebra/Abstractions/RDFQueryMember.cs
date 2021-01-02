@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine
         /// </summary>
-        public Boolean IsEvaluable { get; internal set; }
+        public bool IsEvaluable { get; internal set; }
         #endregion
 
         #region Interfaces
@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs the equality comparison between two query members
         /// </summary>
-        public Boolean Equals(RDFQueryMember other)
+        public bool Equals(RDFQueryMember other)
         {
             return (other != null && this.QueryMemberID.Equals(other.QueryMemberID));
         }

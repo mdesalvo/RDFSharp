@@ -79,9 +79,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = false;
+            bool keepRow = false;
 
             //IN filter is equivalent to an OR-chain of equality comparison filters
             IEnumerator<RDFPatternMember> inTermsEnumerator = this.InTerms.GetEnumerator();

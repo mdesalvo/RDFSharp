@@ -99,9 +99,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = this.LeftFilter.ApplyFilter(row, false) || this.RightFilter.ApplyFilter(row, false);
+            bool keepRow = this.LeftFilter.ApplyFilter(row, false) || this.RightFilter.ApplyFilter(row, false);
 
             //Apply the eventual negation
             if (applyNegation)

@@ -62,9 +62,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the columns corresponding to the variables in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = true;
+            bool keepRow = true;
 
             //Check is performed only on columns found as bindings in the filter
             List<String> filterColumns = this.Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();

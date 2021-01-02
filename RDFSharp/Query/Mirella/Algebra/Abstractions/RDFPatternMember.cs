@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs the equality comparison between two pattern members
         /// </summary>
-        public Boolean Equals(RDFPatternMember other)
+        public bool Equals(RDFPatternMember other)
         {
             return (other != null && this.PatternMemberID.Equals(other.PatternMemberID));
         }

@@ -130,9 +130,9 @@ namespace RDFSharp.Model
                     Dictionary<Int64, XmlNode> containersXML = new Dictionary<Int64, XmlNode>();
 
                     //Floating containers have reification subject which is never object of any graph's triple
-                    Boolean floatingContainers = containers.Any(k => !graph.Triples.Any(v => v.Value.Object.Equals(k.ContainerUri)));
+                    bool floatingContainers = containers.Any(k => !graph.Triples.Any(v => v.Value.Object.Equals(k.ContainerUri)));
                     //Floating collections have reification subject which is never object of any graph's triple
-                    Boolean floatingCollections = collections.Any(k => !graph.Triples.Any(v => v.Value.Object.Equals(k.CollectionUri)));
+                    bool floatingCollections = collections.Any(k => !graph.Triples.Any(v => v.Value.Object.Equals(k.CollectionUri)));
 
                     //Iterate over the calculated groups
                     foreach (var group in groupedList)
@@ -248,7 +248,7 @@ namespace RDFSharp.Model
                                         predNode.Attributes.Append(rdfParseType);
 
                                         //Append "rdf:parseType=Collection" elements
-                                        Boolean nilFound = false;
+                                        bool nilFound = false;
                                         RDFResource currentCollItem = (RDFResource)triple.Object;
                                         List<XmlNode> collElements = new List<XmlNode>();
                                         XmlNode collElementToAppend = null;
@@ -744,7 +744,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Generates an automatic prefix for a namespace
         /// </summary>
-        private static RDFNamespace GenerateNamespace(String namespaceString, Boolean isDatatypeNamespace)
+        private static RDFNamespace GenerateNamespace(String namespaceString, bool isDatatypeNamespace)
         {
             if (namespaceString != null && namespaceString.Trim() != String.Empty)
             {
@@ -902,9 +902,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Verify if we are on a standard rdf:Description element
         /// </summary>
-        private static Boolean CheckIfRdfDescriptionNode(XmlNode subjNode)
+        private static bool CheckIfRdfDescriptionNode(XmlNode subjNode)
         {
-            Boolean result = subjNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase)
+            bool result = subjNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase)
                                 || subjNode.LocalName.Equals("Description", StringComparison.OrdinalIgnoreCase);
 
             return result;
@@ -1067,9 +1067,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Verify if we are on a standard rdf:[Bag|Seq|Alt] element
         /// </summary>
-        private static Boolean CheckIfRdfContainerNode(XmlNode containerNode)
+        private static bool CheckIfRdfContainerNode(XmlNode containerNode)
         {
-            Boolean result = containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
+            bool result = containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
                                 || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase)
                                     || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
                                         || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase)
@@ -1089,7 +1089,7 @@ namespace RDFSharp.Model
             if (predNode.HasChildNodes)
             {
                 XmlNode containerNode = predNode.FirstChild;
-                Boolean isRdfContainer = CheckIfRdfContainerNode(containerNode);
+                bool isRdfContainer = CheckIfRdfContainerNode(containerNode);
                 if (isRdfContainer)
                     return containerNode;
             }

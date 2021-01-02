@@ -36,7 +36,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is subClass of the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsSubClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsSubClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetSuperClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -103,7 +103,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is superClass of the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsSuperClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsSuperClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetSubClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -170,7 +170,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is equivalentClass of the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsEquivalentClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsEquivalentClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetEquivalentClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -229,7 +229,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is disjointClass with the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsDisjointClassWith(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsDisjointClassWith(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetDisjointClassesWith(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -347,7 +347,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is domain of the given ontology property within the given ontology class model
         /// </summary>
-        public static Boolean CheckIsDomainOf(this RDFOntologyClassModel classModel, RDFOntologyClass domainClass, RDFOntologyProperty ontProperty)
+        public static bool CheckIsDomainOf(this RDFOntologyClassModel classModel, RDFOntologyClass domainClass, RDFOntologyProperty ontProperty)
         {
             return (domainClass != null && ontProperty != null && classModel != null ? classModel.GetDomainOf(ontProperty).Classes.ContainsKey(domainClass.PatternMemberID) : false);
         }
@@ -375,7 +375,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is range of the given ontology property within the given ontology class model
         /// </summary>
-        public static Boolean CheckIsRangeOf(this RDFOntologyClassModel classModel, RDFOntologyClass rangeClass, RDFOntologyProperty ontProperty)
+        public static bool CheckIsRangeOf(this RDFOntologyClassModel classModel, RDFOntologyClass rangeClass, RDFOntologyProperty ontProperty)
         {
             return (rangeClass != null && ontProperty != null && classModel != null ? classModel.GetRangeOf(ontProperty).Classes.ContainsKey(rangeClass.PatternMemberID) : false);
         }
@@ -403,7 +403,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is compatible with 'rdfs:Literal' within the given class model
         /// </summary>
-        public static Boolean CheckIsLiteralCompatibleClass(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass)
+        public static bool CheckIsLiteralCompatibleClass(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass)
         {
             var result = false;
             if (ontClass != null && classModel != null)
@@ -424,7 +424,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is subProperty of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsSubPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsSubPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetSuperPropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -491,7 +491,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is superProperty of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsSuperPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsSuperPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetSubPropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -558,7 +558,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is equivalentProperty of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsEquivalentPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsEquivalentPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetEquivalentPropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -617,7 +617,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is disjointProperty with the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsPropertyDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsPropertyDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetPropertiesDisjointWith(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -776,7 +776,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is inverse property of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsInversePropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
+        public static bool CheckIsInversePropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetInversePropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -816,7 +816,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aFact is sameAs the given bFact within the given data
         /// </summary>
-        public static Boolean CheckIsSameFactAs(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
+        public static bool CheckIsSameFactAs(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
         {
             return (aFact != null && bFact != null && data != null ? data.GetSameFactsAs(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
@@ -875,7 +875,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aFact is differentFrom the given bFact within the given data
         /// </summary>
-        public static Boolean CheckIsDifferentFactFrom(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
+        public static bool CheckIsDifferentFactFrom(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
         {
             return (aFact != null && bFact != null && data != null ? data.GetDifferentFactsFrom(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
@@ -940,7 +940,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> transProp" assertion links to the given bFact within the given data
         /// </summary>
-        public static Boolean CheckIsTransitiveAssertionOf(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty transProp, RDFOntologyFact bFact)
+        public static bool CheckIsTransitiveAssertionOf(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty transProp, RDFOntologyFact bFact)
         {
             return (aFact != null && transProp != null && transProp.IsTransitiveProperty() && bFact != null && data != null ? data.GetTransitiveAssertionsOf(aFact, transProp).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
@@ -999,7 +999,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> objectProperty -> bFact" is an assertion within the given data
         /// </summary>
-        public static Boolean CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
+        public static bool CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && bFact != null && objectProperty != null && data != null)
             {
@@ -1017,7 +1017,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> datatypeProperty -> ontologyLiteral" is an assertion within the given data
         /// </summary>
-        public static Boolean CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
+        public static bool CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (aFact != null && ontologyLiteral != null && datatypeProperty != null && data != null)
             {
@@ -1034,7 +1034,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> objectProperty -> bFact" is a negative assertion within the given data
         /// </summary>
-        public static Boolean CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
+        public static bool CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && bFact != null && objectProperty != null && data != null)
             {
@@ -1052,7 +1052,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> datatypeProperty -> ontologyLiteral" is a negative assertion within the given data
         /// </summary>
-        public static Boolean CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
+        public static bool CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (aFact != null && ontologyLiteral != null && datatypeProperty != null && data != null)
             {
@@ -1071,7 +1071,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given fact is member of the given class within the given ontology
         /// </summary>
-        public static Boolean CheckIsMemberOf(this RDFOntology ontology, RDFOntologyFact ontFact, RDFOntologyClass ontClass)
+        public static bool CheckIsMemberOf(this RDFOntology ontology, RDFOntologyFact ontFact, RDFOntologyClass ontClass)
         {
             return (ontFact != null && ontClass != null && ontology != null ? ontology.GetMembersOf(ontClass).Facts.ContainsKey(ontFact.PatternMemberID) : false);
         }

@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates that this shape is ignored (sh:deactivated)
         /// </summary>
-        public Boolean Deactivated { get; internal set; }
+        public bool Deactivated { get; internal set; }
 
         /// <summary>
         /// Count of the human-readable messages of this shape

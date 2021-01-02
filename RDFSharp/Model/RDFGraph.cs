@@ -96,7 +96,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs the equality comparison between two graphs
         /// </summary>
-        public Boolean Equals(RDFGraph other)
+        public bool Equals(RDFGraph other)
         {
             if (other == null || this.TriplesCount != other.TriplesCount)
             {
@@ -476,7 +476,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the graph contains the given triple
         /// </summary>
-        public Boolean ContainsTriple(RDFTriple triple)
+        public bool ContainsTriple(RDFTriple triple)
         {
             return (triple != null && this.Triples.ContainsKey(triple.TripleID));
         }

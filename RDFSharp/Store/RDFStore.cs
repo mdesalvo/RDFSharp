@@ -56,7 +56,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Performs the equality comparison between two stores
         /// </summary>
-        public Boolean Equals(RDFStore other)
+        public bool Equals(RDFStore other)
         {
             return (other != null && this.StoreID.Equals(other.StoreID));
         }
@@ -283,7 +283,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
-        public virtual Boolean ContainsQuadruple(RDFQuadruple quadruple)
+        public virtual bool ContainsQuadruple(RDFQuadruple quadruple)
         {
             if (quadruple != null)
             {

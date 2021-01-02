@@ -101,7 +101,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Performs the equality comparison between two memory stores
         /// </summary>
-        public Boolean Equals(RDFMemoryStore other)
+        public bool Equals(RDFMemoryStore other)
         {
             if (other == null || this.QuadruplesCount != other.QuadruplesCount)
             {
@@ -616,7 +616,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
-        public override Boolean ContainsQuadruple(RDFQuadruple quadruple)
+        public override bool ContainsQuadruple(RDFQuadruple quadruple)
         {
             return (quadruple != null && this.Quadruples.ContainsKey(quadruple.QuadrupleID));
         }

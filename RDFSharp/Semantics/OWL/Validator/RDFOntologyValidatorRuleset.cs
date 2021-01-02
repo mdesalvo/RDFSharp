@@ -570,11 +570,10 @@ namespace RDFSharp.Semantics.OWL
             #region Domain_Range
             RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             var classCache = new Dictionary<Int64, RDFOntologyData>();
-            var litCheckCache = new Dictionary<Int64, Boolean>();
+            var litCheckCache = new Dictionary<Int64, bool>();
 
-            foreach (var assertion in ontology.Data.Relations.Assertions.Where(asn =>
-                                                       ((RDFOntologyProperty)asn.TaxonomyPredicate).Domain != null ||
-                                                       ((RDFOntologyProperty)asn.TaxonomyPredicate).Range != null))
+            foreach (var assertion in ontology.Data.Relations.Assertions.Where(asn => ((RDFOntologyProperty)asn.TaxonomyPredicate).Domain != null
+                                                                                        || ((RDFOntologyProperty)asn.TaxonomyPredicate).Range != null))
             {
 
                 #region Domain
@@ -1053,7 +1052,7 @@ namespace RDFSharp.Semantics.OWL
             #region Facts
             RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             var disjWithCache = new Dictionary<Int64, RDFOntologyClassModel>();
-            var litCheckCache = new Dictionary<Int64, Boolean>();
+            var litCheckCache = new Dictionary<Int64, bool>();
 
             foreach (var fact in ontology.Data)
             {

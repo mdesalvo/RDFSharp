@@ -31,7 +31,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating that closure of predicates is required or not
         /// </summary>
-        public Boolean Closed { get; internal set; }
+        public bool Closed { get; internal set; }
 
         /// <summary>
         /// Properties allowed on the given RDF term
@@ -43,7 +43,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a closed constraint with the given behavior
         /// </summary>
-        public RDFClosedConstraint(Boolean closed) : base()
+        public RDFClosedConstraint(bool closed) : base()
         {
             this.Closed = closed;
             this.IgnoredProperties = new Dictionary<Int64, RDFResource>();

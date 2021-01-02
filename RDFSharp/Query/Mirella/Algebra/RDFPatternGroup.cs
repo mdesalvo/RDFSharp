@@ -37,12 +37,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating the pattern group to be joined as Optional
         /// </summary>
-        internal Boolean IsOptional { get; set; }
+        internal bool IsOptional { get; set; }
 
         /// <summary>
         /// Flag indicating the pattern group to be joined as Union
         /// </summary>
-        internal Boolean JoinAsUnion { get; set; }
+        internal bool JoinAsUnion { get; set; }
 
         /// <summary>
         /// List of members carried by the pattern group

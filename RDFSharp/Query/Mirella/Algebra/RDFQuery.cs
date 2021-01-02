@@ -43,17 +43,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating the subquery to be joined as Optional
         /// </summary>
-        internal Boolean IsOptional { get; set; }
+        internal bool IsOptional { get; set; }
 
         /// <summary>
         /// Flag indicating the subquery to be joined as Union
         /// </summary>
-        internal Boolean JoinAsUnion { get; set; }
+        internal bool JoinAsUnion { get; set; }
 
         /// <summary>
         /// Flag indicating that the query is a subquery
         /// </summary>
-        internal Boolean IsSubQuery { get; set; }
+        internal bool IsSubQuery { get; set; }
         #endregion
 
         #region Ctors

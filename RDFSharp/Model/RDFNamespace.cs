@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating that the namespace is temporary
         /// </summary>
-        internal Boolean IsTemporary { get; set; }
+        internal bool IsTemporary { get; set; }
 
         /// <summary>
         /// Prefix representation of the namespace
@@ -123,7 +123,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs the equality comparison between two namespaces
         /// </summary>
-        public Boolean Equals(RDFNamespace other)
+        public bool Equals(RDFNamespace other)
         {
             return (other != null && this.NamespaceID.Equals(other.NamespaceID));
         }
@@ -133,7 +133,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Sets this namespace as temporary, depending on the given flag
         /// </summary>
-        internal RDFNamespace SetTemporary(Boolean temporary)
+        internal RDFNamespace SetTemporary(bool temporary)
         {
             this.IsTemporary = temporary;
             return this;

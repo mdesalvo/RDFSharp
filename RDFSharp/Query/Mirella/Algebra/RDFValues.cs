@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the SPARQL values has been injected by Mirella
         /// </summary>
-        internal Boolean IsInjected { get; set; }
+        internal bool IsInjected { get; set; }
         #endregion
 
         #region Ctors

@@ -152,7 +152,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -277,7 +277,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -458,7 +458,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -586,7 +586,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -618,7 +618,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the intermediate result tables of the given pattern group
         /// </summary>
-        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource, Boolean withinFederation)
+        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource, bool withinFederation)
         {
             QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
@@ -753,7 +753,7 @@ namespace RDFSharp.Query
                 else
                 {
                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional
-                                                                                                                    || (Boolean)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                    || (bool)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
                 }
                 //Populate its metadata (JoinAsUnion)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -781,7 +781,7 @@ namespace RDFSharp.Query
                 IEnumerator rowsEnum = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
-                Boolean keepRow = false;
+                bool keepRow = false;
                 while (rowsEnum.MoveNext())
                 {
 
@@ -2155,7 +2155,7 @@ namespace RDFSharp.Query
         {
 
             #region Methods
-            public Boolean Equals(DataColumn column1, DataColumn column2)
+            public bool Equals(DataColumn column1, DataColumn column2)
             {
                 if (column1 != null)
                 {
@@ -2192,7 +2192,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void AddRow(DataTable table, Dictionary<String, String> bindings)
         {
-            Boolean rowAdded = false;
+            bool rowAdded = false;
             DataRow resultRow = table.NewRow();
             bindings.Keys.ToList().ForEach(k =>
             {
@@ -2559,9 +2559,9 @@ namespace RDFSharp.Query
             IEnumerable<DataColumn> dt1Columns = (dt1Cols as IList<DataColumn> ?? dt1Cols.ToList<DataColumn>());
             IEnumerable<DataColumn> dt2Columns = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
 
-            Boolean dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
-            Boolean joinInvalidationFlag = false;
-            Boolean foundAnyResult = false;
+            bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
+            bool joinInvalidationFlag = false;
+            bool foundAnyResult = false;
             String strResCol = String.Empty;
 
 
@@ -2705,10 +2705,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Merges / Joins / Products the given list of data tables, based on presence of common columns and dynamic detection of Optional / Union operators
         /// </summary>
-        internal DataTable CombineTables(List<DataTable> dataTables, Boolean isMerge)
+        internal DataTable CombineTables(List<DataTable> dataTables, bool isMerge)
         {
             DataTable finalTable = new DataTable();
-            Boolean switchToOuterJoin = false;
+            bool switchToOuterJoin = false;
             if (dataTables.Count > 0)
             {
 
