@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -103,6 +102,12 @@ namespace RDFSharp.Semantics.OWL
                     "HasKey",
                     "This OWL2 rule checks for consistency of owl:HasKey axioms",
                     RDFOntologyValidatorRuleset.HasKey),
+
+                //PropertyChainAxiom [OWL2]
+                new RDFOntologyValidatorRule(
+                    "PropertyChainAxiom",
+                    "This OWL2 rule checks for consistency of owl:PropertyChainAxiom axioms",
+                    RDFOntologyValidatorRuleset.PropertyChainAxiom),
 
                 //ClassType
                 new RDFOntologyValidatorRule(

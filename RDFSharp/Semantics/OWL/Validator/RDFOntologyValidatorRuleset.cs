@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -1037,6 +1036,57 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'HasKey': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
+        #region Rule:PropertyChainAxiom [OWL2]
+        /// <summary>
+        /// Validation rule checking for consistency of owl:propertyChain axioms [OWL2]
+        /// </summary>
+        internal static RDFOntologyValidatorReport PropertyChainAxiom(RDFOntology ontology)
+        {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'PropertyChainAxiom'...");
+
+            #region PropertyChainAxiom
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
+
+            //PropertyChainAxiom cannot be applied to following restriction types: cardinality, hasSelf (Restriction on Simple Roles)
+            var restrictionsEnum = ontology.Model.ClassModel.RestrictionsEnumerator;
+            while (restrictionsEnum.MoveNext())
+            {
+                if ((restrictionsEnum.Current is RDFOntologyCardinalityRestriction || restrictionsEnum.Current is RDFOntologyHasSelfRestriction)
+                        && restrictionsEnum.Current.OnProperty is RDFOntologyObjectProperty onProperty
+                            && ontology.Model.PropertyModel.CheckIsPropertyChain(onProperty))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                        "PropertyChainAxiom",
+                        string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed type of restriction '{1}'", onProperty, restrictionsEnum.Current),
+                        string.Format("It is not allowed the use of property chain axiom on cardinality or hasSelf restrictions: review the class model")
+                    ));
+                }
+            }
+
+            //PropertyChainAxiom cannot be applied to object properties with following behaviors: functional, inverse functional, irreflexive, asymmetric (Restriction on Simple Roles)
+            var objectPropertiesEnum = ontology.Model.PropertyModel.ObjectPropertiesEnumerator;
+            while (objectPropertiesEnum.MoveNext())
+            {
+                if (objectPropertiesEnum.Current is RDFOntologyObjectProperty objProperty &&
+                        (objProperty.IsFunctionalProperty() || objProperty.IsInverseFunctionalProperty() || objProperty.IsIrreflexiveProperty() || objProperty.IsAsymmetricProperty())
+                            && ontology.Model.PropertyModel.CheckIsPropertyChain(objProperty))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                        "PropertyChainAxiom",
+                        string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed mathematical behavior of property", objProperty),
+                        string.Format("It is not allowed the use of property chain axiom on object properties being also functional, or inverse functional, or irreflexive, or asymmetric: review the property model")
+                    ));
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'PropertyChainAxiom': found " + report.EvidencesCount + " evidences.");
             return report;
         }
         #endregion
