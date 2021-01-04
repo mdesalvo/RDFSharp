@@ -707,7 +707,7 @@ namespace RDFSharp.Semantics.OWL
         public static bool CheckIsPropertyChainAxiomOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             if (aProperty != null && bProperty != null && propertyModel != null)
-                return propertyModel.GetStepsForPropertyChainAxiom(bProperty).Any(step => step.StepProperty.Equals(aProperty.Value));
+                return propertyModel.GetPropertyChainAxiomStepsOf(bProperty).Any(step => step.StepProperty.Equals(aProperty.Value));
 
             return false;
         }
@@ -729,7 +729,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Transform property chain axiom of current property into equivalent property path
                 RDFPropertyPath propertyChainAxiomPath = new RDFPropertyPath(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), new RDFVariable("?PROPERTY_CHAIN_AXIOM_END"));
-                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.Model.PropertyModel.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomy.Key);
+                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.Model.PropertyModel.GetPropertyChainAxiomStepsOf(propertyChainAxiomTaxonomy.Key);
                 foreach (RDFPropertyPathStep propertyChainAxiomPathStep in propertyChainAxiomPathSteps)
                     propertyChainAxiomPath.AddSequenceStep(propertyChainAxiomPathStep);
 
@@ -753,25 +753,26 @@ namespace RDFSharp.Semantics.OWL
             }
             return result;
         }
+
         /// <summary>
         /// Gets the direct and indirect properties composing the path of the given property chain axiom [OWL2]
         /// </summary>
-        internal static List<RDFPropertyPathStep> GetStepsForPropertyChainAxiom(this RDFOntologyPropertyModel propertyModel, RDFOntologyResource propertyChainAxiomName, HashSet<long> visitContext = null)
+        internal static List<RDFPropertyPathStep> GetPropertyChainAxiomStepsOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyResource propertyChainAxiom, HashSet<long> visitContext = null)
         {
             List<RDFPropertyPathStep> result = new List<RDFPropertyPathStep>();
-            if (propertyChainAxiomName != null && propertyModel != null)
+            if (propertyChainAxiom != null && propertyModel != null)
             {
 
                 #region visitContext
                 if (visitContext == null)
                 {
-                    visitContext = new HashSet<long>() { { propertyChainAxiomName.Value.PatternMemberID } };
+                    visitContext = new HashSet<long>() { { propertyChainAxiom.Value.PatternMemberID } };
                 }
                 else
                 {
-                    if (!visitContext.Contains(propertyChainAxiomName.Value.PatternMemberID))
+                    if (!visitContext.Contains(propertyChainAxiom.Value.PatternMemberID))
                     {
-                        visitContext.Add(propertyChainAxiomName.Value.PatternMemberID);
+                        visitContext.Add(propertyChainAxiom.Value.PatternMemberID);
                     }
                     else
                     {
@@ -781,11 +782,11 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 //owl:propertyChainAxiom
-                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomName))
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiom))
                 {
                     bool containsPropertyChainAxiom = propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomTaxonomyEntry.TaxonomyObject).EntriesCount > 0;
                     if (containsPropertyChainAxiom)
-                        result.AddRange(propertyModel.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
+                        result.AddRange(propertyModel.GetPropertyChainAxiomStepsOf(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
                     else
                         result.Add(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
                 }
