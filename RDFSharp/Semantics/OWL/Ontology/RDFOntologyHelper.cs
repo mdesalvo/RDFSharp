@@ -305,7 +305,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the key values for each member of the given class having a complete (or partial, if allowed) key representation [OWL2]
         /// </summary>
-        internal static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass, bool allowPartialKeyValues)
+        public static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass, bool allowPartialKeyValues)
         {
             Dictionary<string, List<RDFOntologyResource>> result = new Dictionary<string, List<RDFOntologyResource>>();
 
@@ -702,12 +702,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty is defined as a propertyChainAxiom of the given bProperty within the given property model
+        /// Checks if the given aProperty is defined as a propertyChainAxiom of the given bProperty within the given ontology
         /// </summary>
         public static bool CheckIsPropertyChainAxiomOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             if (aProperty != null && bProperty != null && propertyModel != null)
-                return propertyModel.Relations.PropertyChainAxiom.Any(te => te.TaxonomySubject.Equals(bProperty) && te.TaxonomyObject.Equals(aProperty));
+                return propertyModel.GetStepsForPropertyChainAxiom(bProperty).Any(step => step.StepProperty.Equals(aProperty.Value));
 
             return false;
         }
@@ -715,7 +715,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the assertions for each property which represents a property chain axiom in the given ontology [OWL2]
         /// </summary>
-        internal static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
+        public static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
         {
             Dictionary<string, RDFOntologyData> result = new Dictionary<string, RDFOntologyData>();
 
@@ -729,7 +729,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Transform property chain axiom of current property into equivalent property path
                 RDFPropertyPath propertyChainAxiomPath = new RDFPropertyPath(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), new RDFVariable("?PROPERTY_CHAIN_AXIOM_END"));
-                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomy.Key);
+                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.Model.PropertyModel.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomy.Key);
                 foreach (RDFPropertyPathStep propertyChainAxiomPathStep in propertyChainAxiomPathSteps)
                     propertyChainAxiomPath.AddSequenceStep(propertyChainAxiomPathStep);
 
@@ -745,32 +745,33 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFTriple queryResultTriple in queryResult.ToRDFGraph())
                 {
                     RDFOntologyFact assertionSubject = ontology.Data.SelectFact(queryResultTriple.Subject.ToString());
-                    RDFOntologyObjectProperty assertionPredicate = (RDFOntologyObjectProperty)ontology.Model.PropertyModel.SelectProperty(queryResultTriple.Predicate.ToString());
+                    RDFOntologyProperty assertionPredicate = ontology.Model.PropertyModel.SelectProperty(queryResultTriple.Predicate.ToString());
                     RDFOntologyFact assertionObject = ontology.Data.SelectFact(queryResultTriple.Object.ToString());
-                    result[propertyChainAxiomTaxonomy.Key.ToString()].AddAssertionRelation(assertionSubject, assertionPredicate, assertionObject);
+                    if (assertionPredicate is RDFOntologyObjectProperty)
+                        result[propertyChainAxiomTaxonomy.Key.ToString()].AddAssertionRelation(assertionSubject, (RDFOntologyObjectProperty)assertionPredicate, assertionObject);
                 }
             }
             return result;
         }
         /// <summary>
-        /// Gets the direct and indirect steps for the given subject of property chain axiom taxonomy [OWL2]
+        /// Gets the direct and indirect properties composing the path of the given property chain axiom [OWL2]
         /// </summary>
-        internal static List<RDFPropertyPathStep> GetStepsForPropertyChainAxiom(this RDFOntology ontology, RDFOntologyResource propertyName, HashSet<long> visitContext = null)
+        internal static List<RDFPropertyPathStep> GetStepsForPropertyChainAxiom(this RDFOntologyPropertyModel propertyModel, RDFOntologyResource propertyChainAxiomName, HashSet<long> visitContext = null)
         {
             List<RDFPropertyPathStep> result = new List<RDFPropertyPathStep>();
-            if (propertyName != null && ontology != null)
+            if (propertyChainAxiomName != null && propertyModel != null)
             {
 
                 #region visitContext
                 if (visitContext == null)
                 {
-                    visitContext = new HashSet<long>() { { propertyName.Value.PatternMemberID } };
+                    visitContext = new HashSet<long>() { { propertyChainAxiomName.Value.PatternMemberID } };
                 }
                 else
                 {
-                    if (!visitContext.Contains(propertyName.Value.PatternMemberID))
+                    if (!visitContext.Contains(propertyChainAxiomName.Value.PatternMemberID))
                     {
-                        visitContext.Add(propertyName.Value.PatternMemberID);
+                        visitContext.Add(propertyChainAxiomName.Value.PatternMemberID);
                     }
                     else
                     {
@@ -780,11 +781,11 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 //owl:propertyChainAxiom
-                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyName))
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomName))
                 {
-                    bool containsPropertyChainAxiom = ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomTaxonomyEntry.TaxonomyObject).EntriesCount > 0;
+                    bool containsPropertyChainAxiom = propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomTaxonomyEntry.TaxonomyObject).EntriesCount > 0;
                     if (containsPropertyChainAxiom)
-                        result.AddRange(ontology.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
+                        result.AddRange(propertyModel.GetStepsForPropertyChainAxiom(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
                     else
                         result.Add(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
                 }
