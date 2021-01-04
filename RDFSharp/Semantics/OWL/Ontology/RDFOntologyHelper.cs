@@ -305,7 +305,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the key values for each member of the given class having a complete (or partial, if allowed) key representation [OWL2]
         /// </summary>
-        public static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass, bool allowPartialKeyValues)
+        internal static Dictionary<string, List<RDFOntologyResource>> GetKeyValuesOf(this RDFOntology ontology, RDFOntologyClass ontologyClass, bool allowPartialKeyValues)
         {
             Dictionary<string, List<RDFOntologyResource>> result = new Dictionary<string, List<RDFOntologyResource>>();
 
@@ -691,9 +691,31 @@ namespace RDFSharp.Semantics.OWL
 
         #region PropertyChainAxiom [OWL2]
         /// <summary>
+        /// Checks if the given ontologyProperty is defined as a propertyChain within the given property model
+        /// </summary>
+        public static bool CheckIsPropertyChain(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty ontProperty)
+        {
+            if (ontProperty != null && propertyModel != null)
+                return propertyModel.Relations.PropertyChainAxiom.Any(te => te.TaxonomySubject.Equals(ontProperty));
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the given aProperty is defined as a propertyChainAxiom of the given bProperty within the given property model
+        /// </summary>
+        public static bool CheckIsPropertyChainAxiomOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
+        {
+            if (aProperty != null && bProperty != null && propertyModel != null)
+                return propertyModel.Relations.PropertyChainAxiom.Any(te => te.TaxonomySubject.Equals(bProperty) && te.TaxonomyObject.Equals(aProperty));
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets the assertions for each property which represents a property chain axiom in the given ontology [OWL2]
         /// </summary>
-        public static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
+        internal static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
         {
             Dictionary<string, RDFOntologyData> result = new Dictionary<string, RDFOntologyData>();
 
@@ -1090,15 +1112,11 @@ namespace RDFSharp.Semantics.OWL
 
                 //DataRange/Literal-Compatible
                 if (expOnt.Model.ClassModel.CheckIsLiteralCompatibleClass(ontClass))
-                {
                     result = expOnt.GetMembersOfLiteralCompatibleClass(ontClass);
-                }
 
                 //Restriction/Composite/Enumerate/Class
                 else
-                {
                     result = expOnt.GetMembersOfNonLiteralCompatibleClass(ontClass);
-                }
 
             }
             return result;
