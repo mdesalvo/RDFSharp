@@ -87,7 +87,10 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(motherProperty, childProperty)
                         && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty)
-                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty));
+                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(childProperty)
+                                    && !propertyModel.CheckIsPropertyChain(motherProperty));
         }
 
         /// <summary>
@@ -111,7 +114,10 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsPropertyDisjointWith(aProperty, bProperty));
+                            && !propertyModel.CheckIsPropertyDisjointWith(aProperty, bProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(aProperty)
+                                    && !propertyModel.CheckIsPropertyChain(bProperty));
         }
 
         /// <summary>
@@ -135,7 +141,10 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(aProperty)
+                                    && !propertyModel.CheckIsPropertyChain(bProperty));
         }
 
         /// <summary>
@@ -159,7 +168,10 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(aProperty)
+                                    && !propertyModel.CheckIsPropertyChain(bProperty));
         }
 
         /// <summary>
