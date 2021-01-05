@@ -1069,17 +1069,17 @@ namespace RDFSharp.Semantics.OWL
             }
 
             //PropertyChainAxiom cannot be applied to object properties with following behaviors: functional, inverse functional, irreflexive, asymmetric (Restriction on Simple Roles)
-            var objectPropertiesEnum = ontology.Model.PropertyModel.ObjectPropertiesEnumerator;
-            while (objectPropertiesEnum.MoveNext())
+            var objPropsEnum = ontology.Model.PropertyModel.ObjectPropertiesEnumerator;
+            while (objPropsEnum.MoveNext())
             {
-                if (objectPropertiesEnum.Current is RDFOntologyObjectProperty objProperty &&
-                        (objProperty.IsFunctionalProperty() || objProperty.IsInverseFunctionalProperty() || objProperty.IsIrreflexiveProperty() || objProperty.IsAsymmetricProperty())
-                            && ontology.Model.PropertyModel.CheckIsPropertyChain(objProperty))
+                if (ontology.Model.PropertyModel.CheckIsPropertyChain(objPropsEnum.Current)
+                        && (objPropsEnum.Current.IsFunctionalProperty() || objPropsEnum.Current.IsInverseFunctionalProperty() ||
+                                objPropsEnum.Current.IsIrreflexiveProperty() || objPropsEnum.Current.IsAsymmetricProperty()))
                 {
                     report.AddEvidence(new RDFOntologyValidatorEvidence(
                         RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                         "PropertyChainAxiom",
-                        string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed mathematical behavior of property", objProperty),
+                        string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed mathematical behavior of property", objPropsEnum.Current),
                         string.Format("It is not allowed the use of property chain axiom on object properties being functional, or inverse functional, or irreflexive, or asymmetric: review the property model")
                     ));
                 }
