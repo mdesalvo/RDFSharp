@@ -691,7 +691,7 @@ namespace RDFSharp.Semantics.OWL
 
         #region PropertyChainAxiom [OWL2]
         /// <summary>
-        /// Checks if the given ontologyProperty is defined as a propertyChain within the given property model
+        /// Checks if the given ontProperty is a property chain within the given property model
         /// </summary>
         public static bool CheckIsPropertyChain(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty ontProperty)
         {
@@ -702,20 +702,20 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty is defined as a propertyChainAxiom of the given bProperty within the given ontology
+        /// Checks if the given aProperty is a property chain step of the given bProperty within the given ontology
         /// </summary>
-        public static bool CheckIsPropertyChainAxiomOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
+        public static bool CheckIsPropertyChainStepOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             if (aProperty != null && bProperty != null && propertyModel != null)
-                return propertyModel.GetPropertyChainAxiomStepsOf(bProperty).Any(step => step.StepProperty.Equals(aProperty.Value));
+                return propertyModel.GetPropertyChainStepsOf(bProperty).Any(step => step.StepProperty.Equals(aProperty.Value));
 
             return false;
         }
 
         /// <summary>
-        /// Gets the assertions for each property which represents a property chain axiom in the given ontology [OWL2]
+        /// Gets the assertions for each property chain declared in the given ontology [OWL2]
         /// </summary>
-        public static Dictionary<string, RDFOntologyData> GetPropertyChainAxioms(this RDFOntology ontology)
+        public static Dictionary<string, RDFOntologyData> GetPropertyChainAxiomsData(this RDFOntology ontology)
         {
             Dictionary<string, RDFOntologyData> result = new Dictionary<string, RDFOntologyData>();
 
@@ -729,7 +729,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Transform property chain axiom of current property into equivalent property path
                 RDFPropertyPath propertyChainAxiomPath = new RDFPropertyPath(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), new RDFVariable("?PROPERTY_CHAIN_AXIOM_END"));
-                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.Model.PropertyModel.GetPropertyChainAxiomStepsOf(propertyChainAxiomTaxonomy.Key);
+                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.Model.PropertyModel.GetPropertyChainStepsOf(propertyChainAxiomTaxonomy.Key);
                 foreach (RDFPropertyPathStep propertyChainAxiomPathStep in propertyChainAxiomPathSteps)
                     propertyChainAxiomPath.AddSequenceStep(propertyChainAxiomPathStep);
 
@@ -755,24 +755,24 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Gets the direct and indirect properties composing the path of the given property chain axiom [OWL2]
+        /// Gets the direct and indirect properties composing the path of the given property chain [OWL2]
         /// </summary>
-        internal static List<RDFPropertyPathStep> GetPropertyChainAxiomStepsOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyResource propertyChainAxiom, HashSet<long> visitContext = null)
+        internal static List<RDFPropertyPathStep> GetPropertyChainStepsOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyResource propertyChain, HashSet<long> visitContext = null)
         {
             List<RDFPropertyPathStep> result = new List<RDFPropertyPathStep>();
-            if (propertyChainAxiom != null && propertyModel != null)
+            if (propertyChain != null && propertyModel != null)
             {
 
                 #region visitContext
                 if (visitContext == null)
                 {
-                    visitContext = new HashSet<long>() { { propertyChainAxiom.Value.PatternMemberID } };
+                    visitContext = new HashSet<long>() { { propertyChain.Value.PatternMemberID } };
                 }
                 else
                 {
-                    if (!visitContext.Contains(propertyChainAxiom.Value.PatternMemberID))
+                    if (!visitContext.Contains(propertyChain.Value.PatternMemberID))
                     {
-                        visitContext.Add(propertyChainAxiom.Value.PatternMemberID);
+                        visitContext.Add(propertyChain.Value.PatternMemberID);
                     }
                     else
                     {
@@ -782,11 +782,11 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 //owl:propertyChainAxiom
-                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiom))
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChain))
                 {
                     bool containsPropertyChainAxiom = propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomTaxonomyEntry.TaxonomyObject).EntriesCount > 0;
                     if (containsPropertyChainAxiom)
-                        result.AddRange(propertyModel.GetPropertyChainAxiomStepsOf(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
+                        result.AddRange(propertyModel.GetPropertyChainStepsOf(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
                     else
                         result.Add(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
                 }
@@ -1698,6 +1698,10 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var entry in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.SubClassOf.AddEntry(entry);
 
+                //HasKey [OWL2]
+                foreach (var entry in ontologyClassModel.Relations.HasKey.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.HasKey.AddEntry(entry);
+
             }
             return result;
         }
@@ -1719,13 +1723,17 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var entry in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.EquivalentProperty.AddEntry(entry);
 
-                //PropertyDisjointWith
-                foreach (var entry in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.PropertyDisjointWith.AddEntry(entry);
-
                 //InverseOf
                 foreach (var entry in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.InverseOf.AddEntry(entry);
+
+                //PropertyDisjointWith [OWL2]
+                foreach (var entry in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.PropertyDisjointWith.AddEntry(entry);
+
+                //PropertyChainAxiom [OWL2]
+                foreach (var entry in ontologyPropertyModel.Relations.PropertyChainAxiom.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.PropertyChainAxiom.AddEntry(entry);
 
             }
             return result;
@@ -1755,6 +1763,10 @@ namespace RDFSharp.Semantics.OWL
                 //Assertions
                 foreach (var entry in ontologyData.Relations.Assertions.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.Assertions.AddEntry(entry);
+
+                //NegativeAssertions [OWL2]
+                foreach (var entry in ontologyData.Relations.NegativeAssertions.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.NegativeAssertions.AddEntry(entry);
 
             }
             return result;
@@ -1811,7 +1823,7 @@ namespace RDFSharp.Semantics.OWL
                 //OneOf
                 ontologyClassModel.Relations.OneOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                //HasKey
+                //HasKey [OWL2]
                 ontologyClassModel.Relations.HasKey.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
@@ -1832,10 +1844,10 @@ namespace RDFSharp.Semantics.OWL
                 //InverseOf
                 ontologyPropertyModel.Relations.InverseOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                //PropertyDisjointWith
+                //PropertyDisjointWith [OWL2]
                 ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                //PropertyChainAxiom
+                //PropertyChainAxiom [OWL2]
                 ontologyPropertyModel.Relations.PropertyChainAxiom.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
@@ -1859,7 +1871,7 @@ namespace RDFSharp.Semantics.OWL
                 //Assertions
                 ontologyData.Relations.Assertions.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                //NegativeAssertions
+                //NegativeAssertions [OWL2]
                 ontologyData.Relations.NegativeAssertions.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }

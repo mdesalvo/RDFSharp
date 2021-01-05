@@ -173,17 +173,6 @@ namespace RDFSharp.Semantics.OWL
                                 && !propertyModel.CheckIsPropertyChain(aProperty)
                                     && !propertyModel.CheckIsPropertyChain(bProperty));
         }
-
-        /// <summary>
-        /// Checks if the given chainProperty can be set propertyChainAxiom of the given ontologyproperty
-        /// </summary>
-        internal static bool CheckPropertyChainAxiomCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                  RDFOntologyObjectProperty ontologyProperty,
-                                                                  RDFOntologyObjectProperty chainProperty)
-        {
-            //TODO
-            return true;
-        }
         #endregion
 
         #region Data

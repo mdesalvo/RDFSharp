@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -740,22 +739,17 @@ namespace RDFSharp.Semantics.OWL
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(ontologyProperty))
                 {
-                    chainProperties.ForEach(chainProperty =>
+                    //Enforce checks on syntactic corner cases and OWL2 decidability (do not allow cycles)
+                    chainProperties.RemoveAll(chainProp => chainProp == null || chainProp.Equals(ontologyProperty));
+                    if (!chainProperties.Any(chainProp => RDFOntologyHelper.CheckIsPropertyChainStepOf(this, ontologyProperty, chainProp)))
                     {
-                        if (chainProperty != null && !chainProperty.Equals(ontologyProperty))
-                        {
-                            //Enforce taxonomy checks before adding the propertyChainAxiom relation
-                            if (RDFOntologyChecker.CheckPropertyChainAxiomCompatibility(this, ontologyProperty, chainProperty))
-                            {
-                                this.Relations.PropertyChainAxiom.AddEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty));
-                            }
-                            else
-                            {
-                                //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyChainAxiom relation between property '{0}' and chain property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", ontologyProperty, chainProperty));
-                            }
-                        }
-                    });
+                        chainProperties.ForEach(chainProperty => this.Relations.PropertyChainAxiom.AddEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty)));
+                    }
+                    else
+                    {
+                        //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyChainAxiom relation '{0}' cannot be added to the property model because it violates the taxonomy consistency: it contains a cyclic property chain axiom.", ontologyProperty));
+                    }
                 }
                 else
                 {
