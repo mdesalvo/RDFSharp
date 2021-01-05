@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,9 +30,9 @@ namespace RDFSharp.Semantics.OWL
         #region Properties
 
         /// <summary>
-        /// Counter of rules contained in the BASE ruleset
+        /// Counter of rules available in the standard RDFS/OWL-DL/OWL2 ruleset
         /// </summary>
-        public static readonly int RulesCount = 17;
+        public static readonly int RulesCount = 18;
 
         #region RDFS
         /// <summary>
@@ -124,6 +123,11 @@ namespace RDFSharp.Semantics.OWL
         /// HasKeyEntailment implements data entailments based on 'owl:hasKey' axiom [OWL2]
         /// </summary>
         public static RDFOntologyReasonerRule HasKeyEntailment { get; internal set; }
+
+        /// <summary>
+        /// PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' axiom [OWL2]
+        /// </summary>
+        public static RDFOntologyReasonerRule PropertyChainEntailment { get; internal set; }
         #endregion
 
         #endregion
@@ -268,6 +272,13 @@ namespace RDFSharp.Semantics.OWL
                                                            "((C HASKEY P) AND (F1 TYPE C) AND (F2 TYPE C) AND (F1 P K) AND (F2 P K)) => (F1 SAMEAS F2)",
                                                            15,
                                                            HasKeyEntailmentExec).SetPriority(15);
+
+            //PropertyChainEntailment
+            PropertyChainEntailment = new RDFOntologyReasonerRule("PropertyChainEntailment",
+                                                                  "PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' taxonomy:" +
+                                                                  "((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)",
+                                                                  18,
+                                                                  PropertyChainEntailmentExec).SetPriority(18);
             #endregion
 
         }
@@ -1005,13 +1016,37 @@ namespace RDFSharp.Semantics.OWL
 
                                 //Add the inference to the ontology and to the report
                                 if (ontology.Data.Relations.SameAs.AddEntry(sem_infA))
-                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKey", sem_infA));
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKeyEntailment", sem_infA));
                                 if (ontology.Data.Relations.SameAs.AddEntry(sem_infB))
-                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKey", sem_infB));
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKeyEntailment", sem_infB));
                             }
                         }
                     }
                     #endregion
+                }
+            }
+
+            return report;
+        }
+
+        /// <summary>
+        /// (OWL2) PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' axiom:<br/>
+        /// ((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)
+        /// </summary>
+        internal static RDFOntologyReasonerReport PropertyChainEntailmentExec(RDFOntology ontology)
+        {
+            var report = new RDFOntologyReasonerReport();
+
+            Dictionary<string, RDFOntologyData> propertyChainAxiomsData = ontology.GetPropertyChainAxiomsData();
+            foreach (var propertyChainAxiom in propertyChainAxiomsData)
+            {
+                foreach (var propertyChainAxiomAssertion in propertyChainAxiom.Value.Relations.Assertions)
+                {
+                    propertyChainAxiomAssertion.SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the ontology and to the report
+                    if (ontology.Data.Relations.Assertions.AddEntry(propertyChainAxiomAssertion))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyChainEntailment", propertyChainAxiomAssertion));
                 }
             }
 
