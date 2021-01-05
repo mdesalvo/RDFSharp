@@ -1086,9 +1086,9 @@ namespace RDFSharp.Semantics.OWL
             }
 
             //PropertyChainAxiom cannot be applied to assertions, since it is a virtual property which can only be materialized by a reasoner
-            foreach (RDFOntologyTaxonomyEntry propChainAsn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate is RDFOntologyObjectProperty asnObjProp
-                                                                                                                && ontology.Model.PropertyModel.CheckIsPropertyChain(asnObjProp)
-                                                                                                                    && asn.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            foreach (RDFOntologyTaxonomyEntry propChainAsn in ontology.Data.Relations.Assertions.Where(asn => asn.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None
+                                                                                                                && asn.TaxonomyPredicate is RDFOntologyObjectProperty asnObjProp
+                                                                                                                    && ontology.Model.PropertyModel.CheckIsPropertyChain(asnObjProp)))
             {
                 report.AddEvidence(new RDFOntologyValidatorEvidence(
                     RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
