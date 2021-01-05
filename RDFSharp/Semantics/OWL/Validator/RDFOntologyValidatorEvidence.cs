@@ -34,17 +34,17 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Rule which has reported this evidence
         /// </summary>
-        public String EvidenceProvenance { get; internal set; }
+        public string EvidenceProvenance { get; internal set; }
 
         /// <summary>
         /// Message of the evidence
         /// </summary>
-        public String EvidenceMessage { get; internal set; }
+        public string EvidenceMessage { get; internal set; }
 
         /// <summary>
         /// Proposed action for solving or mitigating the evidence
         /// </summary>
-        public String EvidenceSuggestion { get; internal set; }
+        public string EvidenceSuggestion { get; internal set; }
         #endregion
 
         #region Ctors
@@ -52,9 +52,9 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build an evidence with given category, provenance, message and suggestion
         /// </summary>
         internal RDFOntologyValidatorEvidence(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory evidenceCategory,
-                                              String evidenceProvenance,
-                                              String evidenceMessage,
-                                              String evidenceSuggestion)
+                                              string evidenceProvenance,
+                                              string evidenceMessage,
+                                              string evidenceSuggestion)
         {
             this.EvidenceCategory = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;

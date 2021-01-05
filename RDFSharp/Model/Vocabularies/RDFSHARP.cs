@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfsharp
             /// </summary>
-            public static readonly String PREFIX = "rdfsharp";
+            public static readonly string PREFIX = "rdfsharp";
 
             /// <summary>
             /// https://rdfsharp.codeplex.com/
             /// </summary>
-            public static readonly String BASE_URI = "https://rdfsharp.codeplex.com/";
+            public static readonly string BASE_URI = "https://rdfsharp.codeplex.com/";
             #endregion
 
         }

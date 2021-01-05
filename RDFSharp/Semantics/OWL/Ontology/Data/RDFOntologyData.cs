@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the facts composing the data
         /// </summary>
-        public Int64 FactsCount
+        public long FactsCount
         {
             get { return this.Facts.Count; }
         }
@@ -40,7 +40,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the literals composing the data
         /// </summary>
-        public Int64 LiteralsCount
+        public long LiteralsCount
         {
             get { return this.Literals.Count; }
         }
@@ -74,12 +74,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of facts composing the data
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyFact> Facts { get; set; }
+        internal Dictionary<long, RDFOntologyFact> Facts { get; set; }
 
         /// <summary>
         /// Dictionary of literals composing the data
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyLiteral> Literals { get; set; }
+        internal Dictionary<long, RDFOntologyLiteral> Literals { get; set; }
         #endregion
 
         #region Ctors
@@ -88,8 +88,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyData()
         {
-            this.Facts = new Dictionary<Int64, RDFOntologyFact>();
-            this.Literals = new Dictionary<Int64, RDFOntologyLiteral>();
+            this.Facts = new Dictionary<long, RDFOntologyFact>();
+            this.Literals = new Dictionary<long, RDFOntologyLiteral>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyDataMetadata();
         }
@@ -166,7 +166,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology fact with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology fact with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -183,7 +183,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology fact with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology fact with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -195,7 +195,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology fact with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology fact with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -321,11 +321,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && ontologyClass != null)
             {
-
                 //Enforce preliminary check on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(ontologyClass))
                 {
-
                     //Enforce taxonomy checks before adding the ClassType relation
                     if (RDFOntologyChecker.CheckClassTypeCompatibility(ontologyClass))
                     {
@@ -333,21 +331,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: ClassType relation cannot be added to the data because only plain classes can be explicitly assigned as class types of facts
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because only plain classes can be explicitly assigned as class types of facts.", ontologyFact, ontologyClass));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because only plain classes can be explicitly assigned as class types of facts.", ontologyFact, ontologyClass));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: ClassType relation cannot be added to the data because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because because usage of BASE reserved classes compromises the taxonomy consistency.", ontologyFact, ontologyClass));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("ClassType relation between fact '{0}' and class '{1}' cannot be added to the data because because usage of BASE reserved classes compromises the taxonomy consistency.", ontologyFact, ontologyClass));
                 }
-
             }
             return this;
         }
@@ -359,7 +351,6 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && bFact != null && !aFact.Equals(bFact))
             {
-
                 //Enforce taxonomy checks before adding the SameAs relation
                 if (RDFOntologyChecker.CheckSameAsCompatibility(this, aFact, bFact))
                 {
@@ -368,12 +359,9 @@ namespace RDFSharp.Semantics.OWL
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SameAs relation cannot be added to the data because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SameAs relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SameAs relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
                 }
-
             }
             return this;
         }
@@ -385,7 +373,6 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && bFact != null && !aFact.Equals(bFact))
             {
-
                 //Enforce taxonomy checks before adding the DifferentFrom relation
                 if (RDFOntologyChecker.CheckDifferentFromCompatibility(this, aFact, bFact))
                 {
@@ -394,12 +381,9 @@ namespace RDFSharp.Semantics.OWL
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: DifferentFrom relation cannot be added to the data because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DifferentFrom relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DifferentFrom relation between fact '{0}' and fact '{1}' cannot be added to the data because it violates the taxonomy consistency.", aFact, bFact));
                 }
-
             }
             return this;
         }
@@ -423,16 +407,13 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(objectProperty))
                 {
-
                     //Enforce taxonomy checks before adding the assertion
                     //Creation of transitive cycles is not allowed [OWL-DL]
                     if (RDFOntologyChecker.CheckTransitiveAssertionCompatibility(this, aFact, objectProperty, bFact))
                     {
-
                         //Collision with negative assertions must be avoided [OWL2]
                         if (RDFOntologyChecker.CheckAssertionCompatibility(this, aFact, objectProperty, bFact))
                         {
@@ -440,30 +421,21 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-
                             //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
-                            RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", aFact, bFact, objectProperty));
-
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", aFact, bFact, objectProperty));
                         }
-
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy transitive consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' with transitive property '{2}' cannot be added to the data because it would violate the taxonomy consistency (transitive cycle detected).", aFact, bFact, objectProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and fact '{1}' with transitive property '{2}' cannot be added to the data because it would violate the taxonomy consistency (transitive cycle detected).", aFact, bFact, objectProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: Assertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and fact '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", aFact, bFact));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and fact '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", aFact, bFact));
                 }
-
             }
             return this;
         }
@@ -477,11 +449,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(datatypeProperty))
                 {
-
                     //Collision with negative assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
                     {
@@ -490,21 +460,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (negative assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: Assertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("Assertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
                 }
-
             }
             return this;
         }
@@ -518,11 +482,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(objectProperty))
                 {
-
                     //Collision with assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, aFact, objectProperty, bFact))
                     {
@@ -530,20 +492,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", aFact, bFact, objectProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", aFact, bFact, objectProperty));
                     }
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", aFact, bFact));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", aFact, bFact));
                 }
-
             }
             return this;
         }
@@ -557,11 +514,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
-
                 //Enforce preliminary check on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(datatypeProperty))
                 {
-
                     //Collision with assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
                     {
@@ -570,20 +525,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (assertion detected).", ontologyFact, ontologyLiteral, datatypeProperty));
                     }
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
                 }
-
             }
             return this;
         }
@@ -881,11 +831,11 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Selects the fact represented by the given string from the data
         /// </summary>
-        public RDFOntologyFact SelectFact(String fact)
+        public RDFOntologyFact SelectFact(string fact)
         {
             if (fact != null)
             {
-                Int64 factID = RDFModelUtilities.CreateHash(fact);
+                long factID = RDFModelUtilities.CreateHash(fact);
                 if (this.Facts.ContainsKey(factID))
                 {
                     return this.Facts[factID];
@@ -897,11 +847,11 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Selects the literal represented by the given string from the data
         /// </summary>
-        public RDFOntologyLiteral SelectLiteral(String literal)
+        public RDFOntologyLiteral SelectLiteral(string literal)
         {
             if (literal != null)
             {
-                Int64 literalID = RDFModelUtilities.CreateHash(literal);
+                long literalID = RDFModelUtilities.CreateHash(literal);
                 if (this.Literals.ContainsKey(literalID))
                 {
                     return this.Literals[literalID];
@@ -944,7 +894,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = this.Relations.SameAs.IntersectWith(ontologyData.Relations.SameAs);
                 result.Relations.DifferentFrom = this.Relations.DifferentFrom.IntersectWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = this.Relations.Assertions.IntersectWith(ontologyData.Relations.Assertions);
-                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.IntersectWith(ontologyData.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.IntersectWith(ontologyData.Relations.NegativeAssertions); //OWL2
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(ontologyData.Annotations.VersionInfo);
@@ -982,7 +932,7 @@ namespace RDFSharp.Semantics.OWL
             result.Relations.SameAs = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
             result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
             result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
-            result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions);
+            result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions); //OWL2
 
             //Add annotations from this data
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1013,7 +963,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = result.Relations.SameAs.UnionWith(ontologyData.Relations.SameAs);
                 result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = result.Relations.Assertions.UnionWith(ontologyData.Relations.Assertions);
-                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(ontologyData.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(ontologyData.Relations.NegativeAssertions); //OWL2
 
                 //Add annotations from the given data
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(ontologyData.Annotations.VersionInfo);
@@ -1059,7 +1009,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = this.Relations.SameAs.DifferenceWith(ontologyData.Relations.SameAs);
                 result.Relations.DifferentFrom = this.Relations.DifferentFrom.DifferenceWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = this.Relations.Assertions.DifferenceWith(ontologyData.Relations.Assertions);
-                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.DifferenceWith(ontologyData.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.DifferenceWith(ontologyData.Relations.NegativeAssertions); //OWL2
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(ontologyData.Annotations.VersionInfo);
@@ -1090,7 +1040,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.SameAs = result.Relations.SameAs.UnionWith(this.Relations.SameAs);
                 result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
                 result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
-                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions);
+                result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions); //OWL2
 
                 //Add annotations from this data
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1118,7 +1068,7 @@ namespace RDFSharp.Semantics.OWL
                            .UnionWith(this.Relations.DifferentFrom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.DifferentFrom)))
                            .UnionWith(this.Relations.ClassType.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.ClassType)))
                            .UnionWith(this.Relations.Assertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.Assertions)))
-                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions)));
+                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions))); //OWL2
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))

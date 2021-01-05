@@ -30,18 +30,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Name of the variable
         /// </summary>
-        public String VariableName { get; internal set; }
+        public string VariableName { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a named SPARQL variable
         /// </summary>
-        public RDFVariable(String variableName)
+        public RDFVariable(string variableName)
         {
-            if (variableName != null && variableName.Trim(new Char[] { ' ', '?', '$' }) != String.Empty)
+            if (variableName != null && variableName.Trim(new char[] { ' ', '?', '$' }) != string.Empty)
             {
-                this.VariableName = "?" + variableName.Trim(new Char[] { ' ', '?', '$' }).ToUpperInvariant();
+                this.VariableName = "?" + variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant();
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
@@ -55,7 +55,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the variable
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.VariableName;
         }

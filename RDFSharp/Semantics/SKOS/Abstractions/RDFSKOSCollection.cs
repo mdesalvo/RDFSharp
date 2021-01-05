@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the concepts of the collection
         /// </summary>
-        public Int64 ConceptsCount
+        public long ConceptsCount
         {
             get { return this.Concepts.Count; }
         }
@@ -40,7 +40,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the collections of the collection
         /// </summary>
-        public Int64 CollectionsCount
+        public long CollectionsCount
         {
             get { return this.Collections.Count; }
         }
@@ -64,12 +64,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Dictionary of concepts contained in the collection
         /// </summary>
-        internal Dictionary<Int64, RDFSKOSConcept> Concepts { get; set; }
+        internal Dictionary<long, RDFSKOSConcept> Concepts { get; set; }
 
         /// <summary>
         /// Dictionary of collections contained in the collection
         /// </summary>
-        internal Dictionary<Int64, RDFSKOSCollection> Collections { get; set; }
+        internal Dictionary<long, RDFSKOSCollection> Collections { get; set; }
         #endregion
 
         #region Ctors
@@ -78,8 +78,8 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFSKOSCollection(RDFResource collectionName) : base(collectionName)
         {
-            this.Concepts = new Dictionary<Int64, RDFSKOSConcept>();
-            this.Collections = new Dictionary<Int64, RDFSKOSCollection>();
+            this.Concepts = new Dictionary<long, RDFSKOSConcept>();
+            this.Collections = new Dictionary<long, RDFSKOSCollection>();
         }
         #endregion
 
@@ -145,11 +145,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the concept represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSConcept SelectConcept(String concept)
+        public RDFSKOSConcept SelectConcept(string concept)
         {
             if (concept != null)
             {
-                Int64 conceptID = RDFModelUtilities.CreateHash(concept);
+                long conceptID = RDFModelUtilities.CreateHash(concept);
                 if (this.Concepts.ContainsKey(conceptID))
                 {
                     return this.Concepts[conceptID];
@@ -161,11 +161,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSCollection SelectCollection(String collection)
+        public RDFSKOSCollection SelectCollection(string collection)
         {
             if (collection != null)
             {
-                Int64 collectionID = RDFModelUtilities.CreateHash(collection);
+                long collectionID = RDFModelUtilities.CreateHash(collection);
                 if (this.Collections.ContainsKey(collectionID))
                 {
                     return this.Collections[collectionID];

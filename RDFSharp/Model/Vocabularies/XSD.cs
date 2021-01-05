@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// xsd
             /// </summary>
-            public static readonly String PREFIX = "xsd";
+            public static readonly string PREFIX = "xsd";
 
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/2001/XMLSchema#";
+            public static readonly string BASE_URI = "http://www.w3.org/2001/XMLSchema#";
 
             /// <summary>
             /// xsd:string

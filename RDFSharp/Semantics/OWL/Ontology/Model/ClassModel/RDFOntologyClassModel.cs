@@ -33,7 +33,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the classes composing the class model
         /// </summary>
-        public Int64 ClassesCount
+        public long ClassesCount
         {
             get { return this.Classes.Count; }
         }
@@ -41,7 +41,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the restrictions classes composing the class model
         /// </summary>
-        public Int64 RestrictionsCount
+        public long RestrictionsCount
         {
             get { return this.Classes.Count(c => c.Value.IsRestrictionClass()); }
         }
@@ -49,7 +49,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the enumerate classes composing the class model
         /// </summary>
-        public Int64 EnumeratesCount
+        public long EnumeratesCount
         {
             get { return this.Classes.Count(c => c.Value.IsEnumerateClass()); }
         }
@@ -57,7 +57,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the datarange classes composing the class model
         /// </summary>
-        public Int64 DataRangesCount
+        public long DataRangesCount
         {
             get { return this.Classes.Count(c => c.Value.IsDataRangeClass()); }
         }
@@ -65,7 +65,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the composite classes composing the class model
         /// </summary>
-        public Int64 CompositesCount
+        public long CompositesCount
         {
             get { return this.Classes.Count(c => c.Value.IsCompositeClass()); }
         }
@@ -142,7 +142,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of classes composing the class model
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyClass> Classes { get; set; }
+        internal Dictionary<long, RDFOntologyClass> Classes { get; set; }
         #endregion
 
         #region Ctors
@@ -151,7 +151,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyClassModel()
         {
-            this.Classes = new Dictionary<Int64, RDFOntologyClass>();
+            this.Classes = new Dictionary<long, RDFOntologyClass>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyClassModelMetadata();
         }
@@ -221,7 +221,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology class with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology class with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -238,7 +238,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology class with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology class with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -250,7 +250,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology class with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology class with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -377,11 +377,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (childClass != null && motherClass != null && !childClass.Equals(motherClass))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(childClass) && !RDFOntologyChecker.CheckReservedClass(motherClass))
                 {
-
                     //Enforce taxonomy checks before adding the subClassOf relation
                     if (RDFOntologyChecker.CheckSubClassOfCompatibility(this, childClass, motherClass))
                     {
@@ -389,21 +387,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: SubClassOf relation cannot be added to the class model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", childClass, motherClass));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SubClassOf relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", childClass, motherClass));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubClassOf relation between child class '{0}' and mother class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", childClass, motherClass));
                 }
-
             }
             return this;
         }
@@ -416,11 +408,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aClass != null && bClass != null && !aClass.Equals(bClass))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(aClass) && !RDFOntologyChecker.CheckReservedClass(bClass))
                 {
-
                     //Enforce taxonomy checks before adding the equivalentClass relation
                     if (RDFOntologyChecker.CheckEquivalentClassCompatibility(this, aClass, bClass))
                     {
@@ -429,21 +419,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: EquivalentClass relation cannot be added to the class model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: EquivalentClass relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentClass relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
                 }
-
             }
             return this;
         }
@@ -456,11 +440,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aClass != null && bClass != null && !aClass.Equals(bClass))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedClass(aClass) && !RDFOntologyChecker.CheckReservedClass(bClass))
                 {
-
                     //Enforce taxonomy checks before adding the disjointWith relation
                     if (RDFOntologyChecker.CheckDisjointWithCompatibility(this, aClass, bClass))
                     {
@@ -469,21 +451,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: DisjointWith relation cannot be added to the class model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because it violates the taxonomy consistency.", aClass, bClass));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: DisjointWith relation cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DisjointWith relation between class '{0}' and class '{1}' cannot be added to the class model because usage of BASE reserved classes compromises the taxonomy consistency.", aClass, bClass));
                 }
-
             }
             return this;
         }
@@ -568,17 +544,17 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// For each of the given properties, adds the "ontologyClass -> owl:hasKey -> ontologyProperty" relation to the class model [OWL2]
+        /// For each of the given properties, adds the "ontologyClass -> owl:hasKey -> keyProperty" relation to the class model [OWL2]
         /// </summary>
         public RDFOntologyClassModel AddHasKeyRelation(RDFOntologyClass ontologyClass,
-                                                       List<RDFOntologyProperty> ontologyProperties)
+                                                       List<RDFOntologyProperty> keyProperties)
         {
-            if (ontologyClass != null && ontologyProperties != null)
+            if (ontologyClass != null && keyProperties != null)
             {
-                ontologyProperties.ForEach(p =>
+                keyProperties.ForEach(kp =>
                 {
-                    if (p != null)
-                        this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), p));
+                    if (kp != null)
+                        this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), kp));
                 });
             }
             return this;
@@ -883,14 +859,14 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Removes the "ontologyClass -> owl:hasKey -> ontologyProperty" relation from the class model [OWL2]
+        /// Removes the "ontologyClass -> owl:hasKey -> keyProperty" relation from the class model [OWL2]
         /// </summary>
         public RDFOntologyClassModel RemoveHasKeyRelation(RDFOntologyClass ontologyClass,
-                                                          RDFOntologyProperty ontologyProperty)
+                                                          RDFOntologyProperty keyProperty)
         {
-            if (ontologyClass != null && ontologyProperty != null)
+            if (ontologyClass != null && keyProperty != null)
             {
-                this.Relations.HasKey.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), ontologyProperty));
+                this.Relations.HasKey.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), keyProperty));
             }
             return this;
         }
@@ -900,11 +876,11 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Selects the ontology class represented by the given string from the ontology class model
         /// </summary>
-        public RDFOntologyClass SelectClass(String ontClass)
+        public RDFOntologyClass SelectClass(string ontClass)
         {
             if (ontClass != null)
             {
-                Int64 classID = RDFModelUtilities.CreateHash(ontClass);
+                long classID = RDFModelUtilities.CreateHash(ontClass);
                 if (this.Classes.ContainsKey(classID))
                 {
                     return this.Classes[classID];
@@ -940,7 +916,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = this.Relations.OneOf.IntersectWith(classModel.Relations.OneOf);
                 result.Relations.IntersectionOf = this.Relations.IntersectionOf.IntersectWith(classModel.Relations.IntersectionOf);
                 result.Relations.UnionOf = this.Relations.UnionOf.IntersectWith(classModel.Relations.UnionOf);
-                result.Relations.HasKey = this.Relations.HasKey.IntersectWith(classModel.Relations.HasKey);
+                result.Relations.HasKey = this.Relations.HasKey.IntersectWith(classModel.Relations.HasKey); //OWL2
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(classModel.Annotations.VersionInfo);
@@ -974,7 +950,7 @@ namespace RDFSharp.Semantics.OWL
             result.Relations.OneOf = result.Relations.OneOf.UnionWith(this.Relations.OneOf);
             result.Relations.IntersectionOf = result.Relations.IntersectionOf.UnionWith(this.Relations.IntersectionOf);
             result.Relations.UnionOf = result.Relations.UnionOf.UnionWith(this.Relations.UnionOf);
-            result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey);
+            result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey); //OWL2
 
             //Add annotations from this class model
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1001,7 +977,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = result.Relations.OneOf.UnionWith(classModel.Relations.OneOf);
                 result.Relations.IntersectionOf = result.Relations.IntersectionOf.UnionWith(classModel.Relations.IntersectionOf);
                 result.Relations.UnionOf = result.Relations.UnionOf.UnionWith(classModel.Relations.UnionOf);
-                result.Relations.HasKey = result.Relations.HasKey.UnionWith(classModel.Relations.HasKey);
+                result.Relations.HasKey = result.Relations.HasKey.UnionWith(classModel.Relations.HasKey); //OWL2
 
                 //Add annotations from the given class model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(classModel.Annotations.VersionInfo);
@@ -1040,7 +1016,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = this.Relations.OneOf.DifferenceWith(classModel.Relations.OneOf);
                 result.Relations.IntersectionOf = this.Relations.IntersectionOf.DifferenceWith(classModel.Relations.IntersectionOf);
                 result.Relations.UnionOf = this.Relations.UnionOf.DifferenceWith(classModel.Relations.UnionOf);
-                result.Relations.HasKey = this.Relations.HasKey.DifferenceWith(classModel.Relations.HasKey);
+                result.Relations.HasKey = this.Relations.HasKey.DifferenceWith(classModel.Relations.HasKey); //OWL2
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(classModel.Annotations.VersionInfo);
@@ -1067,7 +1043,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.OneOf = result.Relations.OneOf.UnionWith(this.Relations.OneOf);
                 result.Relations.IntersectionOf = result.Relations.IntersectionOf.UnionWith(this.Relations.IntersectionOf);
                 result.Relations.UnionOf = result.Relations.UnionOf.UnionWith(this.Relations.UnionOf);
-                result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey);
+                result.Relations.HasKey = result.Relations.HasKey.UnionWith(this.Relations.HasKey); //OWL2
 
                 //Add annotations from this class model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1288,7 +1264,7 @@ namespace RDFSharp.Semantics.OWL
             result = result.UnionWith(this.Relations.SubClassOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SubClassOf)))
                            .UnionWith(this.Relations.EquivalentClass.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.EquivalentClass)))
                            .UnionWith(this.Relations.DisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.DisjointWith)))
-                           .UnionWith(this.Relations.HasKey.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.HasKey)));
+                           .UnionWith(this.Relations.HasKey.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.HasKey))); //OWL2
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))

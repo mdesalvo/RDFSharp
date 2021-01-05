@@ -65,13 +65,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            return $"FILTER ( {RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes)} IN ({String.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes)))}) )";
+            return $"FILTER ( {RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes)} IN ({string.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes)))}) )";
         }
         #endregion
 
@@ -79,9 +79,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = false;
+            bool keepRow = false;
 
             //IN filter is equivalent to an OR-chain of equality comparison filters
             IEnumerator<RDFPatternMember> inTermsEnumerator = this.InTerms.GetEnumerator();

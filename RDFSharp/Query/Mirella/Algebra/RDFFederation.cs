@@ -33,12 +33,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Name of the federation
         /// </summary>
-        public String FederationName { get; internal set; }
+        public string FederationName { get; internal set; }
 
         /// <summary>
         /// Count of the federation's data sources
         /// </summary>
-        public Int32 DataSourcesCount
+        public int DataSourcesCount
         {
             get { return this.DataSources.Count; }
         }
@@ -72,7 +72,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the federation
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.FederationName;
         }

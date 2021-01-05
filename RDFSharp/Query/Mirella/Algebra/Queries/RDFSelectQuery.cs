@@ -36,7 +36,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of projection variables and associated ordinals
         /// </summary>
-        internal Dictionary<RDFVariable, Int32> ProjectionVars { get; set; }
+        internal Dictionary<RDFVariable, int> ProjectionVars { get; set; }
         #endregion
 
         #region Ctors
@@ -45,7 +45,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery()
         {
-            this.ProjectionVars = new Dictionary<RDFVariable, Int32>();
+            this.ProjectionVars = new Dictionary<RDFVariable, int>();
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the SELECT query
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return RDFQueryPrinter.PrintSelectQuery(this, 0, false);
         }
@@ -216,7 +216,7 @@ namespace RDFSharp.Query
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
             if (sparqlEndpoint != null)
             {
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SELECT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluating SELECT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
 
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
@@ -247,14 +247,14 @@ namespace RDFSharp.Query
                 }
 
                 //Eventually adjust column names (should start with "?")
-                Int32 columnsCount = selResult.SelectResults.Columns.Count;
-                for (Int32 i = 0; i < columnsCount; i++)
+                int columnsCount = selResult.SelectResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
                 {
                     if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                         selResult.SelectResults.Columns[i].ColumnName = "?" + selResult.SelectResults.Columns[i].ColumnName;
                 }
 
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
+                RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
             return selResult;
         }

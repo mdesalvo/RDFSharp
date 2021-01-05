@@ -35,12 +35,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of temporary result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<Int64, List<DataTable>> QueryMemberTemporaryResultTables { get; set; }
+        internal Dictionary<long, List<DataTable>> QueryMemberTemporaryResultTables { get; set; }
 
         /// <summary>
         /// Dictionary of final result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<Int64, DataTable> QueryMemberFinalResultTables { get; set; }
+        internal Dictionary<long, DataTable> QueryMemberFinalResultTables { get; set; }
         #endregion
 
         #region Ctors
@@ -49,8 +49,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            this.QueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
-            this.QueryMemberFinalResultTables = new Dictionary<Int64, DataTable>();
+            this.QueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+            this.QueryMemberFinalResultTables = new Dictionary<long, DataTable>();
         }
         #endregion
 
@@ -62,7 +62,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluating SPARQL SELECT query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             selectQuery.InjectValues(selectQuery.GetValues());
@@ -73,14 +73,14 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -152,7 +152,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -176,7 +176,7 @@ namespace RDFSharp.Query
                 queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
 
             }
-            RDFQueryEvents.RaiseSELECTQueryEvaluation(String.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
+            RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluated SPARQL SELECT query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.SelectResultsCount));
 
             queryResult.SelectResults.TableName = selectQuery.ToString();
             return queryResult;
@@ -187,7 +187,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluating SPARQL DESCRIBE query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             describeQuery.InjectValues(describeQuery.GetValues());
@@ -198,14 +198,14 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -277,7 +277,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -357,7 +357,7 @@ namespace RDFSharp.Query
                 }
 
             }
-            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated SPARQL DESCRIBE query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.DescribeResultsCount));
+            RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluated SPARQL DESCRIBE query on DataSource '{0}': Found '{1}' results.", datasource, queryResult.DescribeResultsCount));
 
             queryResult.DescribeResults.TableName = describeQuery.ToString();
             return queryResult;
@@ -368,7 +368,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluating CONSTRUCT query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             constructQuery.InjectValues(constructQuery.GetValues());
@@ -379,14 +379,14 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -458,7 +458,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -485,7 +485,7 @@ namespace RDFSharp.Query
                 constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
 
             }
-            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(String.Format("Evaluated SPARQL CONSTRUCT query on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
+            RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluated SPARQL CONSTRUCT query on DataSource '{0}': Found '{1}' results.", datasource, constructResult.ConstructResultsCount));
 
             constructResult.ConstructResults.TableName = constructQuery.ToString();
             return constructResult;
@@ -496,7 +496,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
+            RDFQueryEvents.RaiseASKQueryEvaluation(string.Format("Evaluating SPARQL ASK query on DataSource '{0}'...", datasource));
 
             //Inject SPARQL values within every evaluable member
             askQuery.InjectValues(askQuery.GetValues());
@@ -507,14 +507,14 @@ namespace RDFSharp.Query
             {
 
                 //Iterate the evaluable members of the query
-                Dictionary<Int64, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<Int64, List<DataTable>>();
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
                 foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 {
 
                     #region PATTERN GROUP
                     if (evaluableQueryMember is RDFPatternGroup)
                     {
-                        RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
+                        RDFQueryEvents.RaiseASKQueryEvaluation(string.Format("Evaluating PatternGroup '{0}' on DataSource '{1}'...", (RDFPatternGroup)evaluableQueryMember, datasource));
 
                         //Step 0: Cleanup eventual data from stateful pattern group members
                         ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
@@ -586,7 +586,7 @@ namespace RDFSharp.Query
                             else
                             {
                                 QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (Boolean)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
                             }
                             //Populate its metadata (JoinAsUnion)
                             if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -610,7 +610,7 @@ namespace RDFSharp.Query
                 askResult.AskResult = (queryResultTable.Rows.Count > 0);
 
             }
-            RDFQueryEvents.RaiseASKQueryEvaluation(String.Format("Evaluated SPARQL ASK query on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));
+            RDFQueryEvents.RaiseASKQueryEvaluation(string.Format("Evaluated SPARQL ASK query on DataSource '{0}': Result is '{1}'.", datasource, askResult.AskResult));
 
             return askResult;
         }
@@ -618,7 +618,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the intermediate result tables of the given pattern group
         /// </summary>
-        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource, Boolean withinFederation)
+        internal void EvaluatePatternGroup(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource, bool withinFederation)
         {
             QueryMemberTemporaryResultTables[patternGroup.QueryMemberID] = new List<DataTable>();
 
@@ -636,7 +636,7 @@ namespace RDFSharp.Query
 
                     #region Events
                     //Raise query event messages
-                    String eventMsg = String.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, dataSource, patternResultsTable.Rows.Count);
+                    string eventMsg = string.Format("Pattern '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPattern)evaluablePGMember, dataSource, patternResultsTable.Rows.Count);
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -664,7 +664,7 @@ namespace RDFSharp.Query
 
                     #region Events
                     //Raise query event messages
-                    String eventMsg = String.Format(String.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, dataSource, pPathResultsTable.Rows.Count));
+                    string eventMsg = string.Format(string.Format("PropertyPath '{0}' has been evaluated on DataSource '{1}': Found '{2}' results.", (RDFPropertyPath)evaluablePGMember, dataSource, pPathResultsTable.Rows.Count));
                     if (query is RDFAskQuery)
                         RDFQueryEvents.RaiseASKQueryEvaluation(eventMsg);
                     else if (query is RDFConstructQuery)
@@ -753,7 +753,7 @@ namespace RDFSharp.Query
                 else
                 {
                     QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"] = patternGroup.IsOptional
-                                                                                                                    || (Boolean)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
+                                                                                                                    || (bool)QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties["IsOptional"];
                 }
                 //Populate its metadata (JoinAsUnion)
                 if (!QueryMemberFinalResultTables[patternGroup.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
@@ -781,7 +781,7 @@ namespace RDFSharp.Query
                 IEnumerator rowsEnum = QueryMemberFinalResultTables[patternGroup.QueryMemberID].Rows.GetEnumerator();
 
                 //Iterate the rows of the pattern group's result table
-                Boolean keepRow = false;
+                bool keepRow = false;
                 while (rowsEnum.MoveNext())
                 {
 
@@ -896,7 +896,7 @@ namespace RDFSharp.Query
             result.AcceptChanges();
 
             //Initialize working variables
-            var constructRow = new Dictionary<String, String>();
+            var constructRow = new Dictionary<string, string>();
             constructRow.Add("?SUBJECT", null);
             constructRow.Add("?PREDICATE", null);
             constructRow.Add("?OBJECT", null);
@@ -2088,8 +2088,8 @@ namespace RDFSharp.Query
             RDFSelectQueryResult selectQueryResult = selectQuery.ApplyToSPARQLEndpoint(sparqlEndpoint);
 
             //Eventually adjust variable names (should start with "?")
-            Int32 columnsCount = selectQueryResult.SelectResults.Columns.Count;
-            for (Int32 i = 0; i < columnsCount; i++)
+            int columnsCount = selectQueryResult.SelectResults.Columns.Count;
+            for (int i = 0; i < columnsCount; i++)
             {
                 if (!selectQueryResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                     selectQueryResult.SelectResults.Columns[i].ColumnName = "?" + selectQueryResult.SelectResults.Columns[i].ColumnName;
@@ -2155,7 +2155,7 @@ namespace RDFSharp.Query
         {
 
             #region Methods
-            public Boolean Equals(DataColumn column1, DataColumn column2)
+            public bool Equals(DataColumn column1, DataColumn column2)
             {
                 if (column1 != null)
                 {
@@ -2164,7 +2164,7 @@ namespace RDFSharp.Query
                 return column2 == null;
             }
 
-            public Int32 GetHashCode(DataColumn column)
+            public int GetHashCode(DataColumn column)
             {
                 return column.Caption.GetHashCode();
             }
@@ -2179,7 +2179,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a new column to the given table, avoiding duplicates
         /// </summary>
-        internal static void AddColumn(DataTable table, String columnName)
+        internal static void AddColumn(DataTable table, string columnName)
         {
             if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant()))
             {
@@ -2190,9 +2190,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds a new row to the given table
         /// </summary>
-        internal static void AddRow(DataTable table, Dictionary<String, String> bindings)
+        internal static void AddRow(DataTable table, Dictionary<string, string> bindings)
         {
-            Boolean rowAdded = false;
+            bool rowAdded = false;
             DataRow resultRow = table.NewRow();
             bindings.Keys.ToList().ForEach(k =>
             {
@@ -2213,7 +2213,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
-            var bindings = new Dictionary<String, String>();
+            var bindings = new Dictionary<string, string>();
 
             //Iterate result graph's triples
             foreach (var t in triples)
@@ -2279,7 +2279,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal void PopulateTable(RDFPattern pattern, RDFMemoryStore store, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
-            var bindings = new Dictionary<String, String>();
+            var bindings = new Dictionary<string, string>();
 
             //Iterate result store's quadruples
             foreach (var q in store)
@@ -2450,13 +2450,13 @@ namespace RDFSharp.Query
                 result.BeginLoadData();
                 foreach (DataRow parentRow in dt1.Rows)
                 {
-                    Object[] firstArray = parentRow.ItemArray;
+                    object[] firstArray = parentRow.ItemArray;
 
                     //Loop through dt2 table
                     foreach (DataRow childRow in dt2.Rows)
                     {
-                        Object[] secondArray = childRow.ItemArray;
-                        Object[] productArray = new Object[firstArray.Length + secondArray.Length];
+                        object[] secondArray = childRow.ItemArray;
+                        object[] productArray = new object[firstArray.Length + secondArray.Length];
                         Array.Copy(firstArray, 0, productArray, 0, firstArray.Length);
                         Array.Copy(secondArray, 0, productArray, firstArray.Length, secondArray.Length);
                         result.LoadDataRow(productArray, true);
@@ -2480,13 +2480,13 @@ namespace RDFSharp.Query
 
                     //Identify join columns from dt1
                     DataColumn[] parentColumns = new DataColumn[commonColumns.Length];
-                    for (Int32 i = 0; i < parentColumns.Length; i++)
+                    for (int i = 0; i < parentColumns.Length; i++)
                     {
                         parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
                     }
                     //Identify join columns from dt2
                     DataColumn[] childColumns = new DataColumn[commonColumns.Length];
-                    for (Int32 i = 0; i < childColumns.Length; i++)
+                    for (int i = 0; i < childColumns.Length; i++)
                     {
                         childColumns[i] = ds.Tables[1].Columns[commonColumns[i].ColumnName];
                     }
@@ -2496,12 +2496,12 @@ namespace RDFSharp.Query
                     ds.Relations.Add(r);
 
                     //Create the structure of the join table
-                    List<String> duplicateCols = new List<String>();
-                    for (Int32 i = 0; i < ds.Tables[0].Columns.Count; i++)
+                    List<string> duplicateCols = new List<string>();
+                    for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
                     {
                         result.Columns.Add(ds.Tables[0].Columns[i].ColumnName, ds.Tables[0].Columns[i].DataType);
                     }
-                    for (Int32 i = 0; i < ds.Tables[1].Columns.Count; i++)
+                    for (int i = 0; i < ds.Tables[1].Columns.Count; i++)
                     {
                         if (!result.Columns.Contains(ds.Tables[1].Columns[i].ColumnName))
                         {
@@ -2525,11 +2525,11 @@ namespace RDFSharp.Query
                         DataRow[] childRows = firstRow.GetChildRows(r);
                         if (childRows.Length > 0)
                         {
-                            Object[] parentArray = firstRow.ItemArray;
+                            object[] parentArray = firstRow.ItemArray;
                             foreach (DataRow secondRow in childRows)
                             {
-                                Object[] secondArray = secondRow.ItemArray;
-                                Object[] joinArray = new Object[parentArray.Length + secondArray.Length];
+                                object[] secondArray = secondRow.ItemArray;
+                                object[] joinArray = new object[parentArray.Length + secondArray.Length];
                                 Array.Copy(parentArray, 0, joinArray, 0, parentArray.Length);
                                 Array.Copy(secondArray, 0, joinArray, parentArray.Length, secondArray.Length);
                                 result.LoadDataRow(joinArray, true);
@@ -2559,10 +2559,10 @@ namespace RDFSharp.Query
             IEnumerable<DataColumn> dt1Columns = (dt1Cols as IList<DataColumn> ?? dt1Cols.ToList<DataColumn>());
             IEnumerable<DataColumn> dt2Columns = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
 
-            Boolean dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
-            Boolean joinInvalidationFlag = false;
-            Boolean foundAnyResult = false;
-            String strResCol = String.Empty;
+            bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
+            bool joinInvalidationFlag = false;
+            bool foundAnyResult = false;
+            string strResCol = string.Empty;
 
 
             //Step 1: Determine common columns
@@ -2705,15 +2705,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Merges / Joins / Products the given list of data tables, based on presence of common columns and dynamic detection of Optional / Union operators
         /// </summary>
-        internal DataTable CombineTables(List<DataTable> dataTables, Boolean isMerge)
+        internal DataTable CombineTables(List<DataTable> dataTables, bool isMerge)
         {
             DataTable finalTable = new DataTable();
-            Boolean switchToOuterJoin = false;
+            bool switchToOuterJoin = false;
             if (dataTables.Count > 0)
             {
 
                 //Process Unions
-                for (Int32 i = 1; i < dataTables.Count; i++)
+                for (int i = 1; i < dataTables.Count; i++)
                 {
                     if (isMerge || (dataTables[i - 1].ExtendedProperties.ContainsKey("JoinAsUnion") && dataTables[i - 1].ExtendedProperties["JoinAsUnion"].Equals(true)))
                     {
@@ -2734,7 +2734,7 @@ namespace RDFSharp.Query
 
                 //Process Joins
                 finalTable = dataTables[0];
-                for (Int32 i = 1; i < dataTables.Count; i++)
+                for (int i = 1; i < dataTables.Count; i++)
                 {
 
                     //Set automatic switch to OuterJoin in case of relevant "Optional" detected

@@ -35,12 +35,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Indicates that this shape is ignored (sh:deactivated)
         /// </summary>
-        public Boolean Deactivated { get; internal set; }
+        public bool Deactivated { get; internal set; }
 
         /// <summary>
         /// Count of the human-readable messages of this shape
         /// </summary>
-        public Int64 MessagesCount
+        public long MessagesCount
         {
             get { return this.Messages.Count; }
         }
@@ -56,7 +56,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the targets of this shape
         /// </summary>
-        public Int64 TargetsCount
+        public long TargetsCount
         {
             get { return this.Targets.Count; }
         }
@@ -72,7 +72,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the constraints of this shape
         /// </summary>
-        public Int64 ConstraintsCount
+        public long ConstraintsCount
         {
             get { return this.Constraints.Count; }
         }
@@ -207,11 +207,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the constraint represented by the given string from this shape
         /// </summary>
-        public RDFConstraint SelectConstraint(String constraintName)
+        public RDFConstraint SelectConstraint(string constraintName)
         {
             if (constraintName != null)
             {
-                Int64 constraintID = RDFModelUtilities.CreateHash(constraintName);
+                long constraintID = RDFModelUtilities.CreateHash(constraintName);
                 return this.Constraints.Find(c => c.PatternMemberID.Equals(constraintID));
             }
             return null;
@@ -220,11 +220,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the target represented by the given string from this shape
         /// </summary>
-        public RDFTarget SelectTarget(String targetName)
+        public RDFTarget SelectTarget(string targetName)
         {
             if (targetName != null)
             {
-                Int64 targetID = RDFModelUtilities.CreateHash(targetName);
+                long targetID = RDFModelUtilities.CreateHash(targetName);
                 return this.Targets.Find(t => t.PatternMemberID.Equals(targetID));
             }
             return null;

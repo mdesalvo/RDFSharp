@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the properties composing the property model
         /// </summary>
-        public Int64 PropertiesCount
+        public long PropertiesCount
         {
             get { return this.Properties.Count; }
         }
@@ -41,7 +40,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the annotation properties composing the property model
         /// </summary>
-        public Int64 AnnotationPropertiesCount
+        public long AnnotationPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsAnnotationProperty()); }
         }
@@ -49,7 +48,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the datatype properties composing the property model
         /// </summary>
-        public Int64 DatatypePropertiesCount
+        public long DatatypePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsDatatypeProperty()); }
         }
@@ -57,7 +56,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the object properties composing the property model
         /// </summary>
-        public Int64 ObjectPropertiesCount
+        public long ObjectPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsObjectProperty()); }
         }
@@ -65,7 +64,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the functional properties composing the property model
         /// </summary>
-        public Int64 FunctionalPropertiesCount
+        public long FunctionalPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsFunctionalProperty()); }
         }
@@ -73,7 +72,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the symmetric properties composing the property model
         /// </summary>
-        public Int64 SymmetricPropertiesCount
+        public long SymmetricPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsSymmetricProperty()); }
         }
@@ -81,7 +80,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the asymmetric properties composing the property model [OWL2]
         /// </summary>
-        public Int64 AsymmetricPropertiesCount
+        public long AsymmetricPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsAsymmetricProperty()); }
         }
@@ -89,7 +88,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the reflexive properties composing the property model [OWL2]
         /// </summary>
-        public Int64 ReflexivePropertiesCount
+        public long ReflexivePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsReflexiveProperty()); }
         }
@@ -97,7 +96,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the irreflexive properties composing the property model [OWL2]
         /// </summary>
-        public Int64 IrreflexivePropertiesCount
+        public long IrreflexivePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsIrreflexiveProperty()); }
         }
@@ -105,7 +104,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the transitive properties composing the property model
         /// </summary>
-        public Int64 TransitivePropertiesCount
+        public long TransitivePropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsTransitiveProperty()); }
         }
@@ -113,7 +112,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the inverse functional properties composing the property model
         /// </summary>
-        public Int64 InverseFunctionalPropertiesCount
+        public long InverseFunctionalPropertiesCount
         {
             get { return this.Properties.Count(p => p.Value.IsInverseFunctionalProperty()); }
         }
@@ -268,7 +267,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of properties composing the property model
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyProperty> Properties { get; set; }
+        internal Dictionary<long, RDFOntologyProperty> Properties { get; set; }
         #endregion
 
         #region Ctors
@@ -277,7 +276,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyPropertyModel()
         {
-            this.Properties = new Dictionary<Int64, RDFOntologyProperty>();
+            this.Properties = new Dictionary<long, RDFOntologyProperty>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyPropertyModelMetadata();
         }
@@ -339,7 +338,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology property with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology property with owl:versionInfo value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -356,7 +355,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology property with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology property with rdfs:comment value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -368,7 +367,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Cannot annotate ontology property with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
+                            RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Cannot annotate ontology property with rdfs:label value '{0}' because it is not an ontology literal", annotationValue));
                         }
                         break;
 
@@ -495,11 +494,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(childProperty) && !RDFOntologyChecker.CheckReservedProperty(motherProperty))
                 {
-
                     //Enforce taxonomy checks before adding the subPropertyOf relation
                     if (RDFOntologyChecker.CheckSubPropertyOfCompatibility(this, childProperty, motherProperty))
                     {
@@ -507,21 +504,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", childProperty, motherProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", childProperty, motherProperty));
                 }
-
             }
             return this;
         }
@@ -534,11 +525,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(childProperty) && !RDFOntologyChecker.CheckReservedProperty(motherProperty))
                 {
-
                     //Enforce taxonomy checks before adding the subPropertyOf relation
                     if (RDFOntologyChecker.CheckSubPropertyOfCompatibility(this, childProperty, motherProperty))
                     {
@@ -546,21 +535,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", childProperty, motherProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: SubPropertyOf relation cannot be added to the property model because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", childProperty, motherProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation between child property '{0}' and mother property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", childProperty, motherProperty));
                 }
-
             }
             return this;
         }
@@ -573,11 +556,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the equivalentProperty relation
                     if (RDFOntologyChecker.CheckEquivalentPropertyCompatibility(this, aProperty, bProperty))
                     {
@@ -586,21 +567,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
                 }
-
             }
             return this;
         }
@@ -613,11 +588,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the equivalentProperty relation
                     if (RDFOntologyChecker.CheckEquivalentPropertyCompatibility(this, aProperty, bProperty))
                     {
@@ -626,21 +599,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: EquivalentProperty relation cannot be added to the property model because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
                 }
-
             }
             return this;
         }
@@ -653,11 +620,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the propertyDisjointWith relation
                     if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty))
                     {
@@ -666,21 +631,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
                 }
-
             }
             return this;
         }
@@ -693,11 +652,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE classes
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the propertyDisjointWith relation
                     if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty))
                     {
@@ -706,21 +663,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: PropertyDisjointWith relation cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved classes compromises the taxonomy consistency.", aProperty, bProperty));
                 }
-
             }
             return this;
         }
@@ -733,11 +684,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
-
                 //Enforce preliminary checks on usage of BASE properties
                 if (!RDFOntologyChecker.CheckReservedProperty(aProperty) && !RDFOntologyChecker.CheckReservedProperty(bProperty))
                 {
-
                     //Enforce taxonomy checks before adding the inverseOf relation
                     if (RDFOntologyChecker.CheckInverseOfPropertyCompatibility(this, aProperty, bProperty))
                     {
@@ -746,21 +695,15 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else
                     {
-
                         //Raise warning event to inform the user: InverseOf relation cannot be added to the property model because it violates the taxonomy consistency
-                        RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
-
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because it violates the taxonomy consistency.", aProperty, bProperty));
                     }
-
                 }
                 else
                 {
-
                     //Raise warning event to inform the user: InverseOf relation cannot be added to the property model because it violates the taxonomy consistency
-                    RDFSemanticsEvents.RaiseSemanticsWarning(String.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
-
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("InverseOf relation between property '{0}' and property '{1}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", aProperty, bProperty));
                 }
-
             }
             return this;
         }
@@ -782,6 +725,38 @@ namespace RDFSharp.Semantics.OWL
         {
             ontologyProperties?.ForEach(outerProperty =>
                 ontologyProperties?.ForEach(innerProperty => this.AddPropertyDisjointWithRelation(outerProperty, innerProperty)));
+            return this;
+        }
+
+        /// <summary>
+        /// For each of the given properties, adds the "ontologyProperty -> owl:propertyChainAxiom -> chainProperty" relation to the property model [OWL2]
+        /// </summary>
+        public RDFOntologyPropertyModel AddPropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty,
+                                                                      List<RDFOntologyObjectProperty> chainProperties)
+        {
+            if (ontologyProperty != null && chainProperties != null)
+            {
+                //Enforce preliminary checks on usage of BASE properties
+                if (!RDFOntologyChecker.CheckReservedProperty(ontologyProperty))
+                {
+                    //Enforce checks on syntactic corner cases and OWL2 decidability (do not allow cycles)
+                    chainProperties.RemoveAll(chainProp => chainProp == null || chainProp.Equals(ontologyProperty));
+                    if (!chainProperties.Any(chainProp => RDFOntologyHelper.CheckIsPropertyChainStepOf(this, ontologyProperty, chainProp)))
+                    {
+                        chainProperties.ForEach(chainProperty => this.Relations.PropertyChainAxiom.AddEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty)));
+                    }
+                    else
+                    {
+                        //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyChainAxiom relation '{0}' cannot be added to the property model because it violates the taxonomy consistency: it contains a cyclic property chain axiom.", ontologyProperty));
+                    }
+                }
+                else
+                {
+                    //Raise warning event to inform the user: PropertyChainAxiom relation cannot be added to the property model because it violates the taxonomy consistency
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyChainAxiom relation on property '{0}' cannot be added to the property model because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyProperty));
+                }
+            }
             return this;
         }
         #endregion
@@ -1075,17 +1050,30 @@ namespace RDFSharp.Semantics.OWL
             });
             return this;
         }
+
+        /// <summary>
+        /// Removes the "ontologyProperty -> owl:propertyChainAxiom -> chainProperty" relation from the property model
+        /// </summary>
+        public RDFOntologyPropertyModel RemovePropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty,
+                                                                         RDFOntologyObjectProperty chainProperty)
+        {
+            if (ontologyProperty != null && chainProperty != null)
+            {
+                this.Relations.PropertyChainAxiom.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty));
+            }
+            return this;
+        }
         #endregion
 
         #region Select
         /// <summary>
         /// Selects the ontology property represented by the given string from the ontology property model
         /// </summary>
-        public RDFOntologyProperty SelectProperty(String ontProperty)
+        public RDFOntologyProperty SelectProperty(string ontProperty)
         {
             if (ontProperty != null)
             {
-                Int64 propertyID = RDFModelUtilities.CreateHash(ontProperty);
+                long propertyID = RDFModelUtilities.CreateHash(ontProperty);
                 if (this.Properties.ContainsKey(propertyID))
                 {
                     return this.Properties[propertyID];
@@ -1117,8 +1105,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add intersection relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.IntersectWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.IntersectWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = this.Relations.InverseOf.IntersectWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.IntersectWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
+                result.Relations.PropertyChainAxiom = this.Relations.PropertyChainAxiom.IntersectWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(propertyModel.Annotations.VersionInfo);
@@ -1148,8 +1137,9 @@ namespace RDFSharp.Semantics.OWL
             //Add relations from this property model
             result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
             result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
-            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith);
             result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
+            result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
+            result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(this.Relations.PropertyChainAxiom); //OWL2
 
             //Add annotations from this property model
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1172,8 +1162,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from the given property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
+                result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add annotations from the given property model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(propertyModel.Annotations.VersionInfo);
@@ -1208,8 +1199,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add difference relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.DifferenceWith(propertyModel.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = this.Relations.EquivalentProperty.DifferenceWith(propertyModel.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = this.Relations.InverseOf.DifferenceWith(propertyModel.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = this.Relations.PropertyDisjointWith.DifferenceWith(propertyModel.Relations.PropertyDisjointWith); //OWL2
+                result.Relations.PropertyChainAxiom = this.Relations.PropertyChainAxiom.DifferenceWith(propertyModel.Relations.PropertyChainAxiom); //OWL2
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(propertyModel.Annotations.VersionInfo);
@@ -1232,8 +1224,9 @@ namespace RDFSharp.Semantics.OWL
                 //Add relations from this property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
                 result.Relations.EquivalentProperty = result.Relations.EquivalentProperty.UnionWith(this.Relations.EquivalentProperty);
-                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith);
                 result.Relations.InverseOf = result.Relations.InverseOf.UnionWith(this.Relations.InverseOf);
+                result.Relations.PropertyDisjointWith = result.Relations.PropertyDisjointWith.UnionWith(this.Relations.PropertyDisjointWith); //OWL2
+                result.Relations.PropertyChainAxiom = result.Relations.PropertyChainAxiom.UnionWith(this.Relations.PropertyChainAxiom); //OWL2
 
                 //Add annotations from this property model
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1321,8 +1314,9 @@ namespace RDFSharp.Semantics.OWL
             //Relations
             result = result.UnionWith(this.Relations.SubPropertyOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SubPropertyOf)))
                            .UnionWith(this.Relations.EquivalentProperty.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.EquivalentProperty)))
-                           .UnionWith(this.Relations.PropertyDisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyDisjointWith)))
-                           .UnionWith(this.Relations.InverseOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.InverseOf)));
+                           .UnionWith(this.Relations.InverseOf.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.InverseOf)))
+                           .UnionWith(this.Relations.PropertyDisjointWith.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyDisjointWith))) //OWL2
+                           .UnionWith(this.Relations.PropertyChainAxiom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.PropertyChainAxiom))); //OWL2
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))

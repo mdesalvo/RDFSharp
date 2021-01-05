@@ -69,11 +69,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
             return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFQueryPrinter.PrintPatternMember(this.RDFTerm, prefixes) + ") )";
         }
@@ -83,14 +83,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = true;
+            bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString()))
             {
-                String varValue = row[this.Variable.ToString()].ToString();
+                string varValue = row[this.Variable.ToString()].ToString();
 
                 //Equality comparison with a RDFTerm being RDFVariable
                 if (this.RDFTerm is RDFVariable)

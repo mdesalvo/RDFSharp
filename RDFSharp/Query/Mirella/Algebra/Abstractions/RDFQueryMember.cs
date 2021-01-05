@@ -30,7 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the query member
         /// </summary>
-        public Int64 QueryMemberID
+        public long QueryMemberID
         {
             get { return RDFModelUtilities.CreateHash(this.GetQueryMemberString()); }
         }
@@ -38,14 +38,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine
         /// </summary>
-        public Boolean IsEvaluable { get; internal set; }
+        public bool IsEvaluable { get; internal set; }
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the query member
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return base.ToString();
         }
@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs the equality comparison between two query members
         /// </summary>
-        public Boolean Equals(RDFQueryMember other)
+        public bool Equals(RDFQueryMember other)
         {
             return (other != null && this.QueryMemberID.Equals(other.QueryMemberID));
         }
@@ -63,7 +63,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the query member
         /// </summary>
-        internal abstract String GetQueryMemberString();
+        internal abstract string GetQueryMemberString();
         #endregion
 
     }

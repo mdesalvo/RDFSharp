@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:broader/skos:broaderTransitive/skos:broadMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
-        internal static Boolean CheckBroaderRelation(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckBroaderRelation(RDFSKOSConceptScheme conceptScheme,
                                                      RDFSKOSConcept aConcept,
                                                      RDFSKOSConcept bConcept)
         {
@@ -62,7 +62,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:narrower/skos:narrowerTransitive/skos:narrowMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
-        internal static Boolean CheckNarrowerRelation(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckNarrowerRelation(RDFSKOSConceptScheme conceptScheme,
                                                       RDFSKOSConcept aConcept,
                                                       RDFSKOSConcept bConcept)
         {
@@ -92,7 +92,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:related/skos:relatedMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
-        internal static Boolean CheckRelatedRelation(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckRelatedRelation(RDFSKOSConceptScheme conceptScheme,
                                                      RDFSKOSConcept aConcept,
                                                      RDFSKOSConcept bConcept)
         {
@@ -117,7 +117,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:closeMatch/skos:exactMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
-        internal static Boolean CheckCloseOrExactMatchRelation(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckCloseOrExactMatchRelation(RDFSKOSConceptScheme conceptScheme,
                                                                RDFSKOSConcept aConcept,
                                                                RDFSKOSConcept bConcept)
         {
@@ -141,7 +141,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:prefLabel/skosxl:prefLabel informations can be added to the given concept
         /// </summary>
-        internal static Boolean CheckPrefLabel(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckPrefLabel(RDFSKOSConceptScheme conceptScheme,
                                                RDFOntologyFact concept,
                                                RDFOntologyLiteral literal)
         {
@@ -149,20 +149,20 @@ namespace RDFSharp.Semantics.SKOS
             var prefLabelLiteralLang = ((RDFPlainLiteral)literal.Value).Language;
 
             //Plain literal without language tag: only one occurrence of this information is allowed
-            if (String.IsNullOrEmpty(prefLabelLiteralLang))
+            if (string.IsNullOrEmpty(prefLabelLiteralLang))
             {
 
                 //Check skos:prefLabel annotation
                 canAddPrefLabelInfo = !(conceptScheme.Annotations.PrefLabel.SelectEntriesBySubject(concept)
                                                                                .Any(x => x.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                           && String.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)));
+                                                                                           && string.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)));
                 //Check skosxl:prefLabel relation
                 if (canAddPrefLabelInfo)
                 {
                     canAddPrefLabelInfo = !(conceptScheme.Relations.PrefLabel.SelectEntriesBySubject(concept)
                                                                              .Any(x => conceptScheme.Relations.LiteralForm.SelectEntriesBySubject(x.TaxonomyObject)
                                                                                                                           .Any(y => y.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                                                                      && String.IsNullOrEmpty(((RDFPlainLiteral)y.TaxonomyObject.Value).Language))));
+                                                                                                                                      && string.IsNullOrEmpty(((RDFPlainLiteral)y.TaxonomyObject.Value).Language))));
                 }
 
             }
@@ -174,7 +174,7 @@ namespace RDFSharp.Semantics.SKOS
                 //Check skos:prefLabel annotation
                 canAddPrefLabelInfo = !(conceptScheme.Annotations.PrefLabel.SelectEntriesBySubject(concept)
                                                                                .Any(x => x.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                           && !String.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
+                                                                                           && !string.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
                                                                                            && (((RDFPlainLiteral)x.TaxonomyObject.Value).Language).Equals(prefLabelLiteralLang, StringComparison.OrdinalIgnoreCase)));
 
                 //Check skosxl:prefLabel relation
@@ -183,7 +183,7 @@ namespace RDFSharp.Semantics.SKOS
                     canAddPrefLabelInfo = !(conceptScheme.Relations.PrefLabel.SelectEntriesBySubject(concept)
                                                                              .Any(x => conceptScheme.Relations.LiteralForm.SelectEntriesBySubject(x.TaxonomyObject)
                                                                                                                           .Any(y => y.TaxonomyObject.Value is RDFPlainLiteral
-                                                                                                                                      && !String.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
+                                                                                                                                      && !string.IsNullOrEmpty(((RDFPlainLiteral)x.TaxonomyObject.Value).Language)
                                                                                                                                       && (((RDFPlainLiteral)x.TaxonomyObject.Value).Language).Equals(prefLabelLiteralLang, StringComparison.OrdinalIgnoreCase))));
                 }
 
@@ -231,7 +231,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:altLabel/skosxl:altLabel informations can be added to the given concept
         /// </summary>
-        internal static Boolean CheckAltLabel(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckAltLabel(RDFSKOSConceptScheme conceptScheme,
                                               RDFOntologyFact concept,
                                               RDFOntologyLiteral literal)
         {
@@ -268,7 +268,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the skos:hiddenLabel/skosxl:hiddenLabel informations can be added to the given concept
         /// </summary>
-        internal static Boolean CheckHiddenLabel(RDFSKOSConceptScheme conceptScheme,
+        internal static bool CheckHiddenLabel(RDFSKOSConceptScheme conceptScheme,
                                                  RDFOntologyFact concept,
                                                  RDFOntologyLiteral literal)
         {

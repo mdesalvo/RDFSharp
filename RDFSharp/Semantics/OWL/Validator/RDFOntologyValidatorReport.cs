@@ -31,7 +31,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of the evidences
         /// </summary>
-        public Int32 EvidencesCount
+        public int EvidencesCount
         {
             get { return this.Evidences.Count; }
         }
@@ -52,7 +52,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// SyncLock for evidences
         /// </summary>
-        internal Object SyncLock { get; set; }
+        internal object SyncLock { get; set; }
         #endregion
 
         #region Ctors
@@ -62,7 +62,7 @@ namespace RDFSharp.Semantics.OWL
         internal RDFOntologyValidatorReport()
         {
             this.Evidences = new List<RDFOntologyValidatorEvidence>();
-            this.SyncLock = new Object();
+            this.SyncLock = new object();
         }
         #endregion
 
@@ -114,9 +114,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlist the names of the rules applied by the validator
         /// </summary>
-        public List<String> EnlistRuleNames()
+        public List<string> EnlistRuleNames()
         {
-            return new List<String>() {
+            return new List<string>() {
                 "AsymmetricProperty",
                 "ClassType",
                 "Deprecation",
@@ -143,7 +143,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the warning evidences of the given validation rule
         /// </summary>
-        public List<RDFOntologyValidatorEvidence> SelectWarningsByRule(String rulename = "")
+        public List<RDFOntologyValidatorEvidence> SelectWarningsByRule(string rulename = "")
         {
             return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal) &&
                                                e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning));
@@ -160,7 +160,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the error evidences of the given validation rule
         /// </summary>
-        public List<RDFOntologyValidatorEvidence> SelectErrorsByRule(String rulename = "")
+        public List<RDFOntologyValidatorEvidence> SelectErrorsByRule(string rulename = "")
         {
             return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal) &&
                                                e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error));

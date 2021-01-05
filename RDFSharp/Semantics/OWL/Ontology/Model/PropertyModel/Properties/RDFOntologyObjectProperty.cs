@@ -30,32 +30,32 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Flag indicating that the ontology property is "owl:SymmetricProperty"
         /// </summary>
-        public Boolean Symmetric { get; internal set; }
+        public bool Symmetric { get; internal set; }
 
         /// <summary>
         /// Flag indicating that the ontology property is "owl:TransitiveProperty"
         /// </summary>
-        public Boolean Transitive { get; internal set; }
+        public bool Transitive { get; internal set; }
 
         /// <summary>
         /// Flag indicating that the ontology property is "owl:InverseFunctionalProperty"
         /// </summary>
-        public Boolean InverseFunctional { get; internal set; }
+        public bool InverseFunctional { get; internal set; }
 
         /// <summary>
         /// Flag indicating that the ontology property is "owl:AsymmetricProperty" [OWL2]
         /// </summary>
-        public Boolean Asymmetric { get; internal set; }
+        public bool Asymmetric { get; internal set; }
 
         /// <summary>
         /// Flag indicating that the ontology property is "owl:ReflexiveProperty" [OWL2]
         /// </summary>
-        public Boolean Reflexive { get; internal set; }
+        public bool Reflexive { get; internal set; }
 
         /// <summary>
         /// Flag indicating that the ontology property is "owl:IrreflexiveProperty" [OWL2]
         /// </summary>
-        public Boolean Irreflexive { get; internal set; }
+        public bool Irreflexive { get; internal set; }
         #endregion
 
         #region Ctors
@@ -69,7 +69,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:SymmetricProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetSymmetric(Boolean symmetric)
+        public RDFOntologyObjectProperty SetSymmetric(bool symmetric)
         {
             this.Symmetric = symmetric;
             if (symmetric)
@@ -80,7 +80,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:ReflexiveProperty" [OWL2]
         /// </summary>
-        public RDFOntologyObjectProperty SetReflexive(Boolean reflexive)
+        public RDFOntologyObjectProperty SetReflexive(bool reflexive)
         {
             this.Reflexive = reflexive;
             if (reflexive)
@@ -91,7 +91,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:IrreflexiveProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetIrreflexive(Boolean irreflexive)
+        public RDFOntologyObjectProperty SetIrreflexive(bool irreflexive)
         {
             this.Irreflexive = irreflexive;
             if (irreflexive)
@@ -102,7 +102,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:AsymmetricProperty" [OWL2]
         /// </summary>
-        public RDFOntologyObjectProperty SetAsymmetric(Boolean asymmetric)
+        public RDFOntologyObjectProperty SetAsymmetric(bool asymmetric)
         {
             this.Asymmetric = asymmetric;
             if (asymmetric)
@@ -113,7 +113,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:TransitiveProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetTransitive(Boolean transitive)
+        public RDFOntologyObjectProperty SetTransitive(bool transitive)
         {
             this.Transitive = transitive;
             return this;
@@ -122,7 +122,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Sets or unsets this ontology object property as "owl:InverseFunctionalProperty"
         /// </summary>
-        public RDFOntologyObjectProperty SetInverseFunctional(Boolean inverseFunctional)
+        public RDFOntologyObjectProperty SetInverseFunctional(bool inverseFunctional)
         {
             this.InverseFunctional = inverseFunctional;
             return this;

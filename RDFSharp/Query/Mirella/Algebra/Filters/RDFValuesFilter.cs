@@ -48,13 +48,13 @@ namespace RDFSharp.Query
         #endregion
 
         #region Interfaces
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            return RDFQueryPrinter.PrintValues(this.Values, prefixes, String.Empty);
+            return RDFQueryPrinter.PrintValues(this.Values, prefixes, string.Empty);
         }
         #endregion
 
@@ -62,12 +62,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the columns corresponding to the variables in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = true;
+            bool keepRow = true;
 
             //Check is performed only on columns found as bindings in the filter
-            List<String> filterColumns = this.Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
+            List<string> filterColumns = this.Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
             if (filterColumns.Any())
             {
 
@@ -79,7 +79,7 @@ namespace RDFSharp.Query
                 {
 
                     //Take the value of the column
-                    String filterColumnValue = row[filterColumn].ToString();
+                    string filterColumnValue = row[filterColumn].ToString();
 
                     //Filter the enumerable representation of the filter table
                     bindingsTable = bindingsTable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue));

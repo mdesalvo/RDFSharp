@@ -34,7 +34,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the concepts composing the scheme
         /// </summary>
-        public Int64 ConceptsCount
+        public long ConceptsCount
         {
             get { return this.Concepts.Count; }
         }
@@ -42,7 +42,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the collections composing the scheme
         /// </summary>
-        public Int64 CollectionsCount
+        public long CollectionsCount
         {
             get { return this.Collections.Count; }
         }
@@ -50,7 +50,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the ordered collections composing the scheme
         /// </summary>
-        public Int64 OrderedCollectionsCount
+        public long OrderedCollectionsCount
         {
             get { return this.OrderedCollections.Count; }
         }
@@ -58,7 +58,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Count of the labels composing the scheme
         /// </summary>
-        public Int64 LabelsCount
+        public long LabelsCount
         {
             get { return this.Labels.Count; }
         }
@@ -108,22 +108,22 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Concepts contained in the scheme (encodes the 'skos:inScheme' relation)
         /// </summary>
-        internal Dictionary<Int64, RDFSKOSConcept> Concepts { get; set; }
+        internal Dictionary<long, RDFSKOSConcept> Concepts { get; set; }
 
         /// <summary>
         /// Collections contained in the scheme
         /// </summary>
-        internal Dictionary<Int64, RDFSKOSCollection> Collections { get; set; }
+        internal Dictionary<long, RDFSKOSCollection> Collections { get; set; }
 
         /// <summary>
         /// OrderedCollections contained in the scheme
         /// </summary>
-        internal Dictionary<Int64, RDFSKOSOrderedCollection> OrderedCollections { get; set; }
+        internal Dictionary<long, RDFSKOSOrderedCollection> OrderedCollections { get; set; }
 
         /// <summary>
         /// Labels contained in the scheme
         /// </summary>
-        internal Dictionary<Int64, RDFSKOSLabel> Labels { get; set; }
+        internal Dictionary<long, RDFSKOSLabel> Labels { get; set; }
         #endregion
 
         #region Ctors
@@ -132,10 +132,10 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFSKOSConceptScheme(RDFResource conceptName) : base(conceptName)
         {
-            this.Concepts = new Dictionary<Int64, RDFSKOSConcept>();
-            this.Collections = new Dictionary<Int64, RDFSKOSCollection>();
-            this.OrderedCollections = new Dictionary<Int64, RDFSKOSOrderedCollection>();
-            this.Labels = new Dictionary<Int64, RDFSKOSLabel>();
+            this.Concepts = new Dictionary<long, RDFSKOSConcept>();
+            this.Collections = new Dictionary<long, RDFSKOSCollection>();
+            this.OrderedCollections = new Dictionary<long, RDFSKOSOrderedCollection>();
+            this.Labels = new Dictionary<long, RDFSKOSLabel>();
             this.Annotations = new RDFSKOSAnnotations();
             this.Relations = new RDFSKOSRelations();
         }
@@ -298,11 +298,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the concept represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSConcept SelectConcept(String concept)
+        public RDFSKOSConcept SelectConcept(string concept)
         {
             if (concept != null)
             {
-                Int64 conceptID = RDFModelUtilities.CreateHash(concept);
+                long conceptID = RDFModelUtilities.CreateHash(concept);
                 if (this.Concepts.ContainsKey(conceptID))
                 {
                     return this.Concepts[conceptID];
@@ -314,11 +314,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSCollection SelectCollection(String collection)
+        public RDFSKOSCollection SelectCollection(string collection)
         {
             if (collection != null)
             {
-                Int64 collectionID = RDFModelUtilities.CreateHash(collection);
+                long collectionID = RDFModelUtilities.CreateHash(collection);
                 if (this.Collections.ContainsKey(collectionID))
                 {
                     return this.Collections[collectionID];
@@ -330,11 +330,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the ordered collection represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSOrderedCollection SelectOrderedCollection(String orderedCollection)
+        public RDFSKOSOrderedCollection SelectOrderedCollection(string orderedCollection)
         {
             if (orderedCollection != null)
             {
-                Int64 orderedCollectionID = RDFModelUtilities.CreateHash(orderedCollection);
+                long orderedCollectionID = RDFModelUtilities.CreateHash(orderedCollection);
                 if (this.OrderedCollections.ContainsKey(orderedCollectionID))
                 {
                     return this.OrderedCollections[orderedCollectionID];
@@ -346,11 +346,11 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Selects the label represented by the given string from the scheme
         /// </summary>
-        public RDFSKOSLabel SelectLabel(String label)
+        public RDFSKOSLabel SelectLabel(string label)
         {
             if (label != null)
             {
-                Int64 labelID = RDFModelUtilities.CreateHash(label);
+                long labelID = RDFModelUtilities.CreateHash(label);
                 if (this.Labels.ContainsKey(labelID))
                 {
                     return this.Labels[labelID];

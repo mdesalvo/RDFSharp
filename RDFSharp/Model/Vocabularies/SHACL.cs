@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// sh
             /// </summary>
-            public static readonly String PREFIX = "sh";
+            public static readonly string PREFIX = "sh";
 
             /// <summary>
             /// http://www.w3.org/ns/shacl#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/ns/shacl#";
+            public static readonly string BASE_URI = "http://www.w3.org/ns/shacl#";
 
             /// <summary>
             /// sh:Shape

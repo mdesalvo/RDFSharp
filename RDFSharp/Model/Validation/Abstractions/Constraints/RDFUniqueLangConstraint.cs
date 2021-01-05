@@ -31,14 +31,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating that uniqueness of language tags is required or not
         /// </summary>
-        public Boolean UniqueLang { get; internal set; }
+        public bool UniqueLang { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a uniqueLang constraint with the given behavior
         /// </summary>
-        public RDFUniqueLangConstraint(Boolean uniqueLang) : base()
+        public RDFUniqueLangConstraint(bool uniqueLang) : base()
         {
             this.UniqueLang = uniqueLang;
         }

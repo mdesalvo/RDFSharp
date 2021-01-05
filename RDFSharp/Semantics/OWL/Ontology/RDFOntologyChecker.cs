@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Semantics.OWL
 {
 
@@ -29,7 +27,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given class is a reserved BASE ontology class
         /// </summary>
-        internal static Boolean CheckReservedClass(RDFOntologyClass ontClass)
+        internal static bool CheckReservedClass(RDFOntologyClass ontClass)
         {
             return (RDFBASEOntology.Instance.Model.ClassModel.Classes.ContainsKey(ontClass.PatternMemberID));
         }
@@ -37,9 +35,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given childclass can be set subclassof the given motherclass
         /// </summary>
-        internal static Boolean CheckSubClassOfCompatibility(RDFOntologyClassModel classModel,
-                                                             RDFOntologyClass childClass,
-                                                             RDFOntologyClass motherClass)
+        internal static bool CheckSubClassOfCompatibility(RDFOntologyClassModel classModel,
+                                                          RDFOntologyClass childClass,
+                                                          RDFOntologyClass motherClass)
         {
             return (!classModel.CheckIsSubClassOf(motherClass, childClass)
                         && !classModel.CheckIsEquivalentClassOf(motherClass, childClass)
@@ -49,9 +47,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aclass can be set equivalentclassof the given bclass
         /// </summary>
-        internal static Boolean CheckEquivalentClassCompatibility(RDFOntologyClassModel classModel,
-                                                                  RDFOntologyClass aClass,
-                                                                  RDFOntologyClass bClass)
+        internal static bool CheckEquivalentClassCompatibility(RDFOntologyClassModel classModel,
+                                                               RDFOntologyClass aClass,
+                                                               RDFOntologyClass bClass)
         {
             return (!classModel.CheckIsSubClassOf(aClass, bClass)
                         && !classModel.CheckIsSuperClassOf(aClass, bClass)
@@ -61,9 +59,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aclass can be set disjointwith the given bclass
         /// </summary>
-        internal static Boolean CheckDisjointWithCompatibility(RDFOntologyClassModel classModel,
-                                                               RDFOntologyClass aClass,
-                                                               RDFOntologyClass bClass)
+        internal static bool CheckDisjointWithCompatibility(RDFOntologyClassModel classModel,
+                                                            RDFOntologyClass aClass,
+                                                            RDFOntologyClass bClass)
         {
             return (!classModel.CheckIsSubClassOf(aClass, bClass)
                         && !classModel.CheckIsSuperClassOf(aClass, bClass)
@@ -75,7 +73,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given property is a reserved BASE ontology property
         /// </summary>
-        internal static Boolean CheckReservedProperty(RDFOntologyProperty ontProperty)
+        internal static bool CheckReservedProperty(RDFOntologyProperty ontProperty)
         {
             return (RDFBASEOntology.Instance.Model.PropertyModel.Properties.ContainsKey(ontProperty.PatternMemberID));
         }
@@ -83,21 +81,24 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given childproperty can be set subpropertyof the given motherproperty
         /// </summary>
-        internal static Boolean CheckSubPropertyOfCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                RDFOntologyObjectProperty childProperty,
-                                                                RDFOntologyObjectProperty motherProperty)
+        internal static bool CheckSubPropertyOfCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                             RDFOntologyObjectProperty childProperty,
+                                                             RDFOntologyObjectProperty motherProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(motherProperty, childProperty)
                         && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty)
-                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty));
+                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(childProperty)
+                                    && !propertyModel.CheckIsPropertyChain(motherProperty));
         }
 
         /// <summary>
         /// Checks if the given childproperty can be set subpropertyof the given motherproperty
         /// </summary>
-        internal static Boolean CheckSubPropertyOfCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                RDFOntologyDatatypeProperty childProperty,
-                                                                RDFOntologyDatatypeProperty motherProperty)
+        internal static bool CheckSubPropertyOfCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                             RDFOntologyDatatypeProperty childProperty,
+                                                             RDFOntologyDatatypeProperty motherProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(motherProperty, childProperty)
                         && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty)
@@ -107,21 +108,24 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty can be set equivalentpropertyof the given bProperty
         /// </summary>
-        internal static Boolean CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                     RDFOntologyObjectProperty aProperty,
-                                                                     RDFOntologyObjectProperty bProperty)
+        internal static bool CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                  RDFOntologyObjectProperty aProperty,
+                                                                  RDFOntologyObjectProperty bProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsPropertyDisjointWith(aProperty, bProperty));
+                            && !propertyModel.CheckIsPropertyDisjointWith(aProperty, bProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(aProperty)
+                                    && !propertyModel.CheckIsPropertyChain(bProperty));
         }
 
         /// <summary>
         /// Checks if the given aProperty can be set equivalentpropertyof the given bProperty
         /// </summary>
-        internal static Boolean CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                     RDFOntologyDatatypeProperty aProperty,
-                                                                     RDFOntologyDatatypeProperty bProperty)
+        internal static bool CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                  RDFOntologyDatatypeProperty aProperty,
+                                                                  RDFOntologyDatatypeProperty bProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
@@ -129,23 +133,26 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty
+        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty [OWL2]
         /// </summary>
-        internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                       RDFOntologyObjectProperty aProperty,
-                                                                       RDFOntologyObjectProperty bProperty)
+        internal static bool CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                    RDFOntologyObjectProperty aProperty,
+                                                                    RDFOntologyObjectProperty bProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(aProperty)
+                                    && !propertyModel.CheckIsPropertyChain(bProperty));
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty
+        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty [OWL2]
         /// </summary>
-        internal static Boolean CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                       RDFOntologyDatatypeProperty aProperty,
-                                                                       RDFOntologyDatatypeProperty bProperty)
+        internal static bool CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                    RDFOntologyDatatypeProperty aProperty,
+                                                                    RDFOntologyDatatypeProperty bProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
@@ -155,13 +162,16 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty can be set inverseof the given bProperty
         /// </summary>
-        internal static Boolean CheckInverseOfPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
-                                                                    RDFOntologyObjectProperty aProperty,
-                                                                    RDFOntologyObjectProperty bProperty)
+        internal static bool CheckInverseOfPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
+                                                                 RDFOntologyObjectProperty aProperty,
+                                                                 RDFOntologyObjectProperty bProperty)
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty)
+                                //OWL2-DL decidability
+                                && !propertyModel.CheckIsPropertyChain(aProperty)
+                                    && !propertyModel.CheckIsPropertyChain(bProperty));
         }
         #endregion
 
@@ -169,7 +179,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given class can be assigned as classtype of facts
         /// </summary>
-        internal static Boolean CheckClassTypeCompatibility(RDFOntologyClass ontologyClass)
+        internal static bool CheckClassTypeCompatibility(RDFOntologyClass ontologyClass)
         {
             return (!ontologyClass.IsRestrictionClass()
                         && !ontologyClass.IsCompositeClass()
@@ -180,9 +190,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given afact can be set sameas the given bfact
         /// </summary>
-        internal static Boolean CheckSameAsCompatibility(RDFOntologyData ontologyData,
-                                                         RDFOntologyFact aFact,
-                                                         RDFOntologyFact bFact)
+        internal static bool CheckSameAsCompatibility(RDFOntologyData ontologyData,
+                                                      RDFOntologyFact aFact,
+                                                      RDFOntologyFact bFact)
         {
             return (!ontologyData.CheckIsDifferentFactFrom(aFact, bFact));
         }
@@ -190,9 +200,9 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given afact can be set differentfrom the given bfact
         /// </summary>
-        internal static Boolean CheckDifferentFromCompatibility(RDFOntologyData ontologyData,
-                                                                RDFOntologyFact aFact,
-                                                                RDFOntologyFact bFact)
+        internal static bool CheckDifferentFromCompatibility(RDFOntologyData ontologyData,
+                                                             RDFOntologyFact aFact,
+                                                             RDFOntologyFact bFact)
         {
             return (!ontologyData.CheckIsSameFactAs(aFact, bFact));
         }
@@ -201,10 +211,10 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the given "aFact -> objectProperty -> bFact" has transitive assertions
         /// which would cause transitive cycles (unallowed concept in OWL-DL)
         /// </summary>
-        internal static Boolean CheckTransitiveAssertionCompatibility(RDFOntologyData ontologyData,
-                                                                      RDFOntologyFact aFact,
-                                                                      RDFOntologyObjectProperty objectProperty,
-                                                                      RDFOntologyFact bFact)
+        internal static bool CheckTransitiveAssertionCompatibility(RDFOntologyData ontologyData,
+                                                                   RDFOntologyFact aFact,
+                                                                   RDFOntologyObjectProperty objectProperty,
+                                                                   RDFOntologyFact bFact)
         {
             return !ontologyData.CheckIsTransitiveAssertionOf(bFact, objectProperty, aFact);
         }
@@ -212,10 +222,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> objectProperty -> bFact" can be an assertion
         /// </summary>
-        internal static Boolean CheckAssertionCompatibility(RDFOntologyData ontologyData,
-                                                            RDFOntologyFact aFact,
-                                                            RDFOntologyObjectProperty objectProperty,
-                                                            RDFOntologyFact bFact)
+        internal static bool CheckAssertionCompatibility(RDFOntologyData ontologyData,
+                                                         RDFOntologyFact aFact,
+                                                         RDFOntologyObjectProperty objectProperty,
+                                                         RDFOntologyFact bFact)
         {
             return !ontologyData.CheckIsNegativeAssertion(aFact, objectProperty, bFact);
         }
@@ -223,10 +233,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> datatypeProperty -> ontologyLiteral" can be an assertion
         /// </summary>
-        internal static Boolean CheckAssertionCompatibility(RDFOntologyData ontologyData,
-                                                            RDFOntologyFact aFact,
-                                                            RDFOntologyDatatypeProperty datatypeProperty,
-                                                            RDFOntologyLiteral ontologyLiteral)
+        internal static bool CheckAssertionCompatibility(RDFOntologyData ontologyData,
+                                                         RDFOntologyFact aFact,
+                                                         RDFOntologyDatatypeProperty datatypeProperty,
+                                                         RDFOntologyLiteral ontologyLiteral)
         {
             return !ontologyData.CheckIsNegativeAssertion(aFact, datatypeProperty, ontologyLiteral);
         }
@@ -234,10 +244,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> objectProperty -> bFact" can be a negative assertion
         /// </summary>
-        internal static Boolean CheckNegativeAssertionCompatibility(RDFOntologyData ontologyData,
-                                                                    RDFOntologyFact aFact,
-                                                                    RDFOntologyObjectProperty objectProperty,
-                                                                    RDFOntologyFact bFact)
+        internal static bool CheckNegativeAssertionCompatibility(RDFOntologyData ontologyData,
+                                                                 RDFOntologyFact aFact,
+                                                                 RDFOntologyObjectProperty objectProperty,
+                                                                 RDFOntologyFact bFact)
         {
             return !ontologyData.CheckIsAssertion(aFact, objectProperty, bFact);
         }
@@ -245,10 +255,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> datatypeProperty -> ontologyLiteral" can be a negative assertion
         /// </summary>
-        internal static Boolean CheckNegativeAssertionCompatibility(RDFOntologyData ontologyData,
-                                                                    RDFOntologyFact aFact,
-                                                                    RDFOntologyDatatypeProperty datatypeProperty,
-                                                                    RDFOntologyLiteral ontologyLiteral)
+        internal static bool CheckNegativeAssertionCompatibility(RDFOntologyData ontologyData,
+                                                                 RDFOntologyFact aFact,
+                                                                 RDFOntologyDatatypeProperty datatypeProperty,
+                                                                 RDFOntologyLiteral ontologyLiteral)
         {
             return !ontologyData.CheckIsAssertion(aFact, datatypeProperty, ontologyLiteral);
         }

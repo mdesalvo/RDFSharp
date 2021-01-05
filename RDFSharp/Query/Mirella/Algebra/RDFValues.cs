@@ -33,12 +33,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of bindings representing the SPARQL values
         /// </summary>
-        internal Dictionary<String, List<RDFPatternMember>> Bindings { get; set; }
+        internal Dictionary<string, List<RDFPatternMember>> Bindings { get; set; }
 
         /// <summary>
         /// Represents the current max length of the bindings
         /// </summary>
-        internal Int32 MaxBindingsLength
+        internal int MaxBindingsLength
         {
             get
             {
@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the SPARQL values has been injected by Mirella
         /// </summary>
-        internal Boolean IsInjected { get; set; }
+        internal bool IsInjected { get; set; }
         #endregion
 
         #region Ctors
@@ -58,7 +58,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFValues()
         {
-            this.Bindings = new Dictionary<String, List<RDFPatternMember>>();
+            this.Bindings = new Dictionary<string, List<RDFPatternMember>>();
             this.IsEvaluable = false;
             this.IsInjected = false;
         }
@@ -68,11 +68,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the SPARQL values
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
-            return this.ToString(new List<RDFNamespace>(), String.Empty);
+            return this.ToString(new List<RDFNamespace>(), string.Empty);
         }
-        internal String ToString(List<RDFNamespace> prefixes, String spaces)
+        internal string ToString(List<RDFNamespace> prefixes, string spaces)
         {
             return RDFQueryPrinter.PrintValues(this, prefixes, spaces);
         }
@@ -123,7 +123,7 @@ namespace RDFSharp.Query
             result.BeginLoadData();
             for (int i = 0; i < this.MaxBindingsLength; i++)
             {
-                Dictionary<String, String> bindings = new Dictionary<String, String>();
+                Dictionary<string, string> bindings = new Dictionary<string, string>();
                 this.Bindings.ToList()
                              .ForEach(b =>
                              {

@@ -59,7 +59,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the DESCRIBE query
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return RDFQueryPrinter.PrintDescribeQuery(this);
         }
@@ -229,7 +229,7 @@ namespace RDFSharp.Query
             RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(this.ToString());
             if (sparqlEndpoint != null)
             {
-                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluating DESCRIBE query on SPARQL endpoint '{0}'...", sparqlEndpoint));
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluating DESCRIBE query on SPARQL endpoint '{0}'...", sparqlEndpoint));
 
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
@@ -261,14 +261,14 @@ namespace RDFSharp.Query
                 }
 
                 //Eventually adjust column names (should start with "?")
-                Int32 columnsCount = describeResult.DescribeResults.Columns.Count;
-                for (Int32 i = 0; i < columnsCount; i++)
+                int columnsCount = describeResult.DescribeResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
                 {
                     if (!describeResult.DescribeResults.Columns[i].ColumnName.StartsWith("?"))
                         describeResult.DescribeResults.Columns[i].ColumnName = "?" + describeResult.DescribeResults.Columns[i].ColumnName;
                 }
 
-                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(String.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
+                RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));
             }
             return describeResult;
         }

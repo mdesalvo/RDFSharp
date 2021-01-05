@@ -35,14 +35,19 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyTaxonomy EquivalentProperty { get; internal set; }
 
         /// <summary>
+        /// "owl:inverseOf" relations
+        /// </summary>
+        public RDFOntologyTaxonomy InverseOf { get; internal set; }
+
+        /// <summary>
         /// "owl:propertyDisjointWith" relations [OWL2]
         /// </summary>
         public RDFOntologyTaxonomy PropertyDisjointWith { get; internal set; }
 
         /// <summary>
-        /// "owl:inverseOf" relations
+        /// "owl:propertyChainAxiom" relations [OWL2]
         /// </summary>
-        public RDFOntologyTaxonomy InverseOf { get; internal set; }
+        public RDFOntologyTaxonomy PropertyChainAxiom { get; internal set; }
         #endregion
 
         #region Ctors
@@ -51,10 +56,11 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyPropertyModelMetadata()
         {
-            this.SubPropertyOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
-            this.EquivalentProperty = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
-            this.PropertyDisjointWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
-            this.InverseOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model);
+            this.SubPropertyOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
+            this.EquivalentProperty = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
+            this.InverseOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
+            this.PropertyDisjointWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
+            this.PropertyChainAxiom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, true); //This taxonomy accepts duplicates
         }
         #endregion
 

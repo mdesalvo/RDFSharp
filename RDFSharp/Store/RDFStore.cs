@@ -36,19 +36,19 @@ namespace RDFSharp.Store
         /// <summary>
         /// Unique representation of the store
         /// </summary>
-        public Int64 StoreID { get; set; }
+        public long StoreID { get; set; }
 
         /// <summary>
         /// Type of the store
         /// </summary>
-        public String StoreType { get; set; }
+        public string StoreType { get; set; }
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the store
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.StoreType;
         }
@@ -56,7 +56,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Performs the equality comparison between two stores
         /// </summary>
-        public Boolean Equals(RDFStore other)
+        public bool Equals(RDFStore other)
         {
             return (other != null && this.StoreID.Equals(other.StoreID));
         }
@@ -251,7 +251,7 @@ namespace RDFSharp.Store
         /// </summary>
         public List<RDFGraph> ExtractGraphs()
         {
-            Dictionary<Int64, RDFGraph> graphs = new Dictionary<Int64, RDFGraph>();
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
             foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
             {
 
@@ -283,7 +283,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
-        public virtual Boolean ContainsQuadruple(RDFQuadruple quadruple)
+        public virtual bool ContainsQuadruple(RDFQuadruple quadruple)
         {
             if (quadruple != null)
             {
@@ -371,9 +371,9 @@ namespace RDFSharp.Store
         /// <summary>
         /// Writes the store into a file in the given RDF format.
         /// </summary>
-        public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, String filepath)
+        public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!String.IsNullOrEmpty(filepath))
+            if (!string.IsNullOrEmpty(filepath))
             {
                 switch (rdfFormat)
                 {

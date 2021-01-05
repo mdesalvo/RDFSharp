@@ -32,18 +32,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal abstract String ToString(List<RDFNamespace> prefixes);
+        internal abstract string ToString(List<RDFNamespace> prefixes);
         #endregion
 
         #region Methods
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal abstract Boolean ApplyFilter(DataRow row, Boolean applyNegation);
+        internal abstract bool ApplyFilter(DataRow row, bool applyNegation);
         #endregion
 
     }

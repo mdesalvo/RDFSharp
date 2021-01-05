@@ -29,12 +29,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Minimum accepted qualified cardinality for the restriction to be satisfied
         /// </summary>
-        public Int32 MinQualifiedCardinality { get; internal set; }
+        public int MinQualifiedCardinality { get; internal set; }
 
         /// <summary>
         /// Maximum accepted qualified cardinality for the restriction to be satisfied
         /// </summary>
-        public Int32 MaxQualifiedCardinality { get; internal set; }
+        public int MaxQualifiedCardinality { get; internal set; }
 
         /// <summary>
         /// Ontology class on which the ontology qualified restriction is applied
@@ -49,8 +49,8 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyQualifiedCardinalityRestriction(RDFResource restrictionName,
                                                           RDFOntologyProperty onProperty,
                                                           RDFOntologyClass onClass,
-                                                          Int32 minQualifiedCardinality,
-                                                          Int32 maxQualifiedCardinality) : base(restrictionName, onProperty)
+                                                          int minQualifiedCardinality,
+                                                          int maxQualifiedCardinality) : base(restrictionName, onProperty)
         {
 
             //OnClass

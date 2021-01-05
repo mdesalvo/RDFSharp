@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Boolean response of the ASK query
         /// </summary>
-        public Boolean AskResult { get; internal set; }
+        public bool AskResult { get; internal set; }
         #endregion
 
         #region Ctors
@@ -103,7 +103,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
         /// </summary>
-        public void ToSparqlXmlResult(String filepath)
+        public void ToSparqlXmlResult(string filepath)
         {
             ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
         }
@@ -133,8 +133,8 @@ namespace RDFSharp.Query
                         #endregion
 
                         #region parse
-                        Boolean foundHead = false;
-                        Boolean foundBoolean = false;
+                        bool foundHead = false;
+                        bool foundBoolean = false;
                         var nodesEnum = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
                         while (nodesEnum != null && nodesEnum.MoveNext())
                         {
@@ -153,8 +153,7 @@ namespace RDFSharp.Query
                                 foundBoolean = true;
                                 if (foundHead)
                                 {
-                                    Boolean bRes = false;
-                                    if (Boolean.TryParse(node.InnerText, out bRes))
+                                    if (bool.TryParse(node.InnerText, out bool bRes))
                                     {
                                         result.AskResult = bRes;
                                     }
@@ -197,7 +196,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
         /// </summary>
-        public static RDFAskQueryResult FromSparqlXmlResult(String filepath)
+        public static RDFAskQueryResult FromSparqlXmlResult(string filepath)
         {
             return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
         }

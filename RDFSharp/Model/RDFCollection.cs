@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -47,7 +46,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the collection's items
         /// </summary>
-        public Int32 ItemsCount
+        public int ItemsCount
         {
             get { return this.Items.Count; }
         }
@@ -61,6 +60,11 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Flag indicating that this collection exceptionally accepts duplicates
+        /// </summary>
+        internal bool AcceptDuplicates { get; set; }
+
+        /// <summary>
         /// List of the items collected by the collection
         /// </summary>
         internal List<RDFPatternMember> Items { get; set; }
@@ -71,11 +75,13 @@ namespace RDFSharp.Model
         /// Default ctor to build an empty collection of the given type
         /// (initial configuration of the collection is "rdf:Nil")
         /// </summary>
-        public RDFCollection(RDFModelEnums.RDFItemTypes itemType)
+        public RDFCollection(RDFModelEnums.RDFItemTypes itemType) : this(itemType, false) { }
+        internal RDFCollection(RDFModelEnums.RDFItemTypes itemType, bool acceptDuplicates)
         {
             this.ItemType = itemType;
             this.ReificationSubject = RDFVocabulary.RDF.NIL;
             this.InternalReificationSubject = new RDFResource();
+            this.AcceptDuplicates = acceptDuplicates;
             this.Items = new List<RDFPatternMember>();
         }
         #endregion
@@ -108,8 +114,7 @@ namespace RDFSharp.Model
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
             {
-                //Avoid duplicates
-                if (this.Items.Find(x => x.Equals(item)) == null)
+                if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
                 {
                     //Add item to collection
                     this.Items.Add(item);
@@ -128,8 +133,7 @@ namespace RDFSharp.Model
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
             {
-                //Avoid duplicates
-                if (this.Items.Find(x => x.Equals(item)) == null)
+                if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
                 {
                     //Add item to collection
                     this.Items.Add(item);
@@ -195,12 +199,12 @@ namespace RDFSharp.Model
         {
             RDFGraph reifColl = new RDFGraph();
             RDFResource reifSubj = this.ReificationSubject;
-            Int32 itemCount = 0;
+            int itemCount = 0;
 
             //Collection can be reified only if it has at least one item
             if (this.ItemsCount > 0)
             {
-                foreach (Object listEnum in this)
+                foreach (object listEnum in this)
                 {
 
                     //Count the items to keep track of the last one, which will be connected to rdf:nil
@@ -211,13 +215,9 @@ namespace RDFSharp.Model
 
                     //  Subject -> rdf:first -> RDFCollection.ITEM[i]
                     if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
-                    }
                     else
-                    {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)listEnum));
-                    }
 
                     //Not the last one: Subject -> rdf:rest  -> NEWBLANK
                     if (itemCount < this.ItemsCount)

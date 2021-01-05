@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public Int64 TriplesCount
+        public long TriplesCount
         {
             get { return this.Triples.Count; }
         }
@@ -60,7 +60,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// List of triples embedded into the graph
         /// </summary>
-        internal Dictionary<Int64, RDFTriple> Triples { get; set; }
+        internal Dictionary<long, RDFTriple> Triples { get; set; }
         #endregion
 
         #region Ctors
@@ -71,7 +71,7 @@ namespace RDFSharp.Model
         {
             this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.GraphIndex = new RDFGraphIndex();
-            this.Triples = new Dictionary<Int64, RDFTriple>();
+            this.Triples = new Dictionary<long, RDFTriple>();
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Context.ToString();
         }
@@ -96,7 +96,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs the equality comparison between two graphs
         /// </summary>
-        public Boolean Equals(RDFGraph other)
+        public bool Equals(RDFGraph other)
         {
             if (other == null || this.TriplesCount != other.TriplesCount)
             {
@@ -158,7 +158,7 @@ namespace RDFSharp.Model
                     //Add index
                     this.GraphIndex.AddIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleAdded(String.Format("Triple '{0}' has been added to the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleAdded(string.Format("Triple '{0}' has been added to the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -210,7 +210,7 @@ namespace RDFSharp.Model
                 //Remove index
                 this.GraphIndex.RemoveIndex(triple);
                 //Raise event
-                RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
             }
             return this;
         }
@@ -229,7 +229,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -249,7 +249,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -269,7 +269,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -289,7 +289,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -310,7 +310,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -331,7 +331,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -352,7 +352,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -373,7 +373,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -394,7 +394,7 @@ namespace RDFSharp.Model
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
                     //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(String.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
+                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -410,7 +410,7 @@ namespace RDFSharp.Model
             //Clear index
             this.GraphIndex.ClearIndex();
             //Raise event
-            RDFModelEvents.RaiseOnGraphCleared(String.Format("Graph '{0}' has been cleared.", this));
+            RDFModelEvents.RaiseOnGraphCleared(string.Format("Graph '{0}' has been cleared.", this));
         }
 
         /// <summary>
@@ -476,7 +476,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the graph contains the given triple
         /// </summary>
-        public Boolean ContainsTriple(RDFTriple triple)
+        public bool ContainsTriple(RDFTriple triple)
         {
             return (triple != null && this.Triples.ContainsKey(triple.TripleID));
         }
@@ -604,9 +604,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Writes the graph into a file in the given RDF format.
         /// </summary>
-        public void ToFile(RDFModelEnums.RDFFormats rdfFormat, String filepath)
+        public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!String.IsNullOrEmpty(filepath))
+            if (!string.IsNullOrEmpty(filepath))
             {
                 switch (rdfFormat)
                 {
@@ -693,9 +693,9 @@ namespace RDFSharp.Model
         /// <summary>
         /// Creates a graph from a file of the given RDF format.
         /// </summary>
-        public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, String filepath)
+        public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!String.IsNullOrEmpty(filepath))
+            if (!string.IsNullOrEmpty(filepath))
             {
                 if (File.Exists(filepath))
                 {
@@ -768,7 +768,7 @@ namespace RDFSharp.Model
 
                         #region SUBJECT
                         //Parse the triple subject
-                        if (!tableRow.IsNull("?SUBJECT") && !String.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
+                        if (!tableRow.IsNull("?SUBJECT") && !string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
                         {
                             RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
                             if (rowSubj is RDFResource)
@@ -776,7 +776,7 @@ namespace RDFSharp.Model
 
                                 #region PREDICATE
                                 //Parse the triple predicate
-                                if (!tableRow.IsNull("?PREDICATE") && !String.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
+                                if (!tableRow.IsNull("?PREDICATE") && !string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
                                 {
                                     RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
                                     if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank)

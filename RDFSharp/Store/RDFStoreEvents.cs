@@ -37,12 +37,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Delegate to handle information events generated when a quadruple has been added to a store
         /// </summary>
-        public delegate void RDFOnQuadrupleAddedEventHandler(String eventMessage);
+        public delegate void RDFOnQuadrupleAddedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnQuadrupleAdded(String eventMessage)
+        internal static void RaiseOnQuadrupleAdded(string eventMessage)
         {
             Parallel.Invoke(() => OnQuadrupleAdded(DateTime.Now.ToString() + ";QUADRUPLE_ADDED;" + eventMessage));
         }
@@ -57,12 +57,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Delegate to handle information events generated when a quadruple has been removed to a store
         /// </summary>
-        public delegate void RDFOnQuadrupleRemovedEventHandler(String eventMessage);
+        public delegate void RDFOnQuadrupleRemovedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnQuadrupleRemoved(String eventMessage)
+        internal static void RaiseOnQuadrupleRemoved(string eventMessage)
         {
             Parallel.Invoke(() => OnQuadrupleRemoved(DateTime.Now.ToString() + ";QUADRUPLE_REMOVED;" + eventMessage));
         }
@@ -77,12 +77,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Delegate to handle information events generated when a store has been cleared
         /// </summary>
-        public delegate void RDFOnStoreClearedEventHandler(String eventMessage);
+        public delegate void RDFOnStoreClearedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreCleared(String eventMessage)
+        internal static void RaiseOnStoreCleared(string eventMessage)
         {
             Parallel.Invoke(() => OnStoreCleared(DateTime.Now.ToString() + ";STORE_CLEARED;" + eventMessage));
         }
@@ -97,12 +97,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Delegate to handle information events generated when a store has been initialized
         /// </summary>
-        public delegate void RDFOnStoreInitializedEventHandler(String eventMessage);
+        public delegate void RDFOnStoreInitializedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreInitialized(String eventMessage)
+        internal static void RaiseOnStoreInitialized(string eventMessage)
         {
             Parallel.Invoke(() => OnStoreInitialized(DateTime.Now.ToString() + ";STORE_INITIALIZED;" + eventMessage));
         }
@@ -117,12 +117,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Delegate to handle information events generated when a store has been optimized
         /// </summary>
-        public delegate void RDFOnStoreOptimizedEventHandler(String eventMessage);
+        public delegate void RDFOnStoreOptimizedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnStoreOptimized(String eventMessage)
+        internal static void RaiseOnStoreOptimized(string eventMessage)
         {
             Parallel.Invoke(() => OnStoreOptimized(DateTime.Now.ToString() + ";STORE_OPTIMIZED;" + eventMessage));
         }

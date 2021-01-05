@@ -29,12 +29,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Name of the rule
         /// </summary>
-        internal String RuleName { get; set; }
+        internal string RuleName { get; set; }
 
         /// <summary>
         /// Description of the rule
         /// </summary>
-        internal String RuleDescription { get; set; }
+        internal string RuleDescription { get; set; }
 
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
@@ -51,8 +51,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an empty validation rule with given name, description and delegate
         /// </summary>
-        internal RDFOntologyValidatorRule(String ruleName,
-                                          String ruleDescription,
+        internal RDFOntologyValidatorRule(string ruleName,
+                                          string ruleDescription,
                                           ValidationRuleDelegate ruleDelegate)
         {
             this.RuleName = ruleName;

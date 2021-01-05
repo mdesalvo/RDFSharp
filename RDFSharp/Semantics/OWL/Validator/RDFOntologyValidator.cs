@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -104,6 +103,12 @@ namespace RDFSharp.Semantics.OWL
                     "This OWL2 rule checks for consistency of owl:HasKey axioms",
                     RDFOntologyValidatorRuleset.HasKey),
 
+                //PropertyChainAxiom [OWL2]
+                new RDFOntologyValidatorRule(
+                    "PropertyChainAxiom",
+                    "This OWL2 rule checks for consistency of owl:PropertyChainAxiom axioms",
+                    RDFOntologyValidatorRuleset.PropertyChainAxiom),
+
                 //ClassType
                 new RDFOntologyValidatorRule(
                     "ClassType",
@@ -142,7 +147,7 @@ namespace RDFSharp.Semantics.OWL
             var report = new RDFOntologyValidatorReport();
             if (ontology != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator is going to be applied on Ontology '{0}'...", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Validator is going to be applied on Ontology '{0}'...", ontology.Value));
 
                 //STEP 1: Expand ontology
                 RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
@@ -150,7 +155,7 @@ namespace RDFSharp.Semantics.OWL
                 //STEP 2: Execute rules
                 Parallel.ForEach(Rules, r => report.MergeEvidences(r.ExecuteRule(expOntology)));
 
-                RDFSemanticsEvents.RaiseSemanticsInfo(String.Format("Validator has been applied on Ontology '{0}': found " + report.EvidencesCount + " evidences.", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Validator has been applied on Ontology '{0}': found " + report.EvidencesCount + " evidences.", ontology.Value));
             }
             return report;
         }

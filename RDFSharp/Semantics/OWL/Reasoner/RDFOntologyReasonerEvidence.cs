@@ -34,7 +34,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Provenance rule of the evidence
         /// </summary>
-        public String EvidenceProvenance { get; internal set; }
+        public string EvidenceProvenance { get; internal set; }
 
         /// <summary>
         /// Content of the evidence
@@ -47,7 +47,7 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build an evidence with given category, provenance and message
         /// </summary>
         internal RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory,
-                                             String evidenceProvenance,
+                                             string evidenceProvenance,
                                              RDFOntologyTaxonomyEntry evidenceContent)
         {
             this.EvidenceCategory = evidenceCategory;

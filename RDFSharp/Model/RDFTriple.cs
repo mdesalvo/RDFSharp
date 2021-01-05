@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Unique representation of the triple
         /// </summary>
-        internal Int64 TripleID { get; set; }
+        internal long TripleID { get; set; }
 
         /// <summary>
         /// Flavor of the triple
@@ -123,7 +123,7 @@ namespace RDFSharp.Model
             }
 
             //Object
-            this.Object = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object = (lit ?? new RDFPlainLiteral(string.Empty));
 
             //TripleID
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
@@ -135,7 +135,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the triple
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Subject + " " + this.Predicate + " " + this.Object;
         }
@@ -143,7 +143,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs the equality comparison between two triples
         /// </summary>
-        public Boolean Equals(RDFTriple other)
+        public bool Equals(RDFTriple other)
         {
             return (other != null && this.TripleID.Equals(other.TripleID));
         }

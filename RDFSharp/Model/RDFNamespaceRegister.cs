@@ -47,7 +47,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the register's namespaces
         /// </summary>
-        public static Int32 NamespacesCount
+        public static int NamespacesCount
         {
             get { return Instance.Register.Count; }
         }
@@ -152,7 +152,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the namespace having the given Uri.
         /// </summary>
-        public static void RemoveByUri(String uri)
+        public static void RemoveByUri(string uri)
         {
             if (uri != null)
             {
@@ -163,7 +163,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes the namespace having the given prefix.
         /// </summary>
-        public static void RemoveByPrefix(String prefix)
+        public static void RemoveByPrefix(string prefix)
         {
             if (prefix != null)
             {
@@ -174,14 +174,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its Uri.
         /// </summary>
-        public static RDFNamespace GetByUri(String uri, Boolean enablePrefixCCService = false)
+        public static RDFNamespace GetByUri(string uri, bool enablePrefixCCService = false)
         {
             if (uri != null)
             {
                 var result = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                 {
-                    result = LookupPrefixCC(uri.Trim().TrimEnd(new Char[] { '#' }), 2);
+                    result = LookupPrefixCC(uri.Trim().TrimEnd(new char[] { '#' }), 2);
                 }
                 return result;
             }
@@ -191,7 +191,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Retrieves a namespace by seeking presence of its prefix.
         /// </summary>
-        public static RDFNamespace GetByPrefix(String prefix, Boolean enablePrefixCCService = false)
+        public static RDFNamespace GetByPrefix(string prefix, bool enablePrefixCCService = false)
         {
             if (prefix != null)
             {
@@ -208,7 +208,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Looksup the given prefix or namespace into the prefix.cc service
         /// </summary>
-        internal static RDFNamespace LookupPrefixCC(String data, Int32 lookupMode)
+        internal static RDFNamespace LookupPrefixCC(string data, int lookupMode)
         {
             var lookupString = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
                                                       "http://prefix.cc/reverse?uri=" + data + "&format=txt");
@@ -219,7 +219,7 @@ namespace RDFSharp.Model
                 {
                     var response = webclient.DownloadString(lookupString);
                     var prefix = response.Split('\t')[0];
-                    var nspace = response.Split('\t')[1].TrimEnd(new Char[] { '\n' });
+                    var nspace = response.Split('\t')[1].TrimEnd(new char[] { '\n' });
                     var result = new RDFNamespace(prefix, nspace);
 
                     //Also add the namespace to the register, to avoid future lookups

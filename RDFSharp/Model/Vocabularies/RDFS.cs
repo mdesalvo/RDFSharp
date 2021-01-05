@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfs
             /// </summary>
-            public static readonly String PREFIX = "rdfs";
+            public static readonly string PREFIX = "rdfs";
 
             /// <summary>
             /// http://www.w3.org/2000/01/rdf-schema#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
+            public static readonly string BASE_URI = "http://www.w3.org/2000/01/rdf-schema#";
 
             /// <summary>
             /// rdfs:Resource

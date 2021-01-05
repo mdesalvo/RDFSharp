@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Shapes required for the given RDF term
         /// </summary>
-        internal Dictionary<Int64, RDFResource> OrShapes { get; set; }
+        internal Dictionary<long, RDFResource> OrShapes { get; set; }
         #endregion
 
         #region Ctors
@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFOrConstraint() : base()
         {
-            this.OrShapes = new Dictionary<Int64, RDFResource>();
+            this.OrShapes = new Dictionary<long, RDFResource>();
         }
         #endregion
 
@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                Boolean valueNodeConforms = false;
+                bool valueNodeConforms = false;
                 foreach (RDFShape orShape in orShapes)
                 {
                     RDFValidationReport orShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, orShape, new List<RDFPatternMember>() { valueNode });

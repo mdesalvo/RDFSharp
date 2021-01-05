@@ -83,15 +83,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
             return "FILTER ( " +
-                this.LeftFilter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " && " +
-                this.RightFilter.ToString(prefixes).Replace("FILTER ", String.Empty).Trim() + " )";
+                this.LeftFilter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim() + " && " +
+                this.RightFilter.ToString(prefixes).Replace("FILTER ", string.Empty).Trim() + " )";
         }
         #endregion
 
@@ -99,9 +99,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = this.LeftFilter.ApplyFilter(row, false) && this.RightFilter.ApplyFilter(row, false);
+            bool keepRow = this.LeftFilter.ApplyFilter(row, false) && this.RightFilter.ApplyFilter(row, false);
 
             //Apply the eventual negation
             if (applyNegation)

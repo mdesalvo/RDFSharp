@@ -770,7 +770,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has broader/broaderTransitive concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasBroaderConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasBroaderConcept(this RDFSKOSConceptScheme conceptScheme,
                                                      RDFSKOSConcept aConcept,
                                                      RDFSKOSConcept bConcept)
         {
@@ -806,14 +806,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         internal static RDFSKOSConceptScheme GetBroaderConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
                                                                           RDFSKOSConcept concept,
-                                                                          Dictionary<Int64, RDFSKOSConcept> visitContext)
+                                                                          Dictionary<long, RDFSKOSConcept> visitContext)
         {
             var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+                visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
             else
             {
@@ -846,7 +846,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has narrower/narrowerTransitive concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasNarrowerConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasNarrowerConcept(this RDFSKOSConceptScheme conceptScheme,
                                                       RDFSKOSConcept aConcept,
                                                       RDFSKOSConcept bConcept)
         {
@@ -882,14 +882,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         internal static RDFSKOSConceptScheme GetNarrowerConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
                                                                            RDFSKOSConcept concept,
-                                                                           Dictionary<Int64, RDFSKOSConcept> visitContext)
+                                                                           Dictionary<long, RDFSKOSConcept> visitContext)
         {
             var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+                visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
             else
             {
@@ -922,7 +922,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has related concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasRelatedConcept(this RDFSKOSConceptScheme data,
+        public static bool CheckHasRelatedConcept(this RDFSKOSConceptScheme data,
                                                      RDFSKOSConcept aConcept,
                                                      RDFSKOSConcept bConcept)
         {
@@ -955,7 +955,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has broadMatch concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasBroadMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasBroadMatchConcept(this RDFSKOSConceptScheme conceptScheme,
                                                         RDFSKOSConcept aConcept,
                                                         RDFSKOSConcept bConcept)
         {
@@ -984,7 +984,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has narrowMatch concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasNarrowMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasNarrowMatchConcept(this RDFSKOSConceptScheme conceptScheme,
                                                          RDFSKOSConcept aConcept,
                                                          RDFSKOSConcept bConcept)
         {
@@ -1013,7 +1013,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept has relatedMatch concept the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasRelatedMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasRelatedMatchConcept(this RDFSKOSConceptScheme conceptScheme,
                                                           RDFSKOSConcept aConcept,
                                                           RDFSKOSConcept bConcept)
         {
@@ -1042,7 +1042,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept skos:closeMatch the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasCloseMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasCloseMatchConcept(this RDFSKOSConceptScheme conceptScheme,
                                                         RDFSKOSConcept aConcept,
                                                         RDFSKOSConcept bConcept)
         {
@@ -1071,7 +1071,7 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Checks if the given aConcept skos:exactMatch the given bConcept within the given scheme
         /// </summary>
-        public static Boolean CheckHasExactMatchConcept(this RDFSKOSConceptScheme conceptScheme,
+        public static bool CheckHasExactMatchConcept(this RDFSKOSConceptScheme conceptScheme,
                                                         RDFSKOSConcept aConcept,
                                                         RDFSKOSConcept bConcept)
         {
@@ -1098,14 +1098,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         internal static RDFSKOSConceptScheme GetExactMatchConceptsOfInternal(this RDFSKOSConceptScheme conceptScheme,
                                                                              RDFSKOSConcept concept,
-                                                                             Dictionary<Int64, RDFSKOSConcept> visitContext)
+                                                                             Dictionary<long, RDFSKOSConcept> visitContext)
         {
             var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
+                visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
             }
             else
             {

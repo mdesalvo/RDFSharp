@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of the evidences
         /// </summary>
-        public Int32 EvidencesCount
+        public int EvidencesCount
         {
             get { return this.Evidences.Count; }
         }
@@ -48,12 +48,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Dictionary of evidences
         /// </summary>
-        internal Dictionary<Int64, RDFOntologyReasonerEvidence> Evidences { get; set; }
+        internal Dictionary<long, RDFOntologyReasonerEvidence> Evidences { get; set; }
 
         /// <summary>
         /// SyncLock for evidences
         /// </summary>
-        internal Object SyncLock { get; set; }
+        internal object SyncLock { get; set; }
         #endregion
 
         #region Ctors
@@ -62,8 +62,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyReasonerReport()
         {
-            this.Evidences = new Dictionary<Int64, RDFOntologyReasonerEvidence>();
-            this.SyncLock = new Object();
+            this.Evidences = new Dictionary<long, RDFOntologyReasonerEvidence>();
+            this.SyncLock = new object();
         }
         #endregion
 
@@ -126,7 +126,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the evidences having the given provenance rule
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(String evidenceProvenance = "")
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(string evidenceProvenance = "")
         {
             return this.Evidences.Values.Where(e => e.EvidenceProvenance.ToUpper().Equals(evidenceProvenance.Trim().ToUpperInvariant(), StringComparison.Ordinal)).ToList();
         }

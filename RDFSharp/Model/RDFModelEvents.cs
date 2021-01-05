@@ -37,12 +37,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Delegate to handle information events generated when a triple has been added to a graph
         /// </summary>
-        public delegate void RDFOnTripleAddedEventHandler(String eventMessage);
+        public delegate void RDFOnTripleAddedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnTripleAdded(String eventMessage)
+        internal static void RaiseOnTripleAdded(string eventMessage)
         {
             Parallel.Invoke(() => OnTripleAdded(DateTime.Now.ToString() + ";TRIPLE_ADDED;" + eventMessage));
         }
@@ -57,12 +57,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Delegate to handle information events generated when a triple has been removed from a graph
         /// </summary>
-        public delegate void RDFOnTripleRemovedEventHandler(String eventMessage);
+        public delegate void RDFOnTripleRemovedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnTripleRemoved(String eventMessage)
+        internal static void RaiseOnTripleRemoved(string eventMessage)
         {
             Parallel.Invoke(() => OnTripleRemoved(DateTime.Now.ToString() + ";TRIPLE_REMOVED;" + eventMessage));
         }
@@ -77,12 +77,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Delegate to handle information events generated when a graph has been cleared
         /// </summary>
-        public delegate void RDFOnGraphClearedEventHandler(String eventMessage);
+        public delegate void RDFOnGraphClearedEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseOnGraphCleared(String eventMessage)
+        internal static void RaiseOnGraphCleared(string eventMessage)
         {
             Parallel.Invoke(() => OnGraphCleared(DateTime.Now.ToString() + ";GRAPH_CLEARED;" + eventMessage));
         }

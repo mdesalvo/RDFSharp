@@ -63,11 +63,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
             return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes) + " )";
         }
@@ -77,14 +77,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = true;
+            bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString()))
             {
-                String variableValue = row[this.Variable.ToString()].ToString();
+                string variableValue = row[this.Variable.ToString()].ToString();
 
                 //Successfull match if given datatype is found in the variable
                 keepRow = Regex.IsMatch(variableValue, "\\^\\^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "$");

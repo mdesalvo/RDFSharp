@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the number of results produced by the query
         /// </summary>
-        public Int64 ConstructResultsCount
+        public long ConstructResultsCount
         {
             get
             {
@@ -50,7 +50,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty CONSTRUCT result
         /// </summary>
-        internal RDFConstructQueryResult(String tableName)
+        internal RDFConstructQueryResult(string tableName)
         {
             this.ConstructResults = new DataTable(tableName);
         }
@@ -92,7 +92,7 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph)
         {
-            RDFConstructQueryResult result = new RDFConstructQueryResult(String.Empty);
+            RDFConstructQueryResult result = new RDFConstructQueryResult(string.Empty);
             if (graph != null)
             {
 

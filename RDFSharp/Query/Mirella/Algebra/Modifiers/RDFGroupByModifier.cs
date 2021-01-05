@@ -73,9 +73,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
-            return String.Format("GROUP BY {0}", String.Join(" ", this.PartitionVariables));
+            return string.Format("GROUP BY {0}", string.Join(" ", this.PartitionVariables));
         }
         #endregion
 
@@ -94,7 +94,7 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    throw new RDFQueryException(String.Format("Cannot add aggregator to GroupBy modifier because the given projection variable '{0}' is already used by another aggregator.", aggregator.ProjectionVariable));
+                    throw new RDFQueryException(string.Format("Cannot add aggregator to GroupBy modifier because the given projection variable '{0}' is already used by another aggregator.", aggregator.ProjectionVariable));
                 }
             }
             return this;
@@ -127,29 +127,29 @@ namespace RDFSharp.Query
             //1 - Every partition variable must be found in the working table as a column
             if (!this.PartitionVariables.TrueForAll(pv => table.Columns.Contains(pv.ToString())))
             {
-                String notfoundPartitionVars = String.Join(",", this.PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
+                string notfoundPartitionVars = string.Join(",", this.PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
                                                                                        .Select(pv => pv.ToString()));
-                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {0}", notfoundPartitionVars));
+                throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {0}", notfoundPartitionVars));
             }
             //2 - Every aggregation variable must be found in the working table as a column
             if (!this.Aggregators.TrueForAll(ag => table.Columns.Contains(ag.AggregatorVariable.ToString())))
             {
                 //Use lookup hashset to ensure distinctness of result variables
-                HashSet<String> notfoundAggregatorVarsLookup = new HashSet<String>();
+                HashSet<string> notfoundAggregatorVarsLookup = new HashSet<string>();
                 foreach (RDFAggregator notfoundAggregatorVar in this.Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString())))
                 {
                     if (!notfoundAggregatorVarsLookup.Contains(notfoundAggregatorVar.AggregatorVariable.ToString()))
                         notfoundAggregatorVarsLookup.Add(notfoundAggregatorVar.AggregatorVariable.ToString());
                 }
-                var notfoundAggregatorVars = String.Join(",", notfoundAggregatorVarsLookup);
-                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregatorVars));
+                var notfoundAggregatorVars = string.Join(",", notfoundAggregatorVarsLookup);
+                throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregatorVars));
             }
             //3 - There should NOT be intersection between partition variables and projection variables
             if (this.PartitionVariables.Any(pv => this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable))))
             {
-                String commonPartitionProjectionVars = String.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
+                string commonPartitionProjectionVars = string.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
                                                                                                .Select(pv => pv.ToString()));
-                throw new RDFQueryException(String.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning and projection: {0}", commonPartitionProjectionVars));
+                throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning and projection: {0}", commonPartitionProjectionVars));
             }
         }
 
@@ -160,7 +160,7 @@ namespace RDFSharp.Query
         {
             foreach (DataRow tableRow in table.Rows)
             {
-                String partitionKey = GetPartitionKey(tableRow);
+                string partitionKey = GetPartitionKey(tableRow);
                 this.Aggregators.ForEach(ag =>
                     ag.ExecutePartition(partitionKey, tableRow));
             }
@@ -193,7 +193,7 @@ namespace RDFSharp.Query
                                                                                                                        ag.ProjectionVariable,
                                                                                                                        ag.HavingClause.Item3));
                 #region ExecuteFilters
-                Boolean keepRow = false;
+                bool keepRow = false;
                 while (rowsEnum.MoveNext())
                 {
 
@@ -225,17 +225,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Calculates the partition key on the given datarow
         /// </summary>
-        private String GetPartitionKey(DataRow tableRow)
+        private string GetPartitionKey(DataRow tableRow)
         {
-            List<String> partitionKey = new List<String>();
+            List<string> partitionKey = new List<string>();
             this.PartitionVariables.ForEach(pv =>
             {
                 if (tableRow.IsNull(pv.VariableName))
-                    partitionKey.Add(pv.VariableName + "§PV§" + String.Empty);
+                    partitionKey.Add(pv.VariableName + "§PV§" + string.Empty);
                 else
                     partitionKey.Add(pv.VariableName + "§PV§" + tableRow[pv.VariableName].ToString());
             });
-            return String.Join("§PK§", partitionKey);
+            return string.Join("§PK§", partitionKey);
         }
         #endregion
 

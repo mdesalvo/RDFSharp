@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// dc
             /// </summary>
-            public static readonly String PREFIX = "dc";
+            public static readonly string PREFIX = "dc";
 
             /// <summary>
             /// http://purl.org/dc/elements/1.1/
             /// </summary>
-            public static readonly String BASE_URI = "http://purl.org/dc/elements/1.1/";
+            public static readonly string BASE_URI = "http://purl.org/dc/elements/1.1/";
 
             /// <summary>
             /// dc:contributor
@@ -130,12 +130,12 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcam
                 /// </summary>
-                public static readonly String PREFIX = "dcam";
+                public static readonly string PREFIX = "dcam";
 
                 /// <summary>
                 /// http://purl.org/dc/dcam/
                 /// </summary>
-                public static readonly String BASE_URI = "http://purl.org/dc/dcam/";
+                public static readonly string BASE_URI = "http://purl.org/dc/dcam/";
 
                 /// <summary>
                 /// dcam:memberOf
@@ -162,12 +162,12 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcterms
                 /// </summary>
-                public static readonly String PREFIX = "dcterms";
+                public static readonly string PREFIX = "dcterms";
 
                 /// <summary>
                 /// http://purl.org/dc/terms/
                 /// </summary>
-                public static readonly String BASE_URI = "http://purl.org/dc/terms/";
+                public static readonly string BASE_URI = "http://purl.org/dc/terms/";
 
                 /// <summary>
                 /// dcterms:abstract
@@ -679,12 +679,12 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dctype
                 /// </summary>
-                public static readonly String PREFIX = "dctype";
+                public static readonly string PREFIX = "dctype";
 
                 /// <summary>
                 /// http://purl.org/dc/dcmitype/
                 /// </summary>
-                public static readonly String BASE_URI = "http://purl.org/dc/dcmitype/";
+                public static readonly string BASE_URI = "http://purl.org/dc/dcmitype/";
 
                 /// <summary>
                 /// dctype:Collection

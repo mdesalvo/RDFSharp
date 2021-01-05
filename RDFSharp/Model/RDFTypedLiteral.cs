@@ -37,9 +37,9 @@ namespace RDFSharp.Model
         /// Default-ctor to build a typed literal with given value and given datatype.
         /// Semantic validation of given value against given datatype is performed.
         /// </summary>
-        public RDFTypedLiteral(String value, RDFModelEnums.RDFDatatypes datatype)
+        public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
         {
-            this.Value = (value ?? String.Empty);
+            this.Value = (value ?? string.Empty);
             this.Datatype = datatype;
 
             //Validation against semantic of given datatype
@@ -54,7 +54,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the typed literal
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return base.ToString() + "^^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype);
         }
@@ -64,7 +64,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with boolean
         /// </summary>
-        internal Boolean HasBooleanDatatype()
+        internal bool HasBooleanDatatype()
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
         }
@@ -72,7 +72,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with datetime
         /// </summary>
-        internal Boolean HasDatetimeDatatype()
+        internal bool HasDatetimeDatatype()
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME) ||
@@ -87,7 +87,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with timespan
         /// </summary>
-        internal Boolean HasTimespanDatatype()
+        internal bool HasTimespanDatatype()
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION));
         }
@@ -95,7 +95,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with string
         /// </summary>
-        internal Boolean HasStringDatatype()
+        internal bool HasStringDatatype()
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL) ||
@@ -117,7 +117,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with decimal
         /// </summary>
-        internal Boolean HasDecimalDatatype()
+        internal bool HasDecimalDatatype()
         {
             return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE) ||
                     this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL) ||

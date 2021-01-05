@@ -36,12 +36,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Basic ctor to throw an RDFSemanticsException with message
         /// </summary>
-        public RDFSemanticsException(String message) : base(message) { }
+        public RDFSemanticsException(string message) : base(message) { }
 
         /// <summary>
         /// Basic ctor to throw an RDFSemanticsException with message and inner exception
         /// </summary>
-        public RDFSemanticsException(String message, Exception innerException) : base(message, innerException) { }
+        public RDFSemanticsException(string message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>
         /// Basic ctor to support serialization of a remotely thrown RDFSemanticsException

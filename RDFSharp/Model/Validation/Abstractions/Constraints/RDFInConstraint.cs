@@ -31,7 +31,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Values allowed on the given RDF term
         /// </summary>
-        internal Dictionary<Int64, RDFPatternMember> InValues { get; set; }
+        internal Dictionary<long, RDFPatternMember> InValues { get; set; }
 
         /// <summary>
         /// Type of the allowed values (Resource/Literal)
@@ -45,7 +45,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base()
         {
-            this.InValues = new Dictionary<Int64, RDFPatternMember>();
+            this.InValues = new Dictionary<long, RDFPatternMember>();
             this.ItemType = itemType;
         }
         #endregion

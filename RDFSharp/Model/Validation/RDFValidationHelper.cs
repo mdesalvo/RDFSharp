@@ -107,7 +107,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the direct (rdf:type) and indirect (rdfs:subClassOf) instances of the given class within the given data graph
         /// </summary>
-        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<Int64> visitContext = null)
+        internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<long> visitContext = null)
         {
             var result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null)
@@ -116,7 +116,7 @@ namespace RDFSharp.Model
                 #region visitContext
                 if (visitContext == null)
                 {
-                    visitContext = new HashSet<Int64>() { { className.PatternMemberID } };
+                    visitContext = new HashSet<long>() { { className.PatternMemberID } };
                 }
                 else
                 {

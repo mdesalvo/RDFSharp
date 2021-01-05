@@ -31,22 +31,22 @@ namespace RDFSharp.Model
         /// <summary>
         /// Flag indicating that closure of predicates is required or not
         /// </summary>
-        public Boolean Closed { get; internal set; }
+        public bool Closed { get; internal set; }
 
         /// <summary>
         /// Properties allowed on the given RDF term
         /// </summary>
-        internal Dictionary<Int64, RDFResource> IgnoredProperties { get; set; }
+        internal Dictionary<long, RDFResource> IgnoredProperties { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a closed constraint with the given behavior
         /// </summary>
-        public RDFClosedConstraint(Boolean closed) : base()
+        public RDFClosedConstraint(bool closed) : base()
         {
             this.Closed = closed;
-            this.IgnoredProperties = new Dictionary<Int64, RDFResource>();
+            this.IgnoredProperties = new Dictionary<long, RDFResource>();
         }
         #endregion
 

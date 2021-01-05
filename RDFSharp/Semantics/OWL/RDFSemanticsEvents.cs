@@ -35,12 +35,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Delegate to handle information events generated within the "RDFSharp.Semantics" namespace
         /// </summary>
-        public delegate void RDFSemanticsInfoEventHandler(String eventMessage);
+        public delegate void RDFSemanticsInfoEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed information event handler
         /// </summary>
-        internal static void RaiseSemanticsInfo(String eventMessage)
+        internal static void RaiseSemanticsInfo(string eventMessage)
         {
             Parallel.Invoke(() => OnSemanticsInfo(DateTime.Now.ToString() + ";SEMANTICS_INFO;" + eventMessage));
         }
@@ -55,12 +55,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Delegate to handle warning events generated within the "RDFSharp.Semantics" namespace
         /// </summary>
-        public delegate void RDFSemanticsWarningEventHandler(String eventMessage);
+        public delegate void RDFSemanticsWarningEventHandler(string eventMessage);
 
         /// <summary>
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
-        internal static void RaiseSemanticsWarning(String eventMessage)
+        internal static void RaiseSemanticsWarning(string eventMessage)
         {
             Parallel.Invoke(() => OnSemanticsWarning(DateTime.Now.ToString() + ";SEMANTICS_WARNING;" + eventMessage));
         }

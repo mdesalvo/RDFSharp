@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the number of results produced by the query
         /// </summary>
-        public Int64 DescribeResultsCount
+        public long DescribeResultsCount
         {
             get
             {
@@ -51,7 +51,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty DESCRIBE result
         /// </summary>
-        internal RDFDescribeQueryResult(String tableName)
+        internal RDFDescribeQueryResult(string tableName)
         {
             this.DescribeResults = new DataTable(tableName);
         }
@@ -127,7 +127,7 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph)
         {
-            RDFDescribeQueryResult result = new RDFDescribeQueryResult(String.Empty);
+            RDFDescribeQueryResult result = new RDFDescribeQueryResult(string.Empty);
             if (graph != null)
             {
 
@@ -143,7 +143,7 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store)
         {
-            RDFDescribeQueryResult result = new RDFDescribeQueryResult(String.Empty);
+            RDFDescribeQueryResult result = new RDFDescribeQueryResult(string.Empty);
             if (store != null)
             {
 

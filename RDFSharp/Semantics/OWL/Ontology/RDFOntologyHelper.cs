@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace RDFSharp.Semantics.OWL
@@ -35,7 +36,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is subClass of the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsSubClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsSubClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetSuperClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -102,7 +103,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is superClass of the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsSuperClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsSuperClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetSubClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -169,7 +170,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is equivalentClass of the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsEquivalentClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsEquivalentClassOf(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetEquivalentClassesOf(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -191,14 +192,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:equivalentClass" taxonomy to discover direct and indirect equivalentClasses of the given class
         /// </summary>
-        internal static RDFOntologyClassModel GetEquivalentClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<Int64, RDFOntologyClass> visitContext)
+        internal static RDFOntologyClassModel GetEquivalentClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<long, RDFOntologyClass> visitContext)
         {
             var result = new RDFOntologyClassModel();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
+                visitContext = new Dictionary<long, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
             }
             else
             {
@@ -228,7 +229,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aClass is disjointClass with the given bClass within the given class model
         /// </summary>
-        public static Boolean CheckIsDisjointClassWith(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
+        public static bool CheckIsDisjointClassWith(this RDFOntologyClassModel classModel, RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             return (aClass != null && bClass != null && classModel != null ? classModel.GetDisjointClassesWith(aClass).Classes.ContainsKey(bClass.PatternMemberID) : false);
         }
@@ -250,7 +251,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:disjointWith" taxonomy to discover direct and indirect disjointClasses of the given class
         /// </summary>
-        internal static RDFOntologyClassModel GetDisjointClassesWithInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<Int64, RDFOntologyClass> visitContext)
+        internal static RDFOntologyClassModel GetDisjointClassesWithInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<long, RDFOntologyClass> visitContext)
         {
             var result1 = new RDFOntologyClassModel();
             var result2 = new RDFOntologyClassModel();
@@ -258,7 +259,7 @@ namespace RDFSharp.Semantics.OWL
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
+                visitContext = new Dictionary<long, RDFOntologyClass>() { { ontClass.PatternMemberID, ontClass } };
             }
             else
             {
@@ -346,7 +347,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is domain of the given ontology property within the given ontology class model
         /// </summary>
-        public static Boolean CheckIsDomainOf(this RDFOntologyClassModel classModel, RDFOntologyClass domainClass, RDFOntologyProperty ontProperty)
+        public static bool CheckIsDomainOf(this RDFOntologyClassModel classModel, RDFOntologyClass domainClass, RDFOntologyProperty ontProperty)
         {
             return (domainClass != null && ontProperty != null && classModel != null ? classModel.GetDomainOf(ontProperty).Classes.ContainsKey(domainClass.PatternMemberID) : false);
         }
@@ -374,7 +375,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is range of the given ontology property within the given ontology class model
         /// </summary>
-        public static Boolean CheckIsRangeOf(this RDFOntologyClassModel classModel, RDFOntologyClass rangeClass, RDFOntologyProperty ontProperty)
+        public static bool CheckIsRangeOf(this RDFOntologyClassModel classModel, RDFOntologyClass rangeClass, RDFOntologyProperty ontProperty)
         {
             return (rangeClass != null && ontProperty != null && classModel != null ? classModel.GetRangeOf(ontProperty).Classes.ContainsKey(rangeClass.PatternMemberID) : false);
         }
@@ -402,7 +403,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given ontology class is compatible with 'rdfs:Literal' within the given class model
         /// </summary>
-        public static Boolean CheckIsLiteralCompatibleClass(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass)
+        public static bool CheckIsLiteralCompatibleClass(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass)
         {
             var result = false;
             if (ontClass != null && classModel != null)
@@ -423,7 +424,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is subProperty of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsSubPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsSubPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetSuperPropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -490,7 +491,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is superProperty of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsSuperPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsSuperPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetSubPropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -557,7 +558,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is equivalentProperty of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsEquivalentPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsEquivalentPropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetEquivalentPropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -579,14 +580,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:equivalentProperty" taxonomy to discover direct and indirect equivalentProperties of the given property
         /// </summary>
-        internal static RDFOntologyPropertyModel GetEquivalentPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext)
+        internal static RDFOntologyPropertyModel GetEquivalentPropertiesOfInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<long, RDFOntologyProperty> visitContext)
         {
             var result = new RDFOntologyPropertyModel();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+                visitContext = new Dictionary<long, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
             }
             else
             {
@@ -616,7 +617,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aProperty is disjointProperty with the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsPropertyDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
+        public static bool CheckIsPropertyDisjointWith(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty aProperty, RDFOntologyProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetPropertiesDisjointWith(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -638,7 +639,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:propertyDisjointWith" taxonomy to discover direct and indirect disjointProperties of the given property
         /// </summary>
-        internal static RDFOntologyPropertyModel GetPropertiesDisjointWithInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<Int64, RDFOntologyProperty> visitContext)
+        internal static RDFOntologyPropertyModel GetPropertiesDisjointWithInternal(this RDFOntologyPropertyModel propertyModel, RDFOntologyProperty ontProperty, Dictionary<long, RDFOntologyProperty> visitContext)
         {
             var result1 = new RDFOntologyPropertyModel();
             var result2 = new RDFOntologyPropertyModel();
@@ -646,7 +647,7 @@ namespace RDFSharp.Semantics.OWL
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
+                visitContext = new Dictionary<long, RDFOntologyProperty>() { { ontProperty.PatternMemberID, ontProperty } };
             }
             else
             {
@@ -688,11 +689,118 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region PropertyChainAxiom [OWL2]
+        /// <summary>
+        /// Checks if the given ontProperty is a property chain within the given property model
+        /// </summary>
+        public static bool CheckIsPropertyChain(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty ontProperty)
+        {
+            if (ontProperty != null && propertyModel != null)
+                return propertyModel.Relations.PropertyChainAxiom.Any(te => te.TaxonomySubject.Equals(ontProperty));
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the given aProperty is a property chain step of the given bProperty within the given ontology
+        /// </summary>
+        public static bool CheckIsPropertyChainStepOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
+        {
+            if (aProperty != null && bProperty != null && propertyModel != null)
+                return propertyModel.GetPropertyChainStepsOf(bProperty).Any(step => step.StepProperty.Equals(aProperty.Value));
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the assertions for each property chain declared in the given ontology [OWL2]
+        /// </summary>
+        public static Dictionary<string, RDFOntologyData> GetPropertyChainAxiomsData(this RDFOntology ontology)
+        {
+            Dictionary<string, RDFOntologyData> result = new Dictionary<string, RDFOntologyData>();
+
+            //Materialize graph representation of the given ontology
+            RDFGraph ontologyGraph = ontology.ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData);
+
+            //Iterate property chain axiom taxonomy of the given ontology
+            foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> propertyChainAxiomTaxonomy in ontology.Model.PropertyModel.Relations.PropertyChainAxiom.GroupBy(t => t.TaxonomySubject))
+            {
+                result.Add(propertyChainAxiomTaxonomy.Key.ToString(), new RDFOntologyData());
+
+                //Transform property chain axiom of current property into equivalent property path
+                RDFPropertyPath propertyChainAxiomPath = new RDFPropertyPath(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), new RDFVariable("?PROPERTY_CHAIN_AXIOM_END"));
+                List<RDFPropertyPathStep> propertyChainAxiomPathSteps = ontology.Model.PropertyModel.GetPropertyChainStepsOf(propertyChainAxiomTaxonomy.Key);
+                foreach (RDFPropertyPathStep propertyChainAxiomPathStep in propertyChainAxiomPathSteps)
+                    propertyChainAxiomPath.AddSequenceStep(propertyChainAxiomPathStep);
+
+                //Execute construct query for getting property chain axiom data from ontology
+                RDFConstructQueryResult queryResult =
+                    new RDFConstructQuery()
+                        .AddPatternGroup(new RDFPatternGroup("PROPERTY_CHAIN_AXIOM")
+                            .AddPropertyPath(propertyChainAxiomPath))
+                        .AddTemplate(new RDFPattern(new RDFVariable("?PROPERTY_CHAIN_AXIOM_START"), (RDFResource)propertyChainAxiomTaxonomy.Key.Value, new RDFVariable("?PROPERTY_CHAIN_AXIOM_END")))
+                        .ApplyToGraph(ontologyGraph);
+
+                //Populate result with corresponding ontology assertions
+                foreach (RDFTriple queryResultTriple in queryResult.ToRDFGraph())
+                {
+                    RDFOntologyFact assertionSubject = ontology.Data.SelectFact(queryResultTriple.Subject.ToString());
+                    RDFOntologyProperty assertionPredicate = ontology.Model.PropertyModel.SelectProperty(queryResultTriple.Predicate.ToString());
+                    RDFOntologyFact assertionObject = ontology.Data.SelectFact(queryResultTriple.Object.ToString());
+                    if (assertionPredicate is RDFOntologyObjectProperty)
+                        result[propertyChainAxiomTaxonomy.Key.ToString()].AddAssertionRelation(assertionSubject, (RDFOntologyObjectProperty)assertionPredicate, assertionObject);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the direct and indirect properties composing the path of the given property chain [OWL2]
+        /// </summary>
+        internal static List<RDFPropertyPathStep> GetPropertyChainStepsOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyResource propertyChain, HashSet<long> visitContext = null)
+        {
+            List<RDFPropertyPathStep> result = new List<RDFPropertyPathStep>();
+            if (propertyChain != null && propertyModel != null)
+            {
+
+                #region visitContext
+                if (visitContext == null)
+                {
+                    visitContext = new HashSet<long>() { { propertyChain.Value.PatternMemberID } };
+                }
+                else
+                {
+                    if (!visitContext.Contains(propertyChain.Value.PatternMemberID))
+                    {
+                        visitContext.Add(propertyChain.Value.PatternMemberID);
+                    }
+                    else
+                    {
+                        return result;
+                    }
+                }
+                #endregion
+
+                //owl:propertyChainAxiom
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomTaxonomyEntry in propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChain))
+                {
+                    bool containsPropertyChainAxiom = propertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(propertyChainAxiomTaxonomyEntry.TaxonomyObject).EntriesCount > 0;
+                    if (containsPropertyChainAxiom)
+                        result.AddRange(propertyModel.GetPropertyChainStepsOf(propertyChainAxiomTaxonomyEntry.TaxonomyObject, visitContext));
+                    else
+                        result.Add(new RDFPropertyPathStep((RDFResource)propertyChainAxiomTaxonomyEntry.TaxonomyObject.Value));
+                }
+
+            }
+            return result;
+        }
+        #endregion
+
         #region InverseOf
         /// <summary>
         /// Checks if the given aProperty is inverse property of the given bProperty within the given property model
         /// </summary>
-        public static Boolean CheckIsInversePropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
+        public static bool CheckIsInversePropertyOf(this RDFOntologyPropertyModel propertyModel, RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             return (aProperty != null && bProperty != null && propertyModel != null ? propertyModel.GetInversePropertiesOf(aProperty).Properties.ContainsKey(bProperty.PatternMemberID) : false);
         }
@@ -732,7 +840,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aFact is sameAs the given bFact within the given data
         /// </summary>
-        public static Boolean CheckIsSameFactAs(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
+        public static bool CheckIsSameFactAs(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
         {
             return (aFact != null && bFact != null && data != null ? data.GetSameFactsAs(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
@@ -754,14 +862,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:sameAs" taxonomy to discover direct and indirect samefacts of the given facts
         /// </summary>
-        internal static RDFOntologyData GetSameFactsAsInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<Int64, RDFOntologyFact> visitContext)
+        internal static RDFOntologyData GetSameFactsAsInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<long, RDFOntologyFact> visitContext)
         {
             var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<long, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else
             {
@@ -791,7 +899,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given aFact is differentFrom the given bFact within the given data
         /// </summary>
-        public static Boolean CheckIsDifferentFactFrom(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
+        public static bool CheckIsDifferentFactFrom(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyFact bFact)
         {
             return (aFact != null && bFact != null && data != null ? data.GetDifferentFactsFrom(aFact).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
@@ -813,14 +921,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Subsumes the "owl:differentFrom" taxonomy to discover direct and indirect differentFacts of the given facts
         /// </summary>
-        internal static RDFOntologyData GetDifferentFactsFromInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<Int64, RDFOntologyFact> visitContext)
+        internal static RDFOntologyData GetDifferentFactsFromInternal(this RDFOntologyData data, RDFOntologyFact ontFact, Dictionary<long, RDFOntologyFact> visitContext)
         {
             var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<long, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else
             {
@@ -856,7 +964,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> transProp" assertion links to the given bFact within the given data
         /// </summary>
-        public static Boolean CheckIsTransitiveAssertionOf(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty transProp, RDFOntologyFact bFact)
+        public static bool CheckIsTransitiveAssertionOf(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty transProp, RDFOntologyFact bFact)
         {
             return (aFact != null && transProp != null && transProp.IsTransitiveProperty() && bFact != null && data != null ? data.GetTransitiveAssertionsOf(aFact, transProp).Facts.ContainsKey(bFact.PatternMemberID) : false);
         }
@@ -877,14 +985,14 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlists the transitive assertions of the given fact and the given property within the given data
         /// </summary>
-        internal static RDFOntologyData GetTransitiveAssertionsOfInternal(this RDFOntologyData data, RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, Dictionary<Int64, RDFOntologyFact> visitContext)
+        internal static RDFOntologyData GetTransitiveAssertionsOfInternal(this RDFOntologyData data, RDFOntologyFact ontFact, RDFOntologyObjectProperty ontProp, Dictionary<long, RDFOntologyFact> visitContext)
         {
             var result = new RDFOntologyData();
 
             #region visitContext
             if (visitContext == null)
             {
-                visitContext = new Dictionary<Int64, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
+                visitContext = new Dictionary<long, RDFOntologyFact>() { { ontFact.PatternMemberID, ontFact } };
             }
             else
             {
@@ -915,7 +1023,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> objectProperty -> bFact" is an assertion within the given data
         /// </summary>
-        public static Boolean CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
+        public static bool CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && bFact != null && objectProperty != null && data != null)
             {
@@ -933,7 +1041,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> datatypeProperty -> ontologyLiteral" is an assertion within the given data
         /// </summary>
-        public static Boolean CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
+        public static bool CheckIsAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (aFact != null && ontologyLiteral != null && datatypeProperty != null && data != null)
             {
@@ -950,7 +1058,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> objectProperty -> bFact" is a negative assertion within the given data
         /// </summary>
-        public static Boolean CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
+        public static bool CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && bFact != null && objectProperty != null && data != null)
             {
@@ -968,7 +1076,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given "aFact -> datatypeProperty -> ontologyLiteral" is a negative assertion within the given data
         /// </summary>
-        public static Boolean CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
+        public static bool CheckIsNegativeAssertion(this RDFOntologyData data, RDFOntologyFact aFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (aFact != null && ontologyLiteral != null && datatypeProperty != null && data != null)
             {
@@ -987,7 +1095,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the given fact is member of the given class within the given ontology
         /// </summary>
-        public static Boolean CheckIsMemberOf(this RDFOntology ontology, RDFOntologyFact ontFact, RDFOntologyClass ontClass)
+        public static bool CheckIsMemberOf(this RDFOntology ontology, RDFOntologyFact ontFact, RDFOntologyClass ontClass)
         {
             return (ontFact != null && ontClass != null && ontology != null ? ontology.GetMembersOf(ontClass).Facts.ContainsKey(ontFact.PatternMemberID) : false);
         }
@@ -1006,15 +1114,11 @@ namespace RDFSharp.Semantics.OWL
 
                 //DataRange/Literal-Compatible
                 if (expOnt.Model.ClassModel.CheckIsLiteralCompatibleClass(ontClass))
-                {
                     result = expOnt.GetMembersOfLiteralCompatibleClass(ontClass);
-                }
 
                 //Restriction/Composite/Enumerate/Class
                 else
-                {
                     result = expOnt.GetMembersOfNonLiteralCompatibleClass(ontClass);
-                }
 
             }
             return result;
@@ -1033,7 +1137,7 @@ namespace RDFSharp.Semantics.OWL
                                                    .AddClass(ontClass);
 
             //Filter "classType" relations made with compatible classes
-            var fTaxonomy = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            var fTaxonomy = new RDFOntologyTaxonomy(ontology.Data.Relations.ClassType.Category, ontology.Data.Relations.ClassType.AcceptDuplicates);
             foreach (var c in compCls)
             {
                 fTaxonomy = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
@@ -1144,7 +1248,7 @@ namespace RDFSharp.Semantics.OWL
                                                                     .AddProperty(ontRestriction.OnProperty);
 
             //Filter assertions made with enlisted compatible properties
-            var restrictionAssertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data);
+            var restrictionAssertions = new RDFOntologyTaxonomy(ontology.Data.Relations.Assertions.Category, ontology.Data.Relations.Assertions.AcceptDuplicates);
             foreach (var property in restrictionProperties)
                 restrictionAssertions = restrictionAssertions.UnionWith(ontology.Data.Relations.Assertions.SelectEntriesByPredicate(property));
 
@@ -1153,19 +1257,19 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Item2 is a counter for occurrences of the restricted property within the subject fact
-                var cardinalityRestrictionRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
+                var cardinalityRestrictionRegistry = new Dictionary<long, Tuple<RDFOntologyFact, long>>();
 
                 //Iterate the compatible assertions
                 foreach (var assertion in restrictionAssertions)
                 {
                     if (!cardinalityRestrictionRegistry.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
                     {
-                        cardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, 1));
+                        cardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, 1));
                     }
                     else
                     {
                         var occurrencyCounter = cardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID].Item2;
-                        cardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
+                        cardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
                     }
                 }
 
@@ -1209,7 +1313,7 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Item2 is a counter for occurrences of the restricted property within the subject fact
-                var qualifiedCardinalityRestrictionRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64>>();
+                var qualifiedCardinalityRestrictionRegistry = new Dictionary<long, Tuple<RDFOntologyFact, long>>();
 
                 //Enlist the classes which are compatible with the restricted "OnClass"
                 var onClasses = ontology.Model.ClassModel.GetSubClassesOf(qualifiedCardinalityRestriction.OnClass)
@@ -1240,12 +1344,12 @@ namespace RDFSharp.Semantics.OWL
                     {
                         if (!qualifiedCardinalityRestrictionRegistry.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
                         {
-                            qualifiedCardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, 1));
+                            qualifiedCardinalityRestrictionRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, 1));
                         }
                         else
                         {
                             var occurrencyCounter = qualifiedCardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID].Item2;
-                            qualifiedCardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
+                            qualifiedCardinalityRestrictionRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long>((RDFOntologyFact)assertion.TaxonomySubject, occurrencyCounter + 1);
                         }
                     }
                 }
@@ -1291,7 +1395,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Item2 is a counter for occurrences of the restricted property with a range member of the restricted "FromClass"
                 //Item3 is a counter for occurrences of the restricted property with a range member not of the restricted "FromClass"
-                var valuesFromRegistry = new Dictionary<Int64, Tuple<RDFOntologyFact, Int64, Int64>>();
+                var valuesFromRegistry = new Dictionary<long, Tuple<RDFOntologyFact, long, long>>();
 
                 //Enlist the classes which are compatible with the restricted "FromClass"
                 var classes = ontRestriction is RDFOntologyAllValuesFromRestriction
@@ -1308,7 +1412,7 @@ namespace RDFSharp.Semantics.OWL
 
                     //Initialize the occurrence counters of the subject fact
                     if (!valuesFromRegistry.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
-                        valuesFromRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)assertion.TaxonomySubject, 0, 0));
+                        valuesFromRegistry.Add(assertion.TaxonomySubject.PatternMemberID, new Tuple<RDFOntologyFact, long, long>((RDFOntologyFact)assertion.TaxonomySubject, 0, 0));
 
                     //Iterate the class types of the object fact, checking presence of the restricted "FromClass"
                     var fromClassFound = false;
@@ -1330,11 +1434,11 @@ namespace RDFSharp.Semantics.OWL
                     var differenceCounter = valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID].Item3;
                     if (fromClassFound)
                     {
-                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter + 1, differenceCounter);
+                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long, long>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter + 1, differenceCounter);
                     }
                     else
                     {
-                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, Int64, Int64>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter, differenceCounter + 1);
+                        valuesFromRegistry[assertion.TaxonomySubject.PatternMemberID] = new Tuple<RDFOntologyFact, long, long>((RDFOntologyFact)assertion.TaxonomySubject, equalityCounter, differenceCounter + 1);
                     }
 
                 }
@@ -1594,6 +1698,10 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var entry in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.SubClassOf.AddEntry(entry);
 
+                //HasKey [OWL2]
+                foreach (var entry in ontologyClassModel.Relations.HasKey.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.HasKey.AddEntry(entry);
+
             }
             return result;
         }
@@ -1615,13 +1723,17 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var entry in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.EquivalentProperty.AddEntry(entry);
 
-                //PropertyDisjointWith
-                foreach (var entry in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.PropertyDisjointWith.AddEntry(entry);
-
                 //InverseOf
                 foreach (var entry in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.InverseOf.AddEntry(entry);
+
+                //PropertyDisjointWith [OWL2]
+                foreach (var entry in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.PropertyDisjointWith.AddEntry(entry);
+
+                //PropertyChainAxiom [OWL2]
+                foreach (var entry in ontologyPropertyModel.Relations.PropertyChainAxiom.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.PropertyChainAxiom.AddEntry(entry);
 
             }
             return result;
@@ -1651,6 +1763,10 @@ namespace RDFSharp.Semantics.OWL
                 //Assertions
                 foreach (var entry in ontologyData.Relations.Assertions.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                     result.Relations.Assertions.AddEntry(entry);
+
+                //NegativeAssertions [OWL2]
+                foreach (var entry in ontologyData.Relations.NegativeAssertions.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                    result.Relations.NegativeAssertions.AddEntry(entry);
 
             }
             return result;
@@ -1689,55 +1805,26 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyClassModel != null)
             {
-                var cacheRemove = new Dictionary<Int64, Object>();
-
                 //SubClassOf
-                foreach (var t in ontologyClassModel.Relations.SubClassOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.SubClassOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.SubClassOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //EquivalentClass
-                foreach (var t in ontologyClassModel.Relations.EquivalentClass.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.EquivalentClass.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.EquivalentClass.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //DisjointWith
-                foreach (var t in ontologyClassModel.Relations.DisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.DisjointWith.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.DisjointWith.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //UnionOf
-                foreach (var t in ontologyClassModel.Relations.UnionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.UnionOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.UnionOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //IntersectionOf
-                foreach (var t in ontologyClassModel.Relations.IntersectionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.IntersectionOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.IntersectionOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //OneOf
-                foreach (var t in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyClassModel.Relations.OneOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyClassModel.Relations.OneOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //HasKey [OWL2]
+                ontologyClassModel.Relations.HasKey.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
 
@@ -1748,39 +1835,20 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyPropertyModel != null)
             {
-                var cacheRemove = new Dictionary<Int64, Object>();
-
                 //SubPropertyOf
-                foreach (var t in ontologyPropertyModel.Relations.SubPropertyOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.SubPropertyOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyPropertyModel.Relations.SubPropertyOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //EquivalentProperty
-                foreach (var t in ontologyPropertyModel.Relations.EquivalentProperty.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.EquivalentProperty.Entries.Remove(c); }
-                cacheRemove.Clear();
-
-                //PropertyDisjointWith
-                foreach (var t in ontologyPropertyModel.Relations.PropertyDisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyPropertyModel.Relations.EquivalentProperty.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //InverseOf
-                foreach (var t in ontologyPropertyModel.Relations.InverseOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyPropertyModel.Relations.InverseOf.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyPropertyModel.Relations.InverseOf.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //PropertyDisjointWith [OWL2]
+                ontologyPropertyModel.Relations.PropertyDisjointWith.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //PropertyChainAxiom [OWL2]
+                ontologyPropertyModel.Relations.PropertyChainAxiom.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
 
@@ -1791,39 +1859,20 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyData != null)
             {
-                var cacheRemove = new Dictionary<Int64, Object>();
-
                 //ClassType
-                foreach (var t in ontologyData.Relations.ClassType.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.ClassType.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.ClassType.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //SameAs
-                foreach (var t in ontologyData.Relations.SameAs.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.SameAs.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.SameAs.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //DifferentFrom
-                foreach (var t in ontologyData.Relations.DifferentFrom.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.DifferentFrom.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.DifferentFrom.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                 //Assertions
-                foreach (var t in ontologyData.Relations.Assertions.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    cacheRemove.Add(t.TaxonomyEntryID, null);
-                }
-                foreach (var c in cacheRemove.Keys) { ontologyData.Relations.Assertions.Entries.Remove(c); }
-                cacheRemove.Clear();
+                ontologyData.Relations.Assertions.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //NegativeAssertions [OWL2]
+                ontologyData.Relations.NegativeAssertions.Entries.RemoveAll(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
             }
         }
         #endregion

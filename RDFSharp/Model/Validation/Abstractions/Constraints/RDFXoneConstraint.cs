@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Shapes required for the given RDF term
         /// </summary>
-        internal Dictionary<Int64, RDFResource> XoneShapes { get; set; }
+        internal Dictionary<long, RDFResource> XoneShapes { get; set; }
         #endregion
 
         #region Ctors
@@ -39,7 +39,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFXoneConstraint() : base()
         {
-            this.XoneShapes = new Dictionary<Int64, RDFResource>();
+            this.XoneShapes = new Dictionary<long, RDFResource>();
         }
         #endregion
 
@@ -75,7 +75,7 @@ namespace RDFSharp.Model
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
-                Int32 valueNodeConformsCounter = 0;
+                int valueNodeConformsCounter = 0;
                 foreach (RDFShape xoneShape in xoneShapes)
                 {
                     RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember>() { valueNode });

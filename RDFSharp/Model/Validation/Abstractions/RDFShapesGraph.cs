@@ -30,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the shapes composing this shapes graph
         /// </summary>
-        public Int64 ShapesCount
+        public long ShapesCount
         {
             get { return this.Shapes.Count; }
         }
@@ -46,7 +46,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// SHACL shapes contained in this shapes graph
         /// </summary>
-        internal Dictionary<Int64, RDFShape> Shapes { get; set; }
+        internal Dictionary<long, RDFShape> Shapes { get; set; }
         #endregion
 
         #region Ctors
@@ -55,7 +55,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
         {
-            this.Shapes = new Dictionary<Int64, RDFShape>();
+            this.Shapes = new Dictionary<long, RDFShape>();
         }
 
         /// <summary>
@@ -140,11 +140,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the shape represented by the given string from this shapes graph
         /// </summary>
-        public RDFShape SelectShape(String shapeName)
+        public RDFShape SelectShape(string shapeName)
         {
             if (shapeName != null)
             {
-                Int64 shapeID = RDFModelUtilities.CreateHash(shapeName);
+                long shapeID = RDFModelUtilities.CreateHash(shapeName);
                 if (this.Shapes.ContainsKey(shapeID))
                 {
                     return this.Shapes[shapeID];

@@ -37,7 +37,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Performs MD5 hash calculation of the given string
         /// </summary>
-        public static Int64 CreateHash(String input)
+        public static long CreateHash(string input)
         {
             if (input != null)
             {
@@ -63,7 +63,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
-        internal static Uri GetUriFromString(String uriString)
+        internal static Uri GetUriFromString(string uriString)
         {
             Uri tempUri = null;
             if (uriString != null)
@@ -82,12 +82,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Turns back ASCII-encoded Unicodes into Unicodes.
         /// </summary>
-        public static String ASCII_To_Unicode(String asciiString)
+        public static string ASCII_To_Unicode(string asciiString)
         {
             if (asciiString != null)
             {
-                asciiString = regexU8.Replace(asciiString, match => ((Char)Int64.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-                asciiString = regexU4.Replace(asciiString, match => ((Char)Int32.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU8.Replace(asciiString, match => ((char)long.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
+                asciiString = regexU4.Replace(asciiString, match => ((char)int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
             }
             return asciiString;
         }
@@ -95,12 +95,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Turns Unicodes into ASCII-encoded Unicodes.
         /// </summary>
-        public static String Unicode_To_ASCII(String unicodeString)
+        public static string Unicode_To_ASCII(string unicodeString)
         {
             if (unicodeString != null)
             {
                 StringBuilder b = new StringBuilder();
-                foreach (Char c in unicodeString)
+                foreach (char c in unicodeString)
                 {
                     if (c <= 127)
                     {
@@ -110,11 +110,11 @@ namespace RDFSharp.Model
                     {
                         if (c <= 65535)
                         {
-                            b.Append("\\u" + ((Int32)c).ToString("X4"));
+                            b.Append("\\u" + ((int)c).ToString("X4"));
                         }
                         else
                         {
-                            b.Append("\\U" + ((Int32)c).ToString("X8"));
+                            b.Append("\\U" + ((int)c).ToString("X8"));
                         }
                     }
                 }
@@ -126,16 +126,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Replaces character controls for XML compatibility
         /// </summary>
-        internal static String EscapeControlCharsForXML(String data)
+        internal static string EscapeControlCharsForXML(string data)
         {
             if (data != null)
             {
                 StringBuilder b = new StringBuilder();
-                foreach (Char c in data)
+                foreach (char c in data)
                 {
-                    if (Char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
+                    if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
                     {
-                        b.Append("\\u" + ((Int32)c).ToString("X4"));
+                        b.Append("\\u" + ((int)c).ToString("X4"));
                     }
                     else
                     {
@@ -150,7 +150,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Trims the end of the given source string searching for the given value
         /// </summary>
-        internal static String TrimEnd(this String source, String value)
+        internal static string TrimEnd(this string source, string value)
         {
             if (!source.EndsWith(value))
                 return source;
@@ -332,7 +332,7 @@ namespace RDFSharp.Model
             RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
 
             #region Deserialization
-            Boolean nilFound = false;
+            bool nilFound = false;
             RDFResource itemRest = collRepresentative;
             while (!nilFound)
             {
@@ -404,7 +404,7 @@ namespace RDFSharp.Model
                 var subj = t.Subject.ToString();
                 var pred = t.Predicate.ToString();
                 var obj = t.Object is RDFResource ? t.Object.ToString() :
-                                (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : String.Empty);
+                                (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : string.Empty);
 
                 //Resolve subject Uri
                 var subjNS = RDFNamespaceRegister.Instance.Register.Where(x => subj.StartsWith(x.ToString()));
@@ -427,7 +427,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parse the given string in order to give the corresponding RDF/RDFS/XSD datatype
         /// </summary>
-        internal static RDFModelEnums.RDFDatatypes GetDatatypeFromString(String datatypeString)
+        internal static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
         {
             if (datatypeString != null)
             {
@@ -618,7 +618,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the given RDF/RDFS/XSD datatype
         /// </summary>
-        internal static String GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
+        internal static string GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
         {
             if (datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL))
             {
@@ -794,7 +794,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
         /// </summary>
-        internal static Boolean ValidateTypedLiteral(RDFTypedLiteral typedLiteral)
+        internal static bool ValidateTypedLiteral(RDFTypedLiteral typedLiteral)
         {
             if (typedLiteral != null)
             {
@@ -928,7 +928,7 @@ namespace RDFSharp.Model
                 //NORMALIZED_STRING
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING))
                 {
-                    if (typedLiteral.Value.IndexOfAny(new Char[] { '\n', '\r', '\t' }) == -1)
+                    if (typedLiteral.Value.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1)
                     {
                         return true;
                     }
@@ -982,8 +982,7 @@ namespace RDFSharp.Model
                 #region BOOLEAN CATEGORY
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN))
                 {
-                    Boolean outBool;
-                    if (Boolean.TryParse(typedLiteral.Value, out outBool))
+                    if (bool.TryParse(typedLiteral.Value, out bool outBool))
                     {
                         typedLiteral.Value = (outBool ? "true" : "false");
                     }
@@ -1212,8 +1211,7 @@ namespace RDFSharp.Model
                 //DECIMAL
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL))
                 {
-                    Decimal outDecimal;
-                    if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out outDecimal))
+                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal outDecimal))
                     {
                         typedLiteral.Value = Convert.ToString(outDecimal, CultureInfo.InvariantCulture);
                         return true;
@@ -1227,8 +1225,7 @@ namespace RDFSharp.Model
                 //DOUBLE
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE))
                 {
-                    Double outDouble;
-                    if (Double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outDouble))
+                    if (double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble))
                     {
                         typedLiteral.Value = Convert.ToString(outDouble, CultureInfo.InvariantCulture);
                         return true;
@@ -1242,8 +1239,7 @@ namespace RDFSharp.Model
                 //FLOAT
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT))
                 {
-                    Single outFloat;
-                    if (Single.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out outFloat))
+                    if (float.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out float outFloat))
                     {
                         typedLiteral.Value = Convert.ToString(outFloat, CultureInfo.InvariantCulture);
                         return true;
@@ -1257,8 +1253,7 @@ namespace RDFSharp.Model
                 //INTEGER
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER))
                 {
-                    Decimal outInteger;
-                    if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInteger))
+                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger))
                     {
                         typedLiteral.Value = Convert.ToString(outInteger, CultureInfo.InvariantCulture);
                         return true;
@@ -1272,8 +1267,7 @@ namespace RDFSharp.Model
                 //LONG
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG))
                 {
-                    Int64 outLong;
-                    if (Int64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outLong))
+                    if (long.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long outLong))
                     {
                         typedLiteral.Value = Convert.ToString(outLong, CultureInfo.InvariantCulture);
                         return true;
@@ -1287,8 +1281,7 @@ namespace RDFSharp.Model
                 //INT
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INT))
                 {
-                    Int32 outInt;
-                    if (Int32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outInt))
+                    if (int.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outInt))
                     {
                         typedLiteral.Value = Convert.ToString(outInt, CultureInfo.InvariantCulture);
                         return true;
@@ -1302,8 +1295,7 @@ namespace RDFSharp.Model
                 //SHORT
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT))
                 {
-                    Int16 outShort;
-                    if (Int16.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outShort))
+                    if (short.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out short outShort))
                     {
                         typedLiteral.Value = Convert.ToString(outShort, CultureInfo.InvariantCulture);
                         return true;
@@ -1317,8 +1309,7 @@ namespace RDFSharp.Model
                 //BYTE
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE))
                 {
-                    SByte outSByte;
-                    if (SByte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outSByte))
+                    if (sbyte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out sbyte outSByte))
                     {
                         typedLiteral.Value = Convert.ToString(outSByte, CultureInfo.InvariantCulture);
                         return true;
@@ -1332,8 +1323,7 @@ namespace RDFSharp.Model
                 //UNSIGNED LONG
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG))
                 {
-                    UInt64 outULong;
-                    if (UInt64.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outULong))
+                    if (ulong.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong outULong))
                     {
                         typedLiteral.Value = Convert.ToString(outULong, CultureInfo.InvariantCulture);
                         return true;
@@ -1347,8 +1337,7 @@ namespace RDFSharp.Model
                 //UNSIGNED INT
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT))
                 {
-                    UInt32 outUInt;
-                    if (UInt32.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outUInt))
+                    if (uint.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint outUInt))
                     {
                         typedLiteral.Value = Convert.ToString(outUInt, CultureInfo.InvariantCulture);
                         return true;
@@ -1362,8 +1351,7 @@ namespace RDFSharp.Model
                 //UNSIGNED SHORT
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT))
                 {
-                    UInt16 outUShort;
-                    if (UInt16.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outUShort))
+                    if (ushort.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort outUShort))
                     {
                         typedLiteral.Value = Convert.ToString(outUShort, CultureInfo.InvariantCulture);
                         return true;
@@ -1377,8 +1365,7 @@ namespace RDFSharp.Model
                 //UNSIGNED BYTE
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE))
                 {
-                    Byte outByte;
-                    if (Byte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outByte))
+                    if (byte.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte outByte))
                     {
                         typedLiteral.Value = Convert.ToString(outByte, CultureInfo.InvariantCulture);
                         return true;
@@ -1389,11 +1376,10 @@ namespace RDFSharp.Model
                     }
                 }
 
-                //NON-POSITIVE INTEGER [Decimal.MinValue, 0]
+                //NON-POSITIVE INTEGER [decimal.MinValue, 0]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER))
                 {
-                    Decimal outNPInteger;
-                    if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNPInteger))
+                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNPInteger))
                     {
                         typedLiteral.Value = Convert.ToString(outNPInteger, CultureInfo.InvariantCulture);
                         if (outNPInteger > 0)
@@ -1408,11 +1394,10 @@ namespace RDFSharp.Model
                     return true;
                 }
 
-                //NEGATIVE INTEGER [Decimal.MinValue, -1]
+                //NEGATIVE INTEGER [decimal.MinValue, -1]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER))
                 {
-                    Decimal outNInteger;
-                    if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNInteger))
+                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNInteger))
                     {
                         typedLiteral.Value = Convert.ToString(outNInteger, CultureInfo.InvariantCulture);
                         if (outNInteger > -1)
@@ -1427,11 +1412,10 @@ namespace RDFSharp.Model
                     return true;
                 }
 
-                //NON-NEGATIVE INTEGER [0, Decimal.MaxValue]
+                //NON-NEGATIVE INTEGER [0, decimal.MaxValue]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER))
                 {
-                    Decimal outNNInteger;
-                    if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outNNInteger))
+                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outNNInteger))
                     {
                         typedLiteral.Value = Convert.ToString(outNNInteger, CultureInfo.InvariantCulture);
                         if (outNNInteger < 0)
@@ -1446,11 +1430,10 @@ namespace RDFSharp.Model
                     return true;
                 }
 
-                //POSITIVE INTEGER [1, Decimal.MaxValue]
+                //POSITIVE INTEGER [1, decimal.MaxValue]
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER))
                 {
-                    Decimal outPInteger;
-                    if (Decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out outPInteger))
+                    if (decimal.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outPInteger))
                     {
                         typedLiteral.Value = Convert.ToString(outPInteger, CultureInfo.InvariantCulture);
                         if (outPInteger < 1)

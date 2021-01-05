@@ -38,20 +38,20 @@ namespace RDFSharp.Query
         /// <summary>
         /// Language to be filtered
         /// </summary>
-        public String Language { get; internal set; }
+        public string Language { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default-ctor to build a filter on the given variable for the given language
         /// </summary>
-        public RDFLangMatchesFilter(RDFVariable variable, String language)
+        public RDFLangMatchesFilter(RDFVariable variable, string language)
         {
             if (variable != null)
             {
                 if (language != null)
                 {
-                    if (language == String.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
+                    if (language == string.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
                     {
                         this.Variable = variable;
                         this.Language = language.ToUpperInvariant();
@@ -77,11 +77,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the filter
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.ToString(new List<RDFNamespace>());
         }
-        internal override String ToString(List<RDFNamespace> prefixes)
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
             return "FILTER ( LANGMATCHES(LANG(" + this.Variable + "), \"" + this.Language + "\") )";
         }
@@ -91,17 +91,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the variable in the given datarow
         /// </summary>
-        internal override Boolean ApplyFilter(DataRow row, Boolean applyNegation)
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            Boolean keepRow = true;
+            bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString()))
             {
-                String variableValue = row[this.Variable.ToString()].ToString();
+                string variableValue = row[this.Variable.ToString()].ToString();
 
                 //NO language is found in the variable
-                if (this.Language == String.Empty)
+                if (this.Language == string.Empty)
                     keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
                 //ANY language is found in the variable

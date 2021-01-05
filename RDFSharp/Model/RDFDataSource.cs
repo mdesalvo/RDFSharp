@@ -16,7 +16,6 @@
 
 using RDFSharp.Query;
 using RDFSharp.Store;
-using System;
 
 namespace RDFSharp.Model
 {
@@ -31,7 +30,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if this data source is a graph
         /// </summary>
-        internal Boolean IsGraph()
+        internal bool IsGraph()
         {
             return this is RDFGraph;
         }
@@ -39,7 +38,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if this data source is a store
         /// </summary>
-        internal Boolean IsStore()
+        internal bool IsStore()
         {
             return this is RDFStore;
         }
@@ -47,7 +46,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if this data source is a federation
         /// </summary>
-        internal Boolean IsFederation()
+        internal bool IsFederation()
         {
             return this is RDFFederation;
         }
@@ -55,7 +54,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if this data source is a SPARQL endpoint
         /// </summary>
-        internal Boolean IsSPARQLEndpoint()
+        internal bool IsSPARQLEndpoint()
         {
             return this is RDFSPARQLEndpoint;
         }

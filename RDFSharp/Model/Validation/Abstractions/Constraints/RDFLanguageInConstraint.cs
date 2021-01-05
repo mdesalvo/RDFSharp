@@ -76,7 +76,7 @@ namespace RDFSharp.Model
                         {
 
                             //NO language is found in the variable
-                            if (langTagsEnumerator.Current == String.Empty)
+                            if (langTagsEnumerator.Current == string.Empty)
                                 langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
 
                             //ANY language is found in the variable
@@ -129,7 +129,7 @@ namespace RDFSharp.Model
 
                 //Get collection from language tags
                 RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
-                foreach (String languageTag in this.LanguageTags)
+                foreach (string languageTag in this.LanguageTags)
                     languageTags.AddItem(new RDFPlainLiteral(languageTag));
                 result.AddCollection(languageTags);
 

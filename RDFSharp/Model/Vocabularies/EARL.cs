@@ -34,12 +34,12 @@ namespace RDFSharp.Model
             /// <summary>
             /// earl
             /// </summary>
-            public static readonly String PREFIX = "earl";
+            public static readonly string PREFIX = "earl";
 
             /// <summary>
             /// http://www.w3.org/ns/earl#
             /// </summary>
-            public static readonly String BASE_URI = "http://www.w3.org/ns/earl#";
+            public static readonly string BASE_URI = "http://www.w3.org/ns/earl#";
 
             /// <summary>
             /// earl:assertedBy

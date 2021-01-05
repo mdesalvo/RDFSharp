@@ -38,9 +38,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the PARTITION aggregator
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
-            return String.Empty;
+            return string.Empty;
         }
         #endregion
 
@@ -48,13 +48,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
-        internal override void ExecutePartition(String partitionKey, DataRow tableRow)
+        internal override void ExecutePartition(string partitionKey, DataRow tableRow)
         {
             //Get aggregator value
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty) ?? String.Empty;
+            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (partition)
-            if (String.IsNullOrEmpty(aggregatorValue))
-                this.AggregatorContext.UpdatePartitionKeyExecutionResult<String>(partitionKey, partitionKey);
+            if (string.IsNullOrEmpty(aggregatorValue))
+                this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, partitionKey);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddColumn(projFuncTable, this.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (String partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in this.AggregatorContext.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 this.UpdateProjectionTable(partitionKey, projFuncTable);
@@ -82,18 +82,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal override void UpdateProjectionTable(String partitionKey, DataTable projFuncTable)
+        internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
         {
             //Get bindings from context
-            Dictionary<String, String> bindings = new Dictionary<String, String>();
-            foreach (String pkValue in partitionKey.Split(new String[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            foreach (string pkValue in partitionKey.Split(new string[] { "§PK§" }, StringSplitOptions.RemoveEmptyEntries))
             {
-                String[] pValues = pkValue.Split(new String[] { "§PV§" }, StringSplitOptions.None);
+                string[] pValues = pkValue.Split(new string[] { "§PV§" }, StringSplitOptions.None);
                 bindings.Add(pValues[0], pValues[1]);
             }
 
             //Add aggregator value to bindings
-            String aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<String>(partitionKey, String.Empty);
+            string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty);
             if (!bindings.ContainsKey(this.ProjectionVariable.VariableName))
                 bindings.Add(this.ProjectionVariable.VariableName, aggregatorValue);
 

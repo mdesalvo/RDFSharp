@@ -31,7 +31,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Unique representation of the quadruple
         /// </summary>
-        public Int64 QuadrupleID { get; internal set; }
+        public long QuadrupleID { get; internal set; }
 
         /// <summary>
         /// Flavor of the triple nested into the quadruple
@@ -135,7 +135,7 @@ namespace RDFSharp.Store
             }
 
             //Object
-            this.Object = (lit ?? new RDFPlainLiteral(String.Empty));
+            this.Object = (lit ?? new RDFPlainLiteral(string.Empty));
 
             //QuadrupleID
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
@@ -147,7 +147,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the quadruple
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return this.Context + " " + this.Subject + " " + this.Predicate + " " + this.Object;
         }
@@ -155,7 +155,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Performs the equality comparison between two quadruples
         /// </summary>
-        public Boolean Equals(RDFQuadruple other)
+        public bool Equals(RDFQuadruple other)
         {
             return (other != null && this.QuadrupleID.Equals(other.QuadrupleID));
         }

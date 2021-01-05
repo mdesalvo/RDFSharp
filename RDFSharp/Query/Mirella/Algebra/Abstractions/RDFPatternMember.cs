@@ -29,14 +29,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern member
         /// </summary>
-        public Int64 PatternMemberID { get; internal set; }
+        public long PatternMemberID { get; internal set; }
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the pattern member
         /// </summary>
-        public override String ToString()
+        public override string ToString()
         {
             return base.ToString();
         }
@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Performs the equality comparison between two pattern members
         /// </summary>
-        public Boolean Equals(RDFPatternMember other)
+        public bool Equals(RDFPatternMember other)
         {
             return (other != null && this.PatternMemberID.Equals(other.PatternMemberID));
         }
