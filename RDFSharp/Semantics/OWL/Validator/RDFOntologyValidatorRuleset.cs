@@ -1080,9 +1080,34 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
                         "PropertyChainAxiom",
                         string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed mathematical behavior of property", objProperty),
-                        string.Format("It is not allowed the use of property chain axiom on object properties being also functional, or inverse functional, or irreflexive, or asymmetric: review the property model")
+                        string.Format("It is not allowed the use of property chain axiom on object properties being functional, or inverse functional, or irreflexive, or asymmetric: review the property model")
                     ));
                 }
+            }
+
+            //PropertyChainAxiom cannot be applied to assertions, since it is a virtual property which can only be materialized by a reasoner
+            foreach (RDFOntologyTaxonomyEntry propChainAsn in ontology.Data.Relations.Assertions.Where(asn => asn.TaxonomyPredicate is RDFOntologyObjectProperty asnObjProp
+                                                                                                                && ontology.Model.PropertyModel.CheckIsPropertyChain(asnObjProp)
+                                                                                                                    && asn.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            {
+                report.AddEvidence(new RDFOntologyValidatorEvidence(
+                    RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                    "PropertyChainAxiom",
+                    string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed explicit assertion '{1}'", propChainAsn.TaxonomyPredicate, propChainAsn),
+                    string.Format("It is not allowed the use of property chain axiom on assertions, since it is a virtual property which can only be materialized by a reasoner")
+                ));
+            }
+
+            //PropertyChainAxiom cannot be applied to negative assertions, since it is a virtual property which can only be materialized by a reasoner
+            foreach (RDFOntologyTaxonomyEntry propChainNegAsn in ontology.Data.Relations.NegativeAssertions.Where(nasn => nasn.TaxonomyPredicate is RDFOntologyObjectProperty nasnObjProp
+                                                                                                                            && ontology.Model.PropertyModel.CheckIsPropertyChain(nasnObjProp)))
+            {
+                report.AddEvidence(new RDFOntologyValidatorEvidence(
+                    RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error,
+                    "PropertyChainAxiom",
+                    string.Format("Violation of OWL2-DL axiom closure caused by propertyChain '{0}': unallowed negative assertion {1}", propChainNegAsn.TaxonomyPredicate, propChainNegAsn),
+                    string.Format("It is not allowed the use of property chain axiom on negative assertions, since it is a virtual property which can only be materialized by a reasoner")
+                ));
             }
             #endregion
 
