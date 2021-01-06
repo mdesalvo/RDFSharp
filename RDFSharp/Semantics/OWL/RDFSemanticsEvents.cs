@@ -42,7 +42,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static void RaiseSemanticsInfo(string eventMessage)
         {
-            Parallel.Invoke(() => OnSemanticsInfo(DateTime.Now.ToString() + ";SEMANTICS_INFO;" + eventMessage));
+            Parallel.Invoke(() => OnSemanticsInfo(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";SEMANTICS_INFO;" + eventMessage));
         }
         #endregion
 
@@ -62,7 +62,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static void RaiseSemanticsWarning(string eventMessage)
         {
-            Parallel.Invoke(() => OnSemanticsWarning(DateTime.Now.ToString() + ";SEMANTICS_WARNING;" + eventMessage));
+            Parallel.Invoke(() => OnSemanticsWarning(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";SEMANTICS_WARNING;" + eventMessage));
         }
         #endregion
 

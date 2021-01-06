@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void RaiseOnTripleAdded(string eventMessage)
         {
-            Parallel.Invoke(() => OnTripleAdded(DateTime.Now.ToString() + ";TRIPLE_ADDED;" + eventMessage));
+            Parallel.Invoke(() => OnTripleAdded(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";TRIPLE_ADDED;" + eventMessage));
         }
         #endregion
 
@@ -64,7 +64,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void RaiseOnTripleRemoved(string eventMessage)
         {
-            Parallel.Invoke(() => OnTripleRemoved(DateTime.Now.ToString() + ";TRIPLE_REMOVED;" + eventMessage));
+            Parallel.Invoke(() => OnTripleRemoved(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";TRIPLE_REMOVED;" + eventMessage));
         }
         #endregion
 
@@ -84,7 +84,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void RaiseOnGraphCleared(string eventMessage)
         {
-            Parallel.Invoke(() => OnGraphCleared(DateTime.Now.ToString() + ";GRAPH_CLEARED;" + eventMessage));
+            Parallel.Invoke(() => OnGraphCleared(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";GRAPH_CLEARED;" + eventMessage));
         }
         #endregion
 

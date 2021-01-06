@@ -44,7 +44,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void RaiseASKQueryEvaluation(string eventMessage)
         {
-            Parallel.Invoke(() => OnASKQueryEvaluation(DateTime.Now.ToString() + ";ASK_QUERY_EVALUATION;" + eventMessage));
+            Parallel.Invoke(() => OnASKQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";ASK_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void RaiseCONSTRUCTQueryEvaluation(string eventMessage)
         {
-            Parallel.Invoke(() => OnCONSTRUCTQueryEvaluation(DateTime.Now.ToString() + ";CONSTRUCT_QUERY_EVALUATION;" + eventMessage));
+            Parallel.Invoke(() => OnCONSTRUCTQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";CONSTRUCT_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 
@@ -84,7 +84,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void RaiseDESCRIBEQueryEvaluation(string eventMessage)
         {
-            Parallel.Invoke(() => OnDESCRIBEQueryEvaluation(DateTime.Now.ToString() + ";DESCRIBE_QUERY_EVALUATION;" + eventMessage));
+            Parallel.Invoke(() => OnDESCRIBEQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";DESCRIBE_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 
@@ -104,7 +104,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void RaiseSELECTQueryEvaluation(string eventMessage)
         {
-            Parallel.Invoke(() => OnSELECTQueryEvaluation(DateTime.Now.ToString() + ";SELECT_QUERY_EVALUATION;" + eventMessage));
+            Parallel.Invoke(() => OnSELECTQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";SELECT_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void RaiseGENERICQueryEvaluation(string eventMessage)
         {
-            Parallel.Invoke(() => OnGENERICQueryEvaluation(DateTime.Now.ToString() + ";GENERIC_QUERY_EVALUATION;" + eventMessage));
+            Parallel.Invoke(() => OnGENERICQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";GENERIC_QUERY_EVALUATION;" + eventMessage));
         }
         #endregion
 

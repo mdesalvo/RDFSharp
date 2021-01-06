@@ -843,7 +843,7 @@ namespace RDFSharp.Model
             // If prefix is empty it must be considered default context of the graph
             if (string.IsNullOrEmpty(prefixStr))
             {
-                prefixStr = string.Format("AutoNS{0}{1}", DateTime.Now.Minute, DateTime.Now.Second);
+                prefixStr = string.Format("AutoNS{0}{1}", DateTime.UtcNow.Minute, DateTime.UtcNow.Second);
                 result.SetContext(new Uri(namespaceStr));
             }
 

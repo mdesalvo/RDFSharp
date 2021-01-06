@@ -44,7 +44,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal static void RaiseOnQuadrupleAdded(string eventMessage)
         {
-            Parallel.Invoke(() => OnQuadrupleAdded(DateTime.Now.ToString() + ";QUADRUPLE_ADDED;" + eventMessage));
+            Parallel.Invoke(() => OnQuadrupleAdded(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";QUADRUPLE_ADDED;" + eventMessage));
         }
         #endregion
 
@@ -64,7 +64,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal static void RaiseOnQuadrupleRemoved(string eventMessage)
         {
-            Parallel.Invoke(() => OnQuadrupleRemoved(DateTime.Now.ToString() + ";QUADRUPLE_REMOVED;" + eventMessage));
+            Parallel.Invoke(() => OnQuadrupleRemoved(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";QUADRUPLE_REMOVED;" + eventMessage));
         }
         #endregion
 
@@ -84,7 +84,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal static void RaiseOnStoreCleared(string eventMessage)
         {
-            Parallel.Invoke(() => OnStoreCleared(DateTime.Now.ToString() + ";STORE_CLEARED;" + eventMessage));
+            Parallel.Invoke(() => OnStoreCleared(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";STORE_CLEARED;" + eventMessage));
         }
         #endregion
 
@@ -104,7 +104,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal static void RaiseOnStoreInitialized(string eventMessage)
         {
-            Parallel.Invoke(() => OnStoreInitialized(DateTime.Now.ToString() + ";STORE_INITIALIZED;" + eventMessage));
+            Parallel.Invoke(() => OnStoreInitialized(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";STORE_INITIALIZED;" + eventMessage));
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace RDFSharp.Store
         /// </summary>
         internal static void RaiseOnStoreOptimized(string eventMessage)
         {
-            Parallel.Invoke(() => OnStoreOptimized(DateTime.Now.ToString() + ";STORE_OPTIMIZED;" + eventMessage));
+            Parallel.Invoke(() => OnStoreOptimized(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";STORE_OPTIMIZED;" + eventMessage));
         }
         #endregion
 
