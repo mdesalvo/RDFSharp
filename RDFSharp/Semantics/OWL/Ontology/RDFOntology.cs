@@ -558,7 +558,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Merges the given ontology into this one, returning this one enhanced
         /// </summary>
-        public RDFOntology MergeOntology(RDFOntology ontology)
+        public RDFOntology Merge(RDFOntology ontology)
         {
             if (ontology != null)
             {
