@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Net;
 
 namespace RDFSharp.Model
 {
@@ -840,6 +841,50 @@ namespace RDFSharp.Model
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Creates a graph by fetching data of the given RDF format at the given Uri
+        /// </summary>
+        public static RDFGraph FromUri(RDFModelEnums.RDFFormats rdfFormat, Uri uri)
+        {
+            if (uri != null && uri.IsAbsoluteUri)
+            {
+                using (var webclient = new WebClient())
+                {
+                    try
+                    {
+                        //Decide appropriate MIME types to be requested, depending on the expected RDF format
+                        switch (rdfFormat)
+                        {
+                            case RDFModelEnums.RDFFormats.NTriples:
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                                break;
+                            case RDFModelEnums.RDFFormats.TriX:
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+                                break;
+                            case RDFModelEnums.RDFFormats.Turtle:
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                                break;
+                            case RDFModelEnums.RDFFormats.RdfXml:
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "text/rdf");
+                                break;
+                        }
+                        Stream stream = webclient.OpenRead(uri);
+                        return FromStream(rdfFormat, stream);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new RDFModelException("Cannot  read RDF graph from Uri because technical failure: " + ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
+            }
         }
         #endregion
 
