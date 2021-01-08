@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -418,7 +417,7 @@ namespace RDFSharp.Semantics.OWL
 
         #region Set
         /// <summary>
-        /// Builds a new intersection ontology from this ontology and a given one
+        /// Builds a new intersection ontology from this ontology and the given one
         /// </summary>
         public RDFOntology IntersectWith(RDFOntology ontology)
         {
@@ -451,7 +450,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Builds a new union ontology from this ontology and a given one
+        /// Builds a new union ontology from this ontology and the given one
         /// </summary>
         public RDFOntology UnionWith(RDFOntology ontology)
         {
@@ -504,7 +503,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Builds a new difference ontology from this ontology and a given one
+        /// Builds a new difference ontology from this ontology and the given one
         /// </summary>
         public RDFOntology DifferenceWith(RDFOntology ontology)
         {
@@ -554,6 +553,35 @@ namespace RDFSharp.Semantics.OWL
 
             }
             return result;
+        }
+
+        /// <summary>
+        /// Merges the given ontology into this one, returning this one enhanced
+        /// </summary>
+        public RDFOntology MergeOntology(RDFOntology ontology)
+        {
+            if (ontology != null)
+            {
+                //Merge the models
+                this.Model = this.Model.UnionWith(ontology.Model);
+
+                //Merge the data
+                this.Data = this.Data.UnionWith(ontology.Data);
+
+                //Merge the annotations
+                this.Annotations.VersionInfo = this.Annotations.VersionInfo.UnionWith(ontology.Annotations.VersionInfo);
+                this.Annotations.VersionIRI = this.Annotations.VersionIRI.UnionWith(ontology.Annotations.VersionIRI);
+                this.Annotations.Comment = this.Annotations.Comment.UnionWith(ontology.Annotations.Comment);
+                this.Annotations.Label = this.Annotations.Label.UnionWith(ontology.Annotations.Label);
+                this.Annotations.SeeAlso = this.Annotations.SeeAlso.UnionWith(ontology.Annotations.SeeAlso);
+                this.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.UnionWith(ontology.Annotations.IsDefinedBy);
+                this.Annotations.PriorVersion = this.Annotations.PriorVersion.UnionWith(ontology.Annotations.PriorVersion);
+                this.Annotations.BackwardCompatibleWith = this.Annotations.BackwardCompatibleWith.UnionWith(ontology.Annotations.BackwardCompatibleWith);
+                this.Annotations.IncompatibleWith = this.Annotations.IncompatibleWith.UnionWith(ontology.Annotations.IncompatibleWith);
+                this.Annotations.Imports = this.Annotations.Imports.UnionWith(ontology.Annotations.Imports);
+                this.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.UnionWith(ontology.Annotations.CustomAnnotations);
+            }
+            return this;
         }
         #endregion
 
