@@ -850,56 +850,45 @@ namespace RDFSharp.Model
         {
             if (uri != null && uri.IsAbsoluteUri)
             {
+                if (uri.IsFile)
+                    return FromFile(rdfFormat, uri.ToString());
+
                 using (var webclient = new WebClient())
                 {
+                    switch (rdfFormat)
+                    {
+                        case RDFModelEnums.RDFFormats.NTriples:
+                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                            break;
+                        case RDFModelEnums.RDFFormats.TriX:
+                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+                            break;
+                        case RDFModelEnums.RDFFormats.Turtle:
+                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                            webclient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                            break;
+                        case RDFModelEnums.RDFFormats.RdfXml:
+                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                            break;
+                    }
+
                     try
                     {
-                        //Decide appropriate MIME types to be requested, depending on expected RDF data source
-                        switch (rdfFormat)
-                        {
-                            case RDFModelEnums.RDFFormats.NTriples:
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
-                                break;
-                            case RDFModelEnums.RDFFormats.TriX:
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-                                break;
-                            case RDFModelEnums.RDFFormats.Turtle:
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-                                break;
-                            case RDFModelEnums.RDFFormats.RdfXml:
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "text/rdf");
-                                break;
-                        }
-
-                        //Open stream to the given Uri and try parsing
-                        Stream stream = webclient.OpenRead(uri);
-                        return FromStream(rdfFormat, stream);
+                        Stream rdfStream = webclient.OpenRead(uri);
+                        return FromStream(rdfFormat, rdfStream);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex1)
                     {
-                        if (rdfFormat == RDFModelEnums.RDFFormats.RdfXml)
-                            throw new RDFModelException("Cannot read RDF graph from Uri because technical failure: " + ex.Message);
-                        else
+                        try
                         {
-                            #region RDF/XML retry
-                            try
-                            {
-                                //Clear existing headers and force MIME type request to RDF/XML
-                                webclient.Headers.Clear();
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
-                                webclient.Headers.Add(HttpRequestHeader.Accept, "text/rdf");
-
-                                //Open stream to the given Uri and try parsing
-                                Stream stream = webclient.OpenRead(uri);
-                                return FromStream(RDFModelEnums.RDFFormats.RdfXml, stream);
-                            }
-                            catch (Exception ex2)
-                            {
-                                throw new RDFModelException("Cannot read RDF graph from Uri because technical failure: " + ex2.Message);
-                            }
+                            #region Retry (RDF/XML)
+                            Stream rdfStream = webclient.OpenRead(uri);
+                            return FromStream(RDFModelEnums.RDFFormats.RdfXml, rdfStream);
                             #endregion
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new RDFModelException("Cannot read RDF graph from Uri because technical error: " + ex.Message);
                         }
                     }
                 }
