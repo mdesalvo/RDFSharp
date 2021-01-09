@@ -210,17 +210,17 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFNamespace LookupPrefixCC(string data, int lookupMode)
         {
-            var lookupString = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt" :
-                                                      "http://prefix.cc/reverse?uri=" + data + "&format=txt");
+            string lookupString = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt"
+                                                   : "http://prefix.cc/reverse?uri=" + data + "&format=txt");
 
-            using (var webclient = new WebClient())
+            using (WebClient webclient = new WebClient())
             {
                 try
                 {
-                    var response = webclient.DownloadString(lookupString);
-                    var prefix = response.Split('\t')[0];
-                    var nspace = response.Split('\t')[1].TrimEnd(new char[] { '\n' });
-                    var result = new RDFNamespace(prefix, nspace);
+                    string response = webclient.DownloadString(lookupString);
+                    string prefix = response.Split('\t')[0];
+                    string nspace = response.Split('\t')[1].TrimEnd(new char[] { '\n' });
+                    RDFNamespace result = new RDFNamespace(prefix, nspace);
 
                     //Also add the namespace to the register, to avoid future lookups
                     AddNamespace(result);
@@ -236,12 +236,12 @@ namespace RDFSharp.Model
                     }
                     else
                     {
-                        throw new RDFModelException("Cannot retrieve data from prefix.cc service because: " + wex.Message, wex);
+                        throw new RDFModelException("Cannot retrieve namespace from prefix.cc service because: " + wex.Message, wex);
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new RDFModelException("Cannot retrieve data from prefix.cc service because: " + ex.Message, ex);
+                    throw new RDFModelException("Cannot retrieve namespace from prefix.cc service because: " + ex.Message, ex);
                 }
             }
         }

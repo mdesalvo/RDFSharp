@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Net;
 
 namespace RDFSharp.Model
 {
@@ -852,49 +851,8 @@ namespace RDFSharp.Model
             {
                 if (uri.IsFile)
                     return FromFile(rdfFormat, uri.ToString());
-
-                using (var webclient = new WebClient())
-                {
-                    switch (rdfFormat)
-                    {
-                        case RDFModelEnums.RDFFormats.NTriples:
-                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
-                            break;
-                        case RDFModelEnums.RDFFormats.TriX:
-                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-                            break;
-                        case RDFModelEnums.RDFFormats.Turtle:
-                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                            webclient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-                            break;
-                        case RDFModelEnums.RDFFormats.RdfXml:
-                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
-                            break;
-                    }
-
-                    try
-                    {
-                        Stream rdfStream = webclient.OpenRead(uri);
-                        return FromStream(rdfFormat, rdfStream);
-                    }
-                    catch (Exception ex1)
-                    {
-                        try
-                        {
-                            #region Retry (RDF/XML)
-                            webclient.Headers.Clear();
-                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
-
-                            Stream rdfStream = webclient.OpenRead(uri);
-                            return FromStream(RDFModelEnums.RDFFormats.RdfXml, rdfStream);
-                            #endregion
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new RDFModelException("Cannot read RDF graph from Uri because technical error: " + ex.Message);
-                        }
-                    }
-                }
+                else
+                    return RDFModelUtilities.DereferenceUri(rdfFormat, uri, false);
             }
             else
             {
