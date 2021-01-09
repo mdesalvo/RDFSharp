@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Net;
 
 namespace RDFSharp.Model
 {
@@ -843,21 +844,53 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Creates a graph by fetching data of the given RDF format at the given Uri
+        /// Creates a graph by trying to dereference the given Uri
         /// </summary>
-        public static RDFGraph FromUri(RDFModelEnums.RDFFormats rdfFormat, Uri uri)
+        public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
+            var result = new RDFGraph();
+
             if (uri != null && uri.IsAbsoluteUri)
             {
-                if (uri.IsFile)
-                    return FromFile(rdfFormat, uri.ToString());
-                else
-                    return RDFModelUtilities.DereferenceUri(rdfFormat, uri, false);
+                try
+                {
+                    HttpWebRequest webRequest = WebRequest.CreateHttp(uri);
+                    webRequest.MaximumAutomaticRedirections = 3;
+                    webRequest.AllowAutoRedirect = true;
+                    webRequest.Timeout = timeoutMilliseconds;
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml,application/turtle,text/turtle,application/n-triples,application/trix");
+
+                    HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
+                    if (webRequest.HaveResponse)
+                    {
+                        //RDF/XML
+                        if (webResponse.ContentType.Contains("application/rdf+xml"))
+                            result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream());
+
+                        //TURTLE
+                        else if (webResponse.ContentType.Contains("application/turtle") || webResponse.ContentType.Contains("text/turtle"))
+                            result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream());
+
+                        //N-TRIPLES
+                        else if (webResponse.ContentType.Contains("application/n-triples"))
+                            result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream());
+
+                        //TRIX
+                        else if (webResponse.ContentType.Contains("application/trix"))
+                            result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new RDFModelException("Cannot read RDF graph from Uri because: " + ex.Message);
+                }
             }
             else
             {
                 throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
             }
+
+            return result;
         }
         #endregion
 

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -157,60 +156,6 @@ namespace RDFSharp.Model
                 return source;
 
             return source.Remove(source.LastIndexOf(value));
-        }
-
-        /// <summary>
-        /// Tries to dereference the given Uri into an RDF graph
-        /// </summary>
-        internal static RDFGraph DereferenceUri(RDFModelEnums.RDFFormats rdfFormat, Uri uri, bool isFallback)
-        {
-            RDFGraph result = default;
-
-            try
-            {
-                HttpWebRequest webRequest = WebRequest.CreateHttp(uri);
-                webRequest.MaximumAutomaticRedirections = 3;
-                webRequest.AllowAutoRedirect = true;
-                webRequest.Timeout = 15000;
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
-                        break;
-                    case RDFModelEnums.RDFFormats.TriX:
-                        webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-                        break;
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                        webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-                        break;
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
-                        break;
-                }
-                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-
-                //Check if request obtained a response from the given Uri
-                if (webRequest.HaveResponse)
-                {
-                    //Response has acceptable content type => start parsing
-                    if (webRequest.Headers[HttpRequestHeader.Accept].Any(acceptHeader => webResponse.ContentType.StartsWith(acceptHeader.ToString())))
-                        result = RDFGraph.FromStream(rdfFormat, webResponse.GetResponseStream());
-
-                    //Response has not acceptable content type => fallback to RDF/XML
-                    else if (!isFallback && !rdfFormat.Equals(RDFModelEnums.RDFFormats.RdfXml))
-                        result = DereferenceUri(RDFModelEnums.RDFFormats.RdfXml, uri, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (!isFallback && !rdfFormat.Equals(RDFModelEnums.RDFFormats.RdfXml))
-                    result = DereferenceUri(RDFModelEnums.RDFFormats.RdfXml, uri, true);
-                else
-                    throw new RDFModelException("Cannot read RDF graph from Uri because: " + ex.Message);
-            }
-
-            return result;
         }
         #endregion
 
