@@ -882,6 +882,9 @@ namespace RDFSharp.Model
                         try
                         {
                             #region Retry (RDF/XML)
+                            webclient.Headers.Clear();
+                            webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+
                             Stream rdfStream = webclient.OpenRead(uri);
                             return FromStream(RDFModelEnums.RDFFormats.RdfXml, rdfStream);
                             #endregion
