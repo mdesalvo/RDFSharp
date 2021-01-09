@@ -858,13 +858,17 @@ namespace RDFSharp.Model
                     webRequest.MaximumAutomaticRedirections = 3;
                     webRequest.AllowAutoRedirect = true;
                     webRequest.Timeout = timeoutMilliseconds;
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml,application/turtle,text/turtle,application/n-triples,application/trix");
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
 
                     HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
                     if (webRequest.HaveResponse)
                     {
                         //RDF/XML
-                        if (webResponse.ContentType.Contains("application/rdf+xml"))
+                        if (string.IsNullOrEmpty(webResponse.ContentType) || webResponse.ContentType.Contains("application/rdf+xml"))
                             result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream());
 
                         //TURTLE
