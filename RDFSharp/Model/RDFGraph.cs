@@ -854,7 +854,7 @@ namespace RDFSharp.Model
                 {
                     try
                     {
-                        //Decide appropriate MIME types to be requested, depending on the expected RDF format
+                        //Decide appropriate MIME types to be requested, depending on expected RDF data source
                         switch (rdfFormat)
                         {
                             case RDFModelEnums.RDFFormats.NTriples:
@@ -872,12 +872,35 @@ namespace RDFSharp.Model
                                 webclient.Headers.Add(HttpRequestHeader.Accept, "text/rdf");
                                 break;
                         }
+
+                        //Open stream to the given Uri and try parsing
                         Stream stream = webclient.OpenRead(uri);
                         return FromStream(rdfFormat, stream);
                     }
                     catch (Exception ex)
                     {
-                        throw new RDFModelException("Cannot  read RDF graph from Uri because technical failure: " + ex.Message);
+                        if (rdfFormat == RDFModelEnums.RDFFormats.RdfXml)
+                            throw new RDFModelException("Cannot read RDF graph from Uri because technical failure: " + ex.Message);
+                        else
+                        {
+                            #region RDF/XML retry
+                            try
+                            {
+                                //Clear existing headers and force MIME type request to RDF/XML
+                                webclient.Headers.Clear();
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                                webclient.Headers.Add(HttpRequestHeader.Accept, "text/rdf");
+
+                                //Open stream to the given Uri and try parsing
+                                Stream stream = webclient.OpenRead(uri);
+                                return FromStream(RDFModelEnums.RDFFormats.RdfXml, stream);
+                            }
+                            catch (Exception ex2)
+                            {
+                                throw new RDFModelException("Cannot read RDF graph from Uri because technical failure: " + ex2.Message);
+                            }
+                            #endregion
+                        }
                     }
                 }
             }
