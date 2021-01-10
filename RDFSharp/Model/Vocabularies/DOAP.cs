@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -40,6 +38,11 @@ namespace RDFSharp.Model
             /// http://usefulinc.com/ns/doap#
             /// </summary>
             public static readonly string BASE_URI = "http://usefulinc.com/ns/doap#";
+
+            /// <summary>
+            /// http://usefulinc.com/ns/doap#
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "http://usefulinc.com/ns/doap#";
 
             /// <summary>
             /// doap:Project

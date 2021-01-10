@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -40,6 +38,11 @@ namespace RDFSharp.Model
             /// http://xmlns.com/foaf/0.1/
             /// </summary>
             public static readonly string BASE_URI = "http://xmlns.com/foaf/0.1/";
+
+            /// <summary>
+            /// http://xmlns.com/foaf/0.1/
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "http://xmlns.com/foaf/0.1/";
 
             /// <summary>
             /// foaf:Agent

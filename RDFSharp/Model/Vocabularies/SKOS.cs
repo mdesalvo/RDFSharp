@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -40,6 +38,11 @@ namespace RDFSharp.Model
             /// http://www.w3.org/2004/02/skos/core#
             /// </summary>
             public static readonly string BASE_URI = "http://www.w3.org/2004/02/skos/core#";
+
+            /// <summary>
+            /// http://www.w3.org/2004/02/skos/core#
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2004/02/skos/core#";
 
             /// <summary>
             /// skos:Concept
@@ -224,6 +227,11 @@ namespace RDFSharp.Model
                 /// http://www.w3.org/2008/05/skos-xl#
                 /// </summary>
                 public static readonly string BASE_URI = "http://www.w3.org/2008/05/skos-xl#";
+
+                /// <summary>
+                /// http://www.w3.org/2008/05/skos-xl#
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2008/05/skos-xl#";
 
                 /// <summary>
                 /// skosxl:Label

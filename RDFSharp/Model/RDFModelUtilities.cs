@@ -88,16 +88,16 @@ namespace RDFSharp.Model
 
             //DublinCore Elements (http://purl.org/dc/elements/1.1/)
             if (uriString.Equals(RDFVocabulary.DC.BASE_URI))
-                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf");
+                uri = new Uri(RDFVocabulary.DC.DEREFERENCE_URI);
             //DublinCore Abstract Model (http://purl.org/dc/dcam/)
             else if (uriString.Equals(RDFVocabulary.DC.DCAM.BASE_URI))
-                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf");
+                uri = new Uri(RDFVocabulary.DC.DCAM.DEREFERENCE_URI);
             //DublinCore Type (http://purl.org/dc/dcmitype/)
             else if (uriString.Equals(RDFVocabulary.DC.DCTYPE.BASE_URI))
-                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf");
+                uri = new Uri(RDFVocabulary.DC.DCTYPE.DEREFERENCE_URI);
             //DublinCore Terms (http://purl.org/dc/terms/)
             else if (uriString.Equals(RDFVocabulary.DC.DCTERMS.BASE_URI))
-                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf");
+                uri = new Uri(RDFVocabulary.DC.DCTERMS.DEREFERENCE_URI);
 
             return uri;
         }

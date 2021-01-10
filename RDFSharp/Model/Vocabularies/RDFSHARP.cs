@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -40,6 +38,11 @@ namespace RDFSharp.Model
             /// https://rdfsharp.codeplex.com/
             /// </summary>
             public static readonly string BASE_URI = "https://rdfsharp.codeplex.com/";
+
+            /// <summary>
+            /// https://rdfsharp.codeplex.com/
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "https://rdfsharp.codeplex.com/";
             #endregion
 
         }

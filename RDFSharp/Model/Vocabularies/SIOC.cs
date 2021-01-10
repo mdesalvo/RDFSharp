@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -40,6 +38,11 @@ namespace RDFSharp.Model
             /// http://rdfs.org/sioc/ns#
             /// </summary>
             public static readonly string BASE_URI = "http://rdfs.org/sioc/ns#";
+
+            /// <summary>
+            /// http://rdfs.org/sioc/ns#
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "http://rdfs.org/sioc/ns#";
 
             /// <summary>
             /// sioc:Community

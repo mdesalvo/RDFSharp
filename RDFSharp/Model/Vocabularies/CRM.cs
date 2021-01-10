@@ -40,6 +40,11 @@ namespace RDFSharp.Model
             public static readonly string BASE_URI = "http://www.cidoc-crm.org/cidoc-crm/";
 
             /// <summary>
+            /// http://www.cidoc-crm.org/sites/default/files/cidoc_crm_v5.0.4_official_release.rdfs
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "http://www.cidoc-crm.org/sites/default/files/cidoc_crm_v5.0.4_official_release.rdfs";
+
+            /// <summary>
             /// crm:E1_CRM_Entity
             /// </summary>
             public static readonly RDFResource E1_CRM_ENTITY = new RDFResource(CRM.BASE_URI + "E1_CRM_Entity");

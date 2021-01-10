@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
     /// <summary>
@@ -40,6 +38,11 @@ namespace RDFSharp.Model
             /// http://www.w3.org/XML/1998/namespace
             /// </summary>
             public static readonly string BASE_URI = "http://www.w3.org/XML/1998/namespace";
+
+            /// <summary>
+            /// http://www.w3.org/XML/1998/namespace
+            /// </summary>
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/XML/1998/namespace";
 
             /// <summary>
             /// xml:lang
