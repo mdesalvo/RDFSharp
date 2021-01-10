@@ -852,6 +852,7 @@ namespace RDFSharp.Model
 
             if (uri != null && uri.IsAbsoluteUri)
             {
+                uri = RDFModelUtilities.RemapUriForDereference(uri);
                 try
                 {
                     HttpWebRequest webRequest = WebRequest.CreateHttp(uri);

@@ -80,6 +80,29 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Detects if the given Uri is known to not be dereferenceable, so that an alternative RDF-compatible representation can be used
+        /// </summary>
+        internal static Uri RemapUriForDereference(Uri uri)
+        {
+            string uriString = uri?.ToString() ?? string.Empty;
+
+            //DublinCore Elements (http://purl.org/dc/elements/1.1/)
+            if (uriString.Equals(RDFVocabulary.DC.BASE_URI))
+                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.rdf");
+            //DublinCore Abstract Model (http://purl.org/dc/dcam/)
+            else if (uriString.Equals(RDFVocabulary.DC.DCAM.BASE_URI))
+                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_abstract_model.rdf");
+            //DublinCore Type (http://purl.org/dc/dcmitype/)
+            else if (uriString.Equals(RDFVocabulary.DC.DCTYPE.BASE_URI))
+                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_type.rdf");
+            //DublinCore Terms (http://purl.org/dc/terms/)
+            else if (uriString.Equals(RDFVocabulary.DC.DCTERMS.BASE_URI))
+                uri = new Uri("https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf");
+
+            return uri;
+        }
+
+        /// <summary>
         /// Turns back ASCII-encoded Unicodes into Unicodes.
         /// </summary>
         public static string ASCII_To_Unicode(string asciiString)
