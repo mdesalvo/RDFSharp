@@ -869,6 +869,12 @@ namespace RDFSharp.Model
             {
                 string attrValue = attr.Value;
 
+                //Adjust corner case for clashes on namespace ending characters ("#", "/")
+                if (xmlBase.ToString().EndsWith("#") && attrValue.StartsWith("#"))
+                    attrValue = string.Join(string.Empty, attrValue.SkipWhile(c => c == '#'));
+                if (xmlBase.ToString().EndsWith("/") && attrValue.StartsWith("/"))
+                    attrValue = string.Join(string.Empty, attrValue.SkipWhile(c => c == '/'));
+
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
                 if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":ID", StringComparison.OrdinalIgnoreCase)
                         || attr.LocalName.Equals("ID", StringComparison.OrdinalIgnoreCase))
