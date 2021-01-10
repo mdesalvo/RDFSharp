@@ -86,8 +86,11 @@ namespace RDFSharp.Model
         {
             string uriString = uri?.ToString() ?? string.Empty;
 
+            //Cidoc CRM (http://www.cidoc-crm.org/cidoc-crm/)
+            if (uriString.Equals(RDFVocabulary.CRM.BASE_URI))
+                uri = new Uri(RDFVocabulary.CRM.DEREFERENCE_URI);
             //DublinCore Elements (http://purl.org/dc/elements/1.1/)
-            if (uriString.Equals(RDFVocabulary.DC.BASE_URI))
+            else if (uriString.Equals(RDFVocabulary.DC.BASE_URI))
                 uri = new Uri(RDFVocabulary.DC.DEREFERENCE_URI);
             //DublinCore Abstract Model (http://purl.org/dc/dcam/)
             else if (uriString.Equals(RDFVocabulary.DC.DCAM.BASE_URI))
