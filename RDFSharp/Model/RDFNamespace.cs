@@ -152,7 +152,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Sets or unsets this namespace as temporary (AutoNS)
+        /// Sets or unsets this namespace as temporary
         /// </summary>
         internal RDFNamespace SetTemporary(bool temporary)
         {
