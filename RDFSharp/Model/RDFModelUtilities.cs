@@ -80,7 +80,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Detects if the given Uri is known to not be dereferenceable, so that an alternative RDF-compatible representation can be used
+        /// Detects if the given Uri is known to not be dereferencable, so that an alternative RDF-compatible representation can be used
         /// </summary>
         internal static Uri RemapUriForDereference(Uri uri)
         {
