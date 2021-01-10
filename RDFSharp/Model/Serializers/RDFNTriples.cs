@@ -219,15 +219,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the given N-Triples filepath to a graph.
         /// </summary>
-        internal static RDFGraph Deserialize(string filepath)
-        {
-            return Deserialize(new FileStream(filepath, FileMode.Open));
-        }
+        internal static RDFGraph Deserialize(string filepath) => Deserialize(new FileStream(filepath, FileMode.Open), null);
 
         /// <summary>
         /// Deserializes the given N-Triples stream to a graph.
         /// </summary>
-        internal static RDFGraph Deserialize(Stream inputStream)
+        internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             long ntripleIndex = 0;
             try
@@ -236,7 +233,7 @@ namespace RDFSharp.Model
                 #region deserialize
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
-                    RDFGraph result = new RDFGraph();
+                    RDFGraph result = new RDFGraph().SetContext(graphContext);
                     string ntriple = string.Empty;
                     string[] tokens = new string[3];
                     RDFResource S = null;

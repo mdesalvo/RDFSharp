@@ -235,22 +235,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the given Turtle filepath to a graph.
         /// </summary>
-        internal static RDFGraph Deserialize(string filepath)
-        {
-            return Deserialize(new FileStream(filepath, FileMode.Open));
-        }
+        internal static RDFGraph Deserialize(string filepath) => Deserialize(new FileStream(filepath, FileMode.Open), null);
 
         /// <summary>
         /// Deserializes the given Turtle stream to a graph.
         /// (This algorythm is based on Sesame Turtle parser)
         /// </summary>
-        internal static RDFGraph Deserialize(Stream inputStream)
+        internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             try
             {
 
                 #region deserialize
-                RDFGraph result = new RDFGraph();
+                RDFGraph result = new RDFGraph().SetContext(graphContext);
 
                 //Initialize Turtle context
                 var turtleContext = new Dictionary<string, object>() {

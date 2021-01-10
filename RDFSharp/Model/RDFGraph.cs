@@ -720,25 +720,25 @@ namespace RDFSharp.Model
         /// <summary>
         /// Creates a graph from a stream of the given RDF format.
         /// </summary>
-        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream)
+        public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
+        internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext)
         {
             if (inputStream != null)
             {
                 switch (rdfFormat)
                 {
                     case RDFModelEnums.RDFFormats.NTriples:
-                        return RDFNTriples.Deserialize(inputStream);
+                        return RDFNTriples.Deserialize(inputStream, graphContext);
                     case RDFModelEnums.RDFFormats.RdfXml:
-                        return RDFXml.Deserialize(inputStream);
+                        return RDFXml.Deserialize(inputStream, graphContext);
                     case RDFModelEnums.RDFFormats.TriX:
-                        return RDFTriX.Deserialize(inputStream);
+                        return RDFTriX.Deserialize(inputStream, graphContext);
                     case RDFModelEnums.RDFFormats.Turtle:
-                        return RDFTurtle.Deserialize(inputStream);
+                        return RDFTurtle.Deserialize(inputStream, graphContext);
                 }
             }
             throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
         }
-
         /// <summary>
         /// Creates a graph from a datatable with "Subject-Predicate-Object" columns.
         /// </summary>
@@ -869,19 +869,19 @@ namespace RDFSharp.Model
                     {
                         //RDF/XML
                         if (string.IsNullOrEmpty(webResponse.ContentType) || webResponse.ContentType.Contains("application/rdf+xml"))
-                            result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream());
+                            result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
 
                         //TURTLE
                         else if (webResponse.ContentType.Contains("application/turtle") || webResponse.ContentType.Contains("text/turtle"))
-                            result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream());
+                            result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
 
                         //N-TRIPLES
                         else if (webResponse.ContentType.Contains("application/n-triples"))
-                            result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream());
+                            result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
 
                         //TRIX
                         else if (webResponse.ContentType.Contains("application/trix"))
-                            result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream());
+                            result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
                     }
                 }
                 catch (Exception ex)
