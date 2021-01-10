@@ -46,6 +46,11 @@ namespace RDFSharp.Model
         /// Uri representation of the namespace
         /// </summary>
         public Uri NamespaceUri { get; internal set; }
+
+        /// <summary>
+        /// Uri dereference representation of the namespace
+        /// </summary>
+        public Uri DereferenceUri { get; internal set; }
         #endregion
 
         #region Ctors
@@ -90,6 +95,7 @@ namespace RDFSharp.Model
                     {
                         this.NamespacePrefix = prefix;
                         this.NamespaceUri = _uri;
+                        this.DereferenceUri = _uri;
                         this.NamespaceID = RDFModelUtilities.CreateHash(this.ToString());
                     }
                     else
@@ -131,7 +137,22 @@ namespace RDFSharp.Model
 
         #region Methods
         /// <summary>
-        /// Sets this namespace as temporary, depending on the given flag
+        /// Sets the Uri for dereferencing the namespace as an RDF representation
+        /// </summary>
+        public RDFNamespace SetDereferenceUri(Uri dereferenceUri)
+        {
+            if (dereferenceUri != null &&
+                    dereferenceUri.IsAbsoluteUri &&
+                        !dereferenceUri.ToString().ToUpperInvariant().StartsWith("BNODE:") &&
+                            !dereferenceUri.ToString().ToUpperInvariant().StartsWith("XMLNS:"))
+            {
+                this.DereferenceUri = dereferenceUri;
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this namespace as temporary (AutoNS)
         /// </summary>
         internal RDFNamespace SetTemporary(bool temporary)
         {

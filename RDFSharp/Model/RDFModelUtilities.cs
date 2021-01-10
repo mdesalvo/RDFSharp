@@ -80,27 +80,16 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Detects if the given Uri is known to not be dereferencable, so that an alternative RDF-compatible representation can be used
+        /// Searches the given Uri in the namespace register for getting its dereferencable representation;<br/>
+        /// if not found, just returns the given Uri
         /// </summary>
         internal static Uri RemapUriForDereference(Uri uri)
         {
             string uriString = uri?.ToString() ?? string.Empty;
 
-            //Cidoc CRM (http://www.cidoc-crm.org/cidoc-crm/)
-            if (uriString.Equals(RDFVocabulary.CRM.BASE_URI))
-                uri = new Uri(RDFVocabulary.CRM.DEREFERENCE_URI);
-            //DublinCore Elements (http://purl.org/dc/elements/1.1/)
-            else if (uriString.Equals(RDFVocabulary.DC.BASE_URI))
-                uri = new Uri(RDFVocabulary.DC.DEREFERENCE_URI);
-            //DublinCore Abstract Model (http://purl.org/dc/dcam/)
-            else if (uriString.Equals(RDFVocabulary.DC.DCAM.BASE_URI))
-                uri = new Uri(RDFVocabulary.DC.DCAM.DEREFERENCE_URI);
-            //DublinCore Type (http://purl.org/dc/dcmitype/)
-            else if (uriString.Equals(RDFVocabulary.DC.DCTYPE.BASE_URI))
-                uri = new Uri(RDFVocabulary.DC.DCTYPE.DEREFERENCE_URI);
-            //DublinCore Terms (http://purl.org/dc/terms/)
-            else if (uriString.Equals(RDFVocabulary.DC.DCTERMS.BASE_URI))
-                uri = new Uri(RDFVocabulary.DC.DCTERMS.DEREFERENCE_URI);
+            RDFNamespace rdfNamespace = RDFNamespaceRegister.GetByUri(uriString);
+            if (rdfNamespace != null)
+                return rdfNamespace.DereferenceUri;
 
             return uri;
         }
