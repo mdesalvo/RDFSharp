@@ -859,10 +859,14 @@ namespace RDFSharp.Model
                     webRequest.MaximumAutomaticRedirections = 3;
                     webRequest.AllowAutoRedirect = true;
                     webRequest.Timeout = timeoutMilliseconds;
+                    //RDF/XML
                     webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                    //TURTLE
                     webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
                     webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                    //N-TRIPLES
                     webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                    //TRIX
                     webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
 
                     HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
