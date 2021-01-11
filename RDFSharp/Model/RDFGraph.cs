@@ -702,14 +702,14 @@ namespace RDFSharp.Model
                 {
                     switch (rdfFormat)
                     {
-                        case RDFModelEnums.RDFFormats.NTriples:
-                            return RDFNTriples.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.RdfXml:
                             return RDFXml.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.TriX:
-                            return RDFTriX.Deserialize(filepath);
                         case RDFModelEnums.RDFFormats.Turtle:
                             return RDFTurtle.Deserialize(filepath);
+                        case RDFModelEnums.RDFFormats.NTriples:
+                            return RDFNTriples.Deserialize(filepath);
+                        case RDFModelEnums.RDFFormats.TriX:
+                            return RDFTriX.Deserialize(filepath);
                     }
                 }
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
@@ -727,14 +727,14 @@ namespace RDFSharp.Model
             {
                 switch (rdfFormat)
                 {
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        return RDFNTriples.Deserialize(inputStream, graphContext);
                     case RDFModelEnums.RDFFormats.RdfXml:
                         return RDFXml.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.TriX:
-                        return RDFTriX.Deserialize(inputStream, graphContext);
                     case RDFModelEnums.RDFFormats.Turtle:
                         return RDFTurtle.Deserialize(inputStream, graphContext);
+                    case RDFModelEnums.RDFFormats.NTriples:
+                        return RDFNTriples.Deserialize(inputStream, graphContext);
+                    case RDFModelEnums.RDFFormats.TriX:
+                        return RDFTriX.Deserialize(inputStream, graphContext);
                 }
             }
             throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");

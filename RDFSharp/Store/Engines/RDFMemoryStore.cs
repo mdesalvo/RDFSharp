@@ -733,10 +733,10 @@ namespace RDFSharp.Store
                 {
                     switch (rdfFormat)
                     {
-                        case RDFStoreEnums.RDFFormats.TriX:
-                            return RDFTriX.Deserialize(filepath);
                         case RDFStoreEnums.RDFFormats.NQuads:
                             return RDFNQuads.Deserialize(filepath);
+                        case RDFStoreEnums.RDFFormats.TriX:
+                            return RDFTriX.Deserialize(filepath);
                     }
                 }
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
@@ -753,10 +753,10 @@ namespace RDFSharp.Store
             {
                 switch (rdfFormat)
                 {
-                    case RDFStoreEnums.RDFFormats.TriX:
-                        return RDFTriX.Deserialize(inputStream);
                     case RDFStoreEnums.RDFFormats.NQuads:
                         return RDFNQuads.Deserialize(inputStream);
+                    case RDFStoreEnums.RDFFormats.TriX:
+                        return RDFTriX.Deserialize(inputStream);
                 }
             }
             throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
