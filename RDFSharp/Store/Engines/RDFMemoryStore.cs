@@ -914,12 +914,12 @@ namespace RDFSharp.Store
                 }
                 catch (Exception ex)
                 {
-                    throw new RDFStoreException("Cannot read RDF store from Uri because: " + ex.Message);
+                    throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
                 }
             }
             else
             {
-                throw new RDFStoreException("Cannot read RDF store from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
+                throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
             }
 
             return result;
