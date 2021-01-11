@@ -874,11 +874,14 @@ namespace RDFSharp.Model
                     if (webRequest.HaveResponse)
                     {
                         //RDF/XML
-                        if (string.IsNullOrEmpty(webResponse.ContentType) || webResponse.ContentType.Contains("application/rdf+xml"))
+                        if (string.IsNullOrEmpty(webResponse.ContentType) ||
+                                webResponse.ContentType.Contains("application/rdf+xml"))
                             result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
 
                         //TURTLE
-                        else if (webResponse.ContentType.Contains("application/turtle") || webResponse.ContentType.Contains("text/turtle"))
+                        else if (webResponse.ContentType.Contains("text/turtle") ||
+                                    webResponse.ContentType.Contains("application/turtle") ||
+                                        webResponse.ContentType.Contains("application/x-turtle"))
                             result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
 
                         //N-TRIPLES
