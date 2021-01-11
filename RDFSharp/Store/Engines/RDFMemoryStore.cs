@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Net;
 
 namespace RDFSharp.Store
 {
@@ -872,6 +873,53 @@ namespace RDFSharp.Store
             else
             {
                 throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter is null, or it does not have exactly 4 columns.");
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a memory store by trying to dereference the given Uri
+        /// </summary>
+        public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds = 20000)
+        {
+            var result = new RDFMemoryStore();
+
+            if (uri != null && uri.IsAbsoluteUri)
+            {
+                uri = RDFModelUtilities.RemapUriForDereference(uri);
+                try
+                {
+                    HttpWebRequest webRequest = WebRequest.CreateHttp(uri);
+                    webRequest.MaximumAutomaticRedirections = 3;
+                    webRequest.AllowAutoRedirect = true;
+                    webRequest.Timeout = timeoutMilliseconds;
+                    //N-QUADS
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-quads");
+                    //TRIX
+                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+
+                    HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
+                    if (webRequest.HaveResponse)
+                    {
+                        //N-QUADS
+                        if (string.IsNullOrEmpty(webResponse.ContentType) ||
+                                webResponse.ContentType.Contains("application/n-quads"))
+                            result = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
+
+                        //TRIX
+                        else if (webResponse.ContentType.Contains("application/trix"))
+                            result = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new RDFStoreException("Cannot read RDF store from Uri because: " + ex.Message);
+                }
+            }
+            else
+            {
+                throw new RDFStoreException("Cannot read RDF store from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
             }
 
             return result;
