@@ -156,6 +156,36 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Enlists the object negative assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
+        /// </summary>
+        public List<(RDFOntologyObjectProperty, RDFOntologyFact)> ObjectNegativeAssertions(bool enableInference)
+        {
+            List<(RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(RDFOntologyObjectProperty, RDFOntologyFact)>();
+
+            if (enableInference)
+            {
+                //Inference-enabled discovery of assigned object negative relations
+                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                                                                                  .Where(te => te.TaxonomyPredicate is RDFOntologyObjectProperty))
+                {
+                    result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                }
+            }
+            else
+            {
+                //First-level enlisting of assigned object negative relations
+                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                                                                                  .Where(te => te.TaxonomyPredicate is RDFOntologyObjectProperty
+                                                                                                    && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                {
+                    result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Enlists the object assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
         /// </summary>
         public List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralAssertions(bool enableInference)
@@ -177,6 +207,36 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
                                                                           .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty
                                                                                             && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                {
+                    result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the object assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
+        /// </summary>
+        public List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralNegativeAssertions(bool enableInference)
+        {
+            List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
+
+            if (enableInference)
+            {
+                //Inference-enabled discovery of assigned literal negative relations
+                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                                                                                  .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty))
+                {
+                    result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+                }
+            }
+            else
+            {
+                //First-level enlisting of assigned literal negative relations
+                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                                                                                  .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty
+                                                                                                    && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
                 {
                     result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
                 }
