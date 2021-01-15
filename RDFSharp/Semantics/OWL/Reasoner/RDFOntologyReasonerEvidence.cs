@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 
 namespace RDFSharp.Semantics.OWL
@@ -54,6 +55,14 @@ namespace RDFSharp.Semantics.OWL
             this.EvidenceProvenance = evidenceProvenance;
             this.EvidenceContent = evidenceContent;
         }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Gets a triple representation of this reasoner evidence
+        /// </summary>
+        /// <returns></returns>
+        public RDFTriple ToRDFTriple() => EvidenceContent.ToRDFTriple();
         #endregion
 
     }

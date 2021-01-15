@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -107,10 +108,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal void Merge(RDFOntologyReasonerReport report)
         {
-            foreach (var evidence in report)
-            {
+            foreach (RDFOntologyReasonerEvidence evidence in report)
                 this.AddEvidence(evidence);
-            }
         }
         #endregion
 
@@ -153,6 +152,19 @@ namespace RDFSharp.Semantics.OWL
         public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentObject(RDFOntologyResource evidenceContentObject)
         {
             return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyObject.Equals(evidenceContentObject)).ToList();
+        }
+        #endregion
+
+        #region Convert
+        /// <summary>
+        /// Gets a graph representation of this reasoner report
+        /// </summary>
+        public RDFGraph ToRDFGraph()
+        {
+            RDFGraph result = new RDFGraph();
+            foreach (RDFOntologyReasonerEvidence evidence in this)
+                result.AddTriple(evidence.ToRDFTriple());
+            return result;
         }
         #endregion
 
