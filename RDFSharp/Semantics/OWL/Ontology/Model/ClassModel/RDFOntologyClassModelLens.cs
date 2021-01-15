@@ -79,7 +79,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Add((false, (RDFOntologyClass)sf.TaxonomySubject));
             }
 
-            //Inference-enabled discovery of different facts
+            //Inference-enabled discovery of subclasses
             if (enableInference)
             {
                 List<RDFOntologyClass> subClasses = RDFOntologyHelper.GetSubClassesOf(this.Ontology.Model.ClassModel, this.OntologyClass).ToList();
@@ -87,6 +87,34 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (!result.Any(f => f.Item2.Equals(subClass)))
                         result.Add((true, subClass));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the classes which are directly (or indirectly, if inference is requested) superclasses of the lens class
+        /// </summary>
+        public List<(bool, RDFOntologyClass)> SuperClasses(bool enableInference)
+        {
+            List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
+
+            //First-level enlisting of superclasses
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.SubClassOf.SelectEntriesBySubject(this.OntologyClass)
+                                                                                                       .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            {
+                result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
+            }
+
+            //Inference-enabled discovery of superclasses
+            if (enableInference)
+            {
+                List<RDFOntologyClass> superClasses = RDFOntologyHelper.GetSuperClassesOf(this.Ontology.Model.ClassModel, this.OntologyClass).ToList();
+                foreach (RDFOntologyClass superClass in superClasses)
+                {
+                    if (!result.Any(f => f.Item2.Equals(superClass)))
+                        result.Add((true, superClass));
                 }
             }
 
