@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,25 +113,27 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyReasonerReport ApplyToOntology(ref RDFOntology ontology)
         {
-            var report = new RDFOntologyReasonerReport();
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             if (ontology != null)
             {
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}'...", ontology.Value));
 
                 //STEP 1: Expand ontology
-                var ontologyValue = ontology.Value;
+                RDFPatternMember ontologyValue = ontology.Value;
                 ontology = ontology.UnionWith(RDFBASEOntology.Instance);
 
                 //STEP 2: Execute BASE rules
                 #region BASE rules
                 var baseRules = this.Rules.Where(x => x.RulePriority <= RDFOntologyReasonerRuleset.RulesCount)
                                           .OrderBy(x => x.RulePriority);
-                foreach (var bRule in baseRules)
+                foreach (RDFOntologyReasonerRule sRule in baseRules)
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoning rule '{0}'...", bRule));
-                    var bRuleReport = bRule.ExecuteRule(ontology);
-                    report.Merge(bRuleReport);
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoning rule '{0}': found {1} evidences.", bRule, bRuleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoner rule '{0}'...", sRule));
+
+                    RDFOntologyReasonerReport sRuleReport = sRule.ExecuteRule(ontology);
+                    report.Merge(sRuleReport);
+
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoner rule '{0}': found {1} evidences.", sRule, sRuleReport.EvidencesCount));
                 }
                 #endregion
 
@@ -138,12 +141,14 @@ namespace RDFSharp.Semantics.OWL
                 #region Custom rules
                 var customRules = this.Rules.Where(x => x.RulePriority > RDFOntologyReasonerRuleset.RulesCount)
                                             .OrderBy(x => x.RulePriority);
-                foreach (var cRule in customRules)
+                foreach (RDFOntologyReasonerRule cRule in customRules)
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoning rule '{0}'...", cRule));
-                    var cRuleReport = cRule.ExecuteRule(ontology);
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoner rule '{0}'...", cRule));
+
+                    RDFOntologyReasonerReport cRuleReport = cRule.ExecuteRule(ontology);
                     report.Merge(cRuleReport);
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoning rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
+
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoner rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
                 }
                 #endregion
 
