@@ -66,7 +66,7 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Enlists the classes which are directly (or indirectly, if inference is requested) subclasses of the lens class
+        /// Enlists the classes which are directly (or indirectly, if inference is requested) children of the lens class
         /// </summary>
         public List<(bool, RDFOntologyClass)> SubClasses(bool enableInference)
         {
@@ -94,7 +94,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the classes which are directly (or indirectly, if inference is requested) superclasses of the lens class
+        /// Enlists the classes which are directly (or indirectly, if inference is requested) parents of the lens class
         /// </summary>
         public List<(bool, RDFOntologyClass)> SuperClasses(bool enableInference)
         {
@@ -115,6 +115,34 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (!result.Any(f => f.Item2.Equals(superClass)))
                         result.Add((true, superClass));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the classes which are directly (or indirectly, if inference is requested) equivalent to the lens class
+        /// </summary>
+        public List<(bool, RDFOntologyClass)> EquivalentClasses(bool enableInference)
+        {
+            List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
+
+            //First-level enlisting of equivalent classes
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.EquivalentClass.SelectEntriesBySubject(this.OntologyClass)
+                                                                                                            .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            {
+                result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
+            }
+
+            //Inference-enabled discovery of equivalent classes
+            if (enableInference)
+            {
+                List<RDFOntologyClass> equivalentClasses = RDFOntologyHelper.GetEquivalentClassesOf(this.Ontology.Model.ClassModel, this.OntologyClass).ToList();
+                foreach (RDFOntologyClass equivalentClass in equivalentClasses)
+                {
+                    if (!result.Any(f => f.Item2.Equals(equivalentClass)))
+                        result.Add((true, equivalentClass));
                 }
             }
 
