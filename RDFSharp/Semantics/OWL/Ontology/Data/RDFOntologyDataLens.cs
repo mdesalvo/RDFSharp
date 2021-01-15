@@ -244,6 +244,71 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Enlists the object annotations which are assigned to the lens fact
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyFact)> ObjectAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyFact)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyFact)>();
+
+            //SeeAlso
+            foreach (var sf in this.Ontology.Data.Annotations.SeeAlso.SelectEntriesBySubject(this.Fact)
+                                                                     .Where(te => te.TaxonomyObject is RDFOntologyFact))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+
+            //IsDefinedBy
+            foreach (var sf in this.Ontology.Data.Annotations.IsDefinedBy.SelectEntriesBySubject(this.Fact)
+                                                                         .Where(te => te.TaxonomyObject is RDFOntologyFact))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+
+            //Custom Annotations
+            foreach (var sf in this.Ontology.Data.Annotations.CustomAnnotations.SelectEntriesBySubject(this.Fact)
+                                                                               .Where(te => te.TaxonomyObject is RDFOntologyFact))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the literal annotations which are assigned to the lens fact
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> LiteralAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
+
+            //VersionInfo
+            foreach (var sf in this.Ontology.Data.Annotations.VersionInfo.SelectEntriesBySubject(this.Fact)
+                                                                         .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Comment
+            foreach (var sf in this.Ontology.Data.Annotations.Comment.SelectEntriesBySubject(this.Fact)
+                                                                     .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Label
+            foreach (var sf in this.Ontology.Data.Annotations.Label.SelectEntriesBySubject(this.Fact)
+                                                                   .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //SeeAlso
+            foreach (var sf in this.Ontology.Data.Annotations.SeeAlso.SelectEntriesBySubject(this.Fact)
+                                                                     .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //IsDefinedBy
+            foreach (var sf in this.Ontology.Data.Annotations.IsDefinedBy.SelectEntriesBySubject(this.Fact)
+                                                                         .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Custom Annotations
+            foreach (var sf in this.Ontology.Data.Annotations.CustomAnnotations.SelectEntriesBySubject(this.Fact)
+                                                                               .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            return result;
+        }
         #endregion
     }
 }
