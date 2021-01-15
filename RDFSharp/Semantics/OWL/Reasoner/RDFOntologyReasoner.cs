@@ -127,10 +127,10 @@ namespace RDFSharp.Semantics.OWL
                                           .OrderBy(x => x.RulePriority);
                 foreach (var bRule in baseRules)
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of BASE reasoning rule '{0}'...", bRule));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoning rule '{0}'...", bRule));
                     var bRuleReport = bRule.ExecuteRule(ontology);
                     report.Merge(bRuleReport);
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of BASE reasoning rule '{0}': found {1} evidences.", bRule, bRuleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoning rule '{0}': found {1} evidences.", bRule, bRuleReport.EvidencesCount));
                 }
                 #endregion
 
@@ -140,10 +140,10 @@ namespace RDFSharp.Semantics.OWL
                                             .OrderBy(x => x.RulePriority);
                 foreach (var cRule in customRules)
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of reasoning rule '{0}'...", cRule));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoning rule '{0}'...", cRule));
                     var cRuleReport = cRule.ExecuteRule(ontology);
                     report.Merge(cRuleReport);
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of reasoning rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoning rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
                 }
                 #endregion
 
