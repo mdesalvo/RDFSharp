@@ -94,7 +94,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the facts which are directly (or even indirectly, if inference is enabled) different from the lens fact
+        /// Enlists the facts which are directly (or indirectly, if inference is requested) different from the lens fact
         /// </summary>
         public List<(bool, RDFOntologyFact)> DifferentFrom(bool enableInference)
         {
@@ -124,7 +124,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(bool, RDFOntologyObjectProperty,RDFOntologyFact)> ObjectAssertions(bool enableInference)
+        public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectProperties(bool enableInference)
         {
             List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>();
 
@@ -152,9 +152,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object negative assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// Enlists the negative object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectNegativeAssertions(bool enableInference)
+        public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> NegativeObjectProperties(bool enableInference)
         {
             List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>();
 
@@ -182,9 +182,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// Enlists the data assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(bool,RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralAssertions(bool enableInference)
+        public List<(bool,RDFOntologyDatatypeProperty, RDFOntologyLiteral)> DataProperties(bool enableInference)
         {
             List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
 
@@ -212,9 +212,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// Enlists the negative data assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralNegativeAssertions(bool enableInference)
+        public List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> NegativeDataProperties(bool enableInference)
         {
             List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
 
@@ -269,7 +269,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlists the literal annotations which are assigned to the lens fact
         /// </summary>
-        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> LiteralAnnotations()
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> DataAnnotations()
         {
             List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
 
