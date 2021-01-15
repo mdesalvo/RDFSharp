@@ -66,29 +66,27 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Enlists the facts which are directly (or even indirectly, if inference is enabled) equivalent to the lens fact
+        /// Enlists the facts which are directly (or indirectly, if inference is requested) equivalent to the lens fact
         /// </summary>
-        public List<RDFOntologyFact> SameAs(bool enableInference)
+        public List<(bool, RDFOntologyFact)> SameAs(bool enableInference)
         {
-            List<RDFOntologyFact> result = new List<RDFOntologyFact>();
+            List<(bool, RDFOntologyFact)> result = new List<(bool, RDFOntologyFact)>();
 
+            //First-level enlisting of same facts
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.SameAs.SelectEntriesBySubject(this.Fact)
+                                                                                       .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            {
+                result.Add((false, (RDFOntologyFact)sf.TaxonomyObject));
+            }
+
+            //Inference-enabled discovery of same facts
             if (enableInference)
             {
-                //Inference-enabled discovery of equivalent facts
-                result.AddRange(RDFOntologyHelper.GetSameFactsAs(this.Ontology.Data, this.Fact));
-            }
-            else
-            {
-                //First-level enlisting of equivalent facts (light reasoning on relation simmetry)
-                foreach (var sf in this.Ontology.Data.Relations.SameAs.SelectEntriesBySubject(this.Fact)
-                                                                      .Where(te => te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                List<RDFOntologyFact> sameFacts = RDFOntologyHelper.GetSameFactsAs(this.Ontology.Data, this.Fact).ToList();
+                foreach (RDFOntologyFact sameFact in sameFacts)
                 {
-                    result.Add((RDFOntologyFact)sf.TaxonomyObject);
-                }
-                foreach (var sf in this.Ontology.Data.Relations.SameAs.SelectEntriesByObject(this.Fact)
-                                                                      .Where(te => te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    result.Add((RDFOntologyFact)sf.TaxonomySubject);
+                    if (!result.Any(f => f.Item2.Equals(sameFact)))
+                        result.Add((true, sameFact));
                 }
             }
 
@@ -98,27 +96,25 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlists the facts which are directly (or even indirectly, if inference is enabled) different from the lens fact
         /// </summary>
-        public List<RDFOntologyFact> DifferentFrom(bool enableInference)
+        public List<(bool, RDFOntologyFact)> DifferentFrom(bool enableInference)
         {
-            List<RDFOntologyFact> result = new List<RDFOntologyFact>();
+            List<(bool, RDFOntologyFact)> result = new List<(bool, RDFOntologyFact)>();
 
+            //First-level enlisting of different facts
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.DifferentFrom.SelectEntriesBySubject(this.Fact)
+                                                                                              .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            {
+                result.Add((false, (RDFOntologyFact)sf.TaxonomyObject));
+            }
+
+            //Inference-enabled discovery of different facts
             if (enableInference)
             {
-                //Inference-enabled discovery of different facts
-                result.AddRange(RDFOntologyHelper.GetDifferentFactsFrom(this.Ontology.Data, this.Fact));
-            }
-            else
-            {
-                //First-level enlisting of different facts (light reasoning on relation simmetry)
-                foreach (var sf in this.Ontology.Data.Relations.DifferentFrom.SelectEntriesBySubject(this.Fact)
-                                                                             .Where(te => te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                List<RDFOntologyFact> differentFacts = RDFOntologyHelper.GetDifferentFactsFrom(this.Ontology.Data, this.Fact).ToList();
+                foreach (RDFOntologyFact differentFact in differentFacts)
                 {
-                    result.Add((RDFOntologyFact)sf.TaxonomyObject);
-                }
-                foreach (var sf in this.Ontology.Data.Relations.DifferentFrom.SelectEntriesByObject(this.Fact)
-                                                                             .Where(te => te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                {
-                    result.Add((RDFOntologyFact)sf.TaxonomySubject);
+                    if (!result.Any(f => f.Item2.Equals(differentFact)))
+                        result.Add((true, differentFact));
                 }
             }
 
@@ -126,29 +122,29 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
+        /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(RDFOntologyObjectProperty,RDFOntologyFact)> ObjectAssertions(bool enableInference)
+        public List<(bool, RDFOntologyObjectProperty,RDFOntologyFact)> ObjectAssertions(bool enableInference)
         {
-            List<(RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(RDFOntologyObjectProperty, RDFOntologyFact)>();
+            List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>();
 
             if (enableInference)
             {
                 //Inference-enabled discovery of assigned object relations
-                foreach (var sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
                                                                           .Where(te => te.TaxonomyPredicate is RDFOntologyObjectProperty))
                 {
-                    result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                    result.Add((sf.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
                 }
             }
             else
             {
                 //First-level enlisting of assigned object relations
-                foreach (var sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
                                                                           .Where(te => te.TaxonomyPredicate is RDFOntologyObjectProperty
-                                                                                            && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                                                                                            && te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
                 {
-                    result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                    result.Add((false, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
                 }
             }
 
@@ -156,29 +152,29 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object negative assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
+        /// Enlists the object negative assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(RDFOntologyObjectProperty, RDFOntologyFact)> ObjectNegativeAssertions(bool enableInference)
+        public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectNegativeAssertions(bool enableInference)
         {
-            List<(RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(RDFOntologyObjectProperty, RDFOntologyFact)>();
+            List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>();
 
             if (enableInference)
             {
                 //Inference-enabled discovery of assigned object negative relations
-                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
                                                                                   .Where(te => te.TaxonomyPredicate is RDFOntologyObjectProperty))
                 {
-                    result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                    result.Add((sf.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
                 }
             }
             else
             {
                 //First-level enlisting of assigned object negative relations
-                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
                                                                                   .Where(te => te.TaxonomyPredicate is RDFOntologyObjectProperty
-                                                                                                    && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                                                                                                    && te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
                 {
-                    result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                    result.Add((false, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
                 }
             }
 
@@ -186,29 +182,29 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
+        /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralAssertions(bool enableInference)
+        public List<(bool,RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralAssertions(bool enableInference)
         {
-            List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
+            List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
 
             if (enableInference)
             {
                 //Inference-enabled discovery of assigned literal relations
-                foreach (var sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
                                                                           .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty))
                 {
-                    result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+                    result.Add((sf.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None, (RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
                 }
             }
             else
             {
                 //First-level enlisting of assigned literal relations
-                foreach (var sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.Fact)
                                                                           .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty
-                                                                                            && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                                                                                            && te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
                 {
-                    result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+                    result.Add((false, (RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
                 }
             }
 
@@ -216,29 +212,29 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the object assertions which are directly (or even indirectly, if inference is enabled) assigned to the lens fact
+        /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralNegativeAssertions(bool enableInference)
+        public List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> LiteralNegativeAssertions(bool enableInference)
         {
-            List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
+            List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)> result = new List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)>();
 
             if (enableInference)
             {
                 //Inference-enabled discovery of assigned literal negative relations
-                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
                                                                                   .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty))
                 {
-                    result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+                    result.Add((sf.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None, (RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
                 }
             }
             else
             {
                 //First-level enlisting of assigned literal negative relations
-                foreach (var sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.Fact)
                                                                                   .Where(te => te.TaxonomyPredicate is RDFOntologyDatatypeProperty
-                                                                                                    && te.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
+                                                                                                    && te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
                 {
-                    result.Add(((RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+                    result.Add((false, (RDFOntologyDatatypeProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
                 }
             }
 
@@ -253,17 +249,17 @@ namespace RDFSharp.Semantics.OWL
             List<(RDFOntologyAnnotationProperty, RDFOntologyFact)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyFact)>();
 
             //SeeAlso
-            foreach (var sf in this.Ontology.Data.Annotations.SeeAlso.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.SeeAlso.SelectEntriesBySubject(this.Fact)
                                                                      .Where(te => te.TaxonomyObject is RDFOntologyFact))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
 
             //IsDefinedBy
-            foreach (var sf in this.Ontology.Data.Annotations.IsDefinedBy.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.IsDefinedBy.SelectEntriesBySubject(this.Fact)
                                                                          .Where(te => te.TaxonomyObject is RDFOntologyFact))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
 
             //Custom Annotations
-            foreach (var sf in this.Ontology.Data.Annotations.CustomAnnotations.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.CustomAnnotations.SelectEntriesBySubject(this.Fact)
                                                                                .Where(te => te.TaxonomyObject is RDFOntologyFact))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
 
@@ -278,32 +274,32 @@ namespace RDFSharp.Semantics.OWL
             List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
 
             //VersionInfo
-            foreach (var sf in this.Ontology.Data.Annotations.VersionInfo.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.VersionInfo.SelectEntriesBySubject(this.Fact)
                                                                          .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
             //Comment
-            foreach (var sf in this.Ontology.Data.Annotations.Comment.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.Comment.SelectEntriesBySubject(this.Fact)
                                                                      .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
             //Label
-            foreach (var sf in this.Ontology.Data.Annotations.Label.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.Label.SelectEntriesBySubject(this.Fact)
                                                                    .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
             //SeeAlso
-            foreach (var sf in this.Ontology.Data.Annotations.SeeAlso.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.SeeAlso.SelectEntriesBySubject(this.Fact)
                                                                      .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
             //IsDefinedBy
-            foreach (var sf in this.Ontology.Data.Annotations.IsDefinedBy.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.IsDefinedBy.SelectEntriesBySubject(this.Fact)
                                                                          .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
             //Custom Annotations
-            foreach (var sf in this.Ontology.Data.Annotations.CustomAnnotations.SelectEntriesBySubject(this.Fact)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Annotations.CustomAnnotations.SelectEntriesBySubject(this.Fact)
                                                                                .Where(te => te.TaxonomyObject is RDFOntologyLiteral))
                 result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
