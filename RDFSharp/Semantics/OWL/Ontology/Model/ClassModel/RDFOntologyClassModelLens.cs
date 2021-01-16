@@ -166,6 +166,49 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Enlists the facts/literals which are directly (or indirectly, if inference is requested) members of the lens class
+        /// </summary>
+        public List<(bool, RDFOntologyResource)> Members(bool enableInference)
+        {
+            List<(bool, RDFOntologyResource)> result = new List<(bool, RDFOntologyResource)>();
+
+            //First-level enlisting of members (datatype class)
+            if (RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, this.OntologyClass))
+            {
+                IEnumerable<RDFOntologyLiteral> ontlits = this.Ontology.Data.Literals.Values.Where(ol => ol.Value is RDFTypedLiteral);
+                foreach (RDFOntologyLiteral ontlit in ontlits.Where(ol => RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ol.Value).Datatype).Equals(this.OntologyClass)))
+                {
+                    if (!result.Any(ol => ol.Equals(ontlit)))
+                        result.Add((false, ontlit));
+                }
+            }
+            //First-level enlisting of members (object class)
+            else
+            {
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.ClassType.SelectEntriesByObject(this.OntologyClass).Where(te => !te.IsInference()))
+                    result.Add((false, sf.TaxonomySubject));
+            }
+
+            //Inference-enabled discovery of members
+            if (enableInference)
+            {
+                RDFOntologyData members = RDFOntologyHelper.GetMembersOf(this.Ontology, this.OntologyClass);
+                foreach (RDFOntologyFact fact in members)
+                {
+                    if (!result.Any(f => f.Item2.Equals(fact)))
+                        result.Add((true, fact));
+                }
+                foreach (RDFOntologyLiteral literal in members.Literals.Values)
+                {
+                    if (!result.Any(f => f.Item2.Equals(literal)))
+                        result.Add((true, literal));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Enlists the object annotations which are assigned to the lens class
         /// </summary>
         public List<(RDFOntologyAnnotationProperty, RDFOntologyResource)> ObjectAnnotations()
