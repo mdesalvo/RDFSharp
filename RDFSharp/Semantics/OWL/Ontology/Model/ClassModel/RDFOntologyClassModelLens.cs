@@ -50,7 +50,7 @@ namespace RDFSharp.Semantics.OWL
                 if (ontology != null)
                 {
                     this.OntologyClass = ontologyClass;
-                    this.Ontology = ontology;
+                    this.Ontology = ontology.UnionWith(RDFBASEOntology.Instance);
                 }
                 else
                 {
@@ -176,7 +176,7 @@ namespace RDFSharp.Semantics.OWL
             if (RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, this.OntologyClass))
             {
                 IEnumerable<RDFOntologyLiteral> ontlits = this.Ontology.Data.Literals.Values.Where(ol => ol.Value is RDFTypedLiteral);
-                foreach (RDFOntologyLiteral ontlit in ontlits.Where(ol => RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ol.Value).Datatype).Equals(this.OntologyClass)))
+                foreach (RDFOntologyLiteral ontlit in ontlits.Where(ol => RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ol.Value).Datatype).Equals(this.OntologyClass.ToString())))
                 {
                     if (!result.Any(ol => ol.Equals(ontlit)))
                         result.Add((false, ontlit));
