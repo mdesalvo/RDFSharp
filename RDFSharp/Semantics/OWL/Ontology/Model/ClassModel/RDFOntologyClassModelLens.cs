@@ -148,6 +148,34 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Enlists the classes which are directly (or indirectly, if inference is requested) disjoint from the lens class
+        /// </summary>
+        public List<(bool, RDFOntologyClass)> DisjointClasses(bool enableInference)
+        {
+            List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
+
+            //First-level enlisting of disjoint classes
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.DisjointWith.SelectEntriesBySubject(this.OntologyClass)
+                                                                                                         .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
+            {
+                result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
+            }
+
+            //Inference-enabled discovery of disjoint classes
+            if (enableInference)
+            {
+                List<RDFOntologyClass> disjointClasses = RDFOntologyHelper.GetDisjointClassesWith(this.Ontology.Model.ClassModel, this.OntologyClass).ToList();
+                foreach (RDFOntologyClass disjointClass in disjointClasses)
+                {
+                    if (!result.Any(f => f.Item2.Equals(disjointClass)))
+                        result.Add((true, disjointClass));
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }
