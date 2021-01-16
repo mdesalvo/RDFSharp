@@ -362,6 +362,11 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Checks if this taxonomy entry represents an inference
+        /// </summary>
+        internal bool IsInference() => this.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None;
+
+        /// <summary>
         /// Get a triple representation of this taxonomy entry
         /// </summary>
         internal RDFTriple ToRDFTriple()

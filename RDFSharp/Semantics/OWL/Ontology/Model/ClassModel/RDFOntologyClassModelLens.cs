@@ -73,11 +73,8 @@ namespace RDFSharp.Semantics.OWL
             List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
 
             //First-level enlisting of subclasses
-            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.SubClassOf.SelectEntriesByObject(this.OntologyClass)
-                                                                                                       .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
-            {
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.SubClassOf.SelectEntriesByObject(this.OntologyClass).Where(te => !te.IsInference()))
                 result.Add((false, (RDFOntologyClass)sf.TaxonomySubject));
-            }
 
             //Inference-enabled discovery of subclasses
             if (enableInference)
@@ -101,11 +98,8 @@ namespace RDFSharp.Semantics.OWL
             List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
 
             //First-level enlisting of superclasses
-            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.SubClassOf.SelectEntriesBySubject(this.OntologyClass)
-                                                                                                       .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
-            {
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.SubClassOf.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.IsInference()))
                 result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
-            }
 
             //Inference-enabled discovery of superclasses
             if (enableInference)
@@ -129,11 +123,8 @@ namespace RDFSharp.Semantics.OWL
             List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
 
             //First-level enlisting of equivalent classes
-            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.EquivalentClass.SelectEntriesBySubject(this.OntologyClass)
-                                                                                                            .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
-            {
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.EquivalentClass.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.IsInference()))
                 result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
-            }
 
             //Inference-enabled discovery of equivalent classes
             if (enableInference)
@@ -157,11 +148,8 @@ namespace RDFSharp.Semantics.OWL
             List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
 
             //First-level enlisting of disjoint classes
-            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.DisjointWith.SelectEntriesBySubject(this.OntologyClass)
-                                                                                                         .Where(te => te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None))
-            {
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.DisjointWith.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.IsInference()))
                 result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
-            }
 
             //Inference-enabled discovery of disjoint classes
             if (enableInference)
@@ -173,6 +161,62 @@ namespace RDFSharp.Semantics.OWL
                         result.Add((true, disjointClass));
                 }
             }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the object annotations which are assigned to the lens class
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyResource)> ObjectAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyResource)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyResource)>();
+
+            //SeeAlso
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.SeeAlso.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, sf.TaxonomyObject));
+
+            //IsDefinedBy
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.IsDefinedBy.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, sf.TaxonomyObject));
+
+            //Custom Annotations
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.CustomAnnotations.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the literal annotations which are assigned to the lens class
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> DataAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
+
+            //VersionInfo
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.VersionInfo.SelectEntriesBySubject(this.OntologyClass).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Comment
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.Comment.SelectEntriesBySubject(this.OntologyClass).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Label
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.Label.SelectEntriesBySubject(this.OntologyClass).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //SeeAlso
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.SeeAlso.SelectEntriesBySubject(this.OntologyClass).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //IsDefinedBy
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.IsDefinedBy.SelectEntriesBySubject(this.OntologyClass).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Custom Annotations
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Annotations.CustomAnnotations.SelectEntriesBySubject(this.OntologyClass).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
 
             return result;
         }
