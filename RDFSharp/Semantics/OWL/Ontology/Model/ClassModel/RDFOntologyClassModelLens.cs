@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using RDFSharp.Semantics.SKOS;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -65,6 +66,15 @@ namespace RDFSharp.Semantics.OWL
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Initializes the lens ontology with support for SKOS ontology
+        /// </summary>
+        public RDFOntologyClassModelLens InitializeSKOS()
+        {
+            this.Ontology = this.Ontology.UnionWith(RDFSKOSOntology.Instance);
+            return this;
+        }
+
         /// <summary>
         /// Enlists the classes which are directly (or indirectly, if inference is requested) children of the lens class
         /// </summary>
