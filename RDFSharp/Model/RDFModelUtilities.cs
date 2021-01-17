@@ -552,85 +552,85 @@ namespace RDFSharp.Model
             {
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     return RDFVocabulary.RDF.XML_LITERAL.ToString();
-                case (RDFModelEnums.RDFDatatypes.RDFS_LITERAL):
+                case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                     return RDFVocabulary.RDFS.LITERAL.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_STRING):
+                case RDFModelEnums.RDFDatatypes.XSD_STRING:
                     return RDFVocabulary.XSD.STRING.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_ANYURI):
+                case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
                     return RDFVocabulary.XSD.ANY_URI.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY):
+                case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     return RDFVocabulary.XSD.BASE64_BINARY.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_BOOLEAN):
+                case RDFModelEnums.RDFDatatypes.XSD_BOOLEAN:
                     return RDFVocabulary.XSD.BOOLEAN.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_BYTE):
+                case RDFModelEnums.RDFDatatypes.XSD_BYTE:
                     return RDFVocabulary.XSD.BYTE.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_DATE):
+                case RDFModelEnums.RDFDatatypes.XSD_DATE:
                     return RDFVocabulary.XSD.DATE.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_DATETIME):
+                case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
                     return RDFVocabulary.XSD.DATETIME.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_DECIMAL):
+                case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
                     return RDFVocabulary.XSD.DECIMAL.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_DOUBLE):
+                case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
                     return RDFVocabulary.XSD.DOUBLE.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_DURATION):
+                case RDFModelEnums.RDFDatatypes.XSD_DURATION:
                     return RDFVocabulary.XSD.DURATION.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_FLOAT):
+                case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
                     return RDFVocabulary.XSD.FLOAT.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_GDAY):
+                case RDFModelEnums.RDFDatatypes.XSD_GDAY:
                     return RDFVocabulary.XSD.G_DAY.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_GMONTH):
+                case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
                     return RDFVocabulary.XSD.G_MONTH.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY):
+                case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
                     return RDFVocabulary.XSD.G_MONTH_DAY.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_GYEAR):
+                case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
                     return RDFVocabulary.XSD.G_YEAR.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH):
+                case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
                     return RDFVocabulary.XSD.G_YEAR_MONTH.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_HEXBINARY):
+                case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
                     return RDFVocabulary.XSD.HEX_BINARY.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_INT):
+                case RDFModelEnums.RDFDatatypes.XSD_INT:
                     return RDFVocabulary.XSD.INT.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_INTEGER):
+                case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
                     return RDFVocabulary.XSD.INTEGER.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_LANGUAGE):
+                case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
                     return RDFVocabulary.XSD.LANGUAGE.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_LONG):
+                case RDFModelEnums.RDFDatatypes.XSD_LONG:
                     return RDFVocabulary.XSD.LONG.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NAME):
+                case RDFModelEnums.RDFDatatypes.XSD_NAME:
                     return RDFVocabulary.XSD.NAME.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NCNAME):
+                case RDFModelEnums.RDFDatatypes.XSD_NCNAME:
                     return RDFVocabulary.XSD.NCNAME.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_ID):
+                case RDFModelEnums.RDFDatatypes.XSD_ID:
                     return RDFVocabulary.XSD.ID.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER):
+                case RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER:
                     return RDFVocabulary.XSD.NEGATIVE_INTEGER.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NMTOKEN):
+                case RDFModelEnums.RDFDatatypes.XSD_NMTOKEN:
                     return RDFVocabulary.XSD.NMTOKEN.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER):
+                case RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER:
                     return RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER):
+                case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
                     return RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING):
+                case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
                     return RDFVocabulary.XSD.NORMALIZED_STRING.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_NOTATION):
+                case RDFModelEnums.RDFDatatypes.XSD_NOTATION:
                     return RDFVocabulary.XSD.NOTATION.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER):
+                case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
                     return RDFVocabulary.XSD.POSITIVE_INTEGER.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_QNAME):
+                case RDFModelEnums.RDFDatatypes.XSD_QNAME:
                     return RDFVocabulary.XSD.QNAME.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_SHORT):
+                case RDFModelEnums.RDFDatatypes.XSD_SHORT:
                     return RDFVocabulary.XSD.SHORT.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_TIME):
+                case RDFModelEnums.RDFDatatypes.XSD_TIME:
                     return RDFVocabulary.XSD.TIME.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_TOKEN):
+                case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
                     return RDFVocabulary.XSD.TOKEN.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE):
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
                     return RDFVocabulary.XSD.UNSIGNED_BYTE.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT):
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT:
                     return RDFVocabulary.XSD.UNSIGNED_INT.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG):
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG:
                     return RDFVocabulary.XSD.UNSIGNED_LONG.ToString();
-                case (RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT):
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT:
                     return RDFVocabulary.XSD.UNSIGNED_SHORT.ToString();
 
                 //Unrecognized datatypes are threated as rdfs:Literal
