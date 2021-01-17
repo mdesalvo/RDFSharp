@@ -126,6 +126,36 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Enlists the classes to which the lens fact directly (or indirectly, if inference is requested) belongs
+        /// </summary>
+        public List<(bool, RDFOntologyClass)> ClassTypes(bool enableInference)
+        {
+            List<(bool, RDFOntologyClass)> result = new List<(bool, RDFOntologyClass)>();
+
+            //First-level enlisting of class types
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Data.Relations.ClassType.SelectEntriesBySubject(this.OntologyFact).Where(te => !te.IsInference()))
+                result.Add((false, (RDFOntologyClass)sf.TaxonomyObject));
+
+            //Inference-enabled discovery of class types
+            if (enableInference)
+            {
+                //Skip evaluation of BASE reserved classes and literal-compatible classes
+                foreach (RDFOntologyClass ontClass in this.Ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
+                                                                                                    && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls)))
+                {
+                    List<RDFOntologyFact> ontClassMembers = RDFOntologyHelper.GetMembersOfNonLiteralCompatibleClass(this.Ontology, ontClass).ToList();
+                    if (ontClassMembers.Any(f => f.Equals(this.OntologyFact)))
+                    {
+                        if (!result.Any(c => c.Item2.Equals(ontClass)))
+                            result.Add((true, ontClass));
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
         public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectAssertions(bool enableInference)

@@ -1605,27 +1605,19 @@ namespace RDFSharp.Semantics.OWL
 
                 //Restriction
                 if (ontClass.IsRestrictionClass())
-                {
                     result = ontology.GetMembersOfRestriction((RDFOntologyRestriction)ontClass);
-                }
 
                 //Composite
                 else if (ontClass.IsCompositeClass())
-                {
                     result = ontology.GetMembersOfComposite(ontClass);
-                }
 
                 //Enumerate
                 else if (ontClass.IsEnumerateClass())
-                {
                     result = ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)ontClass);
-                }
 
                 //Class
                 else
-                {
                     result = ontology.GetMembersOfClass(ontClass);
-                }
 
             }
             return result;
