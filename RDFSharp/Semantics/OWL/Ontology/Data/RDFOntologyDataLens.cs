@@ -144,8 +144,8 @@ namespace RDFSharp.Semantics.OWL
                                                                                                      && !RDFOntologyChecker.CheckReservedClass(cls)
                                                                                                         && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls)))
                 {
-                    List<RDFOntologyFact> ontClassMembers = RDFOntologyHelper.GetMembersOfNonLiteralCompatibleClass(this.Ontology, ontClass).ToList();
-                    if (ontClassMembers.Any(f => f.Equals(this.OntologyFact)))
+                    RDFOntologyData ontClassMembers = RDFOntologyHelper.GetMembersOfNonLiteralCompatibleClass(this.Ontology, ontClass);
+                    if (ontClassMembers.Facts.ContainsKey(this.OntologyFact.PatternMemberID))
                         result.Add((true, ontClass));
                 }
             }
