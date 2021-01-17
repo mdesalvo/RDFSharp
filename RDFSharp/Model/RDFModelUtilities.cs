@@ -449,7 +449,7 @@ namespace RDFSharp.Model
 
                 //Preliminary check to verify if datatypeString is a valid Uri
                 if (!Uri.TryCreate(datatypeString.Trim(), UriKind.Absolute, out Uri dtypeStringUri))
-                    throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid Uri.");
+                    throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri.");
 
                 //Identification of specific RDF/RDFS/XSD datatype
                 datatypeString = dtypeStringUri.ToString();
