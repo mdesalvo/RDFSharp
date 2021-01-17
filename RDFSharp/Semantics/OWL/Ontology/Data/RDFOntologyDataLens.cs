@@ -146,10 +146,7 @@ namespace RDFSharp.Semantics.OWL
                 {
                     List<RDFOntologyFact> ontClassMembers = RDFOntologyHelper.GetMembersOfNonLiteralCompatibleClass(this.Ontology, ontClass).ToList();
                     if (ontClassMembers.Any(f => f.Equals(this.OntologyFact)))
-                    {
-                        if (!result.Any(c => c.Item2.Equals(ontClass)))
-                            result.Add((true, ontClass));
-                    }
+                        result.Add((true, ontClass));
                 }
             }
 
