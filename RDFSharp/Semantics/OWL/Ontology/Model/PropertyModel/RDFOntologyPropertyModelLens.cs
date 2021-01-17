@@ -204,6 +204,24 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Enlists the properties which are chain axioms of the lens property
+        /// </summary>
+        public List<(bool, RDFOntologyObjectProperty)> ChainAxioms()
+        {
+            List<(bool, RDFOntologyObjectProperty)> result = new List<(bool, RDFOntologyObjectProperty)>();
+
+            if (this.OntologyProperty.IsObjectProperty())
+            {
+                //First-level enlisting of chain axioms (reasoning is not available on this concept)
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Relations.PropertyChainAxiom.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.IsInference()))
+                    result.Add((false, (RDFOntologyObjectProperty)sf.TaxonomyObject));
+
+            }
+
+            return result;
+        }
         #endregion
     }
 }
