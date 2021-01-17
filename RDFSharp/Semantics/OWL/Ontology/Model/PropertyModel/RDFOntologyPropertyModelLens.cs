@@ -149,6 +149,36 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Enlists the properties which are directly (or indirectly, if inference is requested) inverse of the lens property
+        /// </summary>
+        public List<(bool, RDFOntologyObjectProperty)> InverseProperties(bool enableInference)
+        {
+            List<(bool, RDFOntologyObjectProperty)> result = new List<(bool, RDFOntologyObjectProperty)>();
+
+            if (this.OntologyProperty.IsObjectProperty())
+            {
+                //First-level enlisting of inverse properties
+                foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Relations.InverseOf.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.IsInference()))
+                    result.Add((false, (RDFOntologyObjectProperty)sf.TaxonomyObject));
+
+                //Inference-enabled discovery of inverse properties
+                if (enableInference)
+                {
+                    List<RDFOntologyObjectProperty> inverseProperties = RDFOntologyHelper.GetInversePropertiesOf(this.Ontology.Model.PropertyModel, (RDFOntologyObjectProperty)this.OntologyProperty)
+                                                                                         .OfType<RDFOntologyObjectProperty>()
+                                                                                         .ToList();
+                    foreach (RDFOntologyObjectProperty inverseProperty in inverseProperties)
+                    {
+                        if (!result.Any(f => f.Item2.Equals(inverseProperty)))
+                            result.Add((true, inverseProperty));
+                    }
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }
