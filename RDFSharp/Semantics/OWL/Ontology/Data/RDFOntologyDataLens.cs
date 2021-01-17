@@ -139,9 +139,10 @@ namespace RDFSharp.Semantics.OWL
             //Inference-enabled discovery of class types
             if (enableInference)
             {
-                //Skip evaluation of BASE reserved classes and literal-compatible classes
-                foreach (RDFOntologyClass ontClass in this.Ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                                                    && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls)))
+                //Skip already enlisted classes and also reserved/literal-compatible classes
+                foreach (RDFOntologyClass ontClass in this.Ontology.Model.ClassModel.Where(cls => !result.Any(res => res.Item2.Equals(cls))
+                                                                                                     && !RDFOntologyChecker.CheckReservedClass(cls)
+                                                                                                        && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls)))
                 {
                     List<RDFOntologyFact> ontClassMembers = RDFOntologyHelper.GetMembersOfNonLiteralCompatibleClass(this.Ontology, ontClass).ToList();
                     if (ontClassMembers.Any(f => f.Equals(this.OntologyFact)))
