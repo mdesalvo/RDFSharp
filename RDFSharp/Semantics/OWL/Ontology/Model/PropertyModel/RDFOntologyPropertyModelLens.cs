@@ -74,6 +74,56 @@ namespace RDFSharp.Semantics.OWL
             this.Ontology = this.Ontology.UnionWith(RDFSKOSOntology.Instance);
             return this;
         }
+
+        /// <summary>
+        /// Enlists the properties which are directly (or indirectly, if inference is requested) children of the lens property
+        /// </summary>
+        public List<(bool, RDFOntologyProperty)> SubProperties(bool enableInference)
+        {
+            List<(bool, RDFOntologyProperty)> result = new List<(bool, RDFOntologyProperty)>();
+
+            //First-level enlisting of subproperties
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Relations.SubPropertyOf.SelectEntriesByObject(this.OntologyProperty).Where(te => !te.IsInference()))
+                result.Add((false, (RDFOntologyProperty)sf.TaxonomySubject));
+
+            //Inference-enabled discovery of subproperties
+            if (enableInference)
+            {
+                List<RDFOntologyProperty> subProperties = RDFOntologyHelper.GetSubPropertiesOf(this.Ontology.Model.PropertyModel, this.OntologyProperty).ToList();
+                foreach (RDFOntologyProperty subProperty in subProperties)
+                {
+                    if (!result.Any(f => f.Item2.Equals(subProperty)))
+                        result.Add((true, subProperty));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the properties which are directly (or indirectly, if inference is requested) parent of the lens property
+        /// </summary>
+        public List<(bool, RDFOntologyProperty)> SuperProperties(bool enableInference)
+        {
+            List<(bool, RDFOntologyProperty)> result = new List<(bool, RDFOntologyProperty)>();
+
+            //First-level enlisting of superproperties
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Relations.SubPropertyOf.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.IsInference()))
+                result.Add((false, (RDFOntologyProperty)sf.TaxonomyObject));
+
+            //Inference-enabled discovery of superproperties
+            if (enableInference)
+            {
+                List<RDFOntologyProperty> superProperties = RDFOntologyHelper.GetSuperPropertiesOf(this.Ontology.Model.PropertyModel, this.OntologyProperty).ToList();
+                foreach (RDFOntologyProperty superProperty in superProperties)
+                {
+                    if (!result.Any(f => f.Item2.Equals(superProperty)))
+                        result.Add((true, superProperty));
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }
