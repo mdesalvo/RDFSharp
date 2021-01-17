@@ -124,6 +124,31 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Enlists the properties which are directly (or indirectly, if inference is requested) equivalent to the lens property
+        /// </summary>
+        public List<(bool, RDFOntologyProperty)> EquivalentProperties(bool enableInference)
+        {
+            List<(bool, RDFOntologyProperty)> result = new List<(bool, RDFOntologyProperty)>();
+
+            //First-level enlisting of equivalent properties
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Relations.EquivalentProperty.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.IsInference()))
+                result.Add((false, (RDFOntologyProperty)sf.TaxonomyObject));
+
+            //Inference-enabled discovery of equivalent properties
+            if (enableInference)
+            {
+                List<RDFOntologyProperty> equivalentProperties = RDFOntologyHelper.GetEquivalentPropertiesOf(this.Ontology.Model.PropertyModel, this.OntologyProperty).ToList();
+                foreach (RDFOntologyProperty equivalentProperty in equivalentProperties)
+                {
+                    if (!result.Any(f => f.Item2.Equals(equivalentProperty)))
+                        result.Add((true, equivalentProperty));
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }
