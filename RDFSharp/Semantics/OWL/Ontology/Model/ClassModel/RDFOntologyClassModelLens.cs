@@ -176,6 +176,20 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Enlists the properties which are keys of the lens class
+        /// </summary>
+        public List<(bool, RDFOntologyProperty)> Keys()
+        {
+            List<(bool, RDFOntologyProperty)> result = new List<(bool, RDFOntologyProperty)>();
+
+            //First-level enlisting of keys (reasoning is not available on this concept)
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.ClassModel.Relations.HasKey.SelectEntriesBySubject(this.OntologyClass).Where(te => !te.IsInference()))
+                result.Add((false, (RDFOntologyProperty)sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
         /// Enlists the facts/literals which are directly (or indirectly, if inference is requested) members of the lens class
         /// </summary>
         public List<(bool, RDFOntologyResource)> Members(bool enableInference)
