@@ -179,6 +179,31 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Enlists the properties which are directly (or indirectly, if inference is requested) disjoint with the lens property
+        /// </summary>
+        public List<(bool, RDFOntologyProperty)> DisjointProperties(bool enableInference)
+        {
+            List<(bool, RDFOntologyProperty)> result = new List<(bool, RDFOntologyProperty)>();
+
+            //First-level enlisting of disjoint properties
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Relations.PropertyDisjointWith.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.IsInference()))
+                result.Add((false, (RDFOntologyProperty)sf.TaxonomyObject));
+
+            //Inference-enabled discovery of disjoint properties
+            if (enableInference)
+            {
+                List<RDFOntologyProperty> disjointProperties = RDFOntologyHelper.GetPropertiesDisjointWith(this.Ontology.Model.PropertyModel, this.OntologyProperty).ToList();
+                foreach (RDFOntologyProperty disjointProperty in disjointProperties)
+                {
+                    if (!result.Any(f => f.Item2.Equals(disjointProperty)))
+                        result.Add((true, disjointProperty));
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }
