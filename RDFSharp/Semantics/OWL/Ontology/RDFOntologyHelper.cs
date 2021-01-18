@@ -1321,18 +1321,24 @@ namespace RDFSharp.Semantics.OWL
                                                          .AddClass(qualifiedCardinalityRestriction.OnClass);
 
                 //Iterate the compatible assertions
+                var classTypesCache = new Dictionary<long, RDFOntologyClassModel>();
                 foreach (var assertion in restrictionAssertions)
                 {
 
                     //Iterate the class types of the object fact, checking presence of the restricted "OnClass"
                     var onClassFound = false;
-                    var objFactClassTypes = ontology.Data.Relations.ClassType.SelectEntriesBySubject(assertion.TaxonomyObject);
-                    foreach (var objFactClassType in objFactClassTypes)
+                    var objectClassTypes = ontology.Data.Relations.ClassType.SelectEntriesBySubject(assertion.TaxonomyObject);
+                    foreach (var objectClassType in objectClassTypes)
                     {
-                        var compObjFactClassTypes = ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject)
-                                                                             .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objFactClassType.TaxonomyObject))
-                                                                             .AddClass((RDFOntologyClass)objFactClassType.TaxonomyObject);
-                        if (compObjFactClassTypes.IntersectWith(onClasses).ClassesCount > 0)
+                        if (!classTypesCache.ContainsKey(objectClassType.TaxonomyObject.PatternMemberID))
+                        {
+                            classTypesCache.Add(objectClassType.TaxonomyObject.PatternMemberID,
+                                                ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objectClassType.TaxonomyObject)
+                                                                         .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objectClassType.TaxonomyObject))
+                                                                         .AddClass((RDFOntologyClass)objectClassType.TaxonomyObject));
+                        }
+
+                        if (classTypesCache[objectClassType.TaxonomyObject.PatternMemberID].IntersectWith(onClasses).ClassesCount > 0)
                         {
                             onClassFound = true;
                             break;
@@ -1407,6 +1413,7 @@ namespace RDFSharp.Semantics.OWL
                                                             .AddClass(((RDFOntologySomeValuesFromRestriction)ontRestriction).FromClass);
 
                 //Iterate the compatible assertions
+                var classTypesCache = new Dictionary<long, RDFOntologyClassModel>();
                 foreach (var assertion in restrictionAssertions)
                 {
 
@@ -1419,10 +1426,15 @@ namespace RDFSharp.Semantics.OWL
                     var objectClassTypes = ontology.Data.Relations.ClassType.SelectEntriesBySubject(assertion.TaxonomyObject);
                     foreach (var objectClassType in objectClassTypes)
                     {
-                        var classTypes = ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objectClassType.TaxonomyObject)
-                                                                  .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objectClassType.TaxonomyObject))
-                                                                  .AddClass((RDFOntologyClass)objectClassType.TaxonomyObject);
-                        if (classTypes.IntersectWith(classes).ClassesCount > 0)
+                        if (!classTypesCache.ContainsKey(objectClassType.TaxonomyObject.PatternMemberID))
+                        {
+                            classTypesCache.Add(objectClassType.TaxonomyObject.PatternMemberID,
+                                                ontology.Model.ClassModel.GetSuperClassesOf((RDFOntologyClass)objectClassType.TaxonomyObject)
+                                                                         .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf((RDFOntologyClass)objectClassType.TaxonomyObject))
+                                                                         .AddClass((RDFOntologyClass)objectClassType.TaxonomyObject));
+                        }
+
+                        if (classTypesCache[objectClassType.TaxonomyObject.PatternMemberID].IntersectWith(classes).ClassesCount > 0)
                         {
                             fromClassFound = true;
                             break;
