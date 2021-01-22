@@ -1485,14 +1485,19 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Iterate the compatible assertions
+                var sameFactsCache = new Dictionary<long, RDFOntologyData>();
                 foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsFact()))
                 {
 
                     //Enlist the same facts of the assertion subject
-                    var facts = ontology.Data.GetSameFactsAs((RDFOntologyFact)assertion.TaxonomySubject)
-                                             .AddFact((RDFOntologyFact)assertion.TaxonomySubject);
-                    if (facts.SelectFact(assertion.TaxonomySubject.ToString()) != null
-                            && facts.SelectFact(assertion.TaxonomyObject.ToString()) != null)
+                    if (!sameFactsCache.ContainsKey(assertion.TaxonomySubject.PatternMemberID))
+                    {
+                        sameFactsCache.Add(assertion.TaxonomySubject.PatternMemberID, ontology.Data.GetSameFactsAs((RDFOntologyFact)assertion.TaxonomySubject)
+                                                                                                   .AddFact((RDFOntologyFact)assertion.TaxonomySubject));
+                    }
+
+                    if (sameFactsCache[assertion.TaxonomySubject.PatternMemberID].SelectFact(assertion.TaxonomySubject.ToString()) != null
+                            && sameFactsCache[assertion.TaxonomySubject.PatternMemberID].SelectFact(assertion.TaxonomyObject.ToString()) != null)
                     {
                         result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
                     }
