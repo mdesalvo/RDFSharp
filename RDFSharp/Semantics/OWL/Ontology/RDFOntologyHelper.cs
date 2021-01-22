@@ -1132,26 +1132,26 @@ namespace RDFSharp.Semantics.OWL
             var result = new RDFOntologyData();
 
             //Get the compatible classes
-            var compCls = ontology.Model.ClassModel.GetSubClassesOf(ontClass)
-                                                   .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(ontClass))
-                                                   .AddClass(ontClass);
+            var compClasses = ontology.Model.ClassModel.GetSubClassesOf(ontClass)
+                                                       .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(ontClass))
+                                                       .AddClass(ontClass);
 
             //Filter "classType" relations made with compatible classes
             var fTaxonomy = new RDFOntologyTaxonomy(ontology.Data.Relations.ClassType.Category, ontology.Data.Relations.ClassType.AcceptDuplicates);
-            foreach (var c in compCls)
-            {
-                fTaxonomy = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(c));
-            }
-            foreach (var tEntry in fTaxonomy)
-            {
+            foreach (var compClass in compClasses)
+                fTaxonomy = fTaxonomy.UnionWith(ontology.Data.Relations.ClassType.SelectEntriesByObject(compClass));
 
-                //Add the fact and its synonyms
-                if (tEntry.TaxonomySubject.IsFact())
+            //Add the fact and its synonyms
+            var sameFactsCache = new Dictionary<long, RDFOntologyData> ();
+            foreach (var ftEntry in fTaxonomy)
+            {
+                if (!sameFactsCache.ContainsKey(ftEntry.TaxonomySubject.PatternMemberID))
                 {
-                    result = result.UnionWith(ontology.Data.GetSameFactsAs((RDFOntologyFact)tEntry.TaxonomySubject))
-                                   .AddFact((RDFOntologyFact)tEntry.TaxonomySubject);
-                }
+                    sameFactsCache.Add(ftEntry.TaxonomySubject.PatternMemberID, ontology.Data.GetSameFactsAs((RDFOntologyFact)ftEntry.TaxonomySubject));
 
+                    result = result.UnionWith(sameFactsCache[ftEntry.TaxonomySubject.PatternMemberID])
+                                   .AddFact((RDFOntologyFact)ftEntry.TaxonomySubject);
+                }
             }
 
             return result;
