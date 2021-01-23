@@ -95,6 +95,18 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// CHecks if this ontology resource represents a simple ontology class
+        /// </summary>
+        internal bool IsSimpleClass()
+        {
+            return (this.IsClass() &&
+                        !this.IsRestrictionClass() &&
+                            !this.IsCompositeClass() &&
+                                !this.IsEnumerateClass() &&
+                                    ! this.IsDataRangeClass());
+        }
+
+        /// <summary>
         /// Checks if this ontology resource represents an ontology property
         /// </summary>
         internal bool IsProperty()
