@@ -140,13 +140,36 @@ namespace RDFSharp.Semantics.OWL
             if (enableInference)
             {
                 //Skip already enlisted classes and also reserved/literal-compatible classes
-                foreach (RDFOntologyClass ontClass in this.Ontology.Model.ClassModel.Where(cls => !result.Any(res => res.Item2.Equals(cls))
-                                                                                                     && !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                                                        && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls)))
+                var availableclasses = this.Ontology.Model.ClassModel.Where(cls => !result.Any(res => res.Item2.Equals(cls))
+                                                                                                        && !RDFOntologyChecker.CheckReservedClass(cls)
+                                                                                                            && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls));
+
+                //Evaluate enumerations
+                foreach (var c in availableclasses.Where(cls => cls.IsEnumerateClass()))
                 {
-                    RDFOntologyData ontClassMembers = RDFOntologyHelper.GetMembersOfNonLiteralCompatibleClass(this.Ontology, ontClass);
-                    if (ontClassMembers.Facts.ContainsKey(this.OntologyFact.PatternMemberID))
-                        result.Add((true, ontClass));
+                    if (this.Ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                        result.Add((true, c));
+                }
+
+                //Evaluate restrictions
+                foreach (var c in availableclasses.Where(cls => cls.IsRestrictionClass()))
+                {
+                    if (this.Ontology.GetMembersOfRestriction((RDFOntologyRestriction)c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                        result.Add((true, c));
+                }
+
+                //Evaluate simple classes
+                foreach (var c in availableclasses.Where(cls => cls.IsSimpleClass()))
+                {
+                    if (this.Ontology.GetMembersOfClass(c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                        result.Add((true, c));
+                }
+
+                //Evaluate composite classes
+                foreach (var c in availableclasses.Where(cls => cls.IsCompositeClass()))
+                {
+                    if (this.Ontology.GetMembersOfComposite(c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                        result.Add((true, c));
                 }
             }
 

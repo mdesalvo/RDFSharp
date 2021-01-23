@@ -369,12 +369,13 @@ namespace RDFSharp.Semantics.OWL
             //Calculate the set of available classes on which to perform the reasoning (exclude BASE classes and literal-compatible classes)
             var availableclasses = ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
                                                                              && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls));
-            foreach (var c in availableclasses)
+
+            //Evaluate enumerations
+            foreach (var c in availableclasses.Where(cls => cls.IsEnumerateClass()))
             {
 
-                //Enlist the members of the current class
-                var clsMembers = ontology.GetMembersOfNonLiteralCompatibleClass(c);
-                foreach (var f in clsMembers)
+                //Enlist the members of the current enumeration
+                foreach (var f in ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)c))
                 {
 
                     //Create the inference as a taxonomy entry
@@ -389,6 +390,70 @@ namespace RDFSharp.Semantics.OWL
                 }
 
             }
+
+            //Evaluate restrictions
+            foreach (var c in availableclasses.Where(cls => cls.IsRestrictionClass()))
+            {
+
+                //Enlist the members of the current restriction
+                foreach (var f in ontology.GetMembersOfRestriction((RDFOntologyRestriction)c))
+                {
+
+                    //Create the inference as a taxonomy entry
+                    var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the ontology and to the report
+                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
+                    {
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
+                    }
+
+                }
+
+            }
+
+            //Evaluate simple classes
+            foreach (var c in availableclasses.Where(cls => cls.IsSimpleClass()))
+            {
+
+                //Enlist the members of the current class
+                foreach (var f in ontology.GetMembersOfClass(c))
+                {
+
+                    //Create the inference as a taxonomy entry
+                    var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the ontology and to the report
+                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
+                    {
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
+                    }
+
+                }
+
+            }
+
+            //Evaluate composite classes
+            foreach (var c in availableclasses.Where(cls => cls.IsCompositeClass()))
+            {
+
+                //Enlist the members of the current composite class
+                foreach (var f in ontology.GetMembersOfComposite(c))
+                {
+
+                    //Create the inference as a taxonomy entry
+                    var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the ontology and to the report
+                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
+                    {
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
+                    }
+
+                }
+
+            }
+
             return report;
         }
 
