@@ -253,8 +253,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyClassModel GetDisjointClassesWithInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass, Dictionary<long, RDFOntologyClass> visitContext)
         {
-            var result1 = new RDFOntologyClassModel();
-            var result2 = new RDFOntologyClassModel();
+            var result = new RDFOntologyClassModel();
 
             #region visitContext
             if (visitContext == null)
@@ -269,35 +268,27 @@ namespace RDFSharp.Semantics.OWL
                 }
                 else
                 {
-                    return result1;
+                    return result;
                 }
             }
             #endregion
 
             // Inference: ((A DISJOINTWITH B)   &&  (B EQUIVALENTCLASS C))  =>  (A DISJOINTWITH C)
             foreach (var dw in classModel.Relations.DisjointWith.SelectEntriesBySubject(ontClass))
-            {
-                result1.AddClass((RDFOntologyClass)dw.TaxonomyObject);
-                result1 = result1.UnionWith(classModel.GetEquivalentClassesOfInternal((RDFOntologyClass)dw.TaxonomyObject, visitContext));
-            }
+                result = result.UnionWith(classModel.GetEquivalentClassesOfInternal((RDFOntologyClass)dw.TaxonomyObject, visitContext))
+                               .AddClass((RDFOntologyClass)dw.TaxonomyObject);
 
             // Inference: ((A DISJOINTWITH B)   &&  (B SUPERCLASS C))  =>  (A DISJOINTWITH C)
-            result2 = result2.UnionWith(result1);
-            foreach (var c in result1)
-            {
-                result2 = result2.UnionWith(classModel.GetSubClassesOfInternal(c));
-            }
-            result1 = result1.UnionWith(result2);
+            foreach (var sc in result.ToList())
+                result = result.UnionWith(classModel.GetSubClassesOfInternal(sc));
 
             // Inference: ((A EQUIVALENTCLASS B || A SUBCLASSOF B)  &&  (B DISJOINTWITH C))  =>  (A DISJOINTWITH C)
             var compatibleCls = classModel.GetSuperClassesOf(ontClass)
                                           .UnionWith(classModel.GetEquivalentClassesOf(ontClass));
             foreach (var ec in compatibleCls)
-            {
-                result1 = result1.UnionWith(classModel.GetDisjointClassesWithInternal(ec, visitContext));
-            }
+                result = result.UnionWith(classModel.GetDisjointClassesWithInternal(ec, visitContext));
 
-            return result1;
+            return result;
         }
         #endregion
 
