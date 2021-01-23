@@ -81,21 +81,15 @@ namespace RDFSharp.Semantics.OWL
         }
         internal static RDFOntologyClassModel GetSubClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass)
         {
-            var result1 = new RDFOntologyClassModel();
-            var result2 = new RDFOntologyClassModel();
-
             // Step 1: Direct subsumption of "rdfs:subClassOf" taxonomy
-            result1 = classModel.GetSubClassesOfInternalVisitor(ontClass);
+            var result = classModel.GetSubClassesOfInternalVisitor(ontClass);
 
             // Step 2: Enlist equivalent classes of subclasses
-            result2 = result2.UnionWith(result1);
-            foreach (var sc in result1)
-            {
-                result2 = result2.UnionWith(classModel.GetEquivalentClassesOf(sc)
-                                                      .UnionWith(classModel.GetSubClassesOf(sc)));
-            }
+            foreach (var sc in result.ToList())
+                result = result.UnionWith(classModel.GetEquivalentClassesOf(sc)
+                                                    .UnionWith(classModel.GetSubClassesOf(sc)));
 
-            return result2;
+            return result;
         }
         #endregion
 
@@ -148,21 +142,15 @@ namespace RDFSharp.Semantics.OWL
         }
         internal static RDFOntologyClassModel GetSuperClassesOfInternal(this RDFOntologyClassModel classModel, RDFOntologyClass ontClass)
         {
-            var result1 = new RDFOntologyClassModel();
-            var result2 = new RDFOntologyClassModel();
-
             // Step 1: Direct subsumption of "rdfs:subClassOf" taxonomy
-            result1 = classModel.GetSuperClassesOfInternalVisitor(ontClass);
+            var result = classModel.GetSuperClassesOfInternalVisitor(ontClass);
 
             // Step 2: Enlist equivalent classes of superclasses
-            result2 = result2.UnionWith(result1);
-            foreach (var sc in result1)
-            {
-                result2 = result2.UnionWith(classModel.GetEquivalentClassesOf(sc)
-                                                      .UnionWith(classModel.GetSuperClassesOf(sc)));
-            }
+            foreach (var sc in result.ToList())
+                result = result.UnionWith(classModel.GetEquivalentClassesOf(sc)
+                                                    .UnionWith(classModel.GetSuperClassesOf(sc)));
 
-            return result2;
+            return result;
         }
         #endregion
 
