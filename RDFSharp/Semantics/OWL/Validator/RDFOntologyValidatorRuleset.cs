@@ -772,8 +772,7 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 #region Domain VS Range
-                if (((RDFOntologyObjectProperty)invOf.TaxonomySubject).Domain != null &&
-                    ((RDFOntologyObjectProperty)invOf.TaxonomyObject).Range != null)
+                if (((RDFOntologyObjectProperty)invOf.TaxonomySubject).Domain != null && ((RDFOntologyObjectProperty)invOf.TaxonomyObject).Range != null)
                 {
                     if (!ontology.Model.ClassModel.CheckIsRangeOf(((RDFOntologyObjectProperty)invOf.TaxonomySubject).Domain, (RDFOntologyObjectProperty)invOf.TaxonomyObject))
                     {
@@ -788,8 +787,7 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region Range VS Domain
-                if (((RDFOntologyObjectProperty)invOf.TaxonomySubject).Range != null &&
-                    ((RDFOntologyObjectProperty)invOf.TaxonomyObject).Domain != null)
+                if (((RDFOntologyObjectProperty)invOf.TaxonomySubject).Range != null && ((RDFOntologyObjectProperty)invOf.TaxonomyObject).Domain != null)
                 {
                     if (!ontology.Model.ClassModel.CheckIsDomainOf(((RDFOntologyObjectProperty)invOf.TaxonomySubject).Range, (RDFOntologyObjectProperty)invOf.TaxonomyObject))
                     {
