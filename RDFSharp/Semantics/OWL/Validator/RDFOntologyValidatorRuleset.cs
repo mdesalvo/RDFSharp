@@ -274,6 +274,29 @@ namespace RDFSharp.Semantics.OWL
                 }
             }
 
+            //HasKey [OWL2]
+            foreach (var c in ontology.Model.ClassModel.Relations.HasKey)
+            {
+                if (!ontology.Model.ClassModel.Classes.ContainsKey(c.TaxonomySubject.PatternMemberID))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        string.Format("Declaration of ontology class '{0}' is not found in the class model: it is required by an 'owl:hasKey' relation.", c.TaxonomySubject),
+                        string.Format("Add declaration of ontology class '{0}' to the class model.", c.TaxonomySubject)
+                   ));
+                }
+                if (!ontology.Model.PropertyModel.Properties.ContainsKey(c.TaxonomyObject.PatternMemberID))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        string.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:hasKey' relation.", c.TaxonomyObject),
+                        string.Format("Add declaration of ontology property '{0}' to the property model.", c.TaxonomyObject)
+                    ));
+                }
+            }
+
             #endregion
 
             #region Restrictions
@@ -434,6 +457,29 @@ namespace RDFSharp.Semantics.OWL
                 }
             }
 
+            //PropertyChainAxiom [OWL2]
+            foreach (var p in ontology.Model.PropertyModel.Relations.PropertyChainAxiom)
+            {
+                if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomySubject.Value.PatternMemberID))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        string.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:PropertyChainAxiom' relation.", p.TaxonomySubject),
+                        string.Format("Add declaration of ontology property '{0}' to the property model.", p.TaxonomySubject)
+                    ));
+                }
+                if (!ontology.Model.PropertyModel.Properties.ContainsKey(p.TaxonomyObject.Value.PatternMemberID))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        string.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by an 'owl:PropertyChainAxiom' relation.", p.TaxonomyObject),
+                        string.Format("Add declaration of ontology property '{0}' to the property model.", p.TaxonomyObject)
+                    ));
+                }
+            }
+
             #endregion
 
             #region Facts
@@ -545,6 +591,41 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
                             "Vocabulary_Declaration",
                             string.Format("Declaration of ontology fact '{0}' is not found in the data: it is required by an assertion relation.", f.TaxonomyObject),
+                            string.Format("Add declaration of ontology fact '{0}' to the data.", f.TaxonomyObject)
+                        ));
+                    }
+                }
+            }
+
+            //NegativeAssertions [OWL2]
+            foreach (var f in ontology.Data.Relations.NegativeAssertions)
+            {
+                if (!ontology.Data.Facts.ContainsKey(f.TaxonomySubject.PatternMemberID))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        string.Format("Declaration of ontology fact '{0}' is not found in the data: it is required by a negative assertion relation.", f.TaxonomySubject),
+                        string.Format("Add declaration of ontology fact '{0}' to the data.", f.TaxonomySubject)
+                    ));
+                }
+                if (!ontology.Model.PropertyModel.Properties.ContainsKey(f.TaxonomyPredicate.PatternMemberID))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "Vocabulary_Declaration",
+                        string.Format("Declaration of ontology property '{0}' is not found in the property model: it is required by a negative assertion relation.", f.TaxonomyPredicate),
+                        string.Format("Add declaration of ontology property '{0}' to the property model.", f.TaxonomyPredicate)
+                    ));
+                }
+                if (f.TaxonomyPredicate.IsObjectProperty())
+                {
+                    if (!ontology.Data.Facts.ContainsKey(f.TaxonomyObject.PatternMemberID))
+                    {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                            "Vocabulary_Declaration",
+                            string.Format("Declaration of ontology fact '{0}' is not found in the data: it is required by a negative assertion relation.", f.TaxonomyObject),
                             string.Format("Add declaration of ontology fact '{0}' to the data.", f.TaxonomyObject)
                         ));
                     }
