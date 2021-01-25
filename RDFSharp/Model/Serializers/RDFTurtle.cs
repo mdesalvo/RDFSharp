@@ -307,13 +307,13 @@ namespace RDFSharp.Model
         {
             if ((int)turtleContext["POSITION"] < turtleData.Length)
             {
-                int highSurrogate = turtleData.ElementAt((int)turtleContext["POSITION"]);
+                int highSurrogate = turtleData[(int)turtleContext["POSITION"]];
                 UpdateTurtleContextPosition(turtleContext, 1);
                 if (char.IsHighSurrogate((char)highSurrogate))
                 {
                     if ((int)turtleContext["POSITION"] < turtleData.Length)
                     {
-                        int lowSurrogate = turtleData.ElementAt((int)turtleContext["POSITION"]);
+                        int lowSurrogate = turtleData[(int)turtleContext["POSITION"]];
                         UpdateTurtleContextPosition(turtleContext, 1);
                         if (char.IsLowSurrogate((char)lowSurrogate))
                         {
