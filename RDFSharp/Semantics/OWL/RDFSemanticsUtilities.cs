@@ -427,19 +427,24 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (u.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
+                        #region Initialize
                         var uc = ontology.Model.ClassModel.SelectClass(u.Subject.ToString());
-                        if (uc != null)
+                        if (uc == null)
                         {
+                            uc = new RDFOntologyClass(new RDFResource(u.Subject.ToString()));
+                            ontology.Model.ClassModel.AddClass(uc);
+                        }
+                        #endregion
 
-                            #region ClassToUnionClass
-                            if (!(uc is RDFOntologyUnionClass))
-                            {
-                                uc = new RDFOntologyUnionClass((RDFResource)u.Subject);
-                                ontology.Model.ClassModel.Classes[uc.PatternMemberID] = uc;
-                            }
-                            #endregion
+                        #region ClassToUnionClass
+                        if (!(uc is RDFOntologyUnionClass))
+                        {
+                            uc = new RDFOntologyUnionClass((RDFResource)u.Subject);
+                            ontology.Model.ClassModel.Classes[uc.PatternMemberID] = uc;
+                        }
+                        #endregion
 
-                            #region DeserializeUnionCollection
+                        #region DeserializeUnionCollection
                             var nilFound = false;
                             var itemRest = (RDFResource)u.Object;
                             while (!nilFound)
@@ -486,8 +491,6 @@ namespace RDFSharp.Semantics.OWL
 
                             }
                             #endregion
-
-                        }
                     }
                 }
                 #endregion
@@ -497,74 +500,77 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (du.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
+                        #region Initialize
                         var duc = ontology.Model.ClassModel.SelectClass(du.Subject.ToString());
-                        if (duc != null)
+                        if (duc == null)
+                        {
+                            duc = new RDFOntologyClass(new RDFResource(du.Subject.ToString()));
+                            ontology.Model.ClassModel.AddClass(duc);
+                        }
+                        #endregion
+
+                        #region ClassToUnionClass
+                        if (!(duc is RDFOntologyUnionClass))
+                        {
+                            duc = new RDFOntologyUnionClass((RDFResource)du.Subject);
+                            ontology.Model.ClassModel.Classes[duc.PatternMemberID] = duc;
+                        }
+                        #endregion
+
+                        #region DeserializeUnionCollection
+                        var nilFound = false;
+                        var itemRest = (RDFResource)du.Object;
+                        var disjointClasses = new List<RDFOntologyClass>();
+                        while (!nilFound)
                         {
 
-                            #region ClassToUnionClass
-                            if (!(duc is RDFOntologyUnionClass))
+                            #region rdf:first
+                            var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                .FirstOrDefault();
+                            if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
-                                duc = new RDFOntologyUnionClass((RDFResource)du.Subject);
-                                ontology.Model.ClassModel.Classes[duc.PatternMemberID] = duc;
-                            }
-                            #endregion
-
-                            #region DeserializeUnionCollection
-                            var nilFound = false;
-                            var itemRest = (RDFResource)du.Object;
-                            var disjointClasses = new List<RDFOntologyClass>();
-                            while (!nilFound)
-                            {
-
-                                #region rdf:first
-                                var first = rdfFirst.SelectTriplesBySubject(itemRest)
-                                                    .FirstOrDefault();
-                                if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                var compClass = ontology.Model.ClassModel.SelectClass(first.Object.ToString());
+                                if (compClass != null)
                                 {
-                                    var compClass = ontology.Model.ClassModel.SelectClass(first.Object.ToString());
-                                    if (compClass != null)
-                                    {
-                                        ontology.Model.ClassModel.AddUnionOfRelation((RDFOntologyUnionClass)duc, new List<RDFOntologyClass>() { compClass });
-                                        //Collect disjoint classes for subsequent elaboration
-                                        disjointClasses.Add(compClass);
-                                    }
-                                    else
-                                    {
-                                        //Raise warning event to inform the user: union class cannot be completely imported from graph, because definition of its compositing class is not found in the model
-                                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("UnionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", du.Subject, first.Object));
-                                    }
-
-                                    #region rdf:rest
-                                    var rest = rdfRest.SelectTriplesBySubject(itemRest)
-                                                      .FirstOrDefault();
-                                    if (rest != null)
-                                    {
-                                        if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
-                                        {
-                                            nilFound = true;
-                                        }
-                                        else
-                                        {
-                                            itemRest = (RDFResource)rest.Object;
-                                        }
-                                    }
-                                    #endregion
+                                    ontology.Model.ClassModel.AddUnionOfRelation((RDFOntologyUnionClass)duc, new List<RDFOntologyClass>() { compClass });
+                                    //Collect disjoint classes for subsequent elaboration
+                                    disjointClasses.Add(compClass);
                                 }
                                 else
                                 {
-                                    nilFound = true;
+                                    //Raise warning event to inform the user: union class cannot be completely imported from graph, because definition of its compositing class is not found in the model
+                                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("UnionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", du.Subject, first.Object));
+                                }
+
+                                #region rdf:rest
+                                var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                    .FirstOrDefault();
+                                if (rest != null)
+                                {
+                                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                    {
+                                        nilFound = true;
+                                    }
+                                    else
+                                    {
+                                        itemRest = (RDFResource)rest.Object;
+                                    }
                                 }
                                 #endregion
-
+                            }
+                            else
+                            {
+                                nilFound = true;
                             }
                             #endregion
 
-                            #region DisjointClasses
-                            disjointClasses.ForEach(outerClass =>
-                                disjointClasses.ForEach(innerClass => ontology.Model.ClassModel.AddDisjointWithRelation(outerClass, innerClass)));
-                            #endregion
-
                         }
+                        #endregion
+
+                        #region DisjointClasses
+                        disjointClasses.ForEach(outerClass =>
+                            disjointClasses.ForEach(innerClass => ontology.Model.ClassModel.AddDisjointWithRelation(outerClass, innerClass)));
+                        #endregion
                     }
                 }
                 #endregion
@@ -574,66 +580,69 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (i.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
+                        #region Initialize
                         var ic = ontology.Model.ClassModel.SelectClass(i.Subject.ToString());
-                        if (ic != null)
+                        if (ic == null)
+                        {
+                            ic = new RDFOntologyClass(new RDFResource(i.Subject.ToString()));
+                            ontology.Model.ClassModel.AddClass(ic);
+                        }
+                        #endregion
+
+                        #region ClassToIntersectionClass
+                        if (!(ic is RDFOntologyIntersectionClass))
+                        {
+                            ic = new RDFOntologyIntersectionClass((RDFResource)i.Subject);
+                            ontology.Model.ClassModel.Classes[ic.PatternMemberID] = ic;
+                        }
+                        #endregion
+
+                        #region DeserializeIntersectionCollection
+                        var nilFound = false;
+                        var itemRest = (RDFResource)i.Object;
+                        while (!nilFound)
                         {
 
-                            #region ClassToIntersectionClass
-                            if (!(ic is RDFOntologyIntersectionClass))
+                            #region rdf:first
+                            var first = rdfFirst.SelectTriplesBySubject(itemRest)
+                                                    .FirstOrDefault();
+                            if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
-                                ic = new RDFOntologyIntersectionClass((RDFResource)i.Subject);
-                                ontology.Model.ClassModel.Classes[ic.PatternMemberID] = ic;
-                            }
-                            #endregion
-
-                            #region DeserializeIntersectionCollection
-                            var nilFound = false;
-                            var itemRest = (RDFResource)i.Object;
-                            while (!nilFound)
-                            {
-
-                                #region rdf:first
-                                var first = rdfFirst.SelectTriplesBySubject(itemRest)
-                                                     .FirstOrDefault();
-                                if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                                var compClass = ontology.Model.ClassModel.SelectClass(first.Object.ToString());
+                                if (compClass != null)
                                 {
-                                    var compClass = ontology.Model.ClassModel.SelectClass(first.Object.ToString());
-                                    if (compClass != null)
-                                    {
-                                        ontology.Model.ClassModel.AddIntersectionOfRelation((RDFOntologyIntersectionClass)ic, new List<RDFOntologyClass>() { compClass });
-                                    }
-                                    else
-                                    {
-                                        //Raise warning event to inform the user: intersection class cannot be completely imported from graph, because definition of its compositing class is not found in the model
-                                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("IntersectionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", i.Subject, first.Object));
-                                    }
-
-                                    #region rdf:rest
-                                    var rest = rdfRest.SelectTriplesBySubject(itemRest)
-                                                              .FirstOrDefault();
-                                    if (rest != null)
-                                    {
-                                        if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
-                                        {
-                                            nilFound = true;
-                                        }
-                                        else
-                                        {
-                                            itemRest = (RDFResource)rest.Object;
-                                        }
-                                    }
-                                    #endregion
+                                    ontology.Model.ClassModel.AddIntersectionOfRelation((RDFOntologyIntersectionClass)ic, new List<RDFOntologyClass>() { compClass });
                                 }
                                 else
                                 {
-                                    nilFound = true;
+                                    //Raise warning event to inform the user: intersection class cannot be completely imported from graph, because definition of its compositing class is not found in the model
+                                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("IntersectionClass '{0}' cannot be completely imported from graph, because definition of its compositing class '{1}' is not found in the model.", i.Subject, first.Object));
+                                }
+
+                                #region rdf:rest
+                                var rest = rdfRest.SelectTriplesBySubject(itemRest)
+                                                            .FirstOrDefault();
+                                if (rest != null)
+                                {
+                                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                                    {
+                                        nilFound = true;
+                                    }
+                                    else
+                                    {
+                                        itemRest = (RDFResource)rest.Object;
+                                    }
                                 }
                                 #endregion
-
+                            }
+                            else
+                            {
+                                nilFound = true;
                             }
                             #endregion
 
                         }
+                        #endregion
                     }
                 }
                 #endregion
