@@ -14,10 +14,7 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using RDFSharp.Semantics.OWL;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
