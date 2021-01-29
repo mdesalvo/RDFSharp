@@ -1,4 +1,4 @@
-# RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp) [![Fuget Badge](https://www.fuget.org/packages/RDFSharp/badge.svg)](https://www.fuget.org/packages/RDFSharp)
+# RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp) [![RDFSharp on fuget.org](https://www.fuget.org/packages/RDFSharp/badge.svg)](https://www.fuget.org/packages/RDFSharp)
 
 RDFSharp has a modular API made up of four layers ([RDF/SPARQL/SHACL docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.20.0/RDFSharp-2.20.0.pdf), [OWL/SKOS docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.20.0/RDFSharp.Semantics-2.20.0.pdf)): 
 
