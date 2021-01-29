@@ -317,6 +317,28 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Enlists the label relations which are assigned to the lens concept
+        /// </summary>
+        public List<(RDFOntologyObjectProperty, RDFSKOSLabel)> LabelRelations()
+        {
+            List<(RDFOntologyObjectProperty, RDFSKOSLabel)> result = new List<(RDFOntologyObjectProperty, RDFSKOSLabel)>();
+
+            //PrefLabel
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Relations.PrefLabel.SelectEntriesBySubject(this.Concept))
+                result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFSKOSLabel)sf.TaxonomyObject));
+
+            //AltLabel
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Relations.AltLabel.SelectEntriesBySubject(this.Concept))
+                result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFSKOSLabel)sf.TaxonomyObject));
+
+            //HiddenLabel
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Relations.HiddenLabel.SelectEntriesBySubject(this.Concept))
+                result.Add(((RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFSKOSLabel)sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
         /// Enlists the label annotations which are assigned to the lens concept
         /// </summary>
         public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> LabelAnnotations()
