@@ -315,6 +315,76 @@ namespace RDFSharp.Semantics.SKOS
         {
             return this.Scheme.Relations.TopConcept.Any(r => r.TaxonomyObject.Equals(this.Concept));
         }
+
+        /// <summary>
+        /// Enlists the label annotations which are assigned to the lens concept
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> LabelAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
+
+            //PrefLabel
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.PrefLabel.SelectEntriesBySubject(this.Concept)
+                                                                                     .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //AltLabel
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.AltLabel.SelectEntriesBySubject(this.Concept)
+                                                                                    .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //HiddenLabel
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.HiddenLabel.SelectEntriesBySubject(this.Concept)
+                                                                                       .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Enlists the documentation annotations which are assigned to the lens concept
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> DocumentationAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
+
+            //Note
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.Note.SelectEntriesBySubject(this.Concept)
+                                                                                .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //ChangeNote
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.ChangeNote.SelectEntriesBySubject(this.Concept)
+                                                                                      .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //EditorialNote
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.EditorialNote.SelectEntriesBySubject(this.Concept)
+                                                                                         .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //HistoryNote
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.HistoryNote.SelectEntriesBySubject(this.Concept)
+                                                                                       .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //ScopeNote
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.ScopeNote.SelectEntriesBySubject(this.Concept)
+                                                                                     .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Definition
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.Definition.SelectEntriesBySubject(this.Concept)
+                                                                                      .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Example
+            foreach (RDFOntologyTaxonomyEntry sf in this.Scheme.Annotations.Example.SelectEntriesBySubject(this.Concept)
+                                                                                   .Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            return result;
+        }
         #endregion
     }
 }
