@@ -317,7 +317,7 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
-        /// Enlists the label relations which are assigned to the lens concept
+        /// Enlists the label relations which are assigned to the lens concept (SKOS-XL)
         /// </summary>
         public List<(RDFOntologyObjectProperty, RDFSKOSLabel)> LabelRelations()
         {
