@@ -42,9 +42,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && concept != null && !conceptScheme.Equals(concept))
             {
 
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
-
                 //Add skos:hasTopConcept relation to the scheme
                 conceptScheme.Relations.TopConcept.AddEntry(new RDFOntologyTaxonomyEntry(conceptScheme, RDFVocabulary.SKOS.HAS_TOP_CONCEPT.ToRDFOntologyObjectProperty(), concept));
 
@@ -64,10 +61,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
             {
 
-                //Add concepts to the scheme
-                conceptScheme.AddConcept(aConcept);
-                conceptScheme.AddConcept(bConcept);
-
                 //Add skos:semanticRelation relation to the scheme
                 conceptScheme.Relations.SemanticRelation.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.SEMANTIC_RELATION.ToRDFOntologyObjectProperty(), bConcept));
 
@@ -86,10 +79,6 @@ namespace RDFSharp.Semantics.SKOS
             {
                 if (RDFSKOSChecker.CheckRelatedRelation(conceptScheme, aConcept, bConcept))
                 {
-
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
 
                     //Add skos:related relations to the scheme
                     conceptScheme.Relations.Related.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.RELATED.ToRDFOntologyObjectProperty(), bConcept));
@@ -113,10 +102,6 @@ namespace RDFSharp.Semantics.SKOS
                 if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept))
                 {
 
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
-
                     //Add skos:broader relation to the scheme
                     conceptScheme.Relations.Broader.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.BROADER.ToRDFOntologyObjectProperty(), bConcept));
 
@@ -136,10 +121,6 @@ namespace RDFSharp.Semantics.SKOS
             {
                 if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept))
                 {
-
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
 
                     //Add skos:broaderTransitive relation to the scheme
                     conceptScheme.Relations.BroaderTransitive.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.BROADER_TRANSITIVE.ToRDFOntologyObjectProperty(), bConcept));
@@ -161,10 +142,6 @@ namespace RDFSharp.Semantics.SKOS
                 if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept))
                 {
 
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
-
                     //Add skos:narrower relation to the scheme
                     conceptScheme.Relations.Narrower.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.NARROWER.ToRDFOntologyObjectProperty(), bConcept));
 
@@ -184,10 +161,6 @@ namespace RDFSharp.Semantics.SKOS
             {
                 if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept))
                 {
-
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
 
                     //Add skos:narrowerTransitive relation to the scheme
                     conceptScheme.Relations.NarrowerTransitive.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.NARROWER_TRANSITIVE.ToRDFOntologyObjectProperty(), bConcept));
@@ -209,10 +182,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && aConcept != null && bConcept != null && !aConcept.Equals(bConcept))
             {
 
-                //Add concepts to the scheme
-                conceptScheme.AddConcept(aConcept);
-                conceptScheme.AddConcept(bConcept);
-
                 //Add skos:mappingRelation relation to the scheme
                 conceptScheme.Relations.MappingRelation.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.MAPPING_RELATION.ToRDFOntologyObjectProperty(), bConcept));
 
@@ -231,10 +200,6 @@ namespace RDFSharp.Semantics.SKOS
             {
                 if (RDFSKOSChecker.CheckCloseOrExactMatchRelation(conceptScheme, aConcept, bConcept))
                 {
-
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
 
                     //Add skos:closeMatch relation to the scheme
                     conceptScheme.Relations.CloseMatch.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.CLOSE_MATCH.ToRDFOntologyObjectProperty(), bConcept));
@@ -258,10 +223,6 @@ namespace RDFSharp.Semantics.SKOS
                 if (RDFSKOSChecker.CheckCloseOrExactMatchRelation(conceptScheme, aConcept, bConcept))
                 {
 
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
-
                     //Add skos:exactMatch relation to the scheme
                     conceptScheme.Relations.ExactMatch.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.EXACT_MATCH.ToRDFOntologyObjectProperty(), bConcept));
                     conceptScheme.Relations.ExactMatch.AddEntry(new RDFOntologyTaxonomyEntry(bConcept, RDFVocabulary.SKOS.EXACT_MATCH.ToRDFOntologyObjectProperty(), aConcept)
@@ -284,10 +245,6 @@ namespace RDFSharp.Semantics.SKOS
                 if (RDFSKOSChecker.CheckBroaderRelation(conceptScheme, aConcept, bConcept))
                 {
 
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
-
                     //Add skos:broadMatch relation to the scheme
                     conceptScheme.Relations.BroadMatch.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.BROAD_MATCH.ToRDFOntologyObjectProperty(), bConcept));
 
@@ -308,10 +265,6 @@ namespace RDFSharp.Semantics.SKOS
                 if (RDFSKOSChecker.CheckNarrowerRelation(conceptScheme, aConcept, bConcept))
                 {
 
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
-
                     //Add skos:narrowMatch relation to the scheme
                     conceptScheme.Relations.NarrowMatch.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.NARROW_MATCH.ToRDFOntologyObjectProperty(), bConcept));
 
@@ -331,10 +284,6 @@ namespace RDFSharp.Semantics.SKOS
             {
                 if (RDFSKOSChecker.CheckRelatedRelation(conceptScheme, aConcept, bConcept))
                 {
-
-                    //Add concepts to the scheme
-                    conceptScheme.AddConcept(aConcept);
-                    conceptScheme.AddConcept(bConcept);
 
                     //Add skos:relatedMatch relation to the scheme
                     conceptScheme.Relations.RelatedMatch.AddEntry(new RDFOntologyTaxonomyEntry(aConcept, RDFVocabulary.SKOS.RELATED_MATCH.ToRDFOntologyObjectProperty(), bConcept));
@@ -357,9 +306,6 @@ namespace RDFSharp.Semantics.SKOS
         {
             if (conceptScheme != null && concept != null && notationLiteral != null)
             {
-
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
 
                 //Add skos:Notation relation to the scheme
                 conceptScheme.Relations.Notation.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.NOTATION.ToRDFOntologyDatatypeProperty(), notationLiteral));
@@ -386,12 +332,6 @@ namespace RDFSharp.Semantics.SKOS
                 {
                     if (RDFSKOSChecker.CheckPrefLabel(conceptScheme, concept, prefLabelLiteral))
                     {
-
-                        //Add concept to the scheme
-                        conceptScheme.AddConcept(concept);
-
-                        //Add label to the scheme
-                        conceptScheme.AddLabel(label);
 
                         //Add prefLabel relation
                         conceptScheme.Relations.PrefLabel.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.SKOSXL.PREF_LABEL.ToRDFOntologyObjectProperty(), label));
@@ -423,12 +363,6 @@ namespace RDFSharp.Semantics.SKOS
                     if (RDFSKOSChecker.CheckAltLabel(conceptScheme, concept, altLabelLiteral))
                     {
 
-                        //Add concept to the scheme
-                        conceptScheme.AddConcept(concept);
-
-                        //Add label to the scheme
-                        conceptScheme.AddLabel(label);
-
                         //Add altLabel relation
                         conceptScheme.Relations.AltLabel.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.SKOSXL.ALT_LABEL.ToRDFOntologyObjectProperty(), label));
 
@@ -459,12 +393,6 @@ namespace RDFSharp.Semantics.SKOS
                     if (RDFSKOSChecker.CheckHiddenLabel(conceptScheme, concept, hiddenLabelLiteral))
                     {
 
-                        //Add concept to the scheme
-                        conceptScheme.AddConcept(concept);
-
-                        //Add label to the scheme
-                        conceptScheme.AddLabel(label);
-
                         //Add hiddenLabel relation
                         conceptScheme.Relations.HiddenLabel.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.SKOSXL.HIDDEN_LABEL.ToRDFOntologyObjectProperty(), label));
 
@@ -489,10 +417,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && aLabel != null && bLabel != null && !aLabel.Equals(bLabel))
             {
 
-                //Add labels to the scheme
-                conceptScheme.AddLabel(aLabel);
-                conceptScheme.AddLabel(bLabel);
-
                 //Add skosxl:labelRelation relation to the scheme
                 conceptScheme.Relations.LabelRelation.AddEntry(new RDFOntologyTaxonomyEntry(aLabel, RDFVocabulary.SKOS.SKOSXL.LABEL_RELATION.ToRDFOntologyObjectProperty(), bLabel));
                 conceptScheme.Relations.LabelRelation.AddEntry(new RDFOntologyTaxonomyEntry(bLabel, RDFVocabulary.SKOS.SKOSXL.LABEL_RELATION.ToRDFOntologyObjectProperty(), aLabel)
@@ -511,9 +435,6 @@ namespace RDFSharp.Semantics.SKOS
         {
             if (conceptScheme != null && label != null && literal != null)
             {
-
-                //Add label to the scheme
-                conceptScheme.AddLabel(label);
 
                 //Add literalForm relation
                 conceptScheme.Relations.LiteralForm.AddEntry(new RDFOntologyTaxonomyEntry(label, RDFVocabulary.SKOS.SKOSXL.LITERAL_FORM.ToRDFOntologyDatatypeProperty(), literal));
@@ -544,9 +465,6 @@ namespace RDFSharp.Semantics.SKOS
                     if (RDFSKOSChecker.CheckPrefLabel(conceptScheme, concept, prefLabelLiteral))
                     {
 
-                        //Add concept to the scheme
-                        conceptScheme.AddConcept(concept);
-
                         //Add prefLabel annotation
                         conceptScheme.Annotations.PrefLabel.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.PREF_LABEL.ToRDFOntologyAnnotationProperty(), prefLabelLiteral));
 
@@ -572,9 +490,6 @@ namespace RDFSharp.Semantics.SKOS
                 {
                     if (RDFSKOSChecker.CheckAltLabel(conceptScheme, concept, altLabelLiteral))
                     {
-
-                        //Add concept to the scheme
-                        conceptScheme.AddConcept(concept);
 
                         //Add altLabel annotation
                         conceptScheme.Annotations.AltLabel.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.ALT_LABEL.ToRDFOntologyAnnotationProperty(), altLabelLiteral));
@@ -602,9 +517,6 @@ namespace RDFSharp.Semantics.SKOS
                     if (RDFSKOSChecker.CheckHiddenLabel(conceptScheme, concept, hiddenLabelLiteral))
                     {
 
-                        //Add concept to the scheme
-                        conceptScheme.AddConcept(concept);
-
                         //Add hiddenLabel annotation
                         conceptScheme.Annotations.HiddenLabel.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.HIDDEN_LABEL.ToRDFOntologyAnnotationProperty(), hiddenLabelLiteral));
 
@@ -627,9 +539,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && concept != null && literal != null)
             {
 
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
-
                 //Add note annotation to the scheme
                 conceptScheme.Annotations.Note.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.NOTE.ToRDFOntologyAnnotationProperty(), literal));
 
@@ -646,9 +555,6 @@ namespace RDFSharp.Semantics.SKOS
         {
             if (conceptScheme != null && concept != null && literal != null)
             {
-
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
 
                 //Add changeNote annotation to the scheme
                 conceptScheme.Annotations.ChangeNote.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.CHANGE_NOTE.ToRDFOntologyAnnotationProperty(), literal));
@@ -667,9 +573,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && concept != null && literal != null)
             {
 
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
-
                 //Add editorialNote annotation to the scheme
                 conceptScheme.Annotations.EditorialNote.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.EDITORIAL_NOTE.ToRDFOntologyAnnotationProperty(), literal));
 
@@ -686,9 +589,6 @@ namespace RDFSharp.Semantics.SKOS
         {
             if (conceptScheme != null && concept != null && literal != null)
             {
-
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
 
                 //Add historyNote annotation to the scheme
                 conceptScheme.Annotations.HistoryNote.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.HISTORY_NOTE.ToRDFOntologyAnnotationProperty(), literal));
@@ -707,9 +607,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && concept != null && literal != null)
             {
 
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
-
                 //Add scopeNote annotation to the scheme
                 conceptScheme.Annotations.ScopeNote.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.SCOPE_NOTE.ToRDFOntologyAnnotationProperty(), literal));
 
@@ -727,9 +624,6 @@ namespace RDFSharp.Semantics.SKOS
             if (conceptScheme != null && concept != null && literal != null)
             {
 
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
-
                 //Add definition annotation to the scheme
                 conceptScheme.Annotations.Definition.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.DEFINITION.ToRDFOntologyAnnotationProperty(), literal));
 
@@ -746,9 +640,6 @@ namespace RDFSharp.Semantics.SKOS
         {
             if (conceptScheme != null && concept != null && literal != null)
             {
-
-                //Add concept to the scheme
-                conceptScheme.AddConcept(concept);
 
                 //Add example annotation to the scheme
                 conceptScheme.Annotations.Example.AddEntry(new RDFOntologyTaxonomyEntry(concept, RDFVocabulary.SKOS.EXAMPLE.ToRDFOntologyAnnotationProperty(), literal));
@@ -789,9 +680,7 @@ namespace RDFSharp.Semantics.SKOS
 
                 //Get skos:broader concepts
                 foreach (var broaderConcept in conceptScheme.Relations.Broader.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)broaderConcept.TaxonomyObject);
-                }
 
                 //Get skos:broaderTransitive concepts
                 result = result.UnionWith(conceptScheme.GetBroaderConceptsOfInternal(concept, null))
@@ -865,9 +754,7 @@ namespace RDFSharp.Semantics.SKOS
 
                 //Get skos:narrower concepts
                 foreach (var narrowerConcept in conceptScheme.Relations.Narrower.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)narrowerConcept.TaxonomyObject);
-                }
 
                 //Get skos:narrowerTransitive concepts
                 result = result.UnionWith(conceptScheme.GetNarrowerConceptsOfInternal(concept, null))
@@ -939,9 +826,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null && conceptScheme != null)
             {
                 foreach (var relatedConcept in conceptScheme.Relations.Related.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)relatedConcept.TaxonomyObject);
-                }
             }
             return result;
         }
@@ -972,9 +857,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null && conceptScheme != null)
             {
                 foreach (var broadMatchConcept in conceptScheme.Relations.BroadMatch.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)broadMatchConcept.TaxonomyObject);
-                }
             }
             return result;
         }
@@ -1001,9 +884,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null && conceptScheme != null)
             {
                 foreach (var narrowMatchConcept in conceptScheme.Relations.NarrowMatch.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)narrowMatchConcept.TaxonomyObject);
-                }
             }
             return result;
         }
@@ -1030,9 +911,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null && conceptScheme != null)
             {
                 foreach (var relatedMatchConcept in conceptScheme.Relations.RelatedMatch.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)relatedMatchConcept.TaxonomyObject);
-                }
             }
             return result;
         }
@@ -1059,9 +938,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null && conceptScheme != null)
             {
                 foreach (var closeMatchConcept in conceptScheme.Relations.CloseMatch.SelectEntriesBySubject(concept))
-                {
                     result.AddConcept((RDFSKOSConcept)closeMatchConcept.TaxonomyObject);
-                }
             }
             return result;
         }
