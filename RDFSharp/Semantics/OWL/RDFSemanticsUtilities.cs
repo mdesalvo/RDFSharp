@@ -712,18 +712,18 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region Step 5: Init Data
-                foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                            && cls.IsSimpleClass()))
+                foreach (var simpleClass in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
+                                                                                        && cls.IsSimpleClass()))
                 {
-                    foreach (var t in rdfType.SelectTriplesByObject((RDFResource)c.Value))
+                    foreach (var classtypeTriple in rdfType.SelectTriplesByObject((RDFResource)simpleClass.Value))
                     {
-                        var f = ontology.Data.SelectFact(t.Subject.ToString());
-                        if (f == null)
+                        var fact = ontology.Data.SelectFact(classtypeTriple.Subject.ToString());
+                        if (fact == null)
                         {
-                            f = ((RDFResource)t.Subject).ToRDFOntologyFact();
-                            ontology.Data.AddFact(f);
+                            fact = ((RDFResource)classtypeTriple.Subject).ToRDFOntologyFact();
+                            ontology.Data.AddFact(fact); //This is the explicit declaration of a fact: instance of a simple class
                         }
-                        ontology.Data.AddClassTypeRelation(f, c);
+                        ontology.Data.AddClassTypeRelation(fact, simpleClass);
                     }
                 }
                 #endregion
@@ -1006,16 +1006,7 @@ namespace RDFSharp.Semantics.OWL
                     {
                         if (hvRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
-
-                            //Create the fact even if not explicitly classtyped
-                            var hvFct = ontology.Data.SelectFact(hvRes.Object.ToString());
-                            if (hvFct == null)
-                            {
-                                hvFct = (new RDFResource(hvRes.Object.ToString())).ToRDFOntologyFact();
-                                ontology.Data.AddFact(hvFct);
-                            }
-
-                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, hvFct);
+                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, ((RDFResource)hvRes.Object).ToRDFOntologyFact());
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
                         }
                         else
@@ -1101,15 +1092,7 @@ namespace RDFSharp.Semantics.OWL
                                                      .FirstOrDefault();
                                 if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                                 {
-
-                                    //Create the fact even if not explicitly classtyped
-                                    var enumMember = ontology.Data.SelectFact(first.Object.ToString());
-                                    if (enumMember == null)
-                                    {
-                                        enumMember = (new RDFResource(first.Object.ToString())).ToRDFOntologyFact();
-                                        ontology.Data.AddFact(enumMember);
-                                    }
-                                    ontology.Model.ClassModel.AddOneOfRelation((RDFOntologyEnumerateClass)ec, new List<RDFOntologyFact>() { enumMember });
+                                    ontology.Model.ClassModel.AddOneOfRelation((RDFOntologyEnumerateClass)ec, new List<RDFOntologyFact>() { ((RDFResource)first.Object).ToRDFOntologyFact() });
 
                                     #region rdf:rest
                                     var rest = rdfRest.SelectTriplesBySubject(itemRest)
@@ -1179,7 +1162,6 @@ namespace RDFSharp.Semantics.OWL
                                 if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                                 {
                                     ontology.Model.ClassModel.AddOneOfRelation((RDFOntologyDataRangeClass)dr, new List<RDFOntologyLiteral>() { ((RDFLiteral)first.Object).ToRDFOntologyLiteral() });
-                                    ontology.Data.AddLiteral(((RDFLiteral)first.Object).ToRDFOntologyLiteral());
 
                                     #region rdf:rest
                                     var rest = rdfRest.SelectTriplesBySubject(itemRest)
@@ -1719,26 +1701,7 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var t in sameAs)
                 {
                     if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                    {
-
-                        //Create the fact even if not explicitly classtyped
-                        var subjFct = ontology.Data.SelectFact(t.Subject.ToString());
-                        if (subjFct == null)
-                        {
-                            subjFct = (new RDFResource(t.Subject.ToString())).ToRDFOntologyFact();
-                            ontology.Data.AddFact(subjFct);
-                        }
-
-                        //Create the fact even if not explicitly classtyped
-                        var objFct = ontology.Data.SelectFact(t.Object.ToString());
-                        if (objFct == null)
-                        {
-                            objFct = (new RDFResource(t.Object.ToString())).ToRDFOntologyFact();
-                            ontology.Data.AddFact(objFct);
-                        }
-
-                        ontology.Data.AddSameAsRelation(subjFct, objFct);
-                    }
+                        ontology.Data.AddSameAsRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), ((RDFResource)t.Object).ToRDFOntologyFact());
                 }
                 #endregion
 
@@ -1746,26 +1709,7 @@ namespace RDFSharp.Semantics.OWL
                 foreach (var t in differentFrom)
                 {
                     if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                    {
-
-                        //Create the fact even if not explicitly classtyped
-                        var subjFct = ontology.Data.SelectFact(t.Subject.ToString());
-                        if (subjFct == null)
-                        {
-                            subjFct = (new RDFResource(t.Subject.ToString())).ToRDFOntologyFact();
-                            ontology.Data.AddFact(subjFct);
-                        }
-
-                        //Create the fact even if not explicitly classtyped
-                        var objFct = ontology.Data.SelectFact(t.Object.ToString());
-                        if (objFct == null)
-                        {
-                            objFct = (new RDFResource(t.Object.ToString())).ToRDFOntologyFact();
-                            ontology.Data.AddFact(objFct);
-                        }
-
-                        ontology.Data.AddDifferentFromRelation(subjFct, objFct);
-                    }
+                        ontology.Data.AddDifferentFromRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), ((RDFResource)t.Object).ToRDFOntologyFact());
                 }
                 #endregion
 
@@ -1900,14 +1844,6 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:SourceIndividual triple is not found in the graph or it does not link a resource.", nAsn.Subject));
                         continue;
                     }
-
-                    //Create the source individual fact even if not explicitly classtyped
-                    var sIndividualFact = ontology.Data.SelectFact(sIndividual.ToString());
-                    if (sIndividualFact == null)
-                    {
-                        sIndividualFact = ((RDFResource)sIndividual).ToRDFOntologyFact();
-                        ontology.Data.AddFact(sIndividualFact);
-                    }
                     #endregion
 
                     #region owl:AssertionProperty
@@ -1937,16 +1873,7 @@ namespace RDFSharp.Semantics.OWL
                         //and the negative assertion's property is effectively an object property
                         if (tIndividual is RDFResource && apProperty is RDFOntologyObjectProperty)
                         {
-                            //Create the target individual fact even if not explicitly classtyped
-                            var tIndividualFact = ontology.Data.SelectFact(tIndividual.ToString());
-                            if (tIndividualFact == null)
-                            {
-                                tIndividualFact = ((RDFResource)tIndividual).ToRDFOntologyFact();
-                                ontology.Data.AddFact(tIndividualFact);
-                            }
-
-                            //Finally, add negative assertion with all retrieved informations (SPO)
-                            ontology.Data.AddNegativeAssertionRelation(sIndividualFact, (RDFOntologyObjectProperty)apProperty, tIndividualFact);
+                            ontology.Data.AddNegativeAssertionRelation(((RDFResource)sIndividual).ToRDFOntologyFact(), (RDFOntologyObjectProperty)apProperty, ((RDFResource)tIndividual).ToRDFOntologyFact());
                             continue;
                         }
                         else
@@ -1966,23 +1893,12 @@ namespace RDFSharp.Semantics.OWL
                         //and the negative assertion's property is effectively a datatype property
                         if (tValue is RDFLiteral && apProperty is RDFOntologyDatatypeProperty)
                         {
-                            //Create the target value literal even if not explicitly declared
-                            var tValueLit = ontology.Data.SelectLiteral(tValue.ToString());
-                            if (tValueLit == null)
-                            {
-                                tValueLit = ((RDFLiteral)tValue).ToRDFOntologyLiteral();
-                                ontology.Data.AddLiteral(tValueLit);
-                            }
-
-                            //Finally, add negative assertion with all retrieved informations (SPL)
-                            ontology.Data.AddNegativeAssertionRelation(sIndividualFact, (RDFOntologyDatatypeProperty)apProperty, tValueLit);
-                            continue;
+                            ontology.Data.AddNegativeAssertionRelation(((RDFResource)sIndividual).ToRDFOntologyFact(), (RDFOntologyDatatypeProperty)apProperty, ((RDFLiteral)tValue).ToRDFOntologyLiteral());
                         }
                         else
                         {
                             //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because use of target value is not correct
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetValue is not correct.", nAsn.Subject));
-                            continue;
                         }
                     }
                     #endregion
@@ -2000,28 +1916,12 @@ namespace RDFSharp.Semantics.OWL
                                                                                                                  && !ontology.Model.ClassModel.Classes.ContainsKey(triple.Subject.PatternMemberID)
                                                                                                                     && !ontology.Model.PropertyModel.Properties.ContainsKey(triple.Subject.PatternMemberID)))
                     {
-                        //Create the fact even if not explicitly classtyped
-                        var subjFct = ontology.Data.SelectFact(t.Subject.ToString());
-                        if (subjFct == null)
-                        {
-                            subjFct = (new RDFResource(t.Subject.ToString())).ToRDFOntologyFact();
-                            ontology.Data.AddFact(subjFct);
-                        }
-
                         //Check if the property is an owl:ObjectProperty
                         if (p.IsObjectProperty())
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
-                                //Create the fact even if not explicitly classtyped
-                                var objFct = ontology.Data.SelectFact(t.Object.ToString());
-                                if (objFct == null)
-                                {
-                                    objFct = (new RDFResource(t.Object.ToString())).ToRDFOntologyFact();
-                                    ontology.Data.AddFact(objFct);
-                                }
-
-                                ontology.Data.AddAssertionRelation(subjFct, (RDFOntologyObjectProperty)p, objFct);
+                                ontology.Data.AddAssertionRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), (RDFOntologyObjectProperty)p, ((RDFResource)t.Object).ToRDFOntologyFact());
                             }
                             else
                             {
@@ -2035,7 +1935,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Data.AddAssertionRelation(subjFct, (RDFOntologyDatatypeProperty)p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Data.AddAssertionRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), (RDFOntologyDatatypeProperty)p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
