@@ -731,7 +731,7 @@ namespace RDFSharp.Semantics.OWL
                 #region Step 6: Finalize
 
                 #region Step 6.1: Finalize OWL:Restriction
-                var restrictions = ontology.Model.ClassModel.OfType<RDFOntologyRestriction>().ToList();
+                var restrictions = ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass()).ToList();
                 foreach (var r in restrictions)
                 {
 
@@ -763,7 +763,7 @@ namespace RDFSharp.Semantics.OWL
 
                     if (exC > 0)
                     {
-                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, r.OnProperty, exC, exC);
+                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exC, exC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
                         continue; //Restriction has been successfully typed
                     }
@@ -818,7 +818,7 @@ namespace RDFSharp.Semantics.OWL
 
                     if (minC > 0 || maxC > 0)
                     {
-                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, r.OnProperty, minC, maxC);
+                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minC, maxC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
                         continue; //Restriction has been successfully typed
                     }
@@ -861,7 +861,7 @@ namespace RDFSharp.Semantics.OWL
                             var exQCOnClass = ontology.Model.ClassModel.SelectClass(exQCCls.Object.ToString());
                             if (exQCOnClass != null)
                             {
-                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, r.OnProperty, exQCOnClass, exQC, exQC);
+                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exQCOnClass, exQC, exQC);
                                 ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
                                 continue; //Restriction has been successfully typed
                             }
@@ -950,7 +950,7 @@ namespace RDFSharp.Semantics.OWL
                             var minmaxQCOnClass = ontology.Model.ClassModel.SelectClass(minmaxQCCls.Object.ToString());
                             if (minmaxQCOnClass != null)
                             {
-                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, r.OnProperty, minmaxQCOnClass, minQC, maxQC);
+                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minmaxQCOnClass, minQC, maxQC);
                                 ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
                                 continue; //Restriction has been successfully typed
                             }
@@ -992,7 +992,7 @@ namespace RDFSharp.Semantics.OWL
                         if (hsRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
                                 && hsRes.Object.Equals(new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)))
                         {
-                            var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, r.OnProperty);
+                            var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasselfRestr;
                             continue; //Restriction has been successfully typed
                         }
@@ -1005,13 +1005,13 @@ namespace RDFSharp.Semantics.OWL
                     {
                         if (hvRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
-                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, ((RDFResource)hvRes.Object).ToRDFOntologyFact());
+                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, ((RDFResource)hvRes.Object).ToRDFOntologyFact());
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
                             continue; //Restriction has been successfully typed
                         }
                         else
                         {
-                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, ((RDFLiteral)hvRes.Object).ToRDFOntologyLiteral());
+                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, ((RDFLiteral)hvRes.Object).ToRDFOntologyLiteral());
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
                             continue; //Restriction has been successfully typed
                         }
@@ -1025,7 +1025,7 @@ namespace RDFSharp.Semantics.OWL
                         var avfCls = ontology.Model.ClassModel.SelectClass(avfRes.Object.ToString());
                         if (avfCls != null)
                         {
-                            var allvaluesfromRestr = new RDFOntologyAllValuesFromRestriction((RDFResource)r.Value, r.OnProperty, avfCls);
+                            var allvaluesfromRestr = new RDFOntologyAllValuesFromRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, avfCls);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = allvaluesfromRestr;
                             continue; //Restriction has been successfully typed
                         }
@@ -1044,7 +1044,7 @@ namespace RDFSharp.Semantics.OWL
                         var svfCls = ontology.Model.ClassModel.SelectClass(svfRes.Object.ToString());
                         if (svfCls != null)
                         {
-                            var somevaluesfromRestr = new RDFOntologySomeValuesFromRestriction((RDFResource)r.Value, r.OnProperty, svfCls);
+                            var somevaluesfromRestr = new RDFOntologySomeValuesFromRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, svfCls);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = somevaluesfromRestr;
                             continue; //Restriction has been successfully typed
                         }
@@ -2127,15 +2127,27 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
-                var annotProps = ontology.Model.PropertyModel.OfType<RDFOntologyAnnotationProperty>();
+                var annotProps = ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty());
                 foreach (var annotProp in annotProps)
                 {
+                    //Skip built-in annotation properties
+                    if (annotProp.Equals(versionInfoAnn)
+                            || annotProp.Equals(commentAnn)
+                                || annotProp.Equals(labelAnn)
+                                    || annotProp.Equals(seeAlsoAnn)
+                                        || annotProp.Equals(isDefinedByAnn)
+                                            || annotProp.Equals(versionIRIAnn)
+                                                || annotProp.Equals(priorVersionAnn)
+                                                    || annotProp.Equals(backwardCWAnn)
+                                                        || annotProp.Equals(incompWithAnn)
+                                                            || annotProp.Equals(importsAnn)) { continue; }
+
                     foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)ontology.Value)
                                               .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                         {
-                            ontology.AddCustomAnnotation(annotProp, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                            ontology.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                         }
                         else
                         {
@@ -2156,7 +2168,7 @@ namespace RDFSharp.Semantics.OWL
                                     }
                                 }
                             }
-                            ontology.AddCustomAnnotation(annotProp, custAnnValue);
+                            ontology.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, custAnnValue);
                         }
                     }
 
@@ -2275,12 +2287,24 @@ namespace RDFSharp.Semantics.OWL
                     #region CustomAnnotations
                     foreach (var annotProp in annotProps)
                     {
+                        //Skip built-in annotation properties
+                        if (annotProp.Equals(versionInfoAnn)
+                                || annotProp.Equals(commentAnn)
+                                    || annotProp.Equals(labelAnn)
+                                        || annotProp.Equals(seeAlsoAnn)
+                                            || annotProp.Equals(isDefinedByAnn)
+                                                || annotProp.Equals(versionIRIAnn)
+                                                    || annotProp.Equals(priorVersionAnn)
+                                                        || annotProp.Equals(backwardCWAnn)
+                                                            || annotProp.Equals(incompWithAnn)
+                                                                || annotProp.Equals(importsAnn)) { continue; }
+
                         foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)c.Value)
                                                   .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Model.ClassModel.AddCustomAnnotation(annotProp, c, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Model.ClassModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, c, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
@@ -2301,7 +2325,7 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                     }
                                 }
-                                ontology.Model.ClassModel.AddCustomAnnotation(annotProp, c, custAnnValue);
+                                ontology.Model.ClassModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, c, custAnnValue);
                             }
                         }
 
@@ -2421,12 +2445,24 @@ namespace RDFSharp.Semantics.OWL
                     #region CustomAnnotations
                     foreach (var annotProp in annotProps)
                     {
+                        //Skip built-in annotation properties
+                        if (annotProp.Equals(versionInfoAnn)
+                                || annotProp.Equals(commentAnn)
+                                    || annotProp.Equals(labelAnn)
+                                        || annotProp.Equals(seeAlsoAnn)
+                                            || annotProp.Equals(isDefinedByAnn)
+                                                || annotProp.Equals(versionIRIAnn)
+                                                    || annotProp.Equals(priorVersionAnn)
+                                                        || annotProp.Equals(backwardCWAnn)
+                                                            || annotProp.Equals(incompWithAnn)
+                                                                || annotProp.Equals(importsAnn)) { continue; }
+
                         foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)p.Value)
                                                  .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Model.PropertyModel.AddCustomAnnotation(annotProp, p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Model.PropertyModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
@@ -2447,7 +2483,7 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                     }
                                 }
-                                ontology.Model.PropertyModel.AddCustomAnnotation(annotProp, p, custAnnValue);
+                                ontology.Model.PropertyModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, p, custAnnValue);
                             }
                         }
 
@@ -2567,12 +2603,24 @@ namespace RDFSharp.Semantics.OWL
                     #region CustomAnnotations
                     foreach (var annotProp in annotProps)
                     {
+                        //Skip built-in annotation properties
+                        if (annotProp.Equals(versionInfoAnn)
+                                || annotProp.Equals(commentAnn)
+                                    || annotProp.Equals(labelAnn)
+                                        || annotProp.Equals(seeAlsoAnn)
+                                            || annotProp.Equals(isDefinedByAnn)
+                                                || annotProp.Equals(versionIRIAnn)
+                                                    || annotProp.Equals(priorVersionAnn)
+                                                        || annotProp.Equals(backwardCWAnn)
+                                                            || annotProp.Equals(incompWithAnn)
+                                                                || annotProp.Equals(importsAnn)) { continue; }
+
                         foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)f.Value)
                                                   .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Data.AddCustomAnnotation(annotProp, f, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, f, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
@@ -2593,7 +2641,7 @@ namespace RDFSharp.Semantics.OWL
                                         }
                                     }
                                 }
-                                ontology.Data.AddCustomAnnotation(annotProp, f, custAnnValue);
+                                ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, f, custAnnValue);
                             }
                         }
 
