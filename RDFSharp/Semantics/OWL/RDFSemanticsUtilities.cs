@@ -732,10 +732,10 @@ namespace RDFSharp.Semantics.OWL
 
                 #region Step 6.1: Finalize OWL:Restriction
                 var restrictions = ontology.Model.ClassModel.Where(c => c.IsRestrictionClass()).ToList();
-                foreach (var r in restrictions)
+                foreach (var r in restrictions.OfType<RDFOntologyCardinalityRestriction>())
                 {
 
-                    #region Cardinality
+                    #region ExactCardinality
                     int exC = 0;
                     var crEx = cardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crEx != null && crEx.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -758,13 +758,16 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
+
                     if (exC > 0)
                     {
-                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exC, exC);
+                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, r.OnProperty, exC, exC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
                         continue;
                     }
+                    #endregion
 
+                    #region MinMaxCardinality
                     int minC = 0;
                     var crMin = mincardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crMin != null && crMin.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -810,15 +813,19 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
+
                     if (minC > 0 || maxC > 0)
                     {
-                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minC, maxC);
+                        var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, r.OnProperty, minC, maxC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
-                        continue;
                     }
                     #endregion
 
-                    #region QualifiedCardinality [OWL2]
+                }
+                foreach (var r in restrictions.OfType<RDFOntologyQualifiedCardinalityRestriction>())
+                {
+
+                    #region ExactQualifiedCardinality [OWL2]
                     int exQC = 0;
                     var crExQC = qualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crExQC != null && crExQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -841,6 +848,7 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
+
                     if (exQC > 0)
                     {
                         //OnClass
@@ -850,7 +858,7 @@ namespace RDFSharp.Semantics.OWL
                             var exQCOnClass = ontology.Model.ClassModel.SelectClass(exQCCls.Object.ToString());
                             if (exQCOnClass != null)
                             {
-                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exQCOnClass, exQC, exQC);
+                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, r.OnProperty, exQCOnClass, exQC, exQC);
                                 ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
                                 continue;
                             }
@@ -881,7 +889,9 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
+                    #endregion
 
+                    #region MinMaxQualifiedCardinality [OWL2]
                     int minQC = 0;
                     var crMinQC = minQualifiedCardinality.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (crMinQC != null && crMinQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -927,6 +937,7 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
+
                     if (minQC > 0 || maxQC > 0)
                     {
                         //OnClass
@@ -936,9 +947,8 @@ namespace RDFSharp.Semantics.OWL
                             var minmaxQCOnClass = ontology.Model.ClassModel.SelectClass(minmaxQCCls.Object.ToString());
                             if (minmaxQCOnClass != null)
                             {
-                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minmaxQCOnClass, minQC, maxQC);
+                                var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, r.OnProperty, minmaxQCOnClass, minQC, maxQC);
                                 ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
-                                continue;
                             }
                             else
                             {
@@ -969,6 +979,10 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
+                }
+                foreach (var r in restrictions.OfType<RDFOntologyHasSelfRestriction>())
+                {
+
                     #region HasSelf [OWL2]
                     var hsRes = hasself.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (hsRes != null)
@@ -976,12 +990,15 @@ namespace RDFSharp.Semantics.OWL
                         if (hsRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
                                 && hsRes.Object.Equals(new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)))
                         {
-                            var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty);
+                            var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, r.OnProperty);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasselfRestr;
-                            continue;
                         }
                     }
                     #endregion
+
+                }
+                foreach (var r in restrictions.OfType<RDFOntologyHasValueRestriction>())
+                {
 
                     #region HasValue
                     var hvRes = hasvalue.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -998,18 +1015,20 @@ namespace RDFSharp.Semantics.OWL
                                 ontology.Data.AddFact(hvFct);
                             }
 
-                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, hvFct);
+                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, hvFct);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
-                            continue;
                         }
                         else
                         {
-                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, ((RDFLiteral)hvRes.Object).ToRDFOntologyLiteral());
+                            var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, ((RDFLiteral)hvRes.Object).ToRDFOntologyLiteral());
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
-                            continue;
                         }
                     }
                     #endregion
+
+                }
+                foreach (var r in restrictions.OfType<RDFOntologyAllValuesFromRestriction>())
+                {
 
                     #region AllValuesFrom
                     var avfRes = allvaluesFrom.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1018,9 +1037,8 @@ namespace RDFSharp.Semantics.OWL
                         var avfCls = ontology.Model.ClassModel.SelectClass(avfRes.Object.ToString());
                         if (avfCls != null)
                         {
-                            var allvaluesfromRestr = new RDFOntologyAllValuesFromRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, avfCls);
+                            var allvaluesfromRestr = new RDFOntologyAllValuesFromRestriction((RDFResource)r.Value, r.OnProperty, avfCls);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = allvaluesfromRestr;
-                            continue;
                         }
                         else
                         {
@@ -1030,6 +1048,10 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
+                }
+                foreach (var r in restrictions.OfType<RDFOntologySomeValuesFromRestriction>())
+                {
+
                     #region SomeValuesFrom
                     var svfRes = somevaluesFrom.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (svfRes != null && svfRes.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
@@ -1037,9 +1059,8 @@ namespace RDFSharp.Semantics.OWL
                         var svfCls = ontology.Model.ClassModel.SelectClass(svfRes.Object.ToString());
                         if (svfCls != null)
                         {
-                            var somevaluesfromRestr = new RDFOntologySomeValuesFromRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, svfCls);
+                            var somevaluesfromRestr = new RDFOntologySomeValuesFromRestriction((RDFResource)r.Value, r.OnProperty, svfCls);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = somevaluesfromRestr;
-                            continue;
                         }
                         else
                         {
