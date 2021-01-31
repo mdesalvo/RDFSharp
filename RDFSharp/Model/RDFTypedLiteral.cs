@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System;
-
 namespace RDFSharp.Model
 {
 
@@ -66,7 +64,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasBooleanDatatype()
         {
-            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BOOLEAN));
+            return this.Datatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
         }
 
         /// <summary>
@@ -74,14 +72,21 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasDatetimeDatatype()
         {
-            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATE) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DATETIME) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GDAY) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTH) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEAR) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TIME));
+            bool hasDatetimeDatatype = false;
+            switch (this.Datatype)
+            {
+                case RDFModelEnums.RDFDatatypes.XSD_DATE:
+                case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
+                case RDFModelEnums.RDFDatatypes.XSD_GDAY:
+                case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
+                case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
+                case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
+                case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
+                case RDFModelEnums.RDFDatatypes.XSD_TIME:
+                    hasDatetimeDatatype = true;
+                    break;
+            }
+            return hasDatetimeDatatype;
         }
 
         /// <summary>
@@ -89,7 +94,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasTimespanDatatype()
         {
-            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DURATION));
+            return this.Datatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
         }
 
         /// <summary>
@@ -97,21 +102,28 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasStringDatatype()
         {
-            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ID) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LANGUAGE) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NAME) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NCNAME) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NMTOKEN) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NOTATION) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_QNAME) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_TOKEN) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_HEXBINARY));
+            bool hasStringDatatype = false;
+            switch (this.Datatype)
+            {
+                case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
+                case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
+                case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
+                case RDFModelEnums.RDFDatatypes.XSD_ID:
+                case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
+                case RDFModelEnums.RDFDatatypes.XSD_NAME:
+                case RDFModelEnums.RDFDatatypes.XSD_NCNAME:
+                case RDFModelEnums.RDFDatatypes.XSD_NMTOKEN:
+                case RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING:
+                case RDFModelEnums.RDFDatatypes.XSD_NOTATION:
+                case RDFModelEnums.RDFDatatypes.XSD_QNAME:
+                case RDFModelEnums.RDFDatatypes.XSD_STRING:
+                case RDFModelEnums.RDFDatatypes.XSD_TOKEN:
+                case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
+                case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
+                    hasStringDatatype = true;
+                    break;
+            }
+            return hasStringDatatype;
         }
 
         /// <summary>
@@ -119,22 +131,29 @@ namespace RDFSharp.Model
         /// </summary>
         internal bool HasDecimalDatatype()
         {
-            return (this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_BYTE) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DECIMAL) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_DOUBLE) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_FLOAT) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INT) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_INTEGER) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_LONG) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_SHORT) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG) ||
-                    this.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT));
+            bool hasDecimalDatatype = false;
+            switch (this.Datatype)
+            {
+                case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
+                case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
+                case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
+                case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
+                case RDFModelEnums.RDFDatatypes.XSD_LONG:
+                case RDFModelEnums.RDFDatatypes.XSD_INT:
+                case RDFModelEnums.RDFDatatypes.XSD_SHORT:
+                case RDFModelEnums.RDFDatatypes.XSD_BYTE:
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG:
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT:
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT:
+                case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
+                case RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER:
+                case RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER:
+                case RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER:
+                case RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER:
+                    hasDecimalDatatype = true;
+                    break;
+            }
+            return hasDecimalDatatype;
         }
         #endregion
 

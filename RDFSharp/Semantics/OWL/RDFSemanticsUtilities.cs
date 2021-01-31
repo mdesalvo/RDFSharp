@@ -718,22 +718,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            if (((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crEx.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            if (((RDFTypedLiteral)crEx.Object).HasDecimalDatatype())
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crEx.Object).Value, @"^[0-9]+$"))
                                 {
@@ -762,22 +747,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            if (((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMin.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            if (((RDFTypedLiteral)crMin.Object).HasDecimalDatatype())
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMin.Object).Value, @"^[0-9]+$"))
                                 {
@@ -800,22 +770,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            if (((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMax.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            if (((RDFTypedLiteral)crMax.Object).HasDecimalDatatype())
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMax.Object).Value, @"^[0-9]+$"))
                                 {
@@ -846,22 +801,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            if (((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crExQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            if (((RDFTypedLiteral)crExQC.Object).HasDecimalDatatype())
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crExQC.Object).Value, @"^[0-9]+$"))
                                 {
@@ -924,22 +864,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            if (((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMinQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            if (((RDFTypedLiteral)crMinQC.Object).HasDecimalDatatype())
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMinQC.Object).Value, @"^[0-9]+$"))
                                 {
@@ -962,22 +887,7 @@ namespace RDFSharp.Semantics.OWL
                         }
                         else
                         {
-                            if (((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DECIMAL ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_LONG ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_INT ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_SHORT ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_BYTE ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER ||
-                                ((RDFTypedLiteral)crMaxQC.Object).Datatype == RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)
+                            if (((RDFTypedLiteral)crMaxQC.Object).HasDecimalDatatype())
                             {
                                 if (Regex.IsMatch(((RDFTypedLiteral)crMaxQC.Object).Value, @"^[0-9]+$"))
                                 {
