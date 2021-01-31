@@ -1179,6 +1179,7 @@ namespace RDFSharp.Semantics.OWL
                                 if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                                 {
                                     ontology.Model.ClassModel.AddOneOfRelation((RDFOntologyDataRangeClass)dr, new List<RDFOntologyLiteral>() { ((RDFLiteral)first.Object).ToRDFOntologyLiteral() });
+                                    ontology.Data.AddLiteral(((RDFLiteral)first.Object).ToRDFOntologyLiteral());
 
                                     #region rdf:rest
                                     var rest = rdfRest.SelectTriplesBySubject(itemRest)
