@@ -731,9 +731,11 @@ namespace RDFSharp.Semantics.OWL
                 #region Step 6: Finalize
 
                 #region Step 6.1: Finalize OWL:Restriction
-                var restrictions = ontology.Model.ClassModel.Where(c => c.IsRestrictionClass()).ToList();
-                foreach (var r in restrictions.OfType<RDFOntologyCardinalityRestriction>())
+                var restrictions = ontology.Model.ClassModel.OfType<RDFOntologyRestriction>().ToList();
+                foreach (var r in restrictions)
                 {
+
+                    #region Cardinality
 
                     #region ExactCardinality
                     int exC = 0;
@@ -763,7 +765,7 @@ namespace RDFSharp.Semantics.OWL
                     {
                         var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, r.OnProperty, exC, exC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
-                        continue;
+                        continue; //Restriction has been successfully typed
                     }
                     #endregion
 
@@ -818,12 +820,13 @@ namespace RDFSharp.Semantics.OWL
                     {
                         var cardRestr = new RDFOntologyCardinalityRestriction((RDFResource)r.Value, r.OnProperty, minC, maxC);
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
+                        continue; //Restriction has been successfully typed
                     }
                     #endregion
 
-                }
-                foreach (var r in restrictions.OfType<RDFOntologyQualifiedCardinalityRestriction>())
-                {
+                    #endregion
+
+                    #region QualifiedCardinality [OWL2]
 
                     #region ExactQualifiedCardinality [OWL2]
                     int exQC = 0;
@@ -860,7 +863,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, r.OnProperty, exQCOnClass, exQC, exQC);
                                 ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
-                                continue;
+                                continue; //Restriction has been successfully typed
                             }
                             else
                             {
@@ -879,7 +882,7 @@ namespace RDFSharp.Semantics.OWL
                                 {
                                     var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, exQCOnDataRange, exQC, exQC);
                                     ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
-                                    continue;
+                                    continue; //Restriction has been successfully typed
                                 }
                                 else
                                 {
@@ -949,6 +952,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, r.OnProperty, minmaxQCOnClass, minQC, maxQC);
                                 ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
+                                continue; //Restriction has been successfully typed
                             }
                             else
                             {
@@ -967,7 +971,7 @@ namespace RDFSharp.Semantics.OWL
                                 {
                                     var qualifCardRestr = new RDFOntologyQualifiedCardinalityRestriction((RDFResource)r.Value, ((RDFOntologyRestriction)r).OnProperty, minmaxQCOnDataRange, minQC, maxQC);
                                     ontology.Model.ClassModel.Classes[r.PatternMemberID] = qualifCardRestr;
-                                    continue;
+                                    continue; //Restriction has been successfully typed
                                 }
                                 else
                                 {
@@ -979,10 +983,8 @@ namespace RDFSharp.Semantics.OWL
                     }
                     #endregion
 
-                }
-                foreach (var r in restrictions.OfType<RDFOntologyHasSelfRestriction>())
-                {
-
+                    #endregion
+                
                     #region HasSelf [OWL2]
                     var hsRes = hasself.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
                     if (hsRes != null)
@@ -992,13 +994,10 @@ namespace RDFSharp.Semantics.OWL
                         {
                             var hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)r.Value, r.OnProperty);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasselfRestr;
+                            continue; //Restriction has been successfully typed
                         }
                     }
                     #endregion
-
-                }
-                foreach (var r in restrictions.OfType<RDFOntologyHasValueRestriction>())
-                {
 
                     #region HasValue
                     var hvRes = hasvalue.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1008,18 +1007,16 @@ namespace RDFSharp.Semantics.OWL
                         {
                             var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, ((RDFResource)hvRes.Object).ToRDFOntologyFact());
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
+                            continue; //Restriction has been successfully typed
                         }
                         else
                         {
                             var hasvalueRestr = new RDFOntologyHasValueRestriction((RDFResource)r.Value, r.OnProperty, ((RDFLiteral)hvRes.Object).ToRDFOntologyLiteral());
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = hasvalueRestr;
+                            continue; //Restriction has been successfully typed
                         }
                     }
                     #endregion
-
-                }
-                foreach (var r in restrictions.OfType<RDFOntologyAllValuesFromRestriction>())
-                {
 
                     #region AllValuesFrom
                     var avfRes = allvaluesFrom.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1030,6 +1027,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             var allvaluesfromRestr = new RDFOntologyAllValuesFromRestriction((RDFResource)r.Value, r.OnProperty, avfCls);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = allvaluesfromRestr;
+                            continue; //Restriction has been successfully typed
                         }
                         else
                         {
@@ -1038,10 +1036,6 @@ namespace RDFSharp.Semantics.OWL
                         }
                     }
                     #endregion
-
-                }
-                foreach (var r in restrictions.OfType<RDFOntologySomeValuesFromRestriction>())
-                {
 
                     #region SomeValuesFrom
                     var svfRes = somevaluesFrom.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1052,6 +1046,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             var somevaluesfromRestr = new RDFOntologySomeValuesFromRestriction((RDFResource)r.Value, r.OnProperty, svfCls);
                             ontology.Model.ClassModel.Classes[r.PatternMemberID] = somevaluesfromRestr;
+                            continue; //Restriction has been successfully typed
                         }
                         else
                         {
