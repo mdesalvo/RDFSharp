@@ -2231,44 +2231,36 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
-                var annotProps = ontology.Model.PropertyModel.Where(prop => prop.IsAnnotationProperty());
-                foreach (var p in annotProps)
+                var annotProps = ontology.Model.PropertyModel.OfType<RDFOntologyAnnotationProperty>();
+                foreach (var annotProp in annotProps)
                 {
-
-                    //Skip built-in annotation properties
-                    if (p.Equals(versionInfoAnn) || p.Equals(commentAnn) || p.Equals(labelAnn) ||
-                        p.Equals(seeAlsoAnn) || p.Equals(isDefinedByAnn) || p.Equals(versionIRIAnn) ||
-                        p.Equals(priorVersionAnn) || p.Equals(backwardCWAnn) || p.Equals(incompWithAnn) ||
-                        p.Equals(importsAnn))
-                    {
-                        continue;
-                    }
-
                     foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)ontology.Value)
-                                              .SelectTriplesByPredicate((RDFResource)p.Value))
+                                              .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                         {
-                            ontology.AddCustomAnnotation((RDFOntologyAnnotationProperty)p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                            ontology.AddCustomAnnotation(annotProp, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                         }
                         else
                         {
-                            RDFOntologyResource custAnn = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
-                            if (custAnn == null)
+                            RDFOntologyResource custAnnValue = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
+                            if (custAnnValue == null)
                             {
-                                custAnn = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
-                                if (custAnn == null)
+                                custAnnValue = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
+                                if (custAnnValue == null)
                                 {
-                                    custAnn = ontology.Data.SelectFact(t.Object.ToString());
-                                    if (custAnn == null)
+                                    custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
+                                    if (custAnnValue == null)
                                     {
-                                        custAnn = new RDFOntologyResource();
-                                        custAnn.Value = t.Object;
-                                        custAnn.PatternMemberID = t.Object.PatternMemberID;
+                                        custAnnValue = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
-                            ontology.AddCustomAnnotation((RDFOntologyAnnotationProperty)p, custAnn);
+                            ontology.AddCustomAnnotation(annotProp, custAnnValue);
                         }
                     }
 
@@ -2385,43 +2377,35 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region CustomAnnotations
-                    foreach (var p in annotProps)
+                    foreach (var annotProp in annotProps)
                     {
-
-                        //Skip built-in annotation properties
-                        if (p.Equals(versionInfoAnn) || p.Equals(commentAnn) || p.Equals(labelAnn) ||
-                            p.Equals(seeAlsoAnn) || p.Equals(isDefinedByAnn) || p.Equals(versionIRIAnn) ||
-                            p.Equals(priorVersionAnn) || p.Equals(backwardCWAnn) || p.Equals(incompWithAnn) ||
-                            p.Equals(importsAnn))
-                        {
-                            continue;
-                        }
-
                         foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)c.Value)
-                                                  .SelectTriplesByPredicate((RDFResource)p.Value))
+                                                  .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Model.ClassModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)p, c, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Model.ClassModel.AddCustomAnnotation(annotProp, c, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
-                                RDFOntologyResource custAnn = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
-                                if (custAnn == null)
+                                RDFOntologyResource custAnnValue = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
+                                if (custAnnValue == null)
                                 {
-                                    custAnn = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
-                                    if (custAnn == null)
+                                    custAnnValue = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
+                                    if (custAnnValue == null)
                                     {
-                                        custAnn = ontology.Data.SelectFact(t.Object.ToString());
-                                        if (custAnn == null)
+                                        custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
+                                        if (custAnnValue == null)
                                         {
-                                            custAnn = new RDFOntologyResource();
-                                            custAnn.Value = t.Object;
-                                            custAnn.PatternMemberID = t.Object.PatternMemberID;
+                                            custAnnValue = new RDFOntologyResource
+                                            {
+                                                Value = t.Object,
+                                                PatternMemberID = t.Object.PatternMemberID
+                                            };
                                         }
                                     }
                                 }
-                                ontology.Model.ClassModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)p, c, custAnn);
+                                ontology.Model.ClassModel.AddCustomAnnotation(annotProp, c, custAnnValue);
                             }
                         }
 
@@ -2539,43 +2523,35 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region CustomAnnotations
-                    foreach (var ap in annotProps)
+                    foreach (var annotProp in annotProps)
                     {
-
-                        //Skip built-in annotation properties
-                        if (ap.Equals(versionInfoAnn) || ap.Equals(commentAnn) || ap.Equals(labelAnn) ||
-                            ap.Equals(seeAlsoAnn) || ap.Equals(isDefinedByAnn) || ap.Equals(versionIRIAnn) ||
-                            ap.Equals(priorVersionAnn) || ap.Equals(backwardCWAnn) || ap.Equals(incompWithAnn) ||
-                            ap.Equals(importsAnn))
-                        {
-                            continue;
-                        }
-
                         foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)p.Value)
-                                                 .SelectTriplesByPredicate((RDFResource)ap.Value))
+                                                 .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Model.PropertyModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)ap, p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Model.PropertyModel.AddCustomAnnotation(annotProp, p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
-                                RDFOntologyResource custAnn = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
-                                if (custAnn == null)
+                                RDFOntologyResource custAnnValue = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
+                                if (custAnnValue == null)
                                 {
-                                    custAnn = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
-                                    if (custAnn == null)
+                                    custAnnValue = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
+                                    if (custAnnValue == null)
                                     {
-                                        custAnn = ontology.Data.SelectFact(t.Object.ToString());
-                                        if (custAnn == null)
+                                        custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
+                                        if (custAnnValue == null)
                                         {
-                                            custAnn = new RDFOntologyResource();
-                                            custAnn.Value = t.Object;
-                                            custAnn.PatternMemberID = t.Object.PatternMemberID;
+                                            custAnnValue = new RDFOntologyResource
+                                            {
+                                                Value = t.Object,
+                                                PatternMemberID = t.Object.PatternMemberID
+                                            };
                                         }
                                     }
                                 }
-                                ontology.Model.PropertyModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)ap, p, custAnn);
+                                ontology.Model.PropertyModel.AddCustomAnnotation(annotProp, p, custAnnValue);
                             }
                         }
 
@@ -2693,43 +2669,35 @@ namespace RDFSharp.Semantics.OWL
                     #endregion
 
                     #region CustomAnnotations
-                    foreach (var p in annotProps)
+                    foreach (var annotProp in annotProps)
                     {
-
-                        //Skip built-in annotation properties
-                        if (p.Equals(versionInfoAnn) || p.Equals(commentAnn) || p.Equals(labelAnn) ||
-                            p.Equals(seeAlsoAnn) || p.Equals(isDefinedByAnn) || p.Equals(versionIRIAnn) ||
-                            p.Equals(priorVersionAnn) || p.Equals(backwardCWAnn) || p.Equals(incompWithAnn) ||
-                            p.Equals(importsAnn))
-                        {
-                            continue;
-                        }
-
                         foreach (var t in ontGraph.SelectTriplesBySubject((RDFResource)f.Value)
-                                                  .SelectTriplesByPredicate((RDFResource)p.Value))
+                                                  .SelectTriplesByPredicate((RDFResource)annotProp.Value))
                         {
                             if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)p, f, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Data.AddCustomAnnotation(annotProp, f, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
-                                RDFOntologyResource custAnn = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
-                                if (custAnn == null)
+                                RDFOntologyResource custAnnValue = ontology.Model.ClassModel.SelectClass(t.Object.ToString());
+                                if (custAnnValue == null)
                                 {
-                                    custAnn = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
-                                    if (custAnn == null)
+                                    custAnnValue = ontology.Model.PropertyModel.SelectProperty(t.Object.ToString());
+                                    if (custAnnValue == null)
                                     {
-                                        custAnn = ontology.Data.SelectFact(t.Object.ToString());
-                                        if (custAnn == null)
+                                        custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
+                                        if (custAnnValue == null)
                                         {
-                                            custAnn = new RDFOntologyResource();
-                                            custAnn.Value = t.Object;
-                                            custAnn.PatternMemberID = t.Object.PatternMemberID;
+                                            custAnnValue = new RDFOntologyResource
+                                            {
+                                                Value = t.Object,
+                                                PatternMemberID = t.Object.PatternMemberID
+                                            };
                                         }
                                     }
                                 }
-                                ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)p, f, custAnn);
+                                ontology.Data.AddCustomAnnotation(annotProp, f, custAnnValue);
                             }
                         }
 
