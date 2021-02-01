@@ -2026,9 +2026,11 @@ namespace RDFSharp.Semantics.OWL
                                 resource = ontology.Data.SelectFact(t.Object.ToString());
                                 if (resource == null)
                                 {
-                                    resource = new RDFOntologyResource();
-                                    resource.Value = t.Object;
-                                    resource.PatternMemberID = t.Object.PatternMemberID;
+                                    resource = new RDFOntologyResource
+                                    {
+                                        Value = t.Object,
+                                        PatternMemberID = t.Object.PatternMemberID
+                                    };
                                 }
                             }
                         }
@@ -2055,9 +2057,11 @@ namespace RDFSharp.Semantics.OWL
                                 isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                 if (isDefBy == null)
                                 {
-                                    isDefBy = new RDFOntologyResource();
-                                    isDefBy.Value = t.Object;
-                                    isDefBy.PatternMemberID = t.Object.PatternMemberID;
+                                    isDefBy = new RDFOntologyResource
+                                    {
+                                        Value = t.Object,
+                                        PatternMemberID = t.Object.PatternMemberID
+                                    };
                                 }
                             }
                         }
@@ -2244,9 +2248,11 @@ namespace RDFSharp.Semantics.OWL
                                     resource = ontology.Data.SelectFact(t.Object.ToString());
                                     if (resource == null)
                                     {
-                                        resource = new RDFOntologyResource();
-                                        resource.Value = t.Object;
-                                        resource.PatternMemberID = t.Object.PatternMemberID;
+                                        resource = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
@@ -2273,9 +2279,11 @@ namespace RDFSharp.Semantics.OWL
                                     isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                     if (isDefBy == null)
                                     {
-                                        isDefBy = new RDFOntologyResource();
-                                        isDefBy.Value = t.Object;
-                                        isDefBy.PatternMemberID = t.Object.PatternMemberID;
+                                        isDefBy = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
@@ -2402,9 +2410,11 @@ namespace RDFSharp.Semantics.OWL
                                     resource = ontology.Data.SelectFact(t.Object.ToString());
                                     if (resource == null)
                                     {
-                                        resource = new RDFOntologyResource();
-                                        resource.Value = t.Object;
-                                        resource.PatternMemberID = t.Object.PatternMemberID;
+                                        resource = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
@@ -2431,9 +2441,11 @@ namespace RDFSharp.Semantics.OWL
                                     isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                     if (isDefBy == null)
                                     {
-                                        isDefBy = new RDFOntologyResource();
-                                        isDefBy.Value = t.Object;
-                                        isDefBy.PatternMemberID = t.Object.PatternMemberID;
+                                        isDefBy = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
@@ -2560,9 +2572,11 @@ namespace RDFSharp.Semantics.OWL
                                     resource = ontology.Data.SelectFact(t.Object.ToString());
                                     if (resource == null)
                                     {
-                                        resource = new RDFOntologyResource();
-                                        resource.Value = t.Object;
-                                        resource.PatternMemberID = t.Object.PatternMemberID;
+                                        resource = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
@@ -2589,9 +2603,11 @@ namespace RDFSharp.Semantics.OWL
                                     isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                     if (isDefBy == null)
                                     {
-                                        isDefBy = new RDFOntologyResource();
-                                        isDefBy.Value = t.Object;
-                                        isDefBy.PatternMemberID = t.Object.PatternMemberID;
+                                        isDefBy = new RDFOntologyResource
+                                        {
+                                            Value = t.Object,
+                                            PatternMemberID = t.Object.PatternMemberID
+                                        };
                                     }
                                 }
                             }
