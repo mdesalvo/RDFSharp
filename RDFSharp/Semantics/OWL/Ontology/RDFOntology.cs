@@ -61,6 +61,16 @@ namespace RDFSharp.Semantics.OWL
                 throw new RDFSemanticsException("Cannot create RDFOntology because given \"ontologyName\" parameter is null.");
             }
         }
+        
+        /// <summary>
+        /// Default-ctor to build an ontology with the given name and the given components
+        /// </summary>
+        public RDFOntology(RDFResource ontologyName, RDFOntologyModel ontologyModel, RDFOntologyData ontologyData, RDFOntologyAnnotations ontologyAnnotations) : this(ontologyName)
+        {            
+            this.Model = ontologyModel ?? new RDFOntologyModel();
+            this.Data = ontologyData ?? new RDFOntologyData();
+            this.Annotations = ontologyAnnotations ?? new RDFOntologyAnnotations();
+        }
         #endregion
 
         #region Methods
