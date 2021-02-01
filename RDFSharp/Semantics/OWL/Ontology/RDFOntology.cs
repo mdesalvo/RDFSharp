@@ -65,7 +65,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an ontology with the given name and the given components
         /// </summary>
-        public RDFOntology(RDFResource ontologyName, RDFOntologyModel ontologyModel, RDFOntologyData ontologyData, RDFOntologyAnnotations ontologyAnnotations) : this(ontologyName)
+        public RDFOntology(RDFResource ontologyName, RDFOntologyModel ontologyModel, RDFOntologyData ontologyData, RDFOntologyAnnotations ontologyAnnotations): this(ontologyName)
         {            
             this.Model = ontologyModel ?? new RDFOntologyModel();
             this.Data = ontologyData ?? new RDFOntologyData();
@@ -79,8 +79,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given standard annotation to the ontology resource
         /// </summary>
-        public RDFOntology AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                 RDFOntologyResource annotationValue)
+        public RDFOntology AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyResource annotationValue)
         {
             if (annotationValue != null)
             {
@@ -201,8 +200,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given custom annotation to the ontology resource
         /// </summary>
-        public RDFOntology AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                               RDFOntologyResource ontologyResource)
+        public RDFOntology AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyResource ontologyResource)
         {
             if (ontologyAnnotationProperty != null && ontologyResource != null)
             {
@@ -282,8 +280,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given standard annotation from the ontology resource
         /// </summary>
-        public RDFOntology RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                    RDFOntologyResource annotationValue)
+        public RDFOntology RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyResource annotationValue)
         {
             if (annotationValue != null)
             {
@@ -348,8 +345,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given custom annotation from the ontology resource
         /// </summary>
-        public RDFOntology RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                  RDFOntologyResource ontologyResource)
+        public RDFOntology RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyResource ontologyResource)
         {
             if (ontologyAnnotationProperty != null && ontologyResource != null)
             {
