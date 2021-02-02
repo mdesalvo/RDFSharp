@@ -41,18 +41,8 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' is going to be parsed as Ontology: triples not having supported ontology semantics may be discarded.", ontGraph.Context));
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP1 PREFETCH");
                 #region Step 1: Prefetch
-
-                var versionInfo = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_INFO);
-                var versionIRI = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_IRI);
-                var comment = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.COMMENT);
-                var label = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.LABEL);
-                var seeAlso = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SEE_ALSO);
-                var isDefinedBy = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.IS_DEFINED_BY);
-                var imports = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.IMPORTS);
-                var bcwcompWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH);
-                var incompWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INCOMPATIBLE_WITH);
-                var priorVersion = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PRIOR_VERSION);
 
                 var rdfType = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
                 var rdfFirst = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
@@ -111,7 +101,9 @@ namespace RDFSharp.Semantics.OWL
                 var incompWithAnn = RDFVocabulary.OWL.INCOMPATIBLE_WITH.ToRDFOntologyAnnotationProperty();
                 var importsAnn = RDFVocabulary.OWL.IMPORTS.ToRDFOntologyAnnotationProperty();
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP1 PREFETCH -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP2 INIT ONTOLOGY");
                 #region Step 2: Init Ontology
                 ontology = new RDFOntology(new RDFResource(ontGraph.Context.ToString())).UnionWith(RDFBASEOntology.Instance);
                 ontology.Value = new RDFResource(ontGraph.Context.ToString());
@@ -126,7 +118,9 @@ namespace RDFSharp.Semantics.OWL
                     }
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP2 INIT ONTOLOGY -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP3 INIT PROPERTY MODEL");
                 #region Step 3: Init PropertyModel
 
                 #region Step 3.0: Load RDF:Property
@@ -358,7 +352,9 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP3 INIT PROPERTY MODEL -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP4 INIT CLASS MODEL");
                 #region Step 4: Init ClassModel
 
                 #region Step 4.0: Load RDFS:Class
@@ -710,7 +706,9 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP4 INIT CLASS MODEL -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP5 INIT DATA");
                 #region Step 5: Init Data
                 foreach (var simpleClass in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
                                                                                         && cls.IsSimpleClass()))
@@ -727,9 +725,11 @@ namespace RDFSharp.Semantics.OWL
                     }
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP5 INIT DATA -> DONE");
 
                 #region Step 6: Finalize
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.1 FINALIZE RESTRICTIONS");
                 #region Step 6.1: Finalize OWL:Restriction
                 var restrictions = ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass()).ToList();
                 foreach (var r in restrictions)
@@ -1058,7 +1058,9 @@ namespace RDFSharp.Semantics.OWL
 
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.1 FINALIZE RESTRICTIONS -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.2 FINALIZE ONEOF ENUMERATE");
                 #region Step 6.2: Finalize OWL:OneOf (Enumerate)
                 foreach (var e in oneOf)
                 {
@@ -1127,7 +1129,9 @@ namespace RDFSharp.Semantics.OWL
                     }
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.2 FINALIZE ONEOF ENUMERATE -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.3 FINALIZE ONEOF DATARANGE");
                 #region Step 6.3: Finalize OWL:OneOf (DataRange)
                 foreach (var d in oneOf)
                 {
@@ -1196,7 +1200,9 @@ namespace RDFSharp.Semantics.OWL
                     }
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.3 FINALIZE ONEOF DATARANGE -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.4 FINALIZE DOMAIN/RANGE");
                 #region Step 6.4: Finalize RDFS:[Domain|Range]
                 foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
                                                                                   && !prop.IsAnnotationProperty()))
@@ -1238,7 +1244,9 @@ namespace RDFSharp.Semantics.OWL
 
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.4 FINALIZE DOMAIN/RANGE -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.5 FINALIZE PROPERTY MODEL");
                 #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:PropertyChainAxiom|OWL:InverseOf]
                 foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
                                                                                   && !prop.IsAnnotationProperty()))
@@ -1499,7 +1507,9 @@ namespace RDFSharp.Semantics.OWL
 
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.5 FINALIZE PROPERTY MODEL -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.6 FINALIZE CLASS MODEL");
                 #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses|OWL:HasKey]]
                 foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)))
                 {
@@ -1689,7 +1699,9 @@ namespace RDFSharp.Semantics.OWL
 
                 }
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.6 FINALIZE CLASS MODEL -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.7 FINALIZE DATA");
                 #region Step 6.7: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS|NEGATIVE ASSERTIONS]
 
                 #region SameAs
@@ -1943,8 +1955,21 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.7 FINALIZE DATA -> DONE");
 
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.8 FINALIZE ANNOTATIONS");
                 #region Step 6.8: Finalize Annotations
+
+                var versionInfo = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_INFO);
+                var versionIRI = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_IRI);
+                var comment = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.COMMENT);
+                var label = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.LABEL);
+                var seeAlso = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SEE_ALSO);
+                var isDefinedBy = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.IS_DEFINED_BY);
+                var imports = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.IMPORTS);
+                var bcwcompWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH);
+                var incompWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INCOMPATIBLE_WITH);
+                var priorVersion = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PRIOR_VERSION);
 
                 #region Ontology
 
@@ -2668,11 +2693,14 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #endregion
-
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.8 FINALIZE ANNOTATIONS -> DONE");
+                
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.9 FINALIZE ONTOLOGY");
                 #region Step 6.9: Finalize Ontology
                 ontology = ontology.DifferenceWith(RDFBASEOntology.Instance);
                 ontology.Value = new RDFResource(ontGraph.Context.ToString());
                 #endregion
+                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.9 FINALIZE ONTOLOGY -> DONE");
 
                 #endregion
 
