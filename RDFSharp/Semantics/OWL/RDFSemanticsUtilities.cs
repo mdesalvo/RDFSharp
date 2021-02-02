@@ -41,9 +41,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' is going to be parsed as Ontology: triples not having supported ontology semantics may be discarded.", ontGraph.Context));
 
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP1 PREFETCH");
                 #region Step 1: Prefetch
-
                 var rdfType = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
                 var rdfFirst = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
                 var rdfRest = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
@@ -100,12 +98,11 @@ namespace RDFSharp.Semantics.OWL
                 var backwardCWAnn = RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH.ToRDFOntologyAnnotationProperty();
                 var incompWithAnn = RDFVocabulary.OWL.INCOMPATIBLE_WITH.ToRDFOntologyAnnotationProperty();
                 var importsAnn = RDFVocabulary.OWL.IMPORTS.ToRDFOntologyAnnotationProperty();
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP1 PREFETCH -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP2 INIT ONTOLOGY");
+                #endregion Step 1: Prefetch
+                
                 #region Step 2: Init Ontology
-                ontology = new RDFOntology(new RDFResource(ontGraph.Context.ToString())).UnionWith(RDFBASEOntology.Instance);
+                ontology = new RDFOntology(new RDFResource(ontGraph.Context.ToString()))
+                                .UnionWith(RDFBASEOntology.Instance);
                 ontology.Value = new RDFResource(ontGraph.Context.ToString());
                 if (!rdfType.ContainsTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY)))
                 {
@@ -117,16 +114,14 @@ namespace RDFSharp.Semantics.OWL
                         ontology.PatternMemberID = ontology.Value.PatternMemberID;
                     }
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP2 INIT ONTOLOGY -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP3 INIT PROPERTY MODEL");
+                #endregion Step 2: Init Ontology
+                
                 #region Step 3: Init PropertyModel
 
                 #region Step 3.0: Load RDF:Property
                 foreach (var p in rdfType.SelectTriplesByObject(RDFVocabulary.RDF.PROPERTY))
                     ontology.Model.PropertyModel.AddProperty(((RDFResource)p.Subject).ToRDFOntologyProperty());
-                #endregion
+                #endregion Step 3.0: Load RDF:Property
 
                 #region Step 3.1: Load OWL:AnnotationProperty
                 foreach (var ap in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ANNOTATION_PROPERTY))
@@ -137,7 +132,7 @@ namespace RDFSharp.Semantics.OWL
                     else
                         ontology.Model.PropertyModel.Properties[aap.PatternMemberID] = aap;
                 }
-                #endregion
+                #endregion Step 3.1: Load OWL:AnnotationProperty
 
                 #region Step 3.2: Load OWL:DatatypeProperty
                 foreach (var dp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.DATATYPE_PROPERTY))
@@ -151,15 +146,15 @@ namespace RDFSharp.Semantics.OWL
                     #region DeprecatedProperty
                     if (rdfType.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY)))
                         dtp.SetDeprecated(true);
-                    #endregion
+                    #endregion DeprecatedProperty
 
                     #region FunctionalProperty
                     if (rdfType.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                         dtp.SetFunctional(true);
-                    #endregion
+                    #endregion FunctionalProperty
 
                 }
-                #endregion
+                #endregion Step 3.2: Load OWL:DatatypeProperty
 
                 #region Step 3.3: Load OWL:ObjectProperty
                 foreach (var op in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.OBJECT_PROPERTY))
@@ -232,7 +227,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     ((RDFOntologyObjectProperty)syp).SetSymmetric(true);
                 }
-                #endregion
+                #endregion SymmetricProperty
 
                 #region AsymmetricProperty [OWL2]
                 foreach (var ap in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ASYMMETRIC_PROPERTY))
@@ -255,7 +250,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     ((RDFOntologyObjectProperty)asyp).SetAsymmetric(true);
                 }
-                #endregion
+                #endregion AsymmetricProperty [OWL2]
 
                 #region ReflexiveProperty [OWL2]
                 foreach (var rp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.REFLEXIVE_PROPERTY))
@@ -278,7 +273,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     ((RDFOntologyObjectProperty)refp).SetReflexive(true);
                 }
-                #endregion
+                #endregion ReflexiveProperty [OWL2]
 
                 #region IrreflexiveProperty [OWL2]
                 foreach (var irp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY))
@@ -301,7 +296,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     ((RDFOntologyObjectProperty)irrefp).SetIrreflexive(true);
                 }
-                #endregion
+                #endregion IrreflexiveProperty [OWL2]
 
                 #region TransitiveProperty
                 foreach (var tp in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.TRANSITIVE_PROPERTY))
@@ -324,7 +319,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     ((RDFOntologyObjectProperty)trp).SetTransitive(true);
                 }
-                #endregion
+                #endregion TransitiveProperty
 
                 #region InverseFunctionalProperty
                 foreach (var ip in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY))
@@ -348,13 +343,12 @@ namespace RDFSharp.Semantics.OWL
                     }
                     ((RDFOntologyObjectProperty)ifp).SetInverseFunctional(true);
                 }
-                #endregion
-                #endregion
+                #endregion InverseFunctionalProperty
 
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP3 INIT PROPERTY MODEL -> DONE");
+                #endregion 3.3: Load OWL:ObjectProperty
 
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP4 INIT CLASS MODEL");
+                #endregion Step 3: Init PropertyModel
+                
                 #region Step 4: Init ClassModel
 
                 #region Step 4.0: Load RDFS:Class
@@ -366,10 +360,10 @@ namespace RDFSharp.Semantics.OWL
                     #region DeprecatedClass
                     if (rdfType.ContainsTriple(new RDFTriple((RDFResource)rdfsClass.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_CLASS)))
                         rdfsClass.SetDeprecated(true);
-                    #endregion
+                    #endregion DeprecatedClass
 
                 }
-                #endregion
+                #endregion Step 4.0: Load RDFS:Class
 
                 #region Step 4.1: Load OWL:DataRange
                 foreach (var dr in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.DATA_RANGE))
@@ -380,7 +374,7 @@ namespace RDFSharp.Semantics.OWL
                     else
                         ontology.Model.ClassModel.Classes[datarangeClass.PatternMemberID] = datarangeClass;
                 }
-                #endregion
+                #endregion Step 4.1: Load OWL:DataRange
 
                 #region Step 4.2: Load OWL:Class
                 foreach (var c in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.CLASS))
@@ -394,10 +388,10 @@ namespace RDFSharp.Semantics.OWL
                     #region DeprecatedClass
                     if (rdfType.ContainsTriple(new RDFTriple((RDFResource)owlClass.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_CLASS)))
                         owlClass.SetDeprecated(true);
-                    #endregion
+                    #endregion DeprecatedClass
 
                 }
-                #endregion
+                #endregion Step 4.2: Load OWL:Class
 
                 #region Step 4.3: Load OWL:DeprecatedClass
                 foreach (var dc in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.DEPRECATED_CLASS))
@@ -408,7 +402,7 @@ namespace RDFSharp.Semantics.OWL
                     else
                         ontology.Model.ClassModel.Classes[deprecatedClass.PatternMemberID].SetDeprecated(true);
                 }
-                #endregion
+                #endregion Step 4.3: Load OWL:DeprecatedClass
 
                 #region Step 4.4: Load OWL:Restriction
                 foreach (var r in rdfType.SelectTriplesByObject(RDFVocabulary.OWL.RESTRICTION))
@@ -442,10 +436,10 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Restriction '{0}' cannot be imported from graph, because definition of its applied property '{1}' is not found in the model.", r.Subject, op.Object));
                         }
                     }
-                    #endregion
+                    #endregion OnProperty
 
                 }
-                #endregion
+                #endregion Step 4.4: Load OWL:Restriction
 
                 #region Step 4.5: Load OWL:[UnionOf|DisjointUnionOf|IntersectionOf|ComplementOf]
 
@@ -520,7 +514,7 @@ namespace RDFSharp.Semantics.OWL
                             #endregion
                     }
                 }
-                #endregion
+                #endregion Union
 
                 #region DisjointUnion [OWL2]
                 foreach (var du in disjointUnionOf)
@@ -600,7 +594,7 @@ namespace RDFSharp.Semantics.OWL
                         #endregion
                     }
                 }
-                #endregion
+                #endregion DisjointUnion [OWL2]
 
                 #region Intersection
                 foreach (var i in intersectionOf)
@@ -672,7 +666,7 @@ namespace RDFSharp.Semantics.OWL
                         #endregion
                     }
                 }
-                #endregion
+                #endregion Intersection
 
                 #region Complement
                 foreach (var c in complementOf)
@@ -701,17 +695,15 @@ namespace RDFSharp.Semantics.OWL
                         }
                     }
                 }
-                #endregion
+                #endregion Complement
 
-                #endregion
+                #endregion Step 4.5: Load OWL:[UnionOf|DisjointUnionOf|IntersectionOf|ComplementOf]
 
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP4 INIT CLASS MODEL -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP5 INIT DATA");
+                #endregion Step 4: Init ClassModel
+                
                 #region Step 5: Init Data
-                foreach (var simpleClass in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                                        && cls.IsSimpleClass()))
+                var evaluableClasses = ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)).ToList();
+                foreach (var simpleClass in evaluableClasses.Where(cls => cls.IsSimpleClass()))
                 {
                     foreach (var classtypeTriple in rdfType.SelectTriplesByObject((RDFResource)simpleClass.Value))
                     {
@@ -719,19 +711,18 @@ namespace RDFSharp.Semantics.OWL
                         if (fact == null)
                         {
                             fact = ((RDFResource)classtypeTriple.Subject).ToRDFOntologyFact();
-                            ontology.Data.AddFact(fact); //This is the explicit declaration of a fact: instance of a simple class
+                            ontology.Data.AddFact(fact); //This is the explicit declaration of a fact as instance of a simple class!
                         }
                         ontology.Data.AddClassTypeRelation(fact, simpleClass);
                     }
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP5 INIT DATA -> DONE");
-
+                #endregion Step 5: Init Data
+                
                 #region Step 6: Finalize
 
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.1 FINALIZE RESTRICTIONS");
                 #region Step 6.1: Finalize OWL:Restriction
-                var restrictions = ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass()).ToList();
+                var restrictions = ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass())
+                                                            .ToList();
                 foreach (var r in restrictions)
                 {
 
@@ -767,7 +758,7 @@ namespace RDFSharp.Semantics.OWL
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
                         continue; //Restriction has been successfully typed
                     }
-                    #endregion
+                    #endregion ExactCardinality
 
                     #region MinMaxCardinality
                     int minC = 0;
@@ -822,9 +813,9 @@ namespace RDFSharp.Semantics.OWL
                         ontology.Model.ClassModel.Classes[r.PatternMemberID] = cardRestr;
                         continue; //Restriction has been successfully typed
                     }
-                    #endregion
+                    #endregion MinMaxCardinality
 
-                    #endregion
+                    #endregion Cardinality
 
                     #region QualifiedCardinality [OWL2]
 
@@ -892,7 +883,7 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
-                    #endregion
+                    #endregion ExactQualifiedCardinality [OWL2]
 
                     #region MinMaxQualifiedCardinality [OWL2]
                     int minQC = 0;
@@ -981,9 +972,9 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
-                    #endregion
+                    #endregion MinMaxQualifiedCardinality [OWL2]
 
-                    #endregion
+                    #endregion QualifiedCardinality [OWL2]
                 
                     #region HasSelf [OWL2]
                     var hsRes = hasself.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -997,7 +988,7 @@ namespace RDFSharp.Semantics.OWL
                             continue; //Restriction has been successfully typed
                         }
                     }
-                    #endregion
+                    #endregion HasSelf [OWL2]
 
                     #region HasValue
                     var hvRes = hasvalue.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1016,7 +1007,7 @@ namespace RDFSharp.Semantics.OWL
                             continue; //Restriction has been successfully typed
                         }
                     }
-                    #endregion
+                    #endregion HasValue
 
                     #region AllValuesFrom
                     var avfRes = allvaluesFrom.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1035,7 +1026,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Restriction '{0}' cannot be imported from graph, because definition of its required class '{1}' is not found in the model.", r.Value, avfRes.Object));
                         }
                     }
-                    #endregion
+                    #endregion AllValuesFrom
 
                     #region SomeValuesFrom
                     var svfRes = somevaluesFrom.SelectTriplesBySubject((RDFResource)r.Value).FirstOrDefault();
@@ -1054,13 +1045,11 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Restriction '{0}' cannot be imported from graph, because definition of its required class '{1}' is not found in the model.", r.Value, svfRes.Object));
                         }
                     }
-                    #endregion
+                    #endregion SomeValuesFrom
 
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.1 FINALIZE RESTRICTIONS -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.2 FINALIZE ONEOF ENUMERATE");
+                #endregion Step 6.1: Finalize OWL:Restriction
+                
                 #region Step 6.2: Finalize OWL:OneOf (Enumerate)
                 foreach (var e in oneOf)
                 {
@@ -1076,7 +1065,7 @@ namespace RDFSharp.Semantics.OWL
                                 ec = new RDFOntologyEnumerateClass((RDFResource)e.Subject);
                                 ontology.Model.ClassModel.Classes[ec.PatternMemberID] = ec;
                             }
-                            #endregion
+                            #endregion ClassToEnumerateClass
 
                             #region DeserializeEnumerateCollection
                             var nilFound = false;
@@ -1105,17 +1094,17 @@ namespace RDFSharp.Semantics.OWL
                                             itemRest = (RDFResource)rest.Object;
                                         }
                                     }
-                                    #endregion
+                                    #endregion rdf:rest
 
                                 }
                                 else
                                 {
                                     nilFound = true;
                                 }
-                                #endregion
+                                #endregion rdf:first
 
                             }
-                            #endregion
+                            #endregion DeserializeEnumerateCollection
 
                         }
                         else
@@ -1128,10 +1117,8 @@ namespace RDFSharp.Semantics.OWL
                         }
                     }
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.2 FINALIZE ONEOF ENUMERATE -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.3 FINALIZE ONEOF DATARANGE");
+                #endregion Step 6.2: Finalize OWL:OneOf (Enumerate)
+                
                 #region Step 6.3: Finalize OWL:OneOf (DataRange)
                 foreach (var d in oneOf)
                 {
@@ -1147,7 +1134,7 @@ namespace RDFSharp.Semantics.OWL
                                 dr = new RDFOntologyDataRangeClass((RDFResource)d.Subject);
                                 ontology.Model.ClassModel.Classes[dr.PatternMemberID] = dr;
                             }
-                            #endregion
+                            #endregion ClassToDataRangeClass
 
                             #region DeserializeDataRangeCollection
                             var nilFound = false;
@@ -1176,17 +1163,17 @@ namespace RDFSharp.Semantics.OWL
                                             itemRest = (RDFResource)rest.Object;
                                         }
                                     }
-                                    #endregion
+                                    #endregion rdf:rest
 
                                 }
                                 else
                                 {
                                     nilFound = true;
                                 }
-                                #endregion
+                                #endregion rdf:first
 
                             }
-                            #endregion
+                            #endregion DeserializeDataRangeCollection
 
                         }
                         else
@@ -1199,136 +1186,125 @@ namespace RDFSharp.Semantics.OWL
                         }
                     }
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.3 FINALIZE ONEOF DATARANGE -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.4 FINALIZE DOMAIN/RANGE");
-                #region Step 6.4: Finalize RDFS:[Domain|Range]
-                foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                  && !prop.IsAnnotationProperty()))
+                #endregion Step 6.3: Finalize OWL:OneOf (DataRange)
+                
+                #region Step 6.4: Finalize PropertyModel [RDFS:Domain|RDFS:Range|RDFS:SubPropertyOf][OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:PropertyChainAxiom|OWL:InverseOf]
+                var evaluableProperties = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop) 
+                                                                                        && !prop.IsAnnotationProperty()).ToList();
+                foreach (var evp in evaluableProperties)
                 {
 
                     #region Domain
-                    var d = domain.SelectTriplesBySubject((RDFResource)p.Value).FirstOrDefault();
+                    var d = domain.SelectTriplesBySubject((RDFResource)evp.Value).FirstOrDefault();
                     if (d != null && d.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
                         var domainClass = ontology.Model.ClassModel.SelectClass(d.Object.ToString());
                         if (domainClass != null)
                         {
-                            p.SetDomain(domainClass);
+                            evp.SetDomain(domainClass);
                         }
                         else
                         {
                             //Raise warning event to inform the user: domain constraint cannot be imported from graph because definition of required class is not found in the model
-                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Domain constraint on property '{0}' cannot be imported from graph because definition of required class '{1}' is not found in the model.", p.Value, d.Object));
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Domain constraint on property '{0}' cannot be imported from graph because definition of required class '{1}' is not found in the model.", evp.Value, d.Object));
                         }
                     }
-                    #endregion
+                    #endregion Domain
 
                     #region Range
-                    var r = range.SelectTriplesBySubject((RDFResource)p.Value).FirstOrDefault();
+                    var r = range.SelectTriplesBySubject((RDFResource)evp.Value).FirstOrDefault();
                     if (r != null && r.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
                         var rangeClass = ontology.Model.ClassModel.SelectClass(r.Object.ToString());
                         if (rangeClass != null)
                         {
-                            p.SetRange(rangeClass);
+                            evp.SetRange(rangeClass);
                         }
                         else
                         {
                             //Raise warning event to inform the user: range constraint cannot be imported from graph because definition of required class is not found in the model
-                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Range constraint on property '{0}' cannot be imported from graph because definition of required class '{1}' is not found in the model.", p.Value, r.Object));
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Range constraint on property '{0}' cannot be imported from graph because definition of required class '{1}' is not found in the model.", evp.Value, r.Object));
                         }
                     }
-                    #endregion
-
-                }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.4 FINALIZE DOMAIN/RANGE -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.5 FINALIZE PROPERTY MODEL");
-                #region Step 6.5: Finalize PropertyModel [RDFS:SubPropertyOf|OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:PropertyChainAxiom|OWL:InverseOf]
-                foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                  && !prop.IsAnnotationProperty()))
-                {
+                    #endregion Range
 
                     #region SubPropertyOf
-                    foreach (var spof in subpropOf.SelectTriplesBySubject((RDFResource)p.Value))
+                    foreach (var spof in subpropOf.SelectTriplesBySubject((RDFResource)evp.Value))
                     {
                         if (spof.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             var superProp = ontology.Model.PropertyModel.SelectProperty(spof.Object.ToString());
                             if (superProp != null)
                             {
-                                if (p.IsObjectProperty() && superProp.IsObjectProperty())
+                                if (evp.IsObjectProperty() && superProp.IsObjectProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddSubPropertyOfRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)superProp);
+                                    ontology.Model.PropertyModel.AddSubPropertyOfRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)superProp);
                                 }
-                                else if (p.IsDatatypeProperty() && superProp.IsDatatypeProperty())
+                                else if (evp.IsDatatypeProperty() && superProp.IsDatatypeProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddSubPropertyOfRelation((RDFOntologyDatatypeProperty)p, (RDFOntologyDatatypeProperty)superProp);
+                                    ontology.Model.PropertyModel.AddSubPropertyOfRelation((RDFOntologyDatatypeProperty)evp, (RDFOntologyDatatypeProperty)superProp);
                                 }
                             }
                             else
                             {
                                 //Raise warning event to inform the user: subpropertyof relation cannot be imported from graph because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model or represents an annotation property.", p.Value, spof.Object));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model or represents an annotation property.", evp.Value, spof.Object));
                             }
                         }
                     }
-                    #endregion
+                    #endregion SubPropertyOf
 
                     #region EquivalentProperty
-                    foreach (var eqpr in equivpropOf.SelectTriplesBySubject((RDFResource)p.Value))
+                    foreach (var eqpr in equivpropOf.SelectTriplesBySubject((RDFResource)evp.Value))
                     {
                         if (eqpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             var equivProp = ontology.Model.PropertyModel.SelectProperty(eqpr.Object.ToString());
                             if (equivProp != null)
                             {
-                                if (p.IsObjectProperty() && equivProp.IsObjectProperty())
+                                if (evp.IsObjectProperty() && equivProp.IsObjectProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddEquivalentPropertyRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)equivProp);
+                                    ontology.Model.PropertyModel.AddEquivalentPropertyRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)equivProp);
                                 }
-                                else if (p.IsDatatypeProperty() && equivProp.IsDatatypeProperty())
+                                else if (evp.IsDatatypeProperty() && equivProp.IsDatatypeProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddEquivalentPropertyRelation((RDFOntologyDatatypeProperty)p, (RDFOntologyDatatypeProperty)equivProp);
+                                    ontology.Model.PropertyModel.AddEquivalentPropertyRelation((RDFOntologyDatatypeProperty)evp, (RDFOntologyDatatypeProperty)equivProp);
                                 }
                             }
                             else
                             {
                                 //Raise warning event to inform the user: equivalentproperty relation cannot be imported from graph, because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", p.Value, eqpr.Object));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", evp.Value, eqpr.Object));
                             }
                         }
                     }
-                    #endregion
+                    #endregion EquivalentProperty
 
                     #region PropertyDisjointWith [OWL2]
-                    foreach (var dwpr in disjpropWith.SelectTriplesBySubject((RDFResource)p.Value))
+                    foreach (var dwpr in disjpropWith.SelectTriplesBySubject((RDFResource)evp.Value))
                     {
                         if (dwpr.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             var disjProp = ontology.Model.PropertyModel.SelectProperty(dwpr.Object.ToString());
                             if (disjProp != null)
                             {
-                                if (p.IsObjectProperty() && disjProp.IsObjectProperty())
+                                if (evp.IsObjectProperty() && disjProp.IsObjectProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)disjProp);
+                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)disjProp);
                                 }
-                                else if (p.IsDatatypeProperty() && disjProp.IsDatatypeProperty())
+                                else if (evp.IsDatatypeProperty() && disjProp.IsDatatypeProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)p, (RDFOntologyDatatypeProperty)disjProp);
+                                    ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)evp, (RDFOntologyDatatypeProperty)disjProp);
                                 }
                             }
                             else
                             {
                                 //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported from graph because definition of property is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", p.Value, dwpr.Object));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", evp.Value, dwpr.Object));
                             }
                         }
                     }
-                    #endregion
+                    #endregion PropertyDisjointWith [OWL2]
 
                     #region AllDisjointProperties [OWL2]
                     foreach (var adjp in alldisjprops)
@@ -1399,10 +1375,10 @@ namespace RDFSharp.Semantics.OWL
                             }
                         }
                     }
-                    #endregion
+                    #endregion AllDisjointProperties [OWL2]
 
                     #region PropertyChainAxiom [OWL2]
-                    foreach (var pca in propertyChainAxiom.SelectTriplesBySubject((RDFResource)p.Value))
+                    foreach (var pca in propertyChainAxiom.SelectTriplesBySubject((RDFResource)evp.Value))
                     {
                         var pcaProperty = ontology.Model.PropertyModel.SelectProperty(pca.Subject.ToString());
                         if (pcaProperty != null)
@@ -1481,95 +1457,93 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyChainAxiom relation on property '{0}' cannot be imported from graph, because definition of the property is not found in the model.", pca.Subject));
                         }
                     }
-                    #endregion
+                    #endregion PropertyChainAxiom [OWL2]
 
                     #region InverseOf
-                    if (p.IsObjectProperty())
+                    if (evp.IsObjectProperty())
                     {
-                        foreach (var inof in inverseOf.SelectTriplesBySubject((RDFResource)p.Value))
+                        foreach (var inof in inverseOf.SelectTriplesBySubject((RDFResource)evp.Value))
                         {
                             if (inof.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
                                 var invProp = ontology.Model.PropertyModel.SelectProperty(inof.Object.ToString());
                                 if (invProp != null && invProp.IsObjectProperty())
                                 {
-                                    ontology.Model.PropertyModel.AddInverseOfRelation((RDFOntologyObjectProperty)p, (RDFOntologyObjectProperty)invProp);
+                                    ontology.Model.PropertyModel.AddInverseOfRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)invProp);
                                 }
                                 else
                                 {
                                     //Raise warning event to inform the user: inverseof relation cannot be imported from graph because definition of property is not found in the model
-                                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("InverseOf relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", p.Value, inof.Object));
+                                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("InverseOf relation on property '{0}' cannot be imported from graph because definition of property '{1}' is not found in the model.", evp.Value, inof.Object));
                                 }
                             }
                         }
                     }
-                    #endregion
+                    #endregion InverseOf
 
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.5 FINALIZE PROPERTY MODEL -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.6 FINALIZE CLASS MODEL");
-                #region Step 6.6: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses|OWL:HasKey]]
-                foreach (var c in ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)))
+                #endregion Step 6.4: Finalize PropertyModel [RDFS:Domain|RDFS:Range|RDFS:SubPropertyOf][OWL:EquivalentProperty|OWL:PropertyDisjointWith|OWL:AllDisjointProperties|OWL:PropertyChainAxiom|OWL:InverseOf]
+                
+                #region Step 6.5: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses|OWL:HasKey]
+                foreach (var evc in evaluableClasses)
                 {
 
                     #region SubClassOf
-                    foreach (var scof in subclassOf.SelectTriplesBySubject((RDFResource)c.Value))
+                    foreach (var scof in subclassOf.SelectTriplesBySubject((RDFResource)evc.Value))
                     {
                         if (scof.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             var superClass = ontology.Model.ClassModel.SelectClass(scof.Object.ToString());
                             if (superClass != null)
                             {
-                                ontology.Model.ClassModel.AddSubClassOfRelation(c, superClass);
+                                ontology.Model.ClassModel.AddSubClassOfRelation(evc, superClass);
                             }
                             else
                             {
                                 //Raise warning event to inform the user: subclassof relation cannot be imported from graph, because definition of class is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubClassOf relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", c.Value, scof.Object));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubClassOf relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", evc.Value, scof.Object));
                             }
                         }
                     }
-                    #endregion
+                    #endregion SubClassOf
 
                     #region EquivalentClass
-                    foreach (var eqcl in equivclassOf.SelectTriplesBySubject((RDFResource)c.Value))
+                    foreach (var eqcl in equivclassOf.SelectTriplesBySubject((RDFResource)evc.Value))
                     {
                         if (eqcl.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             var equivClass = ontology.Model.ClassModel.SelectClass(eqcl.Object.ToString());
                             if (equivClass != null)
                             {
-                                ontology.Model.ClassModel.AddEquivalentClassRelation(c, equivClass);
+                                ontology.Model.ClassModel.AddEquivalentClassRelation(evc, equivClass);
                             }
                             else
                             {
                                 //Raise warning event to inform the user: equivalentclass relation cannot be imported from graph, because definition of class is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentClass relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", c.Value, eqcl.Object));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentClass relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", evc.Value, eqcl.Object));
                             }
                         }
                     }
-                    #endregion
+                    #endregion EquivalentClass
 
                     #region DisjointWith
-                    foreach (var djwt in disjclassWith.SelectTriplesBySubject((RDFResource)c.Value))
+                    foreach (var djwt in disjclassWith.SelectTriplesBySubject((RDFResource)evc.Value))
                     {
                         if (djwt.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             var disjWith = ontology.Model.ClassModel.SelectClass(djwt.Object.ToString());
                             if (disjWith != null)
                             {
-                                ontology.Model.ClassModel.AddDisjointWithRelation(c, disjWith);
+                                ontology.Model.ClassModel.AddDisjointWithRelation(evc, disjWith);
                             }
                             else
                             {
                                 //Raise warning event to inform the user: disjointwith relation cannot be imported from graph, because definition of class is not found in the model
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DisjointWith relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", c.Value, djwt.Object));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("DisjointWith relation on class '{0}' cannot be imported from graph, because definition of class '{1}' is not found in the model.", evc.Value, djwt.Object));
                             }
                         }
                     }
-                    #endregion
+                    #endregion DisjointWith
 
                     #region AllDisjointClasses [OWL2]
                     foreach (var adjc in alldisjclasses)
@@ -1615,24 +1589,24 @@ namespace RDFSharp.Semantics.OWL
                                                 itemRest = (RDFResource)rest.Object;
                                             }
                                         }
-                                        #endregion
+                                        #endregion rdf:rest
                                     }
                                     else
                                     {
                                         nilFound = true;
                                     }
-                                    #endregion
+                                    #endregion rdf:first
 
                                 }
-                                #endregion
+                                #endregion DeserializeCollection
                             }
                         }
                         ontology.Model.ClassModel.AddAllDisjointClassesRelation(allDisjointClasses);
                     }
-                    #endregion
+                    #endregion AllDisjointClasses [OWL2]
 
                     #region HasKey [OWL2]
-                    foreach (var haskey in hasKey.SelectTriplesBySubject((RDFResource)c.Value))
+                    foreach (var haskey in hasKey.SelectTriplesBySubject((RDFResource)evc.Value))
                     {
                         var haskeyClass = ontology.Model.ClassModel.SelectClass(haskey.Subject.ToString());
                         if (haskeyClass != null)
@@ -1676,16 +1650,16 @@ namespace RDFSharp.Semantics.OWL
                                                 itemRest = (RDFResource)rest.Object;
                                             }
                                         }
-                                        #endregion
+                                        #endregion rdf:rest
                                     }
                                     else
                                     {
                                         nilFound = true;
                                     }
-                                    #endregion
+                                    #endregion rdf:first
 
                                 }
-                                #endregion
+                                #endregion DeserializeCollection
                             }
                             ontology.Model.ClassModel.AddHasKeyRelation(haskeyClass, keyProps);
                         }
@@ -1695,30 +1669,28 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("HasKey relation on class '{0}' cannot be imported from graph, because definition of the class is not found in the model.", haskey.Subject));
                         }
                     }
-                    #endregion
+                    #endregion HasKey [OWL2]
 
                 }
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.6 FINALIZE CLASS MODEL -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.7 FINALIZE DATA");
-                #region Step 6.7: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS|NEGATIVE ASSERTIONS]
+                #endregion Step 6.5: Finalize ClassModel [RDFS:SubClassOf|OWL:EquivalentClass|OWL:DisjointWith|OWL:AllDisjointClasses|OWL:HasKey]
+                
+                #region Step 6.6: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS|NEGATIVE ASSERTIONS]
 
                 #region SameAs
-                foreach (var t in sameAs)
+                foreach (var sa in sameAs)
                 {
-                    if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        ontology.Data.AddSameAsRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), ((RDFResource)t.Object).ToRDFOntologyFact());
+                    if (sa.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        ontology.Data.AddSameAsRelation(((RDFResource)sa.Subject).ToRDFOntologyFact(), ((RDFResource)sa.Object).ToRDFOntologyFact());
                 }
-                #endregion
+                #endregion SameAs
 
                 #region DifferentFrom
-                foreach (var t in differentFrom)
+                foreach (var df in differentFrom)
                 {
-                    if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        ontology.Data.AddDifferentFromRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), ((RDFResource)t.Object).ToRDFOntologyFact());
+                    if (df.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                        ontology.Data.AddDifferentFromRelation(((RDFResource)df.Subject).ToRDFOntologyFact(), ((RDFResource)df.Object).ToRDFOntologyFact());
                 }
-                #endregion
+                #endregion DifferentFrom
 
                 #region AllDifferent [OWL2]
                 foreach (var adif in alldifferent)
@@ -1764,21 +1736,21 @@ namespace RDFSharp.Semantics.OWL
                                             itemRest = (RDFResource)rest.Object;
                                         }
                                     }
-                                    #endregion
+                                    #endregion rdf:rest
                                 }
                                 else
                                 {
                                     nilFound = true;
                                 }
-                                #endregion
+                                #endregion rdf:first
 
                             }
-                            #endregion
+                            #endregion DeserializeCollection
                         }
                     }
                     ontology.Data.AddAllDifferentRelation(allDifferentFacts);
                 }
-                #endregion
+                #endregion AllDifferent [OWL2]
 
                 #region OrderedCollection [SKOS]
                 foreach (var ordCol in skosMemberList)
@@ -1824,21 +1796,21 @@ namespace RDFSharp.Semantics.OWL
                                         itemRest = (RDFResource)rest.Object;
                                     }
                                 }
-                                #endregion
+                                #endregion rdf:rest
 
                             }
                             else
                             {
                                 nilFound = true;
                             }
-                            #endregion
+                            #endregion rdf:first
 
                         }
-                        #endregion
+                        #endregion DeserializeOrderedCollection
 
                     }
                 }
-                #endregion
+                #endregion OrderedCollection [SKOS]
 
                 #region NegativeAssertions [OWL2]
                 foreach (var nAsn in negativeAssertions)
@@ -1851,7 +1823,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:SourceIndividual triple is not found in the graph or it does not link a resource.", nAsn.Subject));
                         continue;
                     }
-                    #endregion
+                    #endregion owl:SourceIndividual
 
                     #region owl:AssertionProperty
                     RDFPatternMember asnProperty = assertionProperty.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
@@ -1870,7 +1842,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because owl:AssertionProperty '{1}' is not a declared property.", nAsn.Subject, asnProperty));
                         continue;
                     }
-                    #endregion
+                    #endregion owl:AssertionProperty
 
                     #region owl:TargetIndividual
                     RDFPatternMember tIndividual = targetIndividual.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
@@ -1890,7 +1862,7 @@ namespace RDFSharp.Semantics.OWL
                             continue;
                         }
                     }
-                    #endregion
+                    #endregion owl:TargetIndividual
 
                     #region owl:TargetValue
                     RDFPatternMember tValue = targetValue.SelectTriplesBySubject((RDFResource)nAsn.Subject).FirstOrDefault()?.Object;
@@ -1908,57 +1880,54 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetValue is not correct.", nAsn.Subject));
                         }
                     }
-                    #endregion
+                    #endregion owl:TargetValue
 
                     //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because neither owl:TargetIndividual or owl:TargetValue triples are found in the graph
                     RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because neither owl:TargetIndividual or owl:TargetValue triples are found in the graph.", nAsn.Subject));
                 }
-                #endregion
+                #endregion NegativeAssertions [OWL2]
 
                 #region Assertions
-                foreach (var p in ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                  && !prop.IsAnnotationProperty()))
+                foreach (var p in evaluableProperties)
                 {
-                    foreach (var t in ontGraph.SelectTriplesByPredicate((RDFResource)p.Value).Where(triple => !triple.Subject.Equals(ontology)
-                                                                                                                 && !ontology.Model.ClassModel.Classes.ContainsKey(triple.Subject.PatternMemberID)
-                                                                                                                    && !ontology.Model.PropertyModel.Properties.ContainsKey(triple.Subject.PatternMemberID)))
+                    foreach (var asn in ontGraph.SelectTriplesByPredicate((RDFResource)p.Value).Where(triple => !triple.Subject.Equals(ontology)
+                                                                                                                    && !ontology.Model.ClassModel.Classes.ContainsKey(triple.Subject.PatternMemberID)
+                                                                                                                        && !ontology.Model.PropertyModel.Properties.ContainsKey(triple.Subject.PatternMemberID)))
                     {
                         //Check if the property is an owl:ObjectProperty
                         if (p.IsObjectProperty())
                         {
-                            if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                            if (asn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                             {
-                                ontology.Data.AddAssertionRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), (RDFOntologyObjectProperty)p, ((RDFResource)t.Object).ToRDFOntologyFact());
+                                ontology.Data.AddAssertionRelation(((RDFResource)asn.Subject).ToRDFOntologyFact(), (RDFOntologyObjectProperty)p, ((RDFResource)asn.Object).ToRDFOntologyFact());
                             }
                             else
                             {
                                 //Raise warning event to inform the user: assertion relation cannot be imported from graph, because object property links to a literal
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation on fact '{0}' cannot be imported from graph, because object property '{1}' links to a literal.", t.Subject, p));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation on fact '{0}' cannot be imported from graph, because object property '{1}' links to a literal.", asn.Subject, p));
                             }
                         }
 
                         //Check if the property is an owl:DatatypeProperty
                         else if (p.IsDatatypeProperty())
                         {
-                            if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                            if (asn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             {
-                                ontology.Data.AddAssertionRelation(((RDFResource)t.Subject).ToRDFOntologyFact(), (RDFOntologyDatatypeProperty)p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
+                                ontology.Data.AddAssertionRelation(((RDFResource)asn.Subject).ToRDFOntologyFact(), (RDFOntologyDatatypeProperty)p, ((RDFLiteral)asn.Object).ToRDFOntologyLiteral());
                             }
                             else
                             {
                                 //Raise warning event to inform the user: assertion relation cannot be imported from graph, because datatype property links to a fact
-                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation on fact '{0}' cannot be imported from graph, because datatype property '{1}' links to a fact.", t.Subject, p));
+                                RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation on fact '{0}' cannot be imported from graph, because datatype property '{1}' links to a fact.", asn.Subject, p));
                             }
                         }
                     }
                 }
-                #endregion
+                #endregion Assertions
 
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.7 FINALIZE DATA -> DONE");
-
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.8 FINALIZE ANNOTATIONS");
-                #region Step 6.8: Finalize Annotations
+                #endregion Step 6.6: Finalize Data [OWL:SameAs|OWL:DifferentFrom|OWL:AllDifferent|SKOS:OrderedCollection|ASSERTIONS|NEGATIVE ASSERTIONS]
+                
+                #region Step 6.7: Finalize Annotations
 
                 var versionInfo = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_INFO);
                 var versionIRI = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_IRI);
@@ -1971,7 +1940,7 @@ namespace RDFSharp.Semantics.OWL
                 var incompWith = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.INCOMPATIBLE_WITH);
                 var priorVersion = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.PRIOR_VERSION);
 
-                #region Ontology
+                #region Ontology Annotations
 
                 #region VersionInfo
                 foreach (var t in versionInfo.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -1986,7 +1955,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("VersionInfo annotation on ontology '{0}' cannot be imported from graph, because it does not link a literal.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion VersionInfo
 
                 #region VersionIRI
                 foreach (var t in versionIRI.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2001,7 +1970,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("VersionIRI annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion VersionIRI
 
                 #region Comment
                 foreach (var t in comment.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2016,7 +1985,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Comment annotation on ontology '{0}' cannot be imported from graph, because it does not link a literal.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion Comment
 
                 #region Label
                 foreach (var t in label.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2031,7 +2000,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Label annotation on ontology '{0}' cannot be imported from graph, because it does not link a literal.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion Label
 
                 #region SeeAlso
                 foreach (var t in seeAlso.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2062,7 +2031,7 @@ namespace RDFSharp.Semantics.OWL
                         ontology.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, resource);
                     }
                 }
-                #endregion
+                #endregion SeeAlso
 
                 #region IsDefinedBy
                 foreach (var t in isDefinedBy.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2093,7 +2062,7 @@ namespace RDFSharp.Semantics.OWL
                         ontology.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, isDefBy);
                     }
                 }
-                #endregion
+                #endregion IsDefinedBy
 
                 #region BackwardCompatibleWith
                 foreach (var t in bcwcompWith.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2108,7 +2077,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("BackwardCompatibleWith annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion BackwardCompatibleWith
 
                 #region IncompatibleWith
                 foreach (var t in incompWith.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2123,7 +2092,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("IncompatibleWith annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion IncompatibleWith
 
                 #region PriorVersion
                 foreach (var t in priorVersion.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2138,7 +2107,7 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PriorVersion annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion PriorVersion
 
                 #region Imports
                 foreach (var t in imports.SelectTriplesBySubject((RDFResource)ontology.Value))
@@ -2153,10 +2122,10 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Imports annotation on ontology '{0}' cannot be imported from graph, because it does not link a resource.", ontology.Value));
                     }
                 }
-                #endregion
+                #endregion Imports
 
                 #region CustomAnnotations
-                var annotProps = ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty());
+                var annotProps = ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty()).ToList();
                 foreach (var annotProp in annotProps)
                 {
                     //Skip built-in annotation properties
@@ -2202,11 +2171,11 @@ namespace RDFSharp.Semantics.OWL
                     }
 
                 }
-                #endregion
+                #endregion CustomAnnotations
 
-                #endregion
+                #endregion Ontology Annotations
 
-                #region Classes
+                #region ClassModel Annotations
                 foreach (var c in ontology.Model.ClassModel)
                 {
 
@@ -2223,7 +2192,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("VersionInfo annotation on class '{0}' cannot be imported from graph, because it does not link a literal.", c.Value));
                         }
                     }
-                    #endregion
+                    #endregion VersionInfo
 
                     #region Comment
                     foreach (var t in comment.SelectTriplesBySubject((RDFResource)c.Value))
@@ -2238,7 +2207,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Comment annotation on class '{0}' cannot be imported from graph, because it does not link a literal.", c.Value));
                         }
                     }
-                    #endregion
+                    #endregion Comment
 
                     #region Label
                     foreach (var t in label.SelectTriplesBySubject((RDFResource)c.Value))
@@ -2253,7 +2222,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Label annotation on class '{0}' cannot be imported from graph, because it does not link a literal.", c.Value));
                         }
                     }
-                    #endregion
+                    #endregion Label
 
                     #region SeeAlso
                     foreach (var t in seeAlso.SelectTriplesBySubject((RDFResource)c.Value))
@@ -2284,7 +2253,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.ClassModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, c, resource);
                         }
                     }
-                    #endregion
+                    #endregion SeeAlso
 
                     #region IsDefinedBy
                     foreach (var t in isDefinedBy.SelectTriplesBySubject((RDFResource)c.Value))
@@ -2315,7 +2284,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.ClassModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, c, isDefBy);
                         }
                     }
-                    #endregion
+                    #endregion IsDefinedBy
 
                     #region CustomAnnotations
                     foreach (var annotProp in annotProps)
@@ -2363,12 +2332,12 @@ namespace RDFSharp.Semantics.OWL
                         }
 
                     }
-                    #endregion
+                    #endregion CustomAnnotations
 
                 }
-                #endregion
+                #endregion ClassModel Annotations
 
-                #region Properties
+                #region PropertyModel Annotations
                 foreach (var p in ontology.Model.PropertyModel)
                 {
 
@@ -2385,7 +2354,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("VersionInfo annotation on property '{0}' cannot be imported from graph, because it does not link a literal.", p.Value));
                         }
                     }
-                    #endregion
+                    #endregion VersionInfo
 
                     #region Comment
                     foreach (var t in comment.SelectTriplesBySubject((RDFResource)p.Value))
@@ -2400,7 +2369,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Comment annotation on property '{0}' cannot be imported from graph, because it does not link a literal.", p.Value));
                         }
                     }
-                    #endregion
+                    #endregion Comment
 
                     #region Label
                     foreach (var t in label.SelectTriplesBySubject((RDFResource)p.Value))
@@ -2415,7 +2384,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Label annotation on property '{0}' cannot be imported from graph, because it does not link a literal.", p.Value));
                         }
                     }
-                    #endregion
+                    #endregion Label
 
                     #region SeeAlso
                     foreach (var t in seeAlso.SelectTriplesBySubject((RDFResource)p.Value))
@@ -2446,7 +2415,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.PropertyModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, p, resource);
                         }
                     }
-                    #endregion
+                    #endregion SeeAlso
 
                     #region IsDefinedBy
                     foreach (var t in isDefinedBy.SelectTriplesBySubject((RDFResource)p.Value))
@@ -2477,7 +2446,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.PropertyModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, p, isDefBy);
                         }
                     }
-                    #endregion
+                    #endregion IsDefinedBy
 
                     #region CustomAnnotations
                     foreach (var annotProp in annotProps)
@@ -2525,12 +2494,12 @@ namespace RDFSharp.Semantics.OWL
                         }
 
                     }
-                    #endregion
+                    #endregion CustomAnnotations
 
                 }
-                #endregion
+                #endregion PropertyModel Annotations
 
-                #region Facts
+                #region Data Annotations
                 foreach (var f in ontology.Data)
                 {
 
@@ -2547,7 +2516,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("VersionInfo annotation on fact '{0}' cannot be imported from graph, because it does not link a literal.", f.Value));
                         }
                     }
-                    #endregion
+                    #endregion VersionInfo
 
                     #region Comment
                     foreach (var t in comment.SelectTriplesBySubject((RDFResource)f.Value))
@@ -2562,7 +2531,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Comment annotation on fact '{0}' cannot be imported from graph, because it does not link a literal.", f.Value));
                         }
                     }
-                    #endregion
+                    #endregion Comment
 
                     #region Label
                     foreach (var t in label.SelectTriplesBySubject((RDFResource)f.Value))
@@ -2577,7 +2546,7 @@ namespace RDFSharp.Semantics.OWL
                             RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Label annotation on fact '{0}' cannot be imported from graph, because it does not link a literal.", f.Value));
                         }
                     }
-                    #endregion
+                    #endregion Label
 
                     #region SeeAlso
                     foreach (var t in seeAlso.SelectTriplesBySubject((RDFResource)f.Value))
@@ -2608,7 +2577,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Data.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, f, resource);
                         }
                     }
-                    #endregion
+                    #endregion SeeAlso
 
                     #region IsDefinedBy
                     foreach (var t in isDefinedBy.SelectTriplesBySubject((RDFResource)f.Value))
@@ -2639,7 +2608,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Data.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, f, isDefBy);
                         }
                     }
-                    #endregion
+                    #endregion IsDefinedBy
 
                     #region CustomAnnotations
                     foreach (var annotProp in annotProps)
@@ -2687,22 +2656,19 @@ namespace RDFSharp.Semantics.OWL
                         }
 
                     }
-                    #endregion
+                    #endregion CustomAnnotations
 
                 }
-                #endregion
+                #endregion Data Annotations
 
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.8 FINALIZE ANNOTATIONS -> DONE");
+                #endregion Step 6.7: Finalize Annotations
                 
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.9 FINALIZE ONTOLOGY");
-                #region Step 6.9: Finalize Ontology
+                #region Step 6.8: Finalize Ontology
                 ontology = ontology.DifferenceWith(RDFBASEOntology.Instance);
                 ontology.Value = new RDFResource(ontGraph.Context.ToString());
-                #endregion
-                RDFSemanticsEvents.RaiseSemanticsInfo("STEP6.9 FINALIZE ONTOLOGY -> DONE");
-
-                #endregion
+                #endregion Step 6.8: Finalize Ontology
+                
+                #endregion Step 6: Finalize
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' has been parsed as Ontology.", ontGraph.Context));
             }
