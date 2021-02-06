@@ -127,10 +127,6 @@ namespace RDFSharp.Semantics.OWL
                 if (!this.Facts.ContainsKey(ontologyFact.PatternMemberID))
                 {
                     this.Facts.Add(ontologyFact.PatternMemberID, ontologyFact);
-
-                    //If possible, also state that the given fact is instance of built-in class owl:NamedIndividual
-                    if (!((RDFResource)ontologyFact.Value).IsBlank)
-                        this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass()));
                 }
             }
             return this;
@@ -556,10 +552,6 @@ namespace RDFSharp.Semantics.OWL
                 if (this.Facts.ContainsKey(ontologyFact.PatternMemberID))
                 {
                     this.Facts.Remove(ontologyFact.PatternMemberID);
-
-                    //If possible, also retract that the given fact is instance of built-in class owl:NamedIndividual
-                    if (!((RDFResource)ontologyFact.Value).IsBlank)
-                        this.Relations.ClassType.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass()));
                 }
             }
             return this;
