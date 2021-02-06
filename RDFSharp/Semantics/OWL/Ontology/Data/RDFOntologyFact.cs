@@ -27,7 +27,8 @@ namespace RDFSharp.Semantics.OWL
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an ontology fact with the given name
+        /// Default-ctor to build an ontology fact with the given name: in case of a not-blank resource name,<br />
+        /// the fact will be tagged as instance of built-in class owl:NamedIndividual when added to an ontology.
         /// </summary>
         public RDFOntologyFact(RDFResource factName)
         {
