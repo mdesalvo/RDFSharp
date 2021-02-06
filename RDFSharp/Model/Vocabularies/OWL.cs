@@ -75,6 +75,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource NOTHING = new RDFResource(OWL.BASE_URI + "Nothing");
 
             /// <summary>
+            /// owl:NamedIndividual
+            /// </summary>
+            public static readonly RDFResource NAMED_INDIVIDUAL = new RDFResource(OWL.BASE_URI + "NamedIndividual");
+
+            /// <summary>
             /// owl:Restriction
             /// </summary>
             public static readonly RDFResource RESTRICTION = new RDFResource(OWL.BASE_URI + "Restriction");

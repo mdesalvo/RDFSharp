@@ -713,6 +713,7 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.TRANSITIVE_PROPERTY.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.THING.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.NOTHING.ToRDFOntologyClass());
+            Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass());
 
             //OWL2
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES.ToRDFOntologyClass());
