@@ -79,7 +79,7 @@ namespace RDFSharp.Semantics.OWL
                 var maxQualifiedCardinality = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MAX_QUALIFIED_CARDINALITY); //OWL2
                 var sameAs = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SAME_AS);
                 var differentFrom = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DIFFERENT_FROM);
-                var alldifferent = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ALL_DIFFERENT); //OWL2
+                var alldifferent = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DIFFERENT); //OWL2
                 var members = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MEMBERS);
                 var distinctMembers = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISTINCT_MEMBERS);
                 var negativeAssertions = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION); //OWL2
