@@ -117,7 +117,8 @@ namespace RDFSharp.Semantics.OWL
 
         #region Add
         /// <summary>
-        /// Adds the given fact to the data
+        /// Adds the given fact to the data. In case the fact has a not-blank name,<br/>
+        /// it also adds classtype relation with built-in owl:NamedIndividual class.
         /// </summary>
         public RDFOntologyData AddFact(RDFOntologyFact ontologyFact)
         {
@@ -545,7 +546,8 @@ namespace RDFSharp.Semantics.OWL
 
         #region Remove
         /// <summary>
-        /// Removes the given fact from the data.
+        /// Removes the given fact from the data. In case the fact has a not-blank name,<br/>
+        /// it also removes classtype relation with built-in owl:NamedIndividual class.
         /// </summary>
         public RDFOntologyData RemoveFact(RDFOntologyFact ontologyFact)
         {
