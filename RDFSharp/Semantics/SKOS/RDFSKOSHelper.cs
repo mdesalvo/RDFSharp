@@ -16,7 +16,6 @@
 
 using RDFSharp.Model;
 using RDFSharp.Semantics.OWL;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SKOS
@@ -29,6 +28,22 @@ namespace RDFSharp.Semantics.SKOS
     {
 
         #region Modeling
+
+        #region Initialize
+        /// <summary>
+        /// Initializes the given ontology with support for SKOS T-BOX and A-BOX
+        /// </summary>
+        public static RDFOntology InitializeSKOS(this RDFOntology ontology)
+        {
+            if (ontology != null)
+            {
+                ontology.Merge(RDFSKOSOntology.Instance);
+                ontology.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Imports, RDFSKOSOntology.Instance);
+            }
+
+            return ontology;
+        }
+        #endregion
 
         #region Relations
 
