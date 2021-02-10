@@ -1668,23 +1668,23 @@ namespace RDFSharp.Semantics.OWL
 
                 //EquivalentClass
                 foreach (var entry in ontologyClassModel.Relations.EquivalentClass.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.SubClassOf.AddEntry(entry);
+                    result.Relations.EquivalentClass.AddEntry(entry);
 
                 //DisjointWith
                 foreach (var entry in ontologyClassModel.Relations.DisjointWith.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.SubClassOf.AddEntry(entry);
+                    result.Relations.DisjointWith.AddEntry(entry);
 
                 //UnionOf
                 foreach (var entry in ontologyClassModel.Relations.UnionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.SubClassOf.AddEntry(entry);
+                    result.Relations.UnionOf.AddEntry(entry);
 
                 //IntersectionOf
                 foreach (var entry in ontologyClassModel.Relations.IntersectionOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.SubClassOf.AddEntry(entry);
+                    result.Relations.IntersectionOf.AddEntry(entry);
 
                 //OneOf
                 foreach (var entry in ontologyClassModel.Relations.OneOf.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
-                    result.Relations.SubClassOf.AddEntry(entry);
+                    result.Relations.OneOf.AddEntry(entry);
 
                 //HasKey [OWL2]
                 foreach (var entry in ontologyClassModel.Relations.HasKey.Where(tEntry => tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.API || tEntry.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner))
