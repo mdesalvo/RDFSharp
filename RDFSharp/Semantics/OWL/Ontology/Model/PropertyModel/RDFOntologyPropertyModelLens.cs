@@ -67,15 +67,6 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Initializes the lens ontology with support for SKOS ontology
-        /// </summary>
-        public RDFOntologyPropertyModelLens InitializeSKOS()
-        {
-            this.Ontology = this.Ontology.UnionWith(RDFSKOSOntology.Instance);
-            return this;
-        }
-
-        /// <summary>
         /// Enlists the properties which are directly (or indirectly, if inference is requested) children of the lens property
         /// </summary>
         public List<(bool, RDFOntologyProperty)> SubProperties(bool enableInference)
