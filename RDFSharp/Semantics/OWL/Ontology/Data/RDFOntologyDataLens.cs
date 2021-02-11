@@ -67,15 +67,6 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Initializes the lens ontology with support for SKOS ontology
-        /// </summary>
-        public RDFOntologyDataLens InitializeSKOS()
-        {
-            this.Ontology = this.Ontology.UnionWith(RDFSKOSOntology.Instance);
-            return this;
-        }
-
-        /// <summary>
         /// Enlists the facts which are directly (or indirectly, if inference is requested) equivalent to the lens fact
         /// </summary>
         public List<(bool, RDFOntologyFact)> SameFacts(bool enableInference)
