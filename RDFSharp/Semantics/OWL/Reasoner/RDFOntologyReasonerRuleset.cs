@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of rules available in the standard RDFS/OWL-DL/OWL2 ruleset
         /// </summary>
-        public static readonly int RulesCount = 18;
+        public static readonly int RulesCount = 19;
 
         #region RDFS
         /// <summary>
@@ -111,6 +111,11 @@ namespace RDFSharp.Semantics.OWL
         /// TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom
         /// </summary>
         public static RDFOntologyReasonerRule TransitivePropertyEntailment { get; internal set; }
+
+        /// <summary>
+        /// HasValueEntailment implements data entailments based on 'owl:hasValue' restrictions
+        /// </summary>
+        public static RDFOntologyReasonerRule HasValueEntailment { get; internal set; }
         #endregion
 
         #region OWL2
@@ -256,6 +261,13 @@ namespace RDFSharp.Semantics.OWL
                                                                        "((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)",
                                                                        13,
                                                                        TransitivePropertyEntailmentExec).SetPriority(13);
+
+            //HasValueEntailment
+            HasValueEntailment = new RDFOntologyReasonerRule("HasValueEntailment",
+                                                             "HasValueEntailment implements data entailments based on 'owl:hasValue' restrictions:" +
+                                                             "((F1 TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASVALUE F2)) => (F1 P F2)",
+                                                             19,
+                                                             HasValueEntailmentExec).SetPriority(19);
             #endregion
 
             #region OWL2
@@ -991,6 +1003,40 @@ namespace RDFSharp.Semantics.OWL
                 transPropCache.Clear();
 
             }
+            return report;
+        }
+
+        /// <summary>
+        /// HasValueEntailment implements data entailments based on 'owl:hasValue' restrictions:<br/>
+        /// ((F1 TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASVALUE F2)) => (F1 P F2)
+        /// </summary>
+        internal static RDFOntologyReasonerReport HasValueEntailmentExec(RDFOntology ontology)
+        {
+            var report = new RDFOntologyReasonerReport();
+
+            //Fetch owl:hasValue restrictions from the class model (R, P, F2)
+            var hvRestrictions = ontology.Model.ClassModel.OfType<RDFOntologyHasValueRestriction>();
+            foreach (var hvRestriction in hvRestrictions)
+            {
+                //Calculate subclasses of the current owl:hasValue restriction (C)
+                var subClassesOfHVRestriction = ontology.Model.ClassModel.GetSubClassesOf(hvRestriction);
+                foreach (var subClassOfHVRestriction in subClassesOfHVRestriction)
+                {
+                    //Calculate members of the current subclass of the current owl:hasValue restriction (F1)
+                    var membersOfSubClassOfHVRestriction = ontology.GetMembersOf(subClassOfHVRestriction);
+                    foreach (var memberOfSubClassOfHVRestriction in membersOfSubClassOfHVRestriction)
+                    {
+                        //Create the inference as a taxonomy entry
+                        var sem_inf = new RDFOntologyTaxonomyEntry(memberOfSubClassOfHVRestriction, hvRestriction.OnProperty, hvRestriction.RequiredValue).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                        //Add the inference to the ontology and to the report
+                        if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasValueEntailmentExec", sem_inf));
+
+                    }
+                }
+            }
+
             return report;
         }
         #endregion
