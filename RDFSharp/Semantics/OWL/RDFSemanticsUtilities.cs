@@ -39,7 +39,7 @@ namespace RDFSharp.Semantics.OWL
             RDFOntology ontology = null;
             if (ontGraph != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' is going to be parsed as Ontology: this may require minutes of CPU elaboration, depending on size and complexity of processable knowledge.", ontGraph.Context));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' is going to be parsed as Ontology: triples not having supported ontology semantics may be discarded.", ontGraph.Context));
 
                 #region Step 1: Prefetch
                 var rdfType = ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
