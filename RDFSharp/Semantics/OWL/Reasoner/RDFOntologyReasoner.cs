@@ -116,7 +116,7 @@ namespace RDFSharp.Semantics.OWL
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             if (ontology != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}'...", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of working T-BOX/A-BOX", ontology.Value));
 
                 //STEP 1: Expand ontology
                 RDFPatternMember ontologyValue = ontology.Value;
