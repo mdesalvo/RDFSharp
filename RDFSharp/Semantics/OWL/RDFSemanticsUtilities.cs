@@ -703,7 +703,7 @@ namespace RDFSharp.Semantics.OWL
                 #endregion Step 4: Init ClassModel
 
                 #region Step 5: Init Data
-                //Detect named individuals
+                //Detect named individuals [OWL2]
                 var rdfTypeProperty = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
                 var namedIndividualClass = RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass();
                 foreach (var namedIndividual in namedIndividuals.Where(ni => !((RDFResource)ni.Subject).IsBlank))
