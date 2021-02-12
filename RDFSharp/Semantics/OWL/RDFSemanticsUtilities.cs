@@ -87,6 +87,7 @@ namespace RDFSharp.Semantics.OWL
                 var assertionProperty = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ASSERTION_PROPERTY); //OWL2
                 var targetValue = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.TARGET_VALUE); //OWL2
                 var targetIndividual = ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.TARGET_INDIVIDUAL); //OWL2
+                var namedIndividuals = rdfType.SelectTriplesByObject(RDFVocabulary.OWL.NAMED_INDIVIDUAL); //OWL2
 
                 var versionInfoAnn = RDFVocabulary.OWL.VERSION_INFO.ToRDFOntologyAnnotationProperty();
                 var commentAnn = RDFVocabulary.RDFS.COMMENT.ToRDFOntologyAnnotationProperty();
@@ -700,8 +701,23 @@ namespace RDFSharp.Semantics.OWL
                 #endregion Step 4.5: Load OWL:[UnionOf|DisjointUnionOf|IntersectionOf|ComplementOf]
 
                 #endregion Step 4: Init ClassModel
-                
+
                 #region Step 5: Init Data
+                //Detect named individuals
+                var rdfTypeProperty = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
+                var namedIndividualClass = RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass();
+                foreach (var namedIndividual in namedIndividuals.Where(ni => !((RDFResource)ni.Subject).IsBlank))
+                {
+                    var fact = ontology.Data.SelectFact(namedIndividual.Subject.ToString());
+                    if (fact == null)
+                    {
+                        fact = ((RDFResource)namedIndividual.Subject).ToRDFOntologyFact();
+                        ontology.Data.AddFact(fact);
+                    }
+                    ontology.Data.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(fact, rdfTypeProperty, namedIndividualClass));
+                }
+
+                //Detect classtyped individuals
                 var evaluableClasses = ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)).ToList();
                 foreach (var simpleClass in evaluableClasses.Where(cls => cls.IsSimpleClass()))
                 {
@@ -711,7 +727,7 @@ namespace RDFSharp.Semantics.OWL
                         if (fact == null)
                         {
                             fact = ((RDFResource)classtypeTriple.Subject).ToRDFOntologyFact();
-                            ontology.Data.AddFact(fact); //This is the explicit declaration of a fact as instance of a simple class!
+                            ontology.Data.AddFact(fact);
                         }
                         ontology.Data.AddClassTypeRelation(fact, simpleClass);
                     }
