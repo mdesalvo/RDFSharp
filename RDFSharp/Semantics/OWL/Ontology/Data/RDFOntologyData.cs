@@ -127,6 +127,10 @@ namespace RDFSharp.Semantics.OWL
                 if (!this.Facts.ContainsKey(ontologyFact.PatternMemberID))
                 {
                     this.Facts.Add(ontologyFact.PatternMemberID, ontologyFact);
+
+                    //State that this ontology fact is a named individual
+                    if (!((RDFResource)ontologyFact.Value).IsBlank)
+                        this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass()));
                 }
             }
             return this;
@@ -552,6 +556,11 @@ namespace RDFSharp.Semantics.OWL
                 if (this.Facts.ContainsKey(ontologyFact.PatternMemberID))
                 {
                     this.Facts.Remove(ontologyFact.PatternMemberID);
+
+                    //Unstate that this ontology fact is a named individual
+                    if (!((RDFResource)ontologyFact.Value).IsBlank)
+                        this.Relations.ClassType.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass()));
+
                 }
             }
             return this;
