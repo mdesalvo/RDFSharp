@@ -117,21 +117,14 @@ namespace RDFSharp.Semantics.OWL
 
         #region Add
         /// <summary>
-        /// Adds the given fact to the data. In case the fact has a not-blank name,<br/>
-        /// it also adds classtype relation with built-in owl:NamedIndividual class.
+        /// Adds the given fact to the data
         /// </summary>
         public RDFOntologyData AddFact(RDFOntologyFact ontologyFact)
         {
             if (ontologyFact != null)
             {
                 if (!this.Facts.ContainsKey(ontologyFact.PatternMemberID))
-                {
                     this.Facts.Add(ontologyFact.PatternMemberID, ontologyFact);
-
-                    //State that this ontology fact is a named individual
-                    if (!((RDFResource)ontologyFact.Value).IsBlank)
-                        this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass()));
-                }
             }
             return this;
         }
@@ -144,9 +137,7 @@ namespace RDFSharp.Semantics.OWL
             if (ontologyLiteral != null)
             {
                 if (!this.Literals.ContainsKey(ontologyLiteral.PatternMemberID))
-                {
                     this.Literals.Add(ontologyLiteral.PatternMemberID, ontologyLiteral);
-                }
             }
             return this;
         }
@@ -546,22 +537,14 @@ namespace RDFSharp.Semantics.OWL
 
         #region Remove
         /// <summary>
-        /// Removes the given fact from the data. In case the fact has a not-blank name,<br/>
-        /// it also removes classtype relation with built-in owl:NamedIndividual class.
+        /// Removes the given fact from the data
         /// </summary>
         public RDFOntologyData RemoveFact(RDFOntologyFact ontologyFact)
         {
             if (ontologyFact != null)
             {
                 if (this.Facts.ContainsKey(ontologyFact.PatternMemberID))
-                {
                     this.Facts.Remove(ontologyFact.PatternMemberID);
-
-                    //Unstate that this ontology fact is a named individual
-                    if (!((RDFResource)ontologyFact.Value).IsBlank)
-                        this.Relations.ClassType.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass()));
-
-                }
             }
             return this;
         }
@@ -574,9 +557,7 @@ namespace RDFSharp.Semantics.OWL
             if (ontologyLiteral != null)
             {
                 if (this.Literals.ContainsKey(ontologyLiteral.PatternMemberID))
-                {
                     this.Literals.Remove(ontologyLiteral.PatternMemberID);
-                }
             }
             return this;
         }

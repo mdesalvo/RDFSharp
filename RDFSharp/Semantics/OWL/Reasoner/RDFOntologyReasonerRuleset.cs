@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of rules available in the standard RDFS/OWL-DL/OWL2 ruleset
         /// </summary>
-        public static readonly int RulesCount = 19;
+        public static readonly int RulesCount = 20;
 
         #region RDFS
         /// <summary>
@@ -162,6 +162,12 @@ namespace RDFSharp.Semantics.OWL
         /// ((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)
         /// </summary>
         public static RDFOntologyReasonerRule PropertyChainEntailment { get; internal set; }
+
+        /// <summary>
+        /// NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration [OWL2]<br/>
+        /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
+        /// </summary>
+        public static RDFOntologyReasonerRule NamedIndividualEntailment { get; internal set; }
         #endregion
 
         #endregion
@@ -181,7 +187,7 @@ namespace RDFSharp.Semantics.OWL
                                                                "((C1 SUBCLASSOF C2)      AND (C2 EQUIVALENTCLASS C3)) => (C1 SUBCLASSOF C3);" +
                                                                "((C1 EQUIVALENTCLASS C2) AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)",
                                                                2,
-                                                               SubClassTransitivityExec).SetPriority(2);
+                                                               SubClassTransitivityExec);
 
             //SubPropertyTransitivity (rdfs5)
             SubPropertyTransitivity = new RDFOntologyReasonerRule("SubPropertyTransitivity",
@@ -190,7 +196,7 @@ namespace RDFSharp.Semantics.OWL
                                                                   "((P1 SUBPROPERTYOF P2)      AND (P2 EQUIVALENTPROPERTY P3)) => (P1 SUBPROPERTYOF P3);" +
                                                                   "((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)",
                                                                   5,
-                                                                  SubPropertyTransitivityExec).SetPriority(5);
+                                                                  SubPropertyTransitivityExec);
 
             //ClassTypeEntailment (rdfs9)
             ClassTypeEntailment = new RDFOntologyReasonerRule("ClassTypeEntailment",
@@ -198,7 +204,7 @@ namespace RDFSharp.Semantics.OWL
                                                               "((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2);" +
                                                               "((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)",
                                                               10,
-                                                              ClassTypeEntailmentExec).SetPriority(10);
+                                                              ClassTypeEntailmentExec);
 
             //PropertyEntailment (rdfs7)
             PropertyEntailment = new RDFOntologyReasonerRule("PropertyEntailment",
@@ -206,21 +212,21 @@ namespace RDFSharp.Semantics.OWL
                                                              "((F1 P1 F2) AND (P1 SUBPROPERTYOF P2))      => (F1 P2 F2);" +
                                                              "((F1 P1 F2) AND (P1 EQUIVALENTPROPERTY P2)) => (F1 P2 F2)",
                                                              14,
-                                                             PropertyEntailmentExec).SetPriority(14);
+                                                             PropertyEntailmentExec);
 
             //DomainEntailment (rdfs2)
             DomainEntailment = new RDFOntologyReasonerRule("DomainEntailment",
                                                            "DomainEntailment (rdfs2) implements structural entailments based on 'rdfs:domain' taxonomy:" +
                                                            "((F1 P F2) AND (P DOMAIN C)) => (F1 TYPE C)",
                                                            8,
-                                                           DomainEntailmentExec).SetPriority(8);
+                                                           DomainEntailmentExec);
 
             //RangeEntailment (rdfs3)
             RangeEntailment = new RDFOntologyReasonerRule("RangeEntailment",
                                                           "RangeEntailment (rdfs3) implements structural entailments based on 'rdfs:range' taxonomy:" +
                                                           "((F1 P F2) AND (P RANGE C)) => (F2 TYPE C)",
                                                           9,
-                                                          RangeEntailmentExec).SetPriority(9);
+                                                          RangeEntailmentExec);
             #endregion
 
             #region OWL-DL
@@ -229,7 +235,7 @@ namespace RDFSharp.Semantics.OWL
                                                                       "EquivalentClassTransitivity implements structural entailments based on 'owl:EquivalentClass' taxonomy:" +
                                                                       "((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)",
                                                                       1,
-                                                                      EquivalentClassTransitivityExec).SetPriority(1);
+                                                                      EquivalentClassTransitivityExec);
 
             //DisjointWithEntailment
             DisjointWithEntailment = new RDFOntologyReasonerRule("DisjointWithEntailment",
@@ -238,21 +244,21 @@ namespace RDFSharp.Semantics.OWL
                                                                  "((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3);" +
                                                                  "((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)",
                                                                  3,
-                                                                 DisjointWithEntailmentExec).SetPriority(3);
+                                                                 DisjointWithEntailmentExec);
 
             //EquivalentPropertyTransitivity
             EquivalentPropertyTransitivity = new RDFOntologyReasonerRule("EquivalentPropertyTransitivity",
                                                                          "EquivalentPropertyTransitivity implements structural entailments based on 'owl:EquivalentProperty' taxonomy:" +
                                                                          "((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)",
                                                                          4,
-                                                                         EquivalentPropertyTransitivityExec).SetPriority(4);
+                                                                         EquivalentPropertyTransitivityExec);
 
             //SameAsTransitivity
             SameAsTransitivity = new RDFOntologyReasonerRule("SameAsTransitivity",
                                                              "SameAsTransitivity implements structural entailments based on 'owl:SameAs' taxonomy:" +
                                                              "((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)",
                                                              6,
-                                                             SameAsTransitivityExec).SetPriority(6);
+                                                             SameAsTransitivityExec);
 
             //DifferentFromEntailment
             DifferentFromEntailment = new RDFOntologyReasonerRule("DifferentFromEntailment",
@@ -260,14 +266,14 @@ namespace RDFSharp.Semantics.OWL
                                                                   "((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3);" +
                                                                   "((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)",
                                                                   7,
-                                                                  DifferentFromEntailmentExec).SetPriority(7);
+                                                                  DifferentFromEntailmentExec);
 
             //InverseOfEntailment
             InverseOfEntailment = new RDFOntologyReasonerRule("InverseOfEntailment",
                                                               "InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy:" +
                                                               "((F1 P1 F2) AND (P1 INVERSEOF P2)) => (F2 P2 F1)",
                                                               11,
-                                                              InverseOfEntailmentExec).SetPriority(11);
+                                                              InverseOfEntailmentExec);
 
             //SameAsEntailment
             SameAsEntailment = new RDFOntologyReasonerRule("SameAsEntailment",
@@ -275,28 +281,28 @@ namespace RDFSharp.Semantics.OWL
                                                            "((F1 P F2) AND (F1 SAMEAS F3)) => (F3 P F2);" +
                                                            "((F1 P F2) AND (F2 SAMEAS F3)) => (F1 P F3)",
                                                            16,
-                                                           SameAsEntailmentExec).SetPriority(16);
+                                                           SameAsEntailmentExec);
 
             //SymmetricPropertyEntailment
             SymmetricPropertyEntailment = new RDFOntologyReasonerRule("SymmetricPropertyEntailment",
                                                                       "SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom:" +
                                                                       "((F1 P F2) AND (P TYPE SYMMETRICPROPERTY)) => (F2 P F1)",
                                                                       12,
-                                                                      SymmetricPropertyEntailmentExec).SetPriority(12);
+                                                                      SymmetricPropertyEntailmentExec);
 
             //TransitivePropertyEntailment
             TransitivePropertyEntailment = new RDFOntologyReasonerRule("TransitivePropertyEntailment",
                                                                        "TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom:" +
                                                                        "((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)",
                                                                        13,
-                                                                       TransitivePropertyEntailmentExec).SetPriority(13);
+                                                                       TransitivePropertyEntailmentExec);
 
             //HasValueEntailment
             HasValueEntailment = new RDFOntologyReasonerRule("HasValueEntailment",
                                                              "HasValueEntailment implements data entailments based on 'owl:hasValue' restrictions:" +
                                                              "((F1 TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASVALUE F2)) => (F1 P F2)",
                                                              19,
-                                                             HasValueEntailmentExec).SetPriority(19);
+                                                             HasValueEntailmentExec);
             #endregion
 
             #region OWL2
@@ -305,21 +311,28 @@ namespace RDFSharp.Semantics.OWL
                                                                       "(OWL2) ReflexivePropertyEntailment implements data entailments based on 'owl:ReflexiveProperty' axiom:" +
                                                                       "((F1 P F2) AND (P TYPE REFLEXIVEPROPERTY)) => (F1 P F1)",
                                                                       17,
-                                                                      ReflexivePropertyEntailmentExec).SetPriority(17);
+                                                                      ReflexivePropertyEntailmentExec);
 
             //HasKeyEntailment
             HasKeyEntailment = new RDFOntologyReasonerRule("HasKeyEntailment",
                                                            "HasKeyEntailment implements data entailments based on 'owl:hasKey' taxonomy:" +
                                                            "((C HASKEY P) AND (F1 TYPE C) AND (F2 TYPE C) AND (F1 P K) AND (F2 P K)) => (F1 SAMEAS F2)",
                                                            15,
-                                                           HasKeyEntailmentExec).SetPriority(15);
+                                                           HasKeyEntailmentExec);
 
             //PropertyChainEntailment
             PropertyChainEntailment = new RDFOntologyReasonerRule("PropertyChainEntailment",
                                                                   "PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' taxonomy:" +
                                                                   "((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)",
                                                                   18,
-                                                                  PropertyChainEntailmentExec).SetPriority(18);
+                                                                  PropertyChainEntailmentExec);
+
+            //NamedIndividualEntailment
+            NamedIndividualEntailment = new RDFOntologyReasonerRule("NamedIndividualEntailment",
+                                                                    "NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration:" +
+                                                                    "((F TYPE C) AND (F ISNOT BLANK)) => (F TYPE NAMEDINDIVIDUAL)",
+                                                                    20,
+                                                                    NamedIndividualEntailmentExec);
             #endregion
 
         }
@@ -1187,6 +1200,33 @@ namespace RDFSharp.Semantics.OWL
                     //Add the inference to the ontology and to the report
                     if (ontology.Data.Relations.Assertions.AddEntry(propertyChainAxiomAssertion))
                         report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyChainEntailment", propertyChainAxiomAssertion));
+                }
+            }
+
+            return report;
+        }
+
+        /// <summary>
+        /// NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration [OWL2]<br/>
+        /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
+        /// </summary>
+        internal static RDFOntologyReasonerReport NamedIndividualEntailmentExec(RDFOntology ontology)
+        {
+            var report = new RDFOntologyReasonerReport();
+            var rdfType = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
+            var owlNamedIndividual = RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass();
+
+            foreach (var f in ontology.Data)
+            {
+                if (!((RDFResource)f.Value).IsBlank)
+                {
+                    //Create the inference as a taxonomy entry
+                    var sem_inf = new RDFOntologyTaxonomyEntry(f, rdfType, owlNamedIndividual).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the ontology and to the report
+                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "NamedIndividualEntailment", sem_inf));
+
                 }
             }
 
