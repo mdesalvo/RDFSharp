@@ -147,7 +147,7 @@ namespace RDFSharp.Semantics.OWL
             var report = new RDFOntologyValidatorReport();
             if (ontology != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Validator is going to be applied on Ontology '{0}'...", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Validator is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of working T-BOX/A-BOX", ontology.Value));
 
                 //STEP 1: Expand ontology
                 RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
