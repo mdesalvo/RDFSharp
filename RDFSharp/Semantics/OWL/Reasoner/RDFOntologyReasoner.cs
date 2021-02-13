@@ -122,22 +122,29 @@ namespace RDFSharp.Semantics.OWL
                 RDFPatternMember ontologyValue = ontology.Value;
                 ontology = ontology.UnionWith(RDFBASEOntology.Instance);
 
-                //STEP 2: Execute BASE rules
-                #region BASE rules
+                //STEP 2: Initialize T-BOX cache
+                Dictionary<string, List<RDFOntologyResource>> tboxCache = new Dictionary<string, List<RDFOntologyResource>>()
+                {
+                    { "FreeClasses", ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)).OfType<RDFOntologyResource>().ToList() },
+                    { "FreeProperties", ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)).OfType<RDFOntologyResource>().ToList() }
+                };
+
+                //STEP 3: Execute standard rules
+                #region Standard rules
                 var baseRules = this.Rules.Where(x => x.RulePriority <= RDFOntologyReasonerRuleset.RulesCount)
                                           .OrderBy(x => x.RulePriority);
                 foreach (RDFOntologyReasonerRule sRule in baseRules)
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoner rule '{0}'...", sRule));
 
-                    RDFOntologyReasonerReport sRuleReport = sRule.ExecuteRule(ontology);
+                    RDFOntologyReasonerReport sRuleReport = sRule.ExecuteRule(ontology, tboxCache);
                     report.Merge(sRuleReport);
 
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoner rule '{0}': found {1} evidences.", sRule, sRuleReport.EvidencesCount));
                 }
                 #endregion
 
-                //STEP 3: Execute custom rules
+                //STEP 4: Execute custom rules
                 #region Custom rules
                 var customRules = this.Rules.Where(x => x.RulePriority > RDFOntologyReasonerRuleset.RulesCount)
                                             .OrderBy(x => x.RulePriority);
@@ -145,14 +152,14 @@ namespace RDFSharp.Semantics.OWL
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoner rule '{0}'...", cRule));
 
-                    RDFOntologyReasonerReport cRuleReport = cRule.ExecuteRule(ontology);
+                    RDFOntologyReasonerReport cRuleReport = cRule.ExecuteRule(ontology, tboxCache);
                     report.Merge(cRuleReport);
 
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoner rule '{0}': found {1} evidences.", cRule, cRuleReport.EvidencesCount));
                 }
                 #endregion
 
-                //STEP 4: Unexpand ontology
+                //STEP 5: Unexpand ontology
                 ontology = ontology.DifferenceWith(RDFBASEOntology.Instance);
                 ontology.Value = ontologyValue;
 

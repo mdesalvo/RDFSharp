@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -44,7 +45,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        public delegate RDFOntologyReasonerReport ReasonerRuleDelegate(RDFOntology ontology);
+        public delegate RDFOntologyReasonerReport ReasonerRuleDelegate(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null);
 
         /// <summary>
         /// Function which will be executed as body of the rule

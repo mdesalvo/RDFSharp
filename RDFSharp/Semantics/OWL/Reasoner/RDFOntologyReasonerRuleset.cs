@@ -347,11 +347,11 @@ namespace RDFSharp.Semantics.OWL
         /// ((C1 SUBCLASSOF C2)      AND (C2 EQUIVALENTCLASS C3)) => (C1 SUBCLASSOF C3)<br/>
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SubClassTransitivityExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport SubClassTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var subClassOf = RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty();
-            foreach (var c in ontology.Model.ClassModel)
+            foreach (var c in tboxCache["FreeClasses"].OfType<RDFOntologyClass>())
             {
 
                 //Enlist the superclasses of the current class
@@ -362,11 +362,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(c, subClassOf, sc).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(sem_inf))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "SubClassTransitivity", sem_inf));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "SubClassTransitivity", sem_inf));
 
                 }
 
@@ -380,14 +377,13 @@ namespace RDFSharp.Semantics.OWL
         /// ((P1 SUBPROPERTYOF P2)      AND (P2 EQUIVALENTPROPERTY P3)) => (P1 SUBPROPERTYOF P3)<br/>
         /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SubPropertyTransitivityExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport SubPropertyTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var subPropertyOf = RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                  && !prop.IsAnnotationProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
             foreach (var p in availableprops)
             {
 
@@ -399,11 +395,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(p, subPropertyOf, sp).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(sem_inf))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, "SubPropertyTransitivity", sem_inf));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, "SubPropertyTransitivity", sem_inf));
 
                 }
             }
@@ -415,14 +408,13 @@ namespace RDFSharp.Semantics.OWL
         /// ((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)<br/>
         /// ((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)
         /// </summary>
-        internal static RDFOntologyReasonerReport ClassTypeEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport ClassTypeEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available classes on which to perform the reasoning (exclude BASE classes and literal-compatible classes)
-            var availableclasses = ontology.Model.ClassModel.Where(cls => !RDFOntologyChecker.CheckReservedClass(cls)
-                                                                             && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls));
+            var availableclasses = tboxCache["FreeClasses"].OfType<RDFOntologyClass>().Where(cls => !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls));
 
             //Evaluate enumerations
             foreach (var c in availableclasses.Where(cls => cls.IsEnumerateClass()))
@@ -435,11 +427,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
 
                 }
 
@@ -456,11 +445,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
 
                 }
 
@@ -477,11 +463,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
 
                 }
 
@@ -498,11 +481,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ClassTypeEntailment", sem_inf));
 
                 }
 
@@ -516,13 +496,12 @@ namespace RDFSharp.Semantics.OWL
         /// ((F1 P1 F2) AND (P1 SUBPROPERTYOF P2))      => (F1 P2 F2)<br/>
         /// ((F1 P1 F2) AND (P1 EQUIVALENTPROPERTY P2)) => (F1 P2 F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport PropertyEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport PropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                  && !prop.IsAnnotationProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
             foreach (var p1 in availableprops)
             {
 
@@ -546,9 +525,8 @@ namespace RDFSharp.Semantics.OWL
                             //Create the inference as a taxonomy entry
                             var sem_inf = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomySubject, p2, p1Asn.TaxonomyObject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                            //Add the inference to the ontology and to the report
-                            if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyEntailment", sem_inf));
+                            //Add the inference to the report
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyEntailment", sem_inf));
 
                         }
 
@@ -564,14 +542,13 @@ namespace RDFSharp.Semantics.OWL
         /// DomainEntailment (rdfs2) implements structural entailments based on 'rdfs:domain' taxonomy:<br/>
         /// ((F1 P F2) AND (P DOMAIN C)) => (F1 TYPE C)"
         /// </summary>
-        internal static RDFOntologyReasonerReport DomainEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport DomainEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && !prop.IsAnnotationProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
             foreach (var p in availableprops)
             {
                 if (p.Domain != null)
@@ -587,11 +564,8 @@ namespace RDFSharp.Semantics.OWL
                         //Create the inference as a taxonomy entry
                         var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, type, p.Domain).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                        //Add the inference to the ontology and to the report
-                        if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                        {
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "DomainEntailment", sem_inf));
-                        }
+                        //Add the inference to the report
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "DomainEntailment", sem_inf));
 
                     }
 
@@ -604,14 +578,13 @@ namespace RDFSharp.Semantics.OWL
         /// RangeEntailment (rdfs3) implements structural entailments based on 'rdfs:range' taxonomy:<br/>
         /// ((F1 P F2) AND (P RANGE C)) => (F2 TYPE C)"
         /// </summary>
-        internal static RDFOntologyReasonerReport RangeEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport RangeEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && !prop.IsAnnotationProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
             foreach (var p in availableprops)
             {
                 if (p.Range != null)
@@ -631,11 +604,8 @@ namespace RDFSharp.Semantics.OWL
                             //Create the inference as a taxonomy entry
                             var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, type, p.Range).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                            //Add the inference to the ontology and to the report
-                            if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                            {
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "RangeEntailment", sem_inf));
-                            }
+                            //Add the inference to the report
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "RangeEntailment", sem_inf));
 
                         }
 
@@ -652,11 +622,11 @@ namespace RDFSharp.Semantics.OWL
         /// EquivalentClassTransitivity implements structural entailments based on 'owl:EquivalentClass' taxonomy:<br/>
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)
         /// </summary>
-        internal static RDFOntologyReasonerReport EquivalentClassTransitivityExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport EquivalentClassTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var equivalentClass = RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty();
-            foreach (var c in ontology.Model.ClassModel)
+            foreach (var c in tboxCache["FreeClasses"].OfType<RDFOntologyClass>())
             {
 
                 //Enlist the equivalent classes of the current class
@@ -668,15 +638,9 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infA = new RDFOntologyTaxonomyEntry(c, equivalentClass, ec).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
                     var sem_infB = new RDFOntologyTaxonomyEntry(ec, equivalentClass, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(sem_infA))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "EquivalentClassTransitivity", sem_infA));
-                    }
-                    if (ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(sem_infB))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "EquivalentClassTransitivity", sem_infB));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "EquivalentClassTransitivity", sem_infA));
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "EquivalentClassTransitivity", sem_infB));
 
                 }
 
@@ -690,11 +654,11 @@ namespace RDFSharp.Semantics.OWL
         /// ((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)<br/>
         /// ((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)
         /// </summary>
-        internal static RDFOntologyReasonerReport DisjointWithEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport DisjointWithEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var disjointWith = RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty();
-            foreach (var c in ontology.Model.ClassModel)
+            foreach (var c in tboxCache["FreeClasses"].OfType<RDFOntologyClass>())
             {
 
                 //Enlist the disjoint classes of the current class
@@ -706,15 +670,9 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infA = new RDFOntologyTaxonomyEntry(c, disjointWith, dwc).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
                     var sem_infB = new RDFOntologyTaxonomyEntry(dwc, disjointWith, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(sem_infA))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "DisjointWithEntailment", sem_infA));
-                    }
-                    if (ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(sem_infB))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "DisjointWithEntailment", sem_infB));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "DisjointWithEntailment", sem_infA));
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, "DisjointWithEntailment", sem_infB));
 
                 }
 
@@ -726,14 +684,13 @@ namespace RDFSharp.Semantics.OWL
         /// EquivalentPropertyTransitivity implements structural entailments based on 'owl:EquivalentProperty' taxonomy:<br/>
         /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)
         /// </summary>
-        internal static RDFOntologyReasonerReport EquivalentPropertyTransitivityExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport EquivalentPropertyTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var equivProperty = RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && !prop.IsAnnotationProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
             foreach (var p in availableprops)
             {
 
@@ -746,15 +703,9 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infA = new RDFOntologyTaxonomyEntry(p, equivProperty, ep).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
                     var sem_infB = new RDFOntologyTaxonomyEntry(ep, equivProperty, p).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(sem_infA))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", sem_infA));
-                    }
-                    if (ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(sem_infB))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", sem_infB));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", sem_infA));
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, "EquivalentPropertyTransitivity", sem_infB));
 
                 }
 
@@ -766,7 +717,7 @@ namespace RDFSharp.Semantics.OWL
         /// SameAsTransitivity implements structural entailments based on 'owl:sameAs' taxonomy:<br/>
         /// ((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SameAsTransitivityExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport SameAsTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var sameAs = RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty();
@@ -782,15 +733,9 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infA = new RDFOntologyTaxonomyEntry(f, sameAs, sf).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
                     var sem_infB = new RDFOntologyTaxonomyEntry(sf, sameAs, f).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.SameAs.AddEntry(sem_infA))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsTransitivity", sem_infA));
-                    }
-                    if (ontology.Data.Relations.SameAs.AddEntry(sem_infB))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsTransitivity", sem_infB));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsTransitivity", sem_infA));
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsTransitivity", sem_infB));
 
                 }
 
@@ -803,7 +748,7 @@ namespace RDFSharp.Semantics.OWL
         /// ((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)<br/>
         /// ((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport DifferentFromEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport DifferentFromEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var differentFrom = RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty();
@@ -819,15 +764,9 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infA = new RDFOntologyTaxonomyEntry(f, differentFrom, df).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
                     var sem_infB = new RDFOntologyTaxonomyEntry(df, differentFrom, f).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.DifferentFrom.AddEntry(sem_infA))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "DifferentFromEntailment", sem_infA));
-                    }
-                    if (ontology.Data.Relations.DifferentFrom.AddEntry(sem_infB))
-                    {
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "DifferentFromEntailment", sem_infB));
-                    }
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "DifferentFromEntailment", sem_infA));
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "DifferentFromEntailment", sem_infB));
 
                 }
 
@@ -839,13 +778,12 @@ namespace RDFSharp.Semantics.OWL
         /// InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy:<br/>
         /// ((F1 P1 F2) AND (P1 INVERSEOF P2)) => (F2 P2 F1)
         /// </summary>
-        internal static RDFOntologyReasonerReport InverseOfEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport InverseOfEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation/datatype properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && prop.IsObjectProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => prop.IsObjectProperty()).ToList();
             foreach (var p1 in availableprops)
             {
 
@@ -868,9 +806,8 @@ namespace RDFSharp.Semantics.OWL
                             //Create the inference as a taxonomy entry
                             var sem_inf = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomyObject, p2, p1Asn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                            //Add the inference to the ontology and to the report
-                            if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "InverseOfEntailment", sem_inf));
+                            //Add the inference to the report
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "InverseOfEntailment", sem_inf));
 
                         }
 
@@ -887,7 +824,7 @@ namespace RDFSharp.Semantics.OWL
         /// ((F1 P F2) AND (F1 SAMEAS F3)) => (F3 P F2)<br/>
         /// ((F1 P F2) AND (F2 SAMEAS F3)) => (F1 P F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SameAsEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport SameAsEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             foreach (var f1 in ontology.Data)
@@ -918,9 +855,8 @@ namespace RDFSharp.Semantics.OWL
                                 //Create the inference as a taxonomy entry
                                 var sem_infA = new RDFOntologyTaxonomyEntry(f2, f1Asn.TaxonomyPredicate, f1Asn.TaxonomyObject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                                //Add the inference to the ontology and to the report
-                                if (ontology.Data.Relations.Assertions.AddEntry(sem_infA))
-                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsEntailment", sem_infA));
+                                //Add the inference to the report
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsEntailment", sem_infA));
 
                             }
 
@@ -939,9 +875,8 @@ namespace RDFSharp.Semantics.OWL
                                 //Create the inference as a taxonomy entry
                                 var sem_infB = new RDFOntologyTaxonomyEntry(f1Asn.TaxonomySubject, f1Asn.TaxonomyPredicate, f2).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                                //Add the inference to the ontology and to the report
-                                if (ontology.Data.Relations.Assertions.AddEntry(sem_infB))
-                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsEntailment", sem_infB));
+                                //Add the inference to the report
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SameAsEntailment", sem_infB));
 
                             }
 
@@ -960,13 +895,12 @@ namespace RDFSharp.Semantics.OWL
         /// SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom:<br/>
         /// ((F1 P F2) AND (P TYPE SYMMETRICPROPERTY)) => (F2 P F1)
         /// </summary>
-        internal static RDFOntologyReasonerReport SymmetricPropertyEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport SymmetricPropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-symmetric properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && prop.IsSymmetricProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => prop.IsSymmetricProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -984,9 +918,8 @@ namespace RDFSharp.Semantics.OWL
                         //Create the inference as a taxonomy entry
                         var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                        //Add the inference to the ontology and to the report
-                        if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SymmetricPropertyEntailment", sem_inf));
+                        //Add the inference to the report
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "SymmetricPropertyEntailment", sem_inf));
 
                     }
 
@@ -1001,14 +934,13 @@ namespace RDFSharp.Semantics.OWL
         /// TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom:<br/>
         /// ((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport TransitivePropertyEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport TransitivePropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var transPropCache = new Dictionary<long, RDFOntologyData>();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-transitive properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && prop.IsTransitiveProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => prop.IsTransitiveProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -1033,9 +965,8 @@ namespace RDFSharp.Semantics.OWL
                             //Create the inference as a taxonomy entry
                             var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, te).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                            //Add the inference to the ontology and to the report
-                            if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "TransitivePropertyEntailment", sem_inf));
+                            //Add the inference to the report
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "TransitivePropertyEntailment", sem_inf));
 
                         }
 
@@ -1052,12 +983,12 @@ namespace RDFSharp.Semantics.OWL
         /// HasValueEntailment implements data entailments based on 'owl:hasValue' restrictions:<br/>
         /// ((F1 TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASVALUE F2)) => (F1 P F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport HasValueEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport HasValueEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Fetch owl:hasValue restrictions from the class model (R, P, F2)
-            var hvRestrictions = ontology.Model.ClassModel.OfType<RDFOntologyHasValueRestriction>();
+            var hvRestrictions = tboxCache["FreeClasses"].OfType<RDFOntologyHasValueRestriction>();
             foreach (var hvRestriction in hvRestrictions)
             {
                 //Calculate subclasses of the current owl:hasValue restriction (C)
@@ -1071,9 +1002,8 @@ namespace RDFSharp.Semantics.OWL
                         //Create the inference as a taxonomy entry
                         var sem_inf = new RDFOntologyTaxonomyEntry(memberOfSubClassOfHVRestriction, hvRestriction.OnProperty, hvRestriction.RequiredValue).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                        //Add the inference to the ontology and to the report
-                        if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasValueEntailmentExec", sem_inf));
+                        //Add the inference to the report
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasValueEntailmentExec", sem_inf));
 
                     }
                 }
@@ -1088,13 +1018,12 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) ReflexivePropertyEntailment implements data entailments based on 'owl:ReflexiveProperty' axiom:<br/>
         /// ((F1 P F2) AND (P TYPE REFLEXIVEPROPERTY)) => (F1 P F1)
         /// </summary>
-        internal static RDFOntologyReasonerReport ReflexivePropertyEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport ReflexivePropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-reflexive properties)
-            var availableprops = ontology.Model.PropertyModel.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)
-                                                                                 && prop.IsReflexiveProperty()).ToList();
+            var availableprops = tboxCache["FreeProperties"].Where(prop => prop.IsReflexiveProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -1108,9 +1037,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.Assertions.AddEntry(sem_inf))
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ReflexivePropertyEntailment", sem_inf));
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "ReflexivePropertyEntailment", sem_inf));
 
                 }
 
@@ -1123,7 +1051,7 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) HasKeyEntailment implements data entailments based on 'owl:hasKey' axiom:<br/>
         /// ((C HASKEY P) AND (F1 TYPE C) AND (F2 TYPE C) AND (F1 P K) AND (F2 P K)) => (F1 SAMEAS F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport HasKeyEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport HasKeyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var sameAs = RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty();
@@ -1167,11 +1095,9 @@ namespace RDFSharp.Semantics.OWL
                                 var sem_infA = new RDFOntologyTaxonomyEntry(outerFact, sameAs, innerFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
                                 var sem_infB = new RDFOntologyTaxonomyEntry(innerFact, sameAs, outerFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                                //Add the inference to the ontology and to the report
-                                if (ontology.Data.Relations.SameAs.AddEntry(sem_infA))
-                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKeyEntailment", sem_infA));
-                                if (ontology.Data.Relations.SameAs.AddEntry(sem_infB))
-                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKeyEntailment", sem_infB));
+                                //Add the inference to the report
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKeyEntailment", sem_infA));
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "HasKeyEntailment", sem_infB));
                             }
                         }
                     }
@@ -1186,7 +1112,7 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' axiom:<br/>
         /// ((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport PropertyChainEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport PropertyChainEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
 
@@ -1197,9 +1123,8 @@ namespace RDFSharp.Semantics.OWL
                 {
                     propertyChainAxiomAssertion.SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.Assertions.AddEntry(propertyChainAxiomAssertion))
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyChainEntailment", propertyChainAxiomAssertion));
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "PropertyChainEntailment", propertyChainAxiomAssertion));
                 }
             }
 
@@ -1210,7 +1135,7 @@ namespace RDFSharp.Semantics.OWL
         /// NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration [OWL2]<br/>
         /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
         /// </summary>
-        internal static RDFOntologyReasonerReport NamedIndividualEntailmentExec(RDFOntology ontology)
+        internal static RDFOntologyReasonerReport NamedIndividualEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null)
         {
             var report = new RDFOntologyReasonerReport();
             var rdfType = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
@@ -1223,9 +1148,8 @@ namespace RDFSharp.Semantics.OWL
                     //Create the inference as a taxonomy entry
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, rdfType, owlNamedIndividual).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the ontology and to the report
-                    if (ontology.Data.Relations.ClassType.AddEntry(sem_inf))
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "NamedIndividualEntailment", sem_inf));
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, "NamedIndividualEntailment", sem_inf));
 
                 }
             }
