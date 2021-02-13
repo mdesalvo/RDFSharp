@@ -174,6 +174,87 @@ namespace RDFSharp.Semantics.OWL
                 result.AddTriple(evidence.ToRDFTriple());
             return result;
         }
+
+        /// <summary>
+        /// Joins the reasoner evidences of this report into the given ontology
+        /// </summary>
+        public void JoinEvidences(RDFOntology ontology)
+        {
+            foreach (RDFOntologyReasonerEvidence evidence in this)
+            {
+                switch (evidence.EvidenceCategory)
+                {
+                    case RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel:
+                        switch (evidence.EvidenceDestination)
+                        {
+                            case nameof(RDFOntologyClassModel.Relations.SubClassOf):
+                                ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyClassModel.Relations.DisjointWith):
+                                ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyClassModel.Relations.EquivalentClass):
+                                ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyClassModel.Relations.HasKey):
+                                ontology.Model.ClassModel.Relations.HasKey.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyClassModel.Relations.IntersectionOf):
+                                ontology.Model.ClassModel.Relations.IntersectionOf.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyClassModel.Relations.OneOf):
+                                ontology.Model.ClassModel.Relations.OneOf.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyClassModel.Relations.UnionOf):
+                                ontology.Model.ClassModel.Relations.UnionOf.AddEntry(evidence.EvidenceContent);
+                                break;
+                        }
+                        break;
+
+                    case RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel:
+                        switch (evidence.EvidenceDestination)
+                        {
+                            case nameof(RDFOntologyPropertyModel.Relations.SubPropertyOf):
+                                ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty):
+                                ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyPropertyModel.Relations.InverseOf):
+                                ontology.Model.PropertyModel.Relations.InverseOf.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyPropertyModel.Relations.PropertyDisjointWith):
+                                ontology.Model.PropertyModel.Relations.PropertyDisjointWith.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyPropertyModel.Relations.PropertyChainAxiom):
+                                ontology.Model.PropertyModel.Relations.PropertyChainAxiom.AddEntry(evidence.EvidenceContent);
+                                break;
+                        }
+                        break;
+
+                    case RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data:
+                        switch (evidence.EvidenceDestination)
+                        {
+                            case nameof(RDFOntologyData.Relations.ClassType):
+                                ontology.Data.Relations.ClassType.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyData.Relations.SameAs):
+                                ontology.Data.Relations.SameAs.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyData.Relations.DifferentFrom):
+                                ontology.Data.Relations.DifferentFrom.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyData.Relations.Assertions):
+                                ontology.Data.Relations.Assertions.AddEntry(evidence.EvidenceContent);
+                                break;
+                            case nameof(RDFOntologyData.Relations.NegativeAssertions):
+                                ontology.Data.Relations.NegativeAssertions.AddEntry(evidence.EvidenceContent);
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
         #endregion
 
         #endregion
