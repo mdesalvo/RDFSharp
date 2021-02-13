@@ -1137,9 +1137,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Enlists the facts which are members of the given composition within the given ontology
+        /// Enlists the facts which are members of the given composite within the given ontology.
         /// </summary>
-        internal static RDFOntologyData GetMembersOfComposite(this RDFOntology ontology, RDFOntologyClass ontCompClass)
+        internal static RDFOntologyData GetMembersOfComposite(this RDFOntology ontology, RDFOntologyClass ontCompClass, Dictionary<long, RDFOntologyData> membersCache = null)
         {
             var result = new RDFOntologyData();
 
@@ -1154,12 +1154,29 @@ namespace RDFSharp.Semantics.OWL
                 {
                     if (firstIter)
                     {
-                        result = ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject);
+                        if (membersCache != null)
+                        {
+                            if (!membersCache.ContainsKey(tEntry.TaxonomyObject.PatternMemberID))
+                                membersCache.Add(tEntry.TaxonomyObject.PatternMemberID, ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+
+                            result = membersCache[tEntry.TaxonomyObject.PatternMemberID];
+                        }   
+                        else
+                            result = ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject);
+
                         firstIter = false;
                     }
                     else
                     {
-                        result = result.IntersectWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+                        if (membersCache != null)
+                        {
+                            if (!membersCache.ContainsKey(tEntry.TaxonomyObject.PatternMemberID))
+                                membersCache.Add(tEntry.TaxonomyObject.PatternMemberID, ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+
+                            result = result.IntersectWith(membersCache[tEntry.TaxonomyObject.PatternMemberID]);
+                        }
+                        else
+                            result = result.IntersectWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
                     }
                 }
 
@@ -1174,16 +1191,32 @@ namespace RDFSharp.Semantics.OWL
                 var uTaxonomy = ontology.Model.ClassModel.Relations.UnionOf.SelectEntriesBySubject(ontCompClass);
                 foreach (var tEntry in uTaxonomy)
                 {
-                    result = result.UnionWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+                    if (membersCache != null)
+                    {
+                        if (!membersCache.ContainsKey(tEntry.TaxonomyObject.PatternMemberID))
+                            membersCache.Add(tEntry.TaxonomyObject.PatternMemberID, ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
+
+                        result = result.UnionWith(membersCache[tEntry.TaxonomyObject.PatternMemberID]);
+                    }
+                    else
+                        result = result.UnionWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
                 }
 
             }
             #endregion
 
             #region Complement
-            else if (ontCompClass is RDFOntologyComplementClass)
+            else if (ontCompClass is RDFOntologyComplementClass ontologyComplementClass)
             {
-                result = ontology.Data.DifferenceWith(ontology.GetMembersOf(((RDFOntologyComplementClass)ontCompClass).ComplementOf));
+                if (membersCache != null)
+                {
+                    if (!membersCache.ContainsKey(ontologyComplementClass.ComplementOf.PatternMemberID))
+                        membersCache.Add(ontologyComplementClass.ComplementOf.PatternMemberID, ontology.GetMembersOf(ontologyComplementClass.ComplementOf));
+
+                    result = ontology.Data.DifferenceWith(membersCache[ontologyComplementClass.ComplementOf.PatternMemberID]);
+                }
+                else
+                    result = ontology.Data.DifferenceWith(ontology.GetMembersOf(ontologyComplementClass.ComplementOf));
             }
             #endregion
 

@@ -397,13 +397,16 @@ namespace RDFSharp.Semantics.OWL
 
             //Calculate the set of available classes on which to perform the reasoning (exclude BASE classes and literal-compatible classes)
             var availableclasses = caches["TB_FreeClasses"].OfType<RDFOntologyClass>().Where(cls => !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls));
+            var membersCache = new Dictionary<long, RDFOntologyData>();
 
             //Evaluate enumerations
             foreach (var c in availableclasses.Where(cls => cls.IsEnumerateClass()))
             {
 
                 //Enlist the members of the current enumeration
-                foreach (var f in ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)c))
+                if (!membersCache.ContainsKey(c.PatternMemberID))
+                    membersCache.Add(c.PatternMemberID, ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)c));
+                foreach (var f in membersCache[c.PatternMemberID])
                 {
 
                     //Create the inference as a taxonomy entry
@@ -422,7 +425,9 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Enlist the members of the current restriction
-                foreach (var f in ontology.GetMembersOfRestriction((RDFOntologyRestriction)c))
+                if (!membersCache.ContainsKey(c.PatternMemberID))
+                    membersCache.Add(c.PatternMemberID, ontology.GetMembersOfRestriction((RDFOntologyRestriction)c));
+                foreach (var f in membersCache[c.PatternMemberID])
                 {
 
                     //Create the inference as a taxonomy entry
@@ -441,7 +446,9 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Enlist the members of the current class
-                foreach (var f in ontology.GetMembersOfClass(c))
+                if (!membersCache.ContainsKey(c.PatternMemberID))
+                    membersCache.Add(c.PatternMemberID, ontology.GetMembersOfClass(c));
+                foreach (var f in membersCache[c.PatternMemberID])
                 {
 
                     //Create the inference as a taxonomy entry
@@ -460,7 +467,9 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Enlist the members of the current composite class
-                foreach (var f in ontology.GetMembersOfComposite(c))
+                if (!membersCache.ContainsKey(c.PatternMemberID))
+                    membersCache.Add(c.PatternMemberID, ontology.GetMembersOfComposite(c, membersCache));
+                foreach (var f in membersCache[c.PatternMemberID])
                 {
 
                     //Create the inference as a taxonomy entry
