@@ -343,7 +343,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(c, subClassOf, sc).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(SubClassTransitivity), nameof(RDFOntologyClassModel.Relations.SubClassOf), sem_inf));
+                    if (!ontology.Model.ClassModel.Relations.SubClassOf.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(SubClassTransitivity), nameof(RDFOntologyClassModel.Relations.SubClassOf), sem_inf));
 
                 }
 
@@ -376,7 +377,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(p, subPropertyOf, sp).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(SubPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.SubPropertyOf), sem_inf));
+                    if (!ontology.Model.PropertyModel.Relations.SubPropertyOf.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(SubPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.SubPropertyOf), sem_inf));
 
                 }
             }
@@ -408,7 +410,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
                 }
 
@@ -426,7 +429,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
                 }
 
@@ -444,7 +448,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
                 }
 
@@ -462,7 +467,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(f, type, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
                 }
 
@@ -506,7 +512,8 @@ namespace RDFSharp.Semantics.OWL
                             var sem_inf = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomySubject, p2, p1Asn.TaxonomyObject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                             //Add the inference to the report
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(PropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                            if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(PropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
 
                         }
 
@@ -545,7 +552,8 @@ namespace RDFSharp.Semantics.OWL
                         var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, type, p.Domain).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DomainEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                        if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DomainEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
                     }
 
@@ -585,7 +593,8 @@ namespace RDFSharp.Semantics.OWL
                             var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, type, p.Range).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                             //Add the inference to the report
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(RangeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                            if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(RangeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
                         }
 
@@ -619,8 +628,10 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infB = new RDFOntologyTaxonomyEntry(ec, equivalentClass, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(EquivalentClassTransitivity), nameof(RDFOntologyClassModel.Relations.EquivalentClass), sem_infA));
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(EquivalentClassTransitivity), nameof(RDFOntologyClassModel.Relations.EquivalentClass), sem_infB));
+                    if (!ontology.Model.ClassModel.Relations.EquivalentClass.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(EquivalentClassTransitivity), nameof(RDFOntologyClassModel.Relations.EquivalentClass), sem_infA));
+                    if (!ontology.Model.ClassModel.Relations.EquivalentClass.ContainsEntry(sem_infB))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(EquivalentClassTransitivity), nameof(RDFOntologyClassModel.Relations.EquivalentClass), sem_infB));
 
                 }
 
@@ -651,8 +662,10 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infB = new RDFOntologyTaxonomyEntry(dwc, disjointWith, c).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(DisjointWithEntailment), nameof(RDFOntologyClassModel.Relations.DisjointWith), sem_infA));
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(DisjointWithEntailment), nameof(RDFOntologyClassModel.Relations.DisjointWith), sem_infB));
+                    if (!ontology.Model.ClassModel.Relations.DisjointWith.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(DisjointWithEntailment), nameof(RDFOntologyClassModel.Relations.DisjointWith), sem_infA));
+                    if (!ontology.Model.ClassModel.Relations.DisjointWith.ContainsEntry(sem_infB))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(DisjointWithEntailment), nameof(RDFOntologyClassModel.Relations.DisjointWith), sem_infB));
 
                 }
 
@@ -684,8 +697,10 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infB = new RDFOntologyTaxonomyEntry(ep, equivProperty, p).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(EquivalentPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty), sem_infA));
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(EquivalentPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty), sem_infB));
+                    if (!ontology.Model.PropertyModel.Relations.EquivalentProperty.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(EquivalentPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty), sem_infA));
+                    if (!ontology.Model.PropertyModel.Relations.EquivalentProperty.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(EquivalentPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty), sem_infB));
 
                 }
 
@@ -714,8 +729,10 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infB = new RDFOntologyTaxonomyEntry(sf, sameAs, f).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                    if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
+                    if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infB))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
 
                 }
 
@@ -745,8 +762,10 @@ namespace RDFSharp.Semantics.OWL
                     var sem_infB = new RDFOntologyTaxonomyEntry(df, differentFrom, f).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DifferentFromEntailment), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infA));
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DifferentFromEntailment), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infB));
+                    if (!ontology.Data.Relations.DifferentFrom.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DifferentFromEntailment), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infA));
+                    if (!ontology.Data.Relations.DifferentFrom.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DifferentFromEntailment), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infB));
 
                 }
 
@@ -787,7 +806,8 @@ namespace RDFSharp.Semantics.OWL
                             var sem_inf = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomyObject, p2, p1Asn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                             //Add the inference to the report
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(InverseOfEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                            if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(InverseOfEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
 
                         }
 
@@ -836,7 +856,8 @@ namespace RDFSharp.Semantics.OWL
                                 var sem_infA = new RDFOntologyTaxonomyEntry(f2, f1Asn.TaxonomyPredicate, f1Asn.TaxonomyObject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                                 //Add the inference to the report
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_infA));
+                                if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_infA))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_infA));
 
                             }
 
@@ -856,7 +877,8 @@ namespace RDFSharp.Semantics.OWL
                                 var sem_infB = new RDFOntologyTaxonomyEntry(f1Asn.TaxonomySubject, f1Asn.TaxonomyPredicate, f2).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                                 //Add the inference to the report
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_infB));
+                                if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_infB))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_infB));
 
                             }
 
@@ -899,7 +921,8 @@ namespace RDFSharp.Semantics.OWL
                         var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SymmetricPropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SymmetricPropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
 
                     }
 
@@ -936,9 +959,7 @@ namespace RDFSharp.Semantics.OWL
                     {
 
                         if (!transPropCache.ContainsKey(pAsn.TaxonomySubject.PatternMemberID))
-                        {
                             transPropCache.Add(pAsn.TaxonomySubject.PatternMemberID, ontology.Data.GetTransitiveAssertionsOf((RDFOntologyFact)pAsn.TaxonomySubject, (RDFOntologyObjectProperty)p));
-                        }
                         foreach (var te in transPropCache[pAsn.TaxonomySubject.PatternMemberID])
                         {
 
@@ -946,7 +967,8 @@ namespace RDFSharp.Semantics.OWL
                             var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, te).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                             //Add the inference to the report
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(TransitivePropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                            if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(TransitivePropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
 
                         }
 
@@ -983,7 +1005,8 @@ namespace RDFSharp.Semantics.OWL
                         var sem_inf = new RDFOntologyTaxonomyEntry(memberOfSubClassOfHVRestriction, hvRestriction.OnProperty, hvRestriction.RequiredValue).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasValueEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasValueEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
 
                     }
                 }
@@ -1018,7 +1041,8 @@ namespace RDFSharp.Semantics.OWL
                     var sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, pAsn.TaxonomySubject).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ReflexivePropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                    if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ReflexivePropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
 
                 }
 
@@ -1076,8 +1100,10 @@ namespace RDFSharp.Semantics.OWL
                                 var sem_infB = new RDFOntologyTaxonomyEntry(innerFact, sameAs, outerFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                                 //Add the inference to the report
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasKeyEntailment), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
-                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasKeyEntailment), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                                if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infA))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasKeyEntailment), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
+                                if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infB))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasKeyEntailment), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
                             }
                         }
                     }
@@ -1104,7 +1130,8 @@ namespace RDFSharp.Semantics.OWL
                     propertyChainAxiomAssertion.SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(PropertyChainEntailment), nameof(RDFOntologyData.Relations.Assertions), propertyChainAxiomAssertion));
+                    if (!ontology.Data.Relations.Assertions.ContainsEntry(propertyChainAxiomAssertion))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(PropertyChainEntailment), nameof(RDFOntologyData.Relations.Assertions), propertyChainAxiomAssertion));
                 }
             }
 
