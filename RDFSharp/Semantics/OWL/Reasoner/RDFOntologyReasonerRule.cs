@@ -38,43 +38,37 @@ namespace RDFSharp.Semantics.OWL
         public string RuleDescription { get; internal set; }
 
         /// <summary>
-        /// Execution priority of the rule (less is more priority)
-        /// </summary>
-        public uint RulePriority { get; internal set; }
-
-        /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        public delegate RDFOntologyReasonerReport ReasonerRuleDelegate(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> tboxCache = null);
+        public delegate RDFOntologyReasonerReport ReasonerRuleDelegate(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null);
 
         /// <summary>
         /// Function which will be executed as body of the rule
         /// </summary>
         internal ReasonerRuleDelegate ExecuteRule { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the rule is standard
+        /// </summary>
+        internal bool IsStandardRule { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a reasoner rule with the given name, description and priority (lower is better)
+        /// Default-ctor to build a reasoner rule with the given name and description
         /// </summary>
-        public RDFOntologyReasonerRule(string ruleName, string ruleDescription, uint rulePriority, ReasonerRuleDelegate ruleDelegate)
+        public RDFOntologyReasonerRule(string ruleName, string ruleDescription, ReasonerRuleDelegate ruleDelegate)
         {
-            if (ruleName != null && ruleName.Trim() != string.Empty)
+            if (!string.IsNullOrWhiteSpace(ruleName))
             {
-                if (ruleDescription != null && ruleDescription.Trim() != string.Empty)
+                if (!string.IsNullOrWhiteSpace(ruleDescription))
                 {
                     if (ruleDelegate != null)
                     {
                         this.RuleName = ruleName.Trim();
                         this.RuleDescription = ruleDescription.Trim();
-
-                        //Shift-up rule priority to guarantee preliminar execution of BASE rules
-                        if (rulePriority <= RDFOntologyReasonerRuleset.RulesCount)
-                            this.RulePriority = rulePriority + (uint)RDFOntologyReasonerRuleset.RulesCount + 1;
-                        else
-                            this.RulePriority = rulePriority;
-
                         this.ExecuteRule = ruleDelegate;
+                        this.IsStandardRule = false;
                     }
                     else
                     {
@@ -107,17 +101,17 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public string ToFullString()
         {
-            return this.RuleName + " [PRIORITY " + this.RulePriority + "]: " + this.RuleDescription;
+            return $"{ this.RuleName } : { this.RuleDescription }";
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Redefines the execution priority of the reasoner rule
+        /// Redefines the reasoner rule as a standard rule
         /// </summary>
-        internal RDFOntologyReasonerRule SetPriority(uint priority)
+        internal RDFOntologyReasonerRule SetStandard()
         {
-            this.RulePriority = priority;
+            this.IsStandardRule = true;
             return this;
         }
         #endregion
