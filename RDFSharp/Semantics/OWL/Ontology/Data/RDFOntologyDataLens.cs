@@ -134,32 +134,45 @@ namespace RDFSharp.Semantics.OWL
                 var availableclasses = this.Ontology.Model.ClassModel.Where(cls => !result.Any(res => res.Item2.Equals(cls))
                                                                                                         && !RDFOntologyChecker.CheckReservedClass(cls)
                                                                                                             && !RDFOntologyHelper.CheckIsLiteralCompatibleClass(this.Ontology.Model.ClassModel, cls));
+                var membersCache = new Dictionary<long, RDFOntologyData>();
 
                 //Evaluate enumerations
-                foreach (var c in availableclasses.Where(cls => cls.IsEnumerateClass()))
+                foreach (var e in availableclasses.Where(cls => cls.IsEnumerateClass()))
                 {
-                    if (this.Ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
-                        result.Add((true, c));
+                    if (!membersCache.ContainsKey(e.PatternMemberID))
+                        membersCache.Add(e.PatternMemberID, this.Ontology.GetMembersOfEnumerate((RDFOntologyEnumerateClass)e));
+
+                    if (membersCache[e.PatternMemberID].Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                        result.Add((true, e));
                 }
 
                 //Evaluate restrictions
-                foreach (var c in availableclasses.Where(cls => cls.IsRestrictionClass()))
+                foreach (var r in availableclasses.Where(cls => cls.IsRestrictionClass()))
                 {
-                    if (this.Ontology.GetMembersOfRestriction((RDFOntologyRestriction)c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
-                        result.Add((true, c));
+                    if (!membersCache.ContainsKey(r.PatternMemberID))
+                        membersCache.Add(r.PatternMemberID, this.Ontology.GetMembersOfRestriction((RDFOntologyRestriction)r));
+
+                    if (membersCache[r.PatternMemberID].Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                        result.Add((true, r));
                 }
 
                 //Evaluate simple classes
                 foreach (var c in availableclasses.Where(cls => cls.IsSimpleClass()))
                 {
-                    if (this.Ontology.GetMembersOfClass(c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                    if (!membersCache.ContainsKey(c.PatternMemberID))
+                        membersCache.Add(c.PatternMemberID, this.Ontology.GetMembersOfClass(c));
+
+                    if (membersCache[c.PatternMemberID].Facts.ContainsKey(this.OntologyFact.PatternMemberID))
                         result.Add((true, c));
                 }
 
                 //Evaluate composite classes
                 foreach (var c in availableclasses.Where(cls => cls.IsCompositeClass()))
                 {
-                    if (this.Ontology.GetMembersOfComposite(c).Facts.ContainsKey(this.OntologyFact.PatternMemberID))
+                    if (!membersCache.ContainsKey(c.PatternMemberID))
+                        membersCache.Add(c.PatternMemberID, this.Ontology.GetMembersOfComposite(c, membersCache));
+
+                    if (membersCache[c.PatternMemberID].Facts.ContainsKey(this.OntologyFact.PatternMemberID))
                         result.Add((true, c));
                 }
             }
