@@ -125,8 +125,8 @@ namespace RDFSharp.Semantics.OWL
                 //STEP 2: Initialize caches
                 Dictionary<string, List<RDFOntologyResource>> caches = new Dictionary<string, List<RDFOntologyResource>>()
                 {
-                    { "FreeClasses", expOntology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)).OfType<RDFOntologyResource>().ToList() },
-                    { "FreeProperties", expOntology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)).OfType<RDFOntologyResource>().ToList() }
+                    { "TB_FreeClasses", expOntology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)).OfType<RDFOntologyResource>().ToList() },
+                    { "TB_FreeProperties", expOntology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)).OfType<RDFOntologyResource>().ToList() }
                 };
 
                 //STEP 3: Execute standard rules

@@ -38,6 +38,11 @@ namespace RDFSharp.Semantics.OWL
         public string EvidenceProvenance { get; internal set; }
 
         /// <summary>
+        /// Destination taxonomy of the evidence
+        /// </summary>
+        public string EvidenceDestination { get; internal set; }
+
+        /// <summary>
         /// Content of the evidence
         /// </summary>
         public RDFOntologyTaxonomyEntry EvidenceContent { get; internal set; }
@@ -45,14 +50,16 @@ namespace RDFSharp.Semantics.OWL
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an evidence with given category, provenance and message
+        /// Default-ctor to build an evidence with given category, provenance, destination and content
         /// </summary>
         internal RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory,
                                              string evidenceProvenance,
+                                             string evidenceDestination,
                                              RDFOntologyTaxonomyEntry evidenceContent)
         {
             this.EvidenceCategory = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;
+            this.EvidenceDestination = evidenceDestination;
             this.EvidenceContent = evidenceContent;
         }
         #endregion
