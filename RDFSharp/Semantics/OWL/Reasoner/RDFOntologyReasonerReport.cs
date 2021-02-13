@@ -190,21 +190,31 @@ namespace RDFSharp.Semantics.OWL
                             case nameof(RDFOntologyClassModel.Relations.SubClassOf):
                                 ontology.Model.ClassModel.Relations.SubClassOf.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyClassModel.Relations.DisjointWith):
                                 ontology.Model.ClassModel.Relations.DisjointWith.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyClassModel.Relations.EquivalentClass):
                                 ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyClassModel.Relations.HasKey):
                                 ontology.Model.ClassModel.Relations.HasKey.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyClassModel.Relations.IntersectionOf):
                                 ontology.Model.ClassModel.Relations.IntersectionOf.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyClassModel.Relations.OneOf):
                                 ontology.Model.ClassModel.Relations.OneOf.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyClassModel.Relations.UnionOf):
                                 ontology.Model.ClassModel.Relations.UnionOf.AddEntry(evidence.EvidenceContent);
                                 break;
@@ -217,15 +227,21 @@ namespace RDFSharp.Semantics.OWL
                             case nameof(RDFOntologyPropertyModel.Relations.SubPropertyOf):
                                 ontology.Model.PropertyModel.Relations.SubPropertyOf.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty):
                                 ontology.Model.PropertyModel.Relations.EquivalentProperty.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyPropertyModel.Relations.InverseOf):
                                 ontology.Model.PropertyModel.Relations.InverseOf.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyPropertyModel.Relations.PropertyDisjointWith):
                                 ontology.Model.PropertyModel.Relations.PropertyDisjointWith.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyPropertyModel.Relations.PropertyChainAxiom):
                                 ontology.Model.PropertyModel.Relations.PropertyChainAxiom.AddEntry(evidence.EvidenceContent);
                                 break;
@@ -238,15 +254,20 @@ namespace RDFSharp.Semantics.OWL
                             case nameof(RDFOntologyData.Relations.ClassType):
                                 ontology.Data.Relations.ClassType.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyData.Relations.SameAs):
                                 ontology.Data.Relations.SameAs.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyData.Relations.DifferentFrom):
                                 ontology.Data.Relations.DifferentFrom.AddEntry(evidence.EvidenceContent);
                                 break;
+
                             case nameof(RDFOntologyData.Relations.Assertions):
                                 ontology.Data.Relations.Assertions.AddEntry(evidence.EvidenceContent);
                                 break;
+
+                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyData.Relations.NegativeAssertions):
                                 ontology.Data.Relations.NegativeAssertions.AddEntry(evidence.EvidenceContent);
                                 break;
