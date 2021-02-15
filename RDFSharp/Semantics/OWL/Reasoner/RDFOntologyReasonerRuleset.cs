@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of rules available in the standard RDFS/OWL-DL/OWL2 ruleset
         /// </summary>
-        public static readonly int RulesCount = 20;
+        public static readonly int RulesCount = 21;
 
         #region RDFS
         /// <summary>
@@ -168,6 +168,12 @@ namespace RDFSharp.Semantics.OWL
         /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
         /// </summary>
         public static RDFOntologyReasonerRule NamedIndividualEntailment { get; internal set; }
+		
+		/// <summary>
+        /// HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions [OWL2]<br/>
+        /// ((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)
+        /// </summary>
+        public static RDFOntologyReasonerRule HasSelfEntailment { get; internal set; }
         #endregion
 
         #endregion
@@ -298,21 +304,27 @@ namespace RDFSharp.Semantics.OWL
 
             //HasKeyEntailment
             HasKeyEntailment = new RDFOntologyReasonerRule("HasKeyEntailment",
-                                                           "HasKeyEntailment implements data entailments based on 'owl:hasKey' taxonomy:" +
+                                                           "(OWL2) HasKeyEntailment implements data entailments based on 'owl:hasKey' taxonomy:" +
                                                            "((C HASKEY P) AND (F1 TYPE C) AND (F2 TYPE C) AND (F1 P K) AND (F2 P K)) => (F1 SAMEAS F2)",
                                                            HasKeyEntailmentExec).SetStandard();
 
             //PropertyChainEntailment
             PropertyChainEntailment = new RDFOntologyReasonerRule("PropertyChainEntailment",
-                                                                  "PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' taxonomy:" +
+                                                                  "(OWL2) PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' taxonomy:" +
                                                                   "((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)",
                                                                   PropertyChainEntailmentExec).SetStandard();
 
             //NamedIndividualEntailment
             NamedIndividualEntailment = new RDFOntologyReasonerRule("NamedIndividualEntailment",
-                                                                    "NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration:" +
+                                                                    "(OWL2) NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration:" +
                                                                     "((F TYPE C) AND (F ISNOT BLANK)) => (F TYPE NAMEDINDIVIDUAL)",
                                                                     NamedIndividualEntailmentExec).SetStandard();
+																	
+			//HasSelfEntailment
+            HasSelfEntailment = new RDFOntologyReasonerRule("HasSelfEntailment",
+                                                            "(OWL2) HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions:" +
+                                                            "((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)",
+                                                            HasSelfEntailmentExec).SetStandard();
             #endregion
 
         }
@@ -1148,7 +1160,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration [OWL2]<br/>
+        /// (OWL2) NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration:<br/>
         /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
         /// </summary>
         internal static RDFOntologyReasonerReport NamedIndividualEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
@@ -1167,6 +1179,40 @@ namespace RDFSharp.Semantics.OWL
                     //Add the inference to the report
                     report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(NamedIndividualEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
 
+                }
+            }
+
+            return report;
+        }
+		
+		/// <summary>
+        /// (OWL2) HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions:<br/>
+        /// ((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)
+        /// </summary>
+        internal static RDFOntologyReasonerReport HasSelfEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        {
+            var report = new RDFOntologyReasonerReport();
+
+            //Fetch owl:hasSelf restrictions from the class model (R, P)
+            var hsRestrictions = caches["TB_FreeClasses"].OfType<RDFOntologyHasSelfRestriction>();
+            foreach (var hsRestriction in hsRestrictions)
+            {
+                //Calculate subclasses of the current owl:hasSelf restriction (C)
+                var subClassesOfHSRestriction = ontology.Model.ClassModel.GetSubClassesOf(hsRestriction);
+                foreach (var subClassOfHSRestriction in subClassesOfHSRestriction)
+                {
+                    //Calculate members of the current subclass of the current owl:hasSelf restriction (F)
+                    var membersOfSubClassOfHSRestriction = ontology.GetMembersOf(subClassOfHSRestriction);
+                    foreach (var memberOfSubClassOfHSRestriction in membersOfSubClassOfHSRestriction)
+                    {
+                        //Create the inference as a taxonomy entry
+                        var sem_inf = new RDFOntologyTaxonomyEntry(memberOfSubClassOfHSRestriction, hsRestriction.OnProperty, memberOfSubClassOfHSRestriction).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                        //Add the inference to the report
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasSelfEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+
+                    }
                 }
             }
 
