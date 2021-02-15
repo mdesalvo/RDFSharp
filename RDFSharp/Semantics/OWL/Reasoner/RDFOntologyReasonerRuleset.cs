@@ -168,8 +168,8 @@ namespace RDFSharp.Semantics.OWL
         /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
         /// </summary>
         public static RDFOntologyReasonerRule NamedIndividualEntailment { get; internal set; }
-		
-		/// <summary>
+
+        /// <summary>
         /// HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions [OWL2]<br/>
         /// ((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)
         /// </summary>
@@ -319,8 +319,8 @@ namespace RDFSharp.Semantics.OWL
                                                                     "(OWL2) NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration:" +
                                                                     "((F TYPE C) AND (F ISNOT BLANK)) => (F TYPE NAMEDINDIVIDUAL)",
                                                                     NamedIndividualEntailmentExec).SetStandard();
-																	
-			//HasSelfEntailment
+
+            //HasSelfEntailment
             HasSelfEntailment = new RDFOntologyReasonerRule("HasSelfEntailment",
                                                             "(OWL2) HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions:" +
                                                             "((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)",
@@ -1142,8 +1142,8 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
-		
-		/// <summary>
+
+        /// <summary>
         /// (OWL2) HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions:<br/>
         /// ((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)
         /// </summary>
