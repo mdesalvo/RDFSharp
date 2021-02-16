@@ -79,7 +79,8 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given childproperty can be set subpropertyof the given motherproperty
+        /// Checks if the given childproperty can be set subPropertyOf the given motherproperty;<br/>
+        /// Does not accept property chain definitions, for OWL2-DL decidability preservation.
         /// </summary>
         internal static bool CheckSubPropertyOfCompatibility(RDFOntologyPropertyModel propertyModel,
                                                              RDFOntologyObjectProperty childProperty,
@@ -94,7 +95,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given childproperty can be set subpropertyof the given motherproperty
+        /// Checks if the given childproperty can be set subPropertyOf the given motherproperty
         /// </summary>
         internal static bool CheckSubPropertyOfCompatibility(RDFOntologyPropertyModel propertyModel,
                                                              RDFOntologyDatatypeProperty childProperty,
@@ -106,7 +107,8 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set equivalentpropertyof the given bProperty
+        /// Checks if the given aProperty can be set equivalentPropertyOf the given bProperty;<br/>
+        /// Does not accept property chain definitions, for OWL2-DL decidability preservation.
         /// </summary>
         internal static bool CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                   RDFOntologyObjectProperty aProperty,
@@ -121,7 +123,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set equivalentpropertyof the given bProperty
+        /// Checks if the given aProperty can be set equivalentPropertyOf the given bProperty
         /// </summary>
         internal static bool CheckEquivalentPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                   RDFOntologyDatatypeProperty aProperty,
@@ -133,7 +135,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty [OWL2]
+        /// Checks if the given aProperty can be set propertyDisjointWith the given bProperty [OWL2]
         /// </summary>
         internal static bool CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                     RDFOntologyObjectProperty aProperty,
@@ -141,14 +143,11 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty)
-                                //OWL2-DL decidability
-                                && !propertyModel.CheckIsPropertyChain(aProperty)
-                                    && !propertyModel.CheckIsPropertyChain(bProperty));
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set propertyDisjointwith the given bProperty [OWL2]
+        /// Checks if the given aProperty can be set propertyDisjointWith the given bProperty [OWL2]
         /// </summary>
         internal static bool CheckPropertyDisjointWithCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                     RDFOntologyDatatypeProperty aProperty,
@@ -160,7 +159,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Checks if the given aProperty can be set inverseof the given bProperty
+        /// Checks if the given aProperty can be set inverseOf the given bProperty
         /// </summary>
         internal static bool CheckInverseOfPropertyCompatibility(RDFOntologyPropertyModel propertyModel,
                                                                  RDFOntologyObjectProperty aProperty,
@@ -168,10 +167,7 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(aProperty, bProperty)
                         && !propertyModel.CheckIsSuperPropertyOf(aProperty, bProperty)
-                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty)
-                                //OWL2-DL decidability
-                                && !propertyModel.CheckIsPropertyChain(aProperty)
-                                    && !propertyModel.CheckIsPropertyChain(bProperty));
+                            && !propertyModel.CheckIsEquivalentPropertyOf(aProperty, bProperty));
         }
         #endregion
 
