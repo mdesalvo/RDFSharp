@@ -370,7 +370,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Get a triple representation of this taxonomy entry
         /// </summary>
-        public RDFTriple ToRDFTriple()
+        internal RDFTriple ToRDFTriple()
         {
             if (this.TaxonomyObject.IsLiteral())
                 return new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFLiteral)this.TaxonomyObject.Value);
