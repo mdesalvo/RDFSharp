@@ -110,11 +110,11 @@ namespace RDFSharp.Semantics.OWL
         public enum RDFOntologyInferenceType
         {
             /// <summary>
-            /// Not a semantic inference
+            /// Not a semantic inference (reserved to RDFSharp)
             /// </summary>
             None = 0,
             /// <summary>
-            /// Semantic inference generated during ontology modeling
+            /// Semantic inference generated during ontology modeling (reserved to RDFSharp)
             /// </summary>
             API = 1,
             /// <summary>
