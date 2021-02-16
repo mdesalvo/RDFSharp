@@ -145,7 +145,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if the taxonomy contains the given taxonomy entry
         /// </summary>
-        internal bool ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
+        public bool ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
         {
             return taxonomyEntry != null && this.EntriesLookup.Contains(taxonomyEntry.TaxonomyEntryID);
         }
@@ -369,7 +369,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Get a triple representation of this taxonomy entry
         /// </summary>
-        internal RDFTriple ToRDFTriple()
+        public RDFTriple ToRDFTriple()
         {
             if (this.TaxonomyObject.IsLiteral())
                 return new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFLiteral)this.TaxonomyObject.Value);
