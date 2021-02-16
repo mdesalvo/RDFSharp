@@ -300,7 +300,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build a taxonomy entry with the given subject, predicate and object resources
         /// </summary>
-        internal RDFOntologyTaxonomyEntry(RDFOntologyResource taxonomySubject,
+        public RDFOntologyTaxonomyEntry(RDFOntologyResource taxonomySubject,
                                           RDFOntologyResource taxonomyPredicate,
                                           RDFOntologyResource taxonomyObject)
         {
@@ -355,7 +355,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Marks this taxonomy entry as a semantic inference, depending on the given parameter
         /// </summary>
-        internal RDFOntologyTaxonomyEntry SetInference(RDFSemanticsEnums.RDFOntologyInferenceType inferenceType)
+        public RDFOntologyTaxonomyEntry SetInference(RDFSemanticsEnums.RDFOntologyInferenceType inferenceType)
         {
             this.InferenceType = inferenceType;
             return this;
