@@ -94,17 +94,20 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public void AddEvidence(RDFOntologyReasonerEvidence evidence)
         {
-            lock (this.SyncLock)
+            if (evidence != null)
             {
-                if (!this.Evidences.ContainsKey(evidence.EvidenceContent.TaxonomyEntryID))
-                    this.Evidences.Add(evidence.EvidenceContent.TaxonomyEntryID, evidence);
+                lock (this.SyncLock)
+                {
+                    if (!this.Evidences.ContainsKey(evidence.EvidenceContent.TaxonomyEntryID))
+                        this.Evidences.Add(evidence.EvidenceContent.TaxonomyEntryID, evidence);
+                }
             }
         }
 
         /// <summary>
         /// Merges the evidences of the given report
         /// </summary>
-        public void Merge(RDFOntologyReasonerReport report)
+        internal void Merge(RDFOntologyReasonerReport report)
         {
             foreach (RDFOntologyReasonerEvidence evidence in report)
                 this.AddEvidence(evidence);
@@ -115,50 +118,38 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets the evidences having the given category
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByCategory(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory)
-        {
-            return this.Evidences.Values.Where(e => e.EvidenceCategory.Equals(evidenceCategory)).ToList();
-        }
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByCategory(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory) =>
+            this.Evidences.Values.Where(e => e.EvidenceCategory.Equals(evidenceCategory)).ToList();
 
         /// <summary>
         /// Gets the evidences having the given provenance rule
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(string evidenceProvenance)
-        {
-            return this.Evidences.Values.Where(e => e.EvidenceProvenance.Equals(evidenceProvenance?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByProvenance(string evidenceProvenance) =>
+            this.Evidences.Values.Where(e => e.EvidenceProvenance.Equals(evidenceProvenance?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)).ToList();
 
         /// <summary>
         /// Gets the evidences having the given destination taxonomy
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByDestination(string evidenceDestination)
-        {
-            return this.Evidences.Values.Where(e => e.EvidenceDestination.Equals(evidenceDestination?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByDestination(string evidenceDestination) =>
+            this.Evidences.Values.Where(e => e.EvidenceDestination.Equals(evidenceDestination?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase)).ToList();
+        
         /// <summary>
         /// Gets the evidences having the given content subject
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentSubject(RDFOntologyResource evidenceContentSubject)
-        {
-            return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomySubject.Equals(evidenceContentSubject)).ToList();
-        }
-
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentSubject(RDFOntologyResource evidenceContentSubject) =>
+            this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomySubject.Equals(evidenceContentSubject)).ToList();
+        
         /// <summary>
         /// Gets the evidences having the given content predicate
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentPredicate(RDFOntologyResource evidenceContentPredicate)
-        {
-            return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyPredicate.Equals(evidenceContentPredicate)).ToList();
-        }
-
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentPredicate(RDFOntologyResource evidenceContentPredicate) =>
+            this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyPredicate.Equals(evidenceContentPredicate)).ToList();
+        
         /// <summary>
         /// Gets the evidences having the given content object
         /// </summary>
-        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentObject(RDFOntologyResource evidenceContentObject)
-        {
-            return this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyObject.Equals(evidenceContentObject)).ToList();
-        }
+        public List<RDFOntologyReasonerEvidence> SelectEvidencesByContentObject(RDFOntologyResource evidenceContentObject) =>
+            this.Evidences.Values.Where(e => e.EvidenceContent.TaxonomyObject.Equals(evidenceContentObject)).ToList();
         #endregion
 
         #region Convert
