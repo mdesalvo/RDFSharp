@@ -301,8 +301,8 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build a taxonomy entry with the given subject, predicate and object resources
         /// </summary>
         public RDFOntologyTaxonomyEntry(RDFOntologyResource taxonomySubject,
-                                          RDFOntologyResource taxonomyPredicate,
-                                          RDFOntologyResource taxonomyObject)
+                                        RDFOntologyResource taxonomyPredicate,
+                                        RDFOntologyResource taxonomyObject)
         {
             if (taxonomySubject != null)
             {
@@ -353,7 +353,8 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Marks this taxonomy entry as a semantic inference, depending on the given parameter
+        /// Marks this taxonomy entry as a semantic inference, depending on the given type.<br/>
+        /// Within custom reasoner rules, use "RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner".
         /// </summary>
         public RDFOntologyTaxonomyEntry SetInference(RDFSemanticsEnums.RDFOntologyInferenceType inferenceType)
         {
