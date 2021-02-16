@@ -58,9 +58,21 @@ namespace RDFSharp.Semantics.OWL
                                            RDFOntologyTaxonomyEntry evidenceContent)
         {
             this.EvidenceCategory = evidenceCategory;
-            this.EvidenceProvenance = evidenceProvenance;
-            this.EvidenceDestination = evidenceDestination;
-            this.EvidenceContent = evidenceContent;
+
+            if (!string.IsNullOrEmpty(evidenceProvenance))
+                this.EvidenceProvenance = evidenceProvenance;
+            else
+                throw new RDFSemanticsException("Cannot create reasoner evidence without evidenceProvenance!");
+
+            if (!string.IsNullOrEmpty(evidenceDestination))
+                this.EvidenceDestination = evidenceDestination;
+            else
+                throw new RDFSemanticsException("Cannot create reasoner evidence without evidenceDestination!");
+
+            if (evidenceContent != null)
+                this.EvidenceContent = evidenceContent;
+            else
+                throw new RDFSemanticsException("Cannot create reasoner evidence without evidenceContent!");
         }
         #endregion
 
