@@ -52,10 +52,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an evidence with given category, provenance, destination and content
         /// </summary>
-        internal RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory,
-                                             string evidenceProvenance,
-                                             string evidenceDestination,
-                                             RDFOntologyTaxonomyEntry evidenceContent)
+        public RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory evidenceCategory,
+                                           string evidenceProvenance,
+                                           string evidenceDestination,
+                                           RDFOntologyTaxonomyEntry evidenceContent)
         {
             this.EvidenceCategory = evidenceCategory;
             this.EvidenceProvenance = evidenceProvenance;
