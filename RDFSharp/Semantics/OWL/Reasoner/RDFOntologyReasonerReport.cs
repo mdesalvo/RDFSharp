@@ -61,7 +61,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build an empty reasoner report
         /// </summary>
-        internal RDFOntologyReasonerReport()
+        public RDFOntologyReasonerReport()
         {
             this.Evidences = new Dictionary<long, RDFOntologyReasonerEvidence>();
             this.SyncLock = new object();
@@ -92,21 +92,19 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given evidence to the reasoner report
         /// </summary>
-        internal void AddEvidence(RDFOntologyReasonerEvidence evidence)
+        public void AddEvidence(RDFOntologyReasonerEvidence evidence)
         {
             lock (this.SyncLock)
             {
                 if (!this.Evidences.ContainsKey(evidence.EvidenceContent.TaxonomyEntryID))
-                {
                     this.Evidences.Add(evidence.EvidenceContent.TaxonomyEntryID, evidence);
-                }
             }
         }
 
         /// <summary>
         /// Merges the evidences of the given report
         /// </summary>
-        internal void Merge(RDFOntologyReasonerReport report)
+        public void Merge(RDFOntologyReasonerReport report)
         {
             foreach (RDFOntologyReasonerEvidence evidence in report)
                 this.AddEvidence(evidence);
