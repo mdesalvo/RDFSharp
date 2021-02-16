@@ -353,10 +353,14 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Marks this taxonomy entry as a semantic inference, depending on the given type.<br/>
-        /// Within custom reasoner rules, use "RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner".
+        /// Marks this taxonomy entry as a reasoner semantic inference
         /// </summary>
-        public RDFOntologyTaxonomyEntry SetInference(RDFSemanticsEnums.RDFOntologyInferenceType inferenceType)
+        public RDFOntologyTaxonomyEntry SetInference() => SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+        /// <summary>
+        /// Marks this taxonomy entry as a semantic inference, depending on the given type.
+        /// </summary>
+        internal RDFOntologyTaxonomyEntry SetInference(RDFSemanticsEnums.RDFOntologyInferenceType inferenceType)
         {
             this.InferenceType = inferenceType;
             return this;
