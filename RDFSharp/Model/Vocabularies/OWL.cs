@@ -363,6 +363,36 @@ namespace RDFSharp.Model
             /// owl:propertyChainAxiom [OWL2]
             /// </summary>
             public static readonly RDFResource PROPERTY_CHAIN_AXIOM = new RDFResource(OWL.BASE_URI + "propertyChainAxiom");
+
+            /// <summary>
+            /// owl:topProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource TOP_PROPERTY = new RDFResource(OWL.BASE_URI + "topProperty");
+
+            /// <summary>
+            /// owl:topObjectProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource TOP_OBJECT_PROPERTY = new RDFResource(OWL.BASE_URI + "topObjectProperty");
+
+            /// <summary>
+            /// owl:topDataProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource TOP_DATA_PROPERTY = new RDFResource(OWL.BASE_URI + "topDataProperty");
+
+            /// <summary>
+            /// owl:bottomProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource BOTTOM_PROPERTY = new RDFResource(OWL.BASE_URI + "bottomProperty");
+
+            /// <summary>
+            /// owl:bottomObjectProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource BOTTOM_OBJECT_PROPERTY = new RDFResource(OWL.BASE_URI + "bottomObjectProperty");
+
+            /// <summary>
+            /// owl:bottomDataProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource BOTTOM_DATA_PROPERTY = new RDFResource(OWL.BASE_URI + "bottomDataProperty");
             #endregion
 
         }

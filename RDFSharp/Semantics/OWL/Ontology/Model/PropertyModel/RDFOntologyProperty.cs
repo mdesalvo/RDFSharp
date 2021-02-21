@@ -38,6 +38,16 @@ namespace RDFSharp.Semantics.OWL
         public bool Functional { get; internal set; }
 
         /// <summary>
+        /// Flag indicating that this property is "owl:topProperty"
+        /// </summary>
+        public bool TopProperty { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that this property is "owl:bottomProperty"
+        /// </summary>
+        public bool BottomProperty { get; internal set; }
+
+        /// <summary>
         /// Domain class of the ontology property
         /// </summary>
         public RDFOntologyClass Domain { get; internal set; }
@@ -80,9 +90,7 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyProperty SetDomain(RDFOntologyClass domainClass)
         {
             if (!this.IsAnnotationProperty())
-            {
                 this.Domain = domainClass;
-            }
             return this;
         }
 
@@ -92,9 +100,7 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyProperty SetRange(RDFOntologyClass rangeClass)
         {
             if (!this.IsAnnotationProperty())
-            {
                 this.Range = rangeClass;
-            }
             return this;
         }
 
@@ -104,9 +110,7 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyProperty SetFunctional(bool functional)
         {
             if (!this.IsAnnotationProperty())
-            {
                 this.Functional = functional;
-            }
             return this;
         }
 
@@ -116,9 +120,35 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyProperty SetDeprecated(bool deprecated)
         {
             if (!this.IsAnnotationProperty())
-            {
                 this.Deprecated = deprecated;
-            }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this ontology property as "owl:topProperty"
+        /// </summary>
+        public RDFOntologyProperty SetTopProperty(bool topProperty)
+        {
+            if (!this.IsAnnotationProperty())
+            {
+                this.TopProperty = topProperty;
+                if (topProperty)
+                    this.BottomProperty = false; //Automatically switch-off eventual bottom property
+            }   
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this ontology property as "owl:bottomProperty"
+        /// </summary>
+        public RDFOntologyProperty SetBottomProperty(bool bottomProperty)
+        {
+            if (!this.IsAnnotationProperty())
+            {
+                this.BottomProperty = bottomProperty;
+                if (bottomProperty)
+                    this.TopProperty = false; //Automatically switch-off eventual top property
+            }   
             return this;
         }
         #endregion

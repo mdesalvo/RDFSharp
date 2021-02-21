@@ -1259,6 +1259,10 @@ namespace RDFSharp.Semantics.OWL
                 else if (p.IsDatatypeProperty())
                 {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATATYPE_PROPERTY));
+                    if (p.IsTopProperty())
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_DATA_PROPERTY));
+                    if (p.IsBottomProperty())
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_DATA_PROPERTY));
                 }
                 else if (p.IsObjectProperty())
                 {
@@ -1287,10 +1291,18 @@ namespace RDFSharp.Semantics.OWL
                     {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY));
                     }
+                    if (p.IsTopProperty())
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY));
+                    if (p.IsBottomProperty())
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY));
                 }
                 else
                 {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.PROPERTY));
+                    if (p.IsTopProperty())
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_PROPERTY));
+                    if (p.IsBottomProperty())
+                        result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_PROPERTY));
                 }
 
                 if (p.IsFunctionalProperty())

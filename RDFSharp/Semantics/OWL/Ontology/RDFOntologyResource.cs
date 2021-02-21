@@ -47,184 +47,128 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if this ontology resource represents an ontology class
         /// </summary>
-        internal bool IsClass()
-        {
-            return (this is RDFOntologyClass);
-        }
+        internal bool IsClass() => this is RDFOntologyClass;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology deprecated class
         /// </summary>
-        internal bool IsDeprecatedClass()
-        {
-            return (this is RDFOntologyClass && ((RDFOntologyClass)this).Deprecated);
-        }
+        internal bool IsDeprecatedClass() => this is RDFOntologyClass ontClass && ontClass.Deprecated;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology restriction class
         /// </summary>
-        internal bool IsRestrictionClass()
-        {
-            return (this is RDFOntologyRestriction);
-        }
+        internal bool IsRestrictionClass() => this is RDFOntologyRestriction;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology composite class (union/intersection/complement)
         /// </summary>
-        internal bool IsCompositeClass()
-        {
-            return (this is RDFOntologyUnionClass ||
-                    this is RDFOntologyIntersectionClass ||
-                    this is RDFOntologyComplementClass);
-        }
+        internal bool IsCompositeClass() => this is RDFOntologyUnionClass ||
+                                                this is RDFOntologyIntersectionClass ||
+                                                    this is RDFOntologyComplementClass;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology enumerate class
         /// </summary>
-        internal bool IsEnumerateClass()
-        {
-            return (this is RDFOntologyEnumerateClass);
-        }
+        internal bool IsEnumerateClass() => this is RDFOntologyEnumerateClass;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology datarange class
         /// </summary>
-        internal bool IsDataRangeClass()
-        {
-            return (this is RDFOntologyDataRangeClass);
-        }
+        internal bool IsDataRangeClass() => this is RDFOntologyDataRangeClass;
 
         /// <summary>
         /// CHecks if this ontology resource represents a simple ontology class
         /// </summary>
-        internal bool IsSimpleClass()
-        {
-            return (this.IsClass() &&
-                        !this.IsRestrictionClass() &&
-                            !this.IsCompositeClass() &&
-                                !this.IsEnumerateClass() &&
-                                    ! this.IsDataRangeClass());
-        }
+        internal bool IsSimpleClass() => this.IsClass() &&
+                                            !this.IsRestrictionClass() &&
+                                                !this.IsCompositeClass() &&
+                                                    !this.IsEnumerateClass() &&
+                                                        !this.IsDataRangeClass();
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology property
         /// </summary>
-        internal bool IsProperty()
-        {
-            return (this is RDFOntologyProperty);
-        }
+        internal bool IsProperty() => this is RDFOntologyProperty;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology deprecated property
         /// </summary>
-        internal bool IsDeprecatedProperty()
-        {
-            return (this is RDFOntologyProperty && ((RDFOntologyProperty)this).Deprecated);
-        }
+        internal bool IsDeprecatedProperty() => this is RDFOntologyProperty ontProp && ontProp.Deprecated;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology functional property
         /// </summary>
-        internal bool IsFunctionalProperty()
-        {
-            return (this is RDFOntologyProperty && ((RDFOntologyProperty)this).Functional);
-        }
+        internal bool IsFunctionalProperty() => this is RDFOntologyProperty ontProp && ontProp.Functional;
+
+        /// <summary>
+        /// Checks if this ontology resource represents an ontology top property
+        /// </summary>
+        internal bool IsTopProperty() => this is RDFOntologyProperty ontProp && ontProp.TopProperty;
+
+        /// <summary>
+        /// Checks if this ontology resource represents an ontology bottom property
+        /// </summary>
+        internal bool IsBottomProperty() => this is RDFOntologyProperty ontProp && ontProp.BottomProperty;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology symmetric property
         /// </summary>
-        internal bool IsSymmetricProperty()
-        {
-            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Symmetric);
-        }
+        internal bool IsSymmetricProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.Symmetric;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology asymmetric property [OWL2]
         /// </summary>
-        internal bool IsAsymmetricProperty()
-        {
-            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Asymmetric);
-        }
+        internal bool IsAsymmetricProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.Asymmetric;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology reflexive property [OWL2]
         /// </summary>
-        internal bool IsReflexiveProperty()
-        {
-            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Reflexive);
-        }
+        internal bool IsReflexiveProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.Reflexive;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology irreflexive property [OWL2]
         /// </summary>
-        internal bool IsIrreflexiveProperty()
-        {
-            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Irreflexive);
-        }
+        internal bool IsIrreflexiveProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.Irreflexive;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology transitive property
         /// </summary>
-        internal bool IsTransitiveProperty()
-        {
-            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).Transitive);
-        }
+        internal bool IsTransitiveProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.Transitive;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology inverse functional property
         /// </summary>
-        internal bool IsInverseFunctionalProperty()
-        {
-            return (this is RDFOntologyObjectProperty && ((RDFOntologyObjectProperty)this).InverseFunctional);
-        }
+        internal bool IsInverseFunctionalProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.InverseFunctional;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology annotation property
         /// </summary>
-        internal bool IsAnnotationProperty()
-        {
-            return (this is RDFOntologyAnnotationProperty);
-        }
+        internal bool IsAnnotationProperty() => this is RDFOntologyAnnotationProperty;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology datatype property
         /// </summary>
-        internal bool IsDatatypeProperty()
-        {
-            return (this is RDFOntologyDatatypeProperty);
-        }
+        internal bool IsDatatypeProperty() => this is RDFOntologyDatatypeProperty;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology object property
         /// </summary>
-        internal bool IsObjectProperty()
-        {
-            return (this is RDFOntologyObjectProperty);
-        }
+        internal bool IsObjectProperty() => this is RDFOntologyObjectProperty;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology fact
         /// </summary>
-        internal bool IsFact()
-        {
-            return (this is RDFOntologyFact);
-        }
+        internal bool IsFact() => this is RDFOntologyFact;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology literal
         /// </summary>
-        internal bool IsLiteral()
-        {
-            return (this is RDFOntologyLiteral);
-        }
+        internal bool IsLiteral() => this is RDFOntologyLiteral;
 
         /// <summary>
         /// Checks if this ontology resource represents an ontology
         /// </summary>
-        internal bool IsOntology()
-        {
-            return (this is RDFOntology);
-        }
+        internal bool IsOntology() => this is RDFOntology;
         #endregion
 
     }
