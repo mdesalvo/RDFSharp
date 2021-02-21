@@ -91,7 +91,10 @@ namespace RDFSharp.Semantics.OWL
                             && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty)
                                 //OWL2-DL decidability
                                 && !propertyModel.CheckIsPropertyChain(childProperty)
-                                    && !propertyModel.CheckIsPropertyChain(motherProperty));
+                                    && !propertyModel.CheckIsPropertyChain(motherProperty))
+                                        //OWL2 constraints
+                                        && !childProperty.IsTopProperty()
+                                            && !motherProperty.IsBottomProperty();
         }
 
         /// <summary>
@@ -103,7 +106,10 @@ namespace RDFSharp.Semantics.OWL
         {
             return (!propertyModel.CheckIsSubPropertyOf(motherProperty, childProperty)
                         && !propertyModel.CheckIsEquivalentPropertyOf(motherProperty, childProperty)
-                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty));
+                            && !propertyModel.CheckIsPropertyDisjointWith(motherProperty, childProperty))
+                                //OWL2 constraints
+                                && !childProperty.IsTopProperty()
+                                    && !motherProperty.IsBottomProperty(); ;
         }
 
         /// <summary>
