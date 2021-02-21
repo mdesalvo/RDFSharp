@@ -101,16 +101,6 @@ namespace RDFSharp.Semantics.OWL
         internal bool IsFunctionalProperty() => this is RDFOntologyProperty ontProp && ontProp.Functional;
 
         /// <summary>
-        /// Checks if this ontology resource represents an ontology top property
-        /// </summary>
-        internal bool IsTopProperty() => this is RDFOntologyProperty ontProp && ontProp.TopProperty;
-
-        /// <summary>
-        /// Checks if this ontology resource represents an ontology bottom property
-        /// </summary>
-        internal bool IsBottomProperty() => this is RDFOntologyProperty ontProp && ontProp.BottomProperty;
-
-        /// <summary>
         /// Checks if this ontology resource represents an ontology symmetric property
         /// </summary>
         internal bool IsSymmetricProperty() => this is RDFOntologyObjectProperty ontObjProp && ontObjProp.Symmetric;

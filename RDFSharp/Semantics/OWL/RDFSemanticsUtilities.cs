@@ -121,20 +121,7 @@ namespace RDFSharp.Semantics.OWL
 
                 #region Step 3.0: Load RDF:Property
                 foreach (var p in rdfType.SelectTriplesByObject(RDFVocabulary.RDF.PROPERTY))
-                {
-                    RDFOntologyProperty ontProp = ((RDFResource)p.Subject).ToRDFOntologyProperty();
-                    ontology.Model.PropertyModel.AddProperty(ontProp);
-
-                    #region TopProperty [OWL2]
-                    if (rdfType.ContainsTriple(new RDFTriple((RDFResource)ontProp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_PROPERTY)))
-                        ontProp.SetTopProperty(true);
-                    #endregion
-
-                    #region BottomProperty [OWL2]
-                    if (rdfType.ContainsTriple(new RDFTriple((RDFResource)ontProp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_PROPERTY)))
-                        ontProp.SetBottomProperty(true);
-                    #endregion
-                }
+                    ontology.Model.PropertyModel.AddProperty(((RDFResource)p.Subject).ToRDFOntologyProperty());
                 #endregion Step 3.0: Load RDF:Property
 
                 #region Step 3.1: Load OWL:AnnotationProperty
@@ -166,16 +153,6 @@ namespace RDFSharp.Semantics.OWL
                     if (rdfType.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                         dtp.SetFunctional(true);
                     #endregion FunctionalProperty
-
-                    #region TopDataProperty [OWL2]
-                    if (rdfType.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_DATA_PROPERTY)))
-                        dtp.SetTopProperty(true);
-                    #endregion
-
-                    #region BottomDataProperty [OWL2]
-                    if (rdfType.ContainsTriple(new RDFTriple((RDFResource)dtp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_DATA_PROPERTY)))
-                        dtp.SetBottomProperty(true);
-                    #endregion
                 }
                 #endregion Step 3.2: Load OWL:DatatypeProperty
 
@@ -201,16 +178,6 @@ namespace RDFSharp.Semantics.OWL
                     #region SymmetricProperty
                     if (rdfType.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.SYMMETRIC_PROPERTY)))
                         obp.SetSymmetric(true);
-                    #endregion
-
-                    #region TopObjectProperty [OWL2]
-                    if (rdfType.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                        obp.SetTopProperty(true);
-                    #endregion
-
-                    #region BottomObjectProperty [OWL2]
-                    if (rdfType.ContainsTriple(new RDFTriple((RDFResource)obp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                        obp.SetBottomProperty(true);
                     #endregion
 
                     #region AsymmetricProperty [OWL2]
@@ -257,16 +224,6 @@ namespace RDFSharp.Semantics.OWL
                         if (rdfType.ContainsTriple(new RDFTriple((RDFResource)syp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                             syp.SetFunctional(true);
                         #endregion
-
-                        #region TopObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)syp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                            syp.SetTopProperty(true);
-                        #endregion
-
-                        #region BottomObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)syp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                            syp.SetBottomProperty(true);
-                        #endregion
                     }
                     ((RDFOntologyObjectProperty)syp).SetSymmetric(true);
                 }
@@ -289,16 +246,6 @@ namespace RDFSharp.Semantics.OWL
                         #region FunctionalProperty
                         if (rdfType.ContainsTriple(new RDFTriple((RDFResource)asyp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                             asyp.SetFunctional(true);
-                        #endregion
-
-                        #region TopObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)asyp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                            asyp.SetTopProperty(true);
-                        #endregion
-
-                        #region BottomObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)asyp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                            asyp.SetBottomProperty(true);
                         #endregion
                     }
                     ((RDFOntologyObjectProperty)asyp).SetAsymmetric(true);
@@ -323,16 +270,6 @@ namespace RDFSharp.Semantics.OWL
                         if (rdfType.ContainsTriple(new RDFTriple((RDFResource)refp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                             refp.SetFunctional(true);
                         #endregion
-
-                        #region TopObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)refp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                            refp.SetTopProperty(true);
-                        #endregion
-
-                        #region BottomObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)refp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                            refp.SetBottomProperty(true);
-                        #endregion
                     }
                     ((RDFOntologyObjectProperty)refp).SetReflexive(true);
                 }
@@ -355,16 +292,6 @@ namespace RDFSharp.Semantics.OWL
                         #region FunctionalProperty
                         if (rdfType.ContainsTriple(new RDFTriple((RDFResource)irrefp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                             irrefp.SetFunctional(true);
-                        #endregion
-
-                        #region TopObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)irrefp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                            irrefp.SetTopProperty(true);
-                        #endregion
-
-                        #region BottomObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)irrefp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                            irrefp.SetBottomProperty(true);
                         #endregion
                     }
                     ((RDFOntologyObjectProperty)irrefp).SetIrreflexive(true);
@@ -389,16 +316,6 @@ namespace RDFSharp.Semantics.OWL
                         if (rdfType.ContainsTriple(new RDFTriple((RDFResource)trp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                             trp.SetFunctional(true);
                         #endregion
-
-                        #region TopObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)trp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                            trp.SetTopProperty(true);
-                        #endregion
-
-                        #region BottomObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)trp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                            trp.SetBottomProperty(true);
-                        #endregion
                     }
                     ((RDFOntologyObjectProperty)trp).SetTransitive(true);
                 }
@@ -421,16 +338,6 @@ namespace RDFSharp.Semantics.OWL
                         #region FunctionalProperty
                         if (rdfType.ContainsTriple(new RDFTriple((RDFResource)ifp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY)))
                             ifp.SetFunctional(true);
-                        #endregion
-
-                        #region TopObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)ifp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TOP_OBJECT_PROPERTY)))
-                            ifp.SetTopProperty(true);
-                        #endregion
-
-                        #region BottomObjectProperty [OWL2]
-                        if (rdfType.ContainsTriple(new RDFTriple((RDFResource)ifp.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY)))
-                            ifp.SetBottomProperty(true);
                         #endregion
                     }
                     ((RDFOntologyObjectProperty)ifp).SetInverseFunctional(true);
