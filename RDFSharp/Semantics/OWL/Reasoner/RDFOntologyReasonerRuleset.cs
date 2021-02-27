@@ -32,7 +32,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of rules available in the standard RDFS/OWL-DL/OWL2 ruleset
         /// </summary>
-        public static readonly int RulesCount = 21;
+        public static readonly int RulesCount = 22;
 
         #region RDFS
         /// <summary>
@@ -174,6 +174,13 @@ namespace RDFSharp.Semantics.OWL
         /// ((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)
         /// </summary>
         public static RDFOntologyReasonerRule HasSelfEntailment { get; internal set; }
+
+        /// <summary>
+        /// TopPropertyEntailment implements structural entailments based on 'owl:topObjectProperty' and 'owl:topDataProperty' subsumption [OWL2]<br/>
+        /// ((P TYPE OBJECTPROPERTY)   => (P SUBPROPERTYOF TOPOBJECTPROPERTY)<br/>
+        /// ((P TYPE DATATYPEPROPERTY) => (P SUBPROPERTYOF TOPDATAPROPERTY)
+        /// </summary>
+        public static RDFOntologyReasonerRule TopPropertyEntailment { get; internal set; }
         #endregion
 
         #endregion
@@ -325,6 +332,13 @@ namespace RDFSharp.Semantics.OWL
                                                             "(OWL2) HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions:" +
                                                             "((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)",
                                                             HasSelfEntailmentExec).SetStandard();
+
+            //TopPropertyEntailment
+            TopPropertyEntailment = new RDFOntologyReasonerRule("TopPropertyEntailment",
+                                                                "(OWL2) TopPropertyEntailment implements structural entailments based on 'owl:topObjectProperty' and 'owl:topDataProperty' subsumption:" +
+                                                                "(P TYPE OBJECTPROPERTY) => (P SUBPROPERTYOF TOPOBJECTPROPERTY);" +
+                                                                "(P TYPE DATATYPEPROPERTY) => (P SUBPROPERTYOF TOPDATAPROPERTY);",
+                                                                TopPropertyEntailmentExec).SetStandard();
             #endregion
 
         }
@@ -377,7 +391,6 @@ namespace RDFSharp.Semantics.OWL
             var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
             foreach (var p in availableprops)
             {
-
                 //Enlist the superproperties of the current property
                 var superprops = ontology.Model.PropertyModel.GetSuperPropertiesOf(p);
                 foreach (var sp in superprops)
@@ -1173,6 +1186,41 @@ namespace RDFSharp.Semantics.OWL
                 }
             }
 
+            return report;
+        }
+
+        /// <summary>
+        /// (OWL2) TopPropertyEntailment implements structural entailments based on 'owl:topObjectProperty' and 'owl:topDataProperty' subsumption:<br/>
+        /// ((P TYPE OBJECTPROPERTY)   => (P SUBPROPERTYOF TOPOBJECTPROPERTY)<br/>
+        /// ((P TYPE DATATYPEPROPERTY) => (P SUBPROPERTYOF TOPDATAPROPERTY)
+        /// </summary>
+        internal static RDFOntologyReasonerReport TopPropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        {
+            var report = new RDFOntologyReasonerReport();
+            var subPropertyOf = RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty();
+            var topObjectProperty = RDFVocabulary.OWL.TOP_OBJECT_PROPERTY.ToRDFOntologyObjectProperty();
+            var topDataProperty = RDFVocabulary.OWL.TOP_DATA_PROPERTY.ToRDFOntologyDatatypeProperty();
+
+            //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
+            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            foreach (var op in availableprops.OfType<RDFOntologyObjectProperty>())
+            {
+                //Create the inference as a taxonomy entry
+                var sem_inf = new RDFOntologyTaxonomyEntry(op, subPropertyOf, topObjectProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //Add the inference to the report
+                if (!ontology.Model.PropertyModel.Relations.SubPropertyOf.ContainsEntry(sem_inf))
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(TopPropertyEntailment), nameof(RDFOntologyPropertyModel.Relations.SubPropertyOf), sem_inf));
+            }
+            foreach (var dp in availableprops.OfType<RDFOntologyDatatypeProperty>())
+            {
+                //Create the inference as a taxonomy entry
+                var sem_inf = new RDFOntologyTaxonomyEntry(dp, subPropertyOf, topDataProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //Add the inference to the report
+                if (!ontology.Model.PropertyModel.Relations.SubPropertyOf.ContainsEntry(sem_inf))
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(TopPropertyEntailment), nameof(RDFOntologyPropertyModel.Relations.SubPropertyOf), sem_inf));
+            }
             return report;
         }
         #endregion

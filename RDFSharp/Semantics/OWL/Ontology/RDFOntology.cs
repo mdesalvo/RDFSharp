@@ -788,6 +788,8 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.TARGET_VALUE.ToRDFOntologyDatatypeProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.TOP_OBJECT_PROPERTY.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.TOP_DATA_PROPERTY.ToRDFOntologyDatatypeProperty());
 
             #endregion
 
