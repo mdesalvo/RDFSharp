@@ -596,17 +596,13 @@ namespace RDFSharp.Semantics.OWL
         /// Gets an ontology representation of the given graph.
         /// </summary>
         public static RDFOntology FromRDFGraph(RDFGraph ontGraph)
-        {
-            return RDFSemanticsUtilities.FromRDFGraph(ontGraph);
-        }
+            => RDFSemanticsUtilities.FromRDFGraph(ontGraph);
 
         /// <summary>
         /// Gets a graph representation of this ontology, exporting inferences according to the selected behavior
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
-        {
-            return RDFSemanticsUtilities.ToRDFGraph(this, infexpBehavior);
-        }
+            => RDFSemanticsUtilities.ToRDFGraph(this, infexpBehavior);
         #endregion
 
         #endregion

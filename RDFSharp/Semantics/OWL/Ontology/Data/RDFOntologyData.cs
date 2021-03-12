@@ -33,33 +33,25 @@ namespace RDFSharp.Semantics.OWL
         /// Count of the facts composing the data
         /// </summary>
         public long FactsCount
-        {
-            get { return this.Facts.Count; }
-        }
+            => this.Facts.Count;
 
         /// <summary>
         /// Count of the literals composing the data
         /// </summary>
         public long LiteralsCount
-        {
-            get { return this.Literals.Count; }
-        }
+            => this.Literals.Count;
 
         /// <summary>
         /// Gets the enumerator on the facts of the data for iteration
         /// </summary>
         public IEnumerator<RDFOntologyFact> FactsEnumerator
-        {
-            get { return this.Facts.Values.GetEnumerator(); }
-        }
+            => this.Facts.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the literals of the data for iteration
         /// </summary>
         public IEnumerator<RDFOntologyLiteral> LiteralsEnumerator
-        {
-            get { return this.Literals.Values.GetEnumerator(); }
-        }
+            => this.Literals.Values.GetEnumerator();
 
         /// <summary>
         /// Annotations describing facts of the ontology data
@@ -99,18 +91,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the data's facts
         /// </summary>
-        IEnumerator<RDFOntologyFact> IEnumerable<RDFOntologyFact>.GetEnumerator()
-        {
-            return this.FactsEnumerator;
-        }
+        IEnumerator<RDFOntologyFact> IEnumerable<RDFOntologyFact>.GetEnumerator() => this.FactsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the data's facts
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.FactsEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.FactsEnumerator;
         #endregion
 
         #region Methods

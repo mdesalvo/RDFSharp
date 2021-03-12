@@ -38,18 +38,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the taxonomy entries
         /// </summary>
-        public long EntriesCount
-        {
-            get { return this.Entries.Count; }
-        }
+        public long EntriesCount => this.Entries.Count;
 
         /// <summary>
         /// Gets the enumerator on the taxonomy entries for iteration
         /// </summary>
-        public IEnumerator<RDFOntologyTaxonomyEntry> EntriesEnumerator
-        {
-            get { return this.Entries.GetEnumerator(); }
-        }
+        public IEnumerator<RDFOntologyTaxonomyEntry> EntriesEnumerator => this.Entries.GetEnumerator();
 
         /// <summary>
         /// Dictionary of ontology entries composing the taxonomy
@@ -84,18 +78,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the taxonomy entries
         /// </summary>
-        IEnumerator<RDFOntologyTaxonomyEntry> IEnumerable<RDFOntologyTaxonomyEntry>.GetEnumerator()
-        {
-            return this.EntriesEnumerator;
-        }
+        IEnumerator<RDFOntologyTaxonomyEntry> IEnumerable<RDFOntologyTaxonomyEntry>.GetEnumerator() => this.EntriesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the taxonomy entries
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.EntriesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.EntriesEnumerator;
         #endregion
 
         #region Methods
@@ -146,9 +134,7 @@ namespace RDFSharp.Semantics.OWL
         /// Checks if the taxonomy contains the given taxonomy entry
         /// </summary>
         public bool ContainsEntry(RDFOntologyTaxonomyEntry taxonomyEntry)
-        {
-            return taxonomyEntry != null && this.EntriesLookup.Contains(taxonomyEntry.TaxonomyEntryID);
-        }
+            => taxonomyEntry != null && this.EntriesLookup.Contains(taxonomyEntry.TaxonomyEntryID);
 
         /// <summary>
         /// Gets a taxonomy with the entries having the specified ontology resource as subject
@@ -338,24 +324,21 @@ namespace RDFSharp.Semantics.OWL
         /// Gets the string representation of the taxonomy entry
         /// </summary>
         public override string ToString()
-        {
-            return this.TaxonomySubject + " " + this.TaxonomyPredicate + " " + this.TaxonomyObject;
-        }
+            => string.Concat(this.TaxonomySubject, " ", this.TaxonomyPredicate, " ", this.TaxonomyObject);
 
         /// <summary>
         /// Performs the equality comparison between two taxonomy entries
         /// </summary>
         public bool Equals(RDFOntologyTaxonomyEntry other)
-        {
-            return other != null && this.TaxonomyEntryID.Equals(other.TaxonomyEntryID);
-        }
+            => other != null && this.TaxonomyEntryID.Equals(other.TaxonomyEntryID);
         #endregion
 
         #region Methods
         /// <summary>
         /// Marks this taxonomy entry as a reasoner semantic inference
         /// </summary>
-        public RDFOntologyTaxonomyEntry SetInference() => SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+        public RDFOntologyTaxonomyEntry SetInference()
+            => SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
         /// <summary>
         /// Marks this taxonomy entry as a semantic inference, depending on the given type.
@@ -369,18 +352,15 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Checks if this taxonomy entry represents an inference
         /// </summary>
-        internal bool IsInference() => this.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None;
+        internal bool IsInference()
+            => this.InferenceType != RDFSemanticsEnums.RDFOntologyInferenceType.None;
 
         /// <summary>
         /// Get a triple representation of this taxonomy entry
         /// </summary>
         internal RDFTriple ToRDFTriple()
-        {
-            if (this.TaxonomyObject.IsLiteral())
-                return new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFLiteral)this.TaxonomyObject.Value);
-            else
-                return new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFResource)this.TaxonomyObject.Value);
-        }
+            => this.TaxonomyObject.IsLiteral() ? new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFLiteral)this.TaxonomyObject.Value)
+                                               : new RDFTriple((RDFResource)this.TaxonomySubject.Value, (RDFResource)this.TaxonomyPredicate.Value, (RDFResource)this.TaxonomyObject.Value);
         #endregion
 
     }

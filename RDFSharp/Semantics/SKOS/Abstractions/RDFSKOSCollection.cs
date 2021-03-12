@@ -33,33 +33,25 @@ namespace RDFSharp.Semantics.SKOS
         /// Count of the concepts of the collection
         /// </summary>
         public long ConceptsCount
-        {
-            get { return this.Concepts.Count; }
-        }
+            => this.Concepts.Count;
 
         /// <summary>
         /// Count of the collections of the collection
         /// </summary>
         public long CollectionsCount
-        {
-            get { return this.Collections.Count; }
-        }
+            => this.Collections.Count;
 
         /// <summary>
         /// Gets the enumerator on the concepts of the collection
         /// </summary>
         public IEnumerator<RDFSKOSConcept> ConceptsEnumerator
-        {
-            get { return this.Concepts.Values.GetEnumerator(); }
-        }
+            => this.Concepts.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the collections of the collection
         /// </summary>
         public IEnumerator<RDFSKOSCollection> CollectionsEnumerator
-        {
-            get { return this.Collections.Values.GetEnumerator(); }
-        }
+            => this.Collections.Values.GetEnumerator();
 
         /// <summary>
         /// Dictionary of concepts contained in the collection
@@ -204,9 +196,7 @@ namespace RDFSharp.Semantics.SKOS
         /// Gets a graph representation of this collection, exporting inferences according to the selected behavior
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
-        {
-            return this.ToRDFOntologyData().ToRDFGraph(infexpBehavior);
-        }
+            => this.ToRDFOntologyData().ToRDFGraph(infexpBehavior);
 
         /// <summary>
         /// Gets an ontology data representation of this collection

@@ -33,226 +33,152 @@ namespace RDFSharp.Semantics.OWL
         /// Count of the properties composing the property model
         /// </summary>
         public long PropertiesCount
-        {
-            get { return this.Properties.Count; }
-        }
+            => this.Properties.Count;
 
         /// <summary>
         /// Count of the annotation properties composing the property model
         /// </summary>
         public long AnnotationPropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsAnnotationProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsAnnotationProperty());
 
         /// <summary>
         /// Count of the datatype properties composing the property model
         /// </summary>
         public long DatatypePropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsDatatypeProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsDatatypeProperty());
 
         /// <summary>
         /// Count of the object properties composing the property model
         /// </summary>
         public long ObjectPropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsObjectProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsObjectProperty());
 
         /// <summary>
         /// Count of the functional properties composing the property model
         /// </summary>
         public long FunctionalPropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsFunctionalProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsFunctionalProperty());
 
         /// <summary>
         /// Count of the symmetric properties composing the property model
         /// </summary>
         public long SymmetricPropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsSymmetricProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsSymmetricProperty());
 
         /// <summary>
         /// Count of the asymmetric properties composing the property model [OWL2]
         /// </summary>
         public long AsymmetricPropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsAsymmetricProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsAsymmetricProperty());
 
         /// <summary>
         /// Count of the reflexive properties composing the property model [OWL2]
         /// </summary>
         public long ReflexivePropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsReflexiveProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsReflexiveProperty());
 
         /// <summary>
         /// Count of the irreflexive properties composing the property model [OWL2]
         /// </summary>
         public long IrreflexivePropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsIrreflexiveProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsIrreflexiveProperty());
 
         /// <summary>
         /// Count of the transitive properties composing the property model
         /// </summary>
         public long TransitivePropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsTransitiveProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsTransitiveProperty());
 
         /// <summary>
         /// Count of the inverse functional properties composing the property model
         /// </summary>
         public long InverseFunctionalPropertiesCount
-        {
-            get { return this.Properties.Count(p => p.Value.IsInverseFunctionalProperty()); }
-        }
+            => this.Properties.Count(p => p.Value.IsInverseFunctionalProperty());
 
         /// <summary>
         /// Gets the enumerator on the property model's properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyProperty> PropertiesEnumerator
-        {
-            get { return this.Properties.Values.GetEnumerator(); }
-        }
+            => this.Properties.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's annotation properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyAnnotationProperty> AnnotationPropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsAnnotationProperty())
-                                             .OfType<RDFOntologyAnnotationProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsAnnotationProperty())
+                                     .OfType<RDFOntologyAnnotationProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's datatype properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyDatatypeProperty> DatatypePropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsDatatypeProperty())
-                                             .OfType<RDFOntologyDatatypeProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsDatatypeProperty())
+                                     .OfType<RDFOntologyDatatypeProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's object properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> ObjectPropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsObjectProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsObjectProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's functional properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyProperty> FunctionalPropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsFunctionalProperty())
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsFunctionalProperty())
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's symmetric properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> SymmetricPropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsSymmetricProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsSymmetricProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's asymmetric properties for iteration [OWL2]
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> AsymmetricPropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsAsymmetricProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsAsymmetricProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's reflexive properties for iteration [OWL2]
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> ReflexivePropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsReflexiveProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsReflexiveProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's irreflexive properties for iteration [OWL2]
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> IrreflexivePropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsIrreflexiveProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsIrreflexiveProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's transitive properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> TransitivePropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsTransitiveProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsTransitiveProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's inverse functional properties for iteration
         /// </summary>
         public IEnumerator<RDFOntologyObjectProperty> InverseFunctionalPropertiesEnumerator
-        {
-            get
-            {
-                return this.Properties.Values.Where(p => p.IsInverseFunctionalProperty())
-                                             .OfType<RDFOntologyObjectProperty>()
-                                             .GetEnumerator();
-            }
-        }
+            => this.Properties.Values.Where(p => p.IsInverseFunctionalProperty())
+                                     .OfType<RDFOntologyObjectProperty>()
+                                     .GetEnumerator();
 
         /// <summary>
         /// Annotations describing properties of the ontology property model
@@ -286,18 +212,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the property model's properties
         /// </summary>
-        IEnumerator<RDFOntologyProperty> IEnumerable<RDFOntologyProperty>.GetEnumerator()
-        {
-            return this.PropertiesEnumerator;
-        }
+        IEnumerator<RDFOntologyProperty> IEnumerable<RDFOntologyProperty>.GetEnumerator() => this.PropertiesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the property model's properties
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.PropertiesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.PropertiesEnumerator;
         #endregion
 
         #region Methods

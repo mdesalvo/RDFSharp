@@ -35,65 +35,49 @@ namespace RDFSharp.Semantics.SKOS
         /// Count of the concepts composing the scheme
         /// </summary>
         public long ConceptsCount
-        {
-            get { return this.Concepts.Count; }
-        }
+            => this.Concepts.Count;
 
         /// <summary>
         /// Count of the collections composing the scheme
         /// </summary>
         public long CollectionsCount
-        {
-            get { return this.Collections.Count; }
-        }
+            => this.Collections.Count;
 
         /// <summary>
         /// Count of the ordered collections composing the scheme
         /// </summary>
         public long OrderedCollectionsCount
-        {
-            get { return this.OrderedCollections.Count; }
-        }
+            => this.OrderedCollections.Count;
 
         /// <summary>
         /// Count of the labels composing the scheme
         /// </summary>
         public long LabelsCount
-        {
-            get { return this.Labels.Count; }
-        }
+            => this.Labels.Count;
 
         /// <summary>
         /// Gets the enumerator on the concepts of the scheme for iteration
         /// </summary>
         public IEnumerator<RDFSKOSConcept> ConceptsEnumerator
-        {
-            get { return this.Concepts.Values.GetEnumerator(); }
-        }
+            => this.Concepts.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the collections of the scheme for iteration
         /// </summary>
         public IEnumerator<RDFSKOSCollection> CollectionsEnumerator
-        {
-            get { return this.Collections.Values.GetEnumerator(); }
-        }
+            => this.Collections.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the ordered collections of the scheme for iteration
         /// </summary>
         public IEnumerator<RDFSKOSOrderedCollection> OrderedCollectionsEnumerator
-        {
-            get { return this.OrderedCollections.Values.GetEnumerator(); }
-        }
+            => this.OrderedCollections.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the labels of the scheme for iteration
         /// </summary>
         public IEnumerator<RDFSKOSLabel> LabelsEnumerator
-        {
-            get { return this.Labels.Values.GetEnumerator(); }
-        }
+            => this.Labels.Values.GetEnumerator();
 
         /// <summary>
         /// Annotations describing concepts of the scheme
@@ -145,18 +129,12 @@ namespace RDFSharp.Semantics.SKOS
         /// <summary>
         /// Exposes a typed enumerator on the scheme's concepts
         /// </summary>
-        IEnumerator<RDFSKOSConcept> IEnumerable<RDFSKOSConcept>.GetEnumerator()
-        {
-            return this.ConceptsEnumerator;
-        }
+        IEnumerator<RDFSKOSConcept> IEnumerable<RDFSKOSConcept>.GetEnumerator() => this.ConceptsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the scheme's concepts
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ConceptsEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ConceptsEnumerator;
         #endregion
 
         #region Methods
@@ -721,9 +699,7 @@ namespace RDFSharp.Semantics.SKOS
         /// Gets a graph representation of this scheme, exporting inferences according to the selected behavior
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
-        {
-            return this.ToRDFOntologyData().ToRDFGraph(infexpBehavior);
-        }
+            => this.ToRDFOntologyData().ToRDFGraph(infexpBehavior);
 
         /// <summary>
         /// Gets an ontology data representation of this scheme

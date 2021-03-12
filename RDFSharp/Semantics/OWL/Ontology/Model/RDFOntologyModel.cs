@@ -130,10 +130,8 @@ namespace RDFSharp.Semantics.OWL
         /// Gets a graph representation of this ontology model, exporting inferences according to the selected behavior
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
-        {
-            return this.ClassModel.ToRDFGraph(infexpBehavior)
-                                  .UnionWith(this.PropertyModel.ToRDFGraph(infexpBehavior));
-        }
+            => this.ClassModel.ToRDFGraph(infexpBehavior)
+                              .UnionWith(this.PropertyModel.ToRDFGraph(infexpBehavior));
         #endregion
 
         #endregion

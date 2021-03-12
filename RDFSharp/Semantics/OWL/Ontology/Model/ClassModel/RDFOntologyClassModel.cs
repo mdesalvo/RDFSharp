@@ -34,100 +34,68 @@ namespace RDFSharp.Semantics.OWL
         /// Count of the classes composing the class model
         /// </summary>
         public long ClassesCount
-        {
-            get { return this.Classes.Count; }
-        }
+            => this.Classes.Count;
 
         /// <summary>
         /// Count of the restrictions classes composing the class model
         /// </summary>
         public long RestrictionsCount
-        {
-            get { return this.Classes.Count(c => c.Value.IsRestrictionClass()); }
-        }
+            => this.Classes.Count(c => c.Value.IsRestrictionClass());
 
         /// <summary>
         /// Count of the enumerate classes composing the class model
         /// </summary>
         public long EnumeratesCount
-        {
-            get { return this.Classes.Count(c => c.Value.IsEnumerateClass()); }
-        }
+            => this.Classes.Count(c => c.Value.IsEnumerateClass());
 
         /// <summary>
         /// Count of the datarange classes composing the class model
         /// </summary>
         public long DataRangesCount
-        {
-            get { return this.Classes.Count(c => c.Value.IsDataRangeClass()); }
-        }
+            => this.Classes.Count(c => c.Value.IsDataRangeClass());
 
         /// <summary>
         /// Count of the composite classes composing the class model
         /// </summary>
         public long CompositesCount
-        {
-            get { return this.Classes.Count(c => c.Value.IsCompositeClass()); }
-        }
+            => this.Classes.Count(c => c.Value.IsCompositeClass());
 
         /// <summary>
         /// Gets the enumerator on the class model's classes for iteration
         /// </summary>
         public IEnumerator<RDFOntologyClass> ClassesEnumerator
-        {
-            get { return this.Classes.Values.GetEnumerator(); }
-        }
+            => this.Classes.Values.GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the class model's restriction classes for iteration
         /// </summary>
         public IEnumerator<RDFOntologyRestriction> RestrictionsEnumerator
-        {
-            get
-            {
-                return this.Classes.Values.Where(c => c.IsRestrictionClass())
-                                          .OfType<RDFOntologyRestriction>()
-                                          .GetEnumerator();
-            }
-        }
+            => this.Classes.Values.Where(c => c.IsRestrictionClass())
+                                  .OfType<RDFOntologyRestriction>()
+                                  .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the class model's enumerate classes for iteration
         /// </summary>
         public IEnumerator<RDFOntologyEnumerateClass> EnumeratesEnumerator
-        {
-            get
-            {
-                return this.Classes.Values.Where(c => c.IsEnumerateClass())
-                                          .OfType<RDFOntologyEnumerateClass>()
-                                          .GetEnumerator();
-            }
-        }
+            => this.Classes.Values.Where(c => c.IsEnumerateClass())
+                                  .OfType<RDFOntologyEnumerateClass>()
+                                  .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the class model's datarange classes for iteration
         /// </summary>
         public IEnumerator<RDFOntologyDataRangeClass> DataRangesEnumerator
-        {
-            get
-            {
-                return this.Classes.Values.Where(c => c.IsDataRangeClass())
-                                          .OfType<RDFOntologyDataRangeClass>()
-                                          .GetEnumerator();
-            }
-        }
+            => this.Classes.Values.Where(c => c.IsDataRangeClass())
+                                  .OfType<RDFOntologyDataRangeClass>()
+                                  .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the class model's composite classes for iteration
         /// </summary>
         public IEnumerator<RDFOntologyClass> CompositesEnumerator
-        {
-            get
-            {
-                return this.Classes.Values.Where(c => c.IsCompositeClass())
-                                          .GetEnumerator();
-            }
-        }
+            => this.Classes.Values.Where(c => c.IsCompositeClass())
+                                  .GetEnumerator();
 
         /// <summary>
         /// Annotations describing classes of the ontology class model
@@ -161,18 +129,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the class model's classes
         /// </summary>
-        IEnumerator<RDFOntologyClass> IEnumerable<RDFOntologyClass>.GetEnumerator()
-        {
-            return this.ClassesEnumerator;
-        }
+        IEnumerator<RDFOntologyClass> IEnumerable<RDFOntologyClass>.GetEnumerator() => this.ClassesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the ontology class model's classes
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ClassesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ClassesEnumerator;
         #endregion
 
         #region Methods
