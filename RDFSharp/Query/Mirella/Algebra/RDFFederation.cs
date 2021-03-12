@@ -38,18 +38,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Count of the federation's data sources
         /// </summary>
-        public int DataSourcesCount
-        {
-            get { return this.DataSources.Count; }
-        }
+        public int DataSourcesCount => this.DataSources.Count;
 
         /// <summary>
         /// Gets the enumerator on the federation's data sources for iteration
         /// </summary>
-        public IEnumerator<RDFDataSource> DataSourcesEnumerator
-        {
-            get { return this.DataSources.GetEnumerator(); }
-        }
+        public IEnumerator<RDFDataSource> DataSourcesEnumerator => this.DataSources.GetEnumerator();
 
         /// <summary>
         /// List of data sources of the federation
@@ -63,7 +57,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation()
         {
-            this.FederationName = "FEDERATION|ID=" + Guid.NewGuid().ToString("N");
+            this.FederationName = string.Concat("FEDERATION|ID=", Guid.NewGuid().ToString("N"));
             this.DataSources = new List<RDFDataSource>();
         }
         #endregion
@@ -72,26 +66,17 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the federation
         /// </summary>
-        public override string ToString()
-        {
-            return this.FederationName;
-        }
+        public override string ToString() => this.FederationName;
 
         /// <summary>
         /// Exposes a typed enumerator on the federation's data sources
         /// </summary>
-        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator()
-        {
-            return this.DataSourcesEnumerator;
-        }
+        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator() => this.DataSourcesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the federation's data sources
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.DataSourcesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.DataSourcesEnumerator;
         #endregion
 
         #region Methods
@@ -150,10 +135,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Clears the data sources of the federation
         /// </summary>
-        public void ClearDataSources()
-        {
-            this.DataSources.Clear();
-        }
+        public void ClearDataSources() => this.DataSources.Clear();
         #endregion
 
         #endregion

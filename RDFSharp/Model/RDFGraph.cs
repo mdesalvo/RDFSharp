@@ -40,18 +40,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public long TriplesCount
-        {
-            get { return this.Triples.Count; }
-        }
+        public long TriplesCount => this.Triples.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
         /// </summary>
-        public IEnumerator<RDFTriple> TriplesEnumerator
-        {
-            get { return this.Triples.Values.GetEnumerator(); }
-        }
+        public IEnumerator<RDFTriple> TriplesEnumerator => this.Triples.Values.GetEnumerator();
 
         /// <summary>
         /// Index on the triples of the graph
@@ -79,20 +73,14 @@ namespace RDFSharp.Model
         /// Builds a graph with the given list of triples
         /// </summary>
         public RDFGraph(List<RDFTriple> triples) : this()
-        {
-            if (triples != null)
-                triples.ForEach(t => this.AddTriple(t));
-        }
+            => triples?.ForEach(t => this.AddTriple(t));
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override string ToString()
-        {
-            return this.Context.ToString();
-        }
+        public override string ToString() => this.Context.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two graphs
@@ -116,18 +104,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator()
-        {
-            return this.TriplesEnumerator;
-        }
+        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() => this.TriplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.TriplesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.TriplesEnumerator;
         #endregion
 
         #region Methods
@@ -478,41 +460,31 @@ namespace RDFSharp.Model
         /// Checks if the graph contains the given triple
         /// </summary>
         public bool ContainsTriple(RDFTriple triple)
-        {
-            return (triple != null && this.Triples.ContainsKey(triple.TripleID));
-        }
+            => triple != null && this.Triples.ContainsKey(triple.TripleID);
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified resource as subject
         /// </summary>
         public RDFGraph SelectTriplesBySubject(RDFResource subjectResource)
-        {
-            return (new RDFGraph(RDFModelUtilities.SelectTriples(this, subjectResource, null, null, null)));
-        }
+            => new RDFGraph(RDFModelUtilities.SelectTriples(this, subjectResource, null, null, null));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified resource as predicate
         /// </summary>
         public RDFGraph SelectTriplesByPredicate(RDFResource predicateResource)
-        {
-            return (new RDFGraph(RDFModelUtilities.SelectTriples(this, null, predicateResource, null, null)));
-        }
+            => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, predicateResource, null, null));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified resource as object
         /// </summary>
         public RDFGraph SelectTriplesByObject(RDFResource objectResource)
-        {
-            return (new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, objectResource, null)));
-        }
+            => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, objectResource, null));
 
         /// <summary>
         /// Gets the subgraph containing triples with the specified literal as object
         /// </summary>
         public RDFGraph SelectTriplesByLiteral(RDFLiteral objectLiteral)
-        {
-            return (new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, objectLiteral)));
-        }
+            => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, objectLiteral));
         #endregion
 
         #region Set

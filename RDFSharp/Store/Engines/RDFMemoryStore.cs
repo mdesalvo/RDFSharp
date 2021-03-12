@@ -36,18 +36,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public long QuadruplesCount
-        {
-            get { return this.Quadruples.Count; }
-        }
+        public long QuadruplesCount => this.Quadruples.Count;
 
         /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
         /// </summary>
-        public IEnumerator<RDFQuadruple> QuadruplesEnumerator
-        {
-            get { return this.Quadruples.Values.GetEnumerator(); }
-        }
+        public IEnumerator<RDFQuadruple> QuadruplesEnumerator => this.Quadruples.Values.GetEnumerator();
 
         /// <summary>
         /// Identifier of the memory store
@@ -82,10 +76,7 @@ namespace RDFSharp.Store
         /// List-based ctor to build a memory store with the given list of quadruples
         /// </summary>
         public RDFMemoryStore(List<RDFQuadruple> quadruples) : this()
-        {
-            if (quadruples != null)
-                quadruples.ForEach(q => this.AddQuadruple(q));
-        }
+            => quadruples?.ForEach(q => this.AddQuadruple(q));
         #endregion
 
         #region Interfaces
@@ -93,9 +84,7 @@ namespace RDFSharp.Store
         /// Gives the string representation of the Memory store
         /// </summary>
         public override string ToString()
-        {
-            return base.ToString() + "|ID=" + this.StoreGUID;
-        }
+            => string.Concat(base.ToString(), "|ID=", this.StoreGUID);
 
         /// <summary>
         /// Performs the equality comparison between two memory stores
@@ -119,18 +108,12 @@ namespace RDFSharp.Store
         /// <summary>
         /// Exposes a typed enumerator on the store's quadruples
         /// </summary>
-        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator()
-        {
-            return this.QuadruplesEnumerator;
-        }
+        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator() => this.QuadruplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the store's quadruples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.QuadruplesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.QuadruplesEnumerator;
         #endregion
 
         #region Methods
