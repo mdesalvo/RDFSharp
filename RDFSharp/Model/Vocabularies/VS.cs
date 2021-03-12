@@ -47,22 +47,22 @@ namespace RDFSharp.Model
             /// <summary>
             /// vs:term_status
             /// </summary>
-            public static readonly RDFResource TERM_STATUS = new RDFResource(XML.BASE_URI + "term_status");
+            public static readonly RDFResource TERM_STATUS = new RDFResource(VS.BASE_URI + "term_status");
 
             /// <summary>
             /// vs:stable
             /// </summary>
-            public static readonly RDFResource STABLE = new RDFResource(XML.BASE_URI + "stable");
+            public static readonly RDFResource STABLE = new RDFResource(VS.BASE_URI + "stable");
 
             /// <summary>
             /// vs:testing
             /// </summary>
-            public static readonly RDFResource TESTING = new RDFResource(XML.BASE_URI + "testing");
+            public static readonly RDFResource TESTING = new RDFResource(VS.BASE_URI + "testing");
 
             /// <summary>
             /// vs:unstable
             /// </summary>
-            public static readonly RDFResource UNSTABLE = new RDFResource(XML.BASE_URI + "unstable");
+            public static readonly RDFResource UNSTABLE = new RDFResource(VS.BASE_URI + "unstable");
             #endregion
 
         }
