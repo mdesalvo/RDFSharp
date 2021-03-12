@@ -33,18 +33,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of the evidences
         /// </summary>
-        public int EvidencesCount
-        {
-            get { return this.Evidences.Count; }
-        }
+        public int EvidencesCount => this.Evidences.Count;
 
         /// <summary>
         /// Gets an enumerator on the evidences for iteration
         /// </summary>
-        public IEnumerator<RDFOntologyReasonerEvidence> EvidencesEnumerator
-        {
-            get { return this.Evidences.Values.GetEnumerator(); }
-        }
+        public IEnumerator<RDFOntologyReasonerEvidence> EvidencesEnumerator => this.Evidences.Values.GetEnumerator();
 
         /// <summary>
         /// Dictionary of evidences
@@ -72,18 +66,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the reasoner report's evidences
         /// </summary>
-        IEnumerator<RDFOntologyReasonerEvidence> IEnumerable<RDFOntologyReasonerEvidence>.GetEnumerator()
-        {
-            return this.EvidencesEnumerator;
-        }
+        IEnumerator<RDFOntologyReasonerEvidence> IEnumerable<RDFOntologyReasonerEvidence>.GetEnumerator() => this.EvidencesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the reasoner report's evidences
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.EvidencesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.EvidencesEnumerator;
         #endregion
 
         #region Methods

@@ -31,18 +31,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Counter of the evidences
         /// </summary>
-        public int EvidencesCount
-        {
-            get { return this.Evidences.Count; }
-        }
+        public int EvidencesCount => this.Evidences.Count;
 
         /// <summary>
         /// Gets an enumerator on the evidences for iteration
         /// </summary>
-        public IEnumerator<RDFOntologyValidatorEvidence> EvidencesEnumerator
-        {
-            get { return this.Evidences.GetEnumerator(); }
-        }
+        public IEnumerator<RDFOntologyValidatorEvidence> EvidencesEnumerator => this.Evidences.GetEnumerator();
 
         /// <summary>
         /// List of evidences
@@ -70,18 +64,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Exposes a typed enumerator on the validation report's evidences
         /// </summary>
-        IEnumerator<RDFOntologyValidatorEvidence> IEnumerable<RDFOntologyValidatorEvidence>.GetEnumerator()
-        {
-            return this.EvidencesEnumerator;
-        }
+        IEnumerator<RDFOntologyValidatorEvidence> IEnumerable<RDFOntologyValidatorEvidence>.GetEnumerator() => this.EvidencesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the validation report's evidences
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.EvidencesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.EvidencesEnumerator;
         #endregion
 
         #region Methods
@@ -93,9 +81,7 @@ namespace RDFSharp.Semantics.OWL
         internal void AddEvidence(RDFOntologyValidatorEvidence evidence)
         {
             lock (this.SyncLock)
-            {
                 this.Evidences.Add(evidence);
-            }
         }
 
         /// <summary>
@@ -104,67 +90,36 @@ namespace RDFSharp.Semantics.OWL
         internal void MergeEvidences(RDFOntologyValidatorReport report)
         {
             lock (this.SyncLock)
-            {
                 this.Evidences.AddRange(report.Evidences);
-            }
         }
         #endregion
 
         #region Select
         /// <summary>
-        /// Enlist the names of the rules applied by the validator
-        /// </summary>
-        public List<string> EnlistRuleNames()
-        {
-            return new List<string>() {
-                "AsymmetricProperty",
-                "ClassType",
-                "Deprecation",
-                "Domain_Range",
-                "GlobalCardinalityConstraint",
-                "InverseOf",
-                "IrreflexiveProperty",
-                "LocalCardinalityConstraint",
-                "PropertyDisjoint",
-                "SymmetricProperty",
-                "Vocabulary_Declaration",
-                "Vocabulary_Disjointness"
-            };
-        }
-
-        /// <summary>
         /// Gets the warning evidences from the validation report
         /// </summary>
         public List<RDFOntologyValidatorEvidence> SelectWarnings()
-        {
-            return this.Evidences.FindAll(e => e.EvidenceCategory == RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning);
-        }
+            => this.Evidences.FindAll(e => e.EvidenceCategory == RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning);
 
         /// <summary>
         /// Gets the warning evidences of the given validation rule
         /// </summary>
         public List<RDFOntologyValidatorEvidence> SelectWarningsByRule(string rulename = "")
-        {
-            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal) &&
-                                               e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning));
-        }
+            => this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal)
+                                            && e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning));
 
         /// <summary>
         /// Gets the error evidences from the validation report
         /// </summary>
         public List<RDFOntologyValidatorEvidence> SelectErrors()
-        {
-            return this.Evidences.FindAll(e => e.EvidenceCategory == RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error);
-        }
+            => this.Evidences.FindAll(e => e.EvidenceCategory == RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error);
 
         /// <summary>
         /// Gets the error evidences of the given validation rule
         /// </summary>
         public List<RDFOntologyValidatorEvidence> SelectErrorsByRule(string rulename = "")
-        {
-            return this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal) &&
-                                               e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error));
-        }
+            => this.Evidences.FindAll(e => e.EvidenceProvenance.ToUpperInvariant().Equals(rulename.Trim().ToUpperInvariant(), StringComparison.Ordinal)
+                                            && e.EvidenceCategory.Equals(RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Error));
         #endregion
 
         #endregion

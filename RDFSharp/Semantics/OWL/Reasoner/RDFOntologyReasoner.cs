@@ -34,18 +34,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Count of the rules composing the reasoner
         /// </summary>
-        public int RulesCount
-        {
-            get { return this.Rules.Count; }
-        }
+        public int RulesCount => this.Rules.Count;
 
         /// <summary>
         /// Gets the enumerator on the reasoner's rules for iteration
         /// </summary>
-        public IEnumerator<RDFOntologyReasonerRule> RulesEnumerator
-        {
-            get { return this.Rules.GetEnumerator(); }
-        }
+        public IEnumerator<RDFOntologyReasonerRule> RulesEnumerator => this.Rules.GetEnumerator();
 
         /// <summary>
         /// List of rules applied by the reasoner
@@ -58,27 +52,19 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build an empty ontology reasoner
         /// </summary>
         public RDFOntologyReasoner()
-        {
-            this.Rules = new List<RDFOntologyReasonerRule>();
-        }
+            => this.Rules = new List<RDFOntologyReasonerRule>();
         #endregion
 
         #region Interfaces
         /// <summary>
         /// Exposes a typed enumerator on the reasoner's rules
         /// </summary>
-        IEnumerator<RDFOntologyReasonerRule> IEnumerable<RDFOntologyReasonerRule>.GetEnumerator()
-        {
-            return this.RulesEnumerator;
-        }
+        IEnumerator<RDFOntologyReasonerRule> IEnumerable<RDFOntologyReasonerRule>.GetEnumerator() => this.RulesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the reasoner's rules
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.RulesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.RulesEnumerator;
         #endregion
 
         #region Methods
@@ -91,9 +77,7 @@ namespace RDFSharp.Semantics.OWL
             if (rule != null)
             {
                 if (this.SelectRule(rule.RuleName) == null)
-                {
                     this.Rules.Add(rule);
-                }
             }
             return this;
         }
@@ -102,9 +86,7 @@ namespace RDFSharp.Semantics.OWL
         /// Selects the given rule from the resoner
         /// </summary>
         public RDFOntologyReasonerRule SelectRule(string ruleName)
-        {
-            return this.Rules.FirstOrDefault(r => r.RuleName.Equals(ruleName?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase));
-        }
+            => this.Rules.FirstOrDefault(r => r.RuleName.Equals(ruleName?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// Applies the reasoner on the given ontology, producing a reasoning report.
