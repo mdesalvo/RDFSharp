@@ -81,12 +81,10 @@ namespace RDFSharp.Store
         /// <summary>
         /// List-based ctor to build a memory store with the given list of quadruples
         /// </summary>
-        internal RDFMemoryStore(List<RDFQuadruple> quadruples) : this()
+        public RDFMemoryStore(List<RDFQuadruple> quadruples) : this()
         {
             if (quadruples != null)
-            {
                 quadruples.ForEach(q => this.AddQuadruple(q));
-            }
         }
         #endregion
 
