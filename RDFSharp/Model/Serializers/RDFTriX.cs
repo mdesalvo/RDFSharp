@@ -248,7 +248,7 @@ namespace RDFSharp.Model
                                         //Subject is not valid: exception must be raised
                                         else
                                         {
-                                            throw new RDFModelException("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
+                                            throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
                                         }
                                         #endregion
 
@@ -256,7 +256,7 @@ namespace RDFSharp.Model
                                         //Predicate is not valid: exception must be raised
                                         if (!triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
                                         {
-                                            throw new RDFModelException("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
+                                            throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
                                         }
                                         #endregion
 
@@ -348,7 +348,7 @@ namespace RDFSharp.Model
                                         //Object is not valid: exception must be raised
                                         else
                                         {
-                                            throw new RDFModelException("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
+                                            throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
                                         }
                                         #endregion
 
@@ -358,7 +358,7 @@ namespace RDFSharp.Model
                                     #region exception
                                     else
                                     {
-                                        throw new RDFModelException("found a TriX element (" + triple.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
+                                        throw new Exception("found a TriX element (" + triple.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
                                     }
                                     #endregion
 
