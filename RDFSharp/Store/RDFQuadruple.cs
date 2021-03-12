@@ -61,10 +61,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Subject of the quadruple's reification
         /// </summary>
-        public RDFResource ReificationSubject
-        {
-            get { return new RDFResource("bnode:" + this.QuadrupleID); }
-        }
+        public RDFResource ReificationSubject { get; internal set; }
         #endregion
 
         #region Ctors
@@ -73,7 +70,6 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)
         {
-
             //TripleFlavor
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
 
@@ -103,6 +99,8 @@ namespace RDFSharp.Store
             //QuadrupleID
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
 
+            //ReificationSubject
+            this.ReificationSubject = new RDFResource("bnode:" + this.QuadrupleID);
         }
 
         /// <summary>
@@ -110,7 +108,6 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit)
         {
-
             //TripleFlavor
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
 
@@ -140,6 +137,8 @@ namespace RDFSharp.Store
             //QuadrupleID
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
 
+            //ReificationSubject
+            this.ReificationSubject = new RDFResource("bnode:" + this.QuadrupleID);
         }
         #endregion
 
@@ -148,17 +147,13 @@ namespace RDFSharp.Store
         /// Gives the string representation of the quadruple
         /// </summary>
         public override string ToString()
-        {
-            return this.Context + " " + this.Subject + " " + this.Predicate + " " + this.Object;
-        }
+            => string.Concat(this.Context, " ", this.Subject, " ", this.Predicate, " ", this.Object);
 
         /// <summary>
         /// Performs the equality comparison between two quadruples
         /// </summary>
         public bool Equals(RDFQuadruple other)
-        {
-            return (other != null && this.QuadrupleID.Equals(other.QuadrupleID));
-        }
+            => other != null && this.QuadrupleID.Equals(other.QuadrupleID);
         #endregion
 
         #region Methods
@@ -174,13 +169,9 @@ namespace RDFSharp.Store
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
             reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
             if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-            {
                 reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
-            }
             else
-            {
                 reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
-            }
 
             return reifStore;
         }

@@ -55,10 +55,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Subject of the triple's reification
         /// </summary>
-        public RDFResource ReificationSubject
-        {
-            get { return new RDFResource("bnode:" + this.TripleID); }
-        }
+        public RDFResource ReificationSubject { get; internal set; }
         #endregion
 
         #region Ctors
@@ -67,7 +64,6 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
         {
-
             //TripleFlavor
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
 
@@ -94,6 +90,8 @@ namespace RDFSharp.Model
             //TripleID
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
+            //ReificationSubject
+            this.ReificationSubject = new RDFResource("bnode:" + this.TripleID);
         }
 
         /// <summary>
@@ -101,7 +99,6 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit)
         {
-
             //TripleFlavor
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
 
@@ -128,6 +125,8 @@ namespace RDFSharp.Model
             //TripleID
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
+            //ReificationSubject
+            this.ReificationSubject = new RDFResource("bnode:" + this.TripleID);
         }
         #endregion
 
@@ -136,17 +135,13 @@ namespace RDFSharp.Model
         /// Gives the string representation of the triple
         /// </summary>
         public override string ToString()
-        {
-            return this.Subject + " " + this.Predicate + " " + this.Object;
-        }
+            => string.Concat(this.Subject, " ", this.Predicate, " ", this.Object);
 
         /// <summary>
         /// Performs the equality comparison between two triples
         /// </summary>
         public bool Equals(RDFTriple other)
-        {
-            return (other != null && this.TripleID.Equals(other.TripleID));
-        }
+            => other != null && this.TripleID.Equals(other.TripleID);
         #endregion
 
         #region Methods
