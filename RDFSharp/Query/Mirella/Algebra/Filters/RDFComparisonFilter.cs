@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -76,9 +75,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             string leftValue = RDFQueryPrinter.PrintPatternMember(this.LeftMember, prefixes);
@@ -86,17 +83,17 @@ namespace RDFSharp.Query
             switch (this.ComparisonFlavor)
             {
                 case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                    return "FILTER ( " + leftValue + " < " + rightValue + " )";
+                    return string.Concat("FILTER ( ", leftValue, " < ", rightValue, " )");
                 case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                    return "FILTER ( " + leftValue + " <= " + rightValue + " )";
+                    return string.Concat("FILTER ( ", leftValue, " <= ", rightValue, " )");
                 case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                    return "FILTER ( " + leftValue + " = " + rightValue + " )";
+                    return string.Concat("FILTER ( ", leftValue, " = ", rightValue, " )");
                 case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                    return "FILTER ( " + leftValue + " != " + rightValue + " )";
+                    return string.Concat("FILTER ( ", leftValue, " != ", rightValue, " )");
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                    return "FILTER ( " + leftValue + " >= " + rightValue + " )";
+                    return string.Concat("FILTER ( ", leftValue, " >= ", rightValue, " )");
                 case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                    return "FILTER ( " + leftValue + " > " + rightValue + " )";
+                    return string.Concat("FILTER ( ", leftValue, " > ", rightValue, " )");
                 default:
                     throw new RDFQueryException("Cannot get string representation of unknown '" + this.ComparisonFlavor + "' RDFComparisonFilter.");
             }
@@ -186,9 +183,7 @@ namespace RDFSharp.Query
 
             //Apply the eventual negation
             if (applyNegation)
-            {
                 keepRow = !keepRow;
-            }
 
             return keepRow;
         }

@@ -40,13 +40,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return "FILTER ( NOT EXISTS { " + this.Pattern.ToString(prefixes) + " } )";
-        }
+            => string.Concat("FILTER ( NOT EXISTS { ", this.Pattern.ToString(prefixes), " } )");
         #endregion
 
         #region Methods

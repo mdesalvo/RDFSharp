@@ -70,13 +70,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return "FILTER ( SAMETERM(" + this.Variable + ", " + RDFQueryPrinter.PrintPatternMember(this.RDFTerm, prefixes) + ") )";
-        }
+            => string.Concat("FILTER ( SAMETERM(", this.Variable, ", ", RDFQueryPrinter.PrintPatternMember(this.RDFTerm, prefixes), ") )");
         #endregion
 
         #region Methods
@@ -113,9 +109,7 @@ namespace RDFSharp.Query
 
                 //Apply the eventual negation
                 if (applyNegation)
-                {
                     keepRow = !keepRow;
-                }
             }
 
             return keepRow;

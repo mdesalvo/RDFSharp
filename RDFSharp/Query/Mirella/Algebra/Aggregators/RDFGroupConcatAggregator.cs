@@ -53,10 +53,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the GROUP_CONCAT aggregator
         /// </summary>
         public override string ToString()
-        {
-            return (this.IsDistinct ? string.Format("(GROUP_CONCAT(DISTINCT {0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable)
-                                    : string.Format("(GROUP_CONCAT({0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable));
-        }
+            => this.IsDistinct ? string.Format("(GROUP_CONCAT(DISTINCT {0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable)
+                               : string.Format("(GROUP_CONCAT({0}; SEPARATOR=\"{1}\") AS {2})", this.AggregatorVariable, this.Separator, this.ProjectionVariable);
         #endregion
 
         #region Methods
@@ -79,7 +77,7 @@ namespace RDFSharp.Query
             //Get aggregator value
             string aggregatorValue = this.AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (group_concat)
-            this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, aggregatorValue + rowValue + this.Separator);
+            this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, string.Concat(aggregatorValue, rowValue, this.Separator));
         }
 
         /// <summary>

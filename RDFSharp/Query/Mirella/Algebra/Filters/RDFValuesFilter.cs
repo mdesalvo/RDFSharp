@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -49,13 +48,9 @@ namespace RDFSharp.Query
 
         #region Interfaces
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return RDFQueryPrinter.PrintValues(this.Values, prefixes, string.Empty);
-        }
+            => RDFQueryPrinter.PrintValues(this.Values, prefixes, string.Empty);
         #endregion
 
         #region Methods
@@ -93,9 +88,7 @@ namespace RDFSharp.Query
 
             //Apply the eventual negation
             if (applyNegation)
-            {
                 keepRow = !keepRow;
-            }
 
             return keepRow;
         }

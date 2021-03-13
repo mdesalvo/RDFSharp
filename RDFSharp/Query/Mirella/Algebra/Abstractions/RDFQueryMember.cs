@@ -30,10 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the query member
         /// </summary>
-        public long QueryMemberID
-        {
-            get { return RDFModelUtilities.CreateHash(this.GetQueryMemberString()); }
-        }
+        public long QueryMemberID => RDFModelUtilities.CreateHash(this.GetQueryMemberString());
 
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine
@@ -46,17 +43,13 @@ namespace RDFSharp.Query
         /// Gives the string representation of the query member
         /// </summary>
         public override string ToString()
-        {
-            return base.ToString();
-        }
+            => base.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two query members
         /// </summary>
         public bool Equals(RDFQueryMember other)
-        {
-            return (other != null && this.QueryMemberID.Equals(other.QueryMemberID));
-        }
+            => other != null && this.QueryMemberID.Equals(other.QueryMemberID);
         #endregion
 
         #region Methods

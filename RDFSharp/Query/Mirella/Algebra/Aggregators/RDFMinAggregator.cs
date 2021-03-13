@@ -51,10 +51,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the MIN aggregator
         /// </summary>
         public override string ToString()
-        {
-            return (this.IsDistinct ? string.Format("(MIN(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                                    : string.Format("(MIN({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-        }
+            => this.IsDistinct ? string.Format("(MIN(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
+                               : string.Format("(MIN({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
         #endregion
 
         #region Methods

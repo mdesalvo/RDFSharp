@@ -51,10 +51,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the MAX aggregator
         /// </summary>
         public override string ToString()
-        {
-            return (this.IsDistinct ? string.Format("(MAX(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                                    : string.Format("(MAX({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-        }
+            => this.IsDistinct ? string.Format("(MAX(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
+                               : string.Format("(MAX({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
         #endregion
 
         #region Methods

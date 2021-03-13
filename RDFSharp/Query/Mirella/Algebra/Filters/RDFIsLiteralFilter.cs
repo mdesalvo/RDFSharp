@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -58,13 +57,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return "FILTER ( ISLITERAL(" + this.Variable + ") )";
-        }
+            => string.Concat("FILTER ( ISLITERAL(", this.Variable, ") )");
         #endregion
 
         #region Methods
@@ -85,9 +80,7 @@ namespace RDFSharp.Query
 
                 //Apply the eventual negation
                 if (applyNegation)
-                {
                     keepRow = !keepRow;
-                }
             }
 
             return keepRow;

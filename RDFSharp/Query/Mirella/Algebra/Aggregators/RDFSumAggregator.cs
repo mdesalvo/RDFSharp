@@ -42,10 +42,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the SUM aggregator
         /// </summary>
         public override string ToString()
-        {
-            return (this.IsDistinct ? string.Format("(SUM(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                                    : string.Format("(SUM({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-        }
+            => this.IsDistinct ? string.Format("(SUM(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
+                               : string.Format("(SUM({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
         #endregion
 
         #region Methods

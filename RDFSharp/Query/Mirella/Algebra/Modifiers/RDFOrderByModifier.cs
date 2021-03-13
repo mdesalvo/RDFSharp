@@ -61,9 +61,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-        {
-            return this.OrderByFlavor + "(" + this.Variable + ")";
-        }
+            => string.Concat(this.OrderByFlavor, "(", this.Variable, ")");
         #endregion
 
         #region Methods
@@ -75,13 +73,9 @@ namespace RDFSharp.Query
             if (table.Columns.Contains(this.Variable.ToString()))
             {
                 if (table.DefaultView.Sort != string.Empty)
-                {
-                    table.DefaultView.Sort = table.DefaultView.Sort + ", " + this.Variable + " " + this.OrderByFlavor;
-                }
+                    table.DefaultView.Sort = string.Concat(table.DefaultView.Sort, ", ", this.Variable, " ", this.OrderByFlavor);
                 else
-                {
-                    table.DefaultView.Sort = this.Variable + " " + this.OrderByFlavor;
-                }
+                    table.DefaultView.Sort = string.Concat(this.Variable, " ", this.OrderByFlavor);
             }
             return table;
         }

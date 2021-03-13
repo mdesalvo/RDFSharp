@@ -74,9 +74,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-        {
-            return string.Format("GROUP BY {0}", string.Join(" ", this.PartitionVariables));
-        }
+            => string.Format("GROUP BY {0}", string.Join(" ", this.PartitionVariables));
         #endregion
 
         #region Methods
@@ -231,9 +229,9 @@ namespace RDFSharp.Query
             this.PartitionVariables.ForEach(pv =>
             {
                 if (tableRow.IsNull(pv.VariableName))
-                    partitionKey.Add(pv.VariableName + "§PV§" + string.Empty);
+                    partitionKey.Add(string.Concat(pv.VariableName, "§PV§", string.Empty));
                 else
-                    partitionKey.Add(pv.VariableName + "§PV§" + tableRow[pv.VariableName].ToString());
+                    partitionKey.Add(string.Concat(pv.VariableName, "§PV§", tableRow[pv.VariableName].ToString()));
             });
             return string.Join("§PK§", partitionKey);
         }

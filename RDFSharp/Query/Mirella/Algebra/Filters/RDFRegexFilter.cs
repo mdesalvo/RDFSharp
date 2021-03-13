@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -72,33 +71,23 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
         {
             StringBuilder regexFlags = new StringBuilder();
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
-            {
                 regexFlags.Append("i");
-            }
             if (this.RegEx.Options.HasFlag(RegexOptions.Singleline))
-            {
                 regexFlags.Append("s");
-            }
             if (this.RegEx.Options.HasFlag(RegexOptions.Multiline))
-            {
                 regexFlags.Append("m");
-            }
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-            {
                 regexFlags.Append("x");
-            }
+
             if (regexFlags.ToString() != string.Empty)
-            {
-                return "FILTER ( REGEX(STR(" + this.Variable + "), \"" + this.RegEx + "\", \"" + regexFlags + "\") )";
-            }
-            return "FILTER ( REGEX(STR(" + this.Variable + "), \"" + this.RegEx + "\") )";
+                return string.Concat("FILTER ( REGEX(STR(", this.Variable, "), \"", this.RegEx, "\", \"", regexFlags, "\") )");
+            else
+                return string.Concat("FILTER ( REGEX(STR(", this.Variable, "), \"", this.RegEx, "\") )");
         }
         #endregion
 
@@ -120,9 +109,7 @@ namespace RDFSharp.Query
 
                 //Apply the eventual negation
                 if (applyNegation)
-                {
                     keepRow = !keepRow;
-                }
             }
 
             return keepRow;

@@ -31,9 +31,7 @@ namespace RDFSharp.Query
         /// Unique representation of the pattern group member
         /// </summary>
         public long PatternGroupMemberID
-        {
-            get { return RDFModelUtilities.CreateHash(this.ToString()); }
-        }
+            => RDFModelUtilities.CreateHash(this.ToString());
 
         /// <summary>
         /// Flag indicating that the pattern group member is evaluable by the engine
@@ -46,17 +44,13 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern group member
         /// </summary>
         public override string ToString()
-        {
-            return base.ToString();
-        }
+            => base.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two pattern group members
         /// </summary>
         public bool Equals(RDFPatternGroupMember other)
-        {
-            return (other != null && this.PatternGroupMemberID.Equals(other.PatternGroupMemberID));
-        }
+            => other != null && this.PatternGroupMemberID.Equals(other.PatternGroupMemberID);
         #endregion
 
     }

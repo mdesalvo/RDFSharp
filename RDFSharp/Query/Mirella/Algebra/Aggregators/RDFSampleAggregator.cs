@@ -39,10 +39,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the SAMPLE aggregator
         /// </summary>
         public override string ToString()
-        {
-            return (this.IsDistinct ? string.Format("(SAMPLE(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
-                                    : string.Format("(SAMPLE({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable));
-        }
+            => this.IsDistinct ? string.Format("(SAMPLE(DISTINCT {0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable)
+                               : string.Format("(SAMPLE({0}) AS {1})", this.AggregatorVariable, this.ProjectionVariable);
         #endregion
 
         #region Methods

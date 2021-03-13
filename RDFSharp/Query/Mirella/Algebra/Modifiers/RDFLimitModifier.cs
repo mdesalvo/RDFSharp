@@ -56,9 +56,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-        {
-            return "LIMIT " + this.Limit;
-        }
+            => string.Concat("LIMIT ", this.Limit);
         #endregion
 
         #region Methods

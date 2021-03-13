@@ -57,13 +57,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return "FILTER ( ISURI(" + this.Variable + ") )";
-        }
+            => string.Concat("FILTER ( ISURI(", this.Variable, ") )");
         #endregion
 
         #region Methods
@@ -80,17 +76,12 @@ namespace RDFSharp.Query
                 string variableValue = row[this.Variable.ToString()].ToString();
 
                 //Successfull match if an Uri can be created with the variable value
-                Uri testUri;
-                if (!Uri.TryCreate(variableValue, UriKind.Absolute, out testUri))
-                {
+                if (!Uri.TryCreate(variableValue, UriKind.Absolute, out Uri testUri))
                     keepRow = false;
-                }
 
                 //Apply the eventual negation
                 if (applyNegation)
-                {
                     keepRow = !keepRow;
-                }
             }
 
             return keepRow;

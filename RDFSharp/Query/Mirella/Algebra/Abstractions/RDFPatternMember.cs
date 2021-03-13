@@ -37,17 +37,13 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern member
         /// </summary>
         public override string ToString()
-        {
-            return base.ToString();
-        }
+            => base.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two pattern members
         /// </summary>
         public bool Equals(RDFPatternMember other)
-        {
-            return (other != null && this.PatternMemberID.Equals(other.PatternMemberID));
-        }
+            => other != null && this.PatternMemberID.Equals(other.PatternMemberID);
         #endregion
 
     }

@@ -66,13 +66,14 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return $"FILTER ( {RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes)} IN ({string.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes)))}) )";
-        }
+            => string.Concat(
+                "FILTER ( ",
+                RDFQueryPrinter.PrintPatternMember(this.TermToSearch, prefixes),
+                " IN (",
+                string.Join(", ", this.InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes))),
+                ") )");
         #endregion
 
         #region Methods
@@ -90,16 +91,12 @@ namespace RDFSharp.Query
                 RDFComparisonFilter compFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, this.TermToSearch, inTermsEnumerator.Current);
                 keepRow = compFilter.ApplyFilter(row, false);
                 if (keepRow)
-                {
                     break;
-                }
             }
 
             //Apply the eventual negation
             if (applyNegation)
-            {
                 keepRow = !keepRow;
-            }
 
             return keepRow;
         }

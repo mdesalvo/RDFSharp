@@ -56,9 +56,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString()
-        {
-            return "OFFSET " + this.Offset;
-        }
+            => string.Concat("OFFSET ", this.Offset);
         #endregion
 
         #region Methods

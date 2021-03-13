@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -64,13 +63,11 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-        {
-            return "FILTER ( DATATYPE(" + this.Variable + ") = " + RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes) + " )";
-        }
+            => string.Concat(
+                "FILTER ( DATATYPE(", this.Variable, ") = ",
+                RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes), " )");
         #endregion
 
         #region Methods
@@ -87,13 +84,11 @@ namespace RDFSharp.Query
                 string variableValue = row[this.Variable.ToString()].ToString();
 
                 //Successfull match if given datatype is found in the variable
-                keepRow = Regex.IsMatch(variableValue, "\\^\\^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype) + "$");
+                keepRow = Regex.IsMatch(variableValue, string.Concat("\\^\\^", RDFModelUtilities.GetDatatypeFromEnum(this.Datatype), "$"));
 
                 //Apply the eventual negation
                 if (applyNegation)
-                {
                     keepRow = !keepRow;
-                }
             }
 
             return keepRow;

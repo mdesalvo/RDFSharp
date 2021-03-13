@@ -38,10 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override string ToString()
-        {
-            return "DISTINCT";
-        }
+        public override string ToString() => "DISTINCT";
         #endregion
 
         #region Methods
