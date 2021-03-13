@@ -1,7 +1,7 @@
 ﻿/*
    Copyright 2012-2020 Marco De Salvo
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 (the "License"));
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -47,77 +47,77 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdfs:Resource
             /// </summary>
-            public static readonly RDFResource RESOURCE = new RDFResource(RDFS.BASE_URI + "Resource");
+            public static readonly RDFResource RESOURCE = new RDFResource(string.Concat(RDFS.BASE_URI,"Resource"));
 
             /// <summary>
             /// rdfs:Class
             /// </summary>
-            public static readonly RDFResource CLASS = new RDFResource(RDFS.BASE_URI + "Class");
+            public static readonly RDFResource CLASS = new RDFResource(string.Concat(RDFS.BASE_URI,"Class"));
 
             /// <summary>
             /// rdfs:Literal
             /// </summary>
-            public static readonly RDFResource LITERAL = new RDFResource(RDFS.BASE_URI + "Literal");
+            public static readonly RDFResource LITERAL = new RDFResource(string.Concat(RDFS.BASE_URI,"Literal"));
 
             /// <summary>
             /// rdfs:Container
             /// </summary>
-            public static readonly RDFResource CONTAINER = new RDFResource(RDFS.BASE_URI + "Container");
+            public static readonly RDFResource CONTAINER = new RDFResource(string.Concat(RDFS.BASE_URI,"Container"));
 
             /// <summary>
             /// rdfs:Datatype
             /// </summary>
-            public static readonly RDFResource DATATYPE = new RDFResource(RDFS.BASE_URI + "Datatype");
+            public static readonly RDFResource DATATYPE = new RDFResource(string.Concat(RDFS.BASE_URI,"Datatype"));
 
             /// <summary>
             /// rdfs:ContainerMembershipProperty
             /// </summary>
-            public static readonly RDFResource CONTAINER_MEMBERSHIP_PROPERTY = new RDFResource(RDFS.BASE_URI + "ContainerMembershipProperty");
+            public static readonly RDFResource CONTAINER_MEMBERSHIP_PROPERTY = new RDFResource(string.Concat(RDFS.BASE_URI,"ContainerMembershipProperty"));
 
             /// <summary>
             /// rdfs:range
             /// </summary>
-            public static readonly RDFResource RANGE = new RDFResource(RDFS.BASE_URI + "range");
+            public static readonly RDFResource RANGE = new RDFResource(string.Concat(RDFS.BASE_URI,"range"));
 
             /// <summary>
             /// rdfs:domain
             /// </summary>
-            public static readonly RDFResource DOMAIN = new RDFResource(RDFS.BASE_URI + "domain");
+            public static readonly RDFResource DOMAIN = new RDFResource(string.Concat(RDFS.BASE_URI,"domain"));
 
             /// <summary>
             /// rdfs:subClassOf
             /// </summary>
-            public static readonly RDFResource SUB_CLASS_OF = new RDFResource(RDFS.BASE_URI + "subClassOf");
+            public static readonly RDFResource SUB_CLASS_OF = new RDFResource(string.Concat(RDFS.BASE_URI,"subClassOf"));
 
             /// <summary>
             /// rdfs:subPropertyOf
             /// </summary>
-            public static readonly RDFResource SUB_PROPERTY_OF = new RDFResource(RDFS.BASE_URI + "subPropertyOf");
+            public static readonly RDFResource SUB_PROPERTY_OF = new RDFResource(string.Concat(RDFS.BASE_URI,"subPropertyOf"));
 
             /// <summary>
             /// rdfs:label
             /// </summary>
-            public static readonly RDFResource LABEL = new RDFResource(RDFS.BASE_URI + "label");
+            public static readonly RDFResource LABEL = new RDFResource(string.Concat(RDFS.BASE_URI,"label"));
 
             /// <summary>
             /// rdfs:comment
             /// </summary>
-            public static readonly RDFResource COMMENT = new RDFResource(RDFS.BASE_URI + "comment");
+            public static readonly RDFResource COMMENT = new RDFResource(string.Concat(RDFS.BASE_URI,"comment"));
 
             /// <summary>
             /// rdfs:member
             /// </summary>
-            public static readonly RDFResource MEMBER = new RDFResource(RDFS.BASE_URI + "member");
+            public static readonly RDFResource MEMBER = new RDFResource(string.Concat(RDFS.BASE_URI,"member"));
 
             /// <summary>
             /// rdfs:seeAlso
             /// </summary>
-            public static readonly RDFResource SEE_ALSO = new RDFResource(RDFS.BASE_URI + "seeAlso");
+            public static readonly RDFResource SEE_ALSO = new RDFResource(string.Concat(RDFS.BASE_URI,"seeAlso"));
 
             /// <summary>
             /// rdfs:isDefinedBy
             /// </summary>
-            public static readonly RDFResource IS_DEFINED_BY = new RDFResource(RDFS.BASE_URI + "isDefinedBy");
+            public static readonly RDFResource IS_DEFINED_BY = new RDFResource(string.Concat(RDFS.BASE_URI,"isDefinedBy"));
             #endregion
 
         }

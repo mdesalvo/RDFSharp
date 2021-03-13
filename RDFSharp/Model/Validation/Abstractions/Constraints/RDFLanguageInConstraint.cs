@@ -85,7 +85,7 @@ namespace RDFSharp.Model
 
                             //GIVEN language is found in the variable
                             else
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@" + langTagsEnumerator.Current + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, "(-[a-zA-Z0-9]{1,8})*$"), RegexOptions.IgnoreCase);
 
                         }
                         if (!langMatches)

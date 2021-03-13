@@ -1,7 +1,7 @@
 ﻿/*
    Copyright 2012-2020 Marco De Salvo
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 (the "License"));
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -47,37 +47,37 @@ namespace RDFSharp.Model
             /// <summary>
             /// geo:lat
             /// </summary>
-            public static readonly RDFResource LAT = new RDFResource(GEO.BASE_URI + "lat");
+            public static readonly RDFResource LAT = new RDFResource(string.Concat(GEO.BASE_URI, "lat"));
 
             /// <summary>
             /// geo:long
             /// </summary>
-            public static readonly RDFResource LONG = new RDFResource(GEO.BASE_URI + "long");
+            public static readonly RDFResource LONG = new RDFResource(string.Concat(GEO.BASE_URI, "long"));
 
             /// <summary>
             /// geo:lat_long
             /// </summary>
-            public static readonly RDFResource LAT_LONG = new RDFResource(GEO.BASE_URI + "lat_long");
+            public static readonly RDFResource LAT_LONG = new RDFResource(string.Concat(GEO.BASE_URI, "lat_long"));
 
             /// <summary>
             /// geo:alt
             /// </summary>
-            public static readonly RDFResource ALT = new RDFResource(GEO.BASE_URI + "alt");
+            public static readonly RDFResource ALT = new RDFResource(string.Concat(GEO.BASE_URI, "alt"));
 
             /// <summary>
             /// geo:Point
             /// </summary>
-            public static readonly RDFResource POINT = new RDFResource(GEO.BASE_URI + "Point");
+            public static readonly RDFResource POINT = new RDFResource(string.Concat(GEO.BASE_URI, "Point"));
 
             /// <summary>
             /// geo:SpatialThing
             /// </summary>
-            public static readonly RDFResource SPATIAL_THING = new RDFResource(GEO.BASE_URI + "SpatialThing");
+            public static readonly RDFResource SPATIAL_THING = new RDFResource(string.Concat(GEO.BASE_URI, "SpatialThing"));
 
             /// <summary>
             /// geo:location
             /// </summary>
-            public static readonly RDFResource LOCATION = new RDFResource(GEO.BASE_URI + "location");
+            public static readonly RDFResource LOCATION = new RDFResource(string.Concat(GEO.BASE_URI, "location"));
             #endregion
 
         }

@@ -1,7 +1,7 @@
 ﻿/*
    Copyright 2012-2020 Marco De Salvo
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 (the "License"));
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -47,77 +47,77 @@ namespace RDFSharp.Model
             /// <summary>
             /// dc:contributor
             /// </summary>
-            public static readonly RDFResource CONTRIBUTOR = new RDFResource(DC.BASE_URI + "contributor");
+            public static readonly RDFResource CONTRIBUTOR = new RDFResource(string.Concat(DC.BASE_URI, "contributor"));
 
             /// <summary>
             /// dc:coverage
             /// </summary>
-            public static readonly RDFResource COVERAGE = new RDFResource(DC.BASE_URI + "coverage");
+            public static readonly RDFResource COVERAGE = new RDFResource(string.Concat(DC.BASE_URI, "coverage"));
 
             /// <summary>
             /// dc:creator
             /// </summary>
-            public static readonly RDFResource CREATOR = new RDFResource(DC.BASE_URI + "creator");
+            public static readonly RDFResource CREATOR = new RDFResource(string.Concat(DC.BASE_URI, "creator"));
 
             /// <summary>
             /// dc:date
             /// </summary>
-            public static readonly RDFResource DATE = new RDFResource(DC.BASE_URI + "date");
+            public static readonly RDFResource DATE = new RDFResource(string.Concat(DC.BASE_URI, "date"));
 
             /// <summary>
             /// dc:description
             /// </summary>
-            public static readonly RDFResource DESCRIPTION = new RDFResource(DC.BASE_URI + "description");
+            public static readonly RDFResource DESCRIPTION = new RDFResource(string.Concat(DC.BASE_URI, "description"));
 
             /// <summary>
             /// dc:format
             /// </summary>
-            public static readonly RDFResource FORMAT = new RDFResource(DC.BASE_URI + "format");
+            public static readonly RDFResource FORMAT = new RDFResource(string.Concat(DC.BASE_URI, "format"));
 
             /// <summary>
             /// dc:identifier
             /// </summary>
-            public static readonly RDFResource IDENTIFIER = new RDFResource(DC.BASE_URI + "identifier");
+            public static readonly RDFResource IDENTIFIER = new RDFResource(string.Concat(DC.BASE_URI, "identifier"));
 
             /// <summary>
             /// dc:language
             /// </summary>
-            public static readonly RDFResource LANGUAGE = new RDFResource(DC.BASE_URI + "language");
+            public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(DC.BASE_URI, "language"));
 
             /// <summary>
             /// dc:publisher
             /// </summary>
-            public static readonly RDFResource PUBLISHER = new RDFResource(DC.BASE_URI + "publisher");
+            public static readonly RDFResource PUBLISHER = new RDFResource(string.Concat(DC.BASE_URI, "publisher"));
 
             /// <summary>
             /// dc:relation
             /// </summary>
-            public static readonly RDFResource RELATION = new RDFResource(DC.BASE_URI + "relation");
+            public static readonly RDFResource RELATION = new RDFResource(string.Concat(DC.BASE_URI, "relation"));
 
             /// <summary>
             /// dc:rights
             /// </summary>
-            public static readonly RDFResource RIGHTS = new RDFResource(DC.BASE_URI + "rights");
+            public static readonly RDFResource RIGHTS = new RDFResource(string.Concat(DC.BASE_URI, "rights"));
 
             /// <summary>
             /// dc:source
             /// </summary>
-            public static readonly RDFResource SOURCE = new RDFResource(DC.BASE_URI + "source");
+            public static readonly RDFResource SOURCE = new RDFResource(string.Concat(DC.BASE_URI, "source"));
 
             /// <summary>
             /// dc:subject
             /// </summary>
-            public static readonly RDFResource SUBJECT = new RDFResource(DC.BASE_URI + "subject");
+            public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(DC.BASE_URI, "subject"));
 
             /// <summary>
             /// dc:title
             /// </summary>
-            public static readonly RDFResource TITLE = new RDFResource(DC.BASE_URI + "title");
+            public static readonly RDFResource TITLE = new RDFResource(string.Concat(DC.BASE_URI, "title"));
 
             /// <summary>
             /// dc:type
             /// </summary>
-            public static readonly RDFResource TYPE = new RDFResource(DC.BASE_URI + "type");
+            public static readonly RDFResource TYPE = new RDFResource(string.Concat(DC.BASE_URI, "type"));
             #endregion
 
             #region Extended Properties
@@ -148,12 +148,12 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcam:memberOf
                 /// </summary>
-                public static readonly RDFResource MEMBER_OF = new RDFResource(DCAM.BASE_URI + "memberOf");
+                public static readonly RDFResource MEMBER_OF = new RDFResource(string.Concat(DCAM.BASE_URI, "memberOf"));
 
                 /// <summary>
                 /// dcam:VocabularyEncodingScheme
                 /// </summary>
-                public static readonly RDFResource VOCABULARY_ENCODING_SCHEME = new RDFResource(DCAM.BASE_URI + "VocabularyEncodingScheme");
+                public static readonly RDFResource VOCABULARY_ENCODING_SCHEME = new RDFResource(string.Concat(DCAM.BASE_URI, "VocabularyEncodingScheme"));
                 #endregion
 
             }
@@ -185,495 +185,495 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dcterms:abstract
                 /// </summary>
-                public static readonly RDFResource ABSTRACT = new RDFResource(DCTERMS.BASE_URI + "abstract");
+                public static readonly RDFResource ABSTRACT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "abstract"));
 
                 /// <summary>
                 /// dcterms:accessRights
                 /// </summary>
-                public static readonly RDFResource ACCESS_RIGHTS = new RDFResource(DCTERMS.BASE_URI + "accessRights");
+                public static readonly RDFResource ACCESS_RIGHTS = new RDFResource(string.Concat(DCTERMS.BASE_URI, "accessRights"));
 
                 /// <summary>
                 /// dcterms:accrualMethod
                 /// </summary>
-                public static readonly RDFResource ACCRUAL_METHOD = new RDFResource(DCTERMS.BASE_URI + "accrualMethod");
+                public static readonly RDFResource ACCRUAL_METHOD = new RDFResource(string.Concat(DCTERMS.BASE_URI, "accrualMethod"));
 
                 /// <summary>
                 /// dcterms:accrualPeriodicity
                 /// </summary>
-                public static readonly RDFResource ACCRUAL_PERIODICITY = new RDFResource(DCTERMS.BASE_URI + "accrualPeriodicity");
+                public static readonly RDFResource ACCRUAL_PERIODICITY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "accrualPeriodicity"));
 
                 /// <summary>
                 /// dcterms:accrualPolicy
                 /// </summary>
-                public static readonly RDFResource ACCRUAL_POLICY = new RDFResource(DCTERMS.BASE_URI + "accrualPolicy");
+                public static readonly RDFResource ACCRUAL_POLICY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "accrualPolicy"));
 
                 /// <summary>
                 /// dcterms:Agent
                 /// </summary>
-                public static readonly RDFResource AGENT = new RDFResource(DCTERMS.BASE_URI + "Agent");
+                public static readonly RDFResource AGENT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Agent"));
 
                 /// <summary>
                 /// dcterms:AgentClass
                 /// </summary>
-                public static readonly RDFResource AGENT_CLASS = new RDFResource(DCTERMS.BASE_URI + "AgentClass");
+                public static readonly RDFResource AGENT_CLASS = new RDFResource(string.Concat(DCTERMS.BASE_URI, "AgentClass"));
 
                 /// <summary>
                 /// dcterms:alternative
                 /// </summary>
-                public static readonly RDFResource ALTERNATIVE = new RDFResource(DCTERMS.BASE_URI + "alternative");
+                public static readonly RDFResource ALTERNATIVE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "alternative"));
 
                 /// <summary>
                 /// dcterms:audience
                 /// </summary>
-                public static readonly RDFResource AUDIENCE = new RDFResource(DCTERMS.BASE_URI + "audience");
+                public static readonly RDFResource AUDIENCE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "audience"));
 
                 /// <summary>
                 /// dcterms:available
                 /// </summary>
-                public static readonly RDFResource AVAILABLE = new RDFResource(DCTERMS.BASE_URI + "available");
+                public static readonly RDFResource AVAILABLE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "available"));
 
                 /// <summary>
                 /// dcterms:bibliographicCitation
                 /// </summary>
-                public static readonly RDFResource BIBLIOGRAPHIC_CITATION = new RDFResource(DCTERMS.BASE_URI + "bibliographicCitation");
+                public static readonly RDFResource BIBLIOGRAPHIC_CITATION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "bibliographicCitation"));
 
                 /// <summary>
                 /// dcterms:BibliographicResource
                 /// </summary>
-                public static readonly RDFResource BIBLIOGRAPHIC_RESOURCE = new RDFResource(DCTERMS.BASE_URI + "BibliographicResource");
+                public static readonly RDFResource BIBLIOGRAPHIC_RESOURCE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "BibliographicResource"));
 
                 /// <summary>
                 /// dcterms:conformsTo
                 /// </summary>
-                public static readonly RDFResource CONFORMS_TO = new RDFResource(DCTERMS.BASE_URI + "conformsTo");
+                public static readonly RDFResource CONFORMS_TO = new RDFResource(string.Concat(DCTERMS.BASE_URI, "conformsTo"));
 
                 /// <summary>
                 /// dcterms:contributor
                 /// </summary>
-                public static readonly RDFResource CONTRIBUTOR = new RDFResource(DCTERMS.BASE_URI + "contributor");
+                public static readonly RDFResource CONTRIBUTOR = new RDFResource(string.Concat(DCTERMS.BASE_URI, "contributor"));
 
                 /// <summary>
                 /// dcterms:coverage
                 /// </summary>
-                public static readonly RDFResource COVERAGE = new RDFResource(DCTERMS.BASE_URI + "coverage");
+                public static readonly RDFResource COVERAGE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "coverage"));
 
                 /// <summary>
                 /// dcterms:created
                 /// </summary>
-                public static readonly RDFResource CREATED = new RDFResource(DCTERMS.BASE_URI + "created");
+                public static readonly RDFResource CREATED = new RDFResource(string.Concat(DCTERMS.BASE_URI, "created"));
 
                 /// <summary>
                 /// dcterms:creator
                 /// </summary>
-                public static readonly RDFResource CREATOR = new RDFResource(DCTERMS.BASE_URI + "creator");
+                public static readonly RDFResource CREATOR = new RDFResource(string.Concat(DCTERMS.BASE_URI, "creator"));
 
                 /// <summary>
                 /// dcterms:date
                 /// </summary>
-                public static readonly RDFResource DATE = new RDFResource(DCTERMS.BASE_URI + "date");
+                public static readonly RDFResource DATE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "date"));
 
                 /// <summary>
                 /// dcterms:dateAccepted
                 /// </summary>
-                public static readonly RDFResource DATE_ACCEPTED = new RDFResource(DCTERMS.BASE_URI + "dateAccepted");
+                public static readonly RDFResource DATE_ACCEPTED = new RDFResource(string.Concat(DCTERMS.BASE_URI, "dateAccepted"));
 
                 /// <summary>
                 /// dcterms:dateCopyrighted
                 /// </summary>
-                public static readonly RDFResource DATE_COPYRIGHTED = new RDFResource(DCTERMS.BASE_URI + "dateCopyrighted");
+                public static readonly RDFResource DATE_COPYRIGHTED = new RDFResource(string.Concat(DCTERMS.BASE_URI, "dateCopyrighted"));
 
                 /// <summary>
                 /// dcterms:dateSubmitted
                 /// </summary>
-                public static readonly RDFResource DATE_SUBMITTED = new RDFResource(DCTERMS.BASE_URI + "dateSubmitted");
+                public static readonly RDFResource DATE_SUBMITTED = new RDFResource(string.Concat(DCTERMS.BASE_URI, "dateSubmitted"));
 
                 /// <summary>
                 /// dcterms:description
                 /// </summary>
-                public static readonly RDFResource DESCRIPTION = new RDFResource(DCTERMS.BASE_URI + "description");
+                public static readonly RDFResource DESCRIPTION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "description"));
 
                 /// <summary>
                 /// dcterms:educationLevel
                 /// </summary>
-                public static readonly RDFResource EDUCATION_LEVEL = new RDFResource(DCTERMS.BASE_URI + "educationLevel");
+                public static readonly RDFResource EDUCATION_LEVEL = new RDFResource(string.Concat(DCTERMS.BASE_URI, "educationLevel"));
 
                 /// <summary>
                 /// dcterms:extent
                 /// </summary>
-                public static readonly RDFResource EXTENT = new RDFResource(DCTERMS.BASE_URI + "extent");
+                public static readonly RDFResource EXTENT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "extent"));
 
                 /// <summary>
                 /// dcterms:FileFormat
                 /// </summary>
-                public static readonly RDFResource FILE_FORMAT = new RDFResource(DCTERMS.BASE_URI + "FileFormat");
+                public static readonly RDFResource FILE_FORMAT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "FileFormat"));
 
                 /// <summary>
                 /// dcterms:format
                 /// </summary>
-                public static readonly RDFResource FORMAT = new RDFResource(DCTERMS.BASE_URI + "format");
+                public static readonly RDFResource FORMAT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "format"));
 
                 /// <summary>
                 /// dcterms:Frequency
                 /// </summary>
-                public static readonly RDFResource FREQUENCY = new RDFResource(DCTERMS.BASE_URI + "Frequency");
+                public static readonly RDFResource FREQUENCY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Frequency"));
 
                 /// <summary>
                 /// dcterms:hasFormat
                 /// </summary>
-                public static readonly RDFResource HAS_FORMAT = new RDFResource(DCTERMS.BASE_URI + "hasFormat");
+                public static readonly RDFResource HAS_FORMAT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "hasFormat"));
 
                 /// <summary>
                 /// dcterms:hasPart
                 /// </summary>
-                public static readonly RDFResource HAS_PART = new RDFResource(DCTERMS.BASE_URI + "hasPart");
+                public static readonly RDFResource HAS_PART = new RDFResource(string.Concat(DCTERMS.BASE_URI, "hasPart"));
 
                 /// <summary>
                 /// dcterms:hasVersion
                 /// </summary>
-                public static readonly RDFResource HAS_VERSION = new RDFResource(DCTERMS.BASE_URI + "hasVersion");
+                public static readonly RDFResource HAS_VERSION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "hasVersion"));
 
                 /// <summary>
                 /// dcterms:identifier
                 /// </summary>
-                public static readonly RDFResource IDENTIFIER = new RDFResource(DCTERMS.BASE_URI + "identifier");
+                public static readonly RDFResource IDENTIFIER = new RDFResource(string.Concat(DCTERMS.BASE_URI, "identifier"));
 
                 /// <summary>
                 /// dcterms:instructionalMethod
                 /// </summary>
-                public static readonly RDFResource INSTRUCTIONAL_METHOD = new RDFResource(DCTERMS.BASE_URI + "instructionalMethod");
+                public static readonly RDFResource INSTRUCTIONAL_METHOD = new RDFResource(string.Concat(DCTERMS.BASE_URI, "instructionalMethod"));
 
                 /// <summary>
                 /// dcterms:isFormatOf
                 /// </summary>
-                public static readonly RDFResource IS_FORMAT_OF = new RDFResource(DCTERMS.BASE_URI + "isFormatOf");
+                public static readonly RDFResource IS_FORMAT_OF = new RDFResource(string.Concat(DCTERMS.BASE_URI, "isFormatOf"));
 
                 /// <summary>
                 /// dcterms:isPartOf
                 /// </summary>
-                public static readonly RDFResource IS_PART_OF = new RDFResource(DCTERMS.BASE_URI + "isPartOf");
+                public static readonly RDFResource IS_PART_OF = new RDFResource(string.Concat(DCTERMS.BASE_URI, "isPartOf"));
 
                 /// <summary>
                 /// dcterms:isReferencedBy
                 /// </summary>
-                public static readonly RDFResource IS_REFERENCED_BY = new RDFResource(DCTERMS.BASE_URI + "isReferencedBy");
+                public static readonly RDFResource IS_REFERENCED_BY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "isReferencedBy"));
 
                 /// <summary>
                 /// dcterms:isReplacedBy
                 /// </summary>
-                public static readonly RDFResource IS_REPLACED_BY = new RDFResource(DCTERMS.BASE_URI + "isReplacedBy");
+                public static readonly RDFResource IS_REPLACED_BY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "isReplacedBy"));
 
                 /// <summary>
                 /// dcterms:isRequiredBy
                 /// </summary>
-                public static readonly RDFResource IS_REQUIRED_BY = new RDFResource(DCTERMS.BASE_URI + "isRequiredBy");
+                public static readonly RDFResource IS_REQUIRED_BY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "isRequiredBy"));
 
                 /// <summary>
                 /// dcterms:issued
                 /// </summary>
-                public static readonly RDFResource ISSUED = new RDFResource(DCTERMS.BASE_URI + "issued");
+                public static readonly RDFResource ISSUED = new RDFResource(string.Concat(DCTERMS.BASE_URI, "issued"));
 
                 /// <summary>
                 /// dcterms:isVersionOf
                 /// </summary>
-                public static readonly RDFResource IS_VERSION_OF = new RDFResource(DCTERMS.BASE_URI + "isVersionOf");
+                public static readonly RDFResource IS_VERSION_OF = new RDFResource(string.Concat(DCTERMS.BASE_URI, "isVersionOf"));
 
                 /// <summary>
                 /// dcterms:Jurisdiction
                 /// </summary>
-                public static readonly RDFResource JURISDICTION = new RDFResource(DCTERMS.BASE_URI + "Jurisdiction");
+                public static readonly RDFResource JURISDICTION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Jurisdiction"));
 
                 /// <summary>
                 /// dcterms:language
                 /// </summary>
-                public static readonly RDFResource LANGUAGE = new RDFResource(DCTERMS.BASE_URI + "language");
+                public static readonly RDFResource LANGUAGE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "language"));
 
                 /// <summary>
                 /// dcterms:license
                 /// </summary>
-                public static readonly RDFResource LICENSE = new RDFResource(DCTERMS.BASE_URI + "license");
+                public static readonly RDFResource LICENSE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "license"));
 
                 /// <summary>
                 /// dcterms:LicenseDocument
                 /// </summary>
-                public static readonly RDFResource LICENSE_DOCUMENT = new RDFResource(DCTERMS.BASE_URI + "LicenseDocument");
+                public static readonly RDFResource LICENSE_DOCUMENT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "LicenseDocument"));
 
                 /// <summary>
                 /// dcterms:LinguisticSystem
                 /// </summary>
-                public static readonly RDFResource LINGUISTIC_SYSTEM = new RDFResource(DCTERMS.BASE_URI + "LinguisticSystem");
+                public static readonly RDFResource LINGUISTIC_SYSTEM = new RDFResource(string.Concat(DCTERMS.BASE_URI, "LinguisticSystem"));
 
                 /// <summary>
                 /// dcterms:Location
                 /// </summary>
-                public static readonly RDFResource LOCATION = new RDFResource(DCTERMS.BASE_URI + "Location");
+                public static readonly RDFResource LOCATION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Location"));
 
                 /// <summary>
                 /// dcterms:LocationPeriodOrJurisdiction
                 /// </summary>
-                public static readonly RDFResource LOCATION_PERIOD_OR_JURISDICTION = new RDFResource(DCTERMS.BASE_URI + "LocationPeriodOrJurisdiction");
+                public static readonly RDFResource LOCATION_PERIOD_OR_JURISDICTION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "LocationPeriodOrJurisdiction"));
 
                 /// <summary>
                 /// dcterms:mediator
                 /// </summary>
-                public static readonly RDFResource MEDIATOR = new RDFResource(DCTERMS.BASE_URI + "mediator");
+                public static readonly RDFResource MEDIATOR = new RDFResource(string.Concat(DCTERMS.BASE_URI, "mediator"));
 
                 /// <summary>
                 /// dcterms:MediaType
                 /// </summary>
-                public static readonly RDFResource MEDIA_TYPE = new RDFResource(DCTERMS.BASE_URI + "MediaType");
+                public static readonly RDFResource MEDIA_TYPE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "MediaType"));
 
                 /// <summary>
                 /// dcterms:MediaTypeOrExtent
                 /// </summary>
-                public static readonly RDFResource MEDIA_TYPE_OR_EXTENT = new RDFResource(DCTERMS.BASE_URI + "MediaTypeOrExtent");
+                public static readonly RDFResource MEDIA_TYPE_OR_EXTENT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "MediaTypeOrExtent"));
 
                 /// <summary>
                 /// dcterms:medium
                 /// </summary>
-                public static readonly RDFResource MEDIUM = new RDFResource(DCTERMS.BASE_URI + "medium");
+                public static readonly RDFResource MEDIUM = new RDFResource(string.Concat(DCTERMS.BASE_URI, "medium"));
 
                 /// <summary>
                 /// dcterms:MethodOfAccrual
                 /// </summary>
-                public static readonly RDFResource METHOD_OF_ACCRUAL = new RDFResource(DCTERMS.BASE_URI + "MethodOfAccrual");
+                public static readonly RDFResource METHOD_OF_ACCRUAL = new RDFResource(string.Concat(DCTERMS.BASE_URI, "MethodOfAccrual"));
 
                 /// <summary>
                 /// dcterms:MethodOfInstruction
                 /// </summary>
-                public static readonly RDFResource METHOD_OF_INSTRUCTION = new RDFResource(DCTERMS.BASE_URI + "MethodOfInstruction");
+                public static readonly RDFResource METHOD_OF_INSTRUCTION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "MethodOfInstruction"));
 
                 /// <summary>
                 /// dcterms:modified
                 /// </summary>
-                public static readonly RDFResource MODIFIED = new RDFResource(DCTERMS.BASE_URI + "modified");
+                public static readonly RDFResource MODIFIED = new RDFResource(string.Concat(DCTERMS.BASE_URI, "modified"));
 
                 /// <summary>
                 /// dcterms:PeriodOfTime
                 /// </summary>
-                public static readonly RDFResource PERIOD_OF_TIME = new RDFResource(DCTERMS.BASE_URI + "PeriodOfTime");
+                public static readonly RDFResource PERIOD_OF_TIME = new RDFResource(string.Concat(DCTERMS.BASE_URI, "PeriodOfTime"));
 
                 /// <summary>
                 /// dcterms:PhysicalMedium
                 /// </summary>
-                public static readonly RDFResource PHYSICAL_MEDIUM = new RDFResource(DCTERMS.BASE_URI + "PhysicalMedium");
+                public static readonly RDFResource PHYSICAL_MEDIUM = new RDFResource(string.Concat(DCTERMS.BASE_URI, "PhysicalMedium"));
 
                 /// <summary>
                 /// dcterms:PhysicalResource
                 /// </summary>
-                public static readonly RDFResource PHYSICAL_RESOURCE = new RDFResource(DCTERMS.BASE_URI + "PhysicalResource");
+                public static readonly RDFResource PHYSICAL_RESOURCE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "PhysicalResource"));
 
                 /// <summary>
                 /// dcterms:Policy
                 /// </summary>
-                public static readonly RDFResource POLICY = new RDFResource(DCTERMS.BASE_URI + "Policy");
+                public static readonly RDFResource POLICY = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Policy"));
 
                 /// <summary>
                 /// dcterms:provenance
                 /// </summary>
-                public static readonly RDFResource PROVENANCE = new RDFResource(DCTERMS.BASE_URI + "provenance");
+                public static readonly RDFResource PROVENANCE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "provenance"));
 
                 /// <summary>
                 /// dcterms:ProvenanceStatement
                 /// </summary>
-                public static readonly RDFResource PROVENANCE_STATEMENT = new RDFResource(DCTERMS.BASE_URI + "ProvenanceStatement");
+                public static readonly RDFResource PROVENANCE_STATEMENT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "ProvenanceStatement"));
 
                 /// <summary>
                 /// dcterms:publisher
                 /// </summary>
-                public static readonly RDFResource PUBLISHER = new RDFResource(DCTERMS.BASE_URI + "publisher");
+                public static readonly RDFResource PUBLISHER = new RDFResource(string.Concat(DCTERMS.BASE_URI, "publisher"));
 
                 /// <summary>
                 /// dcterms:references
                 /// </summary>
-                public static readonly RDFResource REFERENCES = new RDFResource(DCTERMS.BASE_URI + "references");
+                public static readonly RDFResource REFERENCES = new RDFResource(string.Concat(DCTERMS.BASE_URI, "references"));
 
                 /// <summary>
                 /// dcterms:relation
                 /// </summary>
-                public static readonly RDFResource RELATION = new RDFResource(DCTERMS.BASE_URI + "relation");
+                public static readonly RDFResource RELATION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "relation"));
 
                 /// <summary>
                 /// dcterms:replaces
                 /// </summary>
-                public static readonly RDFResource REPLACES = new RDFResource(DCTERMS.BASE_URI + "replaces");
+                public static readonly RDFResource REPLACES = new RDFResource(string.Concat(DCTERMS.BASE_URI, "replaces"));
 
                 /// <summary>
                 /// dcterms:requires
                 /// </summary>
-                public static readonly RDFResource REQUIRES = new RDFResource(DCTERMS.BASE_URI + "requires");
+                public static readonly RDFResource REQUIRES = new RDFResource(string.Concat(DCTERMS.BASE_URI, "requires"));
 
                 /// <summary>
                 /// dcterms:rights
                 /// </summary>
-                public static readonly RDFResource RIGHTS = new RDFResource(DCTERMS.BASE_URI + "rights");
+                public static readonly RDFResource RIGHTS = new RDFResource(string.Concat(DCTERMS.BASE_URI, "rights"));
 
                 /// <summary>
                 /// dcterms:RightsStatement
                 /// </summary>
-                public static readonly RDFResource RIGHTS_STATEMENT = new RDFResource(DCTERMS.BASE_URI + "RightsStatement");
+                public static readonly RDFResource RIGHTS_STATEMENT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "RightsStatement"));
 
                 /// <summary>
                 /// dcterms:rightsHolder
                 /// </summary>
-                public static readonly RDFResource RIGHTS_HOLDER = new RDFResource(DCTERMS.BASE_URI + "rightsHolder");
+                public static readonly RDFResource RIGHTS_HOLDER = new RDFResource(string.Concat(DCTERMS.BASE_URI, "rightsHolder"));
 
                 /// <summary>
                 /// dcterms:SizeOrDuration
                 /// </summary>
-                public static readonly RDFResource SIZE_OR_DURATION = new RDFResource(DCTERMS.BASE_URI + "SizeOrDuration");
+                public static readonly RDFResource SIZE_OR_DURATION = new RDFResource(string.Concat(DCTERMS.BASE_URI, "SizeOrDuration"));
 
                 /// <summary>
                 /// dcterms:source
                 /// </summary>
-                public static readonly RDFResource SOURCE = new RDFResource(DCTERMS.BASE_URI + "source");
+                public static readonly RDFResource SOURCE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "source"));
 
                 /// <summary>
                 /// dcterms:spatial
                 /// </summary>
-                public static readonly RDFResource SPATIAL = new RDFResource(DCTERMS.BASE_URI + "spatial");
+                public static readonly RDFResource SPATIAL = new RDFResource(string.Concat(DCTERMS.BASE_URI, "spatial"));
 
                 /// <summary>
                 /// dcterms:Standard
                 /// </summary>
-                public static readonly RDFResource STANDARD = new RDFResource(DCTERMS.BASE_URI + "Standard");
+                public static readonly RDFResource STANDARD = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Standard"));
 
                 /// <summary>
                 /// dcterms:subject
                 /// </summary>
-                public static readonly RDFResource SUBJECT = new RDFResource(DCTERMS.BASE_URI + "subject");
+                public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "subject"));
 
                 /// <summary>
                 /// dcterms:tableOfContents
                 /// </summary>
-                public static readonly RDFResource TABLE_OF_CONTENTS = new RDFResource(DCTERMS.BASE_URI + "tableOfContents");
+                public static readonly RDFResource TABLE_OF_CONTENTS = new RDFResource(string.Concat(DCTERMS.BASE_URI, "tableOfContents"));
 
                 /// <summary>
                 /// dcterms:temporal
                 /// </summary>
-                public static readonly RDFResource TEMPORAL = new RDFResource(DCTERMS.BASE_URI + "temporal");
+                public static readonly RDFResource TEMPORAL = new RDFResource(string.Concat(DCTERMS.BASE_URI, "temporal"));
 
                 /// <summary>
                 /// dcterms:title
                 /// </summary>
-                public static readonly RDFResource TITLE = new RDFResource(DCTERMS.BASE_URI + "title");
+                public static readonly RDFResource TITLE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "title"));
 
                 /// <summary>
                 /// dcterms:type
                 /// </summary>
-                public static readonly RDFResource TYPE = new RDFResource(DCTERMS.BASE_URI + "type");
+                public static readonly RDFResource TYPE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "type"));
 
                 /// <summary>
                 /// dcterms:valid
                 /// </summary>
-                public static readonly RDFResource VALID = new RDFResource(DCTERMS.BASE_URI + "valid");
+                public static readonly RDFResource VALID = new RDFResource(string.Concat(DCTERMS.BASE_URI, "valid"));
 
                 #region Vocabulary Encoding Schemes
                 /// <summary>
                 /// dcterms:DCMIType
                 /// </summary>
-                public static readonly RDFResource DCMITYPE = new RDFResource(DCTERMS.BASE_URI + "DCMIType");
+                public static readonly RDFResource DCMITYPE = new RDFResource(string.Concat(DCTERMS.BASE_URI, "DCMIType"));
 
                 /// <summary>
                 /// dcterms:DDC
                 /// </summary>
-                public static readonly RDFResource DDC = new RDFResource(DCTERMS.BASE_URI + "DDC");
+                public static readonly RDFResource DDC = new RDFResource(string.Concat(DCTERMS.BASE_URI, "DDC"));
 
                 /// <summary>
                 /// dcterms:IMT
                 /// </summary>
-                public static readonly RDFResource IMT = new RDFResource(DCTERMS.BASE_URI + "IMT");
+                public static readonly RDFResource IMT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "IMT"));
 
                 /// <summary>
                 /// dcterms:LCC
                 /// </summary>
-                public static readonly RDFResource LCC = new RDFResource(DCTERMS.BASE_URI + "LCC");
+                public static readonly RDFResource LCC = new RDFResource(string.Concat(DCTERMS.BASE_URI, "LCC"));
 
                 /// <summary>
                 /// dcterms:LCSH
                 /// </summary>
-                public static readonly RDFResource LCSH = new RDFResource(DCTERMS.BASE_URI + "LCSH");
+                public static readonly RDFResource LCSH = new RDFResource(string.Concat(DCTERMS.BASE_URI, "LCSH"));
 
                 /// <summary>
                 /// dcterms:MESH
                 /// </summary>
-                public static readonly RDFResource MESH = new RDFResource(DCTERMS.BASE_URI + "MESH");
+                public static readonly RDFResource MESH = new RDFResource(string.Concat(DCTERMS.BASE_URI, "MESH"));
 
                 /// <summary>
                 /// dcterms:NLM
                 /// </summary>
-                public static readonly RDFResource NLM = new RDFResource(DCTERMS.BASE_URI + "NLM");
+                public static readonly RDFResource NLM = new RDFResource(string.Concat(DCTERMS.BASE_URI, "NLM"));
 
                 /// <summary>
                 /// dcterms:TGN
                 /// </summary>
-                public static readonly RDFResource TGN = new RDFResource(DCTERMS.BASE_URI + "TGN");
+                public static readonly RDFResource TGN = new RDFResource(string.Concat(DCTERMS.BASE_URI, "TGN"));
 
                 /// <summary>
                 /// dcterms:UDC
                 /// </summary>
-                public static readonly RDFResource UDC = new RDFResource(DCTERMS.BASE_URI + "UDC");
+                public static readonly RDFResource UDC = new RDFResource(string.Concat(DCTERMS.BASE_URI, "UDC"));
                 #endregion
 
                 #region Syntax Encoding Schemes
                 /// <summary>
                 /// dcterms:Box
                 /// </summary>
-                public static readonly RDFResource BOX = new RDFResource(DCTERMS.BASE_URI + "Box");
+                public static readonly RDFResource BOX = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Box"));
 
                 /// <summary>
                 /// dcterms:ISO3166
                 /// </summary>
-                public static readonly RDFResource ISO3166 = new RDFResource(DCTERMS.BASE_URI + "ISO3166");
+                public static readonly RDFResource ISO3166 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "ISO3166"));
 
                 /// <summary>
                 /// dcterms:ISO639-2
                 /// </summary>
-                public static readonly RDFResource ISO639_2 = new RDFResource(DCTERMS.BASE_URI + "ISO639-2");
+                public static readonly RDFResource ISO639_2 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "ISO639-2"));
 
                 /// <summary>
                 /// dcterms:ISO639-3
                 /// </summary>
-                public static readonly RDFResource ISO639_3 = new RDFResource(DCTERMS.BASE_URI + "ISO639-3");
+                public static readonly RDFResource ISO639_3 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "ISO639-3"));
 
                 /// <summary>
                 /// dcterms:Period
                 /// </summary>
-                public static readonly RDFResource PERIOD = new RDFResource(DCTERMS.BASE_URI + "Period");
+                public static readonly RDFResource PERIOD = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Period"));
 
                 /// <summary>
                 /// dcterms:Point
                 /// </summary>
-                public static readonly RDFResource POINT = new RDFResource(DCTERMS.BASE_URI + "Point");
+                public static readonly RDFResource POINT = new RDFResource(string.Concat(DCTERMS.BASE_URI, "Point"));
 
                 /// <summary>
                 /// dcterms:RFC1766
                 /// </summary>
-                public static readonly RDFResource RFC1766 = new RDFResource(DCTERMS.BASE_URI + "RFC1766");
+                public static readonly RDFResource RFC1766 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "RFC1766"));
 
                 /// <summary>
                 /// dcterms:RFC3066
                 /// </summary>
-                public static readonly RDFResource RFC3066 = new RDFResource(DCTERMS.BASE_URI + "RFC3066");
+                public static readonly RDFResource RFC3066 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "RFC3066"));
 
                 /// <summary>
                 /// dcterms:RFC4646
                 /// </summary>
-                public static readonly RDFResource RFC4646 = new RDFResource(DCTERMS.BASE_URI + "RFC4646");
+                public static readonly RDFResource RFC4646 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "RFC4646"));
 
                 /// <summary>
                 /// dcterms:RFC5646
                 /// </summary>
-                public static readonly RDFResource RFC5646 = new RDFResource(DCTERMS.BASE_URI + "RFC5646");
+                public static readonly RDFResource RFC5646 = new RDFResource(string.Concat(DCTERMS.BASE_URI, "RFC5646"));
 
                 /// <summary>
                 /// dcterms:URI
                 /// </summary>
-                public static readonly RDFResource URI = new RDFResource(DCTERMS.BASE_URI + "URI");
+                public static readonly RDFResource URI = new RDFResource(string.Concat(DCTERMS.BASE_URI, "URI"));
 
                 /// <summary>
                 /// dcterms:W3CDTF
                 /// </summary>
-                public static readonly RDFResource W3CDTF = new RDFResource(DCTERMS.BASE_URI + "W3CDTF");
+                public static readonly RDFResource W3CDTF = new RDFResource(string.Concat(DCTERMS.BASE_URI, "W3CDTF"));
                 #endregion
 
                 #endregion
@@ -707,62 +707,62 @@ namespace RDFSharp.Model
                 /// <summary>
                 /// dctype:Collection
                 /// </summary>
-                public static readonly RDFResource COLLECTION = new RDFResource(DCTYPE.BASE_URI + "Collection");
+                public static readonly RDFResource COLLECTION = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Collection"));
 
                 /// <summary>
                 /// dctype:Dataset
                 /// </summary>
-                public static readonly RDFResource DATASET = new RDFResource(DCTYPE.BASE_URI + "Dataset");
+                public static readonly RDFResource DATASET = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Dataset"));
 
                 /// <summary>
                 /// dctype:Event
                 /// </summary>
-                public static readonly RDFResource EVENT = new RDFResource(DCTYPE.BASE_URI + "Event");
+                public static readonly RDFResource EVENT = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Event"));
 
                 /// <summary>
                 /// dctype:Image
                 /// </summary>
-                public static readonly RDFResource IMAGE = new RDFResource(DCTYPE.BASE_URI + "Image");
+                public static readonly RDFResource IMAGE = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Image"));
 
                 /// <summary>
                 /// dctype:InteractiveResource
                 /// </summary>
-                public static readonly RDFResource INTERACTIVE_RESOURCE = new RDFResource(DCTYPE.BASE_URI + "InteractiveResource");
+                public static readonly RDFResource INTERACTIVE_RESOURCE = new RDFResource(string.Concat(DCTYPE.BASE_URI, "InteractiveResource"));
 
                 /// <summary>
                 /// dctype:MovingImage
                 /// </summary>
-                public static readonly RDFResource MOVING_IMAGE = new RDFResource(DCTYPE.BASE_URI + "MovingImage");
+                public static readonly RDFResource MOVING_IMAGE = new RDFResource(string.Concat(DCTYPE.BASE_URI, "MovingImage"));
 
                 /// <summary>
                 /// dctype:PhysicalObject
                 /// </summary>
-                public static readonly RDFResource PHYSICAL_OBJECT = new RDFResource(DCTYPE.BASE_URI + "PhysicalObject");
+                public static readonly RDFResource PHYSICAL_OBJECT = new RDFResource(string.Concat(DCTYPE.BASE_URI, "PhysicalObject"));
 
                 /// <summary>
                 /// dctype:Service
                 /// </summary>
-                public static readonly RDFResource SERVICE = new RDFResource(DCTYPE.BASE_URI + "Service");
+                public static readonly RDFResource SERVICE = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Service"));
 
                 /// <summary>
                 /// dctype:Software
                 /// </summary>
-                public static readonly RDFResource SOFTWARE = new RDFResource(DCTYPE.BASE_URI + "Software");
+                public static readonly RDFResource SOFTWARE = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Software"));
 
                 /// <summary>
                 /// dctype:Sound
                 /// </summary>
-                public static readonly RDFResource SOUND = new RDFResource(DCTYPE.BASE_URI + "Sound");
+                public static readonly RDFResource SOUND = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Sound"));
 
                 /// <summary>
                 /// dctype:StillImage
                 /// </summary>
-                public static readonly RDFResource STILL_IMAGE = new RDFResource(DCTYPE.BASE_URI + "StillImage");
+                public static readonly RDFResource STILL_IMAGE = new RDFResource(string.Concat(DCTYPE.BASE_URI, "StillImage"));
 
                 /// <summary>
                 /// dctype:Text
                 /// </summary>
-                public static readonly RDFResource TEXT = new RDFResource(DCTYPE.BASE_URI + "Text");
+                public static readonly RDFResource TEXT = new RDFResource(string.Concat(DCTYPE.BASE_URI, "Text"));
                 #endregion
 
             }

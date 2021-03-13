@@ -1,7 +1,7 @@
 ﻿/*
    Copyright 2012-2020 Marco De Salvo
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 (the "License"));
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -47,82 +47,82 @@ namespace RDFSharp.Model
             /// <summary>
             /// rdf:Bag
             /// </summary>
-            public static readonly RDFResource BAG = new RDFResource(RDF.BASE_URI + "Bag");
+            public static readonly RDFResource BAG = new RDFResource(string.Concat(RDF.BASE_URI,"Bag"));
 
             /// <summary>
             /// rdf:Seq
             /// </summary>
-            public static readonly RDFResource SEQ = new RDFResource(RDF.BASE_URI + "Seq");
+            public static readonly RDFResource SEQ = new RDFResource(string.Concat(RDF.BASE_URI,"Seq"));
 
             /// <summary>
             /// rdf:Alt
             /// </summary>
-            public static readonly RDFResource ALT = new RDFResource(RDF.BASE_URI + "Alt");
+            public static readonly RDFResource ALT = new RDFResource(string.Concat(RDF.BASE_URI,"Alt"));
 
             /// <summary>
             /// rdf:Statement
             /// </summary>
-            public static readonly RDFResource STATEMENT = new RDFResource(RDF.BASE_URI + "Statement");
+            public static readonly RDFResource STATEMENT = new RDFResource(string.Concat(RDF.BASE_URI,"Statement"));
 
             /// <summary>
             /// rdf:Property
             /// </summary>
-            public static readonly RDFResource PROPERTY = new RDFResource(RDF.BASE_URI + "Property");
+            public static readonly RDFResource PROPERTY = new RDFResource(string.Concat(RDF.BASE_URI,"Property"));
 
             /// <summary>
             /// rdf:XMLLiteral
             /// </summary>
-            public static readonly RDFResource XML_LITERAL = new RDFResource(RDF.BASE_URI + "XMLLiteral");
+            public static readonly RDFResource XML_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI,"XMLLiteral"));
 
             /// <summary>
             /// rdf:List
             /// </summary>
-            public static readonly RDFResource LIST = new RDFResource(RDF.BASE_URI + "List");
+            public static readonly RDFResource LIST = new RDFResource(string.Concat(RDF.BASE_URI,"List"));
 
             /// <summary>
             /// rdf:nil
             /// </summary>
-            public static readonly RDFResource NIL = new RDFResource(RDF.BASE_URI + "nil");
+            public static readonly RDFResource NIL = new RDFResource(string.Concat(RDF.BASE_URI,"nil"));
 
             /// <summary>
             /// rdf:li
             /// </summary>
-            public static readonly RDFResource LI = new RDFResource(RDF.BASE_URI + "li");
+            public static readonly RDFResource LI = new RDFResource(string.Concat(RDF.BASE_URI,"li"));
 
             /// <summary>
             /// rdf:subject
             /// </summary>
-            public static readonly RDFResource SUBJECT = new RDFResource(RDF.BASE_URI + "subject");
+            public static readonly RDFResource SUBJECT = new RDFResource(string.Concat(RDF.BASE_URI,"subject"));
 
             /// <summary>
             /// rdf:predicate
             /// </summary>
-            public static readonly RDFResource PREDICATE = new RDFResource(RDF.BASE_URI + "predicate");
+            public static readonly RDFResource PREDICATE = new RDFResource(string.Concat(RDF.BASE_URI,"predicate"));
 
             /// <summary>
             /// rdf:object
             /// </summary>
-            public static readonly RDFResource OBJECT = new RDFResource(RDF.BASE_URI + "object");
+            public static readonly RDFResource OBJECT = new RDFResource(string.Concat(RDF.BASE_URI,"object"));
 
             /// <summary>
             /// rdf:type
             /// </summary>
-            public static readonly RDFResource TYPE = new RDFResource(RDF.BASE_URI + "type");
+            public static readonly RDFResource TYPE = new RDFResource(string.Concat(RDF.BASE_URI,"type"));
 
             /// <summary>
             /// rdf:value
             /// </summary>
-            public static readonly RDFResource VALUE = new RDFResource(RDF.BASE_URI + "value");
+            public static readonly RDFResource VALUE = new RDFResource(string.Concat(RDF.BASE_URI,"value"));
 
             /// <summary>
             /// rdf:first
             /// </summary>
-            public static readonly RDFResource FIRST = new RDFResource(RDF.BASE_URI + "first");
+            public static readonly RDFResource FIRST = new RDFResource(string.Concat(RDF.BASE_URI,"first"));
 
             /// <summary>
             /// rdf:rest
             /// </summary>
-            public static readonly RDFResource REST = new RDFResource(RDF.BASE_URI + "rest");
+            public static readonly RDFResource REST = new RDFResource(string.Concat(RDF.BASE_URI,"rest"));
             #endregion
 
         }
