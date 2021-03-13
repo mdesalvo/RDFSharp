@@ -33,9 +33,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the filter
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal abstract string ToString(List<RDFNamespace> prefixes);
         #endregion
 

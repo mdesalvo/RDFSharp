@@ -50,7 +50,6 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternMember Object { get; internal set; }
 
-        #region Internals
         /// <summary>
         /// Flag indicating the pattern as optional
         /// </summary>
@@ -65,8 +64,6 @@ namespace RDFSharp.Query
         /// List of variables carried by the pattern
         /// </summary>
         internal List<RDFVariable> Variables { get; set; }
-        #endregion
-
         #endregion
 
         #region Ctors
@@ -193,13 +190,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal string ToString(List<RDFNamespace> prefixes)
-        {
-            return RDFQueryPrinter.PrintPattern(this, prefixes);
-        }
+            => RDFQueryPrinter.PrintPattern(this, prefixes);
         #endregion
 
         #region Methods

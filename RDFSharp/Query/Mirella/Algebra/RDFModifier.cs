@@ -30,10 +30,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        public override string ToString() => base.ToString();
         #endregion
 
         #region Methods
@@ -45,10 +42,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the query member
         /// </summary>
-        internal override string GetQueryMemberString()
-        {
-            return this.ToString();
-        }
+        internal override string GetQueryMemberString() => this.ToString();
         #endregion
 
     }

@@ -89,10 +89,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the aggregator function
         /// </summary>
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        public override string ToString() => base.ToString();
         #endregion
 
         #region Methods
@@ -281,25 +278,19 @@ namespace RDFSharp.Query
         /// Gets the execution counter for the given partition key
         /// </summary>
         internal double GetPartitionKeyExecutionCounter(string partitionKey)
-        {
-            return (double)this.ExecutionRegistry[partitionKey]["ExecutionCounter"];
-        }
+            => (double)this.ExecutionRegistry[partitionKey]["ExecutionCounter"];
 
         /// <summary>
         /// Updates the execution result for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionResult<T>(string partitionKey, T newValue)
-        {
-            this.ExecutionRegistry[partitionKey]["ExecutionResult"] = newValue;
-        }
+            => this.ExecutionRegistry[partitionKey]["ExecutionResult"] = newValue;
 
         /// <summary>
         /// Updates the execution counter for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(string partitionKey)
-        {
-            this.ExecutionRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
-        }
+            => this.ExecutionRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
 
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache
@@ -315,9 +306,7 @@ namespace RDFSharp.Query
         /// Updates the given partitionKey's cache with the given value
         /// </summary>
         internal void UpdatePartitionKeyRowValueCache<T>(string partitionKey, T newValue)
-        {
-            this.ExecutionCache[partitionKey].Add(newValue);
-        }
+            => this.ExecutionCache[partitionKey].Add(newValue);
         #endregion
 
     }

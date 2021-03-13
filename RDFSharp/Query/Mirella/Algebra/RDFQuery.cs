@@ -75,28 +75,22 @@ namespace RDFSharp.Query
         /// Gets the query members of type: pattern group
         /// </summary>
         internal IEnumerable<RDFPatternGroup> GetPatternGroups()
-        {
-            return this.QueryMembers.Where(q => q is RDFPatternGroup)
-                                    .OfType<RDFPatternGroup>();
-        }
+            => this.QueryMembers.Where(q => q is RDFPatternGroup)
+                                .OfType<RDFPatternGroup>();
 
         /// <summary>
         /// Gets the query members of type: modifier
         /// </summary>
         internal IEnumerable<RDFModifier> GetModifiers()
-        {
-            return this.QueryMembers.Where(q => q is RDFModifier)
-                                    .OfType<RDFModifier>();
-        }
+            => this.QueryMembers.Where(q => q is RDFModifier)
+                                .OfType<RDFModifier>();
 
         /// <summary>
         /// Gets the query members of type: query
         /// </summary>
         internal IEnumerable<RDFQuery> GetSubQueries()
-        {
-            return this.QueryMembers.Where(q => q is RDFQuery)
-                                    .OfType<RDFQuery>();
-        }
+            => this.QueryMembers.Where(q => q is RDFQuery)
+                                .OfType<RDFQuery>();
 
         /// <summary>
         /// Gets the SPARQL values of the query, including those from patterngroups and subqueries
@@ -121,7 +115,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQuery InjectValues(List<RDFValues> values)
         {
-
             //Inject SPARQL values into pattern groups
             foreach (RDFPatternGroup patternGroup in this.GetPatternGroups())
                 values.ForEach(v => patternGroup.AddInjectedValues(v));
@@ -148,17 +141,13 @@ namespace RDFSharp.Query
         /// Gets the query members which can be evaluated
         /// </summary>
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
-        {
-            return this.QueryMembers.Where(q => q.IsEvaluable);
-        }
+            => this.QueryMembers.Where(q => q.IsEvaluable);
 
         /// <summary>
         /// Gets the strin representation of the query member
         /// </summary>
         internal override string GetQueryMemberString()
-        {
-            return this.ToString();
-        }
+            => this.ToString();
 
         /// <summary>
         /// Sets the query as a subquery

@@ -104,13 +104,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the patternGroup
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal string ToString(List<RDFNamespace> prefixes)
-        {
-            return RDFQueryPrinter.PrintPatternGroup(this, 0, false, prefixes);
-        }
+            => RDFQueryPrinter.PrintPatternGroup(this, 0, false, prefixes);
         #endregion
 
         #region Methods
@@ -235,28 +231,22 @@ namespace RDFSharp.Query
         /// Gets the group members of type: pattern
         /// </summary>
         internal IEnumerable<RDFPattern> GetPatterns()
-        {
-            return this.GroupMembers.Where(g => g is RDFPattern)
-                                    .OfType<RDFPattern>();
-        }
+            => this.GroupMembers.Where(g => g is RDFPattern)
+                                .OfType<RDFPattern>();
 
         /// <summary>
         /// Gets the group members of type: property path
         /// </summary>
         internal IEnumerable<RDFPropertyPath> GetPropertyPaths()
-        {
-            return this.GroupMembers.Where(g => g is RDFPropertyPath)
-                                    .OfType<RDFPropertyPath>();
-        }
+            => this.GroupMembers.Where(g => g is RDFPropertyPath)
+                                .OfType<RDFPropertyPath>();
 
         /// <summary>
         /// Gets the group members of type: values
         /// </summary>
         internal IEnumerable<RDFValues> GetValues()
-        {
-            return this.GroupMembers.Where(g => g is RDFValues)
-                                    .OfType<RDFValues>();
-        }
+            => this.GroupMembers.Where(g => g is RDFValues)
+                                .OfType<RDFValues>();
 
         /// <summary>
         /// Adds the given injected SPARQL values to the pattern group
@@ -280,26 +270,20 @@ namespace RDFSharp.Query
         /// Gets the group members of type: filter
         /// </summary>
         internal IEnumerable<RDFFilter> GetFilters()
-        {
-            return this.GroupMembers.Where(g => g is RDFFilter)
-                                    .OfType<RDFFilter>();
-        }
+            => this.GroupMembers.Where(g => g is RDFFilter)
+                                .OfType<RDFFilter>();
 
         /// <summary>
         /// Gets the group members which can be evaluated
         /// </summary>
         internal IEnumerable<RDFPatternGroupMember> GetEvaluablePatternGroupMembers()
-        {
-            return this.GroupMembers.Where(g => g.IsEvaluable);
-        }
+            => this.GroupMembers.Where(g => g.IsEvaluable);
 
         /// <summary>
         /// Gets the string representation of the query member
         /// </summary>
         internal override string GetQueryMemberString()
-        {
-            return this.PatternGroupName;
-        }
+            => this.PatternGroupName;
         #endregion
 
         #endregion

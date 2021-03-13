@@ -61,9 +61,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the variable
         /// </summary>
         public override string ToString()
-        {
-            return this.BaseAddress.ToString();
-        }
+            => this.BaseAddress.ToString();
         #endregion
 
         #region Methods

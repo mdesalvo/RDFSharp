@@ -38,13 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Represents the current max length of the bindings
         /// </summary>
-        internal int MaxBindingsLength
-        {
-            get
-            {
-                return this.Bindings?.Select(x => x.Value.Count).Max() ?? 0;
-            }
-        }
+        internal int MaxBindingsLength => this.Bindings?.Select(x => x.Value.Count).Max() ?? 0;
 
         /// <summary>
         /// Flag indicating that the SPARQL values has been injected by Mirella
@@ -69,13 +63,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the SPARQL values
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>(), string.Empty);
-        }
+            => this.ToString(new List<RDFNamespace>(), string.Empty);
         internal string ToString(List<RDFNamespace> prefixes, string spaces)
-        {
-            return RDFQueryPrinter.PrintValues(this, prefixes, spaces);
-        }
+            => RDFQueryPrinter.PrintValues(this, prefixes, spaces);
         #endregion
 
         #region Methods
@@ -142,10 +132,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the filter representation of the SPARQL values
         /// </summary>
-        internal RDFValuesFilter GetValuesFilter()
-        {
-            return new RDFValuesFilter(this);
-        }
+        internal RDFValuesFilter GetValuesFilter() => new RDFValuesFilter(this);
         #endregion
 
     }

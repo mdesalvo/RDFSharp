@@ -105,13 +105,9 @@ namespace RDFSharp.Query
         /// Gives the string representation of the path
         /// </summary>
         public override string ToString()
-        {
-            return this.ToString(new List<RDFNamespace>());
-        }
+            => this.ToString(new List<RDFNamespace>());
         internal string ToString(List<RDFNamespace> prefixes)
-        {
-            return RDFQueryPrinter.PrintPropertyPath(this, prefixes);
-        }
+            => RDFQueryPrinter.PrintPropertyPath(this, prefixes);
         #endregion
 
         #region Methods
