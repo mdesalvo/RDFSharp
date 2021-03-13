@@ -64,8 +64,8 @@ namespace RDFSharp.Model
                     #endregion
 
                     #region rdfRoot
-                    XmlNode rdfRoot = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":RDF", RDFVocabulary.RDF.BASE_URI);
-                    XmlAttribute rdfRootNS = rdfDoc.CreateAttribute("xmlns:" + RDFVocabulary.RDF.PREFIX);
+                    XmlNode rdfRoot = rdfDoc.CreateNode(XmlNodeType.Element, string.Concat(RDFVocabulary.RDF.PREFIX, ":RDF"), RDFVocabulary.RDF.BASE_URI);
+                    XmlAttribute rdfRootNS = rdfDoc.CreateAttribute(string.Concat("xmlns:", RDFVocabulary.RDF.PREFIX));
                     XmlText rdfRootNSText = rdfDoc.CreateTextNode(RDFVocabulary.RDF.BASE_URI);
                     rdfRootNS.AppendChild(rdfRootNSText);
                     rdfRoot.Attributes.Append(rdfRootNS);
@@ -79,14 +79,14 @@ namespace RDFSharp.Model
                         if (!p.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX, StringComparison.OrdinalIgnoreCase)
                                 && !p.NamespacePrefix.Equals("base", StringComparison.OrdinalIgnoreCase))
                         {
-                            XmlAttribute pfRootNS = rdfDoc.CreateAttribute("xmlns:" + p.NamespacePrefix);
+                            XmlAttribute pfRootNS = rdfDoc.CreateAttribute(string.Concat("xmlns:", p.NamespacePrefix));
                             XmlText pfRootNSText = rdfDoc.CreateTextNode(p.ToString());
                             pfRootNS.AppendChild(pfRootNSText);
                             rdfRoot.Attributes.Append(pfRootNS);
                         }
                     });
                     //Write the graph's base uri to resolve eventual relative #IDs
-                    XmlAttribute pfBaseNS = rdfDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":base");
+                    XmlAttribute pfBaseNS = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":base"));
                     XmlText pfBaseNSText = rdfDoc.CreateTextNode(graph.Context.ToString());
                     pfBaseNS.AppendChild(pfBaseNSText);
                     rdfRoot.Attributes.Append(pfBaseNS);
@@ -153,13 +153,13 @@ namespace RDFSharp.Model
                             switch (subjContainer.ContainerType)
                             {
                                 case RDFModelEnums.RDFContainerTypes.Bag:
-                                    subjNode = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Bag", RDFVocabulary.RDF.BASE_URI);
+                                    subjNode = rdfDoc.CreateNode(XmlNodeType.Element, string.Concat(RDFVocabulary.RDF.PREFIX, ":Bag"), RDFVocabulary.RDF.BASE_URI);
                                     break;
                                 case RDFModelEnums.RDFContainerTypes.Seq:
-                                    subjNode = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Seq", RDFVocabulary.RDF.BASE_URI);
+                                    subjNode = rdfDoc.CreateNode(XmlNodeType.Element, string.Concat(RDFVocabulary.RDF.PREFIX, ":Seq"), RDFVocabulary.RDF.BASE_URI);
                                     break;
                                 case RDFModelEnums.RDFContainerTypes.Alt:
-                                    subjNode = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Alt", RDFVocabulary.RDF.BASE_URI);
+                                    subjNode = rdfDoc.CreateNode(XmlNodeType.Element, string.Concat(RDFVocabulary.RDF.PREFIX, ":Alt"), RDFVocabulary.RDF.BASE_URI);
                                     break;
                             }
                             containersXML.Add(subjHash, subjNode);
@@ -175,18 +175,18 @@ namespace RDFSharp.Model
                         //It is a traditional subject
                         else
                         {
-                            subjNode = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
+                            subjNode = rdfDoc.CreateNode(XmlNodeType.Element, string.Concat(RDFVocabulary.RDF.PREFIX, ":Description"), RDFVocabulary.RDF.BASE_URI);
                             //<rdf:Description rdf:nodeID="blankID">
                             XmlAttribute subjNodeDesc = null;
                             XmlText subjNodeDescText = rdfDoc.CreateTextNode(group.Key);
                             if (group.Key.StartsWith("bnode:"))
                             {
-                                subjNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
+                                subjNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":nodeID"), RDFVocabulary.RDF.BASE_URI);
                             }
                             //<rdf:Description rdf:about="subjURI">
                             else
                             {
-                                subjNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":about", RDFVocabulary.RDF.BASE_URI);
+                                subjNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":about"), RDFVocabulary.RDF.BASE_URI);
                             }
                             subjNodeDesc.AppendChild(subjNodeDescText);
                             subjNode.Attributes.Append(subjNodeDesc);
@@ -200,18 +200,18 @@ namespace RDFSharp.Model
 
                             //Do not append the triple if it is "SUBJECT rdf:type rdf:[Bag|Seq|Alt]"
                             if (!(triple.Predicate.Equals(RDFVocabulary.RDF.TYPE) &&
-                                  (subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
-                                    || subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
-                                       || subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase))))
+                                  (subjNode.Name.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Bag"), StringComparison.OrdinalIgnoreCase)
+                                    || subjNode.Name.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Seq"), StringComparison.OrdinalIgnoreCase)
+                                       || subjNode.Name.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Alt"), StringComparison.OrdinalIgnoreCase))))
                             {
 
                                 #region pred
                                 string predString = triple.Predicate.ToString();
                                 //"<predPREF:predURI"
                                 RDFNamespace predNS = RDFNamespaceRegister.GetByUri(predString) ?? GenerateNamespace(predString, false);
-                                string predUri = (predNS.NamespacePrefix.Equals("autoNS", StringComparison.OrdinalIgnoreCase) ?
-                                                            predString.Replace(predNS.ToString(), autoNamespaces.Find(ns => ns.NamespaceUri.Equals(predNS.NamespaceUri)).NamespacePrefix + ":") :
-                                                            predString.Replace(predNS.ToString(), predNS.NamespacePrefix + ":"))
+                                string predUri = (predNS.NamespacePrefix.Equals("autoNS", StringComparison.OrdinalIgnoreCase)
+                                                    ? predString.Replace(predNS.ToString(), string.Concat(autoNamespaces.Find(ns => ns.NamespaceUri.Equals(predNS.NamespaceUri)).NamespacePrefix, ":"))
+                                                    : predString.Replace(predNS.ToString(), string.Concat(predNS.NamespacePrefix, ":")))
                                                         .Replace(":#", ":")
                                                         .TrimEnd(new char[] { ':', '/' });
                                 try
@@ -242,7 +242,7 @@ namespace RDFSharp.Model
                                     {
 
                                         //Append "rdf:parseType=Collection" attribute
-                                        XmlAttribute rdfParseType = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":parseType", RDFVocabulary.RDF.BASE_URI);
+                                        XmlAttribute rdfParseType = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":parseType"), RDFVocabulary.RDF.BASE_URI);
                                         XmlText rdfParseTypeText = rdfDoc.CreateTextNode("Collection");
                                         rdfParseType.AppendChild(rdfParseTypeText);
                                         predNode.Attributes.Append(rdfParseType);
@@ -258,16 +258,13 @@ namespace RDFSharp.Model
                                         {
                                             var collElement = collections.Find(x => x.CollectionUri.Equals(currentCollItem));
                                             if (collElement == null || collElement.CollectionValue == null || collElement.CollectionNext == null)
-                                            {
                                                 throw new RDFModelException(string.Format("Collection having '{0}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' triples.", currentCollItem));
-                                            }
-                                            collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, RDFVocabulary.RDF.PREFIX + ":Description", RDFVocabulary.RDF.BASE_URI);
-                                            collElementAttr = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":about", RDFVocabulary.RDF.BASE_URI);
+
+                                            collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, string.Concat(RDFVocabulary.RDF.PREFIX, ":Description"), RDFVocabulary.RDF.BASE_URI);
+                                            collElementAttr = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":about"), RDFVocabulary.RDF.BASE_URI);
                                             collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString());
                                             if (collElementAttrText.InnerText.StartsWith("bnode:"))
-                                            {
                                                 collElementAttrText.InnerText = collElementAttrText.InnerText.Replace("bnode:", string.Empty);
-                                            }
                                             collElementAttr.AppendChild(collElementAttrText);
                                             collElementToAppend.Attributes.Append(collElementAttr);
                                             collElements.Add(collElementToAppend);
@@ -295,12 +292,12 @@ namespace RDFSharp.Model
                                         //  rdf:nodeID="blankID">
                                         if (objString.StartsWith("bnode:"))
                                         {
-                                            predNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":nodeID", RDFVocabulary.RDF.BASE_URI);
+                                            predNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":nodeID"), RDFVocabulary.RDF.BASE_URI);
                                         }
                                         //  rdf:resource="objURI">
                                         else
                                         {
-                                            predNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":resource", RDFVocabulary.RDF.BASE_URI);
+                                            predNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":resource"), RDFVocabulary.RDF.BASE_URI);
                                         }
                                         predNodeDesc.AppendChild(predNodeDescText);
                                         predNode.Attributes.Append(predNodeDesc);
@@ -319,7 +316,7 @@ namespace RDFSharp.Model
                                         //  xml:lang="plitLANG">
                                         if (pLit.Language != string.Empty)
                                         {
-                                            XmlAttribute plainLiteralLangNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":lang", RDFVocabulary.XML.BASE_URI);
+                                            XmlAttribute plainLiteralLangNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
                                             XmlText plainLiteralLangNodeDescText = rdfDoc.CreateTextNode(pLit.Language);
                                             plainLiteralLangNodeDesc.AppendChild(plainLiteralLangNodeDescText);
                                             predNode.Attributes.Append(plainLiteralLangNodeDesc);
@@ -332,7 +329,7 @@ namespace RDFSharp.Model
                                     else
                                     {
                                         RDFTypedLiteral tLit = (RDFTypedLiteral)triple.Object;
-                                        XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute(RDFVocabulary.RDF.PREFIX + ":datatype", RDFVocabulary.RDF.BASE_URI);
+                                        XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":datatype"), RDFVocabulary.RDF.BASE_URI);
                                         XmlText typedLiteralNodeDescText = rdfDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(tLit.Datatype));
                                         typedLiteralNodeDesc.AppendChild(typedLiteralNodeDescText);
                                         predNode.Attributes.Append(typedLiteralNodeDesc);
@@ -352,9 +349,9 @@ namespace RDFSharp.Model
 
                         //Raw containers must not be written as-is, instead they have to be saved
                         //and attached when their subj is found later as object of a triple
-                        if (!subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
-                                && !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
-                                    && !subjNode.Name.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase))
+                        if (!subjNode.Name.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Bag"), StringComparison.OrdinalIgnoreCase)
+                                && !subjNode.Name.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Seq"), StringComparison.OrdinalIgnoreCase)
+                                    && !subjNode.Name.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Alt"), StringComparison.OrdinalIgnoreCase))
                         {
                             rdfRoot.AppendChild(subjNode);
                         }
@@ -424,7 +421,7 @@ namespace RDFSharp.Model
                         Uri xmlBase = null;
                         if (xmlnsAttrs != null && xmlnsAttrs.Count > 0)
                         {
-                            var xmlBaseAttr = (rdfRDF.Attributes?[RDFVocabulary.XML.PREFIX + ":base"]
+                            var xmlBaseAttr = (rdfRDF.Attributes?[string.Concat(RDFVocabulary.XML.PREFIX, ":base")]
                                                     ?? rdfRDF.Attributes?["xmlns"]);
                             if (xmlBaseAttr != null)
                             {
@@ -519,8 +516,8 @@ namespace RDFSharp.Model
 
                             //Threat other attributes as SPL
                             default:
-                                RDFResource subjAttrPred = subjAttr.NamespaceURI == string.Empty ? new RDFResource(xmlBase + subjAttr.LocalName)
-                                                                                                 : new RDFResource(subjAttr.NamespaceURI + subjAttr.LocalName);
+                                RDFResource subjAttrPred = string.IsNullOrEmpty(subjAttr.NamespaceURI) ? new RDFResource(string.Concat(xmlBase, subjAttr.LocalName))
+                                                                                                       : new RDFResource(string.Concat(subjAttr.NamespaceURI, subjAttr.LocalName));
                                 RDFPlainLiteral plit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(subjAttr.Value)), xmlLangSubj?.Value);
                                 result.AddTriple(new RDFTriple(subj, subjAttrPred, plit));
                                 break;
@@ -547,10 +544,10 @@ namespace RDFSharp.Model
                         //Get the predicate
                         XmlAttribute xmlLangPred = GetXmlLangAttribute(predNode) ?? xmlLangSubj;
                         if (predNode.NamespaceURI == string.Empty)
-                            pred = new RDFResource(xmlBase + predNode.LocalName);
+                            pred = new RDFResource(string.Concat(xmlBase, predNode.LocalName));
                         else
                             pred = (predNode.LocalName.StartsWith("autoNS") ? new RDFResource(predNode.NamespaceURI)
-                                                                            : new RDFResource(predNode.NamespaceURI + predNode.LocalName));
+                                                                            : new RDFResource(string.Concat(predNode.NamespaceURI, predNode.LocalName)));
                         #endregion
 
                         #region objList
@@ -571,13 +568,13 @@ namespace RDFSharp.Model
                         if (container != null)
                         {
                             //Distinguish the right type of RDF container to build
-                            if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
+                            if (container.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Bag"), StringComparison.OrdinalIgnoreCase)
                                     || container.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase))
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
-                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
+                            else if (container.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Seq"), StringComparison.OrdinalIgnoreCase)
                                     || container.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase))
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
-                            else if (container.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase)
+                            else if (container.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Alt"), StringComparison.OrdinalIgnoreCase)
                                     || container.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase))
                                 ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
                             continue;
@@ -693,14 +690,12 @@ namespace RDFSharp.Model
         private static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr)
         {
             XmlNode rdf =
-                (xmlDoc.SelectSingleNode(RDFVocabulary.RDF.PREFIX + ":RDF", nsMgr) ??
+                (xmlDoc.SelectSingleNode(string.Concat(RDFVocabulary.RDF.PREFIX, ":RDF"), nsMgr) ??
                     xmlDoc.SelectSingleNode("RDF", nsMgr));
 
             //Invalid RDF/XML file: root node is neither "rdf:RDF" or "RDF"
             if (rdf == null)
-            {
                 throw new Exception("Given file has not a valid \"rdf:RDF\" or \"RDF\" root node");
-            }
 
             return rdf;
         }
@@ -762,7 +757,7 @@ namespace RDFSharp.Model
                     fragment = uriNS.Fragment.Replace("#", string.Empty);           //"integer"
                     if (fragment != string.Empty)
                     {
-                        nspace = Regex.Replace(nspace, fragment + "$", string.Empty); //"http://www.w3.org/2001/XMLSchema#"
+                        nspace = Regex.Replace(nspace, string.Concat(fragment, "$"), string.Empty); //"http://www.w3.org/2001/XMLSchema#"
                     }
                 }
                 else
@@ -772,7 +767,7 @@ namespace RDFSharp.Model
                     {
                         if (!isDatatypeNamespace)
                         {
-                            nspace = Regex.Replace(nspace, uriNS.Segments[uriNS.Segments.Length - 1] + "$", string.Empty);
+                            nspace = Regex.Replace(nspace, string.Concat(uriNS.Segments[uriNS.Segments.Length - 1], "$"), string.Empty);
                         }
                     }
                 }
@@ -801,7 +796,7 @@ namespace RDFSharp.Model
                     {
                         if (!result.Contains(nspace))
                         {
-                            result.Add(new RDFNamespace("autoNS" + (result.Count + 1), nspace.NamespaceUri.ToString()));
+                            result.Add(new RDFNamespace(string.Concat("autoNS", result.Count + 1), nspace.NamespaceUri.ToString()));
                         }
                     }
                 }
@@ -848,11 +843,11 @@ namespace RDFSharp.Model
                 RDFResource obj = null;
                 if (subjNode.NamespaceURI == string.Empty)
                 {
-                    obj = new RDFResource(xmlBase + subjNode.LocalName);
+                    obj = new RDFResource(string.Concat(xmlBase, subjNode.LocalName));
                 }
                 else
                 {
-                    obj = new RDFResource(subjNode.NamespaceURI + subjNode.LocalName);
+                    obj = new RDFResource(string.Concat(subjNode.NamespaceURI, subjNode.LocalName));
                 }
                 result.AddTriple(new RDFTriple(subj, RDFVocabulary.RDF.TYPE, obj));
             }
@@ -876,27 +871,21 @@ namespace RDFSharp.Model
                     attrValue = string.Join(string.Empty, attrValue.SkipWhile(c => c == '/'));
 
                 //"rdf:ID" relative Uri: must be resolved against the xmlBase namespace
-                if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":ID", StringComparison.OrdinalIgnoreCase)
+                if (attr.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":ID"), StringComparison.OrdinalIgnoreCase)
                         || attr.LocalName.Equals("ID", StringComparison.OrdinalIgnoreCase))
-                {
-                    attrValue = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
-                }
+                    attrValue = RDFModelUtilities.GetUriFromString(string.Concat(xmlBase, attrValue)).ToString();
 
                 //"rdf:nodeID" relative Uri: must be resolved against the "bnode:" prefix
-                else if (attr.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":nodeID", StringComparison.OrdinalIgnoreCase)
+                else if (attr.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":nodeID"), StringComparison.OrdinalIgnoreCase)
                             || attr.LocalName.Equals("nodeID", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!attrValue.StartsWith("bnode:"))
-                    {
-                        attrValue = "bnode:" + attrValue;
-                    }
+                        attrValue = string.Concat("bnode:", attrValue);
                 }
 
                 //"rdf:about" or "rdf:resource" relative Uri: must be resolved against the xmlBase namespace
                 else if (RDFModelUtilities.GetUriFromString(attrValue) == null)
-                {
-                    attrValue = RDFModelUtilities.GetUriFromString(xmlBase + attrValue).ToString();
-                }
+                    attrValue = RDFModelUtilities.GetUriFromString(string.Concat(xmlBase, attrValue)).ToString();
 
                 return attrValue;
             }
@@ -907,70 +896,35 @@ namespace RDFSharp.Model
         /// Verify if we are on a standard rdf:Description element
         /// </summary>
         private static bool CheckIfRdfDescriptionNode(XmlNode subjNode)
-        {
-            bool result = subjNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Description", StringComparison.OrdinalIgnoreCase)
-                                || subjNode.LocalName.Equals("Description", StringComparison.OrdinalIgnoreCase);
-
-            return result;
-        }
+            => subjNode.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Description"), StringComparison.OrdinalIgnoreCase)
+                || subjNode.LocalName.Equals("Description", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF subj
         /// </summary>
         private static XmlAttribute GetRdfAboutAttribute(XmlNode subjNode)
-        {
-            //rdf:about
-            XmlAttribute rdfAbout =
-                (subjNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":about"] ??
-                    (subjNode.Attributes?["about"] ??
-                        (subjNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":nodeID"] ??
-                            (subjNode.Attributes?["nodeID"] ??
-                                (subjNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":ID"] ??
-                                    subjNode.Attributes?["ID"])))));
-
-            return rdfAbout;
-        }
+            => subjNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":about")] ?? subjNode.Attributes?["about"] ??
+                 subjNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":nodeID")] ?? subjNode.Attributes?["nodeID"] ??
+                   subjNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":ID")] ?? subjNode.Attributes?["ID"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF object
         /// </summary>
         private static XmlAttribute GetRdfResourceAttribute(XmlNode predNode)
-        {
-            //rdf:Resource
-            XmlAttribute rdfResource =
-                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":resource"] ??
-                    (predNode.Attributes?["resource"] ??
-                        (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":nodeID"] ??
-                            predNode.Attributes?["nodeID"])));
-
-            return rdfResource;
-        }
+            => predNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":resource")] ?? predNode.Attributes?["resource"] ??
+                predNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":nodeID")] ?? predNode.Attributes?["nodeID"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF typed literal datatype
         /// </summary>
         private static XmlAttribute GetRdfDatatypeAttribute(XmlNode predNode)
-        {
-            //rdf:datatype
-            XmlAttribute rdfDatatype =
-                (predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":datatype"] ??
-                    predNode.Attributes?["datatype"]);
-
-            return rdfDatatype;
-        }
+            => predNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":datatype")] ?? predNode.Attributes?["datatype"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF plain literal language
         /// </summary>
         private static XmlAttribute GetXmlLangAttribute(XmlNode predNode)
-        {
-            //xml:lang
-            XmlAttribute xmlLang =
-                (predNode.Attributes?[RDFVocabulary.XML.PREFIX + ":lang"] ??
-                    predNode.Attributes?["lang"]);
-
-            return xmlLang;
-        }
+            => predNode.Attributes?[string.Concat(RDFVocabulary.XML.PREFIX, ":lang")] ?? predNode.Attributes?["lang"];
 
         /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF parseType "Collection"
@@ -978,8 +932,7 @@ namespace RDFSharp.Model
         private static XmlAttribute GetParseTypeCollectionAttribute(XmlNode predNode)
         {
             XmlAttribute rdfCollection =
-                predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
-                    predNode.Attributes?["parseType"];
+                predNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":parseType")] ?? predNode.Attributes?["parseType"];
 
             return (rdfCollection != null && rdfCollection.Value.Equals("Collection", StringComparison.OrdinalIgnoreCase)) ? rdfCollection : null;
         }
@@ -990,8 +943,7 @@ namespace RDFSharp.Model
         private static XmlAttribute GetParseTypeLiteralAttribute(XmlNode predNode)
         {
             XmlAttribute rdfLiteral =
-                predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
-                    predNode.Attributes?["parseType"];
+                predNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":parseType")] ?? predNode.Attributes?["parseType"];
 
             return (rdfLiteral != null && rdfLiteral.Value.Equals("Literal", StringComparison.OrdinalIgnoreCase)) ? rdfLiteral : null;
         }
@@ -1002,10 +954,9 @@ namespace RDFSharp.Model
         private static XmlAttribute GetParseTypeResourceAttribute(XmlNode predNode)
         {
             XmlAttribute rdfResource =
-                predNode.Attributes?[RDFVocabulary.RDF.PREFIX + ":parseType"] ??
-                    predNode.Attributes?["parseType"];
+                predNode.Attributes?[string.Concat(RDFVocabulary.RDF.PREFIX, ":parseType")] ?? predNode.Attributes?["parseType"];
 
-            return ((rdfResource != null && rdfResource.Value.Equals("Resource", StringComparison.OrdinalIgnoreCase)) ? rdfResource : null);
+            return (rdfResource != null && rdfResource.Value.Equals("Resource", StringComparison.OrdinalIgnoreCase)) ? rdfResource : null;
         }
 
         /// <summary>
@@ -1072,16 +1023,12 @@ namespace RDFSharp.Model
         /// Verify if we are on a standard rdf:[Bag|Seq|Alt] element
         /// </summary>
         private static bool CheckIfRdfContainerNode(XmlNode containerNode)
-        {
-            bool result = containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Bag", StringComparison.OrdinalIgnoreCase)
-                                || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase)
-                                    || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Seq", StringComparison.OrdinalIgnoreCase)
-                                        || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase)
-                                            || containerNode.LocalName.Equals(RDFVocabulary.RDF.PREFIX + ":Alt", StringComparison.OrdinalIgnoreCase)
-                                                || containerNode.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase);
-
-            return result;
-        }
+            => containerNode.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Bag"), StringComparison.OrdinalIgnoreCase)
+                || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase)
+                    || containerNode.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Seq"), StringComparison.OrdinalIgnoreCase)
+                        || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase)
+                            || containerNode.LocalName.Equals(string.Concat(RDFVocabulary.RDF.PREFIX, ":Alt"), StringComparison.OrdinalIgnoreCase)
+                                || containerNode.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Given an element, return the child element which can correspond to the RDF container
@@ -1152,7 +1099,7 @@ namespace RDFSharp.Model
                         {
                             if (!elemUri.Value.StartsWith("bnode:"))
                             {
-                                elemUri.Value = "bnode:" + elemUri.Value;
+                                elemUri.Value = string.Concat("bnode:", elemUri.Value);
                             }
                         }
 
@@ -1162,12 +1109,12 @@ namespace RDFSharp.Model
                             if (!elemVals.Contains(elemUri.Value))
                             {
                                 elemVals.Add(elemUri.Value);
-                                result.AddTriple(new RDFTriple(obj, new RDFResource(RDFVocabulary.RDF.BASE_URI + elem.LocalName), new RDFResource(elemUri.Value)));
+                                result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), new RDFResource(elemUri.Value)));
                             }
                         }
                         else
                         {
-                            result.AddTriple(new RDFTriple(obj, new RDFResource(RDFVocabulary.RDF.BASE_URI + elem.LocalName), new RDFResource(elemUri.Value)));
+                            result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), new RDFResource(elemUri.Value)));
                         }
 
                     }
@@ -1197,12 +1144,12 @@ namespace RDFSharp.Model
                             if (!elemVals.Contains(literal.ToString()))
                             {
                                 elemVals.Add(literal.ToString());
-                                result.AddTriple(new RDFTriple(obj, new RDFResource(RDFVocabulary.RDF.BASE_URI + elem.LocalName), literal));
+                                result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), literal));
                             }
                         }
                         else
                         {
-                            result.AddTriple(new RDFTriple(obj, new RDFResource(RDFVocabulary.RDF.BASE_URI + elem.LocalName), literal));
+                            result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), literal));
                         }
 
                     }

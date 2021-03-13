@@ -117,7 +117,7 @@ namespace RDFSharp.Model
                             {
                                 abbreviatedSubj = actualSubj;
                             }
-                            result.Append(abbreviatedSubj + " ");
+                            result.Append(string.Concat(abbreviatedSubj, " "));
                             subjPrint = true;
                         }
                         #endregion
@@ -137,12 +137,12 @@ namespace RDFSharp.Model
                                 }
                                 actualPred = triple.Predicate.ToString();
                                 abbreviatedPred = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPred), prefixes);
+
                                 //Turtle goody for "rdf:type" shortcutting to "a"
-                                if (abbreviatedPred == RDFVocabulary.RDF.PREFIX + ":type")
-                                {
+                                if (abbreviatedPred == string.Concat(RDFVocabulary.RDF.PREFIX, ":type"))
                                     abbreviatedPred = "a";
-                                }
-                                result.Append(abbreviatedPred + " ");
+
+                                result.Append(string.Concat(abbreviatedPred, " "));
                             }
                             #endregion
 
@@ -914,10 +914,10 @@ namespace RDFSharp.Model
                 return new Uri(uriString);
             //Relative: append to graph context
             else if (Uri.IsWellFormedUriString(uriString, UriKind.Relative))
-                return new Uri(result.ToString() + uriString);
+                return new Uri(string.Concat(result.ToString(), uriString));
             //PureFragment: append to graph context
             else if (uriString.Equals("#"))
-                return new Uri(result.ToString().TrimEnd(new char[] { '#' }) + uriString);
+                return new Uri(string.Concat(result.ToString().TrimEnd(new char[] { '#' }), uriString));
             //Error: not well-formed, so throw exception
             else
                 throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
@@ -1251,7 +1251,7 @@ namespace RDFSharp.Model
             }
 
             // Note: namespace has already been resolved
-            return new Uri((nspace ?? result.Context.ToString()) + localNameString);
+            return new Uri(string.Concat(nspace ?? result.Context.ToString(), localNameString));
         }
 
         /// <summary>
