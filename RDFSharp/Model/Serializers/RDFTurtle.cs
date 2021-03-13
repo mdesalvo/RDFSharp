@@ -1014,7 +1014,7 @@ namespace RDFSharp.Model
                 }
             }
 
-            return new RDFResource("bnode:" + name.ToString()); //return createBNode(name.toString());
+            return new RDFResource(string.Concat("bnode:", name.ToString()));
         }
 
         /// <summary>
