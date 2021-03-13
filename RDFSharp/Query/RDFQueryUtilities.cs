@@ -235,7 +235,7 @@ namespace RDFSharp.Query
                     {
                         if (pmString.StartsWith(nS))
                         {
-                            pmString = pmString.Replace(nS, ns.NamespacePrefix + ":").TrimEnd(new char[] { '/' });
+                            pmString = pmString.Replace(nS, string.Concat(ns.NamespacePrefix, ":")).TrimEnd(new char[] { '/' });
 
                             //Accept the abbreviation only if it has generated a valid XSD QName
                             try

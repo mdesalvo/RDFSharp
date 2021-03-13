@@ -118,7 +118,7 @@ namespace RDFSharp.Store
                                     XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
                                     if (((RDFPlainLiteral)t.Object).Language != string.Empty)
                                     {
-                                        XmlAttribute xmlLang = trixDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":lang", RDFVocabulary.XML.BASE_URI);
+                                        XmlAttribute xmlLang = trixDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
                                         XmlText xmlLangText = trixDoc.CreateTextNode(((RDFPlainLiteral)t.Object).Language);
                                         xmlLang.AppendChild(xmlLangText);
                                         plainLiteralElement.Attributes.Append(xmlLang);
@@ -305,7 +305,7 @@ namespace RDFSharp.Store
                                         {
                                             if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
                                             {
-                                                XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
+                                                XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[string.Concat(RDFVocabulary.XML.PREFIX, ":lang")];
                                                 if (xmlLang != null)
                                                 {
 
