@@ -784,14 +784,11 @@ namespace RDFSharp.Query
                 bool keepRow = false;
                 while (rowsEnum.MoveNext())
                 {
-
                     //Apply the pattern group's filters on the row
                     keepRow = true;
                     var filtersEnum = filters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
-                    {
                         keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
-                    }
 
                     //If the row has passed all the filters, keep it in the filtered result table
                     if (keepRow)
@@ -800,7 +797,6 @@ namespace RDFSharp.Query
                         newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
                         filteredTable.Rows.Add(newRow);
                     }
-
                 }
 
                 //Save the result datatable
@@ -858,25 +854,19 @@ namespace RDFSharp.Query
             #region DISTINCT
             var distinctModifier = modifiers.SingleOrDefault(m => m is RDFDistinctModifier);
             if (distinctModifier != null)
-            {
                 table = distinctModifier.ApplyModifier(table);
-            }
             #endregion
 
             #region OFFSET
             var offsetModifier = modifiers.SingleOrDefault(m => m is RDFOffsetModifier);
             if (offsetModifier != null)
-            {
                 table = offsetModifier.ApplyModifier(table);
-            }
             #endregion
 
             #region  LIMIT
             var limitModifier = modifiers.SingleOrDefault(m => m is RDFLimitModifier);
             if (limitModifier != null)
-            {
                 table = limitModifier.ApplyModifier(table);
-            }
             #endregion
 
             return table;
@@ -928,23 +918,17 @@ namespace RDFSharp.Query
                     //Subject of the template is a variable
                     if (tp.Subject is RDFVariable)
                     {
-
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template subject
                         if (((DataRow)rowsEnum.Current).IsNull(tp.Subject.ToString()))
-                        {
                             continue;
-                        }
 
                         RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[tp.Subject.ToString()].ToString());
                         //Row contains a literal in position of the variable corresponding to the template subject
                         if (subj is RDFLiteral)
-                        {
                             continue;
-                        }
                         //Row contains a resource in position of the variable corresponding to the template subject
                         constructRow["?SUBJECT"] = subj.ToString();
-
                     }
                     //Subject of the template is a resource
                     else
@@ -957,22 +941,17 @@ namespace RDFSharp.Query
                     //Predicate of the template is a variable
                     if (tp.Predicate is RDFVariable)
                     {
-
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template predicate
                         if (((DataRow)rowsEnum.Current).IsNull(tp.Predicate.ToString()))
-                        {
                             continue;
-                        }
+
                         RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[tp.Predicate.ToString()].ToString());
                         //Row contains a blank resource or a literal in position of the variable corresponding to the template predicate
                         if ((pred is RDFResource && ((RDFResource)pred).IsBlank) || pred is RDFLiteral)
-                        {
                             continue;
-                        }
                         //Row contains a non-blank resource in position of the variable corresponding to the template predicate
                         constructRow["?PREDICATE"] = pred.ToString();
-
                     }
                     //Predicate of the template is a resource
                     else
@@ -985,17 +964,14 @@ namespace RDFSharp.Query
                     //Object of the template is a variable
                     if (tp.Object is RDFVariable)
                     {
-
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template object
                         if (((DataRow)rowsEnum.Current).IsNull(tp.Object.ToString()))
-                        {
                             continue;
-                        }
+
                         RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[tp.Object.ToString()].ToString());
                         //Row contains a resource or a literal in position of the variable corresponding to the template object
                         constructRow["?OBJECT"] = obj.ToString();
-
                     }
                     //Object of the template is a resource or a literal
                     else
@@ -1035,28 +1011,22 @@ namespace RDFSharp.Query
             IEnumerable<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers();
             if (!evaluableQueryMembers.Any())
             {
-
                 //Iterate the describe terms of the query which are resources (variables are omitted, since useless)
                 foreach (RDFResource dt in describeQuery.DescribeTerms.OfType<RDFResource>())
                 {
-
                     //Search on GRAPH
                     if (dataSource.IsGraph())
                     {
-
                         //Search as RESOURCE (S-P-O)
                         RDFGraph desc = ((RDFGraph)dataSource)
                                             .SelectTriplesBySubject(dt)
                                                 .UnionWith(((RDFGraph)dataSource).SelectTriplesByPredicate(dt))
                                                     .UnionWith(((RDFGraph)dataSource).SelectTriplesByObject(dt));
                         result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-
                     }
-
                     //Search on STORE
                     else if (dataSource.IsStore())
                     {
-
                         //Search as BLANK RESOURCE (S-P-O)
                         if (dt.IsBlank)
                         {
@@ -1066,7 +1036,6 @@ namespace RDFSharp.Query
                                                                .UnionWith(((RDFStore)dataSource).SelectQuadruplesByObject(dt));
                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                         }
-
                         //Search as NON-BLANK RESOURCE (C-S-P-O)
                         else
                         {
@@ -1077,9 +1046,7 @@ namespace RDFSharp.Query
                                                                  .UnionWith(((RDFStore)dataSource).SelectQuadruplesByObject(dt));
                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                         }
-
                     }
-
                     //Search on SPARQL endpoint
                     else if (dataSource.IsSPARQLEndpoint())
                     {
@@ -1099,7 +1066,6 @@ namespace RDFSharp.Query
                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource);
                         result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                     }
-
                     //Search on FEDERATION
                     else if (dataSource.IsFederation())
                     {
@@ -1119,16 +1085,13 @@ namespace RDFSharp.Query
                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToFederation((RDFFederation)dataSource);
                         result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                     }
-
                 }
-
             }
 
             //Query IS NOT empty, so does have query members to fetch data from.
             //We proceed by searching for resources and variables in the describe terms.
             else
             {
-
                 //In case of a "Star" query, all the variables must be extracted as describe terms
                 if (!describeQuery.DescribeTerms.Any())
                     GetDescribeTermsFromQueryMembers(describeQuery, evaluableQueryMembers);
@@ -1136,31 +1099,25 @@ namespace RDFSharp.Query
                 //Iterate the describe terms of the query
                 foreach (RDFPatternMember dt in describeQuery.DescribeTerms)
                 {
-
                     //The describe term is a variable
                     if (dt is RDFVariable)
                     {
-
                         //Process the variable
                         if (resultTable.Columns.Contains(dt.ToString()))
                         {
-
                             //Iterate the results datatable's rows to retrieve terms to be described
                             IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
                             while (rowsEnum.MoveNext())
                             {
-
                                 //Row contains a value in position of the variable corresponding to the describe term
                                 if (!((DataRow)rowsEnum.Current).IsNull(dt.ToString()))
                                 {
-
                                     //Retrieve the term to be described
                                     RDFPatternMember term = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[dt.ToString()].ToString());
 
                                     //Search on GRAPH
                                     if (dataSource.IsGraph())
                                     {
-
                                         //Search as RESOURCE (S-P-O)
                                         if (term is RDFResource)
                                         {
@@ -1170,24 +1127,19 @@ namespace RDFSharp.Query
                                                                         .UnionWith(((RDFGraph)dataSource).SelectTriplesByObject((RDFResource)term));
                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                                         }
-
                                         //Search as LITERAL (L)
                                         else
                                         {
                                             RDFGraph desc = ((RDFGraph)dataSource).SelectTriplesByLiteral((RDFLiteral)term);
                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                                         }
-
                                     }
-
                                     //Search on STORE
                                     else if (dataSource.IsStore())
                                     {
-
                                         //Search as RESOURCE
                                         if (term is RDFResource)
                                         {
-
                                             //Search as BLANK RESOURCE (S-P-O)
                                             if (((RDFResource)term).IsBlank)
                                             {
@@ -1197,7 +1149,6 @@ namespace RDFSharp.Query
                                                                                 .UnionWith(((RDFStore)dataSource).SelectQuadruplesByObject((RDFResource)term));
                                                 result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                                             }
-
                                             //Search as NON-BLANK RESOURCE (C-S-P-O)
                                             else
                                             {
@@ -1208,20 +1159,14 @@ namespace RDFSharp.Query
                                                                                     .UnionWith(((RDFStore)dataSource).SelectQuadruplesByObject((RDFResource)term));
                                                 result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                                             }
-
                                         }
-
                                         //Search as LITERAL (L)
                                         else
                                         {
-
                                             RDFMemoryStore desc = ((RDFStore)dataSource).SelectQuadruplesByLiteral((RDFLiteral)term);
                                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-
                                         }
-
                                     }
-
                                     //Search on SPARQL endpoint
                                     else if (dataSource.IsSPARQLEndpoint())
                                     {
@@ -1247,7 +1192,6 @@ namespace RDFSharp.Query
                                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource);
                                         result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                                     }
-
                                     //Search on FEDERATION
                                     else if (dataSource.IsFederation())
                                     {
@@ -1273,13 +1217,9 @@ namespace RDFSharp.Query
                                         RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToFederation((RDFFederation)dataSource);
                                         result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
 
                     //The describe term is a resource
@@ -1289,20 +1229,16 @@ namespace RDFSharp.Query
                         //Search on GRAPH
                         if (dataSource.IsGraph())
                         {
-
                             //Search as RESOURCE (S-P-O)
                             RDFGraph desc = ((RDFGraph)dataSource)
                                                 .SelectTriplesBySubject((RDFResource)dt)
                                                     .UnionWith(((RDFGraph)dataSource).SelectTriplesByPredicate((RDFResource)dt))
                                                         .UnionWith(((RDFGraph)dataSource).SelectTriplesByObject((RDFResource)dt));
                             result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
-
                         }
-
                         //Search on STORE
                         else if (dataSource.IsStore())
                         {
-
                             //Search as BLANK RESOURCE (S-P-O)
                             if (((RDFResource)dt).IsBlank)
                             {
@@ -1312,7 +1248,6 @@ namespace RDFSharp.Query
                                                                 .UnionWith(((RDFStore)dataSource).SelectQuadruplesByObject((RDFResource)dt));
                                 result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                             }
-
                             //Search as NON-BLANK RESOURCE (C-S-P-O)
                             else
                             {
@@ -1323,9 +1258,7 @@ namespace RDFSharp.Query
                                                                     .UnionWith(((RDFStore)dataSource).SelectQuadruplesByObject((RDFResource)dt));
                                 result.Merge(desc.ToDataTable(), true, MissingSchemaAction.Add);
                             }
-
                         }
-
                         //Search on SPARQL endpoint
                         else if (dataSource.IsSPARQLEndpoint())
                         {
@@ -1345,7 +1278,6 @@ namespace RDFSharp.Query
                             RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource);
                             result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                         }
-
                         //Search on FEDERATION
                         else if (dataSource.IsFederation())
                         {
@@ -1365,11 +1297,8 @@ namespace RDFSharp.Query
                             RDFConstructQueryResult constructQueryResults = constructQuery.ApplyToFederation((RDFFederation)dataSource);
                             result.Merge(constructQueryResults.ConstructResults, true, MissingSchemaAction.Add);
                         }
-
                     }
-
                 }
-
             }
 
             return result;
@@ -2158,16 +2087,13 @@ namespace RDFSharp.Query
             public bool Equals(DataColumn column1, DataColumn column2)
             {
                 if (column1 != null)
-                {
                     return column2 != null && column1.Caption.Equals(column2.Caption, StringComparison.Ordinal);
-                }
+
                 return column2 == null;
             }
 
             public int GetHashCode(DataColumn column)
-            {
-                return column.Caption.GetHashCode();
-            }
+                => column.Caption.GetHashCode();
             #endregion
 
         }
@@ -2433,8 +2359,8 @@ namespace RDFSharp.Query
 
             //Determine common columns
             DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
-                                                            .Select(c => new DataColumn(c.Caption, c.DataType))
-                                                            .ToArray();
+                                                   .Select(c => new DataColumn(c.Caption, c.DataType))
+                                                   .ToArray();
 
             //PRODUCT-JOIN
             if (commonColumns.Length == 0)
@@ -2510,8 +2436,9 @@ namespace RDFSharp.Query
                         else
                         {
                             //Manage duplicate columns by appending a known identificator to their name
-                            result.Columns.Add(ds.Tables[1].Columns[i].ColumnName + "_DUPLICATE_", ds.Tables[1].Columns[i].DataType);
-                            duplicateCols.Add(ds.Tables[1].Columns[i].ColumnName + "_DUPLICATE_");
+                            string duplicateColKey = string.Concat(ds.Tables[1].Columns[i].ColumnName, "_DUPLICATE_");
+                            result.Columns.Add(duplicateColKey, ds.Tables[1].Columns[i].DataType);
+                            duplicateCols.Add(duplicateColKey);
                         }
                     }
 
@@ -2567,8 +2494,8 @@ namespace RDFSharp.Query
 
             //Step 1: Determine common columns
             DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
-                                                            .Select(c => new DataColumn(c.Caption, c.DataType))
-                                                            .ToArray();
+                                                   .Select(c => new DataColumn(c.Caption, c.DataType))
+                                                   .ToArray();
 
             //Step 2: Create structure of finalResult table
             finalResult.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)

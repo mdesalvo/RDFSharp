@@ -43,9 +43,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the ASK query
         /// </summary>
         public override string ToString()
-        {
-            return RDFQueryPrinter.PrintAskQuery(this);
-        }
+            => RDFQueryPrinter.PrintAskQuery(this);
         #endregion
 
         #region Methods
@@ -98,46 +96,22 @@ namespace RDFSharp.Query
         /// Applies the query to the given graph
         /// </summary>
         public RDFAskQueryResult ApplyToGraph(RDFGraph graph)
-        {
-            if (graph != null)
-            {
-                return new RDFQueryEngine().EvaluateAskQuery(this, graph);
-            }
-            else
-            {
-                return new RDFAskQueryResult();
-            }
-        }
+            => graph != null ? new RDFQueryEngine().EvaluateAskQuery(this, graph)
+                             : new RDFAskQueryResult();
 
         /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFAskQueryResult ApplyToStore(RDFStore store)
-        {
-            if (store != null)
-            {
-                return new RDFQueryEngine().EvaluateAskQuery(this, store);
-            }
-            else
-            {
-                return new RDFAskQueryResult();
-            }
-        }
+            => store != null ? new RDFQueryEngine().EvaluateAskQuery(this, store)
+                             : new RDFAskQueryResult();
 
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
         public RDFAskQueryResult ApplyToFederation(RDFFederation federation)
-        {
-            if (federation != null)
-            {
-                return new RDFQueryEngine().EvaluateAskQuery(this, federation);
-            }
-            else
-            {
-                return new RDFAskQueryResult();
-            }
-        }
+            => federation != null ? new RDFQueryEngine().EvaluateAskQuery(this, federation)
+                                  : new RDFAskQueryResult();
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint

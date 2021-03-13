@@ -38,12 +38,7 @@ namespace RDFSharp.Query
         /// Gets the number of results produced by the query
         /// </summary>
         public long ConstructResultsCount
-        {
-            get
-            {
-                return this.ConstructResults.Rows.Count;
-            }
-        }
+            => this.ConstructResults.Rows.Count;
         #endregion
 
         #region Ctors
@@ -51,9 +46,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty CONSTRUCT result
         /// </summary>
         internal RDFConstructQueryResult(string tableName)
-        {
-            this.ConstructResults = new DataTable(tableName);
-        }
+            => this.ConstructResults = new DataTable(tableName);
         #endregion
 
         #region Methods
@@ -75,13 +68,9 @@ namespace RDFSharp.Query
                 pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?PREDICATE"].ToString());
                 obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)resultRows.Current)["?OBJECT"].ToString());
                 if (obj is RDFResource)
-                {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFResource)obj));
-                }
                 else
-                {
                     result.AddTriple(new RDFTriple((RDFResource)subj, (RDFResource)pred, (RDFLiteral)obj));
-                }
             }
 
             return result;

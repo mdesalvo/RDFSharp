@@ -44,9 +44,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT query
         /// </summary>
         public RDFSelectQuery()
-        {
-            this.ProjectionVars = new Dictionary<RDFVariable, int>();
-        }
+            => this.ProjectionVars = new Dictionary<RDFVariable, int>();
         #endregion
 
         #region Interfaces
@@ -54,9 +52,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the SELECT query
         /// </summary>
         public override string ToString()
-        {
-            return RDFQueryPrinter.PrintSelectQuery(this, 0, false);
-        }
+            => RDFQueryPrinter.PrintSelectQuery(this, 0, false);
         #endregion
 
         #region Methods
@@ -99,36 +95,27 @@ namespace RDFSharp.Query
             {
                 //Ensure to have only one groupby modifier in the query
                 if (modifier is RDFGroupByModifier && this.GetModifiers().Any(m => m is RDFGroupByModifier))
-                {
                     return this;
-                }
+
                 //Ensure to have only one distinct modifier in the query
                 if (modifier is RDFDistinctModifier && this.GetModifiers().Any(m => m is RDFDistinctModifier))
-                {
                     return this;
-                }
+
                 //Ensure to have only one limit modifier in the query
                 if (modifier is RDFLimitModifier && this.GetModifiers().Any(m => m is RDFLimitModifier))
-                {
                     return this;
-                }
+
                 //Ensure to have only one offset modifier in the query
                 if (modifier is RDFOffsetModifier && this.GetModifiers().Any(m => m is RDFOffsetModifier))
-                {
                     return this;
-                }
+
                 //Ensure to have only one orderby modifier per variable in the query
                 if (modifier is RDFOrderByModifier && this.GetModifiers().Any(m => m is RDFOrderByModifier && ((RDFOrderByModifier)m).Variable.Equals(((RDFOrderByModifier)modifier).Variable)))
-                {
                     return this;
-                }
 
                 //Add the modifier, avoiding duplicates
                 if (!this.GetModifiers().Any(m => m.Equals(modifier)))
-                {
                     this.QueryMembers.Add(modifier);
-                }
-
             }
             return this;
         }
@@ -167,46 +154,22 @@ namespace RDFSharp.Query
         /// Applies the query to the given graph
         /// </summary>
         public RDFSelectQueryResult ApplyToGraph(RDFGraph graph)
-        {
-            if (graph != null)
-            {
-                return new RDFQueryEngine().EvaluateSelectQuery(this, graph);
-            }
-            else
-            {
-                return new RDFSelectQueryResult();
-            }
-        }
+            => graph != null ? new RDFQueryEngine().EvaluateSelectQuery(this, graph)
+                             : new RDFSelectQueryResult();
 
         /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFSelectQueryResult ApplyToStore(RDFStore store)
-        {
-            if (store != null)
-            {
-                return new RDFQueryEngine().EvaluateSelectQuery(this, store);
-            }
-            else
-            {
-                return new RDFSelectQueryResult();
-            }
-        }
+            => store != null ? new RDFQueryEngine().EvaluateSelectQuery(this, store)
+                             : new RDFSelectQueryResult();
 
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
         public RDFSelectQueryResult ApplyToFederation(RDFFederation federation)
-        {
-            if (federation != null)
-            {
-                return new RDFQueryEngine().EvaluateSelectQuery(this, federation);
-            }
-            else
-            {
-                return new RDFSelectQueryResult();
-            }
-        }
+            => federation != null ? new RDFQueryEngine().EvaluateSelectQuery(this, federation)
+                                  : new RDFSelectQueryResult();
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
@@ -251,7 +214,7 @@ namespace RDFSharp.Query
                 for (int i = 0; i < columnsCount; i++)
                 {
                     if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
-                        selResult.SelectResults.Columns[i].ColumnName = "?" + selResult.SelectResults.Columns[i].ColumnName;
+                        selResult.SelectResults.Columns[i].ColumnName = string.Concat("?", selResult.SelectResults.Columns[i].ColumnName);
                 }
 
                 RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));

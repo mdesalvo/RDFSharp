@@ -43,9 +43,7 @@ namespace RDFSharp.Query
         /// Gets the number of results produced by the query
         /// </summary>
         public long SelectResultsCount
-        {
-            get { return this.SelectResults.Rows.Count; }
-        }
+            => this.SelectResults.Rows.Count;
         #endregion
 
         #region Ctors
@@ -53,9 +51,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT result
         /// </summary>
         internal RDFSelectQueryResult()
-        {
-            this.SelectResults = new DataTable();
-        }
+            => this.SelectResults = new DataTable();
         #endregion
 
         #region Methods
@@ -145,7 +141,7 @@ namespace RDFSharp.Query
                                     {
                                         if (((RDFPlainLiteral)rdfTerm).Language != string.Empty)
                                         {
-                                            XmlAttribute xmlLang = sparqlDoc.CreateAttribute(RDFVocabulary.XML.PREFIX + ":lang", RDFVocabulary.XML.BASE_URI);
+                                            XmlAttribute xmlLang = sparqlDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
                                             XmlText xmlLangText = sparqlDoc.CreateTextNode(((RDFPlainLiteral)rdfTerm).Language);
                                             xmlLang.AppendChild(xmlLangText);
                                             litElement.Attributes.Append(xmlLang);
@@ -192,9 +188,7 @@ namespace RDFSharp.Query
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the SELECT query result
         /// </summary>
         public void ToSparqlXmlResult(string filepath)
-        {
-            ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
-        }
+            => ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
         #endregion
 
         #region Read
@@ -202,9 +196,7 @@ namespace RDFSharp.Query
         /// Reads the given "SPARQL Query Results XML Format" file into a SELECT query result
         /// </summary>
         public static RDFSelectQueryResult FromSparqlXmlResult(string filepath)
-        {
-            return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
-        }
+            => FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
 
         /// <summary>
         /// Reads the given "SPARQL Query Results XML Format" stream into a SELECT query result
@@ -337,20 +329,14 @@ namespace RDFSharp.Query
                                                                         {
                                                                             XmlAttribute litAttr = bdgNode.FirstChild.Attributes["datatype"];
                                                                             if (litAttr != null && litAttr.Value != string.Empty)
-                                                                            {
-                                                                                results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "^^" + litAttr.Value);
-                                                                            }
+                                                                                results.Add(varAttr.Value, string.Concat(bdgNode.FirstChild.InnerText, "^^", litAttr.Value));
                                                                             else
                                                                             {
-                                                                                litAttr = bdgNode.FirstChild.Attributes[RDFVocabulary.XML.PREFIX + ":lang"];
+                                                                                litAttr = bdgNode.FirstChild.Attributes[string.Concat(RDFVocabulary.XML.PREFIX, ":lang")];
                                                                                 if (litAttr != null && litAttr.Value != string.Empty)
-                                                                                {
-                                                                                    results.Add(varAttr.Value, bdgNode.FirstChild.InnerText + "@" + litAttr.Value);
-                                                                                }
+                                                                                    results.Add(varAttr.Value, string.Concat(bdgNode.FirstChild.InnerText, "@", litAttr.Value));
                                                                                 else
-                                                                                {
                                                                                     throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
-                                                                                }
                                                                             }
                                                                         }
                                                                         else
@@ -379,10 +365,7 @@ namespace RDFSharp.Query
                                                     #endregion
 
                                                     if (!foundUri && !foundLit)
-                                                    {
                                                         throw new Exception("one \"binding\" node was found without mandatory child \"uri\" or \"literal\".");
-                                                    }
-
                                                 }
                                                 RDFQueryEngine.AddRow(result.SelectResults, results);
                                             }
@@ -401,13 +384,9 @@ namespace RDFSharp.Query
                         }
 
                         if (!foundHead)
-                        {
                             throw new Exception("mandatory \"head\" node was not found");
-                        }
                         if (!foundResults)
-                        {
                             throw new Exception("mandatory \"results\" node was not found");
-                        }
                         #endregion
 
                     }

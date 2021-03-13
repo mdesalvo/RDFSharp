@@ -60,9 +60,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the CONSTRUCT query
         /// </summary>
         public override string ToString()
-        {
-            return RDFQueryPrinter.PrintConstructQuery(this);
-        }
+            => RDFQueryPrinter.PrintConstructQuery(this);
         #endregion
 
         #region Methods
@@ -197,46 +195,22 @@ namespace RDFSharp.Query
         /// Applies the query to the given graph
         /// </summary>
         public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
-        {
-            if (graph != null)
-            {
-                return new RDFQueryEngine().EvaluateConstructQuery(this, graph);
-            }
-            else
-            {
-                return new RDFConstructQueryResult(this.ToString());
-            }
-        }
+            => graph != null ? new RDFQueryEngine().EvaluateConstructQuery(this, graph)
+                             : new RDFConstructQueryResult(this.ToString());
 
         /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFConstructQueryResult ApplyToStore(RDFStore store)
-        {
-            if (store != null)
-            {
-                return new RDFQueryEngine().EvaluateConstructQuery(this, store);
-            }
-            else
-            {
-                return new RDFConstructQueryResult(this.ToString());
-            }
-        }
+            => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store)
+                             : new RDFConstructQueryResult(this.ToString());
 
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
         public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
-        {
-            if (federation != null)
-            {
-                return new RDFQueryEngine().EvaluateConstructQuery(this, federation);
-            }
-            else
-            {
-                return new RDFConstructQueryResult(this.ToString());
-            }
-        }
+            => federation != null ? new RDFQueryEngine().EvaluateConstructQuery(this, federation)
+                                  : new RDFConstructQueryResult(this.ToString());
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
@@ -282,7 +256,7 @@ namespace RDFSharp.Query
                 for (int i = 0; i < columnsCount; i++)
                 {
                     if (!constructResult.ConstructResults.Columns[i].ColumnName.StartsWith("?"))
-                        constructResult.ConstructResults.Columns[i].ColumnName = "?" + constructResult.ConstructResults.Columns[i].ColumnName;
+                        constructResult.ConstructResults.Columns[i].ColumnName = string.Concat("?", constructResult.ConstructResults.Columns[i].ColumnName);
                 }
 
                 RDFQueryEvents.RaiseCONSTRUCTQueryEvaluation(string.Format("Evaluated CONSTRUCT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, constructResult.ConstructResultsCount));

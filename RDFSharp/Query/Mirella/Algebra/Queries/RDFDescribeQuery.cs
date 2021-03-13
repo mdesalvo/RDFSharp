@@ -60,9 +60,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the DESCRIBE query
         /// </summary>
         public override string ToString()
-        {
-            return RDFQueryPrinter.PrintDescribeQuery(this);
-        }
+            => RDFQueryPrinter.PrintDescribeQuery(this);
         #endregion
 
         #region Methods
@@ -180,46 +178,22 @@ namespace RDFSharp.Query
         /// Applies the query to the given graph
         /// </summary>
         public RDFDescribeQueryResult ApplyToGraph(RDFGraph graph)
-        {
-            if (graph != null)
-            {
-                return new RDFQueryEngine().EvaluateDescribeQuery(this, graph);
-            }
-            else
-            {
-                return new RDFDescribeQueryResult(this.ToString());
-            }
-        }
+            => graph != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, graph)
+                             : new RDFDescribeQueryResult(this.ToString());
 
         /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFDescribeQueryResult ApplyToStore(RDFStore store)
-        {
-            if (store != null)
-            {
-                return new RDFQueryEngine().EvaluateDescribeQuery(this, store);
-            }
-            else
-            {
-                return new RDFDescribeQueryResult(this.ToString());
-            }
-        }
+            => store != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, store)
+                             : new RDFDescribeQueryResult(this.ToString());
 
         /// <summary>
         /// Applies the query to the given federation
         /// </summary>
         public RDFDescribeQueryResult ApplyToFederation(RDFFederation federation)
-        {
-            if (federation != null)
-            {
-                return new RDFQueryEngine().EvaluateDescribeQuery(this, federation);
-            }
-            else
-            {
-                return new RDFDescribeQueryResult(this.ToString());
-            }
-        }
+            => federation != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, federation)
+                                  : new RDFDescribeQueryResult(this.ToString());
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
@@ -265,7 +239,7 @@ namespace RDFSharp.Query
                 for (int i = 0; i < columnsCount; i++)
                 {
                     if (!describeResult.DescribeResults.Columns[i].ColumnName.StartsWith("?"))
-                        describeResult.DescribeResults.Columns[i].ColumnName = "?" + describeResult.DescribeResults.Columns[i].ColumnName;
+                        describeResult.DescribeResults.Columns[i].ColumnName = string.Concat("?", describeResult.DescribeResults.Columns[i].ColumnName);
                 }
 
                 RDFQueryEvents.RaiseDESCRIBEQueryEvaluation(string.Format("Evaluated DESCRIBE query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, describeResult.DescribeResultsCount));

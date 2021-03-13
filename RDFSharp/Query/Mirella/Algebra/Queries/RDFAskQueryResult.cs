@@ -40,9 +40,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty ASK result
         /// </summary>
         internal RDFAskQueryResult()
-        {
-            this.AskResult = false;
-        }
+            => this.AskResult = false;
         #endregion
 
         #region Methods
@@ -104,9 +102,7 @@ namespace RDFSharp.Query
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
         /// </summary>
         public void ToSparqlXmlResult(string filepath)
-        {
-            ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
-        }
+            => ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
         #endregion
 
         #region Read
@@ -197,9 +193,7 @@ namespace RDFSharp.Query
         /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
         /// </summary>
         public static RDFAskQueryResult FromSparqlXmlResult(string filepath)
-        {
-            return FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
-        }
+            => FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
         #endregion
 
         #endregion
