@@ -196,19 +196,12 @@ namespace RDFSharp.Query
             #region Single Property
             if (this.Steps.Count == 1)
             {
-
                 //InversePath (swap start/end)
                 if (this.Steps[0].IsInverseStep)
-                {
                     patterns.Add(new RDFPattern(this.End, this.Steps[0].StepProperty, this.Start));
-                }
-
                 //Path
                 else
-                {
                     patterns.Add(new RDFPattern(this.Start, this.Steps[0].StepProperty, this.End));
-                }
-
             }
             #endregion
 
@@ -223,43 +216,28 @@ namespace RDFSharp.Query
                     #region Alternative
                     if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                     {
-
                         //Translate to union (item is not the last alternative)
                         if (i < this.Steps.Count - 1 && this.Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                         {
-
                             //Adjust start/end
                             if (!this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
-                            {
                                 currEnd = this.End;
-                            }
-
                             //InversePath (swap start/end)
                             if (this.Steps[i].IsInverseStep)
-                            {
                                 patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart).UnionWithNext());
-                            }
-
                             //Path
                             else
-                            {
                                 patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd).UnionWithNext());
-                            }
-
                         }
-
                         //Translate to pattern (item is the last alternative)
                         else
                         {
-
                             //InversePath (swap start/end)
                             if (this.Steps[i].IsInverseStep)
                                 patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart));
-
                             //Path
                             else
                                 patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
-
                             //Adjust start/end
                             if (i < this.Steps.Count - 1)
                             {
@@ -267,26 +245,21 @@ namespace RDFSharp.Query
                                 if (i == this.Steps.Count - 2 || !this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
                                     currEnd = this.End;
                                 else
-                                    currEnd = new RDFVariable(string.Concat("__PP", i+1));
+                                    currEnd = new RDFVariable(string.Concat("__PP", (i + 1).ToString()));
                             }
-
                         }
-
                     }
                     #endregion
 
                     #region Sequence
                     else
                     {
-
                         //InversePath (swap start/end)
                         if (this.Steps[i].IsInverseStep)
                             patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart));
-
                         //Path
                         else
                             patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
-
                         //Adjust start/end
                         if (i < this.Steps.Count - 1)
                         {
@@ -294,9 +267,8 @@ namespace RDFSharp.Query
                             if (i == this.Steps.Count - 2)
                                 currEnd = this.End;
                             else
-                                currEnd = new RDFVariable(string.Concat("__PP", i+1));
+                                currEnd = new RDFVariable(string.Concat("__PP", (i + 1).ToString()));
                         }
-
                     }
                     #endregion
 
