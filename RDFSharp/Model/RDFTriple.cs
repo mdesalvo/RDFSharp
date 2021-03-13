@@ -91,7 +91,7 @@ namespace RDFSharp.Model
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID));
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID.ToString()));
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace RDFSharp.Model
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID));
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID.ToString()));
         }
         #endregion
 
@@ -135,7 +135,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the triple
         /// </summary>
         public override string ToString()
-            => string.Concat(this.Subject, " ", this.Predicate, " ", this.Object);
+            => string.Concat(this.Subject.ToString(), " ", this.Predicate.ToString(), " ", this.Object.ToString());
 
         /// <summary>
         /// Performs the equality comparison between two triples

@@ -324,7 +324,7 @@ namespace RDFSharp.Semantics.OWL
         /// Gets the string representation of the taxonomy entry
         /// </summary>
         public override string ToString()
-            => string.Concat(this.TaxonomySubject, " ", this.TaxonomyPredicate, " ", this.TaxonomyObject);
+            => string.Concat(this.TaxonomySubject.ToString(), " ", this.TaxonomyPredicate.ToString(), " ", this.TaxonomyObject.ToString());
 
         /// <summary>
         /// Performs the equality comparison between two taxonomy entries

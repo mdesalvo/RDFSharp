@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFResource()
         {
-            this.URI = new Uri(string.Concat("bnode:", Guid.NewGuid()));
+            this.URI = new Uri(string.Concat("bnode:", Guid.NewGuid().ToString()));
             this.IsBlank = true;
             this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }

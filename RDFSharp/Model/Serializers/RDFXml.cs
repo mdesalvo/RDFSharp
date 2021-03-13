@@ -796,7 +796,7 @@ namespace RDFSharp.Model
                     {
                         if (!result.Contains(nspace))
                         {
-                            result.Add(new RDFNamespace(string.Concat("autoNS", result.Count + 1), nspace.NamespaceUri.ToString()));
+                            result.Add(new RDFNamespace(string.Concat("autoNS", (result.Count + 1).ToString()), nspace.NamespaceUri.ToString()));
                         }
                     }
                 }

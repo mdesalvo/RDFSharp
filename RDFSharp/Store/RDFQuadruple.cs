@@ -100,7 +100,7 @@ namespace RDFSharp.Store
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID));
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString()));
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace RDFSharp.Store
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID));
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString()));
         }
         #endregion
 
@@ -147,7 +147,7 @@ namespace RDFSharp.Store
         /// Gives the string representation of the quadruple
         /// </summary>
         public override string ToString()
-            => string.Concat(this.Context, " ", this.Subject, " ", this.Predicate, " ", this.Object);
+            => string.Concat(this.Context.ToString(), " ", this.Subject.ToString(), " ", this.Predicate.ToString(), " ", this.Object.ToString());
 
         /// <summary>
         /// Performs the equality comparison between two quadruples

@@ -66,8 +66,8 @@ namespace RDFSharp.Model
                     //Write the namespaces collected by the graph
                     var prefixes = RDFModelUtilities.GetGraphNamespaces(graph);
                     foreach (var ns in prefixes.OrderBy(n => n.NamespacePrefix))
-                        sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
-                    sw.WriteLine(string.Concat("@base <", graph.Context, ">.\n"));
+                        sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri.ToString(), ">."));
+                    sw.WriteLine(string.Concat("@base <", graph.Context.ToString(), ">.\n"));
                     #endregion
 
                     #region linq

@@ -286,7 +286,7 @@ namespace RDFSharp.Query
                     sb.Append(string.Concat(subqueryBodySpaces, "ORDER BY"));
                     modifiers.Where(mod => mod is RDFOrderByModifier)
                              .ToList()
-                             .ForEach(om => sb.Append(string.Concat(" ", om)));
+                             .ForEach(om => sb.Append(string.Concat(" ", om.ToString())));
                 }
 
                 // LIMIT/OFFSET

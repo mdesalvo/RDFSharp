@@ -66,7 +66,7 @@ namespace RDFSharp.Semantics.SKOS
         {
             this.ConceptsSequentialCounter = 0;
             this.Concepts = new Dictionary<long, Tuple<int, RDFSKOSConcept>>();
-            this.Representative = new RDFOntologyFact(new RDFResource(string.Concat("bnode:", this.PatternMemberID)));
+            this.Representative = new RDFOntologyFact(new RDFResource(string.Concat("bnode:", this.PatternMemberID.ToString())));
         }
         #endregion
 

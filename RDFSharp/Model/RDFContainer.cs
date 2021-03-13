@@ -193,7 +193,7 @@ namespace RDFSharp.Model
             int index = 0;
             foreach (object item in this)
             {
-                RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", ++index));
+                RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", (++index).ToString()));
                 if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFResource)item));
                 else
