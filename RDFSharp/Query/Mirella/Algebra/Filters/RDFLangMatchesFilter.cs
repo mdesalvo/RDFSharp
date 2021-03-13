@@ -105,7 +105,7 @@ namespace RDFSharp.Query
 
                 //GIVEN language is found in the variable
                 else
-                    keepRow = Regex.IsMatch(variableValue, "@" + this.Language + "(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                    keepRow = Regex.IsMatch(variableValue, string.Concat("@", this.Language, "(-[a-zA-Z0-9]{1,8})*$"), RegexOptions.IgnoreCase);
 
                 //Apply the eventual negation
                 if (applyNegation)
