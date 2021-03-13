@@ -143,9 +143,7 @@ namespace RDFSharp.Model
             if (nSpace != null)
             {
                 if (GetByPrefix(nSpace.NamespacePrefix) == null && GetByUri(nSpace.NamespaceUri.ToString()) == null)
-                {
                     Instance.Register.Add(nSpace);
-                }
             }
         }
 
@@ -155,9 +153,7 @@ namespace RDFSharp.Model
         public static void RemoveByUri(string uri)
         {
             if (uri != null)
-            {
                 Instance.Register.RemoveAll(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
-            }
         }
 
         /// <summary>
@@ -166,9 +162,7 @@ namespace RDFSharp.Model
         public static void RemoveByPrefix(string prefix)
         {
             if (prefix != null)
-            {
                 Instance.Register.RemoveAll(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
-            }
         }
 
         /// <summary>
@@ -180,9 +174,7 @@ namespace RDFSharp.Model
             {
                 var result = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
-                {
                     result = LookupPrefixCC(uri.Trim().TrimEnd(new char[] { '#' }), 2);
-                }
                 return result;
             }
             return null;
@@ -197,9 +189,7 @@ namespace RDFSharp.Model
             {
                 var result = Instance.Register.Find(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
-                {
                     result = LookupPrefixCC(prefix.Trim(), 1);
-                }
                 return result;
             }
             return null;
@@ -210,8 +200,8 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFNamespace LookupPrefixCC(string data, int lookupMode)
         {
-            string lookupString = (lookupMode == 1 ? "http://prefix.cc/" + data + ".file.txt"
-                                                   : "http://prefix.cc/reverse?uri=" + data + "&format=txt");
+            string lookupString = lookupMode == 1 ? string.Concat("http://prefix.cc/", data, ".file.txt")
+                                                  : string.Concat("http://prefix.cc/reverse?uri=", data, "&format=txt");
 
             using (WebClient webclient = new WebClient())
             {
@@ -228,21 +218,7 @@ namespace RDFSharp.Model
                     //Return the found result
                     return result;
                 }
-                catch (WebException wex)
-                {
-                    if (wex.Message.Contains("404"))
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        throw new RDFModelException("Cannot retrieve namespace from prefix.cc service because: " + wex.Message, wex);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new RDFModelException("Cannot retrieve namespace from prefix.cc service because: " + ex.Message, ex);
-                }
+                catch { return null; }
             }
         }
 
@@ -250,9 +226,7 @@ namespace RDFSharp.Model
         /// Removes namespaces marked as temporary
         /// </summary>
         internal static void RemoveTemporaryNamespaces()
-        {
-            Instance.Register.RemoveAll(x => x.IsTemporary);
-        }
+            => Instance.Register.RemoveAll(x => x.IsTemporary);
         #endregion
 
     }

@@ -53,9 +53,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the typed literal
         /// </summary>
         public override string ToString()
-        {
-            return base.ToString() + "^^" + RDFModelUtilities.GetDatatypeFromEnum(this.Datatype);
-        }
+            => string.Concat(base.ToString(), "^^", RDFModelUtilities.GetDatatypeFromEnum(this.Datatype));
         #endregion
 
         #region Methods
@@ -63,9 +61,7 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with boolean
         /// </summary>
         internal bool HasBooleanDatatype()
-        {
-            return this.Datatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
-        }
+            => this.Datatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with datetime
@@ -93,9 +89,7 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with timespan
         /// </summary>
         internal bool HasTimespanDatatype()
-        {
-            return this.Datatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
-        }
+            => this.Datatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with string

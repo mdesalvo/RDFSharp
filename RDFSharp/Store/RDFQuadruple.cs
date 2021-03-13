@@ -100,7 +100,7 @@ namespace RDFSharp.Store
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource("bnode:" + this.QuadrupleID);
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID));
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace RDFSharp.Store
             this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource("bnode:" + this.QuadrupleID);
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID));
         }
         #endregion
 

@@ -43,9 +43,7 @@ namespace RDFSharp.Store
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseOnQuadrupleAdded(string eventMessage)
-        {
-            Parallel.Invoke(() => OnQuadrupleAdded(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";QUADRUPLE_ADDED;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnQuadrupleAdded(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";QUADRUPLE_ADDED;", eventMessage)));
         #endregion
 
         #region OnQuadrupleRemoved
@@ -63,9 +61,7 @@ namespace RDFSharp.Store
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseOnQuadrupleRemoved(string eventMessage)
-        {
-            Parallel.Invoke(() => OnQuadrupleRemoved(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";QUADRUPLE_REMOVED;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnQuadrupleRemoved(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";QUADRUPLE_REMOVED;", eventMessage)));
         #endregion
 
         #region OnStoreCleared
@@ -83,9 +79,7 @@ namespace RDFSharp.Store
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseOnStoreCleared(string eventMessage)
-        {
-            Parallel.Invoke(() => OnStoreCleared(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";STORE_CLEARED;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnStoreCleared(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";STORE_CLEARED;", eventMessage)));
         #endregion
 
         #region OnStoreInitialized
@@ -103,9 +97,7 @@ namespace RDFSharp.Store
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseOnStoreInitialized(string eventMessage)
-        {
-            Parallel.Invoke(() => OnStoreInitialized(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";STORE_INITIALIZED;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnStoreInitialized(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";STORE_INITIALIZED;", eventMessage)));
         #endregion
 
         #region OnStoreOptimized
@@ -123,9 +115,7 @@ namespace RDFSharp.Store
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseOnStoreOptimized(string eventMessage)
-        {
-            Parallel.Invoke(() => OnStoreOptimized(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";STORE_OPTIMIZED;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnStoreOptimized(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";STORE_OPTIMIZED;", eventMessage)));
         #endregion
 
         #endregion

@@ -71,7 +71,7 @@ namespace RDFSharp.Model
 
                 // blank detection
                 if (uriString.StartsWith("_:"))
-                    uriString = "bnode:" + uriString.Substring(2);
+                    uriString = string.Concat("bnode:", uriString.Substring(2));
 
                 Uri.TryCreate(uriString, UriKind.Absolute, out tempUri);
 
@@ -125,11 +125,11 @@ namespace RDFSharp.Model
                     {
                         if (c <= 65535)
                         {
-                            b.Append("\\u" + ((int)c).ToString("X4"));
+                            b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
                         }
                         else
                         {
-                            b.Append("\\U" + ((int)c).ToString("X8"));
+                            b.Append(string.Concat("\\U", ((int)c).ToString("X8")));
                         }
                     }
                 }
@@ -150,7 +150,7 @@ namespace RDFSharp.Model
                 {
                     if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
                     {
-                        b.Append("\\u" + ((int)c).ToString("X4"));
+                        b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
                     }
                     else
                     {

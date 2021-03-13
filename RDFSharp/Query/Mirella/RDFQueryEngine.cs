@@ -2092,7 +2092,7 @@ namespace RDFSharp.Query
             for (int i = 0; i < columnsCount; i++)
             {
                 if (!selectQueryResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
-                    selectQueryResult.SelectResults.Columns[i].ColumnName = "?" + selectQueryResult.SelectResults.Columns[i].ColumnName;
+                    selectQueryResult.SelectResults.Columns[i].ColumnName = string.Concat("?", selectQueryResult.SelectResults.Columns[i].ColumnName);
             }
 
             return selectQueryResult.SelectResults;

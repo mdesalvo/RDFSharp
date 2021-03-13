@@ -241,7 +241,7 @@ namespace RDFSharp.Model
                                             {
                                                 if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:"))
                                                 {
-                                                    triple.ChildNodes[0].InnerText = "bnode:" + triple.ChildNodes[0].InnerText.Replace("_:", string.Empty);
+                                                    triple.ChildNodes[0].InnerText = string.Concat("bnode:", triple.ChildNodes[0].InnerText.Replace("_:", string.Empty));
                                                 }
                                             }
                                         }
@@ -270,7 +270,7 @@ namespace RDFSharp.Model
                                             {
                                                 if (!triple.ChildNodes[2].InnerText.StartsWith("bnode:"))
                                                 {
-                                                    triple.ChildNodes[2].InnerText = "bnode:" + triple.ChildNodes[2].InnerText.Replace("_:", string.Empty);
+                                                    triple.ChildNodes[2].InnerText = string.Concat("bnode:", triple.ChildNodes[2].InnerText.Replace("_:", string.Empty));
                                                 }
                                             }
                                             result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),

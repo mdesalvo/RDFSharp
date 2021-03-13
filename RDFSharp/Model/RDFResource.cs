@@ -44,7 +44,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFResource()
         {
-            this.URI = new Uri("bnode:" + Guid.NewGuid());
+            this.URI = new Uri(string.Concat("bnode:", Guid.NewGuid()));
             this.IsBlank = true;
             this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
         }
@@ -72,10 +72,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the resource
         /// </summary>
-        public override string ToString()
-        {
-            return this.URI.ToString();
-        }
+        public override string ToString() => this.URI.ToString();
         #endregion
 
     }

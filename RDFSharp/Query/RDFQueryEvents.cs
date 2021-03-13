@@ -43,9 +43,7 @@ namespace RDFSharp.Query
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseASKQueryEvaluation(string eventMessage)
-        {
-            Parallel.Invoke(() => OnASKQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";ASK_QUERY_EVALUATION;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnASKQueryEvaluation(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";ASK_QUERY_EVALUATION;", eventMessage)));
         #endregion
 
         #region OnCONSTRUCTQueryEvaluation
@@ -63,9 +61,7 @@ namespace RDFSharp.Query
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseCONSTRUCTQueryEvaluation(string eventMessage)
-        {
-            Parallel.Invoke(() => OnCONSTRUCTQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";CONSTRUCT_QUERY_EVALUATION;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnCONSTRUCTQueryEvaluation(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";CONSTRUCT_QUERY_EVALUATION;", eventMessage)));
         #endregion
 
         #region OnDESCRIBEQueryEvaluation
@@ -83,9 +79,7 @@ namespace RDFSharp.Query
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseDESCRIBEQueryEvaluation(string eventMessage)
-        {
-            Parallel.Invoke(() => OnDESCRIBEQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";DESCRIBE_QUERY_EVALUATION;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnDESCRIBEQueryEvaluation(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";DESCRIBE_QUERY_EVALUATION;", eventMessage)));
         #endregion
 
         #region OnSELECTQueryEvaluation
@@ -103,9 +97,7 @@ namespace RDFSharp.Query
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseSELECTQueryEvaluation(string eventMessage)
-        {
-            Parallel.Invoke(() => OnSELECTQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";SELECT_QUERY_EVALUATION;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnSELECTQueryEvaluation(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";SELECT_QUERY_EVALUATION;", eventMessage)));
         #endregion
 
         #region OnGENERICQueryEvaluation
@@ -123,9 +115,7 @@ namespace RDFSharp.Query
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseGENERICQueryEvaluation(string eventMessage)
-        {
-            Parallel.Invoke(() => OnGENERICQueryEvaluation(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + ";GENERIC_QUERY_EVALUATION;" + eventMessage));
-        }
+            => Parallel.Invoke(() => OnGENERICQueryEvaluation(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";GENERIC_QUERY_EVALUATION;", eventMessage)));
         #endregion
 
         #endregion

@@ -1111,7 +1111,7 @@ namespace RDFSharp.Semantics.OWL
                 {
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
                     RDFCollection enumCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                    enumCollection.ReificationSubject = new RDFResource("bnode:" + c.PatternMemberID);
+                    enumCollection.ReificationSubject = new RDFResource(string.Concat("bnode:", c.PatternMemberID));
                     if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None ||
                         infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData)
                     {
@@ -1136,7 +1136,7 @@ namespace RDFSharp.Semantics.OWL
                 {
                     result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATA_RANGE));
                     RDFCollection drangeCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
-                    drangeCollection.ReificationSubject = new RDFResource("bnode:" + c.PatternMemberID);
+                    drangeCollection.ReificationSubject = new RDFResource(string.Concat("bnode:", c.PatternMemberID));
                     if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None ||
                         infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData)
                     {
@@ -1167,7 +1167,7 @@ namespace RDFSharp.Semantics.OWL
                     else if (c is RDFOntologyIntersectionClass)
                     {
                         var intersectCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                        intersectCollection.ReificationSubject = new RDFResource("bnode:" + c.PatternMemberID);
+                        intersectCollection.ReificationSubject = new RDFResource(string.Concat("bnode:", c.PatternMemberID));
                         if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None ||
                             infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData)
                         {
@@ -1189,7 +1189,7 @@ namespace RDFSharp.Semantics.OWL
                     else if (c is RDFOntologyUnionClass)
                     {
                         var unionCollection = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                        unionCollection.ReificationSubject = new RDFResource("bnode:" + c.PatternMemberID);
+                        unionCollection.ReificationSubject = new RDFResource(string.Concat("bnode:", c.PatternMemberID));
                         if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None ||
                             infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.OnlyData)
                         {

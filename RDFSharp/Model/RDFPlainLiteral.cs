@@ -62,13 +62,7 @@ namespace RDFSharp.Model
         /// Gives the string representation of the plain literal
         /// </summary>
         public override string ToString()
-        {
-            if (this.Language != string.Empty)
-            {
-                return base.ToString() + "@" + this.Language;
-            }
-            return base.ToString();
-        }
+            => string.IsNullOrEmpty(this.Language) ? base.ToString() : string.Concat(base.ToString(), "@", this.Language);
         #endregion
 
     }

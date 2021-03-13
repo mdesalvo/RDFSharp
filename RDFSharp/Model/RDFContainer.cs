@@ -46,18 +46,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the container's items
         /// </summary>
-        public int ItemsCount
-        {
-            get { return this.Items.Count; }
-        }
+        public int ItemsCount => this.Items.Count;
 
         /// <summary>
         /// Gets the enumerator on the container's items for iteration
         /// </summary>
-        public IEnumerator<RDFPatternMember> ItemsEnumerator
-        {
-            get { return this.Items.GetEnumerator(); }
-        }
+        public IEnumerator<RDFPatternMember> ItemsEnumerator => this.Items.GetEnumerator();
 
         /// <summary>
         /// List of the items contained in the container
@@ -82,18 +76,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the container's items
         /// </summary>
-        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
-        {
-            return this.ItemsEnumerator;
-        }
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() => this.ItemsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the container's items
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ItemsEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ItemsEnumerator;
         #endregion
 
         #region Methods
@@ -157,9 +145,7 @@ namespace RDFSharp.Model
         public RDFContainer RemoveItem(RDFResource item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            {
                 this.Items.RemoveAll(x => x.Equals(item));
-            }
             return this;
         }
 
@@ -169,19 +155,14 @@ namespace RDFSharp.Model
         public RDFContainer RemoveItem(RDFLiteral item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            {
                 this.Items.RemoveAll(x => x.Equals(item));
-            }
             return this;
         }
 
         /// <summary>
         /// Removes all the items from the container
         /// </summary>
-        public void ClearItems()
-        {
-            this.Items.Clear();
-        }
+        public void ClearItems() => this.Items.Clear();
         #endregion
 
         #region Reify
@@ -212,15 +193,11 @@ namespace RDFSharp.Model
             int index = 0;
             foreach (object item in this)
             {
-                RDFResource ordPred = new RDFResource(RDFVocabulary.RDF.BASE_URI + "_" + (++index));
+                RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", ++index));
                 if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                {
                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFResource)item));
-                }
                 else
-                {
                     reifCont.AddTriple(new RDFTriple(this.ReificationSubject, ordPred, (RDFLiteral)item));
-                }
             }
 
             return reifCont;

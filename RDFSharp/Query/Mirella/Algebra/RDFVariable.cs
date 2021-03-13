@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         {
             if (variableName != null && variableName.Trim(new char[] { ' ', '?', '$' }) != string.Empty)
             {
-                this.VariableName = "?" + variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant();
+                this.VariableName = string.Concat("?", variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant());
                 this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
             }
             else
@@ -55,10 +55,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the variable
         /// </summary>
-        public override string ToString()
-        {
-            return this.VariableName;
-        }
+        public override string ToString() => this.VariableName;
         #endregion
 
     }

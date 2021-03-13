@@ -91,7 +91,7 @@ namespace RDFSharp.Model
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource("bnode:" + this.TripleID);
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID));
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace RDFSharp.Model
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
             //ReificationSubject
-            this.ReificationSubject = new RDFResource("bnode:" + this.TripleID);
+            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID));
         }
         #endregion
 
@@ -157,13 +157,9 @@ namespace RDFSharp.Model
             reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
             reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
             if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-            {
                 reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
-            }
             else
-            {
                 reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
-            }
 
             return reifGraph;
         }

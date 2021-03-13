@@ -66,10 +66,8 @@ namespace RDFSharp.Model
                     //Write the namespaces collected by the graph
                     var prefixes = RDFModelUtilities.GetGraphNamespaces(graph);
                     foreach (var ns in prefixes.OrderBy(n => n.NamespacePrefix))
-                    {
-                        sw.WriteLine("@prefix " + ns.NamespacePrefix + ": <" + ns.NamespaceUri + ">.");
-                    }
-                    sw.WriteLine("@base <" + graph.Context + ">.\n");
+                        sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
+                    sw.WriteLine(string.Concat("@base <", graph.Context, ">.\n"));
                     #endregion
 
                     #region linq
@@ -169,24 +167,23 @@ namespace RDFSharp.Model
                             {
 
                                 //Detect presence of long-literals
-                                var litValDelim = "\"";
+                                string litValDelim = "\"";
                                 if (regexTTL.Match(triple.Object.ToString()).Success)
-                                {
                                     litValDelim = "\"\"\"";
-                                }
 
                                 if (triple.Object is RDFTypedLiteral)
                                 {
-                                    string tLit = litValDelim + ((RDFTypedLiteral)triple.Object).Value.Replace("\\", "\\\\") + litValDelim + "^^" + RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype)), prefixes);
+                                    string dtype = RDFQueryPrinter.PrintPatternMember(
+                                                    RDFQueryUtilities.ParseRDFPatternMember(
+                                                     RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)triple.Object).Datatype)), prefixes);
+                                    string tLit = string.Concat(litValDelim, ((RDFTypedLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim, "^^", dtype);
                                     result.Append(tLit);
                                 }
                                 else
                                 {
-                                    string pLit = litValDelim + ((RDFPlainLiteral)triple.Object).Value.Replace("\\", "\\\\") + litValDelim;
+                                    string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim);
                                     if (((RDFPlainLiteral)triple.Object).Language != string.Empty)
-                                    {
-                                        pLit = pLit + "@" + ((RDFPlainLiteral)triple.Object).Language;
-                                    }
+                                        pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
                                     result.Append(pLit);
                                 }
 
@@ -196,13 +193,9 @@ namespace RDFSharp.Model
                             #region continuation goody
                             //Then append the appropriated Turtle continuation goody ("," or ";")
                             if (!triple.Equals(groupLast))
-                            {
                                 result.Append(", ");
-                            }
                             else
-                            {
                                 result.AppendLine("; ");
-                            }
                             #endregion
 
                         }
@@ -369,17 +362,13 @@ namespace RDFSharp.Model
         /// Gets the actual coordinates within Turtle context
         /// </summary>
         private static string GetTurtleContextCoordinates(Dictionary<string, object> turtleContext)
-        {
-            return "[POSITION:" + turtleContext["POSITION"] + "]";
-        }
-
+            => string.Concat("[POSITION:", turtleContext["POSITION"], "]");
+        
         /// <summary>
         /// Updates the position of the cursor within Turtle context
         /// </summary>
         private static void UpdateTurtleContextPosition(Dictionary<string, object> turtleContext, int move)
-        {
-            turtleContext["POSITION"] = (int)turtleContext["POSITION"] + move;
-        }
+        => turtleContext["POSITION"] = (int)turtleContext["POSITION"] + move;
 
         /// <summary>
         /// Safety checks the position of the cursor within Turtle context
@@ -387,9 +376,7 @@ namespace RDFSharp.Model
         private static void SafetyCheckTurtleContextPosition(Dictionary<string, object> turtleContext)
         {
             if ((int)turtleContext["POSITION"] < 0)
-            {
                 turtleContext["POSITION"] = 0;
-            }
         }
         #endregion
 
