@@ -155,8 +155,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Add(quadruple.QuadrupleID, quadruple);
                     //Add index
                     this.StoreIndex.AddIndex(quadruple);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleAdded(string.Format("Quadruple '{0}' has been added to the Store '{1}'.", quadruple, this));
                 }
             }
             return this;
@@ -175,8 +173,6 @@ namespace RDFSharp.Store
                 this.Quadruples.Remove(quadruple.QuadrupleID);
                 //Remove index
                 this.StoreIndex.RemoveIndex(quadruple);
-                //Raise event
-                RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quadruple, this));
             }
             return this;
         }
@@ -194,8 +190,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -214,8 +208,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -234,8 +226,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -254,8 +244,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -274,8 +262,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -295,8 +281,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -316,8 +300,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -337,8 +319,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -358,8 +338,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -380,8 +358,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -402,8 +378,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -424,8 +398,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -446,8 +418,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -468,8 +438,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -489,8 +457,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -510,8 +476,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -531,8 +495,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -552,8 +514,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -573,8 +533,6 @@ namespace RDFSharp.Store
                     this.Quadruples.Remove(quad.QuadrupleID);
                     //Remove index
                     this.StoreIndex.RemoveIndex(quad);
-                    //Raise event
-                    RDFStoreEvents.RaiseOnQuadrupleRemoved(string.Format("Quadruple '{0}' has been removed from the Store '{1}'.", quad, this));
                 }
             }
             return this;
@@ -589,8 +547,6 @@ namespace RDFSharp.Store
             this.Quadruples.Clear();
             //Clear index
             this.StoreIndex.ClearIndex();
-            //Raise event
-            RDFStoreEvents.RaiseOnStoreCleared(string.Format("Store '{0}' has been cleared.", this));
         }
         #endregion
 

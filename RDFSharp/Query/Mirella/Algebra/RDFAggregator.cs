@@ -129,11 +129,7 @@ namespace RDFSharp.Query
                 }
                 return double.NaN;
             }
-            catch (Exception ex)
-            {
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Exception intercepted during evaluation of RDFAggregator '{0}' in method GetRowValueAsNumber: '{1}'", this, ex.Message));
-                return double.NaN;
-            }
+            catch { return double.NaN; }
         }
 
         /// <summary>
@@ -149,11 +145,7 @@ namespace RDFSharp.Query
                 }
                 return string.Empty;
             }
-            catch (Exception ex)
-            {
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Exception intercepted during evaluation of RDFAggregator '{0}' in method GetRowValueAsString: '{1}'", this, ex.Message));
-                return string.Empty;
-            }
+            catch { return string.Empty; }
         }
 
         /// <summary>

@@ -145,14 +145,7 @@ namespace RDFSharp.Query
 
                 #region Evaluability Guard
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
-                {
                     this.IsEvaluable = true;
-                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: non-ground property path detected, evaluability granted or confirmed.");
-                }
-                else
-                {
-                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddAlternativeSteps: ground property path detected, evaluability not granted.");
-                }
                 #endregion
             }
             return this;
@@ -173,14 +166,7 @@ namespace RDFSharp.Query
 
                 #region Evaluability Guard
                 if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
-                {
                     this.IsEvaluable = true;
-                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: non-ground property path detected, evaluability granted or confirmed.");
-                }
-                else
-                {
-                    RDFQueryEvents.RaiseGENERICQueryEvaluation("AddSequenceStep: ground property path detected, evaluability not granted.");
-                }
                 #endregion
             }
             return this;

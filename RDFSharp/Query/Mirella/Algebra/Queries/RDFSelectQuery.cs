@@ -179,8 +179,6 @@ namespace RDFSharp.Query
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
             if (sparqlEndpoint != null)
             {
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluating SELECT query on SPARQL endpoint '{0}'...", sparqlEndpoint));
-
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
                 {
@@ -195,7 +193,7 @@ namespace RDFSharp.Query
                     webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
 
                     //Send querystring to SPARQL endpoint
-                    var sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+                    byte[] sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
 
                     //Parse response from SPARQL endpoint
                     if (sparqlResponse != null)
@@ -216,8 +214,6 @@ namespace RDFSharp.Query
                     if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
                         selResult.SelectResults.Columns[i].ColumnName = string.Concat("?", selResult.SelectResults.Columns[i].ColumnName);
                 }
-
-                RDFQueryEvents.RaiseSELECTQueryEvaluation(string.Format("Evaluated SELECT query on SPARQL endpoint '{0}': Found '{1}' results.", sparqlEndpoint, selResult.SelectResultsCount));
             }
             return selResult;
         }

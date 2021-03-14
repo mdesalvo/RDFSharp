@@ -140,8 +140,6 @@ namespace RDFSharp.Model
                     this.Triples.Add(triple.TripleID, triple);
                     //Add index
                     this.GraphIndex.AddIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleAdded(string.Format("Triple '{0}' has been added to the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -192,8 +190,6 @@ namespace RDFSharp.Model
                 this.Triples.Remove(triple.TripleID);
                 //Remove index
                 this.GraphIndex.RemoveIndex(triple);
-                //Raise event
-                RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
             }
             return this;
         }
@@ -211,8 +207,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -231,8 +225,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -251,8 +243,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -271,8 +261,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -292,8 +280,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -313,8 +299,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -334,8 +318,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -355,8 +337,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -376,8 +356,6 @@ namespace RDFSharp.Model
                     this.Triples.Remove(triple.TripleID);
                     //Remove index
                     this.GraphIndex.RemoveIndex(triple);
-                    //Raise event
-                    RDFModelEvents.RaiseOnTripleRemoved(string.Format("Triple '{0}' has been removed from the Graph '{1}'.", triple, this));
                 }
             }
             return this;
@@ -392,8 +370,6 @@ namespace RDFSharp.Model
             this.Triples.Clear();
             //Clear index
             this.GraphIndex.ClearIndex();
-            //Raise event
-            RDFModelEvents.RaiseOnGraphCleared(string.Format("Graph '{0}' has been cleared.", this));
         }
 
         /// <summary>
