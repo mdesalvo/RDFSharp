@@ -2116,37 +2116,27 @@ namespace RDFSharp.Query
                     case RDFQueryEnums.RDFPatternHoles.SP:
                         bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
-                        }
                         break;
                     //->P->
                     case RDFQueryEnums.RDFPatternHoles.SO:
                         bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
-                        }
                         break;
                     //S->->
                     case RDFQueryEnums.RDFPatternHoles.PO:
                         bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
-                        }
                         break;
                     //->->
                     case RDFQueryEnums.RDFPatternHoles.SPO:
                         bindings.Add(pattern.Subject.ToString(), t.Subject.ToString());
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), t.Predicate.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), t.Object.ToString());
-                        }
                         break;
                 }
                 AddRow(resultTable, bindings);
@@ -2174,9 +2164,7 @@ namespace RDFSharp.Query
                     case RDFQueryEnums.RDFPatternHoles.CS:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Subject.ToString()))
-                        {
                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
-                        }
                         break;
                     //C->->P->O
                     case RDFQueryEnums.RDFPatternHoles.S:
@@ -2186,9 +2174,7 @@ namespace RDFSharp.Query
                     case RDFQueryEnums.RDFPatternHoles.CP:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        }
                         break;
                     //C->S->->O
                     case RDFQueryEnums.RDFPatternHoles.P:
@@ -2198,9 +2184,7 @@ namespace RDFSharp.Query
                     case RDFQueryEnums.RDFPatternHoles.CO:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                     //C->S->P->
                     case RDFQueryEnums.RDFPatternHoles.O:
@@ -2210,89 +2194,61 @@ namespace RDFSharp.Query
                     case RDFQueryEnums.RDFPatternHoles.CSP:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Subject.ToString()))
-                        {
                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        }
                         break;
                     //C->->->O
                     case RDFQueryEnums.RDFPatternHoles.SP:
                         bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        }
                         break;
                     //->->P->
                     case RDFQueryEnums.RDFPatternHoles.CSO:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Subject.ToString()))
-                        {
                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                     //C->->P->
                     case RDFQueryEnums.RDFPatternHoles.SO:
                         bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                     //->S->->
                     case RDFQueryEnums.RDFPatternHoles.CPO:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                     //C->S->->
                     case RDFQueryEnums.RDFPatternHoles.PO:
                         bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                     //->->->
                     case RDFQueryEnums.RDFPatternHoles.CSPO:
                         bindings.Add(pattern.Context.ToString(), q.Context.ToString());
                         if (!bindings.ContainsKey(pattern.Subject.ToString()))
-                        {
                             bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                     //C->->->
                     case RDFQueryEnums.RDFPatternHoles.SPO:
                         bindings.Add(pattern.Subject.ToString(), q.Subject.ToString());
                         if (!bindings.ContainsKey(pattern.Predicate.ToString()))
-                        {
                             bindings.Add(pattern.Predicate.ToString(), q.Predicate.ToString());
-                        }
                         if (!bindings.ContainsKey(pattern.Object.ToString()))
-                        {
                             bindings.Add(pattern.Object.ToString(), q.Object.ToString());
-                        }
                         break;
                 }
                 AddRow(resultTable, bindings);
@@ -2361,15 +2317,12 @@ namespace RDFSharp.Query
                     //Identify join columns from dt1
                     DataColumn[] parentColumns = new DataColumn[commonColumns.Length];
                     for (int i = 0; i < parentColumns.Length; i++)
-                    {
                         parentColumns[i] = ds.Tables[0].Columns[commonColumns[i].ColumnName];
-                    }
+
                     //Identify join columns from dt2
                     DataColumn[] childColumns = new DataColumn[commonColumns.Length];
                     for (int i = 0; i < childColumns.Length; i++)
-                    {
                         childColumns[i] = ds.Tables[1].Columns[commonColumns[i].ColumnName];
-                    }
 
                     //Create the relation linking the common columns
                     DataRelation r = new DataRelation("JoinRelation", parentColumns, childColumns, false);
@@ -2378,15 +2331,11 @@ namespace RDFSharp.Query
                     //Create the structure of the join table
                     List<string> duplicateCols = new List<string>();
                     for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
-                    {
                         result.Columns.Add(ds.Tables[0].Columns[i].ColumnName, ds.Tables[0].Columns[i].DataType);
-                    }
                     for (int i = 0; i < ds.Tables[1].Columns.Count; i++)
                     {
                         if (!result.Columns.Contains(ds.Tables[1].Columns[i].ColumnName))
-                        {
                             result.Columns.Add(ds.Tables[1].Columns[i].ColumnName, ds.Tables[1].Columns[i].DataType);
-                        }
                         else
                         {
                             //Manage duplicate columns by appending a known identificator to their name
@@ -2482,15 +2431,11 @@ namespace RDFSharp.Query
 
                                 //Take value from left
                                 if (dt1Columns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal)))
-                                {
                                     joinRow[strResCol] = leftRow[strResCol];
-                                }
 
                                 //Take value from right
                                 else
-                                {
                                     joinRow[strResCol] = rightRow[strResCol];
-                                }
 
                             }
 
@@ -2623,15 +2568,11 @@ namespace RDFSharp.Query
 
                     //Support OPTIONAL data
                     if (switchToOuterJoin)
-                    {
                         finalTable = OuterJoinTables(finalTable, dataTables[i]);
-                    }
 
                     //Do not support OPTIONAL data
                     else
-                    {
                         finalTable = InnerJoinTables(finalTable, dataTables[i]);
-                    }
 
                 }
 
@@ -2652,14 +2593,9 @@ namespace RDFSharp.Query
                 foreach (DataColumn dtCol in table.Columns)
                 {
                     if (!query.ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
-                    {
                         nonProjCols.Add(dtCol);
-                    }
                 }
-                nonProjCols.ForEach(npc =>
-                {
-                    table.Columns.Remove(npc.ColumnName);
-                });
+                nonProjCols.ForEach(npc => table.Columns.Remove(npc.ColumnName));
 
                 //Adjust ordinals
                 foreach (var pVar in query.ProjectionVars)
