@@ -178,10 +178,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Selects the triples corresponding to the given pattern from the given graph
         /// </summary>
-        internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj,
-                                                                       RDFResource pred,
-                                                                       RDFResource obj,
-                                                                       RDFLiteral lit)
+        internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
             var matchSubj = new List<RDFTriple>();
             var matchPred = new List<RDFTriple>();
@@ -236,8 +233,8 @@ namespace RDFSharp.Model
                         {
                             //S->P->O
                             matchResult = matchSubj.Intersect(matchPred)
-                                                       .Intersect(matchObj)
-                                                       .ToList();
+                                                   .Intersect(matchObj)
+                                                   .ToList();
                         }
                         else
                         {
@@ -262,7 +259,7 @@ namespace RDFSharp.Model
                         {
                             //S->->O
                             matchResult = matchSubj.Intersect(matchObj)
-                                                       .ToList();
+                                                   .ToList();
                         }
                         else
                         {
@@ -288,7 +285,7 @@ namespace RDFSharp.Model
                         {
                             //->P->O
                             matchResult = matchPred.Intersect(matchObj)
-                                                       .ToList();
+                                                   .ToList();
                         }
                         else
                         {
