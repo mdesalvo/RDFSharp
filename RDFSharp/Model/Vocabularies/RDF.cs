@@ -75,6 +75,16 @@ namespace RDFSharp.Model
             public static readonly RDFResource XML_LITERAL = new RDFResource(string.Concat(RDF.BASE_URI,"XMLLiteral"));
 
             /// <summary>
+            /// rdf:HTML
+            /// </summary>
+            public static readonly RDFResource HTML = new RDFResource(string.Concat(RDF.BASE_URI, "HTML"));
+
+            /// <summary>
+            /// rdf:JSON
+            /// </summary>
+            public static readonly RDFResource JSON = new RDFResource(string.Concat(RDF.BASE_URI, "JSON"));
+
+            /// <summary>
             /// rdf:List
             /// </summary>
             public static readonly RDFResource LIST = new RDFResource(string.Concat(RDF.BASE_URI,"List"));

@@ -101,6 +101,8 @@ namespace RDFSharp.Model
             {
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
+                case RDFModelEnums.RDFDatatypes.RDF_HTML:
+                case RDFModelEnums.RDFDatatypes.RDF_JSON:
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
                 case RDFModelEnums.RDFDatatypes.XSD_ID:
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:

@@ -452,6 +452,10 @@ namespace RDFSharp.Model
                 datatypeString = dtypeStringUri.ToString();
                 if (datatypeString.Equals(RDFVocabulary.RDF.XML_LITERAL.ToString(), StringComparison.Ordinal))
                     return RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL;
+                else if (datatypeString.Equals(RDFVocabulary.RDF.HTML.ToString(), StringComparison.Ordinal))
+                    return RDFModelEnums.RDFDatatypes.RDF_HTML;
+                else if (datatypeString.Equals(RDFVocabulary.RDF.JSON.ToString(), StringComparison.Ordinal))
+                    return RDFModelEnums.RDFDatatypes.RDF_JSON;
                 else if (datatypeString.Equals(RDFVocabulary.RDFS.LITERAL.ToString(), StringComparison.Ordinal))
                     return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
                 else if (datatypeString.Equals(RDFVocabulary.XSD.STRING.ToString(), StringComparison.Ordinal))
@@ -549,6 +553,10 @@ namespace RDFSharp.Model
             {
                 case RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL:
                     return RDFVocabulary.RDF.XML_LITERAL.ToString();
+                case RDFModelEnums.RDFDatatypes.RDF_HTML:
+                    return RDFVocabulary.RDF.HTML.ToString();
+                case RDFModelEnums.RDFDatatypes.RDF_JSON:
+                    return RDFVocabulary.RDF.JSON.ToString();
                 case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                     return RDFVocabulary.RDFS.LITERAL.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_STRING:
@@ -645,9 +653,10 @@ namespace RDFSharp.Model
             {
 
                 #region STRING CATEGORY
-                //LITERAL / STRING
+                //LITERAL / STRING / HTML
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDFS_LITERAL) ||
-                    typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
+                    typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING) ||
+                    typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_HTML))
                 {
                     return true;
                 }
@@ -666,11 +675,17 @@ namespace RDFSharp.Model
                     }
                 }
 
+                //JSON
+                if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.RDF_JSON))
+                {
+                    return (typedLiteral.Value.StartsWith("{") && typedLiteral.Value.EndsWith("}"))
+                                || (typedLiteral.Value.StartsWith("[") && typedLiteral.Value.EndsWith("]"));
+                }
+
                 //ANYURI
                 if (typedLiteral.Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_ANYURI))
                 {
-                    Uri outUri;
-                    if (Uri.TryCreate(typedLiteral.Value, UriKind.Absolute, out outUri))
+                    if (Uri.TryCreate(typedLiteral.Value, UriKind.Absolute, out Uri outUri))
                     {
                         typedLiteral.Value = Convert.ToString(outUri);
                         return true;
