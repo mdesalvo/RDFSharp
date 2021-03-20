@@ -256,7 +256,7 @@ namespace RDFSharp.Semantics.OWL
     }
 
     /// <summary>
-    /// RDFOntologyTaxonomy represents an entry of a RDFOntologyTaxonomy object.
+    /// RDFOntologyTaxonomyEntry represents an entry of a RDFOntologyTaxonomy object.
     /// </summary>
     public class RDFOntologyTaxonomyEntry : IEquatable<RDFOntologyTaxonomyEntry>
     {
