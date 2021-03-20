@@ -177,6 +177,12 @@ namespace RDFSharp.Semantics.OWL
             }
             return resultTaxonomy;
         }
+
+        /// <summary>
+        /// Gets the taxonomy entry having the specified identifier
+        /// </summary>
+        public RDFOntologyTaxonomyEntry SelectEntryByID(long taxonomyEntryID)
+            => this.EntriesLookup.Contains(taxonomyEntryID) ? this.Entries.Find(tEntry => tEntry.TaxonomyEntryID == taxonomyEntryID) : null;
         #endregion
 
         #region Set
