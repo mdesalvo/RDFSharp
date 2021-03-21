@@ -37,10 +37,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the literal
         /// </summary>
-        public override string ToString()
-        {
-            return this.Value;
-        }
+        public override string ToString() => this.Value;
         #endregion
 
     }
