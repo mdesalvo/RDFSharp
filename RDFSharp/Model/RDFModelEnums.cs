@@ -58,11 +58,7 @@ namespace RDFSharp.Model
             /// <summary>
             /// Indicates that the object of the triple is a literal
             /// </summary>
-            SPL = 2,
-            /// <summary>
-            /// Indicates that the object of the triple is a variable
-            /// </summary>
-            SPV = 3
+            SPL = 2
         };
 
         /// <summary>
