@@ -437,7 +437,7 @@ namespace RDFSharp.Model
 
         #region Datatypes
         /// <summary>
-        /// Parse the given string in order to give the corresponding RDF/RDFS/XSD datatype
+        /// Parses the given string in order to give the corresponding RDF/RDFS/XSD datatype
         /// </summary>
         public static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
         {
