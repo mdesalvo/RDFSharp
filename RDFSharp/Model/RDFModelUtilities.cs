@@ -35,18 +35,18 @@ namespace RDFSharp.Model
 
         #region Hashing
         /// <summary>
-        /// Performs MD5 hash calculation of the given string
+        /// Creates a unique long representation of the given string
         /// </summary>
         public static long CreateHash(string input)
         {
-            if (input != null)
+            if (input == null)
+                throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.");
+
+            using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
             {
-                var md5Encryptor = new MD5CryptoServiceProvider();
-                var inputBytes = Encoding.UTF8.GetBytes(input);
-                var hashBytes = md5Encryptor.ComputeHash(inputBytes);
+                byte[] hashBytes = md5Encryptor.ComputeHash(Encoding.UTF8.GetBytes(input));
                 return BitConverter.ToInt64(hashBytes, 0);
             }
-            throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.");
         }
         #endregion
 
