@@ -439,7 +439,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parse the given string in order to give the corresponding RDF/RDFS/XSD datatype
         /// </summary>
-        internal static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
+        public static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
         {
             if (datatypeString != null)
             {
@@ -547,7 +547,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the given RDF/RDFS/XSD datatype
         /// </summary>
-        internal static string GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
+        public static string GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
         {
             switch (datatype)
             {
