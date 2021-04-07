@@ -297,7 +297,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "ontologyFact -> rdf:type -> ontologyClass" relation to the data.
+        /// Adds the "ontologyFact -> rdf:type -> ontologyClass" relation to the data (and also ontologyFact definition).
         /// </summary>
         public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass)
         {
@@ -309,6 +309,7 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the ClassType relation
                     if (RDFOntologyChecker.CheckClassTypeCompatibility(ontologyClass))
                     {
+                        this.AddFact(ontologyFact);
                         this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass));
                     }
                     else
