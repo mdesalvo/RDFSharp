@@ -36,49 +36,41 @@ namespace RDFSharp.Query
         /// </summary>
         internal static RDFPatternMember ParseRDFPatternMember(string pMember)
         {
+            if (pMember == null)
+                throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
+            
+            #region Uri
+            if (Uri.TryCreate(pMember, UriKind.Absolute, out _))
+                return new RDFResource(pMember);
+            #endregion
 
-            if (pMember != null)
+            #region Plain Literal
+            if (!pMember.Contains("^^")
+                    || pMember.EndsWith("^^")
+                        || RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null)
             {
-
-                #region Uri
-                Uri testUri;
-                if (Uri.TryCreate(pMember, UriKind.Absolute, out testUri))
+                RDFPlainLiteral pLit = null;
+                if (RDFNTriples.regexLPL.Match(pMember).Success)
                 {
-                    return new RDFResource(pMember);
+                    string pLitVal = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
+                    string pLitLng = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                    pLit = new RDFPlainLiteral(pLitVal, pLitLng);
                 }
-                #endregion
-
-                #region Plain Literal
-                if (!pMember.Contains("^^") ||
-                     pMember.EndsWith("^^") ||
-                     RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null)
+                else
                 {
-                    RDFPlainLiteral pLit = null;
-                    if (RDFNTriples.regexLPL.Match(pMember).Success)
-                    {
-                        string pLitVal = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
-                        string pLitLng = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
-                        pLit = new RDFPlainLiteral(pLitVal, pLitLng);
-                    }
-                    else
-                    {
-                        pLit = new RDFPlainLiteral(pMember);
-                    }
-                    return pLit;
+                    pLit = new RDFPlainLiteral(pMember);
                 }
-                #endregion
-
-                #region Typed Literal
-                string tLitValue = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
-                string tLitDatatype = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
-                RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
-                return tLit;
-                #endregion
-
+                return pLit;
             }
-            throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
+            #endregion
 
+            #region Typed Literal
+            string tLitValue = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
+            string tLitDatatype = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+            RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
+            return tLit;
+            #endregion
         }
 
         /// <summary>
@@ -213,7 +205,8 @@ namespace RDFSharp.Query
         {
             #region Prefix Search
             //Check if the pattern member starts with a known prefix, if so just return it
-            if (prefixes == null) prefixes = new List<RDFNamespace>();
+            if (prefixes == null)
+                prefixes = new List<RDFNamespace>();
             var prefixToSearch = patternMember.ToString().Split(':')[0];
             var searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
             if (searchedPrefix != null)
