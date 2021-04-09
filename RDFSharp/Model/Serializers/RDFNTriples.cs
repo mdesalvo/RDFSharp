@@ -103,9 +103,7 @@ namespace RDFSharp.Model
         /// Serializes the given graph to the given filepath using N-Triples data format.
         /// </summary>
         internal static void Serialize(RDFGraph graph, string filepath)
-        {
-            Serialize(graph, new FileStream(filepath, FileMode.Create));
-        }
+            => Serialize(graph, new FileStream(filepath, FileMode.Create));
 
         /// <summary>
         /// Serializes the given graph to the given stream using N-Triples data format.
@@ -219,7 +217,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Deserializes the given N-Triples filepath to a graph.
         /// </summary>
-        internal static RDFGraph Deserialize(string filepath) => Deserialize(new FileStream(filepath, FileMode.Open), null);
+        internal static RDFGraph Deserialize(string filepath)
+            => Deserialize(new FileStream(filepath, FileMode.Open), null);
 
         /// <summary>
         /// Deserializes the given N-Triples stream to a graph.

@@ -89,9 +89,7 @@ namespace RDFSharp.Store
         /// Serializes the given store to the given filepath using N-Quads data format.
         /// </summary>
         internal static void Serialize(RDFStore store, string filepath)
-        {
-            Serialize(store, new FileStream(filepath, FileMode.Create));
-        }
+            => Serialize(store, new FileStream(filepath, FileMode.Create));
 
         /// <summary>
         /// Serializes the given store to the given filepath using N-Quads data format.
@@ -210,9 +208,7 @@ namespace RDFSharp.Store
         /// Deserializes the given N-Quads filepath to a memory store.
         /// </summary>
         internal static RDFMemoryStore Deserialize(string filepath)
-        {
-            return Deserialize(new FileStream(filepath, FileMode.Open));
-        }
+            => Deserialize(new FileStream(filepath, FileMode.Open));
 
         /// <summary>
         /// Deserializes the given N-Quads stream to a memory store.

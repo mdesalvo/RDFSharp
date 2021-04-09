@@ -85,12 +85,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Selects the quadruples corresponding to the given pattern from the given store
         /// </summary>
-        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store,
-                                                            RDFContext ctx,
-                                                            RDFResource subj,
-                                                            RDFResource pred,
-                                                            RDFResource obj,
-                                                            RDFLiteral lit)
+        internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
             var matchCtx = new List<RDFQuadruple>();
             var matchSubj = new List<RDFQuadruple>();
@@ -157,9 +152,9 @@ namespace RDFSharp.Store
                             {
                                 //C->S->P->O
                                 matchResult = matchCtx.Intersect(matchSubj)
-                                                          .Intersect(matchPred)
-                                                          .Intersect(matchObj)
-                                                          .ToList();
+                                                      .Intersect(matchPred)
+                                                      .Intersect(matchObj)
+                                                      .ToList();
                             }
                             else
                             {
@@ -186,8 +181,8 @@ namespace RDFSharp.Store
                             {
                                 //C->S->->O
                                 matchResult = matchCtx.Intersect(matchSubj)
-                                                          .Intersect(matchObj)
-                                                          .ToList();
+                                                      .Intersect(matchObj)
+                                                      .ToList();
                             }
                             else
                             {
@@ -215,8 +210,8 @@ namespace RDFSharp.Store
                             {
                                 //C->->P->O
                                 matchResult = matchCtx.Intersect(matchPred)
-                                                          .Intersect(matchObj)
-                                                          .ToList();
+                                                      .Intersect(matchObj)
+                                                      .ToList();
                             }
                             else
                             {
@@ -241,7 +236,7 @@ namespace RDFSharp.Store
                             {
                                 //C->->->O
                                 matchResult = matchCtx.Intersect(matchObj)
-                                                          .ToList();
+                                                      .ToList();
                             }
                             else
                             {
@@ -270,8 +265,8 @@ namespace RDFSharp.Store
                             {
                                 //->S->P->O
                                 matchResult = matchSubj.Intersect(matchPred)
-                                                           .Intersect(matchObj)
-                                                           .ToList();
+                                                       .Intersect(matchObj)
+                                                       .ToList();
                             }
                             else
                             {
@@ -296,7 +291,7 @@ namespace RDFSharp.Store
                             {
                                 //->S->->O
                                 matchResult = matchSubj.Intersect(matchObj)
-                                                           .ToList();
+                                                       .ToList();
                             }
                             else
                             {
@@ -322,7 +317,7 @@ namespace RDFSharp.Store
                             {
                                 //->->P->O
                                 matchResult = matchPred.Intersect(matchObj)
-                                                           .ToList();
+                                                       .ToList();
                             }
                             else
                             {
