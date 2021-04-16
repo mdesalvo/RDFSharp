@@ -537,6 +537,118 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Renames all the occurrences of the given fact with the given new fact in the data
+        /// </summary>
+        public RDFOntologyData RenameFact(RDFOntologyFact ontologyFact, RDFOntologyFact newOntologyFact)
+        {
+            if (ontologyFact != null && newOntologyFact != null && !ontologyFact.Equals(newOntologyFact))
+            {
+                //ClassType
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.ClassType.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.ClassType.RemoveEntry(taxonomyEntry);
+                    this.AddClassTypeRelation(newOntologyFact, (RDFOntologyClass)taxonomyEntry.TaxonomyObject);
+                }
+
+                //SameAs
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.SameAs.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.SameAs.RemoveEntry(taxonomyEntry);
+                    this.AddSameAsRelation(newOntologyFact, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.SameAs.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Relations.SameAs.RemoveEntry(taxonomyEntry);
+                    this.AddSameAsRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
+                }
+
+                //DifferentFrom
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.DifferentFrom.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.DifferentFrom.RemoveEntry(taxonomyEntry);
+                    this.AddDifferentFromRelation(newOntologyFact, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.DifferentFrom.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Relations.DifferentFrom.RemoveEntry(taxonomyEntry);
+                    this.AddDifferentFromRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
+                }
+
+                //Assertions
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+                    if (taxonomyEntry.TaxonomyObject.Value is RDFLiteral)
+                        this.AddAssertionRelation(newOntologyFact, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyLiteral)taxonomyEntry.TaxonomyObject);
+                    else
+                        this.AddAssertionRelation(newOntologyFact, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+                    this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
+                }
+
+                //NegativeAssertions
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.NegativeAssertions.RemoveEntry(taxonomyEntry);
+                    if (taxonomyEntry.TaxonomyObject.Value is RDFLiteral)
+                        this.AddNegativeAssertionRelation(newOntologyFact, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyLiteral)taxonomyEntry.TaxonomyObject);
+                    else
+                        this.AddNegativeAssertionRelation(newOntologyFact, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Relations.NegativeAssertions.RemoveEntry(taxonomyEntry);
+                    this.AddNegativeAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
+                }
+
+                //Annotations
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Comment.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Annotations.Comment.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Comment, newOntologyFact, taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Label.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Annotations.Label.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Label, newOntologyFact, taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.SeeAlso.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Annotations.SeeAlso.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, newOntologyFact, taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.IsDefinedBy.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Annotations.IsDefinedBy.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, newOntologyFact, taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Annotations.VersionInfo.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, newOntologyFact, taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Annotations.CustomAnnotations.RemoveEntry(taxonomyEntry);
+                    this.AddCustomAnnotation((RDFOntologyAnnotationProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact, taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Annotations.CustomAnnotations.RemoveEntry(taxonomyEntry);
+                    this.AddCustomAnnotation((RDFOntologyAnnotationProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
+                }
+
+                //Declarations
+                this.RemoveFact(ontologyFact);
+                this.AddFact(newOntologyFact);
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Removes the given literal from the data
         /// </summary>
         public RDFOntologyData RemoveLiteral(RDFOntologyLiteral ontologyLiteral)
