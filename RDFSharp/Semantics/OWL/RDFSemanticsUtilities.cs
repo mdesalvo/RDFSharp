@@ -282,7 +282,8 @@ namespace RDFSharp.Semantics.OWL
                         syp.SetFunctional(true);
                     #endregion
                 }
-                ((RDFOntologyObjectProperty)syp).SetSymmetric(true);
+                if (syp.IsObjectProperty())
+                    ((RDFOntologyObjectProperty)syp).SetSymmetric(true);
             }
             #endregion
 
@@ -305,7 +306,8 @@ namespace RDFSharp.Semantics.OWL
                         asyp.SetFunctional(true);
                     #endregion
                 }
-                ((RDFOntologyObjectProperty)asyp).SetAsymmetric(true);
+                if (asyp.IsObjectProperty())
+                    ((RDFOntologyObjectProperty)asyp).SetAsymmetric(true);
             }
             #endregion
 
@@ -328,7 +330,8 @@ namespace RDFSharp.Semantics.OWL
                         refp.SetFunctional(true);
                     #endregion
                 }
-                ((RDFOntologyObjectProperty)refp).SetReflexive(true);
+                if (refp.IsObjectProperty())
+                    ((RDFOntologyObjectProperty)refp).SetReflexive(true);
             }
             #endregion
 
@@ -351,7 +354,8 @@ namespace RDFSharp.Semantics.OWL
                         irrefp.SetFunctional(true);
                     #endregion
                 }
-                ((RDFOntologyObjectProperty)irrefp).SetIrreflexive(true);
+                if (irrefp.IsObjectProperty())
+                    ((RDFOntologyObjectProperty)irrefp).SetIrreflexive(true);
             }
             #endregion
 
@@ -374,7 +378,8 @@ namespace RDFSharp.Semantics.OWL
                         trp.SetFunctional(true);
                     #endregion
                 }
-                ((RDFOntologyObjectProperty)trp).SetTransitive(true);
+                if (trp.IsObjectProperty())
+                    ((RDFOntologyObjectProperty)trp).SetTransitive(true);
             }
             #endregion
 
@@ -397,7 +402,8 @@ namespace RDFSharp.Semantics.OWL
                         ifp.SetFunctional(true);
                     #endregion
                 }
-                ((RDFOntologyObjectProperty)ifp).SetInverseFunctional(true);
+                if (ifp.IsObjectProperty())
+                    ((RDFOntologyObjectProperty)ifp).SetInverseFunctional(true);
             }
             #endregion
 
