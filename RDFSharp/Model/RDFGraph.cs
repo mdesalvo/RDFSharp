@@ -28,7 +28,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFGraph represents a graph in the RDF model.
     /// </summary>
-    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>
+    public class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
     {
 
         #region Properties
@@ -56,6 +56,11 @@ namespace RDFSharp.Model
         /// List of triples embedded into the graph
         /// </summary>
         internal Dictionary<long, RDFTriple> Triples { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the graph has already been disposed
+        /// </summary>
+        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -67,6 +72,7 @@ namespace RDFSharp.Model
             this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
             this.GraphIndex = new RDFGraphIndex();
             this.Triples = new Dictionary<long, RDFTriple>();
+            this.Disposed = false;
         }
 
         /// <summary>
@@ -74,6 +80,11 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph(List<RDFTriple> triples) : this()
             => triples?.ForEach(t => this.AddTriple(t));
+
+        /// <summary>
+        /// Destroys the graph instance
+        /// </summary>
+        ~RDFGraph() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -110,6 +121,33 @@ namespace RDFSharp.Model
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.TriplesEnumerator;
+
+        /// <summary>
+        /// Disposes the graph 
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the graph (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.GraphIndex.Dispose();
+                this.GraphIndex = null;
+                this.Triples = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods

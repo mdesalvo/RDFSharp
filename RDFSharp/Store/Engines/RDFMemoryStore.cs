@@ -29,7 +29,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
-    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>
+    public class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
     {
 
         #region Properties
@@ -57,6 +57,11 @@ namespace RDFSharp.Store
         /// List of quadruples embedded into the store
         /// </summary>
         internal Dictionary<long, RDFQuadruple> Quadruples { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the memory store has already been disposed
+        /// </summary>
+        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -70,6 +75,7 @@ namespace RDFSharp.Store
             this.StoreIndex = new RDFStoreIndex();
             this.StoreID = RDFModelUtilities.CreateHash(this.ToString());
             this.Quadruples = new Dictionary<long, RDFQuadruple>();
+            this.Disposed = false;
         }
 
         /// <summary>
@@ -77,6 +83,11 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFMemoryStore(List<RDFQuadruple> quadruples) : this()
             => quadruples?.ForEach(q => this.AddQuadruple(q));
+
+        /// <summary>
+        /// Destroys the memory store instance
+        /// </summary>
+        ~RDFMemoryStore() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -114,6 +125,33 @@ namespace RDFSharp.Store
         /// Exposes an untyped enumerator on the store's quadruples
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.QuadruplesEnumerator;
+
+        /// <summary>
+        /// Disposes the memory store 
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the memory store (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.StoreIndex.Dispose();
+                this.StoreIndex = null;
+                this.Quadruples = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods
