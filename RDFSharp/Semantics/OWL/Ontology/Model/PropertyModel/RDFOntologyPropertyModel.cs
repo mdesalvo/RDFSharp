@@ -36,6 +36,12 @@ namespace RDFSharp.Semantics.OWL
             => this.Properties.Count;
 
         /// <summary>
+        /// Count of the deprecated properties composing the property model
+        /// </summary>
+        public long DeprecatedPropertiesCount
+            => this.Properties.Count(p => p.Value.IsDeprecatedProperty());
+
+        /// <summary>
         /// Count of the annotation properties composing the property model
         /// </summary>
         public long AnnotationPropertiesCount
@@ -100,6 +106,13 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public IEnumerator<RDFOntologyProperty> PropertiesEnumerator
             => this.Properties.Values.GetEnumerator();
+
+        /// <summary>
+        /// Gets the enumerator on the property model's deprecated properties for iteration
+        /// </summary>
+        public IEnumerator<RDFOntologyProperty> DeprecatedPropertiesEnumerator
+            => this.Properties.Values.Where(p => p.IsDeprecatedProperty())
+                                     .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the property model's annotation properties for iteration

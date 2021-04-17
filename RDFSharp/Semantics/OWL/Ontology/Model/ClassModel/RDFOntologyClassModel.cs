@@ -37,6 +37,12 @@ namespace RDFSharp.Semantics.OWL
             => this.Classes.Count;
 
         /// <summary>
+        /// Count of the deprecated classes composing the class model
+        /// </summary>
+        public long DeprecatedClassesCount
+            => this.Classes.Count(c => c.Value.IsDeprecatedClass());
+
+        /// <summary>
         /// Count of the restrictions classes composing the class model
         /// </summary>
         public long RestrictionsCount
@@ -65,6 +71,13 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public IEnumerator<RDFOntologyClass> ClassesEnumerator
             => this.Classes.Values.GetEnumerator();
+
+        /// <summary>
+        /// Gets the enumerator on the class model's deprecated classes for iteration
+        /// </summary>
+        public IEnumerator<RDFOntologyClass> DeprecatedClassesEnumerator
+            => this.Classes.Values.Where(c => c.IsDeprecatedClass())
+                                  .GetEnumerator();
 
         /// <summary>
         /// Gets the enumerator on the class model's restriction classes for iteration
