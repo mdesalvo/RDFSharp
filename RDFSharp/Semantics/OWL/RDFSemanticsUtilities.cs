@@ -497,6 +497,11 @@ namespace RDFSharp.Semantics.OWL
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Restriction '{0}' cannot be imported from graph, because definition of its applied property '{1}' is not found in the model.", r.Subject, op.Object));
                     }
                 }
+                else
+                {
+                    //Raise warning event to inform the user: restriction cannot be imported from graph, because owl:OnProperty triple is not found in the graph
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Restriction '{0}' cannot be imported from graph, because owl:OnProperty triple is not found in the graph.", r.Subject));
+                }
                 #endregion
             }
             #endregion
