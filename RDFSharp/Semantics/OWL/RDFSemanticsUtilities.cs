@@ -555,6 +555,10 @@ namespace RDFSharp.Semantics.OWL
                             else
                                 itemRest = (RDFResource)rest.Object;
                         }
+                        else
+                        {
+                            nilFound = true;
+                        }
                         #endregion
                     }
                     else
@@ -617,6 +621,10 @@ namespace RDFSharp.Semantics.OWL
                                 nilFound = true;
                             else
                                 itemRest = (RDFResource)rest.Object;
+                        }
+                        else
+                        {
+                            nilFound = true;
                         }
                         #endregion
                     }
@@ -681,6 +689,10 @@ namespace RDFSharp.Semantics.OWL
                                 nilFound = true;
                             else
                                 itemRest = (RDFResource)rest.Object;
+                        }
+                        else
+                        {
+                            nilFound = true;
                         }
                         #endregion
                     }
@@ -1103,6 +1115,10 @@ namespace RDFSharp.Semantics.OWL
                                 else
                                     itemRest = (RDFResource)rest.Object;
                             }
+                            else
+                            {
+                                nilFound = true;
+                            }
                             #endregion
                         }
                         else
@@ -1154,6 +1170,10 @@ namespace RDFSharp.Semantics.OWL
                                     nilFound = true;
                                 else
                                     itemRest = (RDFResource)rest.Object;
+                            }
+                            else
+                            {
+                                nilFound = true;
                             }
                             #endregion
                         }
@@ -1318,6 +1338,10 @@ namespace RDFSharp.Semantics.OWL
                                     else
                                         itemRest = (RDFResource)rest.Object;
                                 }
+                                else
+                                {
+                                    nilFound = true;
+                                }
                                 #endregion
                             }
                             else
@@ -1386,6 +1410,10 @@ namespace RDFSharp.Semantics.OWL
                                             nilFound = true;
                                         else
                                             itemRest = (RDFResource)rest.Object;
+                                    }
+                                    else
+                                    {
+                                        nilFound = true;
                                     }
                                     #endregion
                                 }
@@ -1492,6 +1520,10 @@ namespace RDFSharp.Semantics.OWL
                                     else
                                         itemRest = (RDFResource)rest.Object;
                                 }
+                                else
+                                {
+                                    nilFound = true;
+                                }
                                 #endregion rdf:rest
                             }
                             else
@@ -1540,6 +1572,10 @@ namespace RDFSharp.Semantics.OWL
                                         nilFound = true;
                                     else
                                         itemRest = (RDFResource)rest.Object;
+                                }
+                                else
+                                {
+                                    nilFound = true;
                                 }
                                 #endregion
                             }
@@ -1611,6 +1647,10 @@ namespace RDFSharp.Semantics.OWL
                                 else
                                     itemRest = (RDFResource)rest.Object;
                             }
+                            else
+                            {
+                                nilFound = true;
+                            }
                             #endregion
                         }
                         else
@@ -1663,6 +1703,10 @@ namespace RDFSharp.Semantics.OWL
                                 ontology.Data.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), ((RDFResource)rest.Object).ToRDFOntologyFact()));
                                 itemRest = (RDFResource)rest.Object;
                             }
+                        }
+                        else
+                        {
+                            nilFound = true;
                         }
                         #endregion
                     }

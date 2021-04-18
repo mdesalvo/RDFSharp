@@ -350,18 +350,13 @@ namespace RDFSharp.Model
             {
 
                 #region rdf:first
-                RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest)
-                                          .FirstOrDefault();
+                RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest).FirstOrDefault();
                 if (first != null && first.TripleFlavor == expectedFlavor)
                 {
                     if (expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                    {
                         collection.AddItem((RDFResource)first.Object);
-                    }
                     else
-                    {
                         collection.AddItem((RDFLiteral)first.Object);
-                    }
                 }
                 else
                 {
@@ -370,18 +365,17 @@ namespace RDFSharp.Model
                 #endregion
 
                 #region rdf:rest
-                RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest)
-                                        .FirstOrDefault();
+                RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest).FirstOrDefault();
                 if (rest != null)
                 {
                     if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
-                    {
                         nilFound = true;
-                    }
                     else
-                    {
                         itemRest = (RDFResource)rest.Object;
-                    }
+                }
+                else
+                {
+                    nilFound = true;
                 }
                 #endregion
 
