@@ -531,6 +531,7 @@ namespace RDFSharp.Semantics.OWL
                 #region DeserializeUnionCollection
                 bool nilFound = false;
                 RDFResource itemRest = (RDFResource)u.Object;
+                HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                 while (!nilFound)
                 {
                     #region rdf:first
@@ -553,7 +554,14 @@ namespace RDFSharp.Semantics.OWL
                             if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                 nilFound = true;
                             else
+                            {
                                 itemRest = (RDFResource)rest.Object;
+                                //Avoid bad-formed cyclic lists to generate infinite loops
+                                if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                    itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                else
+                                    nilFound = true;
+                            }
                         }
                         else
                         {
@@ -594,6 +602,7 @@ namespace RDFSharp.Semantics.OWL
                 #region DeserializeUnionCollection
                 bool nilFound = false;
                 RDFResource itemRest = (RDFResource)du.Object;
+                HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                 List<RDFOntologyClass> disjointClasses = new List<RDFOntologyClass>();
                 while (!nilFound)
                 {
@@ -620,7 +629,14 @@ namespace RDFSharp.Semantics.OWL
                             if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                 nilFound = true;
                             else
+                            {
                                 itemRest = (RDFResource)rest.Object;
+                                //Avoid bad-formed cyclic lists to generate infinite loops
+                                if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                    itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                else
+                                    nilFound = true;
+                            }
                         }
                         else
                         {
@@ -666,6 +682,7 @@ namespace RDFSharp.Semantics.OWL
                 #region DeserializeIntersectionCollection
                 bool nilFound = false;
                 RDFResource itemRest = (RDFResource)i.Object;
+                HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                 while (!nilFound)
                 {
                     #region rdf:first
@@ -688,7 +705,14 @@ namespace RDFSharp.Semantics.OWL
                             if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                 nilFound = true;
                             else
+                            {
                                 itemRest = (RDFResource)rest.Object;
+                                //Avoid bad-formed cyclic lists to generate infinite loops
+                                if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                    itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                else
+                                    nilFound = true;
+                            }
                         }
                         else
                         {
@@ -1098,6 +1122,7 @@ namespace RDFSharp.Semantics.OWL
                     #region DeserializeEnumerateCollection
                     bool nilFound = false;
                     RDFResource itemRest = (RDFResource)e.Object;
+                    HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                     while (!nilFound)
                     {
                         #region rdf:first
@@ -1113,7 +1138,14 @@ namespace RDFSharp.Semantics.OWL
                                 if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                     nilFound = true;
                                 else
+                                {
                                     itemRest = (RDFResource)rest.Object;
+                                    //Avoid bad-formed cyclic lists to generate infinite loops
+                                    if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                        itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                    else
+                                        nilFound = true;
+                                }
                             }
                             else
                             {
@@ -1154,6 +1186,7 @@ namespace RDFSharp.Semantics.OWL
                     #region DeserializeDataRangeCollection
                     bool nilFound = false;
                     RDFResource itemRest = (RDFResource)d.Object;
+                    HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                     while (!nilFound)
                     {
                         #region rdf:first
@@ -1169,7 +1202,14 @@ namespace RDFSharp.Semantics.OWL
                                 if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                     nilFound = true;
                                 else
+                                {
                                     itemRest = (RDFResource)rest.Object;
+                                    //Avoid bad-formed cyclic lists to generate infinite loops
+                                    if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                        itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                    else
+                                        nilFound = true;
+                                }
                             }
                             else
                             {
@@ -1314,6 +1354,7 @@ namespace RDFSharp.Semantics.OWL
                         #region DeserializeCollection
                         bool nilFound = false;
                         RDFResource itemRest = (RDFResource)adjpMembers.Object;
+                        HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                         while (!nilFound)
                         {
                             #region rdf:first
@@ -1336,7 +1377,14 @@ namespace RDFSharp.Semantics.OWL
                                     if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                         nilFound = true;
                                     else
+                                    {
                                         itemRest = (RDFResource)rest.Object;
+                                        //Avoid bad-formed cyclic lists to generate infinite loops
+                                        if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                            itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                        else
+                                            nilFound = true;
+                                    }
                                 }
                                 else
                                 {
@@ -1379,6 +1427,7 @@ namespace RDFSharp.Semantics.OWL
                             #region DeserializeCollection
                             bool nilFound = false;
                             RDFResource itemRest = (RDFResource)pca.Object;
+                            HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                             while (!nilFound)
                             {
                                 #region rdf:first
@@ -1409,7 +1458,14 @@ namespace RDFSharp.Semantics.OWL
                                         if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                             nilFound = true;
                                         else
+                                        {
                                             itemRest = (RDFResource)rest.Object;
+                                            //Avoid bad-formed cyclic lists to generate infinite loops
+                                            if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                                itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                            else
+                                                nilFound = true;
+                                        }
                                     }
                                     else
                                     {
@@ -1496,6 +1552,7 @@ namespace RDFSharp.Semantics.OWL
                         #region DeserializeCollection
                         bool nilFound = false;
                         RDFResource itemRest = (RDFResource)adjcMembers.Object;
+                        HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                         while (!nilFound)
                         {
                             #region rdf:first
@@ -1518,7 +1575,14 @@ namespace RDFSharp.Semantics.OWL
                                     if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                         nilFound = true;
                                     else
+                                    {
                                         itemRest = (RDFResource)rest.Object;
+                                        //Avoid bad-formed cyclic lists to generate infinite loops
+                                        if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                            itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                        else
+                                            nilFound = true;
+                                    }
                                 }
                                 else
                                 {
@@ -1549,6 +1613,7 @@ namespace RDFSharp.Semantics.OWL
                         #region DeserializeCollection
                         bool nilFound = false;
                         RDFResource itemRest = (RDFResource)haskey.Object;
+                        HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                         while (!nilFound)
                         {
                             #region rdf:first
@@ -1571,7 +1636,14 @@ namespace RDFSharp.Semantics.OWL
                                     if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                         nilFound = true;
                                     else
+                                    {
                                         itemRest = (RDFResource)rest.Object;
+                                        //Avoid bad-formed cyclic lists to generate infinite loops
+                                        if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                            itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                        else
+                                            nilFound = true;
+                                    }
                                 }
                                 else
                                 {
@@ -1623,6 +1695,7 @@ namespace RDFSharp.Semantics.OWL
                     #region DeserializeCollection
                     bool nilFound = false;
                     RDFResource itemRest = (RDFResource)adifMembers.Object;
+                    HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                     while (!nilFound)
                     {
                         #region rdf:first
@@ -1645,7 +1718,14 @@ namespace RDFSharp.Semantics.OWL
                                 if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                                     nilFound = true;
                                 else
+                                {
                                     itemRest = (RDFResource)rest.Object;
+                                    //Avoid bad-formed cyclic lists to generate infinite loops
+                                    if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                        itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                    else
+                                        nilFound = true;
+                                }
                             }
                             else
                             {
@@ -1676,6 +1756,7 @@ namespace RDFSharp.Semantics.OWL
                 #region DeserializeOrderedCollection
                 bool nilFound = false;
                 RDFResource itemRest = (RDFResource)ordCol.Object;
+                HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                 while (!nilFound)
                 {
                     ontology.Data.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.LIST.ToRDFOntologyClass()));
@@ -1702,6 +1783,11 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 ontology.Data.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), ((RDFResource)rest.Object).ToRDFOntologyFact()));
                                 itemRest = (RDFResource)rest.Object;
+                                //Avoid bad-formed cyclic lists to generate infinite loops
+                                if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                    itemRestVisitCache.Add(itemRest.PatternMemberID);
+                                else
+                                    nilFound = true;
                             }
                         }
                         else

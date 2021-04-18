@@ -346,6 +346,7 @@ namespace RDFSharp.Model
             #region Deserialization
             bool nilFound = false;
             RDFResource itemRest = collRepresentative;
+            HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
             while (!nilFound)
             {
 
@@ -371,7 +372,14 @@ namespace RDFSharp.Model
                     if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
                         nilFound = true;
                     else
+                    {
                         itemRest = (RDFResource)rest.Object;
+                        //Avoid bad-formed cyclic lists to generate infinite loops
+                        if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                            itemRestVisitCache.Add(itemRest.PatternMemberID);
+                        else
+                            nilFound = true;
+                    }
                 }
                 else
                 {
