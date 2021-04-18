@@ -547,7 +547,7 @@ namespace RDFSharp.Semantics.OWL
                         }
 
                         #region rdf:rest
-                        RDFTriple rest = prefetchContext[nameof(RDFVocabulary.RDF.FIRST)].SelectTriplesBySubject(itemRest).FirstOrDefault();
+                        RDFTriple rest = prefetchContext[nameof(RDFVocabulary.RDF.REST)].SelectTriplesBySubject(itemRest).FirstOrDefault();
                         if (rest != null)
                         {
                             if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
@@ -1095,7 +1095,7 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.ClassModel.AddOneOfRelation((RDFOntologyEnumerateClass)ec, new List<RDFOntologyFact>() { ((RDFResource)first.Object).ToRDFOntologyFact() });
 
                             #region rdf:rest
-                            RDFTriple rest = prefetchContext[nameof(RDFVocabulary.RDF.FIRST)].SelectTriplesBySubject(itemRest).FirstOrDefault();
+                            RDFTriple rest = prefetchContext[nameof(RDFVocabulary.RDF.REST)].SelectTriplesBySubject(itemRest).FirstOrDefault();
                             if (rest != null)
                             {
                                 if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
