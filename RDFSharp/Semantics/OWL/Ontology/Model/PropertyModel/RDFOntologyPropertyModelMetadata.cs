@@ -14,13 +14,14 @@
    limitations under the License.
 */
 
+using System;
 namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
     /// RDFOntologyPropertyModelMetadata represents a collector for relations describing ontology properties.
     /// </summary>
-    public class RDFOntologyPropertyModelMetadata
+    public class RDFOntologyPropertyModelMetadata : IDisposable
     {
 
         #region Properties
@@ -48,6 +49,11 @@ namespace RDFSharp.Semantics.OWL
         /// "owl:propertyChainAxiom" relations [OWL2]
         /// </summary>
         public RDFOntologyTaxonomy PropertyChainAxiom { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology property model metadata has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -61,9 +67,54 @@ namespace RDFSharp.Semantics.OWL
             this.InverseOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
             this.PropertyDisjointWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
             this.PropertyChainAxiom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, true); //This taxonomy accepts duplicates
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the ontology property model metadata instance
+        /// </summary>
+        ~RDFOntologyPropertyModelMetadata() => this.Dispose(false);
         #endregion
 
+        #region Interfaces
+        /// <summary>
+        /// Disposes the ontology property model metadata
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the ontology property model metadata (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.SubPropertyOf.Dispose();
+                this.SubPropertyOf = null;
+
+                this.EquivalentProperty.Dispose();
+                this.EquivalentProperty = null;
+
+                this.InverseOf.Dispose();
+                this.InverseOf = null;
+
+                this.PropertyChainAxiom.Dispose();
+                this.PropertyChainAxiom = null;
+
+                this.PropertyDisjointWith.Dispose();
+                this.PropertyDisjointWith = null;
+            }
+
+            this.Disposed = true;
+        }
+        #endregion
     }
 
 }

@@ -26,7 +26,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyClassModel represents the class-oriented model component (T-BOX) of an ontology.
     /// </summary>
-    public sealed class RDFOntologyClassModel : IEnumerable<RDFOntologyClass>
+    public class RDFOntologyClassModel : IEnumerable<RDFOntologyClass>, IDisposable
     {
 
         #region Properties
@@ -121,9 +121,14 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyClassModelMetadata Relations { get; internal set; }
 
         /// <summary>
-        /// Dictionary of classes composing the class model
+        /// Dictionary of classes composing the ontology class model
         /// </summary>
         internal Dictionary<long, RDFOntologyClass> Classes { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology class model has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -135,7 +140,13 @@ namespace RDFSharp.Semantics.OWL
             this.Classes = new Dictionary<long, RDFOntologyClass>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyClassModelMetadata();
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the ontology class model instance
+        /// </summary>
+        ~RDFOntologyClassModel() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -148,6 +159,38 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the ontology class model's classes
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.ClassesEnumerator;
+
+        /// <summary>
+        /// Disposes the ontology class model
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the ontology class model (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.Relations.Dispose();
+                this.Relations = null;
+
+                this.Annotations.Dispose();
+                this.Annotations = null;
+
+                this.Classes.Clear();
+                this.Classes = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods

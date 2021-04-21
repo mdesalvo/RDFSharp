@@ -14,13 +14,15 @@
    limitations under the License.
 */
 
+using System;
+
 namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
     /// RDFOntologyAnnotations represents a collector for annotations describing ontology resources.
     /// </summary>
-    public class RDFOntologyAnnotations
+    public class RDFOntologyAnnotations : IDisposable
     {
 
         #region Properties
@@ -78,6 +80,11 @@ namespace RDFSharp.Semantics.OWL
         /// Custom-property annotations
         /// </summary>
         public RDFOntologyTaxonomy CustomAnnotations { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology annotations has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -97,9 +104,72 @@ namespace RDFSharp.Semantics.OWL
             this.IncompatibleWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
             this.Imports = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
             this.CustomAnnotations = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the ontology annotations instance
+        /// </summary>
+        ~RDFOntologyAnnotations() => this.Dispose(false);
         #endregion
 
+        #region Interfaces
+        /// <summary>
+        /// Disposes the ontology annotations
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the ontology annotations (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.VersionInfo.Dispose();
+                this.VersionInfo = null;
+
+                this.VersionIRI.Dispose();
+                this.VersionIRI = null;
+
+                this.Comment.Dispose();
+                this.Comment = null;
+
+                this.Label.Dispose();
+                this.Label = null;
+
+                this.SeeAlso.Dispose();
+                this.SeeAlso = null;
+
+                this.IsDefinedBy.Dispose();
+                this.IsDefinedBy = null;
+
+                this.PriorVersion.Dispose();
+                this.PriorVersion = null;
+
+                this.BackwardCompatibleWith.Dispose();
+                this.BackwardCompatibleWith = null;
+
+                this.IncompatibleWith.Dispose();
+                this.IncompatibleWith = null;
+
+                this.Imports.Dispose();
+                this.Imports = null;
+
+                this.CustomAnnotations.Dispose();
+                this.CustomAnnotations = null;
+            }
+
+            this.Disposed = true;
+        }
+        #endregion
     }
 
 }

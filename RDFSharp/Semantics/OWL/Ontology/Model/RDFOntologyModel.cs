@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using RDFSharp.Model;
 
 namespace RDFSharp.Semantics.OWL
@@ -22,7 +23,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyModel represents the model component (T-BOX) of an ontology.
     /// </summary>
-    public class RDFOntologyModel
+    public class RDFOntologyModel : IDisposable
     {
 
         #region Properties
@@ -35,6 +36,11 @@ namespace RDFSharp.Semantics.OWL
         /// Submodel containing the ontology properties
         /// </summary>
         public RDFOntologyPropertyModel PropertyModel { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology model has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -45,6 +51,43 @@ namespace RDFSharp.Semantics.OWL
         {
             this.ClassModel = new RDFOntologyClassModel();
             this.PropertyModel = new RDFOntologyPropertyModel();
+            this.Disposed = false;
+        }
+
+        /// <summary>
+        /// Destroys the ontology model instance
+        /// </summary>
+        ~RDFOntologyModel() => this.Dispose(false);
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Disposes the ontology model
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the ontology model (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.ClassModel.Dispose();
+                this.ClassModel = null;
+
+                this.PropertyModel.Dispose();
+                this.PropertyModel = null;
+            }
+
+            this.Disposed = true;
         }
         #endregion
 

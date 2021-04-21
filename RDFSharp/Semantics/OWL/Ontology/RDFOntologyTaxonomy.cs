@@ -26,7 +26,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyTaxonomy represents a register for storing a generic taxonomy relationship.
     /// </summary>
-    public sealed class RDFOntologyTaxonomy : IEnumerable<RDFOntologyTaxonomyEntry>
+    public class RDFOntologyTaxonomy : IEnumerable<RDFOntologyTaxonomyEntry>, IDisposable
     {
 
         #region Properties
@@ -59,6 +59,11 @@ namespace RDFSharp.Semantics.OWL
         /// Flag indicating that this taxonomy exceptionally accepts duplicate entries
         /// </summary>
         internal bool AcceptDuplicates { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the taxonomy has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -71,7 +76,13 @@ namespace RDFSharp.Semantics.OWL
             this.Entries = new List<RDFOntologyTaxonomyEntry>();
             this.EntriesLookup = new HashSet<long>();
             this.AcceptDuplicates = acceptDuplicates;
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the taxonomy instance
+        /// </summary>
+        ~RDFOntologyTaxonomy() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -84,6 +95,35 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the taxonomy entries
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.EntriesEnumerator;
+
+        /// <summary>
+        /// Disposes the taxonomy
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the taxonomy (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.Entries.Clear();
+                this.Entries = null;
+
+                this.EntriesLookup.Clear();
+                this.EntriesLookup = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods

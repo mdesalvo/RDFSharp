@@ -14,13 +14,14 @@
    limitations under the License.
 */
 
+using System;
 namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
     /// RDFOntologyClassModelMetadata represents a collector for relations describing ontology classes.
     /// </summary>
-    public class RDFOntologyClassModelMetadata
+    public class RDFOntologyClassModelMetadata : IDisposable
     {
 
         #region Properties
@@ -58,6 +59,11 @@ namespace RDFSharp.Semantics.OWL
         /// "owl:hasKey" relations [OWL2]
         /// </summary>
         public RDFOntologyTaxonomy HasKey { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology class model metadata has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -73,9 +79,60 @@ namespace RDFSharp.Semantics.OWL
             this.IntersectionOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
             this.UnionOf = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
             this.HasKey = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model, false);
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the ontology class model metadata instance
+        /// </summary>
+        ~RDFOntologyClassModelMetadata() => this.Dispose(false);
         #endregion
 
+        #region Interfaces
+        /// <summary>
+        /// Disposes the ontology class model metadata
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the ontology class model metadata (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.SubClassOf.Dispose();
+                this.SubClassOf = null;
+
+                this.EquivalentClass.Dispose();
+                this.EquivalentClass = null;
+
+                this.DisjointWith.Dispose();
+                this.DisjointWith = null;
+
+                this.HasKey.Dispose();
+                this.HasKey = null;
+
+                this.OneOf.Dispose();
+                this.OneOf = null;
+
+                this.IntersectionOf.Dispose();
+                this.IntersectionOf = null;
+
+                this.UnionOf.Dispose();
+                this.UnionOf = null;
+            }
+
+            this.Disposed = true;
+        }
+        #endregion
     }
 
 }

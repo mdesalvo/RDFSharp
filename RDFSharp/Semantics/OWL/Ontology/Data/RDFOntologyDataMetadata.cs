@@ -14,13 +14,14 @@
    limitations under the License.
 */
 
+using System;
 namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
     /// RDFOntologyDataMetadata represents a collector for relations connecting ontology facts.
     /// </summary>
-    public class RDFOntologyDataMetadata
+    public class RDFOntologyDataMetadata : IDisposable
     {
 
         #region Properties
@@ -48,6 +49,11 @@ namespace RDFSharp.Semantics.OWL
         /// "ontology property -> ontology resource" custom negative relations [OWL2]
         /// </summary>
         public RDFOntologyTaxonomy NegativeAssertions { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the ontology data metadata has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -61,9 +67,54 @@ namespace RDFSharp.Semantics.OWL
             this.DifferentFrom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
             this.Assertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
             this.NegativeAssertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the ontology data metadata instance
+        /// </summary>
+        ~RDFOntologyDataMetadata() => this.Dispose(false);
         #endregion
 
+        #region Interfaces
+        /// <summary>
+        /// Disposes the ontology data metadata
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the ontology data metadata (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.ClassType.Dispose();
+                this.ClassType = null;
+
+                this.SameAs.Dispose();
+                this.SameAs = null;
+
+                this.DifferentFrom.Dispose();
+                this.DifferentFrom = null;
+
+                this.Assertions.Dispose();
+                this.Assertions = null;
+
+                this.NegativeAssertions.Dispose();
+                this.NegativeAssertions = null;
+            }
+
+            this.Disposed = true;
+        }
+        #endregion
     }
 
 }

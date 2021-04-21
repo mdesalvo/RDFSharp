@@ -61,7 +61,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Flag indicating that the memory store has already been disposed
         /// </summary>
-        internal bool Disposed { get; set; }
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
