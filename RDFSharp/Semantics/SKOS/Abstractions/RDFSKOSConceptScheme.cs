@@ -27,7 +27,7 @@ namespace RDFSharp.Semantics.SKOS
     /// <summary>
     /// RDFSKOSConceptScheme represents an instance of skos:ConceptScheme within an ontology data.
     /// </summary>
-    public class RDFSKOSConceptScheme : RDFOntologyFact, IEnumerable<RDFSKOSConcept>
+    public class RDFSKOSConceptScheme : RDFOntologyFact, IEnumerable<RDFSKOSConcept>, IDisposable
     {
 
         #region Properties
@@ -108,6 +108,11 @@ namespace RDFSharp.Semantics.SKOS
         /// Labels contained in the scheme
         /// </summary>
         internal Dictionary<long, RDFSKOSLabel> Labels { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the scheme has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -122,7 +127,13 @@ namespace RDFSharp.Semantics.SKOS
             this.Labels = new Dictionary<long, RDFSKOSLabel>();
             this.Annotations = new RDFSKOSAnnotations();
             this.Relations = new RDFSKOSRelations();
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the scheme instance
+        /// </summary>
+        ~RDFSKOSConceptScheme() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -135,6 +146,47 @@ namespace RDFSharp.Semantics.SKOS
         /// Exposes an untyped enumerator on the scheme's concepts
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.ConceptsEnumerator;
+
+        /// <summary>
+        /// Disposes the scheme
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the scheme (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.Relations.Dispose();
+                this.Relations = null;
+
+                this.Annotations.Dispose();
+                this.Annotations = null;
+
+                this.Concepts.Clear();
+                this.Concepts = null;
+
+                this.Collections.Clear();
+                this.Collections = null;
+
+                this.OrderedCollections.Clear();
+                this.OrderedCollections = null;
+
+                this.Labels.Clear();
+                this.Labels = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods

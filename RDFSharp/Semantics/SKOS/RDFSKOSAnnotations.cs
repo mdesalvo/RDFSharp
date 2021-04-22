@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using RDFSharp.Semantics.OWL;
 
 namespace RDFSharp.Semantics.SKOS
@@ -22,7 +23,7 @@ namespace RDFSharp.Semantics.SKOS
     /// <summary>
     /// RDFSKOSAnnotations represents a collector for annotations describing SKOS concepts.
     /// </summary>
-    public class RDFSKOSAnnotations
+    public class RDFSKOSAnnotations : IDisposable
     {
 
         #region Properties
@@ -75,6 +76,11 @@ namespace RDFSharp.Semantics.SKOS
         /// "skos:example" annotations
         /// </summary>
         public RDFOntologyTaxonomy Example { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the SKOS annotations has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -93,9 +99,69 @@ namespace RDFSharp.Semantics.SKOS
             this.ScopeNote = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
             this.Definition = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
             this.Example = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the SKOS annotations instance
+        /// </summary>
+        ~RDFSKOSAnnotations() => this.Dispose(false);
         #endregion
 
+        #region Interfaces
+        /// <summary>
+        /// Disposes the SKOS annotations
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the SKOS annotations (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.PrefLabel.Dispose();
+                this.PrefLabel = null;
+
+                this.AltLabel.Dispose();
+                this.AltLabel = null;
+
+                this.HiddenLabel.Dispose();
+                this.HiddenLabel = null;
+
+                this.Note.Dispose();
+                this.Note = null;
+
+                this.ChangeNote.Dispose();
+                this.ChangeNote = null;
+
+                this.EditorialNote.Dispose();
+                this.EditorialNote = null;
+
+                this.HistoryNote.Dispose();
+                this.HistoryNote = null;
+
+                this.ScopeNote.Dispose();
+                this.ScopeNote = null;
+
+                this.Definition.Dispose();
+                this.Definition = null;
+
+                this.Example.Dispose();
+                this.Example = null;
+            }
+
+            this.Disposed = true;
+        }
+        #endregion
     }
 
 }
