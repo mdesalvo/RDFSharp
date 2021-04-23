@@ -147,6 +147,8 @@ namespace RDFSharp.Store
             {
                 this.StoreIndex.Dispose();
                 this.StoreIndex = null;
+
+                this.Quadruples.Clear();
                 this.Quadruples = null;
             }
 

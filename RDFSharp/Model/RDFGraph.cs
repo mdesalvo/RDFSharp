@@ -143,6 +143,8 @@ namespace RDFSharp.Model
             {
                 this.GraphIndex.Dispose();
                 this.GraphIndex = null;
+
+                this.Triples.Clear();
                 this.Triples = null;
             }
 

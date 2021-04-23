@@ -99,10 +99,19 @@ namespace RDFSharp.Store
 
             if (disposing)
             {
+                this.Contexts.Clear();
                 this.Contexts = null;
+
+                this.Subjects.Clear();
                 this.Subjects = null;
+
+                this.Predicates.Clear();
                 this.Predicates = null;
+
+                this.Objects.Clear();
                 this.Objects = null;
+
+                this.Literals.Clear();
                 this.Literals = null;
             }
 

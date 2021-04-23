@@ -92,9 +92,16 @@ namespace RDFSharp.Model
 
             if (disposing)
             {
+                this.Subjects.Clear();
                 this.Subjects = null;
+
+                this.Predicates.Clear();
                 this.Predicates = null;
+
+                this.Objects.Clear();
                 this.Objects = null;
+
+                this.Literals.Clear();
                 this.Literals = null;
             }
 
