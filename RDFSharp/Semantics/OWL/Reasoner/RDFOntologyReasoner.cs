@@ -27,7 +27,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasoner represents an inference engine applied on a given ontology
     /// </summary>
-    public class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule>
+    public class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule>, IDisposable
     {
 
         #region Properties
@@ -45,6 +45,11 @@ namespace RDFSharp.Semantics.OWL
         /// List of rules applied by the reasoner
         /// </summary>
         internal List<RDFOntologyReasonerRule> Rules { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the reasoner has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -52,7 +57,15 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build an empty ontology reasoner
         /// </summary>
         public RDFOntologyReasoner()
-            => this.Rules = new List<RDFOntologyReasonerRule>();
+        {
+            this.Rules = new List<RDFOntologyReasonerRule>();
+            this.Disposed = false;
+        }
+
+        /// <summary>
+        /// Destroys the reasoner instance
+        /// </summary>
+        ~RDFOntologyReasoner() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -65,6 +78,32 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the reasoner's rules
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.RulesEnumerator;
+
+        /// <summary>
+        /// Disposes the reasoner
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the reasoner (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.Rules.Clear();
+                this.Rules = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods
