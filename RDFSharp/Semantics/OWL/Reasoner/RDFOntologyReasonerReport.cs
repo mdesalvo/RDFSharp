@@ -26,7 +26,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerReport represents a detailed report of an ontology reasoner's activity.
     /// </summary>
-    public sealed class RDFOntologyReasonerReport : IEnumerable<RDFOntologyReasonerEvidence>
+    public class RDFOntologyReasonerReport : IEnumerable<RDFOntologyReasonerEvidence>, IDisposable
     {
 
         #region Properties
@@ -49,6 +49,11 @@ namespace RDFSharp.Semantics.OWL
         /// SyncLock for evidences
         /// </summary>
         internal object SyncLock { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the reasoner report has already been disposed
+        /// </summary>
+        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -59,7 +64,13 @@ namespace RDFSharp.Semantics.OWL
         {
             this.Evidences = new Dictionary<long, RDFOntologyReasonerEvidence>();
             this.SyncLock = new object();
+            this.Disposed = false;
         }
+
+        /// <summary>
+        /// Destroys the reasoner report instance
+        /// </summary>
+        ~RDFOntologyReasonerReport() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -72,6 +83,32 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the reasoner report's evidences
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.EvidencesEnumerator;
+
+        /// <summary>
+        /// Disposes the reasoner report
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Disposes the reasoner report (business logic of resources disposal)
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.Disposed)
+                return;
+
+            if (disposing)
+            {
+                this.Evidences.Clear();
+                this.Evidences = null;
+            }
+
+            this.Disposed = true;
+        }
         #endregion
 
         #region Methods
