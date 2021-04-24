@@ -25,7 +25,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyData represents the data component (A-BOX) of an ontology.
     /// </summary>
-    public class RDFOntologyData : IEnumerable<RDFOntologyFact>, IDisposable
+    public class RDFOntologyData : IEnumerable<RDFOntologyFact>
     {
 
         #region Properties
@@ -72,11 +72,6 @@ namespace RDFSharp.Semantics.OWL
         /// Dictionary of literals composing the ontology data
         /// </summary>
         internal Dictionary<long, RDFOntologyLiteral> Literals { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the ontology data has already been disposed
-        /// </summary>
-        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -89,13 +84,7 @@ namespace RDFSharp.Semantics.OWL
             this.Literals = new Dictionary<long, RDFOntologyLiteral>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyDataMetadata();
-            this.Disposed = false;
         }
-
-        /// <summary>
-        /// Destroys the ontology data instance
-        /// </summary>
-        ~RDFOntologyData() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -108,41 +97,6 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the data's facts
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.FactsEnumerator;
-
-        /// <summary>
-        /// Disposes the ontology data
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the ontology data (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.Relations.Dispose();
-                this.Relations = null;
-
-                this.Annotations.Dispose();
-                this.Annotations = null;
-
-                this.Facts.Clear();
-                this.Facts = null;
-
-                this.Literals.Clear();
-                this.Literals = null;
-            }
-
-            this.Disposed = true;
-        }
         #endregion
 
         #region Methods

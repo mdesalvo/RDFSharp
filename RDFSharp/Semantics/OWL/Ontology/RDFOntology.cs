@@ -23,7 +23,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntology represents an ontology definition.
     /// </summary>
-    public class RDFOntology : RDFOntologyResource, IDisposable
+    public class RDFOntology : RDFOntologyResource
     {
 
         #region Properties
@@ -41,11 +41,6 @@ namespace RDFSharp.Semantics.OWL
         /// Annotations describing the ontology
         /// </summary>
         public RDFOntologyAnnotations Annotations { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that the ontology has already been disposed
-        /// </summary>
-        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -61,7 +56,6 @@ namespace RDFSharp.Semantics.OWL
                 this.Model = new RDFOntologyModel();
                 this.Data = new RDFOntologyData();
                 this.Annotations = new RDFOntologyAnnotations();
-                this.Disposed = false;
             }
             else
             {
@@ -77,45 +71,6 @@ namespace RDFSharp.Semantics.OWL
             this.Model = ontologyModel ?? new RDFOntologyModel();
             this.Data = ontologyData ?? new RDFOntologyData();
             this.Annotations = ontologyAnnotations ?? new RDFOntologyAnnotations();
-        }
-
-        /// <summary>
-        /// Destroys the ontology instance
-        /// </summary>
-        ~RDFOntology() => this.Dispose(false);
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Disposes the ontology
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the ontology (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.Model.Dispose();
-                this.Model = null;
-
-                this.Data.Dispose();
-                this.Data = null;
-
-                this.Annotations.Dispose();
-                this.Annotations = null;
-            }
-
-            this.Disposed = true;
         }
         #endregion
 

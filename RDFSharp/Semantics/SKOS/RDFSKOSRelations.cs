@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using RDFSharp.Semantics.OWL;
 
 namespace RDFSharp.Semantics.SKOS
@@ -23,9 +22,8 @@ namespace RDFSharp.Semantics.SKOS
     /// <summary>
     /// RDFSKOSRelations represents a collector for relations connecting skos concepts.
     /// </summary>
-    public class RDFSKOSRelations : IDisposable
+    public class RDFSKOSRelations
     {
-
         #region Properties
 
         #region SKOS
@@ -127,11 +125,6 @@ namespace RDFSharp.Semantics.SKOS
         public RDFOntologyTaxonomy LabelRelation { get; internal set; }
         #endregion
 
-        /// <summary>
-        /// Flag indicating that the SKOS relations has already been disposed
-        /// </summary>
-        private bool Disposed { get; set; }
-
         #endregion
 
         #region Ctors
@@ -162,95 +155,6 @@ namespace RDFSharp.Semantics.SKOS
             this.HiddenLabel = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
             this.LiteralForm = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
             this.LabelRelation = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
-
-            this.Disposed = false;
-        }
-
-        /// <summary>
-        /// Destroys the SKOS relations instance
-        /// </summary>
-        ~RDFSKOSRelations() => this.Dispose(false);
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Disposes the SKOS relations
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the SKOS relations (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.TopConcept.Dispose();
-                this.TopConcept = null;
-
-                this.Broader.Dispose();
-                this.Broader = null;
-
-                this.BroaderTransitive.Dispose();
-                this.BroaderTransitive = null;
-
-                this.BroadMatch.Dispose();
-                this.BroadMatch = null;
-
-                this.Narrower.Dispose();
-                this.Narrower = null;
-
-                this.NarrowerTransitive.Dispose();
-                this.NarrowerTransitive = null;
-
-                this.NarrowMatch.Dispose();
-                this.NarrowMatch = null;
-
-                this.Related.Dispose();
-                this.Related = null;
-
-                this.RelatedMatch.Dispose();
-                this.RelatedMatch = null;
-
-                this.SemanticRelation.Dispose();
-                this.SemanticRelation = null;
-
-                this.MappingRelation.Dispose();
-                this.MappingRelation = null;
-
-                this.CloseMatch.Dispose();
-                this.CloseMatch = null;
-
-                this.ExactMatch.Dispose();
-                this.ExactMatch = null;
-
-                this.Notation.Dispose();
-                this.Notation = null;
-
-                this.PrefLabel.Dispose();
-                this.PrefLabel = null;
-
-                this.AltLabel.Dispose();
-                this.AltLabel = null;
-
-                this.HiddenLabel.Dispose();
-                this.HiddenLabel = null;
-
-                this.LiteralForm.Dispose();
-                this.LiteralForm = null;
-
-                this.LabelRelation.Dispose();
-                this.LabelRelation = null;
-            }
-
-            this.Disposed = true;
         }
         #endregion
     }

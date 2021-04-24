@@ -24,7 +24,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyValidatorReport represents a detailed report of an ontology analysis.
     /// </summary>
-    public class RDFOntologyValidatorReport : IEnumerable<RDFOntologyValidatorEvidence>, IDisposable
+    public class RDFOntologyValidatorReport : IEnumerable<RDFOntologyValidatorEvidence>
     {
 
         #region Properties
@@ -47,11 +47,6 @@ namespace RDFSharp.Semantics.OWL
         /// SyncLock for evidences
         /// </summary>
         internal object SyncLock { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the validator report has already been disposed
-        /// </summary>
-        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -62,13 +57,7 @@ namespace RDFSharp.Semantics.OWL
         {
             this.Evidences = new List<RDFOntologyValidatorEvidence>();
             this.SyncLock = new object();
-            this.Disposed = false;
         }
-
-        /// <summary>
-        /// Destroys the validator report instance
-        /// </summary>
-        ~RDFOntologyValidatorReport() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -81,32 +70,6 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the validation report's evidences
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.EvidencesEnumerator;
-
-        /// <summary>
-        /// Disposes the validator report
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the validator report (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.Evidences.Clear();
-                this.Evidences = null;
-            }
-
-            this.Disposed = true;
-        }
         #endregion
 
         #region Methods

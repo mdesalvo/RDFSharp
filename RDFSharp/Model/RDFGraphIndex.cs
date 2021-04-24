@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFGraphIndex represents an automatically managed in-memory index structure for the triples of a graph.
     /// </summary>
-    internal class RDFGraphIndex : IDisposable
+    internal class RDFGraphIndex
     {
 
         #region Properties
@@ -46,11 +46,6 @@ namespace RDFSharp.Model
         /// Index on the literals of the graph's triples
         /// </summary>
         internal Dictionary<long, HashSet<long>> Literals { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the graph index has already been disposed
-        /// </summary>
-        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -63,49 +58,6 @@ namespace RDFSharp.Model
             this.Predicates = new Dictionary<long, HashSet<long>>();
             this.Objects = new Dictionary<long, HashSet<long>>();
             this.Literals = new Dictionary<long, HashSet<long>>();
-            this.Disposed = false;
-        }
-
-        /// <summary>
-        /// Destroys the graph index instance
-        /// </summary>
-        ~RDFGraphIndex() => this.Dispose(false);
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Disposes the graph index
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the graph index (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.Subjects.Clear();
-                this.Subjects = null;
-
-                this.Predicates.Clear();
-                this.Predicates = null;
-
-                this.Objects.Clear();
-                this.Objects = null;
-
-                this.Literals.Clear();
-                this.Literals = null;
-            }
-
-            this.Disposed = true;
         }
         #endregion
 

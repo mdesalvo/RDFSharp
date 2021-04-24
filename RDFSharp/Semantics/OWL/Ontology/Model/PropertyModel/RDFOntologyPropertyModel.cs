@@ -208,11 +208,6 @@ namespace RDFSharp.Semantics.OWL
         /// Dictionary of properties composing the ontology property model
         /// </summary>
         internal Dictionary<long, RDFOntologyProperty> Properties { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the ontology property model has already been disposed
-        /// </summary>
-        private bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -224,13 +219,7 @@ namespace RDFSharp.Semantics.OWL
             this.Properties = new Dictionary<long, RDFOntologyProperty>();
             this.Annotations = new RDFOntologyAnnotations();
             this.Relations = new RDFOntologyPropertyModelMetadata();
-            this.Disposed = false;
         }
-
-        /// <summary>
-        /// Destroys the ontology property model instance
-        /// </summary>
-        ~RDFOntologyPropertyModel() => this.Dispose(false);
         #endregion
 
         #region Interfaces
@@ -243,38 +232,6 @@ namespace RDFSharp.Semantics.OWL
         /// Exposes an untyped enumerator on the property model's properties
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() => this.PropertiesEnumerator;
-
-        /// <summary>
-        /// Disposes the ontology property model
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the ontology property model (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.Relations.Dispose();
-                this.Relations = null;
-
-                this.Annotations.Dispose();
-                this.Annotations = null;
-
-                this.Properties.Clear();
-                this.Properties = null;
-            }
-
-            this.Disposed = true;
-        }
         #endregion
 
         #region Methods

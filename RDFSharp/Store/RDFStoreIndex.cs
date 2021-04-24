@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Store
@@ -24,7 +23,7 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFStoreIndex represents an automatically managed in-memory index structure for the quadruples of a store.
     /// </summary>
-    internal class RDFStoreIndex : IDisposable
+    internal class RDFStoreIndex
     {
 
         #region Properties
@@ -52,11 +51,6 @@ namespace RDFSharp.Store
         /// Index on the literals of the store's quadruples
         /// </summary>
         internal Dictionary<long, HashSet<long>> Literals { get; set; }
-
-        /// <summary>
-        /// Flag indicating that the memory store index has already been disposed
-        /// </summary>
-        internal bool Disposed { get; set; }
         #endregion
 
         #region Ctors
@@ -70,52 +64,6 @@ namespace RDFSharp.Store
             this.Predicates = new Dictionary<long, HashSet<long>>();
             this.Objects = new Dictionary<long, HashSet<long>>();
             this.Literals = new Dictionary<long, HashSet<long>>();
-            this.Disposed = false;
-        }
-
-        /// <summary>
-        /// Destroys the memory store index instance
-        /// </summary>
-        ~RDFStoreIndex() => this.Dispose(false);
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Disposes the memory store index
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes the memory store index (business logic of resources disposal)
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.Disposed)
-                return;
-
-            if (disposing)
-            {
-                this.Contexts.Clear();
-                this.Contexts = null;
-
-                this.Subjects.Clear();
-                this.Subjects = null;
-
-                this.Predicates.Clear();
-                this.Predicates = null;
-
-                this.Objects.Clear();
-                this.Objects = null;
-
-                this.Literals.Clear();
-                this.Literals = null;
-            }
-
-            this.Disposed = true;
         }
         #endregion
 
