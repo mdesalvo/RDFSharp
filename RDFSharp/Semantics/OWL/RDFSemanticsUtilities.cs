@@ -805,8 +805,6 @@ namespace RDFSharp.Semantics.OWL
             foreach (RDFOntologyClass restriction in ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass()).ToList())
             {
                 #region Cardinality
-
-                #region ExactCardinality
                 int exC = 0;
                 RDFTriple crEx = prefetchContext[nameof(RDFVocabulary.OWL.CARDINALITY)].SelectTriplesBySubject((RDFResource)restriction.Value).FirstOrDefault();
                 if (crEx != null && crEx.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -881,11 +879,7 @@ namespace RDFSharp.Semantics.OWL
                 }
                 #endregion
 
-                #endregion
-
                 #region QualifiedCardinality [OWL2]
-
-                #region ExactQualifiedCardinality [OWL2]
                 int exQC = 0;
                 RDFTriple crExQC = prefetchContext[nameof(RDFVocabulary.OWL.QUALIFIED_CARDINALITY)].SelectTriplesBySubject((RDFResource)restriction.Value).FirstOrDefault();
                 if (crExQC != null && crExQC.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -1026,8 +1020,6 @@ namespace RDFSharp.Semantics.OWL
                         }
                     }
                 }
-                #endregion
-
                 #endregion
 
                 #region HasSelf [OWL2]
