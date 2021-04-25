@@ -1466,6 +1466,40 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
+        #region Rule:UntypedRestrictions
+        /// <summary>
+        /// Validation rule checking for restrictions which haven't been specialized in any supported forms
+        /// </summary>
+        internal static RDFOntologyValidatorReport UntypedRestrictions(RDFOntology ontology)
+        {
+            RDFSemanticsEvents.RaiseSemanticsInfo("Launching execution of validation rule 'UntypedRestrictions'...");
+
+            #region Restrictions
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
+            foreach (RDFOntologyClass restriction in ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass()).ToList())
+            {
+                if (!(restriction is RDFOntologyAllValuesFromRestriction) &&
+                        !(restriction is RDFOntologySomeValuesFromRestriction) &&
+                            !(restriction is RDFOntologyHasValueRestriction) &&
+                                 !(restriction is RDFOntologyHasSelfRestriction) &&
+                                    !(restriction is RDFOntologyCardinalityRestriction) &&
+                                        !(restriction is RDFOntologyQualifiedCardinalityRestriction))
+                {
+                    report.AddEvidence(new RDFOntologyValidatorEvidence(
+                        RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                        "UntypedRestrictions",
+                        string.Format("Ontology restriction '{0}' hasn't been specialized in any supported forms: at the moment it is unusable!", restriction),
+                        string.Format("Finalize the definition of restriction '{0}' into a supported form: AllValuesFrom, SomeValuesFrom, HasValue, HasSelf, Cardinality, QualifiedCardinality.", restriction)
+                    ));
+                }
+            }
+            #endregion
+
+            RDFSemanticsEvents.RaiseSemanticsInfo("Completed execution of validation rule 'UntypedRestrictions': found " + report.EvidencesCount + " evidences.");
+            return report;
+        }
+        #endregion
+
     }
 
 }

@@ -40,8 +40,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         static RDFOntologyValidator()
         {
-            Rules = new List<RDFOntologyValidatorRule>() {
-
+            Rules = new List<RDFOntologyValidatorRule>()
+            {
                 #region BASE
                 //Vocabulary_Disjointness
                 new RDFOntologyValidatorRule(
@@ -131,9 +131,14 @@ namespace RDFSharp.Semantics.OWL
                 new RDFOntologyValidatorRule(
                     "Deprecation",
                     "This OWL-DL rule checks for usage of deprecated classes and properties",
-                    RDFOntologyValidatorRuleset.Deprecation)
-                #endregion
+                    RDFOntologyValidatorRuleset.Deprecation),
 
+                //UntypedRestrictions
+                new RDFOntologyValidatorRule(
+                    "UntypedRestrictions",
+                    "This OWL-DL rule checks for restrictions which haven't been specialized in any supported forms",
+                    RDFOntologyValidatorRuleset.UntypedRestrictions)
+                #endregion
             };
         }
         #endregion
