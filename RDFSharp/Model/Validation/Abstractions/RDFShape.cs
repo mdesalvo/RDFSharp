@@ -253,9 +253,9 @@ namespace RDFSharp.Model
 
             //Deactivated
             if (this.Deactivated)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.True));
             else
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False));
 
             //Messages
             this.Messages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.MESSAGE, message)));

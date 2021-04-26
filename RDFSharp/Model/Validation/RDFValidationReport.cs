@@ -126,9 +126,9 @@ namespace RDFSharp.Model
 
             //Conforms
             if (this.Conforms)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.True));
             else
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.False));
 
             //Results
             this.Results.ForEach(res =>

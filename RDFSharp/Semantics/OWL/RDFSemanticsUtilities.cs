@@ -801,7 +801,6 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         private static void FinalizeRestrictions(RDFOntology ontology, RDFGraph ontGraph, Dictionary<string, RDFGraph> prefetchContext)
         {
-            RDFTypedLiteral trueTypedLiteral = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
             foreach (RDFOntologyClass restriction in ontology.Model.ClassModel.Where(rst => rst.IsRestrictionClass()).ToList())
             {
                 #region Cardinality
@@ -1025,7 +1024,7 @@ namespace RDFSharp.Semantics.OWL
                 #region HasSelf [OWL2]
                 RDFTriple hsRes = prefetchContext[nameof(RDFVocabulary.OWL.HAS_SELF)].SelectTriplesBySubject((RDFResource)restriction.Value).FirstOrDefault();
                 if (hsRes?.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL
-                        && hsRes.Object.Equals(trueTypedLiteral))
+                        && hsRes.Object.Equals(RDFTypedLiteral.True))
                 {
                     RDFOntologyHasSelfRestriction hasselfRestr = new RDFOntologyHasSelfRestriction((RDFResource)restriction.Value, ((RDFOntologyRestriction)restriction).OnProperty);
                     ontology.Model.ClassModel.Classes[restriction.PatternMemberID] = hasselfRestr;

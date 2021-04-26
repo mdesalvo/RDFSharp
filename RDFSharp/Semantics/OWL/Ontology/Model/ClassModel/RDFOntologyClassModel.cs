@@ -1060,7 +1060,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                     else if (c is RDFOntologyHasSelfRestriction hasSelfRestriction)
                     {
-                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_SELF, new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                        result.AddTriple(new RDFTriple((RDFResource)c.Value, RDFVocabulary.OWL.HAS_SELF, RDFTypedLiteral.True));
                     }
                     else if (c is RDFOntologyHasValueRestriction hasValueRestriction)
                     {
