@@ -1272,6 +1272,11 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.PropertyModel.AddSubPropertyOfRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)superProp);
                         else if (evp.IsDatatypeProperty() && superProp.IsDatatypeProperty())
                             ontology.Model.PropertyModel.AddSubPropertyOfRelation((RDFOntologyDatatypeProperty)evp, (RDFOntologyDatatypeProperty)superProp);
+                        else
+                        {
+                            //Raise warning event to inform the user: subpropertyof relation cannot be imported from graph because both properties must be explicitly typed as object or datatype properties
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("SubPropertyOf relation between properties '{0}' and '{1}' cannot be imported from graph because both properties must be explicitly typed as object or datatype properties.", evp.Value, spof.Object));
+                        }
                     }
                     else
                     {
@@ -1291,6 +1296,11 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.PropertyModel.AddEquivalentPropertyRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)equivProp);
                         else if (evp.IsDatatypeProperty() && equivProp.IsDatatypeProperty())
                             ontology.Model.PropertyModel.AddEquivalentPropertyRelation((RDFOntologyDatatypeProperty)evp, (RDFOntologyDatatypeProperty)equivProp);
+                        else
+                        {
+                            //Raise warning event to inform the user: equivalentproperty relation cannot be imported from graph because both properties must be explicitly typed as object or datatype properties
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("EquivalentProperty relation between properties '{0}' and '{1}' cannot be imported from graph because both properties must be explicitly typed as object or datatype properties.", evp.Value, eqpr.Object));
+                        }
                     }
                     else
                     {
