@@ -1337,6 +1337,11 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyObjectProperty)evp, (RDFOntologyObjectProperty)disjProp);
                         else if (evp.IsDatatypeProperty() && disjProp.IsDatatypeProperty())
                             ontology.Model.PropertyModel.AddPropertyDisjointWithRelation((RDFOntologyDatatypeProperty)evp, (RDFOntologyDatatypeProperty)disjProp);
+                        else
+                        {
+                            //Raise warning event to inform the user: propertyDisjointWith relation cannot be imported from graph because both properties must be explicitly typed as object or datatype properties
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("PropertyDisjointWith relation between properties '{0}' and '{1}' cannot be imported from graph because both properties must be explicitly typed as object or datatype properties.", evp.Value, dwpr.Object));
+                        }
                     }
                     else
                     {
