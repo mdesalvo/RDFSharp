@@ -116,7 +116,7 @@ namespace RDFSharp.Model
             {
 
                 //sh:closed
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, new RDFTypedLiteral(this.Closed.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, this.Closed ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
                 //Get collection from ignored properties
                 RDFCollection ignoredProperties = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };

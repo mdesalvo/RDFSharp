@@ -100,7 +100,7 @@ namespace RDFSharp.Model
             {
 
                 //sh:uniqueLang
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, new RDFTypedLiteral(this.UniqueLang.ToString(), RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)));
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, this.UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
             }
             return result;
