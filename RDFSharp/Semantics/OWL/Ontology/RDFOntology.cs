@@ -716,6 +716,7 @@ namespace RDFSharp.Semantics.OWL
 
             //OWL2
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.ALL_DISJOINT_CLASSES.ToRDFOntologyClass());
+            Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.ALL_DISJOINT_PROPERTIES.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.ALL_DIFFERENT.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.ASYMMETRIC_PROPERTY.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.REFLEXIVE_PROPERTY.ToRDFOntologyClass());
