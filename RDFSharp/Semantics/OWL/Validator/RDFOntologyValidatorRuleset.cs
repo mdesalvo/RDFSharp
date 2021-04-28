@@ -315,7 +315,7 @@ namespace RDFSharp.Semantics.OWL
                     ));
                 }
 
-                // AllValuesFrom
+                //AllValuesFrom.FromClass
                 if (restrEnum is RDFOntologyAllValuesFromRestriction)
                 {
                     var fromClass = ((RDFOntologyAllValuesFromRestriction)restrEnum).FromClass;
@@ -330,7 +330,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                 }
 
-                // SomeValuesFrom
+                //SomeValuesFrom.FromClass
                 else if (restrEnum is RDFOntologySomeValuesFromRestriction)
                 {
                     var fromClass = ((RDFOntologySomeValuesFromRestriction)restrEnum).FromClass;
@@ -345,7 +345,7 @@ namespace RDFSharp.Semantics.OWL
                     }
                 }
 
-                // HasValue
+                //HasValue.RequiredValue
                 else if (restrEnum is RDFOntologyHasValueRestriction)
                 {
                     var reqValue = ((RDFOntologyHasValueRestriction)restrEnum).RequiredValue;
@@ -356,6 +356,21 @@ namespace RDFSharp.Semantics.OWL
                             "Vocabulary_Declaration",
                             string.Format("Declaration of ontology fact '{0}' is not found in the data: restriction class '{1}' requires it as 'owl:RequiredValue'.", reqValue, restrEnum),
                             string.Format("Add declaration of ontology fact '{0}' to the data.", reqValue)
+                        ));
+                    }
+                }
+
+                //QualifiedCardinality.OnClass
+                else if (restrEnum is RDFOntologyQualifiedCardinalityRestriction)
+                {
+                    var onClass = ((RDFOntologyQualifiedCardinalityRestriction)restrEnum).OnClass;
+                    if (!ontology.Model.ClassModel.Classes.ContainsKey(onClass.Value.PatternMemberID))
+                    {
+                        report.AddEvidence(new RDFOntologyValidatorEvidence(
+                            RDFSemanticsEnums.RDFOntologyValidatorEvidenceCategory.Warning,
+                            "Vocabulary_Declaration",
+                            string.Format("Declaration of ontology class '{0}' is not found in the class model: restriction class '{1}' requires it as 'owl:OnClass'.", onClass, restrEnum),
+                            string.Format("Add declaration of ontology class '{0}' to the class model.", onClass)
                         ));
                     }
                 }
