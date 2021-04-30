@@ -1028,6 +1028,64 @@ namespace RDFSharp.Semantics.SKOS
 
         #endregion
 
+        #region Extensions
+        /// <summary>
+        /// Adds the "skosCollection -> skos:member -> skosMember" relation to the data.
+        /// </summary>
+        internal static RDFOntologyData AddMemberRelation(this RDFOntologyData ontologyData,
+                                                          RDFOntologyFact skosCollection,
+                                                          RDFOntologyFact skosMember)
+        {
+            if (ontologyData != null && skosCollection != null && skosMember != null)
+            {
+                ontologyData.Relations.Member.AddEntry(new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember));
+            }
+            return ontologyData;
+        }
+
+        /// <summary>
+        /// Adds the "skosOrderedCollection -> skos:memberList -> skosMember" relation to the data.
+        /// </summary>
+        internal static RDFOntologyData AddMemberListRelation(this RDFOntologyData ontologyData,
+                                                              RDFOntologyFact skosOrderedCollection,
+                                                              RDFOntologyFact skosMember)
+        {
+            if (ontologyData != null && skosOrderedCollection != null && skosMember != null)
+            {
+                ontologyData.Relations.MemberList.AddEntry(new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember));
+            }
+            return ontologyData;
+        }
+
+        /// <summary>
+        /// Removes the "skosCollection -> skos:member -> skosMember" relation to the data.
+        /// </summary>
+        internal static RDFOntologyData RemoveMemberRelation(this RDFOntologyData ontologyData,
+                                                             RDFOntologyFact skosCollection,
+                                                             RDFOntologyFact skosMember)
+        {
+            if (ontologyData != null && skosCollection != null && skosMember != null)
+            {
+                ontologyData.Relations.Member.RemoveEntry(new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember));
+            }
+            return ontologyData;
+        }
+
+        /// <summary>
+        /// Removes the "skosOrderedCollection -> skos:memberList -> skosMember" relation to the data.
+        /// </summary>
+        internal static RDFOntologyData RemoveMemberListRelation(this RDFOntologyData ontologyData,
+                                                                 RDFOntologyFact skosOrderedCollection,
+                                                                 RDFOntologyFact skosMember)
+        {
+            if (ontologyData != null && skosOrderedCollection != null && skosMember != null)
+            {
+                ontologyData.Relations.MemberList.RemoveEntry(new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember));
+            }
+            return ontologyData;
+        }
+        #endregion
+
     }
 
 }

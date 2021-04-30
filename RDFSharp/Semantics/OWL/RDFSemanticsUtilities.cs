@@ -16,7 +16,7 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System;
+using RDFSharp.Semantics.SKOS;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -80,7 +80,7 @@ namespace RDFSharp.Semantics.OWL
 
             //Step 6.7: end the graph->ontology process
             EndProcess(ref ontology, ontGraph, prefetchContext);
-            
+
             RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' has been parsed as Ontology.", ontGraph.Context));
             return ontology;
         }
@@ -94,6 +94,7 @@ namespace RDFSharp.Semantics.OWL
                     { nameof(RDFVocabulary.RDF.TYPE), ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE) },
                     { nameof(RDFVocabulary.RDF.FIRST), ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST) },
                     { nameof(RDFVocabulary.RDF.REST), ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST) },
+                    { nameof(RDFVocabulary.SKOS.MEMBER), ontGraph.SelectTriplesByPredicate(RDFVocabulary.SKOS.MEMBER) }, //SKOS
                     { nameof(RDFVocabulary.SKOS.MEMBER_LIST), ontGraph.SelectTriplesByPredicate(RDFVocabulary.SKOS.MEMBER_LIST) }, //SKOS
                     { nameof(RDFVocabulary.RDFS.SUB_CLASS_OF), ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF) },
                     { nameof(RDFVocabulary.RDFS.SUB_PROPERTY_OF), ontGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_PROPERTY_OF) },
@@ -1756,13 +1757,26 @@ namespace RDFSharp.Semantics.OWL
             }
             #endregion
 
-            #region OrderedCollection [SKOS]
+            #region Member [SKOS]
+            foreach (RDFTriple col in prefetchContext[nameof(RDFVocabulary.SKOS.MEMBER)].Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            {
+                //skos:Collection
+                RDFOntologyFact skosCollection = new RDFOntologyFact((RDFResource)col.Subject);
+                ontology.Data.AddFact(skosCollection);
+                ontology.Data.AddClassTypeRelation(skosCollection, RDFVocabulary.SKOS.COLLECTION.ToRDFOntologyClass());
+
+                //skos:Collection -> skos:member -> [skos:Concept|skos:Collection]
+                ontology.Data.AddMemberRelation(skosCollection, new RDFOntologyFact((RDFResource)col.Object));
+            }
+            #endregion
+
+            #region MemberList [SKOS]
             foreach (RDFTriple ordCol in prefetchContext[nameof(RDFVocabulary.SKOS.MEMBER_LIST)].Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
-                RDFOntologyFact ordColRepresentFact = new RDFOntologyFact((RDFResource)ordCol.Object);
-
-                //Representative of skos:OrderedCollection is a fact of type rdf:List
-                ontology.Data.AddFact(ordColRepresentFact);
+                //skos:OrderedCollection
+                RDFOntologyFact skosOrderedCollection = new RDFOntologyFact((RDFResource)ordCol.Subject);
+                ontology.Data.AddFact(skosOrderedCollection);
+                ontology.Data.AddClassTypeRelation(skosOrderedCollection, RDFVocabulary.SKOS.ORDERED_COLLECTION.ToRDFOntologyClass());
 
                 #region DeserializeOrderedCollection
                 bool nilFound = false;
@@ -1770,29 +1784,23 @@ namespace RDFSharp.Semantics.OWL
                 HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
                 while (!nilFound)
                 {
-                    ontology.Data.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.LIST.ToRDFOntologyClass()));
-
                     #region rdf:first
                     RDFTriple first = prefetchContext[nameof(RDFVocabulary.RDF.FIRST)].SelectTriplesBySubject(itemRest).FirstOrDefault();
                     if (first != null && first.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                     {
-                        //Items of skos:OrderedCollection are facts of type skos:Concept
+                        //skos:OrderedCollection -> skos:memberList -> skos:Concept
                         ontology.Data.AddFact(((RDFResource)first.Object).ToRDFOntologyFact());
-                        ontology.Data.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(((RDFResource)first.Object).ToRDFOntologyFact(), RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass()));
-                        ontology.Data.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.FIRST.ToRDFOntologyObjectProperty(), ((RDFResource)first.Object).ToRDFOntologyFact()));
+                        ontology.Data.AddClassTypeRelation(((RDFResource)first.Object).ToRDFOntologyFact(), RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass());
+                        ontology.Data.AddMemberListRelation(skosOrderedCollection, ((RDFResource)first.Object).ToRDFOntologyFact());
 
                         #region rdf:rest
                         RDFTriple rest = prefetchContext[nameof(RDFVocabulary.RDF.REST)].SelectTriplesBySubject(itemRest).FirstOrDefault();
                         if (rest != null)
                         {
                             if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
-                            {
-                                ontology.Data.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.NIL.ToRDFOntologyFact()));
                                 nilFound = true;
-                            }
                             else
                             {
-                                ontology.Data.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(itemRest.ToRDFOntologyFact(), RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), ((RDFResource)rest.Object).ToRDFOntologyFact()));
                                 itemRest = (RDFResource)rest.Object;
                                 //Avoid bad-formed cyclic lists to generate infinite loops
                                 if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))

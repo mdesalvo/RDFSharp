@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using RDFSharp.Semantics.SKOS;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -400,7 +401,14 @@ namespace RDFSharp.Semantics.OWL
                         //Collision with negative assertions must be avoided [OWL2]
                         if (RDFOntologyChecker.CheckAssertionCompatibility(this, aFact, objectProperty, bFact))
                         {
-                            this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                            //Cannot accept assertion in case of SKOS collection predicates:
+                            //In this cases properly delegate the operation to SKOS layer
+                            if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER))
+                                this.AddMemberRelation(aFact, bFact);
+                            else if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
+                                this.AddMemberListRelation(aFact, bFact);
+                            else
+                                this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
                         }
                         else
                         {
@@ -438,8 +446,18 @@ namespace RDFSharp.Semantics.OWL
                     //Collision with negative assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
                     {
-                        this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-                        this.AddLiteral(ontologyLiteral);
+                        //Cannot accept assertion in case of SKOS collection predicates
+                        if (!datatypeProperty.Equals(RDFVocabulary.SKOS.MEMBER)
+                                && !datatypeProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
+                        {
+                            this.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
+                            this.AddLiteral(ontologyLiteral);
+                        }
+                        else
+                        {
+                            //Raise warning event to inform the user: Assertion relation cannot be added to the data because it violates the taxonomy consistency
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (SKOS collection detected).", ontologyFact, ontologyLiteral, datatypeProperty));
+                        }
                     }
                     else
                     {
@@ -471,7 +489,15 @@ namespace RDFSharp.Semantics.OWL
                     //Collision with assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, aFact, objectProperty, bFact))
                     {
-                        this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                        //Cannot accept negative assertion in case of SKOS collection predicates
+                        if (!objectProperty.Equals(RDFVocabulary.SKOS.MEMBER)
+                                && !objectProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
+                            this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                        else
+                        {
+                            //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and fact '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (SKOS collection detected).", aFact, bFact, objectProperty));
+                        }
                     }
                     else
                     {
@@ -503,8 +529,18 @@ namespace RDFSharp.Semantics.OWL
                     //Collision with assertions must be avoided [OWL2]
                     if (RDFOntologyChecker.CheckNegativeAssertionCompatibility(this, ontologyFact, datatypeProperty, ontologyLiteral))
                     {
-                        this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-                        this.AddLiteral(ontologyLiteral);
+                        //Cannot accept negative assertion in case of SKOS collection predicates
+                        if (!datatypeProperty.Equals(RDFVocabulary.SKOS.MEMBER)
+                                && !datatypeProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
+                        {
+                            this.Relations.NegativeAssertions.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
+                            this.AddLiteral(ontologyLiteral);
+                        }
+                        else
+                        {
+                            //Raise warning event to inform the user: NegativeAssertion relation cannot be added to the data because it violates the taxonomy consistency
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' with property '{2}' cannot be added to the data because it would violate the taxonomy consistency (SKOS collection detected).", ontologyFact, ontologyLiteral, datatypeProperty));
+                        }
                     }
                     else
                     {
@@ -589,7 +625,7 @@ namespace RDFSharp.Semantics.OWL
                     this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
                 }
 
-                //NegativeAssertions
+                //NegativeAssertions [OWL2]
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesBySubject(ontologyFact))
                 {
                     this.Relations.NegativeAssertions.RemoveEntry(taxonomyEntry);
@@ -602,6 +638,30 @@ namespace RDFSharp.Semantics.OWL
                 {
                     this.Relations.NegativeAssertions.RemoveEntry(taxonomyEntry);
                     this.AddNegativeAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
+                }
+
+                //Member [SKOS]
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Member.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.Member.RemoveEntry(taxonomyEntry);
+                    this.AddMemberRelation(newOntologyFact, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Member.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Relations.Member.RemoveEntry(taxonomyEntry);
+                    this.AddMemberRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
+                }
+
+                //MemberList [SKOS]
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.MemberList.SelectEntriesBySubject(ontologyFact))
+                {
+                    this.Relations.MemberList.RemoveEntry(taxonomyEntry);
+                    this.AddMemberListRelation(newOntologyFact, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.MemberList.SelectEntriesByObject(ontologyFact))
+                {
+                    this.Relations.MemberList.RemoveEntry(taxonomyEntry);
+                    this.AddMemberListRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
                 }
 
                 //Annotations
@@ -870,7 +930,14 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
-                this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+                //Cannot remove assertion in case of SKOS collection predicates:
+                //In this cases properly delegate the operation to SKOS layer
+                if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER))
+                    this.RemoveMemberRelation(aFact, bFact);
+                else if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
+                    this.RemoveMemberListRelation(aFact, bFact);
+                else
+                    this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
             }
             return this;
         }
@@ -928,9 +995,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 long factID = RDFModelUtilities.CreateHash(fact);
                 if (this.Facts.ContainsKey(factID))
-                {
                     return this.Facts[factID];
-                }
             }
             return null;
         }
@@ -944,9 +1009,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 long literalID = RDFModelUtilities.CreateHash(literal);
                 if (this.Literals.ContainsKey(literalID))
-                {
                     return this.Literals[literalID];
-                }
             }
             return null;
         }
@@ -958,27 +1021,18 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyData IntersectWith(RDFOntologyData ontologyData)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
             if (ontologyData != null)
             {
-
                 //Add intersection facts
-                foreach (var f in this)
-                {
+                foreach (RDFOntologyFact f in this)
                     if (ontologyData.Facts.ContainsKey(f.PatternMemberID))
-                    {
                         result.AddFact(f);
-                    }
-                }
 
                 //Add intersection literals
-                foreach (var l in this.Literals.Values)
-                {
+                foreach (RDFOntologyLiteral l in this.Literals.Values)
                     if (ontologyData.Literals.ContainsKey(l.PatternMemberID))
-                    {
                         result.AddLiteral(l);
-                    }
-                }
 
                 //Add intersection relations
                 result.Relations.ClassType = this.Relations.ClassType.IntersectWith(ontologyData.Relations.ClassType);
@@ -986,6 +1040,8 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.DifferentFrom = this.Relations.DifferentFrom.IntersectWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = this.Relations.Assertions.IntersectWith(ontologyData.Relations.Assertions);
                 result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.IntersectWith(ontologyData.Relations.NegativeAssertions); //OWL2
+                result.Relations.Member = this.Relations.Member.IntersectWith(ontologyData.Relations.Member); //SKOS
+                result.Relations.MemberList = this.Relations.MemberList.IntersectWith(ontologyData.Relations.MemberList); //SKOS
 
                 //Add intersection annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.IntersectWith(ontologyData.Annotations.VersionInfo);
@@ -994,7 +1050,6 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = this.Annotations.SeeAlso.IntersectWith(ontologyData.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.IntersectWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.IntersectWith(ontologyData.Annotations.CustomAnnotations);
-
             }
             return result;
         }
@@ -1004,19 +1059,15 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyData UnionWith(RDFOntologyData ontologyData)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //Add facts from this data
-            foreach (var f in this)
-            {
+            foreach (RDFOntologyFact f in this)
                 result.AddFact(f);
-            }
 
             //Add literals from this data
-            foreach (var l in this.Literals.Values)
-            {
+            foreach (RDFOntologyLiteral l in this.Literals.Values)
                 result.AddLiteral(l);
-            }
 
             //Add relations from this data
             result.Relations.ClassType = result.Relations.ClassType.UnionWith(this.Relations.ClassType);
@@ -1024,6 +1075,8 @@ namespace RDFSharp.Semantics.OWL
             result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
             result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
             result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions); //OWL2
+            result.Relations.Member = result.Relations.Member.UnionWith(this.Relations.Member); //SKOS
+            result.Relations.MemberList = result.Relations.MemberList.UnionWith(this.Relations.MemberList); //SKOS
 
             //Add annotations from this data
             result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1036,18 +1089,13 @@ namespace RDFSharp.Semantics.OWL
             //Manage the given data
             if (ontologyData != null)
             {
-
                 //Add facts from the given data
-                foreach (var f in ontologyData)
-                {
+                foreach (RDFOntologyFact f in ontologyData)
                     result.AddFact(f);
-                }
 
                 //Add literals from the given data
-                foreach (var l in ontologyData.Literals.Values)
-                {
+                foreach (RDFOntologyLiteral l in ontologyData.Literals.Values)
                     result.AddLiteral(l);
-                }
 
                 //Add relations from the given data
                 result.Relations.ClassType = result.Relations.ClassType.UnionWith(ontologyData.Relations.ClassType);
@@ -1055,6 +1103,8 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = result.Relations.Assertions.UnionWith(ontologyData.Relations.Assertions);
                 result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(ontologyData.Relations.NegativeAssertions); //OWL2
+                result.Relations.Member = result.Relations.Member.UnionWith(ontologyData.Relations.Member); //SKOS
+                result.Relations.MemberList = result.Relations.MemberList.UnionWith(ontologyData.Relations.MemberList); //SKOS
 
                 //Add annotations from the given data
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(ontologyData.Annotations.VersionInfo);
@@ -1063,7 +1113,6 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(ontologyData.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(ontologyData.Annotations.CustomAnnotations);
-
             }
             return result;
         }
@@ -1076,24 +1125,15 @@ namespace RDFSharp.Semantics.OWL
             var result = new RDFOntologyData();
             if (ontologyData != null)
             {
-
                 //Add difference facts
-                foreach (var f in this)
-                {
+                foreach (RDFOntologyFact f in this)
                     if (!ontologyData.Facts.ContainsKey(f.PatternMemberID))
-                    {
                         result.AddFact(f);
-                    }
-                }
 
                 //Add difference literals
-                foreach (var l in this.Literals.Values)
-                {
+                foreach (RDFOntologyLiteral l in this.Literals.Values)
                     if (!ontologyData.Literals.ContainsKey(l.PatternMemberID))
-                    {
                         result.AddLiteral(l);
-                    }
-                }
 
                 //Add difference relations
                 result.Relations.ClassType = this.Relations.ClassType.DifferenceWith(ontologyData.Relations.ClassType);
@@ -1101,6 +1141,8 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.DifferentFrom = this.Relations.DifferentFrom.DifferenceWith(ontologyData.Relations.DifferentFrom);
                 result.Relations.Assertions = this.Relations.Assertions.DifferenceWith(ontologyData.Relations.Assertions);
                 result.Relations.NegativeAssertions = this.Relations.NegativeAssertions.DifferenceWith(ontologyData.Relations.NegativeAssertions); //OWL2
+                result.Relations.Member = this.Relations.Member.DifferenceWith(ontologyData.Relations.Member); //SKOS
+                result.Relations.MemberList = this.Relations.MemberList.DifferenceWith(ontologyData.Relations.MemberList); //SKOS
 
                 //Add difference annotations
                 result.Annotations.VersionInfo = this.Annotations.VersionInfo.DifferenceWith(ontologyData.Annotations.VersionInfo);
@@ -1109,22 +1151,16 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = this.Annotations.SeeAlso.DifferenceWith(ontologyData.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.DifferenceWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.DifferenceWith(ontologyData.Annotations.CustomAnnotations);
-
             }
             else
             {
-
                 //Add facts from this data
-                foreach (var f in this)
-                {
+                foreach (RDFOntologyFact f in this)
                     result.AddFact(f);
-                }
 
                 //Add literals from this data
-                foreach (var l in this.Literals.Values)
-                {
+                foreach (RDFOntologyLiteral l in this.Literals.Values)
                     result.AddLiteral(l);
-                }
 
                 //Add relations from this data
                 result.Relations.ClassType = result.Relations.ClassType.UnionWith(this.Relations.ClassType);
@@ -1132,6 +1168,8 @@ namespace RDFSharp.Semantics.OWL
                 result.Relations.DifferentFrom = result.Relations.DifferentFrom.UnionWith(this.Relations.DifferentFrom);
                 result.Relations.Assertions = result.Relations.Assertions.UnionWith(this.Relations.Assertions);
                 result.Relations.NegativeAssertions = result.Relations.NegativeAssertions.UnionWith(this.Relations.NegativeAssertions); //OWL2
+                result.Relations.Member = result.Relations.Member.UnionWith(this.Relations.Member); //SKOS
+                result.Relations.MemberList = result.Relations.MemberList.UnionWith(this.Relations.MemberList); //SKOS
 
                 //Add annotations from this data
                 result.Annotations.VersionInfo = result.Annotations.VersionInfo.UnionWith(this.Annotations.VersionInfo);
@@ -1140,7 +1178,6 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
-
             }
             return result;
         }
@@ -1159,7 +1196,9 @@ namespace RDFSharp.Semantics.OWL
                            .UnionWith(this.Relations.DifferentFrom.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.DifferentFrom)))
                            .UnionWith(this.Relations.ClassType.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.ClassType)))
                            .UnionWith(this.Relations.Assertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.Assertions)))
-                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions))); //OWL2
+                           .UnionWith(this.Relations.NegativeAssertions.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.NegativeAssertions))) //OWL2
+                           .UnionWith(this.Relations.Member.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.Member))) //SKOS
+                           .UnionWith(this.Relations.MemberList.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.MemberList))); //SKOS
 
             //Annotations
             result = result.UnionWith(this.Annotations.VersionInfo.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.VersionInfo)))

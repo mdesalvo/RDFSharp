@@ -706,14 +706,14 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFOntologyData ToRDFOntologyData()
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //ConceptScheme
             result.AddFact(this);
             result.AddClassTypeRelation(this, RDFVocabulary.SKOS.CONCEPT_SCHEME.ToRDFOntologyClass());
 
             //Concepts
-            foreach (var c in this)
+            foreach (RDFSKOSConcept c in this)
             {
                 result.AddFact(c);
                 result.AddClassTypeRelation(c, RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass());
@@ -721,21 +721,21 @@ namespace RDFSharp.Semantics.SKOS
             }
 
             //Collections
-            foreach (var c in this.Collections.Values)
+            foreach (RDFSKOSCollection c in this.Collections.Values)
             {
                 result.AddAssertionRelation(c, RDFVocabulary.SKOS.IN_SCHEME.ToRDFOntologyObjectProperty(), this);
                 result = result.UnionWith(c.ToRDFOntologyData());
             }
 
             //OrderedCollections
-            foreach (var o in this.OrderedCollections.Values)
+            foreach (RDFSKOSOrderedCollection o in this.OrderedCollections.Values)
             {
                 result.AddAssertionRelation(o, RDFVocabulary.SKOS.IN_SCHEME.ToRDFOntologyObjectProperty(), this);
                 result = result.UnionWith(o.ToRDFOntologyData());
             }
 
             //Labels
-            foreach (var l in this.Labels.Values)
+            foreach (RDFSKOSLabel l in this.Labels.Values)
             {
                 result.AddFact(l);
                 result.AddClassTypeRelation(l, RDFVocabulary.SKOS.SKOSXL.LABEL.ToRDFOntologyClass());

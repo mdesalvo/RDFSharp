@@ -22,7 +22,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyDataMetadata
     {
-
         #region Properties
         /// <summary>
         /// "rdf:type" relations
@@ -48,6 +47,16 @@ namespace RDFSharp.Semantics.OWL
         /// "ontology property -> ontology resource" custom negative relations [OWL2]
         /// </summary>
         public RDFOntologyTaxonomy NegativeAssertions { get; internal set; }
+
+        /// <summary>
+        /// "skos:member" relations [SKOS]
+        /// </summary>
+        internal RDFOntologyTaxonomy Member { get; set; }
+
+        /// <summary>
+        /// "skos:memberList" relations [SKOS]
+        /// </summary>
+        internal RDFOntologyTaxonomy MemberList { get; set; }
         #endregion
 
         #region Ctors
@@ -60,7 +69,9 @@ namespace RDFSharp.Semantics.OWL
             this.SameAs = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
             this.DifferentFrom = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
             this.Assertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
-            this.NegativeAssertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false);
+            this.NegativeAssertions = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false); //OWL2
+            this.Member = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false); //SKOS
+            this.MemberList = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data, false); //SKOS
         }
         #endregion
     }

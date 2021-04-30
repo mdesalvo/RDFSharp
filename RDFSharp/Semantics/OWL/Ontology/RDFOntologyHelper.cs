@@ -1159,7 +1159,7 @@ namespace RDFSharp.Semantics.OWL
                                 membersCache.Add(tEntry.TaxonomyObject.PatternMemberID, ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
 
                             result = membersCache[tEntry.TaxonomyObject.PatternMemberID];
-                        }   
+                        }
                         else
                             result = ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject);
 
@@ -2021,6 +2021,7 @@ namespace RDFSharp.Semantics.OWL
                 //List-based reification
                 case nameof(RDFOntologyClassModelMetadata.HasKey):
                 case nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom):
+                case nameof(RDFOntologyDataMetadata.MemberList):
                     result = ReifyListTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior);
                     break;
 
@@ -2132,18 +2133,23 @@ namespace RDFSharp.Semantics.OWL
         {
             RDFGraph result = new RDFGraph();
 
-            RDFResource taxonomyPredicate = taxonomyName.Equals(nameof(RDFOntologyClassModelMetadata.HasKey))
-                                                ? RDFVocabulary.OWL.HAS_KEY : RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM;
-            foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
+            RDFResource taxonomyPredicate = taxonomyName.Equals(nameof(RDFOntologyClassModelMetadata.HasKey)) ? RDFVocabulary.OWL.HAS_KEY :
+                                                taxonomyName.Equals(nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom)) ? RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM :
+                                                    taxonomyName.Equals(nameof(RDFOntologyDataMetadata.MemberList)) ? RDFVocabulary.SKOS.MEMBER_LIST :
+                                                        null;
+            if (taxonomyPredicate != null)
             {
-                //Build collection corresponding to the current subject of the given taxonomy
-                RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource, taxonomy.AcceptDuplicates);
-                foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
-                    tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
-                result.AddCollection(tgroupColl);
+                foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
+                {
+                    //Build collection corresponding to the current subject of the given taxonomy
+                    RDFCollection tgroupColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource, taxonomy.AcceptDuplicates);
+                    foreach (RDFOntologyTaxonomyEntry tgroupEntry in tgroup.ToList())
+                        tgroupColl.AddItem((RDFResource)tgroupEntry.TaxonomyObject.Value);
+                    result.AddCollection(tgroupColl);
 
-                //Attach collection with taxonomy-specific predicate
-                result.AddTriple(new RDFTriple((RDFResource)tgroup.Key.Value, taxonomyPredicate, tgroupColl.ReificationSubject));
+                    //Attach collection with taxonomy-specific predicate
+                    result.AddTriple(new RDFTriple((RDFResource)tgroup.Key.Value, taxonomyPredicate, tgroupColl.ReificationSubject));
+                }
             }
 
             return result;

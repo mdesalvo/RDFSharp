@@ -126,14 +126,12 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public List<RDFSKOSConcept> GetMembers()
         {
-            var result = new List<RDFSKOSConcept>();
+            List<RDFSKOSConcept> result = new List<RDFSKOSConcept>();
 
             //Concepts
             var conceptsEnum = this.ConceptsEnumerator;
             while (conceptsEnum.MoveNext())
-            {
                 result.Add(conceptsEnum.Current.Item2);
-            }
 
             return result;
         }
@@ -151,50 +149,18 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFOntologyData ToRDFOntologyData()
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //OrderedCollection
             result.AddFact(this);
             result.AddClassTypeRelation(this, RDFVocabulary.SKOS.ORDERED_COLLECTION.ToRDFOntologyClass());
-            result.AddAssertionRelation(this, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), this.Representative);
-
-            //Representative
-            result.AddFact(this.Representative);
 
             //Concepts
-            var reifSubj = new RDFOntologyFact((RDFResource)this.Representative.Value);
-            if (this.ConceptsCount == 0)
+            foreach (RDFSKOSConcept cn in this.GetMembers())
             {
-                result.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.LIST.ToRDFOntologyClass()));
-                result.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.FIRST.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.NIL.ToRDFOntologyFact()));
-                result.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.NIL.ToRDFOntologyFact()));
-            }
-            else
-            {
-                var itemCounter = 0;
-                var conceptsEnum = this.ConceptsEnumerator;
-                while (conceptsEnum.MoveNext())
-                {
-                    result.AddFact(conceptsEnum.Current.Item2);
-                    result.AddClassTypeRelation(conceptsEnum.Current.Item2, RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass());
-
-                    //first
-                    result.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.LIST.ToRDFOntologyClass()));
-                    result.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.FIRST.ToRDFOntologyObjectProperty(), conceptsEnum.Current.Item2));
-
-                    //rest
-                    itemCounter++;
-                    if (itemCounter < this.ConceptsCount)
-                    {
-                        var newReifSubj = new RDFOntologyFact(new RDFResource());
-                        result.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), newReifSubj));
-                        reifSubj = newReifSubj;
-                    }
-                    else
-                    {
-                        result.Relations.Assertions.AddEntry(new RDFOntologyTaxonomyEntry(reifSubj, RDFVocabulary.RDF.REST.ToRDFOntologyObjectProperty(), RDFVocabulary.RDF.NIL.ToRDFOntologyFact()));
-                    }
-                }
+                result.AddFact(cn);
+                result.AddClassTypeRelation(cn, RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass());
+                result.AddMemberListRelation(this, cn);
             }
 
             return result;

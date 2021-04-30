@@ -309,9 +309,7 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the lens concept is the top concept of the lens scheme
         /// </summary>
         public bool IsTopConcept()
-        {
-            return this.Scheme.Relations.TopConcept.Any(r => r.TaxonomyObject.Equals(this.Concept));
-        }
+            => this.Scheme.Relations.TopConcept.Any(r => r.TaxonomyObject.Equals(this.Concept));
 
         /// <summary>
         /// Enlists the label relations which are assigned to the lens concept (SKOS-XL)

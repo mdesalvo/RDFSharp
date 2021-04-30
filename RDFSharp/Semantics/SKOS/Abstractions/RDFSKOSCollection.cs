@@ -173,19 +173,15 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public List<RDFSKOSConcept> GetMembers()
         {
-            var result = new List<RDFSKOSConcept>();
+            List<RDFSKOSConcept> result = new List<RDFSKOSConcept>();
 
             //Concepts
-            foreach (var concept in this.Concepts.Values)
-            {
+            foreach (RDFSKOSConcept concept in this.Concepts.Values)
                 result.Add(concept);
-            }
 
             //Collections
-            foreach (var collection in this.Collections.Values)
-            {
+            foreach (RDFSKOSCollection collection in this.Collections.Values)
                 result.AddRange(collection.GetMembers());
-            }
 
             return result;
         }
@@ -203,24 +199,26 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFOntologyData ToRDFOntologyData()
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //Collection
             result.AddFact(this);
             result.AddClassTypeRelation(this, RDFVocabulary.SKOS.COLLECTION.ToRDFOntologyClass());
 
             //Concepts
-            foreach (var cn in this.Concepts.Values)
+            foreach (RDFSKOSConcept cn in this.Concepts.Values)
             {
                 result.AddFact(cn);
                 result.AddClassTypeRelation(cn, RDFVocabulary.SKOS.CONCEPT.ToRDFOntologyClass());
-                result.AddAssertionRelation(this, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), cn);
+                result.AddMemberRelation(this, cn);
             }
 
             //Collections
-            foreach (var cl in this.Collections.Values)
+            foreach (RDFSKOSCollection cl in this.Collections.Values)
             {
-                result.AddAssertionRelation(this, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), cl);
+                result.AddMemberRelation(this, cl);
+
+                //Recursively add linked SKOS collection
                 result = result.UnionWith(cl.ToRDFOntologyData());
             }
 
