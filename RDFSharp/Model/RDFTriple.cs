@@ -55,7 +55,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Subject of the triple's reification
         /// </summary>
-        public RDFResource ReificationSubject { get; internal set; }
+        public RDFResource ReificationSubject => LazyReificationSubject.Value;
+        private readonly Lazy<RDFResource> LazyReificationSubject;
         #endregion
 
         #region Ctors
@@ -90,8 +91,8 @@ namespace RDFSharp.Model
             //TripleID
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
-            //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID.ToString()));
+            //LazyReificationSubject
+            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
         }
 
         /// <summary>
@@ -125,8 +126,8 @@ namespace RDFSharp.Model
             //TripleID
             this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
 
-            //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.TripleID.ToString()));
+            //LazyReificationSubject
+            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
         }
         #endregion
 
@@ -150,16 +151,15 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph ReifyTriple()
         {
-            var reifGraph = new RDFGraph();
-            var reifSubj = this.ReificationSubject;
+            RDFGraph reifGraph = new RDFGraph();
 
-            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
-            reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
+            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
+            reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
             if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
+                reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
             else
-                reifGraph.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
+                reifGraph.AddTriple(new RDFTriple(this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
 
             return reifGraph;
         }
