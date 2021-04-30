@@ -131,7 +131,7 @@ namespace RDFSharp.Semantics.OWL
                     { nameof(RDFVocabulary.OWL.DIFFERENT_FROM), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DIFFERENT_FROM) },
                     { nameof(RDFVocabulary.OWL.ALL_DIFFERENT), ontGraph.SelectTriplesByObject(RDFVocabulary.OWL.ALL_DIFFERENT).SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)}, //OWL2
                     { nameof(RDFVocabulary.OWL.MEMBERS), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.MEMBERS) },
-                    { nameof(RDFVocabulary.OWL.DISTINCT_MEMBERS), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISTINCT_MEMBERS) },
+                    { nameof(RDFVocabulary.OWL.DISTINCT_MEMBERS), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.DISTINCT_MEMBERS) }, //OWL2
                     { nameof(RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION), ontGraph.SelectTriplesByObject(RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION).SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)}, //OWL2
                     { nameof(RDFVocabulary.OWL.SOURCE_INDIVIDUAL), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.SOURCE_INDIVIDUAL) }, //OWL2
                     { nameof(RDFVocabulary.OWL.ASSERTION_PROPERTY), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ASSERTION_PROPERTY) }, //OWL2
