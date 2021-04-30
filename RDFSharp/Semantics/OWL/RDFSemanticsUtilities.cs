@@ -1884,11 +1884,15 @@ namespace RDFSharp.Semantics.OWL
                     //We found owl:TargetValue, so we can accept it only if it's a literal
                     //and the negative assertion's property is effectively a datatype property
                     if (tValue is RDFLiteral && apProperty is RDFOntologyDatatypeProperty)
+                    {
                         ontology.Data.AddNegativeAssertionRelation(((RDFResource)sIndividual).ToRDFOntologyFact(), (RDFOntologyDatatypeProperty)apProperty, ((RDFLiteral)tValue).ToRDFOntologyLiteral());
+                        continue;
+                    }
                     else
                     {
                         //Raise warning event to inform the user: negative assertion relation cannot be imported from graph, because use of target value is not correct
                         RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation '{0}' cannot be imported from graph, because use of owl:TargetValue is not correct.", nAsn.Subject));
+                        continue;
                     }
                 }
                 #endregion
