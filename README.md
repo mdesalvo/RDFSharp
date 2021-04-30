@@ -30,6 +30,6 @@ RDFSharp has a modular API made up of four layers ([RDF/SPARQL/SHACL docs](https
         <li>Create and manage <i>OWL-DL ontologies</i> (classes, restrictions, properties, facts, assertions, annotations, ...)</li>
         <li>Validate ontology <i>T-BOX</i> and <i>A-BOX</i> against a standard set of <i>RDFS/OWL-DL</i> constraint rules</li>
         <li>Create <i>OWL-DL reasoners</i> exploiting an extensible set of <i>RDFS/OWL-DL</i> inference rules</li>
-        <li>Create and manage <i>SKOS concept schemes</i> (concepts, relations, annotations, labels, ...)</li>
+        <li>Create and manage <i>SKOS concept schemes</i> (concepts, collections, relations, annotations, labels, ...)</li>
     </ul>
 </ul>
