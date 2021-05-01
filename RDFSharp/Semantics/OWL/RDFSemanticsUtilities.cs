@@ -2239,9 +2239,10 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
+                RDFGraph classGraph = ontGraph.SelectTriplesBySubject((RDFResource)c.Value);
                 foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
                 {
-                    foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)c.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
+                    foreach (RDFTriple t in classGraph.SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             ontology.Model.ClassModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, c, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
@@ -2369,9 +2370,10 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
+                RDFGraph propertyGraph = ontGraph.SelectTriplesBySubject((RDFResource)p.Value);
                 foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
                 {
-                    foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)p.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
+                    foreach (RDFTriple t in propertyGraph.SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             ontology.Model.PropertyModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, p, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
@@ -2498,9 +2500,10 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
+                RDFGraph factGraph = ontGraph.SelectTriplesBySubject((RDFResource)f.Value);
                 foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
                 {
-                    foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)f.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
+                    foreach (RDFTriple t in factGraph.SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
                             ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, f, ((RDFLiteral)t.Object).ToRDFOntologyLiteral());
