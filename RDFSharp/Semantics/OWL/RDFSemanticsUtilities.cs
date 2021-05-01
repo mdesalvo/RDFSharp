@@ -92,7 +92,7 @@ namespace RDFSharp.Semantics.OWL
             FinalizeDataAnnotations(ontology, ontGraph, prefetchContext);
 
             //Step 6.7: end the graph->ontology process
-            EndProcess(ref ontology, ontGraph, prefetchContext);
+            EndProcess(ref ontology);
 
             RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Graph '{0}' has been parsed as Ontology.", ontGraph.Context));
             return ontology;
@@ -2533,7 +2533,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Ends the graph->ontology process
         /// </summary>
-        private static void EndProcess(ref RDFOntology ontology, RDFGraph ontGraph, Dictionary<string, RDFGraph> prefetchContext)
+        private static void EndProcess(ref RDFOntology ontology)
         {
             //Unexpand from BASE ontology
             RDFPatternMember ontologyValue = ontology.Value;
