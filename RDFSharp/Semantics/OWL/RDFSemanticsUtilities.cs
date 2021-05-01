@@ -29,7 +29,20 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     internal static class RDFSemanticsUtilities
     {
-        internal static Regex NumberRegex = new Regex(@"^[0-9]+$", RegexOptions.Compiled);
+        internal static readonly Regex NumberRegex = new Regex(@"^[0-9]+$", RegexOptions.Compiled);
+        internal static readonly HashSet<long> StandardAnnotationProperties = new HashSet<long>()
+        {
+            { RDFVocabulary.OWL.VERSION_INFO.PatternMemberID },
+            { RDFVocabulary.OWL.VERSION_IRI.PatternMemberID },
+            { RDFVocabulary.RDFS.COMMENT.PatternMemberID },
+            { RDFVocabulary.RDFS.LABEL.PatternMemberID },
+            { RDFVocabulary.RDFS.SEE_ALSO.PatternMemberID },
+            { RDFVocabulary.RDFS.IS_DEFINED_BY.PatternMemberID },
+            { RDFVocabulary.OWL.PRIOR_VERSION.PatternMemberID },
+            { RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH.PatternMemberID },
+            { RDFVocabulary.OWL.INCOMPATIBLE_WITH.PatternMemberID },
+            { RDFVocabulary.OWL.IMPORTS.PatternMemberID }
+        };
 
         #region Convert
         /// <summary>
@@ -2099,15 +2112,8 @@ namespace RDFSharp.Semantics.OWL
             #endregion
 
             #region CustomAnnotations
-            foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty()).ToList())
+            foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
             {
-                //Skip built-in annotation properties
-                if (annotProp.Equals(RDFVocabulary.OWL.VERSION_INFO) || annotProp.Equals(RDFVocabulary.RDFS.COMMENT)
-                        || annotProp.Equals(RDFVocabulary.RDFS.LABEL) || annotProp.Equals(RDFVocabulary.RDFS.SEE_ALSO)
-                            || annotProp.Equals(RDFVocabulary.RDFS.IS_DEFINED_BY) || annotProp.Equals(RDFVocabulary.OWL.VERSION_IRI)
-                                || annotProp.Equals(RDFVocabulary.OWL.PRIOR_VERSION) || annotProp.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH)
-                                    || annotProp.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH) || annotProp.Equals(RDFVocabulary.OWL.IMPORTS)) { continue; }
-
                 foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)ontology.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
                 {
                     if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -2235,15 +2241,8 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
-                foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty()).ToList())
+                foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
                 {
-                    //Skip built-in annotation properties
-                    if (annotProp.Equals(RDFVocabulary.OWL.VERSION_INFO) || annotProp.Equals(RDFVocabulary.RDFS.COMMENT)
-                            || annotProp.Equals(RDFVocabulary.RDFS.LABEL) || annotProp.Equals(RDFVocabulary.RDFS.SEE_ALSO)
-                                || annotProp.Equals(RDFVocabulary.RDFS.IS_DEFINED_BY) || annotProp.Equals(RDFVocabulary.OWL.VERSION_IRI)
-                                    || annotProp.Equals(RDFVocabulary.OWL.PRIOR_VERSION) || annotProp.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH)
-                                        || annotProp.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH) || annotProp.Equals(RDFVocabulary.OWL.IMPORTS)) { continue; }
-
                     foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)c.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -2372,15 +2371,8 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
-                foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty()).ToList())
+                foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
                 {
-                    //Skip built-in annotation properties
-                    if (annotProp.Equals(RDFVocabulary.OWL.VERSION_INFO) || annotProp.Equals(RDFVocabulary.RDFS.COMMENT)
-                            || annotProp.Equals(RDFVocabulary.RDFS.LABEL) || annotProp.Equals(RDFVocabulary.RDFS.SEE_ALSO)
-                                || annotProp.Equals(RDFVocabulary.RDFS.IS_DEFINED_BY) || annotProp.Equals(RDFVocabulary.OWL.VERSION_IRI)
-                                    || annotProp.Equals(RDFVocabulary.OWL.PRIOR_VERSION) || annotProp.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH)
-                                        || annotProp.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH) || annotProp.Equals(RDFVocabulary.OWL.IMPORTS)) { continue; }
-
                     foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)p.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
@@ -2508,15 +2500,8 @@ namespace RDFSharp.Semantics.OWL
                 #endregion
 
                 #region CustomAnnotations
-                foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty()).ToList())
+                foreach (RDFOntologyProperty annotProp in ontology.Model.PropertyModel.Where(ap => ap.IsAnnotationProperty() && !StandardAnnotationProperties.Contains(ap.PatternMemberID)).ToList())
                 {
-                    //Skip built-in annotation properties
-                    if (annotProp.Equals(RDFVocabulary.OWL.VERSION_INFO) || annotProp.Equals(RDFVocabulary.RDFS.COMMENT)
-                            || annotProp.Equals(RDFVocabulary.RDFS.LABEL) || annotProp.Equals(RDFVocabulary.RDFS.SEE_ALSO)
-                                || annotProp.Equals(RDFVocabulary.RDFS.IS_DEFINED_BY) || annotProp.Equals(RDFVocabulary.OWL.VERSION_IRI)
-                                    || annotProp.Equals(RDFVocabulary.OWL.PRIOR_VERSION) || annotProp.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH)
-                                        || annotProp.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH) || annotProp.Equals(RDFVocabulary.OWL.IMPORTS)) { continue; }
-
                     foreach (RDFTriple t in ontGraph.SelectTriplesBySubject((RDFResource)f.Value).SelectTriplesByPredicate((RDFResource)annotProp.Value))
                     {
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
