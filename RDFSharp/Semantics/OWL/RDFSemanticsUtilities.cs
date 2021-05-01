@@ -2540,9 +2540,6 @@ namespace RDFSharp.Semantics.OWL
             ontology = ontology.DifferenceWith(RDFBASEOntology.Instance);
             ontology.Value = ontologyValue;
             ontology.SetLazyPatternMemberID();
-
-            //Free resources
-            prefetchContext.Clear();
         }
 
         /// <summary>
