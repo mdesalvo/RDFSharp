@@ -30,7 +30,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Unique representation of the triple
         /// </summary>
-        internal long TripleID { get; set; }
+        internal long TripleID => LazyTripleID.Value;
+        private readonly Lazy<long> LazyTripleID;
 
         /// <summary>
         /// Flavor of the triple
@@ -69,7 +70,7 @@ namespace RDFSharp.Model
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
 
             //Subject
-            this.Subject = (subj ?? new RDFResource());
+            this.Subject = subj ?? new RDFResource();
 
             //Predicate
             if (pred != null)
@@ -86,10 +87,10 @@ namespace RDFSharp.Model
             }
 
             //Object
-            this.Object = (obj ?? new RDFResource());
+            this.Object = obj ?? new RDFResource();
 
-            //TripleID
-            this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
+            //LazyTripleID
+            this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
 
             //LazyReificationSubject
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
@@ -104,7 +105,7 @@ namespace RDFSharp.Model
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
 
             //Subject
-            this.Subject = (subj ?? new RDFResource());
+            this.Subject = subj ?? new RDFResource();
 
             //Predicate
             if (pred != null)
@@ -121,10 +122,10 @@ namespace RDFSharp.Model
             }
 
             //Object
-            this.Object = (lit ?? new RDFPlainLiteral(string.Empty));
+            this.Object = lit ?? new RDFPlainLiteral(string.Empty);
 
-            //TripleID
-            this.TripleID = RDFModelUtilities.CreateHash(this.ToString());
+            //LazyTripleID
+            this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
 
             //LazyReificationSubject
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));

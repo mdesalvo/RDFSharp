@@ -31,7 +31,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Unique representation of the quadruple
         /// </summary>
-        public long QuadrupleID { get; internal set; }
+        public long QuadrupleID => LazyQuadrupleID.Value;
+        private readonly Lazy<long> LazyQuadrupleID;
 
         /// <summary>
         /// Flavor of the triple nested into the quadruple
@@ -61,7 +62,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Subject of the quadruple's reification
         /// </summary>
-        public RDFResource ReificationSubject { get; internal set; }
+        public RDFResource ReificationSubject => LazyReificationSubject.Value;
+        private readonly Lazy<RDFResource> LazyReificationSubject;
         #endregion
 
         #region Ctors
@@ -74,10 +76,10 @@ namespace RDFSharp.Store
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
 
             //Context
-            this.Context = (context ?? new RDFContext());
+            this.Context = context ?? new RDFContext();
 
             //Subject
-            this.Subject = (subj ?? new RDFResource());
+            this.Subject = subj ?? new RDFResource();
 
             //Predicate
             if (pred != null)
@@ -94,13 +96,13 @@ namespace RDFSharp.Store
             }
 
             //Object
-            this.Object = (obj ?? new RDFResource());
+            this.Object = obj ?? new RDFResource();
 
-            //QuadrupleID
-            this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
+            //LazyQuadrupleID
+            this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
 
-            //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString()));
+            //LazyReificationSubject
+            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
         }
 
         /// <summary>
@@ -112,10 +114,10 @@ namespace RDFSharp.Store
             this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
 
             //Context
-            this.Context = (context ?? new RDFContext());
+            this.Context = context ?? new RDFContext();
 
             //Subject
-            this.Subject = (subj ?? new RDFResource());
+            this.Subject = subj ?? new RDFResource();
 
             //Predicate
             if (pred != null)
@@ -132,13 +134,13 @@ namespace RDFSharp.Store
             }
 
             //Object
-            this.Object = (lit ?? new RDFPlainLiteral(string.Empty));
+            this.Object = lit ?? new RDFPlainLiteral(string.Empty);
 
-            //QuadrupleID
-            this.QuadrupleID = RDFModelUtilities.CreateHash(this.ToString());
+            //LazyQuadrupleID
+            this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
 
-            //ReificationSubject
-            this.ReificationSubject = new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString()));
+            //LazyReificationSubject
+            this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
         }
         #endregion
 
