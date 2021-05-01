@@ -801,10 +801,8 @@ namespace RDFSharp.Semantics.OWL
                 {
                     RDFOntologyFact fact = ontology.Data.SelectFact(classtypeTriple.Subject.ToString());
                     if (fact == null)
-                    {
                         fact = ((RDFResource)classtypeTriple.Subject).ToRDFOntologyFact();
-                        ontology.Data.AddFact(fact);
-                    }
+
                     ontology.Data.AddClassTypeRelation(fact, simpleClass);
                 }
             }
