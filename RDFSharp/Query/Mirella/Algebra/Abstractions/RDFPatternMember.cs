@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 
 namespace RDFSharp.Query
@@ -29,7 +30,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern member
         /// </summary>
-        public long PatternMemberID { get; internal set; }
+        public long PatternMemberID => LazyPatternMemberId.Value;
+
+        /// <summary>
+        /// Lazy evaluation of the pattern member identifier
+        /// </summary>
+        protected Lazy<long> LazyPatternMemberId;
         #endregion
 
         #region Interfaces
@@ -44,6 +50,14 @@ namespace RDFSharp.Query
         /// </summary>
         public bool Equals(RDFPatternMember other)
             => other != null && this.PatternMemberID.Equals(other.PatternMemberID);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets the lazy calculation of PatternMemberID
+        /// </summary>
+        internal void SetLazyPatternMemberID()
+            => this.LazyPatternMemberId = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         #endregion
 
     }

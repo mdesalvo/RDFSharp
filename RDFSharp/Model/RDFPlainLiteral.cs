@@ -39,9 +39,9 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPlainLiteral(string value)
         {
-            this.Value = (value ?? string.Empty);
+            this.Value = value ?? string.Empty;
             this.Language = string.Empty;
-            this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+            this.SetLazyPatternMemberID();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace RDFSharp.Model
             if (language != null && Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
             {
                 this.Language = language.ToUpperInvariant();
-                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                this.SetLazyPatternMemberID();
             }
         }
         #endregion

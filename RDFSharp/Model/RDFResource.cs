@@ -42,12 +42,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a blank resource
         /// </summary>
-        public RDFResource()
-        {
-            this.URI = new Uri(string.Concat("bnode:", Guid.NewGuid().ToString()));
-            this.IsBlank = true;
-            this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-        }
+        public RDFResource() : this(string.Concat("bnode:", Guid.NewGuid().ToString())) { }
 
         /// <summary>
         /// Builds a non-blank resource (if starting with "_:" or "bnode:", it builds a blank resource)
@@ -59,7 +54,7 @@ namespace RDFSharp.Model
             {
                 this.URI = tempUri;
                 this.IsBlank = this.URI.ToString().StartsWith("bnode:");
-                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                this.SetLazyPatternMemberID();
             }
             else
             {

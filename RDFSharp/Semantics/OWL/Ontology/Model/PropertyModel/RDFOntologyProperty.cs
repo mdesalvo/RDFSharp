@@ -59,7 +59,7 @@ namespace RDFSharp.Semantics.OWL
                 if (!propertyName.IsBlank)
                 {
                     this.Value = propertyName;
-                    this.PatternMemberID = propertyName.PatternMemberID;
+                    this.SetLazyPatternMemberID();
                 }
                 else
                 {

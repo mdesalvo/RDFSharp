@@ -56,12 +56,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
         {
-            this.Value = (value ?? string.Empty);
+            this.Value = value ?? string.Empty;
             this.Datatype = datatype;
 
             //Validation against semantic of given datatype
             if (RDFModelUtilities.ValidateTypedLiteral(this))
-                this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                this.SetLazyPatternMemberID();
             else
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ")");
         }

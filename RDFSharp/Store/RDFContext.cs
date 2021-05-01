@@ -39,11 +39,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Default-ctor to build a predefined context
         /// </summary>
-        public RDFContext()
-        {
-            this.Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-            this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
-        }
+        public RDFContext() : this(RDFNamespaceRegister.DefaultNamespace.NamespaceUri) { }
 
         /// <summary>
         /// String-based ctor to build a context from the given string
@@ -53,10 +49,10 @@ namespace RDFSharp.Store
             Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri);
             if (tempUri != null)
             {
-                if (!tempUri.ToString().ToUpperInvariant().StartsWith("BNODE:"))
+                if (!tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                 {
                     this.Context = tempUri;
-                    this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                    this.SetLazyPatternMemberID();
                 }
                 else
                 {
@@ -79,10 +75,10 @@ namespace RDFSharp.Store
                 Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri.ToString());
                 if (tempUri != null)
                 {
-                    if (!tempUri.ToString().ToUpperInvariant().StartsWith("BNODE:"))
+                    if (!tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                     {
                         this.Context = tempUri;
-                        this.PatternMemberID = RDFModelUtilities.CreateHash(this.ToString());
+                        this.SetLazyPatternMemberID();
                     }
                     else
                     {

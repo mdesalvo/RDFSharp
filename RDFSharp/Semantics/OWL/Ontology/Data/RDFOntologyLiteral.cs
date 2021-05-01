@@ -34,7 +34,7 @@ namespace RDFSharp.Semantics.OWL
             if (literal != null)
             {
                 this.Value = literal;
-                this.PatternMemberID = literal.PatternMemberID;
+                this.SetLazyPatternMemberID();
             }
             else
             {

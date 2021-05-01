@@ -52,10 +52,10 @@ namespace RDFSharp.Semantics.OWL
             if (ontologyName != null)
             {
                 this.Value = ontologyName;
-                this.PatternMemberID = ontologyName.PatternMemberID;
                 this.Model = new RDFOntologyModel();
                 this.Data = new RDFOntologyData();
                 this.Annotations = new RDFOntologyAnnotations();
+                this.SetLazyPatternMemberID();
             }
             else
             {
