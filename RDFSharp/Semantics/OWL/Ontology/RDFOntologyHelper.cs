@@ -1528,31 +1528,22 @@ namespace RDFSharp.Semantics.OWL
                     var facts = ontology.Data.GetSameFactsAs((RDFOntologyFact)hasValueRestriction.RequiredValue)
                                              .AddFact((RDFOntologyFact)hasValueRestriction.RequiredValue);
 
-                    //Iterate the compatible assertions and track the occurrence informations
+                    //Iterate the compatible assertions and track the subject facts having the required value
                     foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsFact()))
                     {
                         if (facts.SelectFact(assertion.TaxonomyObject.ToString()) != null)
-                        {
                             result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
-                        }
                     }
 
                 }
                 else if (hasValueRestriction.RequiredValue.IsLiteral())
                 {
 
-                    //Iterate the compatible assertions and track the occurrence informations
+                    //Iterate the compatible assertions and track the subject facts having the required value
                     foreach (var assertion in restrictionAssertions.Where(x => x.TaxonomyObject.IsLiteral()))
                     {
-                        try
-                        {
-                            var literalsCompare = RDFQueryUtilities.CompareRDFPatternMembers(hasValueRestriction.RequiredValue.Value, assertion.TaxonomyObject.Value);
-                            if (literalsCompare == 0)
-                            {
-                                result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
-                            }
-                        }
-                        finally { }
+                        if (RDFQueryUtilities.CompareRDFPatternMembers(hasValueRestriction.RequiredValue.Value, assertion.TaxonomyObject.Value) == 0)
+                            result.AddFact((RDFOntologyFact)assertion.TaxonomySubject);
                     }
 
                 }
