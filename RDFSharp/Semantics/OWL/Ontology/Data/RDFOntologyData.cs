@@ -589,6 +589,8 @@ namespace RDFSharp.Semantics.OWL
                     this.Relations.MemberList.RemoveEntry(taxonomyEntry);
 
                 //Annotations
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesBySubject(ontologyFact))
+                    this.Annotations.VersionInfo.RemoveEntry(taxonomyEntry);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Comment.SelectEntriesBySubject(ontologyFact))
                     this.Annotations.Comment.RemoveEntry(taxonomyEntry);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Label.SelectEntriesBySubject(ontologyFact))
@@ -597,8 +599,6 @@ namespace RDFSharp.Semantics.OWL
                     this.Annotations.SeeAlso.RemoveEntry(taxonomyEntry);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.IsDefinedBy.SelectEntriesBySubject(ontologyFact))
                     this.Annotations.IsDefinedBy.RemoveEntry(taxonomyEntry);
-                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesBySubject(ontologyFact))
-                    this.Annotations.VersionInfo.RemoveEntry(taxonomyEntry);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesBySubject(ontologyFact))
                     this.Annotations.CustomAnnotations.RemoveEntry(taxonomyEntry);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesByObject(ontologyFact))
@@ -668,6 +668,8 @@ namespace RDFSharp.Semantics.OWL
                     this.AddMemberListRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
 
                 //Annotations
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesBySubject(ontologyFact))
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, newOntologyFact, taxonomyEntry.TaxonomyObject);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Comment.SelectEntriesBySubject(ontologyFact))
                     this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Comment, newOntologyFact, taxonomyEntry.TaxonomyObject);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Label.SelectEntriesBySubject(ontologyFact))
@@ -676,8 +678,6 @@ namespace RDFSharp.Semantics.OWL
                     this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, newOntologyFact, taxonomyEntry.TaxonomyObject);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.IsDefinedBy.SelectEntriesBySubject(ontologyFact))
                     this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, newOntologyFact, taxonomyEntry.TaxonomyObject);
-                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesBySubject(ontologyFact))
-                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, newOntologyFact, taxonomyEntry.TaxonomyObject);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesBySubject(ontologyFact))
                     this.AddCustomAnnotation((RDFOntologyAnnotationProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact, taxonomyEntry.TaxonomyObject);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesByObject(ontologyFact))
@@ -728,6 +728,11 @@ namespace RDFSharp.Semantics.OWL
                 }
 
                 //Annotations
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.VersionInfo.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Comment.SelectEntriesByObject(ontologyLiteral))
                 {
                     this.Annotations.Comment.RemoveEntry(taxonomyEntry);
@@ -747,11 +752,6 @@ namespace RDFSharp.Semantics.OWL
                 {
                     this.Annotations.IsDefinedBy.RemoveEntry(taxonomyEntry);
                     this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
-                }                    
-                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesByObject(ontologyLiteral))
-                {
-                    this.Annotations.VersionInfo.RemoveEntry(taxonomyEntry);
-                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
                 }
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesByObject(ontologyLiteral))
                 {
