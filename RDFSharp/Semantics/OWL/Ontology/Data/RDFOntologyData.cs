@@ -705,6 +705,66 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Replaces all the occurrences of the given literal with the given new literal in the data
+        /// </summary>
+        public RDFOntologyData ReplaceLiteral(RDFOntologyLiteral ontologyLiteral, RDFOntologyLiteral newOntologyLiteral)
+        {
+            if (ontologyLiteral != null && newOntologyLiteral != null && !ontologyLiteral.Equals(newOntologyLiteral))
+            {
+                //Declarations
+                this.RemoveLiteral(ontologyLiteral);
+                this.AddLiteral(newOntologyLiteral);
+
+                //Assertions
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+                    this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, newOntologyLiteral);
+                }
+
+                //NegativeAssertions [OWL2]
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Relations.NegativeAssertions.RemoveEntry(taxonomyEntry);
+                    this.AddNegativeAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, newOntologyLiteral);
+                }
+
+                //Annotations
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Comment.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.Comment.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Comment, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.Label.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.Label.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Label, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }   
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.SeeAlso.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.SeeAlso.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.IsDefinedBy.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.IsDefinedBy.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }                    
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.VersionInfo.RemoveEntry(taxonomyEntry);
+                    this.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.CustomAnnotations.SelectEntriesByObject(ontologyLiteral))
+                {
+                    this.Annotations.CustomAnnotations.RemoveEntry(taxonomyEntry);
+                    this.AddCustomAnnotation((RDFOntologyAnnotationProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyLiteral);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Removes the given standard annotation from the given ontology fact
         /// </summary>
         public RDFOntologyData RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
@@ -715,7 +775,6 @@ namespace RDFSharp.Semantics.OWL
             {
                 switch (standardAnnotation)
                 {
-
                     //owl:versionInfo
                     case RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo:
                         this.Annotations.VersionInfo.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.OWL.VERSION_INFO.ToRDFOntologyAnnotationProperty(), annotationValue));
@@ -765,7 +824,6 @@ namespace RDFSharp.Semantics.OWL
                     case RDFSemanticsEnums.RDFOntologyStandardAnnotation.IncompatibleWith:
                         this.Annotations.IncompatibleWith.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.OWL.INCOMPATIBLE_WITH.ToRDFOntologyAnnotationProperty(), annotationValue));
                         break;
-
                 }
             }
             return this;
@@ -780,73 +838,49 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyAnnotationProperty != null && ontologyFact != null && annotationValue != null)
             {
-
                 //owl:versionInfo
                 if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.VERSION_INFO.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionInfo, ontologyFact, annotationValue);
-                }
-
+                
                 //owl:versionIRI
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.VERSION_IRI.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.VersionIRI, ontologyFact, annotationValue);
-                }
-
+                
                 //rdfs:comment
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.COMMENT.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Comment, ontologyFact, annotationValue);
-                }
-
+                
                 //rdfs:label
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.LABEL.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Label, ontologyFact, annotationValue);
-                }
-
+                
                 //rdfs:seeAlso
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.SEE_ALSO.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, ontologyFact, annotationValue);
-                }
-
+                
                 //rdfs:isDefinedBy
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.RDFS.IS_DEFINED_BY.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, ontologyFact, annotationValue);
-                }
-
+                
                 //owl:imports
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.IMPORTS.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.Imports, ontologyFact, annotationValue);
-                }
-
+                
                 //owl:backwardCompatibleWith
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.BACKWARD_COMPATIBLE_WITH.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.BackwardCompatibleWith, ontologyFact, annotationValue);
-                }
-
+                
                 //owl:incompatibleWith
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.INCOMPATIBLE_WITH.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IncompatibleWith, ontologyFact, annotationValue);
-                }
-
+                
                 //owl:priorVersion
                 else if (ontologyAnnotationProperty.Equals(RDFVocabulary.OWL.PRIOR_VERSION.ToRDFOntologyAnnotationProperty()))
-                {
                     this.RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.PriorVersion, ontologyFact, annotationValue);
-                }
-
+                
                 //custom annotation
                 else
-                {
                     this.Annotations.CustomAnnotations.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, ontologyAnnotationProperty, annotationValue));
-                }
-
             }
             return this;
         }
