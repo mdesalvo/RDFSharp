@@ -31,7 +31,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    internal static class RDFQueryUtilities
+    public static class RDFQueryUtilities
     {
 
         #region MIRELLA RDF
