@@ -182,7 +182,6 @@ namespace RDFSharp.Query
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
                 {
-
                     //Insert reserved "query" parameter
                     webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
 
@@ -198,13 +197,10 @@ namespace RDFSharp.Query
                     //Parse response from SPARQL endpoint
                     if (sparqlResponse != null)
                     {
-                        using (var sStream = new MemoryStream(sparqlResponse))
-                        {
+                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             selResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                        }
                         selResult.SelectResults.TableName = this.ToString();
                     }
-
                 }
 
                 //Eventually adjust column names (should start with "?")
