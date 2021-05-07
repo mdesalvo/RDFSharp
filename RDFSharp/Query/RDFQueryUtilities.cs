@@ -207,16 +207,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal static (bool, string) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
-            #region Prefix Search
-            //Check if the pattern member starts with a known prefix, if so just return it
             if (prefixes == null)
                 prefixes = new List<RDFNamespace>();
-            var prefixToSearch = patternMember.ToString().Split(':')[0];
-            var searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
+
+            #region Prefix Search
+            //Check if the pattern member starts with a known prefix, if so just return it
+            string prefixToSearch = patternMember.ToString().Split(':')[0];
+            RDFNamespace searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
             if (searchedPrefix != null)
-            {
                 return (true, patternMember.ToString());
-            }
             #endregion
 
             #region Namespace Search
@@ -237,7 +236,7 @@ namespace RDFSharp.Query
                             //Accept the abbreviation only if it has generated a valid XSD QName
                             try
                             {
-                                var qn = new RDFTypedLiteral(pmString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                                _ = new RDFTypedLiteral(pmString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
                                 abbrev = true;
                             }
                             catch
