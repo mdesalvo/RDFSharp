@@ -274,6 +274,129 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Asynchronously evaluates the given SPARQL CONSTRUCT query on the given RDF datasource
+        /// </summary>
+        internal async Task<RDFConstructQueryResult> EvaluateConstructQueryAsync(RDFConstructQuery constructQuery, RDFDataSource datasource)
+        {
+            //Inject SPARQL values within every evaluable member
+            constructQuery.InjectValues(constructQuery.GetValues());
+
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
+            List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
+            {
+
+                //Iterate the evaluable members of the query
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+                {
+
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember is RDFPatternGroup)
+                    {
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
+                        //Step 1: Get the intermediate result tables of the pattern group
+                        if (datasource.IsFederation())
+                        {
+                            //Ensure to skip tricky empty federations
+                            if (((RDFFederation)datasource).DataSourcesCount == 0)
+                            {
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            }
+
+                            #region TrueFederations
+                            foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
+                            {
+
+                                //Step FED.1: Evaluate the current pattern group on the data source
+                                await EvaluatePatternGroupAsync(constructQuery, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
+
+                                //Step FED.2: Federate the results of the pattern group on the data source
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                                {
+                                    fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                                }
+                                else
+                                {
+                                    fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                      fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                }
+
+                            }
+                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                            #endregion
+
+                        }
+                        else
+                        {
+                            await EvaluatePatternGroupAsync(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
+                        }
+
+                        //Step 2: Get the result table of the pattern group
+                        await FinalizePatternGroupAsync(constructQuery, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Step 3: Apply the filters of the pattern group to its result table
+                        await ApplyFiltersAsync(constructQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = await ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSourceAsync(datasource);
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            //Populate its name
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                            }
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                            }
+                        }
+                    }
+                    #endregion
+
+                }
+
+                //Step 4: Get the result table of the query
+                DataTable queryResultTable = await CombineTablesAsync(QueryMemberFinalResultTables.Values.ToList(), false);
+
+                //Step 5: Fill the templates from the result table
+                DataTable filledResultTable = await FillTemplatesAsync(constructQuery, queryResultTable);
+
+                //Step 6: Apply the modifiers of the query to the result table
+                constructResult.ConstructResults = await ApplyModifiersAsync(constructQuery, filledResultTable);
+
+            }
+
+            constructResult.ConstructResults.TableName = constructQuery.ToString();
+            return constructResult;
+        }
+
+        /// <summary>
         /// Asynchronously gets the intermediate result tables of the given pattern group
         /// </summary>
         internal async Task EvaluatePatternGroupAsync(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource, bool withinFederation)
@@ -481,6 +604,12 @@ namespace RDFSharp.Query
             resultTable.TableName = propertyPath.ToString();
             return resultTable;
         }
+
+        /// <summary>
+        /// Asynchronously fills the templates of the given CONSTRUCT query with data from the given result table
+        /// </summary>
+        internal async Task<DataTable> FillTemplatesAsync(RDFConstructQuery constructQuery, DataTable resultTable)
+            => await Task.Run(() => FillTemplates(constructQuery, resultTable));
         #endregion
 
         #region MIRELLA ASYNC TABLE
