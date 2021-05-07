@@ -277,7 +277,7 @@ namespace RDFSharp.Query
 
         #region MIRELLA ASYNC
         /// <summary>
-        /// Applies the query to the given data source
+        /// Asynchronously applies the query to the given data source
         /// </summary>
         internal static async Task<RDFSelectQueryResult> ApplyToDataSourceAsync(this RDFSelectQuery selectQuery, RDFDataSource dataSource)
         {
@@ -306,21 +306,42 @@ namespace RDFSharp.Query
                          : new RDFSelectQueryResult();
 
         /// <summary>
-        /// Applies the query to the given store
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public static async Task<RDFAskQueryResult> ApplyToGraphAsync(this RDFAskQuery askQuery, RDFGraph graph)
+        => graph != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(askQuery, graph)
+                         : new RDFAskQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given store
         /// </summary>
         public static async Task<RDFSelectQueryResult> ApplyToStoreAsync(this RDFSelectQuery selectQuery, RDFStore store)
             => store != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(selectQuery, store)
                              : new RDFSelectQueryResult();
 
         /// <summary>
-        /// Applies the query to the given federation
+        /// Asynchronously applies the query to the given store
+        /// </summary>
+        public static async Task<RDFAskQueryResult> ApplyToStoreAsync(this RDFAskQuery askQuery, RDFStore store)
+            => store != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(askQuery, store)
+                             : new RDFAskQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given federation
         /// </summary>
         public static async Task<RDFSelectQueryResult> ApplyToFederationAsync(this RDFSelectQuery selectQuery, RDFFederation federation)
             => federation != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(selectQuery, federation)
                                   : new RDFSelectQueryResult();
 
         /// <summary>
-        /// Asynchronously applies the query to the given SPARQL endpoint
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public static async Task<RDFAskQueryResult> ApplyToFederationAsync(this RDFAskQuery askQuery, RDFFederation federation)
+            => federation != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(askQuery, federation)
+                                  : new RDFAskQueryResult();
+
+        /// <summary>
+        /// Asynchronously asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public static async Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(this RDFSelectQuery selectQuery, RDFSPARQLEndpoint sparqlEndpoint)
         {

@@ -683,7 +683,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Get the final result table of the given pattern group
+        /// Gets the final result table of the given pattern group
         /// </summary>
         internal void FinalizePatternGroup(RDFQuery query, RDFPatternGroup patternGroup)
         {
@@ -723,7 +723,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Apply the filters of the given pattern group to its result table
+        /// Applies the filters of the given pattern group to its result table
         /// </summary>
         internal void ApplyFilters(RDFQuery query, RDFPatternGroup patternGroup)
         {
@@ -759,7 +759,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Apply the query modifiers to the query result table
+        /// Applies the query modifiers to the query result table
         /// </summary>
         internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
         {
