@@ -53,15 +53,17 @@ namespace RDFSharp.Store
                 string literal = fetchedQuadruples["Object"].ToString();
 
                 //PlainLiteral
-                if (!literal.Contains("^^") ||
-                     literal.EndsWith("^^") ||
-                     RDFModelUtilities.GetUriFromString(literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null)
+                int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+                int lastIndexOfLanguage = literal.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
+                if (!literal.Contains("^^")
+                        || literal.EndsWith("^^")
+                            || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
                 {
                     RDFPlainLiteral pLit = null;
                     if (RDFNTriples.regexLPL.Match(literal).Success)
                     {
-                        string pLitValue = literal.Substring(0, literal.LastIndexOf("@", StringComparison.Ordinal));
-                        string pLitLang = literal.Substring(literal.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                        string pLitValue = literal.Substring(0, lastIndexOfLanguage);
+                        string pLitLang = literal.Substring(lastIndexOfLanguage + 1);
                         pLit = new RDFPlainLiteral(pLitValue, pLitLang);
                     }
                     else
@@ -72,8 +74,8 @@ namespace RDFSharp.Store
                 }
 
                 //TypedLiteral
-                string tLitValue = literal.Substring(0, literal.LastIndexOf("^^", StringComparison.Ordinal));
-                string tLitDatatype = literal.Substring(literal.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+                string tLitValue = literal.Substring(0, lastIndexOfDatatype);
+                string tLitDatatype = literal.Substring(lastIndexOfDatatype + 2);
                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
                 RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
                 return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
