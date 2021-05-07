@@ -555,9 +555,7 @@ namespace RDFSharp.Store
         /// Checks if the store contains the given quadruple
         /// </summary>
         public override bool ContainsQuadruple(RDFQuadruple quadruple)
-        {
-            return (quadruple != null && this.Quadruples.ContainsKey(quadruple.QuadrupleID));
-        }
+            => quadruple != null && this.Quadruples.ContainsKey(quadruple.QuadrupleID);
 
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
@@ -567,9 +565,7 @@ namespace RDFSharp.Store
                                                           RDFResource predicateResource,
                                                           RDFResource objectResource,
                                                           RDFLiteral objectLiteral)
-        {
-            return (new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, contextResource, subjectResource, predicateResource, objectResource, objectLiteral)));
-        }
+            => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, contextResource, subjectResource, predicateResource, objectResource, objectLiteral));
         #endregion
 
         #region Set
