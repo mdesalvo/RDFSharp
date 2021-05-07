@@ -397,6 +397,184 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Asynchronously evaluates the given SPARQL DESCRIBE query on the given RDF datasource
+        /// </summary>
+        internal async Task<RDFDescribeQueryResult> EvaluateDescribeQueryAsync(RDFDescribeQuery describeQuery, RDFDataSource datasource)
+        {
+            //Inject SPARQL values within every evaluable member
+            describeQuery.InjectValues(describeQuery.GetValues());
+
+            RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult(this.ToString());
+            List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
+            {
+
+                //Iterate the evaluable members of the query
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+                {
+
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember is RDFPatternGroup)
+                    {
+                        //Step 0: Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
+                        //Step 1: Get the intermediate result tables of the pattern group
+                        if (datasource.IsFederation())
+                        {
+                            //Ensure to skip tricky empty federations
+                            if (((RDFFederation)datasource).DataSourcesCount == 0)
+                            {
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            }
+
+                            #region TrueFederations
+                            foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
+                            {
+
+                                //Step FED.1: Evaluate the pattern group on the data source
+                                await EvaluatePatternGroupAsync(describeQuery, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
+
+                                //Step FED.2: Federate the results of the pattern group on the data source
+                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                                {
+                                    fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                                }
+                                else
+                                {
+                                    fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                                }
+
+                            }
+                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                            #endregion
+
+                        }
+                        else
+                        {
+                            await EvaluatePatternGroupAsync(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
+                        }
+
+                        //Step 2: Get the result table of the pattern group
+                        await FinalizePatternGroupAsync(describeQuery, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Step 3: Apply the filters of the pattern group to its result table
+                        await ApplyFiltersAsync(describeQuery, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = await ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSourceAsync(datasource);
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            //Populate its name
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+                            }
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            }
+                            else
+                            {
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                            }
+                        }
+                    }
+                    #endregion
+
+                }
+
+                //Step 4: Get the result table of the query
+                DataTable queryResultTable = await CombineTablesAsync(this.QueryMemberFinalResultTables.Values.ToList(), false);
+
+                //Step 5: Describe the terms from the result table
+                DataTable describeResultTable = new DataTable(this.ToString());
+                if (datasource.IsFederation())
+                {
+
+                    #region TrueFederations
+                    foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
+                    {
+                        //Ensure to skip tricky empty federations
+                        if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
+                            continue;
+
+                        await Task.Run(() => describeResultTable.Merge(DescribeTerms(describeQuery, fedDataSource, queryResultTable), true, MissingSchemaAction.Add));
+                    }
+                    #endregion
+
+                }
+                else
+                {
+                    describeResultTable = await DescribeTermsAsync(describeQuery, datasource, queryResultTable);
+                }
+
+                //Step 6: Apply the modifiers of the query to the result table
+                queryResult.DescribeResults = await ApplyModifiersAsync(describeQuery, describeResultTable);
+
+            }
+            else
+            {
+
+                //In this case the only chance to proceed is to have resources in the describe terms,
+                //which will be used to search for S-P-O data. Variables are ignored in this scenario.
+                if (describeQuery.DescribeTerms.Any(dt => dt is RDFResource))
+                {
+
+                    //Step 1: Describe the terms from the result table
+                    DataTable describeResultTable = new DataTable(this.ToString());
+                    if (datasource.IsFederation())
+                    {
+
+                        #region TrueFederations
+                        foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
+                        {
+                            //Ensure to skip tricky empty federations
+                            if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
+                                continue;
+
+                            await Task.Run(() => describeResultTable.Merge(DescribeTerms(describeQuery, fedDataSource, new DataTable()), true, MissingSchemaAction.Add));
+                        }
+                        #endregion
+
+                    }
+                    else
+                    {
+                        describeResultTable = await DescribeTermsAsync(describeQuery, datasource, new DataTable());
+                    }
+
+                    //Step 2: Apply the modifiers of the query to the result table
+                    queryResult.DescribeResults = await ApplyModifiersAsync(describeQuery, describeResultTable);
+
+                }
+
+            }
+
+            queryResult.DescribeResults.TableName = describeQuery.ToString();
+            return queryResult;
+        }
+
+        /// <summary>
         /// Asynchronously gets the intermediate result tables of the given pattern group
         /// </summary>
         internal async Task EvaluatePatternGroupAsync(RDFQuery query, RDFPatternGroup patternGroup, RDFDataSource dataSource, bool withinFederation)
@@ -610,6 +788,13 @@ namespace RDFSharp.Query
         /// </summary>
         internal async Task<DataTable> FillTemplatesAsync(RDFConstructQuery constructQuery, DataTable resultTable)
             => await Task.Run(() => FillTemplates(constructQuery, resultTable));
+
+        /// <summary>
+        /// Asynchronously describes the terms of the given DESCRIBE query with data from the given result table
+        /// </summary>
+        internal async Task<DataTable> DescribeTermsAsync(RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable resultTable)
+            => await Task.Run(() => DescribeTerms(describeQuery, dataSource, resultTable));
+
         #endregion
 
         #region MIRELLA ASYNC TABLE

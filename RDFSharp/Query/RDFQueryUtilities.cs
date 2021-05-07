@@ -320,6 +320,13 @@ namespace RDFSharp.Query
                              : new RDFConstructQueryResult(constructQuery?.ToString());
 
         /// <summary>
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public static async Task<RDFDescribeQueryResult> ApplyToGraphAsync(this RDFDescribeQuery describeQuery, RDFGraph graph)
+            => graph != null ? await new RDFQueryAsyncEngine().EvaluateDescribeQueryAsync(describeQuery, graph)
+                             : new RDFDescribeQueryResult(describeQuery?.ToString());
+
+        /// <summary>
         /// Asynchronously applies the query to the given store
         /// </summary>
         public static async Task<RDFSelectQueryResult> ApplyToStoreAsync(this RDFSelectQuery selectQuery, RDFStore store)
@@ -341,6 +348,13 @@ namespace RDFSharp.Query
                              : new RDFConstructQueryResult(constructQuery?.ToString());
 
         /// <summary>
+        /// Asynchronously applies the query to the given store
+        /// </summary>
+        public static async Task<RDFDescribeQueryResult> ApplyToStoreAsync(this RDFDescribeQuery describeQuery, RDFStore store)
+            => store != null ? await new RDFQueryAsyncEngine().EvaluateDescribeQueryAsync(describeQuery, store)
+                             : new RDFDescribeQueryResult(describeQuery?.ToString());
+
+        /// <summary>
         /// Asynchronously applies the query to the given federation
         /// </summary>
         public static async Task<RDFSelectQueryResult> ApplyToFederationAsync(this RDFSelectQuery selectQuery, RDFFederation federation)
@@ -360,6 +374,13 @@ namespace RDFSharp.Query
         public static async Task<RDFConstructQueryResult> ApplyToFederationAsync(this RDFConstructQuery constructQuery, RDFFederation federation)
             => federation != null ? await new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(constructQuery, federation)
                                   : new RDFConstructQueryResult(constructQuery?.ToString());
+
+        /// <summary>
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public static async Task<RDFDescribeQueryResult> ApplyToFederationAsync(this RDFDescribeQuery describeQuery, RDFFederation federation)
+            => federation != null ? await new RDFQueryAsyncEngine().EvaluateDescribeQueryAsync(describeQuery, federation)
+                                  : new RDFDescribeQueryResult(describeQuery?.ToString());
 
         /// <summary>
         /// Asynchronously asynchronously applies the query to the given SPARQL endpoint
