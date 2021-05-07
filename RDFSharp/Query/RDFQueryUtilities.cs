@@ -49,15 +49,17 @@ namespace RDFSharp.Query
             #endregion
 
             #region Plain Literal
+            int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+            int lastIndexOfLanguage = pMember.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
             if (!pMember.Contains("^^")
                     || pMember.EndsWith("^^")
-                        || RDFModelUtilities.GetUriFromString(pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2)) == null)
+                        || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
             {
                 RDFPlainLiteral pLit = null;
                 if (RDFNTriples.regexLPL.Match(pMember).Success)
                 {
-                    string pLitVal = pMember.Substring(0, pMember.LastIndexOf("@", StringComparison.Ordinal));
-                    string pLitLng = pMember.Substring(pMember.LastIndexOf("@", StringComparison.Ordinal) + 1);
+                    string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
+                    string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
                     pLit = new RDFPlainLiteral(pLitVal, pLitLng);
                 }
                 else
@@ -69,8 +71,8 @@ namespace RDFSharp.Query
             #endregion
 
             #region Typed Literal
-            string tLitValue = pMember.Substring(0, pMember.LastIndexOf("^^", StringComparison.Ordinal));
-            string tLitDatatype = pMember.Substring(pMember.LastIndexOf("^^", StringComparison.Ordinal) + 2);
+            string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
+            string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
             RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
             RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
             return tLit;
