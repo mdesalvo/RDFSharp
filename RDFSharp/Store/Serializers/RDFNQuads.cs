@@ -301,15 +301,16 @@ namespace RDFSharp.Store
                             #endregion
 
                             #region plain literal
-                            if (!tokens[2].Contains("^^") ||
-                                 tokens[2].EndsWith("^^") ||
-                                 tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
+                            if (!tokens[2].Contains("^^")
+                                    || tokens[2].EndsWith("^^")
+                                        || tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2, 1) != "<")
                             {
                                 if (RDFNTriples.regexLPL.Match(tokens[2]).Success)
                                 {
                                     tokens[2] = tokens[2].Replace("\"@", "@");
-                                    string pLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("@", StringComparison.Ordinal));
-                                    string pLitLang = tokens[2].Substring(tokens[2].LastIndexOf("@", StringComparison.Ordinal) + 1);
+                                    int lastIndexOfLanguage = tokens[2].LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
+                                    string pLitValue = tokens[2].Substring(0, lastIndexOfLanguage);
+                                    string pLitLang = tokens[2].Substring(lastIndexOfLanguage + 1);
                                     L = new RDFPlainLiteral(HttpUtility.HtmlDecode(pLitValue), pLitLang);
                                 }
                                 else
@@ -323,10 +324,11 @@ namespace RDFSharp.Store
                             else
                             {
                                 tokens[2] = tokens[2].Replace("\"^^", "^^");
-                                string tLitValue = tokens[2].Substring(0, tokens[2].LastIndexOf("^^", StringComparison.Ordinal));
-                                string tLitDatatype = tokens[2].Substring(tokens[2].LastIndexOf("^^", StringComparison.Ordinal) + 2)
-                                                                        .TrimStart(new char[] { '<' })
-                                                                        .TrimEnd(new char[] { '>' });
+                                int lastIndexOfDatatype = tokens[2].LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+                                string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
+                                string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
+                                                               .TrimStart(new char[] { '<' })
+                                                               .TrimEnd(new char[] { '>' });
                                 RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
                                 L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), dt);
                             }
