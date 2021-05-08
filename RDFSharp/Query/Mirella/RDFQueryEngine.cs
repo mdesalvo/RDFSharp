@@ -2261,10 +2261,8 @@ namespace RDFSharp.Query
         internal DataTable InnerJoinTables(DataTable dt1, DataTable dt2)
         {
             DataTable result = new DataTable();
-            IEnumerable<DataColumn> dt1Cols = dt1.Columns.OfType<DataColumn>();
-            IEnumerable<DataColumn> dt2Cols = dt2.Columns.OfType<DataColumn>();
-            IEnumerable<DataColumn> dt1Columns = (dt1Cols as IList<DataColumn> ?? dt1Cols.ToList<DataColumn>());
-            IEnumerable<DataColumn> dt2Columns = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
+            DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] dt2Columns = dt2.Columns.OfType<DataColumn>().ToArray();
 
             //Determine common columns
             DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
@@ -2296,7 +2294,6 @@ namespace RDFSharp.Query
                         Array.Copy(secondArray, 0, productArray, firstArray.Length, secondArray.Length);
                         result.LoadDataRow(productArray, true);
                     }
-
                 }
                 result.EndLoadData();
 
@@ -2383,10 +2380,8 @@ namespace RDFSharp.Query
         internal DataTable OuterJoinTables(DataTable dt1, DataTable dt2)
         {
             DataTable finalResult = new DataTable();
-            IEnumerable<DataColumn> dt1Cols = dt1.Columns.OfType<DataColumn>();
-            IEnumerable<DataColumn> dt2Cols = dt2.Columns.OfType<DataColumn>();
-            IEnumerable<DataColumn> dt1Columns = (dt1Cols as IList<DataColumn> ?? dt1Cols.ToList<DataColumn>());
-            IEnumerable<DataColumn> dt2Columns = (dt2Cols as IList<DataColumn> ?? dt2Cols.ToList<DataColumn>());
+            DataColumn[] dt1Columns = dt1.Columns.OfType<DataColumn>().ToArray();
+            DataColumn[] dt2Columns = dt2.Columns.OfType<DataColumn>().ToArray();
 
             bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
             bool joinInvalidationFlag = false;
@@ -2588,7 +2583,7 @@ namespace RDFSharp.Query
             {
 
                 //Remove non-projection variables
-                var nonProjCols = new List<DataColumn>();
+                List<DataColumn> nonProjCols = new List<DataColumn>();
                 foreach (DataColumn dtCol in table.Columns)
                 {
                     if (!query.ProjectionVars.Any(pv => pv.Key.ToString().Equals(dtCol.ColumnName, StringComparison.OrdinalIgnoreCase)))
