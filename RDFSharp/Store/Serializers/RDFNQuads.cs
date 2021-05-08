@@ -34,52 +34,52 @@ namespace RDFSharp.Store
         /// <summary>
         /// Regex to detect S->P->B->C form of N-Quad
         /// </summary>
-        internal static readonly Regex SPBC = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPBC = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect S->P->O->C form of N-Quad
         /// </summary>
-        internal static readonly Regex SPOC = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPOC = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLAIN = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect S->P->B->L(TYPED) form of N-Quad
         /// </summary>
-        internal static readonly Regex SPLC_TLIT = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex SPLC_TLIT = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect B->P->B->C form of N-Quad
         /// </summary>
-        internal static readonly Regex BPBC = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPBC = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect B->P->O->C form of N-Quad
         /// </summary>
-        internal static readonly Regex BPOC = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPOC = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLAIN = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*<[^<>]+>\s*.$");
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED)->C form of N-Quad
         /// </summary>
-        internal static readonly Regex BPLC_TLIT = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
+        internal static readonly Regex BPLC_TLIT = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*<[^<>]+>\s*.$");
         #endregion
 
         #region Methods
