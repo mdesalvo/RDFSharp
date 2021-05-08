@@ -64,19 +64,15 @@ namespace RDFSharp.Model
             if (prefix != null && prefix.Trim() != string.Empty)
             {
                 prefix = prefix.Trim();
-
                 if (Regex.IsMatch(prefix, @"^[a-zA-Z0-9_\-]+$"))
                 {
                     if (prefix.ToUpperInvariant() == "BNODE" || prefix.ToUpperInvariant() == "XMLNS")
-                    {
                         throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
-                    }
                 }
                 else
                 {
                     throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter contains unallowed characters");
                 }
-
             }
             else
             {
@@ -122,17 +118,13 @@ namespace RDFSharp.Model
         /// Gives the string representation of the namespace
         /// </summary>
         public override string ToString()
-        {
-            return this.NamespaceUri.ToString();
-        }
+            => this.NamespaceUri.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two namespaces
         /// </summary>
         public bool Equals(RDFNamespace other)
-        {
-            return (other != null && this.NamespaceID.Equals(other.NamespaceID));
-        }
+            => other != null && this.NamespaceID.Equals(other.NamespaceID);
         #endregion
 
         #region Methods

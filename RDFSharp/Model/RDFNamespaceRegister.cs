@@ -47,18 +47,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the register's namespaces
         /// </summary>
-        public static int NamespacesCount
-        {
-            get { return Instance.Register.Count; }
-        }
+        public static int NamespacesCount => Instance.Register.Count;
 
         /// <summary>
         /// Gets the enumerator on the register's namespaces for iteration
         /// </summary>
-        public static IEnumerator<RDFNamespace> NamespacesEnumerator
-        {
-            get { return Instance.Register.GetEnumerator(); }
-        }
+        public static IEnumerator<RDFNamespace> NamespacesEnumerator => Instance.Register.GetEnumerator();
         #endregion
 
         #region Ctors
@@ -106,18 +100,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the register's namespaces
         /// </summary>
-        IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator()
-        {
-            return NamespacesEnumerator;
-        }
+        IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator() => NamespacesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the register's namespaces
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return NamespacesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => NamespacesEnumerator;
         #endregion
 
         #region Methods
@@ -172,7 +160,7 @@ namespace RDFSharp.Model
         {
             if (uri != null)
             {
-                var result = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
+                RDFNamespace result = Instance.Register.Find(ns => ns.NamespaceUri.ToString().Equals(uri.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                     result = LookupPrefixCC(uri.Trim().TrimEnd(new char[] { '#' }), 2);
                 return result;
@@ -187,7 +175,7 @@ namespace RDFSharp.Model
         {
             if (prefix != null)
             {
-                var result = Instance.Register.Find(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
+                RDFNamespace result = Instance.Register.Find(ns => ns.NamespacePrefix.Equals(prefix.Trim(), StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
                     result = LookupPrefixCC(prefix.Trim(), 1);
                 return result;
