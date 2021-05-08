@@ -30,7 +30,6 @@ namespace RDFSharp.Query
     /// </summary>
     internal class RDFQueryEngine
     {
-
         #region Properties
         /// <summary>
         /// Dictionary of temporary result tables produced by evaluation of query members
