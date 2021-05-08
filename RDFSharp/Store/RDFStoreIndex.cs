@@ -51,6 +51,11 @@ namespace RDFSharp.Store
         /// Index on the literals of the store's quadruples
         /// </summary>
         internal Dictionary<long, HashSet<long>> Literals { get; set; }
+
+        /// <summary>
+        /// Empty hashset to be returned in case of index miss
+        /// </summary>
+        private static HashSet<long> EmptyHashSet = new HashSet<long>();
         #endregion
 
         #region Ctors
@@ -256,76 +261,36 @@ namespace RDFSharp.Store
         /// Selects the quadruples indexed by the given context
         /// </summary>
         internal HashSet<long> SelectIndexByContext(RDFContext contextResource)
-        {
-            if (contextResource != null)
-            {
-                if (this.Contexts.ContainsKey(contextResource.PatternMemberID))
-                {
-                    return this.Contexts[contextResource.PatternMemberID];
-                }
-            }
-            return new HashSet<long>();
-        }
+            => contextResource != null && this.Contexts.ContainsKey(contextResource.PatternMemberID)
+                ? this.Contexts[contextResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given subject
         /// </summary>
         internal HashSet<long> SelectIndexBySubject(RDFResource subjectResource)
-        {
-            if (subjectResource != null)
-            {
-                if (this.Subjects.ContainsKey(subjectResource.PatternMemberID))
-                {
-                    return this.Subjects[subjectResource.PatternMemberID];
-                }
-            }
-            return new HashSet<long>();
-        }
+            => subjectResource != null && this.Subjects.ContainsKey(subjectResource.PatternMemberID)
+                ? this.Subjects[subjectResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given predicate
         /// </summary>
         internal HashSet<long> SelectIndexByPredicate(RDFResource predicateResource)
-        {
-            if (predicateResource != null)
-            {
-                if (this.Predicates.ContainsKey(predicateResource.PatternMemberID))
-                {
-                    return this.Predicates[predicateResource.PatternMemberID];
-                }
-            }
-            return new HashSet<long>();
-        }
+            => predicateResource != null && this.Predicates.ContainsKey(predicateResource.PatternMemberID)
+                ? this.Predicates[predicateResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given object
         /// </summary>
         internal HashSet<long> SelectIndexByObject(RDFResource objectResource)
-        {
-            if (objectResource != null)
-            {
-                if (this.Objects.ContainsKey(objectResource.PatternMemberID))
-                {
-                    return this.Objects[objectResource.PatternMemberID];
-                }
-            }
-            return new HashSet<long>();
-        }
+            => objectResource != null && this.Objects.ContainsKey(objectResource.PatternMemberID)
+                ? this.Objects[objectResource.PatternMemberID] : EmptyHashSet;
 
         /// <summary>
         /// Selects the quadruples indexed by the given literal
         /// </summary>
         internal HashSet<long> SelectIndexByLiteral(RDFLiteral objectLiteral)
-        {
-            if (objectLiteral != null)
-            {
-                if (this.Literals.ContainsKey(objectLiteral.PatternMemberID))
-                {
-                    return this.Literals[objectLiteral.PatternMemberID];
-                }
-            }
-            return new HashSet<long>();
-        }
+            => objectLiteral != null && this.Literals.ContainsKey(objectLiteral.PatternMemberID)
+                ? this.Literals[objectLiteral.PatternMemberID] : EmptyHashSet;
         #endregion
 
         #endregion
