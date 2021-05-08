@@ -30,12 +30,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern member
         /// </summary>
-        public long PatternMemberID => LazyPatternMemberId.Value;
+        public long PatternMemberID => LazyPatternMemberID.Value;
 
         /// <summary>
         /// Lazy evaluation of the pattern member identifier
         /// </summary>
-        protected Lazy<long> LazyPatternMemberId;
+        protected Lazy<long> LazyPatternMemberID;
         #endregion
 
         #region Interfaces
@@ -57,7 +57,7 @@ namespace RDFSharp.Query
         /// Sets the lazy calculation of PatternMemberID
         /// </summary>
         internal void SetLazyPatternMemberID()
-            => this.LazyPatternMemberId = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
+            => this.LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         #endregion
 
     }
