@@ -231,22 +231,25 @@ namespace RDFSharp.Query
         /// Gets the group members of type: pattern
         /// </summary>
         internal IEnumerable<RDFPattern> GetPatterns()
-            => this.GroupMembers.Where(g => g is RDFPattern)
-                                .OfType<RDFPattern>();
+            => this.GroupMembers.OfType<RDFPattern>();
 
         /// <summary>
         /// Gets the group members of type: property path
         /// </summary>
         internal IEnumerable<RDFPropertyPath> GetPropertyPaths()
-            => this.GroupMembers.Where(g => g is RDFPropertyPath)
-                                .OfType<RDFPropertyPath>();
+            => this.GroupMembers.OfType<RDFPropertyPath>();
 
         /// <summary>
         /// Gets the group members of type: values
         /// </summary>
         internal IEnumerable<RDFValues> GetValues()
-            => this.GroupMembers.Where(g => g is RDFValues)
-                                .OfType<RDFValues>();
+            => this.GroupMembers.OfType<RDFValues>();
+
+        /// <summary>
+        /// Gets the group members of type: filter
+        /// </summary>
+        internal IEnumerable<RDFFilter> GetFilters()
+            => this.GroupMembers.OfType<RDFFilter>();
 
         /// <summary>
         /// Adds the given injected SPARQL values to the pattern group
@@ -256,22 +259,17 @@ namespace RDFSharp.Query
             if (values != null)
             {
                 //Clone the SPARQL values and set as injected
-                RDFValues clonedValues = new RDFValues();
-                clonedValues.Bindings = values.Bindings;
-                clonedValues.IsEvaluable = values.IsEvaluable;
-                clonedValues.IsInjected = true;
+                RDFValues clonedValues = new RDFValues()
+                {
+                    Bindings = values.Bindings,
+                    IsEvaluable = values.IsEvaluable,
+                    IsInjected = true
+                };
 
                 this.AddValues(clonedValues);
             }
             return this;
         }
-
-        /// <summary>
-        /// Gets the group members of type: filter
-        /// </summary>
-        internal IEnumerable<RDFFilter> GetFilters()
-            => this.GroupMembers.Where(g => g is RDFFilter)
-                                .OfType<RDFFilter>();
 
         /// <summary>
         /// Gets the group members which can be evaluated

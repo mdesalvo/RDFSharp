@@ -75,22 +75,19 @@ namespace RDFSharp.Query
         /// Gets the query members of type: pattern group
         /// </summary>
         internal IEnumerable<RDFPatternGroup> GetPatternGroups()
-            => this.QueryMembers.Where(q => q is RDFPatternGroup)
-                                .OfType<RDFPatternGroup>();
+            => this.QueryMembers.OfType<RDFPatternGroup>();
 
         /// <summary>
         /// Gets the query members of type: modifier
         /// </summary>
         internal IEnumerable<RDFModifier> GetModifiers()
-            => this.QueryMembers.Where(q => q is RDFModifier)
-                                .OfType<RDFModifier>();
+            => this.QueryMembers.OfType<RDFModifier>();
 
         /// <summary>
         /// Gets the query members of type: query
         /// </summary>
         internal IEnumerable<RDFQuery> GetSubQueries()
-            => this.QueryMembers.Where(q => q is RDFQuery)
-                                .OfType<RDFQuery>();
+            => this.QueryMembers.OfType<RDFQuery>();
 
         /// <summary>
         /// Gets the SPARQL values of the query, including those from patterngroups and subqueries
