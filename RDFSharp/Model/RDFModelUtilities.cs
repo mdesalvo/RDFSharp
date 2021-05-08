@@ -180,151 +180,88 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFTriple> SelectTriples(RDFGraph graph, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
-            var matchSubj = new List<RDFTriple>();
-            var matchPred = new List<RDFTriple>();
-            var matchObj = new List<RDFTriple>();
-            var matchLit = new List<RDFTriple>();
-            var matchResult = new List<RDFTriple>();
+            List<RDFTriple> matchResult = new List<RDFTriple>();
             if (graph != null)
             {
+                List<RDFTriple> S = new List<RDFTriple>();
+                List<RDFTriple> P = new List<RDFTriple>();
+                List<RDFTriple> O = new List<RDFTriple>();
+                List<RDFTriple> L = new List<RDFTriple>();
+                StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Subject
                 if (subj != null)
                 {
-                    foreach (var t in graph.GraphIndex.SelectIndexBySubject(subj))
-                    {
-                        matchSubj.Add(graph.Triples[t]);
-                    }
+                    queryFilters.Append("S");
+                    foreach (long t in graph.GraphIndex.SelectIndexBySubject(subj))
+                        S.Add(graph.Triples[t]);
                 }
 
                 //Filter by Predicate
                 if (pred != null)
                 {
-                    foreach (var t in graph.GraphIndex.SelectIndexByPredicate(pred))
-                    {
-                        matchPred.Add(graph.Triples[t]);
-                    }
+                    queryFilters.Append("P");
+                    foreach (long t in graph.GraphIndex.SelectIndexByPredicate(pred))
+                        P.Add(graph.Triples[t]);
                 }
 
                 //Filter by Object
                 if (obj != null)
                 {
-                    foreach (var t in graph.GraphIndex.SelectIndexByObject(obj))
-                    {
-                        matchObj.Add(graph.Triples[t]);
-                    }
+                    queryFilters.Append("O");
+                    foreach (long t in graph.GraphIndex.SelectIndexByObject(obj))
+                        O.Add(graph.Triples[t]);
                 }
 
                 //Filter by Literal
                 if (lit != null)
                 {
-                    foreach (var t in graph.GraphIndex.SelectIndexByLiteral(lit))
-                    {
-                        matchLit.Add(graph.Triples[t]);
-                    }
+                    queryFilters.Append("L");
+                    foreach (long t in graph.GraphIndex.SelectIndexByLiteral(lit))
+                        L.Add(graph.Triples[t]);
                 }
 
                 //Intersect the filters
-                if (subj != null)
+                string queryFilter = queryFilters.ToString();
+                switch (queryFilter)
                 {
-                    if (pred != null)
-                    {
-                        if (obj != null)
-                        {
-                            //S->P->O
-                            matchResult = matchSubj.Intersect(matchPred)
-                                                   .Intersect(matchObj)
-                                                   .ToList();
-                        }
-                        else
-                        {
-                            if (lit != null)
-                            {
-                                //S->P->L
-                                matchResult = matchSubj.Intersect(matchPred)
-                                                       .Intersect(matchLit)
-                                                       .ToList();
-                            }
-                            else
-                            {
-                                //S->P->
-                                matchResult = matchSubj.Intersect(matchPred)
-                                                       .ToList();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (obj != null)
-                        {
-                            //S->->O
-                            matchResult = matchSubj.Intersect(matchObj)
-                                                   .ToList();
-                        }
-                        else
-                        {
-                            if (lit != null)
-                            {
-                                //S->->L
-                                matchResult = matchSubj.Intersect(matchLit)
-                                                       .ToList();
-                            }
-                            else
-                            {
-                                //S->->
-                                matchResult = matchSubj;
-                            }
-                        }
-                    }
+                    case "S":
+                        matchResult = S;
+                        break;
+                    case "P":
+                        matchResult = P;
+                        break;
+                    case "O":
+                        matchResult = O;
+                        break;
+                    case "L":
+                        matchResult = L;
+                        break;
+                    case "SP":
+                        matchResult = S.Intersect(P).ToList();
+                        break;
+                    case "SO":
+                        matchResult = S.Intersect(O).ToList();
+                        break;
+                    case "SL":
+                        matchResult = S.Intersect(L).ToList();
+                        break;
+                    case "PO":
+                        matchResult = P.Intersect(O).ToList();
+                        break;
+                    case "PL":
+                        matchResult = P.Intersect(L).ToList();
+                        break;
+                    case "SPO":
+                        matchResult = S.Intersect(P).Intersect(O).ToList();
+                        break;
+                    case "SPL":
+                        matchResult = S.Intersect(P).Intersect(L).ToList();
+                        break;
+                    default:
+                        matchResult = graph.ToList();
+                        break;
                 }
-                else
-                {
-                    if (pred != null)
-                    {
-                        if (obj != null)
-                        {
-                            //->P->O
-                            matchResult = matchPred.Intersect(matchObj)
-                                                   .ToList();
-                        }
-                        else
-                        {
-                            if (lit != null)
-                            {
-                                //->P->L
-                                matchResult = matchPred.Intersect(matchLit)
-                                                       .ToList();
-                            }
-                            else
-                            {
-                                //->P->
-                                matchResult = matchPred;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (obj != null)
-                        {
-                            //->->O
-                            matchResult = matchObj;
-                        }
-                        else
-                        {
-                            if (lit != null)
-                            {
-                                //->->L
-                                matchResult = matchLit;
-                            }
-                            else
-                            {
-                                //->->
-                                matchResult = graph.Triples.Values.ToList();
-                            }
-                        }
-                    }
-                }
-
             }
             return matchResult;
         }

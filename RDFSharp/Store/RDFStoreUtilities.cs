@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 
 namespace RDFSharp.Store
 {
@@ -89,275 +90,132 @@ namespace RDFSharp.Store
         /// </summary>
         internal static List<RDFQuadruple> SelectQuadruples(RDFMemoryStore store, RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
         {
-            var matchCtx = new List<RDFQuadruple>();
-            var matchSubj = new List<RDFQuadruple>();
-            var matchPred = new List<RDFQuadruple>();
-            var matchObj = new List<RDFQuadruple>();
-            var matchLit = new List<RDFQuadruple>();
-            var matchResult = new List<RDFQuadruple>();
+            List<RDFQuadruple> matchResult = new List<RDFQuadruple>();
             if (store != null)
             {
+                List<RDFQuadruple> C = new List<RDFQuadruple>();
+                List<RDFQuadruple> S = new List<RDFQuadruple>();
+                List<RDFQuadruple> P = new List<RDFQuadruple>();
+                List<RDFQuadruple> O = new List<RDFQuadruple>();
+                List<RDFQuadruple> L = new List<RDFQuadruple>();
+                StringBuilder queryFilters = new StringBuilder();
 
                 //Filter by Context
                 if (ctx != null)
                 {
-                    foreach (var q in store.StoreIndex.SelectIndexByContext(ctx))
-                    {
-                        matchCtx.Add(store.Quadruples[q]);
-                    }
+                    queryFilters.Append("C");
+                    foreach (long q in store.StoreIndex.SelectIndexByContext(ctx))
+                        C.Add(store.Quadruples[q]);
                 }
 
                 //Filter by Subject
                 if (subj != null)
                 {
-                    foreach (var q in store.StoreIndex.SelectIndexBySubject(subj))
-                    {
-                        matchSubj.Add(store.Quadruples[q]);
-                    }
+                    queryFilters.Append("S");
+                    foreach (long q in store.StoreIndex.SelectIndexBySubject(subj))
+                        S.Add(store.Quadruples[q]);
                 }
 
                 //Filter by Predicate
                 if (pred != null)
                 {
-                    foreach (var q in store.StoreIndex.SelectIndexByPredicate(pred))
-                    {
-                        matchPred.Add(store.Quadruples[q]);
-                    }
+                    queryFilters.Append("P");
+                    foreach (long q in store.StoreIndex.SelectIndexByPredicate(pred))
+                        P.Add(store.Quadruples[q]);
                 }
 
                 //Filter by Object
                 if (obj != null)
                 {
-                    foreach (var q in store.StoreIndex.SelectIndexByObject(obj))
-                    {
-                        matchObj.Add(store.Quadruples[q]);
-                    }
+                    queryFilters.Append("O");
+                    foreach (long q in store.StoreIndex.SelectIndexByObject(obj))
+                        O.Add(store.Quadruples[q]);
                 }
 
                 //Filter by Literal
                 if (lit != null)
                 {
+                    queryFilters.Append("L");
                     foreach (var q in store.StoreIndex.SelectIndexByLiteral(lit))
-                    {
-                        matchLit.Add(store.Quadruples[q]);
-                    }
+                        L.Add(store.Quadruples[q]);
                 }
 
                 //Intersect the filters
-                if (ctx != null)
+                string queryFilter = queryFilters.ToString();
+                switch (queryFilter)
                 {
-                    if (subj != null)
-                    {
-                        if (pred != null)
-                        {
-                            if (obj != null)
-                            {
-                                //C->S->P->O
-                                matchResult = matchCtx.Intersect(matchSubj)
-                                                      .Intersect(matchPred)
-                                                      .Intersect(matchObj)
-                                                      .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //C->S->P->L
-                                    matchResult = matchCtx.Intersect(matchSubj)
-                                                          .Intersect(matchPred)
-                                                          .Intersect(matchLit)
-                                                          .ToList();
-                                }
-                                else
-                                {
-                                    //C->S->P->
-                                    matchResult = matchCtx.Intersect(matchSubj)
-                                                          .Intersect(matchPred)
-                                                          .ToList();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (obj != null)
-                            {
-                                //C->S->->O
-                                matchResult = matchCtx.Intersect(matchSubj)
-                                                      .Intersect(matchObj)
-                                                      .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //C->S->->L
-                                    matchResult = matchCtx.Intersect(matchSubj)
-                                                          .Intersect(matchLit)
-                                                          .ToList();
-                                }
-                                else
-                                {
-                                    //C->S->->
-                                    matchResult = matchCtx.Intersect(matchSubj)
-                                                          .ToList();
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (pred != null)
-                        {
-                            if (obj != null)
-                            {
-                                //C->->P->O
-                                matchResult = matchCtx.Intersect(matchPred)
-                                                      .Intersect(matchObj)
-                                                      .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //C->->P->L
-                                    matchResult = matchCtx.Intersect(matchPred)
-                                                          .Intersect(matchLit)
-                                                          .ToList();
-                                }
-                                else
-                                {
-                                    //C->->P->
-                                    matchResult = matchCtx.Intersect(matchPred)
-                                                          .ToList();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (obj != null)
-                            {
-                                //C->->->O
-                                matchResult = matchCtx.Intersect(matchObj)
-                                                      .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //C->->->L
-                                    matchResult = matchCtx.Intersect(matchLit)
-                                                          .ToList();
-                                }
-                                else
-                                {
-                                    //C->->->
-                                    matchResult = matchCtx;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (subj != null)
-                    {
-                        if (pred != null)
-                        {
-                            if (obj != null)
-                            {
-                                //->S->P->O
-                                matchResult = matchSubj.Intersect(matchPred)
-                                                       .Intersect(matchObj)
-                                                       .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //->S->P->L
-                                    matchResult = matchSubj.Intersect(matchPred)
-                                                           .Intersect(matchLit)
-                                                           .ToList();
-                                }
-                                else
-                                {
-                                    //->S->P->
-                                    matchResult = matchSubj.Intersect(matchPred)
-                                                           .ToList();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (obj != null)
-                            {
-                                //->S->->O
-                                matchResult = matchSubj.Intersect(matchObj)
-                                                       .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //->S->->L
-                                    matchResult = matchSubj.Intersect(matchLit)
-                                                           .ToList();
-                                }
-                                else
-                                {
-                                    //->S->->
-                                    matchResult = matchSubj;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (pred != null)
-                        {
-                            if (obj != null)
-                            {
-                                //->->P->O
-                                matchResult = matchPred.Intersect(matchObj)
-                                                       .ToList();
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //->->P->L
-                                    matchResult = matchPred.Intersect(matchLit)
-                                                           .ToList();
-                                }
-                                else
-                                {
-                                    //->->P->
-                                    matchResult = matchPred;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (obj != null)
-                            {
-                                //->->->O
-                                matchResult = matchObj;
-                            }
-                            else
-                            {
-                                if (lit != null)
-                                {
-                                    //->->->L
-                                    matchResult = matchLit;
-                                }
-                                else
-                                {
-                                    //->->->
-                                    matchResult = store.Quadruples.Values.ToList();
-                                }
-                            }
-                        }
-                    }
+                    case "C":
+                        matchResult = C;
+                        break;
+                    case "S":
+                        matchResult = S;
+                        break;
+                    case "P":
+                        matchResult = P;
+                        break;
+                    case "O":
+                        matchResult = O;
+                        break;
+                    case "L":
+                        matchResult = L;
+                        break;
+                    case "CS":
+                        matchResult = C.Intersect(S).ToList();
+                        break;
+                    case "CP":
+                        matchResult = C.Intersect(P).ToList();
+                        break;
+                    case "CO":
+                        matchResult = C.Intersect(O).ToList();
+                        break;
+                    case "CL":
+                        matchResult = C.Intersect(L).ToList();
+                        break;
+                    case "CSP":
+                        matchResult = C.Intersect(S).Intersect(P).ToList();
+                        break;
+                    case "CSO":
+                        matchResult = C.Intersect(S).Intersect(O).ToList();
+                        break;
+                    case "CSL":
+                        matchResult = C.Intersect(S).Intersect(L).ToList();
+                        break;
+                    case "CPO":
+                        matchResult = C.Intersect(P).Intersect(O).ToList();
+                        break;
+                    case "CPL":
+                        matchResult = C.Intersect(P).Intersect(L).ToList();
+                        break;
+                    case "CSPO":
+                        matchResult = C.Intersect(S).Intersect(P).Intersect(O).ToList();
+                        break;
+                    case "CSPL":
+                        matchResult = C.Intersect(S).Intersect(P).Intersect(L).ToList();
+                        break;
+                    case "SP":
+                        matchResult = S.Intersect(P).ToList();
+                        break;
+                    case "SO":
+                        matchResult = S.Intersect(O).ToList();
+                        break;
+                    case "SL":
+                        matchResult = S.Intersect(L).ToList();
+                        break;
+                    case "SPO":
+                        matchResult = S.Intersect(P).Intersect(O).ToList();
+                        break;
+                    case "SPL":
+                        matchResult = S.Intersect(P).Intersect(L).ToList();
+                        break;
+                    case "PO":
+                        matchResult = P.Intersect(O).ToList();
+                        break;
+                    case "PL":
+                        matchResult = P.Intersect(L).ToList();
+                        break;
+                    default:
+                        matchResult = store.ToList();
+                        break;
                 }
 
             }
