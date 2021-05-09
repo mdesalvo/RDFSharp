@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace RDFSharp.Query
@@ -199,10 +200,24 @@ namespace RDFSharp.Query
                              : new RDFConstructQueryResult(this.ToString());
 
         /// <summary>
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public async Task<RDFConstructQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => graph != null ? await new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(this, graph)
+                             : new RDFConstructQueryResult(this.ToString());
+
+        /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFConstructQueryResult ApplyToStore(RDFStore store)
             => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store)
+                             : new RDFConstructQueryResult(this.ToString());
+
+        /// <summary>
+        /// Asynchronously applies the query to the given store
+        /// </summary>
+        public async Task<RDFConstructQueryResult> ApplyToStoreAsync(RDFStore store)
+            => store != null ? await new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(this, store)
                              : new RDFConstructQueryResult(this.ToString());
 
         /// <summary>
@@ -213,18 +228,26 @@ namespace RDFSharp.Query
                                   : new RDFConstructQueryResult(this.ToString());
 
         /// <summary>
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public async Task<RDFConstructQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => federation != null ? await new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(this, federation)
+                                  : new RDFConstructQueryResult(this.ToString());
+
+        /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
+            string constructQueryString = this.ToString();
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(constructQueryString);
             if (sparqlEndpoint != null)
             {
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(constructQueryString));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -241,7 +264,52 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             constructResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                        constructResult.ConstructResults.TableName = this.ToString();
+                        constructResult.ConstructResults.TableName = constructQueryString;
+                    }
+                }
+
+                //Eventually adjust column names (should start with "?")
+                int columnsCount = constructResult.ConstructResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
+                {
+                    if (!constructResult.ConstructResults.Columns[i].ColumnName.StartsWith("?"))
+                        constructResult.ConstructResults.Columns[i].ColumnName = string.Concat("?", constructResult.ConstructResults.Columns[i].ColumnName);
+                }
+            }
+            return constructResult;
+        }
+
+        /// <summary>
+        /// Asynchronously applies the query to the given SPARQL endpoint
+        /// </summary>
+        public async Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
+        {
+            string constructQueryString = this.ToString();
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(constructQueryString);
+            if (sparqlEndpoint != null)
+            {
+                //Establish a connection to the given SPARQL endpoint
+                using (WebClient webClient = new WebClient())
+                {
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(constructQueryString));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+
+                    //Send querystring to SPARQL endpoint
+                    byte[] sparqlResponse = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse != null)
+                    {
+                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
+                            constructResult = await Task.Run(() => RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream)));
+                        constructResult.ConstructResults.TableName = constructQueryString;
                     }
                 }
 

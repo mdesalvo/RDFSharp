@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace RDFSharp.Query
@@ -158,10 +159,24 @@ namespace RDFSharp.Query
                              : new RDFSelectQueryResult();
 
         /// <summary>
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public async Task<RDFSelectQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => graph != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, graph)
+                             : new RDFSelectQueryResult();
+
+        /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFSelectQueryResult ApplyToStore(RDFStore store)
             => store != null ? new RDFQueryEngine().EvaluateSelectQuery(this, store)
+                             : new RDFSelectQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given store
+        /// </summary>
+        public async Task<RDFSelectQueryResult> ApplyToStoreAsync(RDFStore store)
+            => store != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, store)
                              : new RDFSelectQueryResult();
 
         /// <summary>
@@ -172,10 +187,18 @@ namespace RDFSharp.Query
                                   : new RDFSelectQueryResult();
 
         /// <summary>
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public async Task<RDFSelectQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => federation != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, federation)
+                                  : new RDFSelectQueryResult();
+
+        /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFSelectQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
+            string selectQueryString = this.ToString();
             RDFSelectQueryResult selResult = new RDFSelectQueryResult();
             if (sparqlEndpoint != null)
             {
@@ -183,7 +206,7 @@ namespace RDFSharp.Query
                 using (WebClient webClient = new WebClient())
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(selectQueryString));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -199,7 +222,51 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             selResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                        selResult.SelectResults.TableName = this.ToString();
+                        selResult.SelectResults.TableName = selectQueryString;
+                    }
+                }
+
+                //Eventually adjust column names (should start with "?")
+                int columnsCount = selResult.SelectResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
+                {
+                    if (!selResult.SelectResults.Columns[i].ColumnName.StartsWith("?"))
+                        selResult.SelectResults.Columns[i].ColumnName = string.Concat("?", selResult.SelectResults.Columns[i].ColumnName);
+                }
+            }
+            return selResult;
+        }
+
+        /// <summary>
+        /// Asynchronously asynchronously applies the query to the given SPARQL endpoint
+        /// </summary>
+        public async Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
+        {
+            string selectQueryString = this.ToString();
+            RDFSelectQueryResult selResult = new RDFSelectQueryResult();
+            if (sparqlEndpoint != null)
+            {
+                //Establish a connection to the given SPARQL endpoint
+                using (WebClient webClient = new WebClient())
+                {
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(selectQueryString));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
+
+                    //Send querystring to SPARQL endpoint
+                    byte[] sparqlResponse = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse != null)
+                    {
+                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
+                            selResult = await Task.Run(() => RDFSelectQueryResult.FromSparqlXmlResult(sStream));
+                        selResult.SelectResults.TableName = selectQueryString;
                     }
                 }
 
@@ -237,7 +304,29 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the query as optional
+        /// Asynchronously applies the query to the given data source
+        /// </summary>
+        internal async Task<RDFSelectQueryResult> ApplyToDataSourceAsync(RDFDataSource dataSource)
+        {
+            if (dataSource != null)
+            {
+                switch (dataSource)
+                {
+                    case RDFGraph graph:
+                        return await this.ApplyToGraphAsync(graph);
+                    case RDFStore store:
+                        return await this.ApplyToStoreAsync(store);
+                    case RDFFederation federation:
+                        return await this.ApplyToFederationAsync(federation);
+                    case RDFSPARQLEndpoint sparqlEndpoint:
+                        return await this.ApplyToSPARQLEndpointAsync(sparqlEndpoint);
+                }
+            }
+            return new RDFSelectQueryResult();
+        }
+
+        /// <summary>
+        /// Sets the query to be joined as optional with the previous query member
         /// </summary>
         public RDFSelectQuery Optional()
         {

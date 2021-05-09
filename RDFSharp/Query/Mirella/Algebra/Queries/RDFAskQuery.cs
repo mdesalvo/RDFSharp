@@ -20,6 +20,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace RDFSharp.Query
@@ -100,10 +101,24 @@ namespace RDFSharp.Query
                              : new RDFAskQueryResult();
 
         /// <summary>
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public async Task<RDFAskQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => graph != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, graph)
+                             : new RDFAskQueryResult();
+
+        /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFAskQueryResult ApplyToStore(RDFStore store)
             => store != null ? new RDFQueryEngine().EvaluateAskQuery(this, store)
+                             : new RDFAskQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given store
+        /// </summary>
+        public async Task<RDFAskQueryResult> ApplyToStoreAsync(RDFStore store)
+            => store != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, store)
                              : new RDFAskQueryResult();
 
         /// <summary>
@@ -114,10 +129,18 @@ namespace RDFSharp.Query
                                   : new RDFAskQueryResult();
 
         /// <summary>
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public async Task<RDFAskQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => federation != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, federation)
+                                  : new RDFAskQueryResult();
+
+        /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFAskQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
+            string askQueryString = this.ToString();
             RDFAskQueryResult askResult = new RDFAskQueryResult();
             if (sparqlEndpoint != null)
             {
@@ -125,7 +148,7 @@ namespace RDFSharp.Query
                 using (WebClient webClient = new WebClient())
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(askQueryString));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -141,6 +164,41 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             askResult = RDFAskQueryResult.FromSparqlXmlResult(sStream);
+                    }
+                }
+            }
+            return askResult;
+        }
+
+        /// <summary>
+        /// Asynchronously applies the query to the given SPARQL endpoint
+        /// </summary>
+        public async Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
+        {
+            string askQueryString = this.ToString();
+            RDFAskQueryResult askResult = new RDFAskQueryResult();
+            if (sparqlEndpoint != null)
+            {
+                //Establish a connection to the given SPARQL endpoint
+                using (WebClient webClient = new WebClient())
+                {
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(askQueryString));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/sparql-results+xml");
+
+                    //Send querystring to SPARQL endpoint
+                    byte[] sparqlResponse = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse != null)
+                    {
+                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
+                            askResult = await Task.Run(() => RDFAskQueryResult.FromSparqlXmlResult(sStream));
                     }
                 }
             }

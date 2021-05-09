@@ -197,7 +197,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Sets the pattern as optional
+        /// Sets the pattern to be joined as optional with the previous pattern
         /// </summary>
         public RDFPattern Optional()
         {

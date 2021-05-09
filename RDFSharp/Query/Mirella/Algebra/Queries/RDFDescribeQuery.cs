@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace RDFSharp.Query
@@ -182,10 +183,24 @@ namespace RDFSharp.Query
                              : new RDFDescribeQueryResult(this.ToString());
 
         /// <summary>
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public async Task<RDFDescribeQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => graph != null ? await new RDFQueryAsyncEngine().EvaluateDescribeQueryAsync(this, graph)
+                             : new RDFDescribeQueryResult(this.ToString());
+
+        /// <summary>
         /// Applies the query to the given store
         /// </summary>
         public RDFDescribeQueryResult ApplyToStore(RDFStore store)
             => store != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, store)
+                             : new RDFDescribeQueryResult(this.ToString());
+
+        /// <summary>
+        /// Asynchronously applies the query to the given store
+        /// </summary>
+        public async Task<RDFDescribeQueryResult> ApplyToStoreAsync(RDFStore store)
+            => store != null ? await new RDFQueryAsyncEngine().EvaluateDescribeQueryAsync(this, store)
                              : new RDFDescribeQueryResult(this.ToString());
 
         /// <summary>
@@ -196,18 +211,26 @@ namespace RDFSharp.Query
                                   : new RDFDescribeQueryResult(this.ToString());
 
         /// <summary>
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public async Task<RDFDescribeQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => federation != null ? await new RDFQueryAsyncEngine().EvaluateDescribeQueryAsync(this, federation)
+                                  : new RDFDescribeQueryResult(this.ToString());
+
+        /// <summary>
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFDescribeQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
-            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(this.ToString());
+            string describeQueryString = this.ToString();
+            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(describeQueryString);
             if (sparqlEndpoint != null)
             {
                 //Establish a connection to the given SPARQL endpoint
                 using (WebClient webClient = new WebClient())
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(describeQueryString));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -224,7 +247,52 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             describeResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                        describeResult.DescribeResults.TableName = this.ToString();
+                        describeResult.DescribeResults.TableName = describeQueryString;
+                    }
+                }
+
+                //Eventually adjust column names (should start with "?")
+                int columnsCount = describeResult.DescribeResults.Columns.Count;
+                for (int i = 0; i < columnsCount; i++)
+                {
+                    if (!describeResult.DescribeResults.Columns[i].ColumnName.StartsWith("?"))
+                        describeResult.DescribeResults.Columns[i].ColumnName = string.Concat("?", describeResult.DescribeResults.Columns[i].ColumnName);
+                }
+            }
+            return describeResult;
+        }
+
+        /// <summary>
+        /// Asynchronously applies the query to the given SPARQL endpoint
+        /// </summary>
+        public async Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
+        {
+            string describeQueryString = this.ToString();
+            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(describeQueryString);
+            if (sparqlEndpoint != null)
+            {
+                //Establish a connection to the given SPARQL endpoint
+                using (WebClient webClient = new WebClient())
+                {
+                    //Insert reserved "query" parameter
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(describeQueryString));
+
+                    //Insert user-provided parameters
+                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
+
+                    //Insert request headers
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+
+                    //Send querystring to SPARQL endpoint
+                    byte[] sparqlResponse = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
+
+                    //Parse response from SPARQL endpoint
+                    if (sparqlResponse != null)
+                    {
+                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
+                            describeResult = await Task.Run(() => RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream)));
+                        describeResult.DescribeResults.TableName = describeQueryString;
                     }
                 }
 

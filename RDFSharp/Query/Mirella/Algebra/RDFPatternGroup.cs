@@ -209,7 +209,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the pattern group as optional
+        /// Sets the pattern group to be joined as optional with the previous query member
         /// </summary>
         public RDFPatternGroup Optional()
         {
