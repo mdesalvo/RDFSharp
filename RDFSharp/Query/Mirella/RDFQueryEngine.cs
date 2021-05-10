@@ -2015,14 +2015,9 @@ namespace RDFSharp.Query
             foreach (DataColumn dtCol in resultTable.Columns)
             {
                 if (dtCol.ColumnName.StartsWith("?__PP"))
-                {
                     propPathCols.Add(dtCol);
-                }
             }
-            propPathCols.ForEach(ppc =>
-            {
-                resultTable.Columns.Remove(ppc.ColumnName);
-            });
+            propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc.ColumnName));
 
             resultTable.TableName = propertyPath.ToString();
             return resultTable;

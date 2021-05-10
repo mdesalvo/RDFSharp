@@ -1957,14 +1957,14 @@ namespace RDFSharp.Semantics.OWL
         /// Asynchronously applies the given SPARQL SELECT query to the given ontology (which is converted into
         /// a RDF graph including semantic inferences in respect of the given export behavior)
         /// </summary>
-        public static async Task<RDFSelectQueryResult> ApplyToOntologyAsync(this RDFSelectQuery selectQuery,
-                                                                            RDFOntology ontology,
-                                                                            RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
+        public static Task<RDFSelectQueryResult> ApplyToOntologyAsync(this RDFSelectQuery selectQuery,
+                                                                      RDFOntology ontology,
+                                                                      RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
         {
             if (selectQuery != null && ontology != null)
-                return await selectQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
+                return selectQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
-            return new RDFSelectQueryResult();
+            return Task.FromResult(new RDFSelectQueryResult());
         }
 
         /// <summary>
@@ -1985,14 +1985,14 @@ namespace RDFSharp.Semantics.OWL
         /// Asynchronously applies the given SPARQL ASK query to the given ontology (which is converted into
         /// a RDF graph including semantic inferences in respect of the given export behavior)
         /// </summary>
-        public static async Task<RDFAskQueryResult> ApplyToOntologyAsync(this RDFAskQuery askQuery,
-                                                                         RDFOntology ontology,
-                                                                         RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
+        public static Task<RDFAskQueryResult> ApplyToOntologyAsync(this RDFAskQuery askQuery,
+                                                                   RDFOntology ontology,
+                                                                   RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
         {
             if (askQuery != null && ontology != null)
-                return await askQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
+                return askQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
-            return new RDFAskQueryResult();
+            return Task.FromResult(new RDFAskQueryResult());
         }
 
         /// <summary>
@@ -2013,14 +2013,14 @@ namespace RDFSharp.Semantics.OWL
         /// Asynchronously applies the given SPARQL CONSTRUCT query to the given ontology (which is converted into
         /// a RDF graph including semantic inferences in respect of the given export behavior)
         /// </summary>
-        public static async Task<RDFConstructQueryResult> ApplyToOntologyAsync(this RDFConstructQuery constructQuery,
-                                                                               RDFOntology ontology,
-                                                                               RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
+        public static Task<RDFConstructQueryResult> ApplyToOntologyAsync(this RDFConstructQuery constructQuery,
+                                                                         RDFOntology ontology,
+                                                                         RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
         {
             if (constructQuery != null && ontology != null)
-                return await constructQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
+                return constructQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
-            return new RDFConstructQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString());
+            return Task.FromResult(new RDFConstructQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString()));
         }
 
         /// <summary>
@@ -2041,14 +2041,14 @@ namespace RDFSharp.Semantics.OWL
         /// Asynchronously applies the given SPARQL DESCRIBE query to the given ontology (which is converted into
         /// a RDF graph including semantic inferences in respect of the given export behavior)
         /// </summary>
-        public static async Task<RDFDescribeQueryResult> ApplyToOntologyAsync(this RDFDescribeQuery describeQuery,
-                                                                              RDFOntology ontology,
-                                                                              RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
+        public static Task<RDFDescribeQueryResult> ApplyToOntologyAsync(this RDFDescribeQuery describeQuery,
+                                                                        RDFOntology ontology,
+                                                                        RDFSemanticsEnums.RDFOntologyInferenceExportBehavior ontologyInferenceExportBehavior = RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.ModelAndData)
         {
             if (describeQuery != null && ontology != null)
-                return await describeQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
+                return describeQuery.ApplyToGraphAsync(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
-            return new RDFDescribeQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString());
+            return Task.FromResult(new RDFDescribeQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString()));
         }
         #endregion
 

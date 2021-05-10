@@ -704,35 +704,35 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the filters of the given pattern group to its result table
         /// </summary>
-        internal async Task ApplyFiltersAsync(RDFQuery query, RDFPatternGroup patternGroup)
-            => await Task.Run(() => ApplyFilters(query, patternGroup));
+        internal Task ApplyFiltersAsync(RDFQuery query, RDFPatternGroup patternGroup)
+            => Task.Run(() => ApplyFilters(query, patternGroup));
 
         /// <summary>
         /// Asynchronously applies the query modifiers to the query result table
         /// </summary>
-        internal async Task<DataTable> ApplyModifiersAsync(RDFQuery query, DataTable table)
-            => await Task.Run(() => ApplyModifiers(query, table));
+        internal Task<DataTable> ApplyModifiersAsync(RDFQuery query, DataTable table)
+            => Task.Run(() => ApplyModifiers(query, table));
 
         /// <summary>
         /// Asynchronously applies the given pattern to the given data source
         /// </summary>
-        internal async Task<DataTable> ApplyPatternAsync(RDFPattern pattern, RDFDataSource dataSource)
+        internal Task<DataTable> ApplyPatternAsync(RDFPattern pattern, RDFDataSource dataSource)
         {
             switch (dataSource)
             {
                 case RDFGraph dataSourceGraph:
-                    return await Task.Run(() => ApplyPattern(pattern, dataSourceGraph));
+                    return Task.Run(() => ApplyPattern(pattern, dataSourceGraph));
 
                 case RDFStore dataSourceStore:
-                    return await Task.Run(() => ApplyPattern(pattern, dataSourceStore));
+                    return Task.Run(() => ApplyPattern(pattern, dataSourceStore));
 
                 case RDFFederation dataSourceFederation:
-                    return await Task.Run(() => ApplyPattern(pattern, dataSourceFederation));
+                    return Task.Run(() => ApplyPattern(pattern, dataSourceFederation));
 
                 case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                    return await Task.Run(() => ApplyPattern(pattern, dataSourceSparqlEndpoint));
+                    return Task.Run(() => ApplyPattern(pattern, dataSourceSparqlEndpoint));
             }
-            return new DataTable();
+            return Task.FromResult(new DataTable());
         }
 
         /// <summary>
@@ -770,14 +770,9 @@ namespace RDFSharp.Query
             foreach (DataColumn dtCol in resultTable.Columns)
             {
                 if (dtCol.ColumnName.StartsWith("?__PP"))
-                {
                     propPathCols.Add(dtCol);
-                }
             }
-            propPathCols.ForEach(ppc =>
-            {
-                resultTable.Columns.Remove(ppc.ColumnName);
-            });
+            propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc.ColumnName));
 
             resultTable.TableName = propertyPath.ToString();
             return resultTable;
@@ -786,14 +781,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously fills the templates of the given CONSTRUCT query with data from the given result table
         /// </summary>
-        internal async Task<DataTable> FillTemplatesAsync(RDFConstructQuery constructQuery, DataTable resultTable)
-            => await Task.Run(() => FillTemplates(constructQuery, resultTable));
+        internal Task<DataTable> FillTemplatesAsync(RDFConstructQuery constructQuery, DataTable resultTable)
+            => Task.Run(() => FillTemplates(constructQuery, resultTable));
 
         /// <summary>
         /// Asynchronously describes the terms of the given DESCRIBE query with data from the given result table
         /// </summary>
-        internal async Task<DataTable> DescribeTermsAsync(RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable resultTable)
-            => await Task.Run(() => DescribeTerms(describeQuery, dataSource, resultTable));
+        internal Task<DataTable> DescribeTermsAsync(RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable resultTable)
+            => Task.Run(() => DescribeTerms(describeQuery, dataSource, resultTable));
 
         #endregion
 
@@ -802,8 +797,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously Merges / Joins / Products the given list of data tables, based on presence of common columns and dynamic detection of Optional / Union operators
         /// </summary>
-        internal async Task<DataTable> CombineTablesAsync(List<DataTable> dataTables, bool isMerge)
-            => await Task.Run(() => CombineTables(dataTables, isMerge));
+        internal Task<DataTable> CombineTablesAsync(List<DataTable> dataTables, bool isMerge)
+            => Task.Run(() => CombineTables(dataTables, isMerge));
 
         #endregion
 

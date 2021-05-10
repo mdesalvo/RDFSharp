@@ -103,9 +103,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given graph
         /// </summary>
-        public async Task<RDFAskQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => graph != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, graph)
-                             : new RDFAskQueryResult();
+        public Task<RDFAskQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => graph != null ? new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, graph)
+                             : Task.FromResult(new RDFAskQueryResult());
 
         /// <summary>
         /// Applies the query to the given store
@@ -117,9 +117,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given store
         /// </summary>
-        public async Task<RDFAskQueryResult> ApplyToStoreAsync(RDFStore store)
-            => store != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, store)
-                             : new RDFAskQueryResult();
+        public Task<RDFAskQueryResult> ApplyToStoreAsync(RDFStore store)
+            => store != null ? new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, store)
+                             : Task.FromResult(new RDFAskQueryResult());
 
         /// <summary>
         /// Applies the query to the given federation
@@ -131,9 +131,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given federation
         /// </summary>
-        public async Task<RDFAskQueryResult> ApplyToFederationAsync(RDFFederation federation)
-            => federation != null ? await new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, federation)
-                                  : new RDFAskQueryResult();
+        public Task<RDFAskQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => federation != null ? new RDFQueryAsyncEngine().EvaluateAskQueryAsync(this, federation)
+                                  : Task.FromResult(new RDFAskQueryResult());
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint

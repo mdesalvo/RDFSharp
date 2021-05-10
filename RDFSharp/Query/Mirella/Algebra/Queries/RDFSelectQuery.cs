@@ -161,9 +161,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given graph
         /// </summary>
-        public async Task<RDFSelectQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => graph != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, graph)
-                             : new RDFSelectQueryResult();
+        public Task<RDFSelectQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => graph != null ? new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, graph)
+                             : Task.FromResult(new RDFSelectQueryResult());
 
         /// <summary>
         /// Applies the query to the given store
@@ -175,9 +175,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given store
         /// </summary>
-        public async Task<RDFSelectQueryResult> ApplyToStoreAsync(RDFStore store)
-            => store != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, store)
-                             : new RDFSelectQueryResult();
+        public Task<RDFSelectQueryResult> ApplyToStoreAsync(RDFStore store)
+            => store != null ? new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, store)
+                             : Task.FromResult(new RDFSelectQueryResult());
 
         /// <summary>
         /// Applies the query to the given federation
@@ -189,9 +189,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given federation
         /// </summary>
-        public async Task<RDFSelectQueryResult> ApplyToFederationAsync(RDFFederation federation)
-            => federation != null ? await new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, federation)
-                                  : new RDFSelectQueryResult();
+        public Task<RDFSelectQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => federation != null ? new RDFQueryAsyncEngine().EvaluateSelectQueryAsync(this, federation)
+                                  : Task.FromResult(new RDFSelectQueryResult());
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
@@ -306,23 +306,23 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given data source
         /// </summary>
-        internal async Task<RDFSelectQueryResult> ApplyToDataSourceAsync(RDFDataSource dataSource)
+        internal Task<RDFSelectQueryResult> ApplyToDataSourceAsync(RDFDataSource dataSource)
         {
             if (dataSource != null)
             {
                 switch (dataSource)
                 {
                     case RDFGraph graph:
-                        return await this.ApplyToGraphAsync(graph);
+                        return this.ApplyToGraphAsync(graph);
                     case RDFStore store:
-                        return await this.ApplyToStoreAsync(store);
+                        return this.ApplyToStoreAsync(store);
                     case RDFFederation federation:
-                        return await this.ApplyToFederationAsync(federation);
+                        return this.ApplyToFederationAsync(federation);
                     case RDFSPARQLEndpoint sparqlEndpoint:
-                        return await this.ApplyToSPARQLEndpointAsync(sparqlEndpoint);
+                        return this.ApplyToSPARQLEndpointAsync(sparqlEndpoint);
                 }
             }
-            return new RDFSelectQueryResult();
+            return Task.FromResult(new RDFSelectQueryResult());
         }
 
         /// <summary>
