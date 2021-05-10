@@ -2011,13 +2011,13 @@ namespace RDFSharp.Query
             resultTable = CombineTables(patternTables, false);
 
             //Remove property path variables
-            List<DataColumn> propPathCols = new List<DataColumn>();
+            List<string> propPathCols = new List<string>();
             foreach (DataColumn dtCol in resultTable.Columns)
             {
                 if (dtCol.ColumnName.StartsWith("?__PP"))
-                    propPathCols.Add(dtCol);
+                    propPathCols.Add(dtCol.ColumnName);
             }
-            propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc.ColumnName));
+            propPathCols.ForEach(ppc => resultTable.Columns.Remove(ppc));
 
             resultTable.TableName = propertyPath.ToString();
             return resultTable;
