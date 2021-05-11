@@ -378,27 +378,6 @@ namespace RDFSharp.Model
                 if (ntriple.StartsWith("<"))
                 {
 
-                    //S->P->B
-                    if (SPB.Match(ntriple).Success)
-                    {
-                        ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
-
-                        //subject
-                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                        ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
-                        tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
-
-                        //predicate
-                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                        ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
-                        tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
-
-                        //object
-                        tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
-
-                        return tokens;
-                    }
-
                     //S->P->O
                     if (SPO.Match(ntriple).Success)
                     {
@@ -483,20 +462,13 @@ namespace RDFSharp.Model
                         return tokens;
                     }
 
-                    throw new Exception("found illegal N-Triple, unrecognized 'S->->' structure");
-                }
-
-                //B->-> triple
-                else
-                {
-
-                    //B->P->B
-                    if (BPB.Match(ntriple).Success)
+                    //S->P->B
+                    if (SPB.Match(ntriple).Success)
                     {
                         ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
 
                         //subject
-                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
                         ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
                         tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
 
@@ -510,6 +482,13 @@ namespace RDFSharp.Model
 
                         return tokens;
                     }
+
+                    throw new Exception("found illegal N-Triple, unrecognized 'S->->' structure");
+                }
+
+                //B->-> triple
+                else
+                {
 
                     //B->P->O
                     if (BPO.Match(ntriple).Success)
@@ -590,6 +569,27 @@ namespace RDFSharp.Model
                         tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
 
                         //typed literal
+                        tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
+
+                        return tokens;
+                    }
+
+                    //B->P->B
+                    if (BPB.Match(ntriple).Success)
+                    {
+                        ntriple = ntriple.Trim(new char[] { '.', ' ', '\t' });
+
+                        //subject
+                        tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
+                        ntriple = ntriple.Substring(tokens[0].Length).Trim(new char[] { ' ', '\t' });
+                        tokens[0] = tokens[0].Trim(new char[] { ' ', '\t' });
+
+                        //predicate
+                        tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
+                        ntriple = ntriple.Substring(tokens[1].Length).Trim(new char[] { ' ', '\t' });
+                        tokens[1] = tokens[1].Trim(new char[] { ' ', '\t' });
+
+                        //object
                         tokens[2] = ntriple.Trim(new char[] { ' ', '\t' });
 
                         return tokens;
