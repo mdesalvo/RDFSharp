@@ -258,9 +258,7 @@ namespace RDFSharp.Model
 
                         //Skip empty or comment lines
                         if (ntriple == string.Empty || ntriple.StartsWith("#"))
-                        {
                             continue;
-                        }
 
                         //Tokenizes the sanitized triple
                         tokens = TokenizeNTriple(ntriple);
@@ -268,14 +266,14 @@ namespace RDFSharp.Model
 
                         #region subj
                         string subj = tokens[0].TrimStart(new char[] { '<' })
-                                                  .TrimEnd(new char[] { '>' })
-                                                  .Replace("_:", "bnode:");
+                                               .TrimEnd(new char[] { '>' })
+                                               .Replace("_:", "bnode:");
                         S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
                         string pred = tokens[1].TrimStart(new char[] { '<' })
-                                                  .TrimEnd(new char[] { '>' });
+                                               .TrimEnd(new char[] { '>' });
                         P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
 
@@ -346,13 +344,9 @@ namespace RDFSharp.Model
 
                         #region addtriple
                         if (O != null)
-                        {
                             result.AddTriple(new RDFTriple(S, P, O));
-                        }
                         else
-                        {
                             result.AddTriple(new RDFTriple(S, P, L));
-                        }
                         #endregion
 
                     }

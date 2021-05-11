@@ -251,9 +251,7 @@ namespace RDFSharp.Store
 
                         //Skip empty or comment lines
                         if (nquad == string.Empty || nquad.StartsWith("#"))
-                        {
                             continue;
-                        }
 
                         //Tokenizes the sanitized quad
                         tokens = TokenizeNQuad(nquad);
@@ -261,14 +259,14 @@ namespace RDFSharp.Store
 
                         #region subj
                         string subj = tokens[0].TrimStart(new char[] { '<' })
-                                                     .TrimEnd(new char[] { '>' })
-                                                     .Replace("_:", "bnode:");
+                                               .TrimEnd(new char[] { '>' })
+                                               .Replace("_:", "bnode:");
                         S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
                         string pred = tokens[1].TrimStart(new char[] { '<' })
-                                                     .TrimEnd(new char[] { '>' });
+                                               .TrimEnd(new char[] { '>' });
                         P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
 
@@ -278,9 +276,9 @@ namespace RDFSharp.Store
                             tokens[2].StartsWith("_:"))
                         {
                             string obj = tokens[2].TrimStart(new char[] { '<' })
-                                                     .TrimEnd(new char[] { '>' })
-                                                     .Replace("_:", "bnode:")
-                                                     .Trim(new char[] { ' ', '\n', '\t', '\r' });
+                                                  .TrimEnd(new char[] { '>' })
+                                                  .Replace("_:", "bnode:")
+                                                  .Trim(new char[] { ' ', '\n', '\t', '\r' });
                             O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
                         }
                         #endregion
@@ -293,10 +291,10 @@ namespace RDFSharp.Store
                             tokens[2] = RDFNTriples.regexSqt.Replace(tokens[2], string.Empty);
                             tokens[2] = RDFNTriples.regexEqt.Replace(tokens[2], string.Empty);
                             tokens[2] = tokens[2].Replace("\\\\", "\\")
-                                                     .Replace("\\\"", "\"")
-                                                     .Replace("\\n", "\n")
-                                                     .Replace("\\t", "\t")
-                                                     .Replace("\\r", "\r");
+                                                 .Replace("\\\"", "\"")
+                                                 .Replace("\\n", "\n")
+                                                 .Replace("\\t", "\t")
+                                                 .Replace("\\r", "\r");
                             tokens[2] = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
                             #endregion
 
@@ -341,7 +339,7 @@ namespace RDFSharp.Store
                         if (!string.IsNullOrEmpty(tokens[3]))
                         {
                             string ctx = tokens[3].TrimStart(new char[] { '<' })
-                                                      .TrimEnd(new char[] { '>' });
+                                                  .TrimEnd(new char[] { '>' });
 
                             Uri ctxUri = null;
                             if (Uri.TryCreate(ctx, UriKind.Absolute, out ctxUri))
@@ -357,13 +355,9 @@ namespace RDFSharp.Store
 
                         #region addquadruple
                         if (O != null)
-                        {
                             result.AddQuadruple(new RDFQuadruple(C, S, P, O));
-                        }
                         else
-                        {
                             result.AddQuadruple(new RDFQuadruple(C, S, P, L));
-                        }
                         #endregion
 
                     }
