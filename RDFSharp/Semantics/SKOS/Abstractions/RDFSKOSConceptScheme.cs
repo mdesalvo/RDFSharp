@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.SKOS
 {
@@ -702,6 +703,12 @@ namespace RDFSharp.Semantics.SKOS
             => this.ToRDFOntologyData().ToRDFGraph(infexpBehavior);
 
         /// <summary>
+        /// Asynchronously gets a graph representation of this scheme, exporting inferences according to the selected behavior
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+            => Task.Run(() => ToRDFGraph(infexpBehavior));
+
+        /// <summary>
         /// Gets an ontology data representation of this scheme
         /// </summary>
         public RDFOntologyData ToRDFOntologyData()
@@ -778,6 +785,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously gets an ontology data representation of this scheme
+        /// </summary>
+        public Task<RDFOntologyData> ToRDFOntologyDataAsync()
+            => Task.Run(() => ToRDFOntologyData());
         #endregion
 
         #endregion
