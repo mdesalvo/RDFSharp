@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Model
 {
@@ -580,6 +581,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously writes the graph into a file in the given RDF format.
+        /// </summary>
+        public Task ToFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
+            => Task.Run(() => ToFile(rdfFormat, filepath));
+
+        /// <summary>
         /// Writes the graph into a stream in the given RDF format.
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
@@ -609,6 +616,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously writes the graph into a stream in the given RDF format.
+        /// </summary>
+        public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
+            => Task.Run(() => ToStream(rdfFormat, outputStream));
+
+        /// <summary>
         /// Writes the graph into a datatable with "Subject-Predicate-Object" columns
         /// </summary>
         public DataTable ToDataTable()
@@ -636,11 +649,17 @@ namespace RDFSharp.Model
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously writes the graph into a datatable with "Subject-Predicate-Object" columns
+        /// </summary>
+        public Task<DataTable> ToDataTableAsync()
+            => Task.Run(() => ToDataTable());
         #endregion
 
         #region Import
         /// <summary>
-        /// Creates a graph from a file of the given RDF format.
+        /// Reads a graph from a file of the given RDF format.
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
@@ -666,7 +685,13 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Creates a graph from a stream of the given RDF format.
+        /// Asynchronously reads a graph from a file of the given RDF format.
+        /// </summary>
+        public static Task<RDFGraph> FromFileAsync(RDFModelEnums.RDFFormats rdfFormat, string filepath)
+            => Task.Run(() => FromFile(rdfFormat, filepath));
+
+        /// <summary>
+        /// Reads a graph from a stream of the given RDF format.
         /// </summary>
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext)
@@ -687,8 +712,15 @@ namespace RDFSharp.Model
             }
             throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
         }
+
         /// <summary>
-        /// Creates a graph from a datatable with "Subject-Predicate-Object" columns.
+        /// Asynchronously reads a graph from a stream of the given RDF format.
+        /// </summary>
+        public static Task<RDFGraph> FromStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream)
+            => Task.Run(() => FromStream(rdfFormat, inputStream));
+
+        /// <summary>
+        /// Reads a graph from a datatable with "Subject-Predicate-Object" columns.
         /// </summary>
         public static RDFGraph FromDataTable(DataTable table)
         {
@@ -792,18 +824,24 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Creates a graph by trying to dereference the given Uri
+        /// Asynchronously reads a graph from a datatable with "Subject-Predicate-Object" columns.
+        /// </summary>
+        public static Task<RDFGraph> FromDataTableAsync(DataTable table)
+            => Task.Run(() => FromDataTable(table));
+
+        /// <summary>
+        /// Reads a graph by trying to dereference the given Uri
         /// </summary>
         public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
-            if (uri != null && uri.IsAbsoluteUri)
+            if (uri?.IsAbsoluteUri ?? false)
             {
-                uri = RDFModelUtilities.RemapUriForDereference(uri);
+                Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
                 try
                 {
-                    HttpWebRequest webRequest = WebRequest.CreateHttp(uri);
+                    HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
                     webRequest.MaximumAutomaticRedirections = 3;
                     webRequest.AllowAutoRedirect = true;
                     webRequest.Timeout = timeoutMilliseconds;
@@ -853,6 +891,12 @@ namespace RDFSharp.Model
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously reads a graph by trying to dereference the given Uri
+        /// </summary>
+        public static Task<RDFGraph> FromUriAsync(Uri uri, int timeoutMilliseconds = 20000)
+            => Task.Run(() => FromUri(uri, timeoutMilliseconds));
         #endregion
 
         #endregion
