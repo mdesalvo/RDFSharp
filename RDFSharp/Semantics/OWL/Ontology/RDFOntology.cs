@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Threading.Tasks;
 using RDFSharp.Model;
 
 namespace RDFSharp.Semantics.OWL
@@ -600,10 +601,22 @@ namespace RDFSharp.Semantics.OWL
             => RDFSemanticsUtilities.FromRDFGraph(ontGraph);
 
         /// <summary>
+        /// Asynchronously gets an ontology representation of the given graph.
+        /// </summary>
+        public static Task<RDFOntology> FromRDFGraphAsync(RDFGraph ontGraph)
+            => Task.Run(() => FromRDFGraph(ontGraph));
+
+        /// <summary>
         /// Gets a graph representation of this ontology, exporting inferences according to the selected behavior
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
             => RDFSemanticsUtilities.ToRDFGraph(this, infexpBehavior);
+
+        /// <summary>
+        /// Asynchronously gets a graph representation of this ontology, exporting inferences according to the selected behavior
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+            => Task.Run(() => ToRDFGraph(infexpBehavior));
         #endregion
 
         #endregion
