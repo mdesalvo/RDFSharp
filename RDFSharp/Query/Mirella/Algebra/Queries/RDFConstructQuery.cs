@@ -80,38 +80,29 @@ namespace RDFSharp.Query
                     if (template.Context != null && template.Context is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(template.Context)))
-                        {
                             this.Variables.Add((RDFVariable)template.Context);
-                        }
                     }
 
                     //Subject
                     if (template.Subject is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                        {
                             this.Variables.Add((RDFVariable)template.Subject);
-                        }
                     }
 
                     //Predicate
                     if (template.Predicate is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                        {
                             this.Variables.Add((RDFVariable)template.Predicate);
-                        }
                     }
 
                     //Object
                     if (template.Object is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(template.Object)))
-                        {
                             this.Variables.Add((RDFVariable)template.Object);
-                        }
                     }
-
                 }
             }
             return this;
@@ -125,9 +116,7 @@ namespace RDFSharp.Query
             if (patternGroup != null)
             {
                 if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                {
                     this.QueryMembers.Add(patternGroup);
-                }
             }
             return this;
         }
@@ -140,9 +129,7 @@ namespace RDFSharp.Query
             if (modifier != null)
             {
                 if (!this.GetModifiers().Any(m => m is RDFLimitModifier))
-                {
                     this.QueryMembers.Add(modifier);
-                }
             }
             return this;
         }
@@ -155,9 +142,7 @@ namespace RDFSharp.Query
             if (modifier != null)
             {
                 if (!this.GetModifiers().Any(m => m is RDFOffsetModifier))
-                {
                     this.QueryMembers.Add(modifier);
-                }
             }
             return this;
         }
@@ -170,9 +155,7 @@ namespace RDFSharp.Query
             if (prefix != null)
             {
                 if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                {
                     this.Prefixes.Add(prefix);
-                }
             }
             return this;
         }
@@ -185,9 +168,7 @@ namespace RDFSharp.Query
             if (subQuery != null)
             {
                 if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                {
                     this.QueryMembers.Add(subQuery.SubQuery());
-                }
             }
             return this;
         }
@@ -203,8 +184,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given graph
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToGraphAsync(RDFGraph graph)
-            => graph != null ? new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(this, graph)
-                             : Task.FromResult(new RDFConstructQueryResult(this.ToString()));
+            => Task.Run(() => this.ApplyToGraph(graph));
 
         /// <summary>
         /// Applies the query to the given store
@@ -217,8 +197,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given store
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToStoreAsync(RDFStore store)
-            => store != null ? new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(this, store)
-                             : Task.FromResult(new RDFConstructQueryResult(this.ToString()));
+            => Task.Run(() => this.ApplyToStore(store));
 
         /// <summary>
         /// Applies the query to the given federation
@@ -231,8 +210,7 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given federation
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToFederationAsync(RDFFederation federation)
-            => federation != null ? new RDFQueryAsyncEngine().EvaluateConstructQueryAsync(this, federation)
-                                  : Task.FromResult(new RDFConstructQueryResult(this.ToString()));
+            => Task.Run(() => this.ApplyToFederation(federation));
 
         /// <summary>
         /// Applies the query to the given SPARQL endpoint
@@ -282,47 +260,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
-        public async Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-        {
-            string constructQueryString = this.ToString();
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(constructQueryString);
-            if (sparqlEndpoint != null)
-            {
-                //Establish a connection to the given SPARQL endpoint
-                using (WebClient webClient = new WebClient())
-                {
-                    //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(constructQueryString));
-
-                    //Insert user-provided parameters
-                    webClient.QueryString.Add(sparqlEndpoint.QueryParams);
-
-                    //Insert request headers
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-
-                    //Send querystring to SPARQL endpoint
-                    byte[] sparqlResponse = await webClient.DownloadDataTaskAsync(sparqlEndpoint.BaseAddress);
-
-                    //Parse response from SPARQL endpoint
-                    if (sparqlResponse != null)
-                    {
-                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
-                            constructResult = await Task.Run(() => RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream)));
-                        constructResult.ConstructResults.TableName = constructQueryString;
-                    }
-                }
-
-                //Eventually adjust column names (should start with "?")
-                int columnsCount = constructResult.ConstructResults.Columns.Count;
-                for (int i = 0; i < columnsCount; i++)
-                {
-                    if (!constructResult.ConstructResults.Columns[i].ColumnName.StartsWith("?"))
-                        constructResult.ConstructResults.Columns[i].ColumnName = string.Concat("?", constructResult.ConstructResults.Columns[i].ColumnName);
-                }
-            }
-            return constructResult;
-        }
+        public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
+            => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint));
         #endregion
 
     }
