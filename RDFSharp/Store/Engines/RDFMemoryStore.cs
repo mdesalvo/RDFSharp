@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Store
 {
@@ -656,7 +657,7 @@ namespace RDFSharp.Store
 
         #region Import
         /// <summary>
-        /// Creates a memory store from a file of the given RDF format.
+        /// Reads a memory store from a file of the given RDF format.
         /// </summary>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
@@ -678,7 +679,13 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Creates a memory store from a stream of the given RDF format.
+        /// Asynchronously reads a memory store from a file of the given RDF format.
+        /// </summary>
+        public static Task<RDFMemoryStore> FromFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
+            => Task.Run(() => FromFile(rdfFormat, filepath));
+
+        /// <summary>
+        /// Reads a memory store from a stream of the given RDF format.
         /// </summary>
         public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
         {
@@ -696,11 +703,17 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Creates a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
+        /// Asynchronously reads a memory store from a stream of the given RDF format.
+        /// </summary>
+        public static Task<RDFMemoryStore> FromStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
+            => Task.Run(() => FromStream(rdfFormat, inputStream));
+
+        /// <summary>
+        /// Reads a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
         /// </summary>
         public static RDFMemoryStore FromDataTable(DataTable table)
         {
-            var result = new RDFMemoryStore();
+            RDFMemoryStore result = new RDFMemoryStore();
 
             //Check the structure of the datatable for consistency against the "C-S-P-O" RDF model
             if (table != null && table.Columns.Count == 4)
@@ -812,18 +825,24 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Creates a memory store by trying to dereference the given Uri
+        /// Asynchronously reads a memory store from a datatable with "Context-Subject-Predicate-Object" columns.
+        /// </summary>
+        public static Task<RDFMemoryStore> FromDataTableAsync(DataTable table)
+            => Task.Run(() => FromDataTable(table));
+
+        /// <summary>
+        /// Reads a memory store by trying to dereference the given Uri
         /// </summary>
         public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
-            var result = new RDFMemoryStore();
+            RDFMemoryStore result = new RDFMemoryStore();
 
-            if (uri != null && uri.IsAbsoluteUri)
+            if (uri?.IsAbsoluteUri ?? false)
             {
-                uri = RDFModelUtilities.RemapUriForDereference(uri);
+                Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
                 try
                 {
-                    HttpWebRequest webRequest = WebRequest.CreateHttp(uri);
+                    HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
                     webRequest.MaximumAutomaticRedirections = 3;
                     webRequest.AllowAutoRedirect = true;
                     webRequest.Timeout = timeoutMilliseconds;
@@ -857,6 +876,12 @@ namespace RDFSharp.Store
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously reads a memory store by trying to dereference the given Uri
+        /// </summary>
+        public static Task<RDFMemoryStore> FromUriAsync(Uri uri, int timeoutMilliseconds = 20000)
+            => Task.Run(() => FromUri(uri, timeoutMilliseconds));
         #endregion
 
         #endregion

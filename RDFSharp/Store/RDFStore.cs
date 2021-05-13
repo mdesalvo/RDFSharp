@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Store
 {
@@ -392,6 +393,12 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Asynchronously writes the store into a file in the given RDF format.
+        /// </summary>
+        public Task ToFileAsync(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
+            => Task.Run(() => ToFile(rdfFormat, filepath));
+
+        /// <summary>
         /// Writes the store into a stream in the given RDF format.
         /// </summary>
         public void ToStream(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
@@ -413,6 +420,12 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot write RDF store to stream because given \"outputStream\" parameter is null.");
             }
         }
+
+        /// <summary>
+        /// Asynchronously writes the store into a stream in the given RDF format.
+        /// </summary>
+        public Task ToStreamAsync(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
+            => Task.Run(() => ToStream(rdfFormat, outputStream));
 
         /// <summary>
         /// Writes the store into a datatable with "Context-Subject-Predicate-Object" columns
@@ -444,6 +457,12 @@ namespace RDFSharp.Store
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously writes the store into a datatable with "Context-Subject-Predicate-Object" columns
+        /// </summary>
+        public Task<DataTable> ToDataTableAsync()
+            => Task.Run(() => ToDataTable());
         #endregion
 
         #endregion
