@@ -17,6 +17,7 @@
 using RDFSharp.Semantics.OWL;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.SKOS
 {
@@ -89,6 +90,12 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) broader to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> BroaderConceptsAsync(bool enableInference)
+            => Task.Run(() => BroaderConcepts(enableInference));
+
+        /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) broad match to the lens concept
         /// </summary>
         public List<(bool, RDFSKOSConcept)> BroadMatchConcepts(bool enableInference)
@@ -112,6 +119,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) broad match to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> BroadMatchConceptsAsync(bool enableInference)
+            => Task.Run(() => BroadMatchConcepts(enableInference));
 
         /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) narrower to the lens concept
@@ -139,6 +152,12 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) narrower to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> NarrowerConceptsAsync(bool enableInference)
+            => Task.Run(() => NarrowerConcepts(enableInference));
+
+        /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) narrow match to the lens concept
         /// </summary>
         public List<(bool, RDFSKOSConcept)> NarrowMatchConcepts(bool enableInference)
@@ -162,6 +181,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) narrow match to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> NarrowMatchConceptsAsync(bool enableInference)
+            => Task.Run(() => NarrowMatchConcepts(enableInference));
 
         /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) close match to the lens concept
@@ -189,6 +214,12 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) close match to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> CloseMatchConceptsAsync(bool enableInference)
+            => Task.Run(() => CloseMatchConcepts(enableInference));
+
+        /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) exact match to the lens concept
         /// </summary>
         public List<(bool, RDFSKOSConcept)> ExactMatchConcepts(bool enableInference)
@@ -212,6 +243,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) exact match to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> ExactMatchConceptsAsync(bool enableInference)
+            => Task.Run(() => ExactMatchConcepts(enableInference));
 
         /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) related to the lens concept
@@ -239,6 +276,12 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) related to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> RelatedConceptsAsync(bool enableInference)
+            => Task.Run(() => RelatedConcepts(enableInference));
+
+        /// <summary>
         /// Enlists the concepts which are directly (or indirectly, if inference is requested) related match to the lens concept
         /// </summary>
         public List<(bool, RDFSKOSConcept)> RelatedMatchConcepts(bool enableInference)
@@ -264,6 +307,12 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the concepts which are directly (or indirectly, if inference is requested) related match to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> RelatedMatchConceptsAsync(bool enableInference)
+            => Task.Run(() => RelatedMatchConcepts(enableInference));
+
+        /// <summary>
         /// Enlists the concepts which are mapping relation to the lens concept
         /// </summary>
         public List<(bool, RDFSKOSConcept)> MappingRelationConcepts()
@@ -276,6 +325,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the concepts which are mapping relation to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> MappingRelationConceptsAsync()
+            => Task.Run(() => MappingRelationConcepts());
 
         /// <summary>
         /// Enlists the concepts which are semantic relation to the lens concept
@@ -292,6 +347,12 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the concepts which are semantic relation to the lens concept
+        /// </summary>
+        public Task<List<(bool, RDFSKOSConcept)>> SemanticRelationConceptsAsync()
+            => Task.Run(() => SemanticRelationConcepts());
+
+        /// <summary>
         /// Enlists the literal notations of the lens concept
         /// </summary>
         public List<RDFOntologyLiteral> Notations()
@@ -306,10 +367,22 @@ namespace RDFSharp.Semantics.SKOS
         }
 
         /// <summary>
+        /// Asynchronously enlists the literal notations of the lens concept
+        /// </summary>
+        public Task<List<RDFOntologyLiteral>> NotationsAsync()
+            => Task.Run(() => Notations());
+
+        /// <summary>
         /// Checks if the lens concept is the top concept of the lens scheme
         /// </summary>
         public bool IsTopConcept()
             => this.Scheme.Relations.TopConcept.Any(r => r.TaxonomyObject.Equals(this.Concept));
+
+        /// <summary>
+        /// Asynchronously checks if the lens concept is the top concept of the lens scheme
+        /// </summary>
+        public Task<bool> IsTopConceptAsync()
+            => Task.Run(() => IsTopConcept());
 
         /// <summary>
         /// Enlists the label relations which are assigned to the lens concept (SKOS-XL)
@@ -332,6 +405,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the label relations which are assigned to the lens concept (SKOS-XL)
+        /// </summary>
+        public Task<List<(RDFOntologyObjectProperty, RDFSKOSLabel)>> LabelRelationsAsync()
+            => Task.Run(() => LabelRelations());
 
         /// <summary>
         /// Enlists the label annotations which are assigned to the lens concept
@@ -357,6 +436,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the label annotations which are assigned to the lens concept
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>> LabelAnnotationsAsync()
+            => Task.Run(() => LabelAnnotations());
 
         /// <summary>
         /// Enlists the documentation annotations which are assigned to the lens concept
@@ -402,6 +487,12 @@ namespace RDFSharp.Semantics.SKOS
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the documentation annotations which are assigned to the lens concept
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>> DocumentationAnnotationsAsync()
+            => Task.Run(() => DocumentationAnnotations());
         #endregion
     }
 }

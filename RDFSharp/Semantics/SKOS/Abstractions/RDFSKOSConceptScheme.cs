@@ -149,9 +149,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null)
             {
                 if (!this.Concepts.ContainsKey(concept.PatternMemberID))
-                {
                     this.Concepts.Add(concept.PatternMemberID, concept);
-                }
             }
             return this;
         }
@@ -203,9 +201,7 @@ namespace RDFSharp.Semantics.SKOS
             if (label != null)
             {
                 if (!this.Labels.ContainsKey(label.PatternMemberID))
-                {
                     this.Labels.Add(label.PatternMemberID, label);
-                }
             }
             return this;
         }
@@ -220,9 +216,7 @@ namespace RDFSharp.Semantics.SKOS
             if (concept != null)
             {
                 if (this.Concepts.ContainsKey(concept.PatternMemberID))
-                {
                     this.Concepts.Remove(concept.PatternMemberID);
-                }
             }
             return this;
         }
@@ -235,9 +229,7 @@ namespace RDFSharp.Semantics.SKOS
             if (collection != null)
             {
                 if (this.Collections.ContainsKey(collection.PatternMemberID))
-                {
                     this.Collections.Remove(collection.PatternMemberID);
-                }
             }
             return this;
         }
@@ -250,9 +242,7 @@ namespace RDFSharp.Semantics.SKOS
             if (orderedCollection != null)
             {
                 if (this.OrderedCollections.ContainsKey(orderedCollection.PatternMemberID))
-                {
                     this.OrderedCollections.Remove(orderedCollection.PatternMemberID);
-                }
             }
             return this;
         }
@@ -265,9 +255,7 @@ namespace RDFSharp.Semantics.SKOS
             if (label != null)
             {
                 if (this.Labels.ContainsKey(label.PatternMemberID))
-                {
                     this.Labels.Remove(label.PatternMemberID);
-                }
             }
             return this;
         }
@@ -283,9 +271,7 @@ namespace RDFSharp.Semantics.SKOS
             {
                 long conceptID = RDFModelUtilities.CreateHash(concept);
                 if (this.Concepts.ContainsKey(conceptID))
-                {
                     return this.Concepts[conceptID];
-                }
             }
             return null;
         }
@@ -299,9 +285,7 @@ namespace RDFSharp.Semantics.SKOS
             {
                 long collectionID = RDFModelUtilities.CreateHash(collection);
                 if (this.Collections.ContainsKey(collectionID))
-                {
                     return this.Collections[collectionID];
-                }
             }
             return null;
         }
@@ -315,9 +299,7 @@ namespace RDFSharp.Semantics.SKOS
             {
                 long orderedCollectionID = RDFModelUtilities.CreateHash(orderedCollection);
                 if (this.OrderedCollections.ContainsKey(orderedCollectionID))
-                {
                     return this.OrderedCollections[orderedCollectionID];
-                }
             }
             return null;
         }
@@ -331,9 +313,7 @@ namespace RDFSharp.Semantics.SKOS
             {
                 long labelID = RDFModelUtilities.CreateHash(label);
                 if (this.Labels.ContainsKey(labelID))
-                {
                     return this.Labels[labelID];
-                }
             }
             return null;
         }
@@ -345,44 +325,36 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFSKOSConceptScheme IntersectWith(RDFSKOSConceptScheme conceptScheme)
         {
-            var result = new RDFSKOSConceptScheme(new RDFResource());
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme(new RDFResource());
             if (conceptScheme != null)
             {
 
                 //Add intersection concepts
-                foreach (var c in this)
+                foreach (RDFSKOSConcept c in this)
                 {
                     if (conceptScheme.Concepts.ContainsKey(c.PatternMemberID))
-                    {
                         result.AddConcept(c);
-                    }
                 }
 
                 //Add intersection collections
-                foreach (var c in this.Collections.Values)
+                foreach (RDFSKOSCollection c in this.Collections.Values)
                 {
                     if (conceptScheme.Collections.ContainsKey(c.PatternMemberID))
-                    {
                         result.AddCollection(c);
-                    }
                 }
 
                 //Add intersection ordered collections
-                foreach (var o in this.OrderedCollections.Values)
+                foreach (RDFSKOSOrderedCollection o in this.OrderedCollections.Values)
                 {
                     if (conceptScheme.OrderedCollections.ContainsKey(o.PatternMemberID))
-                    {
                         result.AddOrderedCollection(o);
-                    }
                 }
 
                 //Add intersection labels
-                foreach (var l in this.Labels.Values)
+                foreach (RDFSKOSLabel l in this.Labels.Values)
                 {
                     if (conceptScheme.Labels.ContainsKey(l.PatternMemberID))
-                    {
                         result.AddLabel(l);
-                    }
                 }
 
                 //Add intersection relations
@@ -427,31 +399,23 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFSKOSConceptScheme UnionWith(RDFSKOSConceptScheme conceptScheme)
         {
-            var result = new RDFSKOSConceptScheme(new RDFResource());
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme(new RDFResource());
 
             //Add concepts from this scheme
-            foreach (var c in this)
-            {
+            foreach (RDFSKOSConcept c in this)
                 result.AddConcept(c);
-            }
 
             //Add collections from this scheme
-            foreach (var c in this.Collections.Values)
-            {
+            foreach (RDFSKOSCollection c in this.Collections.Values)
                 result.AddCollection(c);
-            }
 
             //Add ordered collections from this scheme
-            foreach (var o in this.OrderedCollections.Values)
-            {
+            foreach (RDFSKOSOrderedCollection o in this.OrderedCollections.Values)
                 result.AddOrderedCollection(o);
-            }
 
             //Add labels from this scheme
-            foreach (var l in this.Labels.Values)
-            {
+            foreach (RDFSKOSLabel l in this.Labels.Values)
                 result.AddLabel(l);
-            }
 
             //Add relations from this scheme
             result.Relations.TopConcept = result.Relations.TopConcept.UnionWith(this.Relations.TopConcept);
@@ -491,28 +455,20 @@ namespace RDFSharp.Semantics.SKOS
             {
 
                 //Add concepts from the given scheme
-                foreach (var c in conceptScheme)
-                {
+                foreach (RDFSKOSConcept c in conceptScheme)
                     result.AddConcept(c);
-                }
 
                 //Add collections from the given scheme
-                foreach (var c in conceptScheme.Collections.Values)
-                {
+                foreach (RDFSKOSCollection c in conceptScheme.Collections.Values)
                     result.AddCollection(c);
-                }
 
                 //Add ordered collections from the given scheme
-                foreach (var o in conceptScheme.OrderedCollections.Values)
-                {
+                foreach (RDFSKOSOrderedCollection o in conceptScheme.OrderedCollections.Values)
                     result.AddOrderedCollection(o);
-                }
 
                 //Add labels from the given scheme
-                foreach (var l in conceptScheme.Labels.Values)
-                {
+                foreach (RDFSKOSLabel l in conceptScheme.Labels.Values)
                     result.AddLabel(l);
-                }
 
                 //Add relations from the given scheme
                 result.Relations.TopConcept = result.Relations.TopConcept.UnionWith(conceptScheme.Relations.TopConcept);
@@ -556,44 +512,36 @@ namespace RDFSharp.Semantics.SKOS
         /// </summary>
         public RDFSKOSConceptScheme DifferenceWith(RDFSKOSConceptScheme conceptScheme)
         {
-            var result = new RDFSKOSConceptScheme(new RDFResource());
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme(new RDFResource());
             if (conceptScheme != null)
             {
 
                 //Add difference concepts
-                foreach (var c in this)
+                foreach (RDFSKOSConcept c in this)
                 {
                     if (!conceptScheme.Concepts.ContainsKey(c.PatternMemberID))
-                    {
                         result.AddConcept(c);
-                    }
                 }
 
                 //Add difference collections
-                foreach (var c in this.Collections.Values)
+                foreach (RDFSKOSCollection c in this.Collections.Values)
                 {
                     if (!conceptScheme.Collections.ContainsKey(c.PatternMemberID))
-                    {
                         result.AddCollection(c);
-                    }
                 }
 
                 //Add difference ordered collections
-                foreach (var o in this.OrderedCollections.Values)
+                foreach (RDFSKOSOrderedCollection o in this.OrderedCollections.Values)
                 {
                     if (!conceptScheme.OrderedCollections.ContainsKey(o.PatternMemberID))
-                    {
                         result.AddOrderedCollection(o);
-                    }
                 }
 
                 //Add difference labels
-                foreach (var l in this.Labels.Values)
+                foreach (RDFSKOSLabel l in this.Labels.Values)
                 {
                     if (!conceptScheme.Labels.ContainsKey(l.PatternMemberID))
-                    {
                         result.AddLabel(l);
-                    }
                 }
 
                 //Add difference relations
@@ -634,28 +582,20 @@ namespace RDFSharp.Semantics.SKOS
             {
 
                 //Add concepts from this scheme
-                foreach (var c in this)
-                {
+                foreach (RDFSKOSConcept c in this)
                     result.AddConcept(c);
-                }
 
                 //Add collections from this scheme
-                foreach (var c in this.Collections.Values)
-                {
+                foreach (RDFSKOSCollection c in this.Collections.Values)
                     result.AddCollection(c);
-                }
 
                 //Add ordered collections from this scheme
-                foreach (var o in this.OrderedCollections.Values)
-                {
+                foreach (RDFSKOSOrderedCollection o in this.OrderedCollections.Values)
                     result.AddOrderedCollection(o);
-                }
 
                 //Add labels from this scheme
-                foreach (var l in this.Labels.Values)
-                {
+                foreach (RDFSKOSLabel l in this.Labels.Values)
                     result.AddLabel(l);
-                }
 
                 //Add relations from this scheme
                 result.Relations.TopConcept = result.Relations.TopConcept.UnionWith(this.Relations.TopConcept);
