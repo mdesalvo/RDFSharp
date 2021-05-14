@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -153,6 +154,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously gets a graph representation of this reasoner report
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync()
+            => Task.Run(() => ToRDFGraph());
+
+        /// <summary>
         /// Joins the reasoner evidences of this report into the given ontology
         /// </summary>
         public void JoinEvidences(RDFOntology ontology)
@@ -176,22 +183,19 @@ namespace RDFSharp.Semantics.OWL
                                 ontology.Model.ClassModel.Relations.EquivalentClass.AddEntry(evidence.EvidenceContent);
                                 break;
 
-                            //Supported, but not expected at the moment
+                            //OWL2
                             case nameof(RDFOntologyClassModel.Relations.HasKey):
                                 ontology.Model.ClassModel.Relations.HasKey.AddEntry(evidence.EvidenceContent);
                                 break;
 
-                            //Supported, but not expected at the moment
-                            case nameof(RDFOntologyClassModel.Relations.IntersectionOf):
-                                ontology.Model.ClassModel.Relations.IntersectionOf.AddEntry(evidence.EvidenceContent);
-                                break;
-
-                            //Supported, but not expected at the moment
                             case nameof(RDFOntologyClassModel.Relations.OneOf):
                                 ontology.Model.ClassModel.Relations.OneOf.AddEntry(evidence.EvidenceContent);
                                 break;
 
-                            //Supported, but not expected at the moment
+                            case nameof(RDFOntologyClassModel.Relations.IntersectionOf):
+                                ontology.Model.ClassModel.Relations.IntersectionOf.AddEntry(evidence.EvidenceContent);
+                                break;
+
                             case nameof(RDFOntologyClassModel.Relations.UnionOf):
                                 ontology.Model.ClassModel.Relations.UnionOf.AddEntry(evidence.EvidenceContent);
                                 break;
@@ -213,12 +217,12 @@ namespace RDFSharp.Semantics.OWL
                                 ontology.Model.PropertyModel.Relations.InverseOf.AddEntry(evidence.EvidenceContent);
                                 break;
 
-                            //Supported, but not expected at the moment
+                            //OWL2
                             case nameof(RDFOntologyPropertyModel.Relations.PropertyDisjointWith):
                                 ontology.Model.PropertyModel.Relations.PropertyDisjointWith.AddEntry(evidence.EvidenceContent);
                                 break;
 
-                            //Supported, but not expected at the moment
+                            //OWL2
                             case nameof(RDFOntologyPropertyModel.Relations.PropertyChainAxiom):
                                 ontology.Model.PropertyModel.Relations.PropertyChainAxiom.AddEntry(evidence.EvidenceContent);
                                 break;
@@ -244,15 +248,31 @@ namespace RDFSharp.Semantics.OWL
                                 ontology.Data.Relations.Assertions.AddEntry(evidence.EvidenceContent);
                                 break;
 
-                            //Supported, but not expected at the moment
+                            //OWL2
                             case nameof(RDFOntologyData.Relations.NegativeAssertions):
                                 ontology.Data.Relations.NegativeAssertions.AddEntry(evidence.EvidenceContent);
+                                break;
+
+                            //SKOS
+                            case nameof(RDFOntologyData.Relations.Member):
+                                ontology.Data.Relations.Member.AddEntry(evidence.EvidenceContent);
+                                break;
+
+                            //SKOS
+                            case nameof(RDFOntologyData.Relations.MemberList):
+                                ontology.Data.Relations.MemberList.AddEntry(evidence.EvidenceContent);
                                 break;
                         }
                         break;
                 }
             }
         }
+
+        /// <summary>
+        /// Asynchronously joins the reasoner evidences of this report into the given ontology
+        /// </summary>
+        public Task JoinEvidencesAsync(RDFOntology ontology)
+            => Task.Run(() => JoinEvidences(ontology));
         #endregion
 
         #endregion
