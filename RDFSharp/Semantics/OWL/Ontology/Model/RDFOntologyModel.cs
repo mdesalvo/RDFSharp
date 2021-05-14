@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -132,6 +133,12 @@ namespace RDFSharp.Semantics.OWL
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
             => this.ClassModel.ToRDFGraph(infexpBehavior)
                               .UnionWith(this.PropertyModel.ToRDFGraph(infexpBehavior));
+
+        /// <summary>
+        /// Asynchronously gts a graph representation of this ontology model, exporting inferences according to the selected behavior
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+            => Task.Run(() => ToRDFGraph(infexpBehavior));
         #endregion
 
         #endregion

@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -92,6 +93,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the properties which are directly (or indirectly, if inference is requested) children of the lens property
+        /// </summary>
+        public Task<List<(bool, RDFOntologyProperty)>> SubPropertiesAsync(bool enableInference)
+            => Task.Run(() => SubProperties(enableInference));
+
+        /// <summary>
         /// Enlists the properties which are directly (or indirectly, if inference is requested) parent of the lens property
         /// </summary>
         public List<(bool, RDFOntologyProperty)> SuperProperties(bool enableInference)
@@ -117,6 +124,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the properties which are directly (or indirectly, if inference is requested) parent of the lens property
+        /// </summary>
+        public Task<List<(bool, RDFOntologyProperty)>> SuperPropertiesAsync(bool enableInference)
+            => Task.Run(() => SuperProperties(enableInference));
+
+        /// <summary>
         /// Enlists the properties which are directly (or indirectly, if inference is requested) equivalent to the lens property
         /// </summary>
         public List<(bool, RDFOntologyProperty)> EquivalentProperties(bool enableInference)
@@ -140,6 +153,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the properties which are directly (or indirectly, if inference is requested) equivalent to the lens property
+        /// </summary>
+        public Task<List<(bool, RDFOntologyProperty)>> EquivalentPropertiesAsync(bool enableInference)
+            => Task.Run(() => EquivalentProperties(enableInference));
 
         /// <summary>
         /// Enlists the properties which are directly (or indirectly, if inference is requested) inverse of the lens property
@@ -172,6 +191,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the properties which are directly (or indirectly, if inference is requested) inverse of the lens property
+        /// </summary>
+        public Task<List<(bool, RDFOntologyObjectProperty)>> InversePropertiesAsync(bool enableInference)
+            => Task.Run(() => InverseProperties(enableInference));
+
+        /// <summary>
         /// Enlists the properties which are directly (or indirectly, if inference is requested) disjoint with the lens property
         /// </summary>
         public List<(bool, RDFOntologyProperty)> DisjointProperties(bool enableInference)
@@ -197,6 +222,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the properties which are directly (or indirectly, if inference is requested) disjoint with the lens property
+        /// </summary>
+        public Task<List<(bool, RDFOntologyProperty)>> DisjointPropertiesAsync(bool enableInference)
+            => Task.Run(() => DisjointProperties(enableInference));
+
+        /// <summary>
         /// Enlists the properties which are chain axioms of the lens property
         /// </summary>
         public List<(bool, RDFOntologyObjectProperty)> ChainAxioms()
@@ -213,6 +244,80 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the properties which are chain axioms of the lens property
+        /// </summary>
+        public Task<List<(bool, RDFOntologyObjectProperty)>> ChainAxiomsAsync()
+            => Task.Run(() => ChainAxioms());
+
+        /// <summary>
+        /// Enlists the object annotations which are assigned to the lens property
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyResource)> ObjectAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyResource)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyResource)>();
+
+            //SeeAlso
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.SeeAlso.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, sf.TaxonomyObject));
+
+            //IsDefinedBy
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.IsDefinedBy.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, sf.TaxonomyObject));
+
+            //Custom Annotations
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.CustomAnnotations.SelectEntriesBySubject(this.OntologyProperty).Where(te => !te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously enlists the object annotations which are assigned to the lens property
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyResource)>> ObjectAnnotationsAsync()
+            => Task.Run(() => ObjectAnnotations());
+
+        /// <summary>
+        /// Enlists the literal annotations which are assigned to the lens property
+        /// </summary>
+        public List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> DataAnnotations()
+        {
+            List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)> result = new List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>();
+
+            //VersionInfo
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.VersionInfo.SelectEntriesBySubject(this.OntologyProperty).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Comment
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.Comment.SelectEntriesBySubject(this.OntologyProperty).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Label
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.Label.SelectEntriesBySubject(this.OntologyProperty).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //SeeAlso
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.SeeAlso.SelectEntriesBySubject(this.OntologyProperty).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //IsDefinedBy
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.IsDefinedBy.SelectEntriesBySubject(this.OntologyProperty).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            //Custom Annotations
+            foreach (RDFOntologyTaxonomyEntry sf in this.Ontology.Model.PropertyModel.Annotations.CustomAnnotations.SelectEntriesBySubject(this.OntologyProperty).Where(te => te.TaxonomyObject.IsLiteral()))
+                result.Add(((RDFOntologyAnnotationProperty)sf.TaxonomyPredicate, (RDFOntologyLiteral)sf.TaxonomyObject));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously enlists the literal annotations which are assigned to the lens property
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>> DataAnnotationsAsync()
+            => Task.Run(() => DataAnnotations());
         #endregion
     }
 }

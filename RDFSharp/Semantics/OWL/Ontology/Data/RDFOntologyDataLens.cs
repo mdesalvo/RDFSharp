@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -92,6 +93,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the facts which are directly (or indirectly, if inference is requested) equivalent to the lens fact
+        /// </summary>
+        public Task<List<(bool, RDFOntologyFact)>> SameFactsAsync(bool enableInference)
+            => Task.Run(() => SameFacts(enableInference));
+
+        /// <summary>
         /// Enlists the facts which are directly (or indirectly, if inference is requested) different from the lens fact
         /// </summary>
         public List<(bool, RDFOntologyFact)> DifferentFacts(bool enableInference)
@@ -115,6 +122,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the facts which are directly (or indirectly, if inference is requested) equivalent to the lens fact
+        /// </summary>
+        public Task<List<(bool, RDFOntologyFact)>> DifferentFactsAsync(bool enableInference)
+            => Task.Run(() => DifferentFacts(enableInference));
 
         /// <summary>
         /// Enlists the classes to which the lens fact directly (or indirectly, if inference is requested) belongs
@@ -181,6 +194,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the classes to which the lens fact directly (or indirectly, if inference is requested) belongs
+        /// </summary>
+        public Task<List<(bool, RDFOntologyClass)>> ClassTypesAsync(bool enableInference)
+            => Task.Run(() => ClassTypes(enableInference));
+
+        /// <summary>
         /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
         public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectAssertions(bool enableInference)
@@ -203,6 +222,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// </summary>
+        public Task<List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>> ObjectAssertionsAsync(bool enableInference)
+            => Task.Run(() => ObjectAssertions(enableInference));
 
         /// <summary>
         /// Enlists the negative object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
@@ -229,6 +254,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the negative object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// </summary>
+        public Task<List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>> NegativeObjectAssertionsAsync(bool enableInference)
+            => Task.Run(() => NegativeObjectAssertions(enableInference));
+
+        /// <summary>
         /// Enlists the data assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
         public List<(bool,RDFOntologyDatatypeProperty, RDFOntologyLiteral)> DataAssertions(bool enableInference)
@@ -251,6 +282,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the data assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// </summary>
+        public Task<List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)>> DataAssertionsAsync(bool enableInference)
+            => Task.Run(() => DataAssertions(enableInference));
 
         /// <summary>
         /// Enlists the negative data assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
@@ -277,6 +314,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the negative data assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
+        /// </summary>
+        public Task<List<(bool, RDFOntologyDatatypeProperty, RDFOntologyLiteral)>> NegativeDataAssertionsAsync(bool enableInference)
+            => Task.Run(() => NegativeDataAssertions(enableInference));
+
+        /// <summary>
         /// Enlists the object annotations which are assigned to the lens fact
         /// </summary>
         public List<(RDFOntologyAnnotationProperty, RDFOntologyFact)> ObjectAnnotations()
@@ -300,6 +343,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the object annotations which are assigned to the lens fact
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyFact)>> ObjectAnnotationsAsync()
+            => Task.Run(() => ObjectAnnotations());
 
         /// <summary>
         /// Enlists the literal annotations which are assigned to the lens fact
@@ -340,6 +389,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the literal annotations which are assigned to the lens fact
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>> DataAnnotationsAsync()
+            => Task.Run(() => DataAnnotations());
         #endregion
     }
 }

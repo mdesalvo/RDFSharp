@@ -19,6 +19,7 @@ using RDFSharp.Semantics.SKOS;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -870,9 +871,7 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyData RemoveClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass)
         {
             if (ontologyFact != null && ontologyClass != null)
-            {
                 this.Relations.ClassType.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass));
-            }
             return this;
         }
 
@@ -946,9 +945,7 @@ namespace RDFSharp.Semantics.OWL
                                                        RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
-            {
                 this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-            }
             return this;
         }
 
@@ -960,9 +957,7 @@ namespace RDFSharp.Semantics.OWL
                                                                RDFOntologyFact bFact)
         {
             if (aFact != null && objectProperty != null && bFact != null)
-            {
                 this.Relations.NegativeAssertions.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
-            }
             return this;
         }
 
@@ -974,9 +969,7 @@ namespace RDFSharp.Semantics.OWL
                                                                RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
-            {
                 this.Relations.NegativeAssertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-            }
             return this;
         }
         #endregion
@@ -1185,7 +1178,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //Relations
             result = result.UnionWith(this.Relations.SameAs.ReifyToRDFGraph(infexpBehavior, nameof(this.Relations.SameAs)))
@@ -1206,6 +1199,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously gets a graph representation of this ontology data, exporting inferences according to the selected behavior
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+            => Task.Run(() => ToRDFGraph(infexpBehavior));
         #endregion
 
         #endregion

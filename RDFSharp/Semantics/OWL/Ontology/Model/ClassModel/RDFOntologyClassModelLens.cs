@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -92,6 +93,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the classes which are directly (or indirectly, if inference is requested) children of the lens class
+        /// </summary>
+        public Task<List<(bool, RDFOntologyClass)>> SubClassesAsync(bool enableInference)
+            => Task.Run(() => SubClasses(enableInference));
+
+        /// <summary>
         /// Enlists the classes which are directly (or indirectly, if inference is requested) parents of the lens class
         /// </summary>
         public List<(bool, RDFOntologyClass)> SuperClasses(bool enableInference)
@@ -115,6 +122,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the classes which are directly (or indirectly, if inference is requested) parents of the lens class
+        /// </summary>
+        public Task<List<(bool, RDFOntologyClass)>> SuperClassesAsync(bool enableInference)
+            => Task.Run(() => SuperClasses(enableInference));
 
         /// <summary>
         /// Enlists the classes which are directly (or indirectly, if inference is requested) equivalent to the lens class
@@ -142,6 +155,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the classes which are directly (or indirectly, if inference is requested) equivalent to the lens class
+        /// </summary>
+        public Task<List<(bool, RDFOntologyClass)>> EquivalentClassesAsync(bool enableInference)
+            => Task.Run(() => EquivalentClasses(enableInference));
+
+        /// <summary>
         /// Enlists the classes which are directly (or indirectly, if inference is requested) disjoint from the lens class
         /// </summary>
         public List<(bool, RDFOntologyClass)> DisjointClasses(bool enableInference)
@@ -167,6 +186,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the classes which are directly (or indirectly, if inference is requested) disjoint from the lens class
+        /// </summary>
+        public Task<List<(bool, RDFOntologyClass)>> DisjointClassesAsync(bool enableInference)
+            => Task.Run(() => DisjointClasses(enableInference));
+
+        /// <summary>
         /// Enlists the properties which are keys of the lens class
         /// </summary>
         public List<(bool, RDFOntologyProperty)> Keys()
@@ -179,6 +204,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the properties which are keys of the lens class
+        /// </summary>
+        public Task<List<(bool, RDFOntologyProperty)>> KeysAsync()
+            => Task.Run(() => Keys());
 
         /// <summary>
         /// Enlists the facts/literals which are directly (or indirectly, if inference is requested) members of the lens class
@@ -224,6 +255,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Asynchronously enlists the facts/literals which are directly (or indirectly, if inference is requested) members of the lens class
+        /// </summary>
+        public Task<List<(bool, RDFOntologyResource)>> MembersAsync(bool enableInference)
+            => Task.Run(() => Members(enableInference));
+
+        /// <summary>
         /// Enlists the object annotations which are assigned to the lens class
         /// </summary>
         public List<(RDFOntologyAnnotationProperty, RDFOntologyResource)> ObjectAnnotations()
@@ -244,6 +281,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the object annotations which are assigned to the lens class
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyResource)>> ObjectAnnotationsAsync()
+            => Task.Run(() => ObjectAnnotations());
 
         /// <summary>
         /// Enlists the literal annotations which are assigned to the lens class
@@ -278,6 +321,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously enlists the literal annotations which are assigned to the lens class
+        /// </summary>
+        public Task<List<(RDFOntologyAnnotationProperty, RDFOntologyLiteral)>> DataAnnotationsAsync()
+            => Task.Run(() => DataAnnotations());
         #endregion
     }
 }

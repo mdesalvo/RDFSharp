@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -245,9 +246,7 @@ namespace RDFSharp.Semantics.OWL
             if (ontologyProperty != null)
             {
                 if (!this.Properties.ContainsKey(ontologyProperty.PatternMemberID))
-                {
                     this.Properties.Add(ontologyProperty.PatternMemberID, ontologyProperty);
-                }
             }
             return this;
         }
@@ -684,9 +683,7 @@ namespace RDFSharp.Semantics.OWL
             if (ontologyProperty != null)
             {
                 if (this.Properties.ContainsKey(ontologyProperty.PatternMemberID))
-                {
                     this.Properties.Remove(ontologyProperty.PatternMemberID);
-                }
             }
             return this;
         }
@@ -845,9 +842,7 @@ namespace RDFSharp.Semantics.OWL
                                                                     RDFOntologyObjectProperty motherProperty)
         {
             if (childProperty != null && motherProperty != null)
-            {
                 this.Relations.SubPropertyOf.RemoveEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty));
-            }
             return this;
         }
 
@@ -858,9 +853,7 @@ namespace RDFSharp.Semantics.OWL
                                                                     RDFOntologyDatatypeProperty motherProperty)
         {
             if (childProperty != null && motherProperty != null)
-            {
                 this.Relations.SubPropertyOf.RemoveEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty));
-            }
             return this;
         }
 
@@ -972,9 +965,7 @@ namespace RDFSharp.Semantics.OWL
                                                                          RDFOntologyObjectProperty chainProperty)
         {
             if (ontologyProperty != null && chainProperty != null)
-            {
                 this.Relations.PropertyChainAxiom.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty));
-            }
             return this;
         }
         #endregion
@@ -989,9 +980,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 long propertyID = RDFModelUtilities.CreateHash(ontProperty);
                 if (this.Properties.ContainsKey(propertyID))
-                {
                     return this.Properties[propertyID];
-                }
             }
             return null;
         }
@@ -1003,17 +992,15 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyPropertyModel IntersectWith(RDFOntologyPropertyModel propertyModel)
         {
-            var result = new RDFOntologyPropertyModel();
+            RDFOntologyPropertyModel result = new RDFOntologyPropertyModel();
             if (propertyModel != null)
             {
 
                 //Add intersection properties
-                foreach (var p in this)
+                foreach (RDFOntologyProperty p in this)
                 {
                     if (propertyModel.Properties.ContainsKey(p.PatternMemberID))
-                    {
                         result.AddProperty(p);
-                    }
                 }
 
                 //Add intersection relations
@@ -1040,13 +1027,11 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyPropertyModel UnionWith(RDFOntologyPropertyModel propertyModel)
         {
-            var result = new RDFOntologyPropertyModel();
+            RDFOntologyPropertyModel result = new RDFOntologyPropertyModel();
 
             //Add properties from this property model
-            foreach (var p in this)
-            {
+            foreach (RDFOntologyProperty p in this)
                 result.AddProperty(p);
-            }
 
             //Add relations from this property model
             result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
@@ -1068,10 +1053,8 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Add properties from the given property model
-                foreach (var p in propertyModel)
-                {
+                foreach (RDFOntologyProperty p in propertyModel)
                     result.AddProperty(p);
-                }
 
                 //Add relations from the given property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(propertyModel.Relations.SubPropertyOf);
@@ -1097,17 +1080,15 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyPropertyModel DifferenceWith(RDFOntologyPropertyModel propertyModel)
         {
-            var result = new RDFOntologyPropertyModel();
+            RDFOntologyPropertyModel result = new RDFOntologyPropertyModel();
             if (propertyModel != null)
             {
 
                 //Add difference properties
-                foreach (var p in this)
+                foreach (RDFOntologyProperty p in this)
                 {
                     if (!propertyModel.Properties.ContainsKey(p.PatternMemberID))
-                    {
                         result.AddProperty(p);
-                    }
                 }
 
                 //Add difference relations
@@ -1130,10 +1111,8 @@ namespace RDFSharp.Semantics.OWL
             {
 
                 //Add properties from this property model
-                foreach (var p in this)
-                {
+                foreach (RDFOntologyProperty p in this)
                     result.AddProperty(p);
-                }
 
                 //Add relations from this property model
                 result.Relations.SubPropertyOf = result.Relations.SubPropertyOf.UnionWith(this.Relations.SubPropertyOf);
@@ -1161,7 +1140,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFGraph ToRDFGraph(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //Definitions
             foreach (var p in this.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)))
@@ -1242,6 +1221,12 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously gets a graph representation of this ontology property model, exporting inferences according to the selected behavior
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync(RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+            => Task.Run(() => ToRDFGraph(infexpBehavior));
         #endregion
 
         #endregion
