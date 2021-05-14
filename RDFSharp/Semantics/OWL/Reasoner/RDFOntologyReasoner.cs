@@ -141,6 +141,12 @@ namespace RDFSharp.Semantics.OWL
             return report;
         }
 
+        /// <summary>
+        /// Asynchronously applies the reasoner on the given ontology, producing a reasoning report.
+        /// </summary>
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology)
+            => Task.Run(() => ApplyToOntology(ontology));
+
         #endregion
 
     }

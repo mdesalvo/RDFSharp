@@ -145,11 +145,11 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Validate the given ontology against a set of RDFS/OWL-DL rules, detecting errors and inconsistencies affecting its model and data.
+        /// Validates the given ontology against a set of RDFS/OWL-DL rules, detecting errors and inconsistencies affecting its model and data.
         /// </summary>
         public static RDFOntologyValidatorReport Validate(this RDFOntology ontology)
         {
-            var report = new RDFOntologyValidatorReport();
+            RDFOntologyValidatorReport report = new RDFOntologyValidatorReport();
             if (ontology != null)
             {
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Validator is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge.", ontology.Value));
@@ -164,6 +164,12 @@ namespace RDFSharp.Semantics.OWL
             }
             return report;
         }
+
+        /// <summary>
+        /// Asynchronously validates the given ontology against a set of RDFS/OWL-DL rules, detecting errors and inconsistencies affecting its model and data.
+        /// </summary>
+        public static Task<RDFOntologyValidatorReport> ValidateAsync(this RDFOntology ontology)
+            => Task.Run(() => Validate(ontology));
         #endregion
 
     }
