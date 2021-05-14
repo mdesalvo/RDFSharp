@@ -252,10 +252,7 @@ namespace RDFSharp.Model
             }
 
             //Deactivated
-            if (this.Deactivated)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.True));
-            else
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False));
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DEACTIVATED, this.Deactivated ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
             //Messages
             this.Messages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.MESSAGE, message)));
