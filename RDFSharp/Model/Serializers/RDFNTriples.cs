@@ -33,67 +33,67 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPB = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*.$");
+        internal static readonly Regex SPB = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect S->P->O form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPO = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$");
+        internal static readonly Regex SPO = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_PLAIN = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*.$");
+        internal static readonly Regex SPL_PLAIN = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect S->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*.$");
+        internal static readonly Regex SPL_PLANG = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect S->P->L(TYPED) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex SPL_TLIT = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$");
+        internal static readonly Regex SPL_TLIT = new Regex(@"^<[^<>]+>\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->B form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPB = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*.$");
+        internal static readonly Regex BPB = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*_:[^<>]+\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->O form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPO = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*.$");
+        internal static readonly Regex BPO = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*<[^<>]+>\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_PLAIN = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*.$");
+        internal static readonly Regex BPL_PLAIN = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->L(PLAIN LANGUAGE) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*.$");
+        internal static readonly Regex BPL_PLANG = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect B->P->L(TYPED) form of N-Triple/N-Quad
         /// </summary>
-        internal static readonly Regex BPL_TLIT = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$");
+        internal static readonly Regex BPL_TLIT = new Regex(@"^_:[^<>]+\s*<[^<>]+>\s*\""(.)*\""\^\^<[^<>]+>\s*.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect presence of a plain literal with language tag within a given N-Triple
         /// </summary>
-        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$");
+        internal static readonly Regex regexLPL = new Regex(@"@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect presence of starting " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Regex regexSqt = new Regex(@"^""");
+        internal static readonly Regex regexSqt = new Regex(@"^""", RegexOptions.Compiled);
 
         /// <summary>
         /// Regex to detect presence of ending " in the value of a given N-Triple literal
         /// </summary>
-        internal static readonly Regex regexEqt = new Regex(@"""$");
+        internal static readonly Regex regexEqt = new Regex(@"""$", RegexOptions.Compiled);
         #endregion
 
         #region Methods

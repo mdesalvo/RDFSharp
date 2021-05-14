@@ -54,11 +54,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch 8-byte unicodes
         /// </summary>
-        internal static readonly Regex regexU8 = new Regex(@"\\U([0-9A-Fa-f]{8})");
+        internal static readonly Regex regexU8 = new Regex(@"\\U([0-9A-Fa-f]{8})", RegexOptions.Compiled);
         /// <summary>
         /// Regex to catch 4-byte unicodes
         /// </summary>
-        internal static readonly Regex regexU4 = new Regex(@"\\u([0-9A-Fa-f]{4})");
+        internal static readonly Regex regexU4 = new Regex(@"\\u([0-9A-Fa-f]{4})", RegexOptions.Compiled);
+        /// <summary>
+        /// Regex to catch xsd:hexBinary typed literals
+        /// </summary>
+        internal static readonly Regex hexBinary = new Regex(@"^([0-9a-fA-F]{2})*$", RegexOptions.Compiled);
 
         /// <summary>
         /// Gets the Uri corresponding to the given string
@@ -680,7 +684,7 @@ namespace RDFSharp.Model
                     return typedLiteral.Value.IndexOfAny(new char[] { '\n', '\r', '\t' }) == -1;
 
                 case RDFModelEnums.RDFDatatypes.XSD_LANGUAGE:
-                    return Regex.IsMatch(typedLiteral.Value, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$");
+                    return RDFPlainLiteral.LangTag.Match(typedLiteral.Value).Success;
 
                 case RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY:
                     try
@@ -691,7 +695,7 @@ namespace RDFSharp.Model
                     catch { return false; }
 
                 case RDFModelEnums.RDFDatatypes.XSD_HEXBINARY:
-                    return Regex.IsMatch(typedLiteral.Value, @"^([0-9a-fA-F]{2})*$");
+                    return hexBinary.Match(typedLiteral.Value).Success;
                 #endregion
 
                 #region BOOLEAN CATEGORY

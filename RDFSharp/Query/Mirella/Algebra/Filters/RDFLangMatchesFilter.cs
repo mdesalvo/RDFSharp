@@ -50,7 +50,7 @@ namespace RDFSharp.Query
             {
                 if (language != null)
                 {
-                    if (language == string.Empty || language == "*" || Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
+                    if (language == string.Empty || language == "*" || RDFPlainLiteral.LangTag.Match(language).Success)
                     {
                         this.Variable = variable;
                         this.Language = language.ToUpperInvariant();
@@ -97,11 +97,11 @@ namespace RDFSharp.Query
 
                 //NO language is found in the variable
                 if (this.Language == string.Empty)
-                    keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                    keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                 //ANY language is found in the variable
                 else if (this.Language == "*")
-                    keepRow = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                    keepRow = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                 //GIVEN language is found in the variable
                 else

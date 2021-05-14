@@ -46,10 +46,8 @@ namespace RDFSharp.Model
             languageTags?.ForEach(lt =>
             {
                 string languageTag = lt?.Trim() ?? string.Empty;
-                if (languageTag == string.Empty || languageTag == "*" || Regex.IsMatch(languageTag, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
-                {
+                if (languageTag == string.Empty || languageTag == "*" || RDFPlainLiteral.LangTag.Match(languageTag).Success)
                     this.LanguageTags.Add(languageTag.ToUpperInvariant());
-                }
             });
         }
         #endregion
@@ -77,11 +75,11 @@ namespace RDFSharp.Model
 
                             //NO language is found in the variable
                             if (langTagsEnumerator.Current == string.Empty)
-                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                                langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                             //ANY language is found in the variable
                             else if (langTagsEnumerator.Current == "*")
-                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.IgnoreCase);
+                                langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                             //GIVEN language is found in the variable
                             else

@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Regex to catch literals which must be escaped as long literals in Turtle
         /// </summary>
-        internal static readonly Regex regexTTL = new Regex("[\n\r\t\"]");
+        internal static readonly Regex regexTTL = new Regex("[\n\r\t\"]", RegexOptions.Compiled);
         #endregion
 
         #region Methods

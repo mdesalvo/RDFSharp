@@ -28,6 +28,11 @@ namespace RDFSharp.Model
 
         #region Properties
         /// <summary>
+        /// Regex for validation of language tags
+        /// </summary>
+        internal static readonly Regex LangTag = new Regex("^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled);
+
+        /// <summary>
         /// Optional language of the plain literal
         /// </summary>
         public string Language { get; internal set; }
@@ -49,7 +54,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPlainLiteral(string value, string language) : this(value)
         {
-            if (language != null && Regex.IsMatch(language, "^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$"))
+            if (language != null && LangTag.Match(language).Success)
             {
                 this.Language = language.ToUpperInvariant();
                 this.SetLazyPatternMemberID();

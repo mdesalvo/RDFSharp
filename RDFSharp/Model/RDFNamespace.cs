@@ -28,6 +28,11 @@ namespace RDFSharp.Model
 
         #region Properties
         /// <summary>
+        /// Regex for validation of prefixes
+        /// </summary>
+        internal static readonly Regex Prefix = new Regex(@"^[a-zA-Z0-9_\-]+$", RegexOptions.Compiled);
+
+        /// <summary>
         /// Unique representation of the namespace
         /// </summary>
         internal long NamespaceID { get; set; }
@@ -59,12 +64,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFNamespace(string prefix, string uri)
         {
-
             //Validate prefix: must contain only letters/numbers and cannot be "bnode" or "xmlns"
-            if (prefix != null && prefix.Trim() != string.Empty)
+            if (!string.IsNullOrWhiteSpace(prefix))
             {
                 prefix = prefix.Trim();
-                if (Regex.IsMatch(prefix, @"^[a-zA-Z0-9_\-]+$"))
+
+                if (Prefix.Match(prefix).Success)
                 {
                     if (prefix.ToUpperInvariant() == "BNODE" || prefix.ToUpperInvariant() == "XMLNS")
                         throw new RDFModelException("Cannot create RDFNamespace because \"prefix\" parameter cannot be \"bnode\" or \"xmlns\"");
@@ -80,18 +85,19 @@ namespace RDFSharp.Model
             }
 
             //Validate uri: must be an absolute Uri and cannot start with "bnode:" or "xmlns:"
-            if (uri != null && uri.Trim() != string.Empty)
+            if (!string.IsNullOrWhiteSpace(uri))
             {
                 uri = uri.Trim();
 
-                Uri _uri = RDFModelUtilities.GetUriFromString(uri);
-                if (_uri != null)
+                Uri finalUri = RDFModelUtilities.GetUriFromString(uri);
+                if (finalUri != null)
                 {
-                    if (!_uri.ToString().ToUpperInvariant().StartsWith("BNODE:") && !_uri.ToString().ToUpperInvariant().StartsWith("XMLNS:"))
+                    if (!finalUri.ToString().ToUpperInvariant().StartsWith("BNODE:")
+                            && !finalUri.ToString().ToUpperInvariant().StartsWith("XMLNS:"))
                     {
                         this.NamespacePrefix = prefix;
-                        this.NamespaceUri = _uri;
-                        this.DereferenceUri = _uri;
+                        this.NamespaceUri = finalUri;
+                        this.DereferenceUri = finalUri;
                         this.NamespaceID = RDFModelUtilities.CreateHash(this.ToString());
                     }
                     else
@@ -103,13 +109,11 @@ namespace RDFSharp.Model
                 {
                     throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is not a valid Uri");
                 }
-
             }
             else
             {
                 throw new RDFModelException("Cannot create RDFNamespace because \"uri\" parameter is null or empty");
             }
-
         }
         #endregion
 
