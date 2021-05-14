@@ -16,6 +16,7 @@
 
 using RDFSharp.Query;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Model
 {
@@ -36,12 +37,16 @@ namespace RDFSharp.Model
             if (dataGraph != null)
             {
                 foreach (RDFShape shape in shapesGraph)
-                {
                     report.MergeResults(ValidateShape(shapesGraph, dataGraph, shape));
-                }
             }
             return report;
         }
+
+        /// <summary>
+        /// Asynchronously validates the given data graph against the given SHACL shapes graph
+        /// </summary>
+        public static Task<RDFValidationReport> ValidateAsync(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
+            => Task.Run(() => Validate(shapesGraph, dataGraph));
 
         /// <summary>
         /// Validates the given data graph against the given SHACL shape

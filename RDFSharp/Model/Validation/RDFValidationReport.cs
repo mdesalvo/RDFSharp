@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Model
 {
@@ -119,7 +120,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph ToRDFGraph()
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //ValidationReport
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT));
@@ -140,6 +141,12 @@ namespace RDFSharp.Model
             result.SetContext(this.URI);
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously gets a graph representation of this validation report
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync()
+            => Task.Run(() => ToRDFGraph());
         #endregion
 
         #endregion

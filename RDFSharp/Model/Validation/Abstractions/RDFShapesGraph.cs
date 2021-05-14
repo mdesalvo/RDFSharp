@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Model
 {
@@ -160,7 +161,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph ToRDFGraph()
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             foreach (var shape in this)
                 result = result.UnionWith(shape.ToRDFGraph());
@@ -170,12 +171,22 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously gets a graph representation of this shapes graph
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync()
+            => Task.Run(() => ToRDFGraph());
+
+        /// <summary>
         /// Gets a shapes graph representation of the given graph
         /// </summary>
         public static RDFShapesGraph FromRDFGraph(RDFGraph graph)
-        {
-            return RDFValidationHelper.FromRDFGraph(graph);
-        }
+            => RDFValidationHelper.FromRDFGraph(graph);
+
+        /// <summary>
+        /// Asynchronously gets a shapes graph representation of the given graph
+        /// </summary>
+        public static Task<RDFShapesGraph> FromRDFGraphAsync(RDFGraph graph)
+            => Task.Run(() => FromRDFGraph(graph));
         #endregion
 
         #endregion
