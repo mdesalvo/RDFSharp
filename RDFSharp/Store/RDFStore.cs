@@ -312,49 +312,37 @@ namespace RDFSharp.Store
         /// Gets a store containing all quadruples
         /// </summary>
         public RDFMemoryStore SelectAllQuadruples()
-        {
-            return this.SelectQuadruples(null, null, null, null, null);
-        }
+            => this.SelectQuadruples(null, null, null, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified context
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByContext(RDFContext contextResource)
-        {
-            return this.SelectQuadruples(contextResource, null, null, null, null);
-        }
+            => this.SelectQuadruples(contextResource, null, null, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified subject
         /// </summary>
         public RDFMemoryStore SelectQuadruplesBySubject(RDFResource subjectResource)
-        {
-            return this.SelectQuadruples(null, subjectResource, null, null, null);
-        }
+            => this.SelectQuadruples(null, subjectResource, null, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified predicate
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByPredicate(RDFResource predicateResource)
-        {
-            return this.SelectQuadruples(null, null, predicateResource, null, null);
-        }
+            => this.SelectQuadruples(null, null, predicateResource, null, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified object
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByObject(RDFResource objectResource)
-        {
-            return this.SelectQuadruples(null, null, null, objectResource, null);
-        }
+            => this.SelectQuadruples(null, null, null, objectResource, null);
 
         /// <summary>
         /// Gets a memory store containing quadruples with the specified literal
         /// </summary>
         public RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral objectLiteral)
-        {
-            return this.SelectQuadruples(null, null, null, null, objectLiteral);
-        }
+            => this.SelectQuadruples(null, null, null, null, objectLiteral);
 
         /// <summary>
         /// Gets a store containing quadruples satisfying the given pattern
