@@ -46,18 +46,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the collection's items
         /// </summary>
-        public int ItemsCount
-        {
-            get { return this.Items.Count; }
-        }
+        public int ItemsCount => this.Items.Count;
 
         /// <summary>
         /// Gets the enumerator on the collection's items for iteration
         /// </summary>
-        public IEnumerator<RDFPatternMember> ItemsEnumerator
-        {
-            get { return this.Items.GetEnumerator(); }
-        }
+        public IEnumerator<RDFPatternMember> ItemsEnumerator => this.Items.GetEnumerator();
 
         /// <summary>
         /// Flag indicating that this collection exceptionally accepts duplicates
@@ -90,18 +84,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the collection's items
         /// </summary>
-        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
-        {
-            return this.ItemsEnumerator;
-        }
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() => this.ItemsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the collection's items
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ItemsEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ItemsEnumerator;
         #endregion
 
         #region Methods
@@ -206,7 +194,6 @@ namespace RDFSharp.Model
             {
                 foreach (object listEnum in this)
                 {
-
                     //Count the items to keep track of the last one, which will be connected to rdf:nil
                     itemCount++;
 
@@ -231,7 +218,6 @@ namespace RDFSharp.Model
                     {
                         reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
                     }
-
                 }
             }
 

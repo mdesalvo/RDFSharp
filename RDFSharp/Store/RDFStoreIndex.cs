@@ -85,56 +85,40 @@ namespace RDFSharp.Store
 
                 //Context
                 if (!this.Contexts.ContainsKey(quadruple.Context.PatternMemberID))
-                {
                     this.Contexts.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                }
                 else
                 {
                     if (!this.Contexts[quadruple.Context.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    {
                         this.Contexts[quadruple.Context.PatternMemberID].Add(quadruple.QuadrupleID);
-                    }
                 }
 
                 //Subject
                 if (!this.Subjects.ContainsKey(quadruple.Subject.PatternMemberID))
-                {
                     this.Subjects.Add(quadruple.Subject.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                }
                 else
                 {
                     if (!this.Subjects[quadruple.Subject.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    {
                         this.Subjects[quadruple.Subject.PatternMemberID].Add(quadruple.QuadrupleID);
-                    }
                 }
 
                 //Predicate
                 if (!this.Predicates.ContainsKey(quadruple.Predicate.PatternMemberID))
-                {
                     this.Predicates.Add(quadruple.Predicate.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                }
                 else
                 {
                     if (!this.Predicates[quadruple.Predicate.PatternMemberID].Contains(quadruple.QuadrupleID))
-                    {
                         this.Predicates[quadruple.Predicate.PatternMemberID].Add(quadruple.QuadrupleID);
-                    }
                 }
 
                 //Object
                 if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                 {
                     if (!this.Objects.ContainsKey(quadruple.Object.PatternMemberID))
-                    {
                         this.Objects.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                    }
                     else
                     {
                         if (!this.Objects[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                        {
                             this.Objects[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
-                        }
                     }
                 }
 
@@ -142,15 +126,11 @@ namespace RDFSharp.Store
                 else
                 {
                     if (!this.Literals.ContainsKey(quadruple.Object.PatternMemberID))
-                    {
                         this.Literals.Add(quadruple.Object.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
-                    }
                     else
                     {
                         if (!this.Literals[quadruple.Object.PatternMemberID].Contains(quadruple.QuadrupleID))
-                        {
                             this.Literals[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
-                        }
                     }
                 }
 
@@ -175,9 +155,7 @@ namespace RDFSharp.Store
                     {
                         this.Contexts[quadruple.Context.PatternMemberID].Remove(quadruple.QuadrupleID);
                         if (this.Contexts[quadruple.Context.PatternMemberID].Count == 0)
-                        {
                             this.Contexts.Remove(quadruple.Context.PatternMemberID);
-                        }
                     }
                 }
 
@@ -188,9 +166,7 @@ namespace RDFSharp.Store
                     {
                         this.Subjects[quadruple.Subject.PatternMemberID].Remove(quadruple.QuadrupleID);
                         if (this.Subjects[quadruple.Subject.PatternMemberID].Count == 0)
-                        {
                             this.Subjects.Remove(quadruple.Subject.PatternMemberID);
-                        }
                     }
                 }
 
@@ -201,9 +177,7 @@ namespace RDFSharp.Store
                     {
                         this.Predicates[quadruple.Predicate.PatternMemberID].Remove(quadruple.QuadrupleID);
                         if (this.Predicates[quadruple.Predicate.PatternMemberID].Count == 0)
-                        {
                             this.Predicates.Remove(quadruple.Predicate.PatternMemberID);
-                        }
                     }
                 }
 
@@ -216,9 +190,7 @@ namespace RDFSharp.Store
                         {
                             this.Objects[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
                             if (this.Objects[quadruple.Object.PatternMemberID].Count == 0)
-                            {
                                 this.Objects.Remove(quadruple.Object.PatternMemberID);
-                            }
                         }
                     }
                 }
@@ -232,9 +204,7 @@ namespace RDFSharp.Store
                         {
                             this.Literals[quadruple.Object.PatternMemberID].Remove(quadruple.QuadrupleID);
                             if (this.Literals[quadruple.Object.PatternMemberID].Count == 0)
-                            {
                                 this.Literals.Remove(quadruple.Object.PatternMemberID);
-                            }
                         }
                     }
                 }
