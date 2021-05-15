@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace RDFSharp.Query
@@ -99,10 +100,22 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Asynchronously writes the "SPARQL Query Results XML Format" stream corresponding to the ASK query result
+        /// </summary>
+        public Task ToSparqlXmlResultAsync(Stream outputStream)
+            => Task.Run(() => ToSparqlXmlResult(outputStream));
+
+        /// <summary>
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
         /// </summary>
         public void ToSparqlXmlResult(string filepath)
             => ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
+
+        /// <summary>
+        /// Asynchronously writes the "SPARQL Query Results XML Format" file corresponding to the ASK query result
+        /// </summary>
+        public Task ToSparqlXmlResultAsync(string filepath)
+            => Task.Run(() => ToSparqlXmlResult(filepath));
         #endregion
 
         #region Read
@@ -190,10 +203,22 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Asynchronously reads the given "SPARQL Query Results XML Format" stream into an ASK query result
+        /// </summary>
+        public static Task<RDFAskQueryResult> FromSparqlXmlResultAsync(Stream inputStream)
+            => Task.Run(() => FromSparqlXmlResult(inputStream));
+
+        /// <summary>
         /// Reads the given "SPARQL Query Results XML Format" file into an ASK query result
         /// </summary>
         public static RDFAskQueryResult FromSparqlXmlResult(string filepath)
             => FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
+
+        /// <summary>
+        /// Asynchronously reads the given "SPARQL Query Results XML Format" file into an ASK query result
+        /// </summary>
+        public static Task<RDFAskQueryResult> FromSparqlXmlResultAsync(string filepath)
+            => Task.Run(() => FromSparqlXmlResult(filepath));
         #endregion
 
         #endregion

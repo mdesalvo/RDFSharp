@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 
@@ -185,10 +186,22 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Asynchronously writes the "SPARQL Query Results XML Format" stream corresponding to the SELECT query result
+        /// </summary>
+        public Task ToSparqlXmlResultAsync(Stream outputStream)
+            => Task.Run(() => ToSparqlXmlResult(outputStream));
+
+        /// <summary>
         /// Writes the "SPARQL Query Results XML Format" file corresponding to the SELECT query result
         /// </summary>
         public void ToSparqlXmlResult(string filepath)
             => ToSparqlXmlResult(new FileStream(filepath, FileMode.Create));
+
+        /// <summary>
+        /// Asynchronously writes the "SPARQL Query Results XML Format" file corresponding to the SELECT query result
+        /// </summary>
+        public Task ToSparqlXmlResultAsync(string filepath)
+            => Task.Run(() => ToSparqlXmlResult(filepath));
         #endregion
 
         #region Read
@@ -197,6 +210,12 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFSelectQueryResult FromSparqlXmlResult(string filepath)
             => FromSparqlXmlResult(new FileStream(filepath, FileMode.Open));
+
+        /// <summary>
+        /// Asynchronously reads the given "SPARQL Query Results XML Format" file into a SELECT query result
+        /// </summary>
+        public static Task<RDFSelectQueryResult> FromSparqlXmlResultAsync(string filepath)
+            => Task.Run(() => FromSparqlXmlResult(filepath));
 
         /// <summary>
         /// Reads the given "SPARQL Query Results XML Format" stream into a SELECT query result
@@ -400,6 +419,12 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Asynchronously reads the given "SPARQL Query Results XML Format" stream into a SELECT query result
+        /// </summary>
+        public static Task<RDFSelectQueryResult> FromSparqlXmlResultAsync(Stream inputStream)
+            => Task.Run(() => FromSparqlXmlResult(inputStream));
         #endregion
 
         #endregion
