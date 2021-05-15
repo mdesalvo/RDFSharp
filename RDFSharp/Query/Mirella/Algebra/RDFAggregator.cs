@@ -122,9 +122,7 @@ namespace RDFSharp.Query
                     if (rowAggregatorValue is RDFTypedLiteral && ((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
                     {
                         if (double.TryParse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
-                        {
                             return result;
-                        }
                     }
                 }
                 return double.NaN;
@@ -140,9 +138,7 @@ namespace RDFSharp.Query
             try
             {
                 if (!tableRow.IsNull(this.AggregatorVariable.VariableName))
-                {
                     return tableRow[this.AggregatorVariable.VariableName].ToString();
-                }
                 return string.Empty;
             }
             catch { return string.Empty; }
@@ -200,9 +196,7 @@ namespace RDFSharp.Query
         public RDFAggregator SetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember comparisonValue)
         {
             if (comparisonValue != null)
-            {
                 this.HavingClause = (true, comparisonFlavor, comparisonValue);
-            }
             return this;
         }
         #endregion

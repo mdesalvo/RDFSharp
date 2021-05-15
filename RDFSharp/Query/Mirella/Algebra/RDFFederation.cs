@@ -88,9 +88,7 @@ namespace RDFSharp.Query
         public RDFFederation AddGraph(RDFGraph graph)
         {
             if (graph != null)
-            {
                 this.DataSources.Add(graph);
-            }
             return this;
         }
 
@@ -100,9 +98,7 @@ namespace RDFSharp.Query
         public RDFFederation AddStore(RDFStore store)
         {
             if (store != null)
-            {
                 this.DataSources.Add(store);
-            }
             return this;
         }
 
@@ -112,9 +108,7 @@ namespace RDFSharp.Query
         public RDFFederation AddFederation(RDFFederation federation)
         {
             if (federation != null)
-            {
                 this.DataSources.Add(federation);
-            }
             return this;
         }
 
@@ -124,9 +118,7 @@ namespace RDFSharp.Query
         public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
             if (sparqlEndpoint != null)
-            {
                 this.DataSources.Add(sparqlEndpoint);
-            }
             return this;
         }
         #endregion

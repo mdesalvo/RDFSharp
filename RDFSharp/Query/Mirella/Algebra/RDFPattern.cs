@@ -86,9 +86,7 @@ namespace RDFSharp.Query
                     if (subject is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(subject)))
-                        {
                             this.Variables.Add((RDFVariable)subject);
-                        }
                     }
                 }
                 else
@@ -107,16 +105,13 @@ namespace RDFSharp.Query
                 if (predicate is RDFResource || predicate is RDFVariable)
                 {
                     if (predicate is RDFResource && ((RDFResource)predicate).IsBlank)
-                    {
                         throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is a blank resource");
-                    }
+
                     this.Predicate = predicate;
                     if (predicate is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(predicate)))
-                        {
                             this.Variables.Add((RDFVariable)predicate);
-                        }
                     }
                 }
                 else
@@ -138,9 +133,7 @@ namespace RDFSharp.Query
                     if (objLit is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(objLit)))
-                        {
                             this.Variables.Add((RDFVariable)objLit);
-                        }
                     }
                 }
                 else
@@ -168,9 +161,7 @@ namespace RDFSharp.Query
                     if (context is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(context)))
-                        {
                             this.Variables.Add((RDFVariable)context);
-                        }
                     }
                 }
                 else
