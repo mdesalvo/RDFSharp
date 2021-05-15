@@ -191,11 +191,11 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyTaxonomy IntersectWith(RDFOntologyTaxonomy taxonomy)
         {
-            var result = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
+            RDFOntologyTaxonomy result = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
             if (taxonomy != null)
             {
                 //Add intersection triples
-                foreach (var te in this)
+                foreach (RDFOntologyTaxonomyEntry te in this)
                 {
                     if (taxonomy.ContainsEntry(te))
                         result.AddEntry(te);
@@ -209,17 +209,17 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyTaxonomy UnionWith(RDFOntologyTaxonomy taxonomy)
         {
-            var result = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
+            RDFOntologyTaxonomy result = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
 
             //Add entries from this taxonomy
-            foreach (var te in this)
+            foreach (RDFOntologyTaxonomyEntry te in this)
                 result.AddEntry(te);
 
             //Manage the given taxonomy
             if (taxonomy != null)
             {
                 //Add entries from the given taxonomy
-                foreach (var te in taxonomy)
+                foreach (RDFOntologyTaxonomyEntry te in taxonomy)
                     result.AddEntry(te);
             }
 
@@ -231,11 +231,11 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal RDFOntologyTaxonomy DifferenceWith(RDFOntologyTaxonomy taxonomy)
         {
-            var result = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
+            RDFOntologyTaxonomy result = new RDFOntologyTaxonomy(this.Category, this.AcceptDuplicates);
             if (taxonomy != null)
             {
                 //Add difference entries
-                foreach (var te in this)
+                foreach (RDFOntologyTaxonomyEntry te in this)
                 {
                     if (!taxonomy.ContainsEntry(te))
                         result.AddEntry(te);
@@ -244,7 +244,7 @@ namespace RDFSharp.Semantics.OWL
             else
             {
                 //Add entries from this taxonomy
-                foreach (var te in this)
+                foreach (RDFOntologyTaxonomyEntry te in this)
                     result.AddEntry(te);
             }
             return result;
