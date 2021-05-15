@@ -677,11 +677,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept has broader/broaderTransitive concept the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasBroaderConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                     RDFSKOSConcept aConcept,
-                                                     RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetBroaderConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                  RDFSKOSConcept aConcept,
+                                                  RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetBroaderConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the broader/broaderTransitive concepts of the given concept within the given scheme
@@ -689,18 +687,16 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetBroaderConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                 RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-
                 //Get skos:broader concepts
-                foreach (var broaderConcept in conceptScheme.Relations.Broader.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry broaderConcept in conceptScheme.Relations.Broader.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)broaderConcept.TaxonomyObject);
 
                 //Get skos:broaderTransitive concepts
                 result = result.UnionWith(conceptScheme.GetBroaderConceptsOfInternal(concept, null))
-                                       .RemoveConcept(concept); //Safety deletion
-
+                               .RemoveConcept(concept); //Safety deletion
             }
             return result;
         }
@@ -712,29 +708,23 @@ namespace RDFSharp.Semantics.SKOS
                                                                           RDFSKOSConcept concept,
                                                                           Dictionary<long, RDFSKOSConcept> visitContext)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
-            {
                 visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
-            }
             else
             {
                 if (!visitContext.ContainsKey(concept.PatternMemberID))
-                {
                     visitContext.Add(concept.PatternMemberID, concept);
-                }
                 else
-                {
                     return result;
-                }
             }
             #endregion
 
             //Transitivity of "skos:broaderTransitive" taxonomy:
             //((A SKOS:BROADERTRANSITIVE B)  &&  (B SKOS:BROADERTRANSITIVE C))  =>  (A SKOS:BROADERTRANSITIVE C)
-            foreach (var bt in conceptScheme.Relations.BroaderTransitive.SelectEntriesBySubject(concept))
+            foreach (RDFOntologyTaxonomyEntry bt in conceptScheme.Relations.BroaderTransitive.SelectEntriesBySubject(concept))
             {
                 result.AddConcept((RDFSKOSConcept)bt.TaxonomyObject);
 
@@ -751,11 +741,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept has narrower/narrowerTransitive concept the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasNarrowerConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                      RDFSKOSConcept aConcept,
-                                                      RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetNarrowerConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                   RDFSKOSConcept aConcept,
+                                                   RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetNarrowerConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the narrower/narrowerTransitive concepts of the given concept within the given scheme
@@ -763,18 +751,16 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetNarrowerConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                  RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-
                 //Get skos:narrower concepts
-                foreach (var narrowerConcept in conceptScheme.Relations.Narrower.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry narrowerConcept in conceptScheme.Relations.Narrower.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)narrowerConcept.TaxonomyObject);
 
                 //Get skos:narrowerTransitive concepts
                 result = result.UnionWith(conceptScheme.GetNarrowerConceptsOfInternal(concept, null))
-                                 .RemoveConcept(concept); //Safety deletion
-
+                               .RemoveConcept(concept); //Safety deletion
             }
             return result;
         }
@@ -786,29 +772,23 @@ namespace RDFSharp.Semantics.SKOS
                                                                            RDFSKOSConcept concept,
                                                                            Dictionary<long, RDFSKOSConcept> visitContext)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
-            {
                 visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
-            }
             else
             {
                 if (!visitContext.ContainsKey(concept.PatternMemberID))
-                {
                     visitContext.Add(concept.PatternMemberID, concept);
-                }
                 else
-                {
                     return result;
-                }
             }
             #endregion
 
             //Transitivity of "skos:narrowerTransitive" taxonomy:
             //((A SKOS:NARROWERTRANSITIVE B)  &&  (B SKOS:NARROWERTRANSITIVE C))  =>  (A SKOS:NARROWERTRANSITIVE C)
-            foreach (var nt in conceptScheme.Relations.NarrowerTransitive.SelectEntriesBySubject(concept))
+            foreach (RDFOntologyTaxonomyEntry nt in conceptScheme.Relations.NarrowerTransitive.SelectEntriesBySubject(concept))
             {
                 result.AddConcept((RDFSKOSConcept)nt.TaxonomyObject);
 
@@ -825,11 +805,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept has related concept the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasRelatedConcept(this RDFSKOSConceptScheme data,
-                                                     RDFSKOSConcept aConcept,
-                                                     RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && data != null ? data.GetRelatedConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                  RDFSKOSConcept aConcept,
+                                                  RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && data != null ? data.GetRelatedConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the related concepts of the given concept within the given scheme
@@ -837,10 +815,10 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetRelatedConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                 RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-                foreach (var relatedConcept in conceptScheme.Relations.Related.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry relatedConcept in conceptScheme.Relations.Related.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)relatedConcept.TaxonomyObject);
             }
             return result;
@@ -856,11 +834,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept has broadMatch concept the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasBroadMatchConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                        RDFSKOSConcept aConcept,
-                                                        RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetBroadMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                     RDFSKOSConcept aConcept,
+                                                     RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetBroadMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the broadMatch concepts of the given concept within the given scheme
@@ -868,10 +844,10 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetBroadMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                    RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-                foreach (var broadMatchConcept in conceptScheme.Relations.BroadMatch.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry broadMatchConcept in conceptScheme.Relations.BroadMatch.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)broadMatchConcept.TaxonomyObject);
             }
             return result;
@@ -883,11 +859,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept has narrowMatch concept the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasNarrowMatchConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                         RDFSKOSConcept aConcept,
-                                                         RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetNarrowMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                      RDFSKOSConcept aConcept,
+                                                      RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetNarrowMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the narrowMatch concepts of the given concept within the given scheme
@@ -895,10 +869,10 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetNarrowMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                     RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-                foreach (var narrowMatchConcept in conceptScheme.Relations.NarrowMatch.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry narrowMatchConcept in conceptScheme.Relations.NarrowMatch.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)narrowMatchConcept.TaxonomyObject);
             }
             return result;
@@ -910,11 +884,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept has relatedMatch concept the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasRelatedMatchConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                          RDFSKOSConcept aConcept,
-                                                          RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetRelatedMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                       RDFSKOSConcept aConcept,
+                                                       RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetRelatedMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the relatedMatch concepts of the given concept within the given scheme
@@ -922,10 +894,10 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetRelatedMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                      RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-                foreach (var relatedMatchConcept in conceptScheme.Relations.RelatedMatch.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry relatedMatchConcept in conceptScheme.Relations.RelatedMatch.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)relatedMatchConcept.TaxonomyObject);
             }
             return result;
@@ -937,11 +909,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept skos:closeMatch the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasCloseMatchConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                        RDFSKOSConcept aConcept,
-                                                        RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetCloseMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                     RDFSKOSConcept aConcept,
+                                                     RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetCloseMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the skos:closeMatch concepts of the given concept within the given scheme
@@ -949,10 +919,10 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetCloseMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                    RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
-                foreach (var closeMatchConcept in conceptScheme.Relations.CloseMatch.SelectEntriesBySubject(concept))
+                foreach (RDFOntologyTaxonomyEntry closeMatchConcept in conceptScheme.Relations.CloseMatch.SelectEntriesBySubject(concept))
                     result.AddConcept((RDFSKOSConcept)closeMatchConcept.TaxonomyObject);
             }
             return result;
@@ -964,11 +934,9 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the given aConcept skos:exactMatch the given bConcept within the given scheme
         /// </summary>
         public static bool CheckHasExactMatchConcept(this RDFSKOSConceptScheme conceptScheme,
-                                                        RDFSKOSConcept aConcept,
-                                                        RDFSKOSConcept bConcept)
-        {
-            return (aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetExactMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false);
-        }
+                                                     RDFSKOSConcept aConcept,
+                                                     RDFSKOSConcept bConcept)
+            => aConcept != null && bConcept != null && conceptScheme != null ? conceptScheme.GetExactMatchConceptsOf(aConcept).Concepts.ContainsKey(bConcept.PatternMemberID) : false;
 
         /// <summary>
         /// Enlists the skos:exactMatch concepts of the given concept within the given scheme
@@ -976,11 +944,11 @@ namespace RDFSharp.Semantics.SKOS
         public static RDFSKOSConceptScheme GetExactMatchConceptsOf(this RDFSKOSConceptScheme conceptScheme,
                                                                    RDFSKOSConcept concept)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
             if (concept != null && conceptScheme != null)
             {
                 result = conceptScheme.GetExactMatchConceptsOfInternal(concept, null)
-                                        .RemoveConcept(concept); //Safety deletion
+                                      .RemoveConcept(concept); //Safety deletion
             }
             return result;
         }
@@ -992,29 +960,23 @@ namespace RDFSharp.Semantics.SKOS
                                                                              RDFSKOSConcept concept,
                                                                              Dictionary<long, RDFSKOSConcept> visitContext)
         {
-            var result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
+            RDFSKOSConceptScheme result = new RDFSKOSConceptScheme((RDFResource)conceptScheme.Value);
 
             #region visitContext
             if (visitContext == null)
-            {
                 visitContext = new Dictionary<long, RDFSKOSConcept>() { { concept.PatternMemberID, concept } };
-            }
             else
             {
                 if (!visitContext.ContainsKey(concept.PatternMemberID))
-                {
                     visitContext.Add(concept.PatternMemberID, concept);
-                }
                 else
-                {
                     return result;
-                }
             }
             #endregion
 
             // Transitivity of "skos:exactMatch" taxonomy:
             //((A SKOS:EXACTMATCH B)  &&  (B SKOS:EXACTMATCH C))  =>  (A SKOS:EXACTMATCH C)
-            foreach (var em in conceptScheme.Relations.ExactMatch.SelectEntriesBySubject(concept))
+            foreach (RDFOntologyTaxonomyEntry em in conceptScheme.Relations.ExactMatch.SelectEntriesBySubject(concept))
             {
                 result.AddConcept((RDFSKOSConcept)em.TaxonomyObject);
                 result = result.UnionWith(conceptScheme.GetExactMatchConceptsOfInternal((RDFSKOSConcept)em.TaxonomyObject, visitContext));
@@ -1037,9 +999,7 @@ namespace RDFSharp.Semantics.SKOS
                                                           RDFOntologyFact skosMember)
         {
             if (ontologyData != null && skosCollection != null && skosMember != null)
-            {
                 ontologyData.Relations.Member.AddEntry(new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember));
-            }
             return ontologyData;
         }
 
@@ -1051,9 +1011,7 @@ namespace RDFSharp.Semantics.SKOS
                                                               RDFOntologyFact skosMember)
         {
             if (ontologyData != null && skosOrderedCollection != null && skosMember != null)
-            {
                 ontologyData.Relations.MemberList.AddEntry(new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember));
-            }
             return ontologyData;
         }
 
@@ -1065,9 +1023,7 @@ namespace RDFSharp.Semantics.SKOS
                                                              RDFOntologyFact skosMember)
         {
             if (ontologyData != null && skosCollection != null && skosMember != null)
-            {
                 ontologyData.Relations.Member.RemoveEntry(new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember));
-            }
             return ontologyData;
         }
 
@@ -1079,9 +1035,7 @@ namespace RDFSharp.Semantics.SKOS
                                                                  RDFOntologyFact skosMember)
         {
             if (ontologyData != null && skosOrderedCollection != null && skosMember != null)
-            {
                 ontologyData.Relations.MemberList.RemoveEntry(new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember));
-            }
             return ontologyData;
         }
         #endregion
