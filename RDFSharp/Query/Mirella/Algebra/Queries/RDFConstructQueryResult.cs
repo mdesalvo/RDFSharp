@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using System;
 using System.Collections;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Query
 {
@@ -51,7 +52,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Builds a graph corresponding to the query result
+        /// Gets a graph corresponding to the query result
         /// </summary>
         public RDFGraph ToRDFGraph()
         {
@@ -77,7 +78,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a query result corresponding to the given graph
+        /// Asynchronously gets a graph corresponding to the query result
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync()
+            => Task.Run(() => ToRDFGraph());
+
+        /// <summary>
+        /// Gets a query result corresponding to the given graph
         /// </summary>
         public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph)
         {
@@ -91,6 +98,12 @@ namespace RDFSharp.Query
             }
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously gets a query result corresponding to the given graph
+        /// </summary>
+        public static Task<RDFConstructQueryResult> FromRDFGraphAsync(RDFGraph graph)
+            => Task.Run(() => FromRDFGraph(graph));
         #endregion
 
     }

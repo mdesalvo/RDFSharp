@@ -19,6 +19,7 @@ using RDFSharp.Store;
 using System;
 using System.Collections;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Query
 {
@@ -52,7 +53,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Builds a graph corresponding to the query result
+        /// Gets a graph corresponding to the query result
         /// </summary>
         public RDFGraph ToRDFGraph()
         {
@@ -78,7 +79,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a memory store corresponding to the query result
+        /// Asynchronously gets a graph corresponding to the query result
+        /// </summary>
+        public Task<RDFGraph> ToRDFGraphAsync()
+            => Task.Run(() => ToRDFGraph());
+
+        /// <summary>
+        /// Gets a memory store corresponding to the query result
         /// </summary>
         public RDFMemoryStore ToRDFMemoryStore()
         {
@@ -108,7 +115,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a query result corresponding to the given graph
+        /// Asynchronously gets a memory store corresponding to the query result
+        /// </summary>
+        public Task<RDFMemoryStore> ToRDFMemoryStoreAsync()
+            => Task.Run(() => ToRDFMemoryStore());
+
+        /// <summary>
+        /// Gets a query result corresponding to the given graph
         /// </summary>
         public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph)
         {
@@ -124,7 +137,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a query result corresponding to the given memory store
+        /// Asynchronously gets a query result corresponding to the given graph
+        /// </summary>
+        public static Task<RDFDescribeQueryResult> FromRDFGraphAsync(RDFGraph graph)
+            => Task.Run(() => FromRDFGraph(graph));
+
+        /// <summary>
+        /// Gets a query result corresponding to the given memory store
         /// </summary>
         public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store)
         {
@@ -138,6 +157,12 @@ namespace RDFSharp.Query
             }
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously gets a query result corresponding to the given memory store
+        /// </summary>
+        public static Task<RDFDescribeQueryResult> FromRDFMemoryStoreAsync(RDFMemoryStore store)
+            => Task.Run(() => FromRDFMemoryStore(store));
         #endregion
 
     }
