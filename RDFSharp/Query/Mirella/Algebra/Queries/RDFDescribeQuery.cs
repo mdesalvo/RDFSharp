@@ -32,7 +32,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFDescribeQuery : RDFQuery
     {
-
         #region Properties
         /// <summary>
         /// List of RDF terms to be described by the query
@@ -106,6 +105,19 @@ namespace RDFSharp.Query
             {
                 if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
                     this.QueryMembers.Add(patternGroup);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        public RDFDescribeQuery AddModifier(RDFDistinctModifier modifier)
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
+                    this.QueryMembers.Add(modifier);
             }
             return this;
         }
@@ -252,7 +264,6 @@ namespace RDFSharp.Query
         public Task<RDFDescribeQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
             => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint));
         #endregion
-
     }
 
 }

@@ -31,7 +31,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFAskQuery : RDFQuery
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty ASK query
@@ -167,7 +166,6 @@ namespace RDFSharp.Query
         public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
             => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint));
         #endregion
-
     }
 
 }

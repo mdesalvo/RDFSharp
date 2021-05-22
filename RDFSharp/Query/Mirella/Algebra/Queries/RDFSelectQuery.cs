@@ -32,7 +32,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFSelectQuery : RDFQuery
     {
-
         #region Properties
         /// <summary>
         /// Dictionary of projection variables and associated ordinals
@@ -278,7 +277,6 @@ namespace RDFSharp.Query
             return this;
         }
         #endregion
-
     }
 
 }

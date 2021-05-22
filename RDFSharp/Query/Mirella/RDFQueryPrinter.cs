@@ -29,7 +29,6 @@ namespace RDFSharp.Query
     /// </summary>
     internal static class RDFQueryPrinter
     {
-
         #region Methods
         /// <summary>
         /// Prints the string representation of a SPARQL SELECT query
@@ -39,7 +38,6 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
             if (selectQuery != null)
             {
-
                 #region INDENT
                 int subqueryHeaderSpacesFunc(double indLevel) { return subqueryBodySpacesFunc(indentLevel) - 2 < 0 ? 0 : subqueryBodySpacesFunc(indentLevel) - 2; }
                 int subqueryBodySpacesFunc(double indLevel) { return Convert.ToInt32(4 * indentLevel); }
@@ -308,7 +306,6 @@ namespace RDFSharp.Query
                 #endregion
 
                 #endregion
-
             }
             return sb.ToString();
         }
@@ -321,7 +318,6 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
             if (describeQuery != null)
             {
-
                 #region PREFIXES
                 List<RDFNamespace> prefixes = describeQuery.GetPrefixes();
                 if (prefixes.Any())
@@ -510,7 +506,6 @@ namespace RDFSharp.Query
                 #endregion
 
                 #endregion
-
             }
             return sb.ToString();
         }
@@ -523,7 +518,6 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
             if (constructQuery != null)
             {
-
                 #region PREFIXES
                 List<RDFNamespace> prefixes = constructQuery.GetPrefixes();
                 if (prefixes.Any())
@@ -716,7 +710,6 @@ namespace RDFSharp.Query
                 #endregion
 
                 #endregion
-
             }
             return sb.ToString();
         }
@@ -729,7 +722,6 @@ namespace RDFSharp.Query
             StringBuilder sb = new StringBuilder();
             if (askQuery != null)
             {
-
                 #region PREFIXES
                 List<RDFNamespace> prefixes = askQuery.GetPrefixes();
                 if (prefixes.Any())
@@ -884,7 +876,6 @@ namespace RDFSharp.Query
 
                 sb.Append("}");
                 #endregion
-
             }
             return sb.ToString();
         }
@@ -1189,7 +1180,6 @@ namespace RDFSharp.Query
         {
             if (patternMember != null)
             {
-
                 #region Variable
                 if (patternMember is RDFVariable)
                     return patternMember.ToString();
@@ -1237,11 +1227,9 @@ namespace RDFSharp.Query
                     #endregion
                 }
                 #endregion
-
             }
             return null;
         }
         #endregion
-
     }
 }
