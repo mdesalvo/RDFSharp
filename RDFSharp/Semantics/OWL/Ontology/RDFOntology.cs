@@ -674,6 +674,7 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.BYTE.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.DATE.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.DATETIME.ToRDFOntologyClass());
+            Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.DATETIMESTAMP.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.DECIMAL.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.DOUBLE.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.XSD.DURATION.ToRDFOntologyClass());
@@ -834,6 +835,7 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.NOTATION.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.DURATION.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.DATETIME.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()));
+            Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.DATETIMESTAMP.ToRDFOntologyClass(), subClassOf, RDFVocabulary.XSD.DATETIME.ToRDFOntologyClass()));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.TIME.ToRDFOntologyClass(), subClassOf, RDFVocabulary.XSD.DATETIME.ToRDFOntologyClass()));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.DATE.ToRDFOntologyClass(), subClassOf, RDFVocabulary.XSD.DATETIME.ToRDFOntologyClass()));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.G_YEAR_MONTH.ToRDFOntologyClass(), subClassOf, RDFVocabulary.XSD.DATE.ToRDFOntologyClass()));
@@ -911,6 +913,7 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.NON_NEGATIVE_INTEGER.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToRDFOntologyClass(), subClassOf, RDFVocabulary.XSD.DECIMAL.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.NON_POSITIVE_INTEGER.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+            Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.DATETIMESTAMP.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.DATE.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.TIME.ToRDFOntologyClass(), subClassOf, RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
             Instance.Model.ClassModel.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(RDFVocabulary.XSD.G_DAY.ToRDFOntologyClass(), subClassOf, RDFVocabulary.XSD.DATETIME.ToRDFOntologyClass()).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));

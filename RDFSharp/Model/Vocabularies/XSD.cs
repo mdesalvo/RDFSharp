@@ -145,6 +145,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource DATETIME = new RDFResource(string.Concat(XSD.BASE_URI,"dateTime"));
 
             /// <summary>
+            /// xsd:dateTimeStamp
+            /// </summary>
+            public static readonly RDFResource DATETIMESTAMP = new RDFResource(string.Concat(XSD.BASE_URI, "dateTimeStamp"));
+
+            /// <summary>
             /// xsd:time
             /// </summary>
             public static readonly RDFResource TIME = new RDFResource(string.Concat(XSD.BASE_URI,"time"));

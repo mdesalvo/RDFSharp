@@ -265,7 +265,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Unique representation of the taxonomy entry
         /// </summary>
-        public long TaxonomyEntryID { get; internal set; }
+        public long TaxonomyEntryID => LazyTaxonomyEntryID.Value;
+        private readonly Lazy<long> LazyTaxonomyEntryID;
 
         /// <summary>
         /// Ontology resource acting as subject of the taxonomy relationship
@@ -306,7 +307,7 @@ namespace RDFSharp.Semantics.OWL
                         this.TaxonomyPredicate = taxonomyPredicate;
                         this.TaxonomyObject = taxonomyObject;
                         this.InferenceType = RDFSemanticsEnums.RDFOntologyInferenceType.None;
-                        this.TaxonomyEntryID = RDFModelUtilities.CreateHash(this.ToString());
+                        this.LazyTaxonomyEntryID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
                     }
                     else
                     {

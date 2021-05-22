@@ -163,81 +163,85 @@ namespace RDFSharp.Model
             /// </summary>
             XSD_DATETIME = 23,
             /// <summary>
+            /// http://www.w3.org/2001/XMLSchema#dateTimeStamp
+            /// </summary>
+            XSD_DATETIMESTAMP = 24,
+            /// <summary>
             /// http://www.w3.org/2001/XMLSchema#date
             /// </summary>
-            XSD_DATE = 24,
+            XSD_DATE = 25,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#time
             /// </summary>
-            XSD_TIME = 25,
+            XSD_TIME = 26,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYear
             /// </summary>
-            XSD_GYEAR = 26,
+            XSD_GYEAR = 27,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonth
             /// </summary>
-            XSD_GMONTH = 27,
+            XSD_GMONTH = 28,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gDay
             /// </summary>
-            XSD_GDAY = 28,
+            XSD_GDAY = 29,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYearMonth
             /// </summary>
-            XSD_GYEARMONTH = 29,
+            XSD_GYEARMONTH = 30,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonthDay
             /// </summary>
-            XSD_GMONTHDAY = 30,
+            XSD_GMONTHDAY = 31,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#hexBinary
             /// </summary>
-            XSD_HEXBINARY = 31,
+            XSD_HEXBINARY = 32,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#base64Binary
             /// </summary>
-            XSD_BASE64BINARY = 32,
+            XSD_BASE64BINARY = 33,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#anyURI
             /// </summary>
-            XSD_ANYURI = 33,
+            XSD_ANYURI = 34,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#QName
             /// </summary>
-            XSD_QNAME = 34,
+            XSD_QNAME = 35,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NOTATION
             /// </summary>
-            XSD_NOTATION = 35,
+            XSD_NOTATION = 36,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#language
             /// </summary>
-            XSD_LANGUAGE = 36,
+            XSD_LANGUAGE = 37,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#normalizedString
             /// </summary>
-            XSD_NORMALIZEDSTRING = 37,
+            XSD_NORMALIZEDSTRING = 38,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#token
             /// </summary>
-            XSD_TOKEN = 38,
+            XSD_TOKEN = 39,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NMToken
             /// </summary>
-            XSD_NMTOKEN = 39,
+            XSD_NMTOKEN = 40,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#Name
             /// </summary>
-            XSD_NAME = 40,
+            XSD_NAME = 41,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NCName
             /// </summary>
-            XSD_NCNAME = 41,
+            XSD_NCNAME = 42,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#ID
             /// </summary>
-            XSD_ID = 42
+            XSD_ID = 43
         };
 
         /// <summary>

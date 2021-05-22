@@ -92,6 +92,7 @@ namespace RDFSharp.Model
             {
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
+                case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
