@@ -41,9 +41,9 @@ namespace RDFSharp.Query
         internal Dictionary<long, DataTable> QueryMemberFinalResultTables { get; set; }
 
         /// <summary>
-        /// Default column type for Mirella tables
+        /// Default column type used for Mirella tables
         /// </summary>
-        internal static Type SystemString = Type.GetType("System.String"); 
+        internal static Type SystemString = typeof(string); 
         #endregion
 
         #region Ctors
