@@ -50,7 +50,35 @@ namespace RDFSharp.Query
 
                 #region TEMPLATES
                 sb.Append("INSERT DATA\n{\n");
-                insertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(insertDataOperation, tp)));
+                insertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(insertDataOperation.Prefixes, tp)));
+                sb.Append("}\n");
+                #endregion
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL DELETE DATA operation
+        /// </summary>
+        internal static string PrintDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (deleteDataOperation != null)
+            {
+                #region PREFIXES
+                List<RDFNamespace> prefixes = deleteDataOperation.GetPrefixes();
+                if (prefixes.Any())
+                {
+                    prefixes.ForEach(pf => sb.Append(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">\n")));
+                    sb.Append("\n");
+                }
+                #endregion
+
+                #region TEMPLATES
+                sb.Append("DELETE DATA\n{\n");
+                deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(deleteDataOperation.Prefixes, tp)));
                 sb.Append("}\n");
                 #endregion
             }
@@ -60,10 +88,9 @@ namespace RDFSharp.Query
         #endregion
 
         #region Utilities
-        //Prints the given pattern
-        private static string PrintPattern(RDFInsertDataOperation insertDataOperation, RDFPattern tp)
+        private static string PrintPattern(List<RDFNamespace> operationPrefixes, RDFPattern tp)
         {
-            string tpString = RDFQueryPrinter.PrintPattern(tp, insertDataOperation.Prefixes);
+            string tpString = RDFQueryPrinter.PrintPattern(tp, operationPrefixes);
 
             //Remove the Optional indicator from the template print (since it is not supported in SPARQL UPDATE operations)
             if (tp.IsOptional)

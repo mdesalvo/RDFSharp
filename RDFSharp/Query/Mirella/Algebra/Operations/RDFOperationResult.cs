@@ -54,17 +54,19 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult()
         {
+            //Initialize DELETE templates
             this.DeleteResults = new DataTable("DELETE_RESULTS");
-            this.DeleteResults.Columns.Add("?CONTEXT", Type.GetType("System.String"));
-            this.DeleteResults.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            this.DeleteResults.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            this.DeleteResults.Columns.Add("?OBJECT", Type.GetType("System.String"));
+            this.DeleteResults.Columns.Add("?CONTEXT", RDFQueryEngine.SystemString);
+            this.DeleteResults.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
+            this.DeleteResults.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
+            this.DeleteResults.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
 
+            //Initialize INSERT templates
             this.InsertResults = new DataTable("INSERT_RESULTS");
-            this.InsertResults.Columns.Add("?CONTEXT", Type.GetType("System.String"));
-            this.InsertResults.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            this.InsertResults.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            this.InsertResults.Columns.Add("?OBJECT", Type.GetType("System.String"));
+            this.InsertResults.Columns.Add("?CONTEXT", RDFQueryEngine.SystemString);
+            this.InsertResults.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
+            this.InsertResults.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
+            this.InsertResults.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
         }
         #endregion
     }

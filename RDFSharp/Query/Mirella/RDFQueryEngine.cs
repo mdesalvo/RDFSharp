@@ -39,6 +39,11 @@ namespace RDFSharp.Query
         /// Dictionary of final result tables produced by evaluation of query members
         /// </summary>
         internal Dictionary<long, DataTable> QueryMemberFinalResultTables { get; set; }
+
+        /// <summary>
+        /// Default column type for Mirella tables
+        /// </summary>
+        internal static Type SystemString = Type.GetType("System.String"); 
         #endregion
 
         #region Ctors
@@ -733,9 +738,9 @@ namespace RDFSharp.Query
         {
             //Create the structure of the result datatable
             DataTable result = new DataTable("CONSTRUCT_RESULTS");
-            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?SUBJECT", SystemString);
+            result.Columns.Add("?PREDICATE", SystemString);
+            result.Columns.Add("?OBJECT", SystemString);
             result.AcceptChanges();
 
             //Initialize working variables
@@ -848,10 +853,10 @@ namespace RDFSharp.Query
             //Create the structure of the result datatable
             DataTable result = new DataTable("DESCRIBE_RESULTS");
             if (dataSource.IsStore())
-                result.Columns.Add("?CONTEXT", Type.GetType("System.String"));
-            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
+                result.Columns.Add("?CONTEXT", SystemString);
+            result.Columns.Add("?SUBJECT", SystemString);
+            result.Columns.Add("?PREDICATE", SystemString);
+            result.Columns.Add("?OBJECT", SystemString);
             result.AcceptChanges();
 
             //Query IS empty, so does not have evaluable members to fetch data from.
@@ -1943,7 +1948,7 @@ namespace RDFSharp.Query
         internal static void AddColumn(DataTable table, string columnName)
         {
             if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant()))
-                table.Columns.Add(columnName.Trim().ToUpperInvariant(), Type.GetType("System.String"));
+                table.Columns.Add(columnName.Trim().ToUpperInvariant(), SystemString);
         }
 
         /// <summary>

@@ -22,37 +22,37 @@ using System.Threading.Tasks;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFInsertDataOperation is the SPARQL "INSERT DATA" operation implementation
+    /// RDFDeleteDataOperation is the SPARQL "DELETE DATA" operation implementation
     /// </summary>
-    public class RDFInsertDataOperation : RDFOperation
+    public class RDFDeleteDataOperation : RDFOperation
     {
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the INSERT DATA operation
+        /// Gives the string representation of the DELETE DATA operation
         /// </summary>
         public override string ToString()
-            => RDFOperationPrinter.PrintInsertDataOperation(this);
+            => RDFOperationPrinter.PrintDeleteDataOperation(this);
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty INSERT DATA operation
+        /// Default-ctor to build an empty DELETE DATA operation
         /// </summary>
-        public RDFInsertDataOperation() : base()
-            => this.IsInsertData = true;
+        public RDFDeleteDataOperation() : base()
+            => this.IsDeleteData = true;
         #endregion
 
         #region Methods
         /// <summary>
         /// Adds the given ground pattern to the templates of the operation
         /// </summary>
-        public RDFInsertDataOperation AddInsertTemplate(RDFPattern template)
+        public RDFDeleteDataOperation AddDeleteTemplate(RDFPattern template)
         {
             //This operation accepts only ground patterns
             if (template?.Variables.Count == 0)
             {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                    this.InsertTemplates.Add(template);
+                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
+                    this.DeleteTemplates.Add(template);
             }
             return this;
         }
@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public RDFInsertDataOperation AddPrefix(RDFNamespace prefix)
+        public RDFDeleteDataOperation AddPrefix(RDFNamespace prefix)
         {
             if (prefix != null)
             {
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         /// Applies the operation to the given graph
         /// </summary>
         public override RDFOperationResult ApplyToGraph(RDFGraph graph)
-            => graph != null ? new RDFOperationEngine().EvaluateInsertDataOperation(this, graph)
+            => graph != null ? new RDFOperationEngine().EvaluateDeleteDataOperation(this, graph)
                              : new RDFOperationResult();
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace RDFSharp.Query
         /// Applies the operation to the given store
         /// </summary>
         public override RDFOperationResult ApplyToStore(RDFStore store)
-            => store != null ? new RDFOperationEngine().EvaluateInsertDataOperation(this, store)
+            => store != null ? new RDFOperationEngine().EvaluateDeleteDataOperation(this, store)
                              : new RDFOperationResult();
 
         /// <summary>

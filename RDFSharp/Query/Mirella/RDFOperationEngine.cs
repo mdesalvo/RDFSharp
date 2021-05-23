@@ -88,6 +88,64 @@ namespace RDFSharp.Query
 
             return operationResult;
         }
+
+        /// <summary>
+        /// Evaluates the given SPARQL DELETE DATA operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult();
+
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            deleteDataOperation.DeleteTemplates.ForEach(deleteTemplate =>
+            {
+                //GRAPH
+                if (datasource.IsGraph())
+                {
+                    RDFTriple deleteTriple = deleteTemplate.Object is RDFLiteral
+                                                ? new RDFTriple((RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFLiteral)deleteTemplate.Object)
+                                                : new RDFTriple((RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFResource)deleteTemplate.Object);
+                    if (((RDFGraph)datasource).ContainsTriple(deleteTriple))
+                    {
+                        //Add the bindings to the operation result
+                        bindings.Add("?CONTEXT", ((RDFGraph)datasource).ToString());
+                        bindings.Add("?SUBJECT", deleteTriple.Subject.ToString());
+                        bindings.Add("?PREDICATE", deleteTriple.Predicate.ToString());
+                        bindings.Add("?OBJECT", deleteTriple.Object.ToString());
+                        AddRow(operationResult.DeleteResults, bindings);
+                        bindings.Clear();
+
+                        //Remove the triple from the graph
+                        ((RDFGraph)datasource).RemoveTriple(deleteTriple);
+                    }
+                }
+
+                //STORE
+                else if (datasource.IsStore())
+                {
+                    RDFContext deleteContext = deleteTemplate.Context as RDFContext ?? new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
+                    RDFQuadruple deleteQuadruple = deleteTemplate.Object is RDFLiteral
+                                                      ? new RDFQuadruple(deleteContext, (RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFLiteral)deleteTemplate.Object)
+                                                      : new RDFQuadruple(deleteContext, (RDFResource)deleteTemplate.Subject, (RDFResource)deleteTemplate.Predicate, (RDFResource)deleteTemplate.Object);
+                    if (((RDFStore)datasource).ContainsQuadruple(deleteQuadruple))
+                    {
+                        //Add the bindings to the operation result
+                        bindings.Add("?CONTEXT", deleteContext.ToString());
+                        bindings.Add("?SUBJECT", deleteQuadruple.Subject.ToString());
+                        bindings.Add("?PREDICATE", deleteQuadruple.Predicate.ToString());
+                        bindings.Add("?OBJECT", deleteQuadruple.Object.ToString());
+                        AddRow(operationResult.DeleteResults, bindings);
+                        bindings.Clear();
+
+                        //Remove the quadruple from the store
+                        ((RDFStore)datasource).RemoveQuadruple(deleteQuadruple);
+                    }
+                }
+            });
+
+            return operationResult;
+        }
+
         #endregion
 
         #endregion

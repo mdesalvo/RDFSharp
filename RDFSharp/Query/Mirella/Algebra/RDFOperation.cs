@@ -28,6 +28,16 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
+        /// Flag indicating that the operation is compatible with SPARQL DELETE DATA
+        /// </summary>
+        public bool IsDeleteData { get; internal set; }
+
+        /// <summary>
+        /// Flag indicating that the operation is compatible with SPARQL INSERT DATA
+        /// </summary>
+        public bool IsInsertData { get; internal set; }
+
+        /// <summary>
         /// Templates for SPARQL DELETE operations
         /// </summary>
         internal List<RDFPattern> DeleteTemplates { get; set; }
@@ -46,6 +56,8 @@ namespace RDFSharp.Query
         {
             this.DeleteTemplates = new List<RDFPattern>();
             this.InsertTemplates = new List<RDFPattern>();
+            this.IsDeleteData = false;
+            this.IsInsertData = false;
         }
         #endregion
 
