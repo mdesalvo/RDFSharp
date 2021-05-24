@@ -37,15 +37,135 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateInsertDataOperation(RDFInsertDataOperation insertDataOperation, RDFDataSource datasource)
         {
+            RDFOperationResult operationResult = new RDFOperationResult() {
+                InsertResults = PopulateInsertOperationResults(insertDataOperation.InsertTemplates, datasource) };
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL INSERT WHERE operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateInsertWhereOperation(RDFInsertWhereOperation insertWhereOperation, RDFDataSource datasource)
+        {
             RDFOperationResult operationResult = new RDFOperationResult();
 
+            #region CONSTRUCT
+            //Inject SPARQL values within every evaluable member
+            insertWhereOperation.InjectValues(insertWhereOperation.GetValues());
+
+            DataTable insertWhereResultTable = new DataTable();
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(insertWhereOperation.ToString());
+            List<RDFQueryMember> evaluableQueryMembers = insertWhereOperation.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
+            {
+                //Iterate the evaluable members of the query
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+                {
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember is RDFPatternGroup)
+                    {
+                        //Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
+                        //Get the intermediate result tables of the pattern group
+                        EvaluatePatternGroup(insertWhereOperation, (RDFPatternGroup)evaluableQueryMember, datasource, false);
+
+                        //Get the result table of the pattern group
+                        FinalizePatternGroup(insertWhereOperation, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Apply the filters of the pattern group to its result table
+                        ApplyFilters(insertWhereOperation, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            //Populate its name
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            else
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            else
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                        }
+                    }
+                    #endregion
+                }
+
+                //Get the result table of the query
+                insertWhereResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+            }
+
+            //Fill the templates from the result table
+            DataTable filledResultTable = FillTemplates(insertWhereOperation.InsertTemplates, insertWhereResultTable);
+
+            //Apply the modifiers of the query to the result table
+            constructResult.ConstructResults = ApplyModifiers(insertWhereOperation, filledResultTable);
+            #endregion
+
+            #region INSERT
+            List<RDFPattern> insertWhereTemplates = new List<RDFPattern>();
+            if (datasource.IsGraph())
+            {
+                RDFContext graphContext = new RDFContext(((RDFGraph)datasource).Context);
+                RDFGraph insertWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFTriple insertWhereTriple in insertWhereGraph)
+                    insertWhereTemplates.Add(new RDFPattern(graphContext, insertWhereTriple.Subject, insertWhereTriple.Predicate, insertWhereTriple.Object));
+            }
+            else if (datasource.IsStore())
+            {
+                RDFMemoryStore insertWhereStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFQuadruple insertWhereQuadruple in insertWhereStore)
+                    insertWhereTemplates.Add(new RDFPattern(insertWhereQuadruple.Context, insertWhereQuadruple.Subject, insertWhereQuadruple.Predicate, insertWhereQuadruple.Object));
+            }
+            operationResult.InsertResults = PopulateInsertOperationResults(insertWhereTemplates, datasource);
+            #endregion
+
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL DELETE DATA operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult() {
+                DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource) };
+            return operationResult;
+        }
+        
+        /// <summary>
+        /// Populates a datatble with data from the given INSERT templates
+        /// </summary>
+        internal DataTable PopulateInsertOperationResults(List<RDFPattern> insertDataTemplates, RDFDataSource datasource)
+        {
+            DataTable resultTable = new DataTable();
+
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            insertDataOperation.InsertTemplates.ForEach(insertTemplate =>
+            insertDataTemplates.ForEach(insertTemplate =>
             {
                 //GRAPH
                 if (datasource.IsGraph())
                 {
-                    RDFTriple insertTriple = insertTemplate.Object is RDFLiteral 
+                    RDFTriple insertTriple = insertTemplate.Object is RDFLiteral
                                                 ? new RDFTriple((RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, (RDFLiteral)insertTemplate.Object)
                                                 : new RDFTriple((RDFResource)insertTemplate.Subject, (RDFResource)insertTemplate.Predicate, (RDFResource)insertTemplate.Object);
                     if (!((RDFGraph)datasource).ContainsTriple(insertTriple))
@@ -55,7 +175,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", insertTriple.Subject.ToString());
                         bindings.Add("?PREDICATE", insertTriple.Predicate.ToString());
                         bindings.Add("?OBJECT", insertTriple.Object.ToString());
-                        AddRow(operationResult.InsertResults, bindings);
+                        AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Add the triple to the graph
@@ -77,7 +197,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", insertQuadruple.Subject.ToString());
                         bindings.Add("?PREDICATE", insertQuadruple.Predicate.ToString());
                         bindings.Add("?OBJECT", insertQuadruple.Object.ToString());
-                        AddRow(operationResult.InsertResults, bindings);
+                        AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Add the quadruple to the store
@@ -86,18 +206,18 @@ namespace RDFSharp.Query
                 }
             });
 
-            return operationResult;
+            return resultTable;
         }
 
         /// <summary>
-        /// Evaluates the given SPARQL DELETE DATA operation on the given RDF datasource
+        /// Populates a datatble with data from the given DELETE templates
         /// </summary>
-        internal RDFOperationResult EvaluateDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation, RDFDataSource datasource)
+        internal DataTable PopulateDeleteOperationResults(List<RDFPattern> deleteDataTemplates, RDFDataSource datasource)
         {
-            RDFOperationResult operationResult = new RDFOperationResult();
+            DataTable resultTable = new DataTable();
 
             Dictionary<string, string> bindings = new Dictionary<string, string>();
-            deleteDataOperation.DeleteTemplates.ForEach(deleteTemplate =>
+            deleteDataTemplates.ForEach(deleteTemplate =>
             {
                 //GRAPH
                 if (datasource.IsGraph())
@@ -112,7 +232,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", deleteTriple.Subject.ToString());
                         bindings.Add("?PREDICATE", deleteTriple.Predicate.ToString());
                         bindings.Add("?OBJECT", deleteTriple.Object.ToString());
-                        AddRow(operationResult.DeleteResults, bindings);
+                        AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Remove the triple from the graph
@@ -134,7 +254,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", deleteQuadruple.Subject.ToString());
                         bindings.Add("?PREDICATE", deleteQuadruple.Predicate.ToString());
                         bindings.Add("?OBJECT", deleteQuadruple.Object.ToString());
-                        AddRow(operationResult.DeleteResults, bindings);
+                        AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Remove the quadruple from the store
@@ -143,9 +263,8 @@ namespace RDFSharp.Query
                 }
             });
 
-            return operationResult;
+            return resultTable;
         }
-
         #endregion
 
         #endregion

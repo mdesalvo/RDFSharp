@@ -28,24 +28,34 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Flag indicating that the operation is compatible with SPARQL DELETE DATA
+        /// Flag indicating that operation is compatible with SPARQL "DELETE DATA"
         /// </summary>
         public bool IsDeleteData { get; internal set; }
 
         /// <summary>
-        /// Flag indicating that the operation is compatible with SPARQL INSERT DATA
+        /// Flag indicating that operation is compatible with SPARQL "INSERT DATA"
         /// </summary>
         public bool IsInsertData { get; internal set; }
 
         /// <summary>
-        /// Templates for SPARQL DELETE operations
+        /// Flag indicating that operation is compatible with SPARQL "INSERT WHERE"
+        /// </summary>
+        public bool IsInsertWhere { get; internal set; }
+
+        /// <summary>
+        /// Templates for SPARQL DELETE operation
         /// </summary>
         internal List<RDFPattern> DeleteTemplates { get; set; }
 
         /// <summary>
-        /// Templates for SPARQL INSERT operations
+        /// Templates for SPARQL INSERT operation
         /// </summary>
         internal List<RDFPattern> InsertTemplates { get; set; }
+
+        /// <summary>
+        /// List of variables carried by the templates of the operation
+        /// </summary>
+        internal List<RDFVariable> Variables { get; set; }
         #endregion
 
         #region Ctors
@@ -56,8 +66,10 @@ namespace RDFSharp.Query
         {
             this.DeleteTemplates = new List<RDFPattern>();
             this.InsertTemplates = new List<RDFPattern>();
+            this.Variables = new List<RDFVariable>();
             this.IsDeleteData = false;
             this.IsInsertData = false;
+            this.IsInsertWhere = false;
         }
         #endregion
 

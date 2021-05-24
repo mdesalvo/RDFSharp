@@ -412,7 +412,7 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(constructQuery, queryResultTable);
+            DataTable filledResultTable = FillTemplates(constructQuery.Templates, queryResultTable);
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
@@ -732,9 +732,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the templates of the given CONSTRUCT query with data from the given result table
+        /// Fills the given templates with data from the given result table
         /// </summary>
-        internal DataTable FillTemplates(RDFConstructQuery constructQuery, DataTable resultTable)
+        internal DataTable FillTemplates(List<RDFPattern> templates, DataTable resultTable)
         {
             //Create the structure of the result datatable
             DataTable result = new DataTable("CONSTRUCT_RESULTS");
@@ -752,8 +752,8 @@ namespace RDFSharp.Query
             };
 
             //Iterate on the templates
-            foreach (RDFPattern template in constructQuery.Templates.Where(tp => tp.Variables.Count == 0
-                                                                                    || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
+            foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
+                                                                    || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
                 #region GROUND TEMPLATE
                 if (template.Variables.Count == 0)
