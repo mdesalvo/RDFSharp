@@ -125,10 +125,9 @@ namespace RDFSharp.Query
             List<RDFPattern> insertWhereTemplates = new List<RDFPattern>();
             if (datasource.IsGraph())
             {
-                RDFContext graphContext = new RDFContext(((RDFGraph)datasource).Context);
                 RDFGraph insertWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
                 foreach (RDFTriple insertWhereTriple in insertWhereGraph)
-                    insertWhereTemplates.Add(new RDFPattern(graphContext, insertWhereTriple.Subject, insertWhereTriple.Predicate, insertWhereTriple.Object));
+                    insertWhereTemplates.Add(new RDFPattern(insertWhereTriple.Subject, insertWhereTriple.Predicate, insertWhereTriple.Object));
             }
             else if (datasource.IsStore())
             {
@@ -225,7 +224,7 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(deleteWhereOperation.InsertTemplates, deleteWhereResultTable, datasource.IsStore());
+            DataTable filledResultTable = FillTemplates(deleteWhereOperation.DeleteTemplates, deleteWhereResultTable, datasource.IsStore());
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(deleteWhereOperation, filledResultTable);
@@ -235,10 +234,9 @@ namespace RDFSharp.Query
             List<RDFPattern> deleteWhereTemplates = new List<RDFPattern>();
             if (datasource.IsGraph())
             {
-                RDFContext graphContext = new RDFContext(((RDFGraph)datasource).Context);
                 RDFGraph deleteWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
                 foreach (RDFTriple deleteWhereTriple in deleteWhereGraph)
-                    deleteWhereTemplates.Add(new RDFPattern(graphContext, deleteWhereTriple.Subject, deleteWhereTriple.Predicate, deleteWhereTriple.Object));
+                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereTriple.Subject, deleteWhereTriple.Predicate, deleteWhereTriple.Object));
             }
             else if (datasource.IsStore())
             {

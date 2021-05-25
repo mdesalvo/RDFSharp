@@ -44,7 +44,7 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given ground pattern to the templates of the operation
+        /// Adds the given pattern to the templates of the operation
         /// </summary>
         public RDFInsertWhereOperation AddInsertTemplate(RDFPattern template)
         {

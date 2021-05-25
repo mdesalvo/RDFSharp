@@ -44,15 +44,15 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given ground pattern to the templates of the operation
+        /// Adds the given pattern to the templates of the operation
         /// </summary>
-        public RDFDeleteWhereOperation AddInsertTemplate(RDFPattern template)
+        public RDFDeleteWhereOperation AddDeleteTemplate(RDFPattern template)
         {
             if (template != null)
             {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
+                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
                 {
-                    this.InsertTemplates.Add(template);
+                    this.DeleteTemplates.Add(template);
 
                     //Context
                     if (template.Context != null && template.Context is RDFVariable)
