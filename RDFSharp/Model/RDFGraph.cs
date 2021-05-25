@@ -626,19 +626,18 @@ namespace RDFSharp.Model
         /// </summary>
         public DataTable ToDataTable()
         {
-
             //Create the structure of the result datatable
             DataTable result = new DataTable(this.ToString());
-            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
+            result.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
+            result.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
+            result.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
             result.AcceptChanges();
 
             //Iterate the triples of the graph to populate the result datatable
             result.BeginLoadData();
             foreach (RDFTriple t in this)
             {
-                var newRow = result.NewRow();
+                DataRow newRow = result.NewRow();
                 newRow["?SUBJECT"] = t.Subject.ToString();
                 newRow["?PREDICATE"] = t.Predicate.ToString();
                 newRow["?OBJECT"] = t.Object.ToString();
@@ -724,7 +723,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromDataTable(DataTable table)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //Check the structure of the datatable for consistency against the "S-P-O" RDF model
             if (table != null && table.Columns.Count == 3)

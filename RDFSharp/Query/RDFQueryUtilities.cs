@@ -27,9 +27,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    public static class RDFQueryUtilities
+    internal static class RDFQueryUtilities
     {
-
         #region MIRELLA RDF
         /// <summary>
         /// Parses the given string to return an instance of pattern member
@@ -80,7 +79,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal static int CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
         {
-
             #region NULLS
             if (left == null)
             {
@@ -197,7 +195,6 @@ namespace RDFSharp.Query
 
             }
             #endregion
-
         }
 
         /// <summary>
@@ -271,7 +268,6 @@ namespace RDFSharp.Query
             return results;
         }
         #endregion
-
     }
 
 }

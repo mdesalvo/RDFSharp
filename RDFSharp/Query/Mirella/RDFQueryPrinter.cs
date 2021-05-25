@@ -563,7 +563,6 @@ namespace RDFSharp.Query
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
-
                     #region PATTERNGROUPS
                     if (queryMember is RDFPatternGroup)
                     {
@@ -685,7 +684,6 @@ namespace RDFSharp.Query
                         }
                     }
                     #endregion
-
                 }
                 #endregion
 

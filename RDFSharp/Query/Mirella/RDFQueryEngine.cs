@@ -39,6 +39,11 @@ namespace RDFSharp.Query
         /// Dictionary of final result tables produced by evaluation of query members
         /// </summary>
         internal Dictionary<long, DataTable> QueryMemberFinalResultTables { get; set; }
+
+        /// <summary>
+        /// Default column type used for Mirella tables
+        /// </summary>
+        internal static Type SystemString = typeof(string); 
         #endregion
 
         #region Ctors
@@ -407,7 +412,7 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(constructQuery, queryResultTable);
+            DataTable filledResultTable = FillTemplates(constructQuery.Templates, queryResultTable, false);
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
@@ -727,32 +732,37 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the templates of the given CONSTRUCT query with data from the given result table
+        /// Fills the given templates with data from the given result table<br/>
+        /// (needsContext flag is true only when the caller is a store operation)
         /// </summary>
-        internal DataTable FillTemplates(RDFConstructQuery constructQuery, DataTable resultTable)
+        internal DataTable FillTemplates(List<RDFPattern> templates, DataTable resultTable, bool needsContext)
         {
             //Create the structure of the result datatable
             DataTable result = new DataTable("CONSTRUCT_RESULTS");
-            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
+            if (needsContext)
+                result.Columns.Add("?CONTEXT", SystemString);
+            result.Columns.Add("?SUBJECT", SystemString);
+            result.Columns.Add("?PREDICATE", SystemString);
+            result.Columns.Add("?OBJECT", SystemString);
             result.AcceptChanges();
 
             //Initialize working variables
-            Dictionary<string, string> constructRow = new Dictionary<string, string>()
-            {
-                { "?SUBJECT", null },
-                { "?PREDICATE", null },
-                { "?OBJECT", null }
-            };
+            Dictionary<string, string> constructRow = new Dictionary<string, string>();
+            if (needsContext)
+                constructRow.Add("?CONTEXT", null);
+            constructRow.Add("?SUBJECT", null);
+            constructRow.Add("?PREDICATE", null);
+            constructRow.Add("?OBJECT", null);
 
             //Iterate on the templates
-            foreach (RDFPattern template in constructQuery.Templates.Where(tp => tp.Variables.Count == 0
-                                                                                    || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
+            foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
+                                                                    || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
                 #region GROUND TEMPLATE
                 if (template.Variables.Count == 0)
                 {
+                    if (needsContext)
+                        constructRow["?CONTEXT"] = template.Context?.ToString() ?? RDFNamespaceRegister.DefaultNamespace.ToString();
                     constructRow["?SUBJECT"] = template.Subject.ToString();
                     constructRow["?PREDICATE"] = template.Predicate.ToString();
                     constructRow["?OBJECT"] = template.Object.ToString();
@@ -765,6 +775,32 @@ namespace RDFSharp.Query
                 IEnumerator rowsEnum = resultTable.Rows.GetEnumerator();
                 while (rowsEnum.MoveNext())
                 {
+                    #region CONTEXT
+                    if (needsContext)
+                    {
+                        //Context of the template is a variable
+                        if (template.Context is RDFVariable)
+                        {
+                            //Check if the template must be skipped, in order to not produce illegal triples
+                            //Row contains an unbound value in position of the variable corresponding to the template context
+                            if (((DataRow)rowsEnum.Current).IsNull(template.Context.ToString()))
+                                continue;
+
+                            RDFPatternMember ctx = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[template.Context.ToString()].ToString());
+                            //Row contains a literal in position of the variable corresponding to the template context
+                            if (ctx is RDFLiteral)
+                                continue;
+                            //Row contains a resource in position of the variable corresponding to the template context
+                            constructRow["?CONTEXT"] = ctx.ToString();
+                        }
+                        //Context of the template is a resource
+                        else
+                        {
+                            constructRow["?CONTEXT"] = template.Context?.ToString() ?? RDFNamespaceRegister.DefaultNamespace.ToString();
+                        }
+                    }
+                    #endregion
+
                     #region SUBJECT
                     //Subject of the template is a variable
                     if (template.Subject is RDFVariable)
@@ -848,10 +884,10 @@ namespace RDFSharp.Query
             //Create the structure of the result datatable
             DataTable result = new DataTable("DESCRIBE_RESULTS");
             if (dataSource.IsStore())
-                result.Columns.Add("?CONTEXT", Type.GetType("System.String"));
-            result.Columns.Add("?SUBJECT", Type.GetType("System.String"));
-            result.Columns.Add("?PREDICATE", Type.GetType("System.String"));
-            result.Columns.Add("?OBJECT", Type.GetType("System.String"));
+                result.Columns.Add("?CONTEXT", SystemString);
+            result.Columns.Add("?SUBJECT", SystemString);
+            result.Columns.Add("?PREDICATE", SystemString);
+            result.Columns.Add("?OBJECT", SystemString);
             result.AcceptChanges();
 
             //Query IS empty, so does not have evaluable members to fetch data from.
@@ -1943,7 +1979,7 @@ namespace RDFSharp.Query
         internal static void AddColumn(DataTable table, string columnName)
         {
             if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant()))
-                table.Columns.Add(columnName.Trim().ToUpperInvariant(), Type.GetType("System.String"));
+                table.Columns.Add(columnName.Trim().ToUpperInvariant(), SystemString);
         }
 
         /// <summary>
