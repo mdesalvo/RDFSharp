@@ -56,17 +56,9 @@ namespace RDFSharp.Query
         {
             //Initialize DELETE templates
             this.DeleteResults = new DataTable("DELETE_RESULTS");
-            this.DeleteResults.Columns.Add("?CONTEXT", RDFQueryEngine.SystemString);
-            this.DeleteResults.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
-            this.DeleteResults.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
-            this.DeleteResults.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
 
             //Initialize INSERT templates
             this.InsertResults = new DataTable("INSERT_RESULTS");
-            this.InsertResults.Columns.Add("?CONTEXT", RDFQueryEngine.SystemString);
-            this.InsertResults.Columns.Add("?SUBJECT", RDFQueryEngine.SystemString);
-            this.InsertResults.Columns.Add("?PREDICATE", RDFQueryEngine.SystemString);
-            this.InsertResults.Columns.Add("?OBJECT", RDFQueryEngine.SystemString);
         }
         #endregion
     }

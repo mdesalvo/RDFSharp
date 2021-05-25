@@ -761,7 +761,7 @@ namespace RDFSharp.Query
                 if (template.Variables.Count == 0)
                 {
                     if (needsContext)
-                        constructRow["?CONTEXT"] = template.Context?.ToString();
+                        constructRow["?CONTEXT"] = template.Context?.ToString() ?? RDFNamespaceRegister.DefaultNamespace.ToString();
                     constructRow["?SUBJECT"] = template.Subject.ToString();
                     constructRow["?PREDICATE"] = template.Predicate.ToString();
                     constructRow["?OBJECT"] = template.Object.ToString();
@@ -795,7 +795,7 @@ namespace RDFSharp.Query
                         //Context of the template is a resource
                         else
                         {
-                            constructRow["?CONTEXT"] = template.Context.ToString();
+                            constructRow["?CONTEXT"] = template.Context?.ToString() ?? RDFNamespaceRegister.DefaultNamespace.ToString();
                         }
                     }
                     #endregion

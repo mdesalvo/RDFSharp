@@ -158,7 +158,8 @@ namespace RDFSharp.Query
         internal DataTable PopulateInsertOperationResults(List<RDFPattern> insertDataTemplates, RDFDataSource datasource)
         {
             DataTable resultTable = new DataTable("INSERT_RESULTS");
-            resultTable.Columns.Add("?CONTEXT", SystemString);
+            if (datasource.IsStore())
+                resultTable.Columns.Add("?CONTEXT", SystemString);
             resultTable.Columns.Add("?SUBJECT", SystemString);
             resultTable.Columns.Add("?PREDICATE", SystemString);
             resultTable.Columns.Add("?OBJECT", SystemString);
@@ -175,7 +176,6 @@ namespace RDFSharp.Query
                     if (!((RDFGraph)datasource).ContainsTriple(insertTriple))
                     {
                         //Add the bindings to the operation result
-                        bindings.Add("?CONTEXT", ((RDFGraph)datasource).ToString());
                         bindings.Add("?SUBJECT", insertTriple.Subject.ToString());
                         bindings.Add("?PREDICATE", insertTriple.Predicate.ToString());
                         bindings.Add("?OBJECT", insertTriple.Object.ToString());
@@ -219,7 +219,8 @@ namespace RDFSharp.Query
         internal DataTable PopulateDeleteOperationResults(List<RDFPattern> deleteDataTemplates, RDFDataSource datasource)
         {
             DataTable resultTable = new DataTable("DELETE_RESULTS");
-            resultTable.Columns.Add("?CONTEXT", SystemString);
+            if (datasource.IsStore())
+                resultTable.Columns.Add("?CONTEXT", SystemString);
             resultTable.Columns.Add("?SUBJECT", SystemString);
             resultTable.Columns.Add("?PREDICATE", SystemString);
             resultTable.Columns.Add("?OBJECT", SystemString);
@@ -236,7 +237,6 @@ namespace RDFSharp.Query
                     if (((RDFGraph)datasource).ContainsTriple(deleteTriple))
                     {
                         //Add the bindings to the operation result
-                        bindings.Add("?CONTEXT", ((RDFGraph)datasource).ToString());
                         bindings.Add("?SUBJECT", deleteTriple.Subject.ToString());
                         bindings.Add("?PREDICATE", deleteTriple.Predicate.ToString());
                         bindings.Add("?OBJECT", deleteTriple.Object.ToString());
