@@ -151,7 +151,107 @@ namespace RDFSharp.Query
                 DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource) };
             return operationResult;
         }
-        
+
+        /// <summary>
+        /// Evaluates the given SPARQL DELETE WHERE operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateDeleteWhereOperation(RDFDeleteWhereOperation deleteWhereOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult();
+
+            #region CONSTRUCT
+            //Inject SPARQL values within every evaluable member
+            deleteWhereOperation.InjectValues(deleteWhereOperation.GetValues());
+
+            DataTable deleteWhereResultTable = new DataTable();
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(deleteWhereOperation.ToString());
+            List<RDFQueryMember> evaluableQueryMembers = deleteWhereOperation.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
+            {
+                //Iterate the evaluable members of the query
+                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+                {
+                    #region PATTERN GROUP
+                    if (evaluableQueryMember is RDFPatternGroup)
+                    {
+                        //Cleanup eventual data from stateful pattern group members
+                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                        {
+                            if (gm is RDFExistsFilter)
+                                ((RDFExistsFilter)gm).PatternResults?.Clear();
+                        });
+
+                        //Get the intermediate result tables of the pattern group
+                        EvaluatePatternGroup(deleteWhereOperation, (RDFPatternGroup)evaluableQueryMember, datasource, false);
+
+                        //Get the result table of the pattern group
+                        FinalizePatternGroup(deleteWhereOperation, (RDFPatternGroup)evaluableQueryMember);
+
+                        //Apply the filters of the pattern group to its result table
+                        ApplyFilters(deleteWhereOperation, (RDFPatternGroup)evaluableQueryMember);
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (evaluableQueryMember is RDFQuery)
+                    {
+                        //Get the result table of the subquery
+                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
+                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                        {
+                            //Populate its name
+                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+
+                            //Populate its metadata (IsOptional)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                            else
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+
+                            //Populate its metadata (JoinAsUnion)
+                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                            else
+                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                        }
+                    }
+                    #endregion
+                }
+
+                //Get the result table of the query
+                deleteWhereResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+            }
+
+            //Fill the templates from the result table
+            DataTable filledResultTable = FillTemplates(deleteWhereOperation.InsertTemplates, deleteWhereResultTable, datasource.IsStore());
+
+            //Apply the modifiers of the query to the result table
+            constructResult.ConstructResults = ApplyModifiers(deleteWhereOperation, filledResultTable);
+            #endregion
+
+            #region DELETE
+            List<RDFPattern> deleteWhereTemplates = new List<RDFPattern>();
+            if (datasource.IsGraph())
+            {
+                RDFContext graphContext = new RDFContext(((RDFGraph)datasource).Context);
+                RDFGraph deleteWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFTriple deleteWhereTriple in deleteWhereGraph)
+                    deleteWhereTemplates.Add(new RDFPattern(graphContext, deleteWhereTriple.Subject, deleteWhereTriple.Predicate, deleteWhereTriple.Object));
+            }
+            else if (datasource.IsStore())
+            {
+                RDFMemoryStore deleteWhereStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFQuadruple deleteWhereQuadruple in deleteWhereStore)
+                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereQuadruple.Context, deleteWhereQuadruple.Subject, deleteWhereQuadruple.Predicate, deleteWhereQuadruple.Object));
+            }
+            operationResult.DeleteResults = PopulateDeleteOperationResults(deleteWhereTemplates, datasource);
+            #endregion
+
+            return operationResult;
+        }
+
         /// <summary>
         /// Populates a datatble with data from the given INSERT templates
         /// </summary>

@@ -732,7 +732,8 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the given templates with data from the given result table
+        /// Fills the given templates with data from the given result table<br/>
+        /// (needsContext flag is true only when the caller is a store operation)
         /// </summary>
         internal DataTable FillTemplates(List<RDFPattern> templates, DataTable resultTable, bool needsContext)
         {

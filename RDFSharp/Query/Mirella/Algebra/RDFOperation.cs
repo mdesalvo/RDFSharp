@@ -33,6 +33,11 @@ namespace RDFSharp.Query
         public bool IsDeleteData { get; internal set; }
 
         /// <summary>
+        /// Flag indicating that operation is compatible with SPARQL "DELETE WHERE"
+        /// </summary>
+        public bool IsDeleteWhere { get; internal set; }
+
+        /// <summary>
         /// Flag indicating that operation is compatible with SPARQL "INSERT DATA"
         /// </summary>
         public bool IsInsertData { get; internal set; }
@@ -68,6 +73,7 @@ namespace RDFSharp.Query
             this.InsertTemplates = new List<RDFPattern>();
             this.Variables = new List<RDFVariable>();
             this.IsDeleteData = false;
+            this.IsDeleteWhere = false;
             this.IsInsertData = false;
             this.IsInsertWhere = false;
         }

@@ -15,10 +15,7 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Store;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -250,6 +247,176 @@ namespace RDFSharp.Query
                 sb.Append("DELETE DATA\n{\n");
                 deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(deleteDataOperation.Prefixes, tp)));
                 sb.Append("}\n");
+                #endregion
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL DELETE WHERE operation
+        /// </summary>
+        internal static string PrintDeleteWhereOperation(RDFDeleteWhereOperation deleteWhereOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (deleteWhereOperation != null)
+            {
+                #region PREFIXES
+                List<RDFNamespace> prefixes = deleteWhereOperation.GetPrefixes();
+                if (prefixes.Any())
+                {
+                    prefixes.ForEach(pf => sb.Append(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">\n")));
+                    sb.Append("\n");
+                }
+                #endregion
+
+                #region HEADER
+
+                #region BEGINDELETE
+                sb.Append("DELETE");
+                #endregion
+
+                #region TEMPLATES
+                sb.Append("\n{\n");
+                deleteWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(deleteWhereOperation.Prefixes, tp)));
+                sb.Append("}\n");
+                #endregion
+
+                #endregion
+
+                #region BODY
+                sb.Append("WHERE {\n");
+
+                #region MEMBERS
+                bool printingUnion = false;
+                List<RDFQueryMember> evaluableQueryMembers = deleteWhereOperation.GetEvaluableQueryMembers().ToList();
+                RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
+                foreach (RDFQueryMember queryMember in evaluableQueryMembers)
+                {
+                    #region PATTERNGROUPS
+                    if (queryMember is RDFPatternGroup)
+                    {
+
+                        //Current pattern group is set as UNION with the next one
+                        if (((RDFPatternGroup)queryMember).JoinAsUnion)
+                        {
+
+                            //Current pattern group IS NOT the last of the query
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
+                                sb.Append("    UNION\n");
+                            }
+
+                            //Current pattern group IS the last of the query
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
+                                    sb.Append("  }\n");
+                                }
+                                else
+                                {
+                                    sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
+                                }
+                            }
+
+                        }
+
+                        //Current pattern group is set as INTERSECT with the next one
+                        else
+                        {
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
+                                sb.Append("  }\n");
+                            }
+                            else
+                            {
+                                sb.Append(RDFQueryPrinter.PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
+                            }
+                        }
+
+                    }
+                    #endregion
+
+                    #region SUBQUERY
+                    else if (queryMember is RDFQuery)
+                    {
+                        //Merge main query prefixes
+                        deleteWhereOperation.GetPrefixes()
+                                            .ForEach(pf1 => ((RDFSelectQuery)queryMember).AddPrefix(pf1));
+
+                        //Current subquery is set as UNION with the next one
+                        if (((RDFSelectQuery)queryMember).JoinAsUnion)
+                        {
+                            //Current subquery IS NOT the last of the query
+                            //(so UNION keyword must be appended at last)
+                            if (!queryMember.Equals(lastQueryMbr))
+                            {
+                                //Begin a new Union block
+                                if (!printingUnion)
+                                {
+                                    printingUnion = true;
+                                    sb.Append("  {\n");
+                                }
+                                sb.Append(RDFQueryPrinter.PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
+                                sb.Append("    UNION\n");
+                            }
+
+                            //Current query IS the last of the query
+                            //(so UNION keyword must not be appended at last)
+                            else
+                            {
+                                //End the Union block
+                                if (printingUnion)
+                                {
+                                    printingUnion = false;
+                                    sb.Append(RDFQueryPrinter.PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
+                                    sb.Append("  }\n");
+                                }
+                                else
+                                {
+                                    sb.Append(RDFQueryPrinter.PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
+                                }
+                            }
+                        }
+
+                        //Current query is set as INTERSECT with the next one
+                        else
+                        {
+                            //End the Union block
+                            if (printingUnion)
+                            {
+                                printingUnion = false;
+                                sb.Append(RDFQueryPrinter.PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
+                                sb.Append("  }\n");
+                            }
+                            else
+                            {
+                                sb.Append(RDFQueryPrinter.PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
+                            }
+                        }
+                    }
+                    #endregion
+                }
+                #endregion
+
+                sb.Append("}");
                 #endregion
             }
 
