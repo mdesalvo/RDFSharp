@@ -115,7 +115,7 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(insertWhereOperation.InsertTemplates, insertWhereResultTable);
+            DataTable filledResultTable = FillTemplates(insertWhereOperation.InsertTemplates, insertWhereResultTable, datasource.IsStore());
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(insertWhereOperation, filledResultTable);
@@ -157,7 +157,11 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable PopulateInsertOperationResults(List<RDFPattern> insertDataTemplates, RDFDataSource datasource)
         {
-            DataTable resultTable = new DataTable();
+            DataTable resultTable = new DataTable("INSERT_RESULTS");
+            resultTable.Columns.Add("?CONTEXT", SystemString);
+            resultTable.Columns.Add("?SUBJECT", SystemString);
+            resultTable.Columns.Add("?PREDICATE", SystemString);
+            resultTable.Columns.Add("?OBJECT", SystemString);
 
             Dictionary<string, string> bindings = new Dictionary<string, string>();
             insertDataTemplates.ForEach(insertTemplate =>
@@ -214,7 +218,11 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable PopulateDeleteOperationResults(List<RDFPattern> deleteDataTemplates, RDFDataSource datasource)
         {
-            DataTable resultTable = new DataTable();
+            DataTable resultTable = new DataTable("DELETE_RESULTS");
+            resultTable.Columns.Add("?CONTEXT", SystemString);
+            resultTable.Columns.Add("?SUBJECT", SystemString);
+            resultTable.Columns.Add("?PREDICATE", SystemString);
+            resultTable.Columns.Add("?OBJECT", SystemString);
 
             Dictionary<string, string> bindings = new Dictionary<string, string>();
             deleteDataTemplates.ForEach(deleteTemplate =>

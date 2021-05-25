@@ -723,7 +723,7 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromDataTable(DataTable table)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //Check the structure of the datatable for consistency against the "S-P-O" RDF model
             if (table != null && table.Columns.Count == 3)
