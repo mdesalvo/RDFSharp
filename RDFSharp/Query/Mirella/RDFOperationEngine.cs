@@ -1,17 +1,17 @@
 ﻿/*
-   Copyright 2012-2020 Marco De Salvo
+  Copyright 2012-2020 Marco De Salvo
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
 using RDFSharp.Model;
@@ -37,8 +37,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateInsertDataOperation(RDFInsertDataOperation insertDataOperation, RDFDataSource datasource)
         {
-            RDFOperationResult operationResult = new RDFOperationResult() {
-                InsertResults = PopulateInsertOperationResults(insertDataOperation.InsertTemplates, datasource) };
+            RDFOperationResult operationResult = new RDFOperationResult()
+            {
+                InsertResults = PopulateInsertOperationResults(insertDataOperation.InsertTemplates, datasource)
+            };
             return operationResult;
         }
 
@@ -49,79 +51,10 @@ namespace RDFSharp.Query
         {
             RDFOperationResult operationResult = new RDFOperationResult();
 
-            #region CONSTRUCT
-            //Inject SPARQL values within every evaluable member
-            insertWhereOperation.InjectValues(insertWhereOperation.GetValues());
+            //Execute the CONSTRUCT query for materialization of the operation templates
+            RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(insertWhereOperation, datasource);
 
-            DataTable insertWhereResultTable = new DataTable();
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(insertWhereOperation.ToString());
-            List<RDFQueryMember> evaluableQueryMembers = insertWhereOperation.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
-            {
-                //Iterate the evaluable members of the query
-                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                {
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember is RDFPatternGroup)
-                    {
-                        //Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
-                        {
-                            if (gm is RDFExistsFilter)
-                                ((RDFExistsFilter)gm).PatternResults?.Clear();
-                        });
-
-                        //Get the intermediate result tables of the pattern group
-                        EvaluatePatternGroup(insertWhereOperation, (RDFPatternGroup)evaluableQueryMember, datasource, false);
-
-                        //Get the result table of the pattern group
-                        FinalizePatternGroup(insertWhereOperation, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Apply the filters of the pattern group to its result table
-                        ApplyFilters(insertWhereOperation, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                    #region SUBQUERY
-                    else if (evaluableQueryMember is RDFQuery)
-                    {
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
-                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                        {
-                            //Populate its name
-                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
-
-                            //Populate its metadata (IsOptional)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
-
-                            //Populate its metadata (JoinAsUnion)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
-                        }
-                    }
-                    #endregion
-                }
-
-                //Get the result table of the query
-                insertWhereResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
-            }
-
-            //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(insertWhereOperation.InsertTemplates, insertWhereResultTable, datasource.IsStore());
-
-            //Apply the modifiers of the query to the result table
-            constructResult.ConstructResults = ApplyModifiers(insertWhereOperation, filledResultTable);
-            #endregion
-
-            #region INSERT
+            //Use materialized templates for execution of the operation
             List<RDFPattern> insertWhereTemplates = new List<RDFPattern>();
             if (datasource.IsGraph())
             {
@@ -136,7 +69,6 @@ namespace RDFSharp.Query
                     insertWhereTemplates.Add(new RDFPattern(insertWhereQuadruple.Context, insertWhereQuadruple.Subject, insertWhereQuadruple.Predicate, insertWhereQuadruple.Object));
             }
             operationResult.InsertResults = PopulateInsertOperationResults(insertWhereTemplates, datasource);
-            #endregion
 
             return operationResult;
         }
@@ -146,8 +78,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFOperationResult EvaluateDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation, RDFDataSource datasource)
         {
-            RDFOperationResult operationResult = new RDFOperationResult() {
-                DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource) };
+            RDFOperationResult operationResult = new RDFOperationResult()
+            {
+                DeleteResults = PopulateDeleteOperationResults(deleteDataOperation.DeleteTemplates, datasource)
+            };
             return operationResult;
         }
 
@@ -158,13 +92,39 @@ namespace RDFSharp.Query
         {
             RDFOperationResult operationResult = new RDFOperationResult();
 
-            #region CONSTRUCT
-            //Inject SPARQL values within every evaluable member
-            deleteWhereOperation.InjectValues(deleteWhereOperation.GetValues());
+            //Execute the CONSTRUCT query for materialization of the operation templates
+            RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(deleteWhereOperation, datasource);
 
-            DataTable deleteWhereResultTable = new DataTable();
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(deleteWhereOperation.ToString());
-            List<RDFQueryMember> evaluableQueryMembers = deleteWhereOperation.GetEvaluableQueryMembers().ToList();
+            //Use materialized templates for execution of the operation
+            List<RDFPattern> deleteWhereTemplates = new List<RDFPattern>();
+            if (datasource.IsGraph())
+            {
+                RDFGraph deleteWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFTriple deleteWhereTriple in deleteWhereGraph)
+                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereTriple.Subject, deleteWhereTriple.Predicate, deleteWhereTriple.Object));
+            }
+            else if (datasource.IsStore())
+            {
+                RDFMemoryStore deleteWhereStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFQuadruple deleteWhereQuadruple in deleteWhereStore)
+                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereQuadruple.Context, deleteWhereQuadruple.Subject, deleteWhereQuadruple.Predicate, deleteWhereQuadruple.Object));
+            }
+            operationResult.DeleteResults = PopulateDeleteOperationResults(deleteWhereTemplates, datasource);
+
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Executes the CONSTRUCT query for materialization of the operation templates
+        /// </summary>
+        private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource)
+        {
+            //Inject SPARQL values within every evaluable member
+            operation.InjectValues(operation.GetValues());
+
+            DataTable resultTable = new DataTable();
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(operation.ToString());
+            List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
@@ -182,13 +142,13 @@ namespace RDFSharp.Query
                         });
 
                         //Get the intermediate result tables of the pattern group
-                        EvaluatePatternGroup(deleteWhereOperation, (RDFPatternGroup)evaluableQueryMember, datasource, false);
+                        EvaluatePatternGroup(operation, (RDFPatternGroup)evaluableQueryMember, datasource, false);
 
                         //Get the result table of the pattern group
-                        FinalizePatternGroup(deleteWhereOperation, (RDFPatternGroup)evaluableQueryMember);
+                        FinalizePatternGroup(operation, (RDFPatternGroup)evaluableQueryMember);
 
                         //Apply the filters of the pattern group to its result table
-                        ApplyFilters(deleteWhereOperation, (RDFPatternGroup)evaluableQueryMember);
+                        ApplyFilters(operation, (RDFPatternGroup)evaluableQueryMember);
                     }
                     #endregion
 
@@ -220,40 +180,22 @@ namespace RDFSharp.Query
                 }
 
                 //Get the result table of the query
-                deleteWhereResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
+                resultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(deleteWhereOperation.DeleteTemplates, deleteWhereResultTable, datasource.IsStore());
+            bool isDeleteOperation = operation.IsDeleteData || operation.IsDeleteWhere;
+            DataTable filledResultTable = FillTemplates(isDeleteOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
 
             //Apply the modifiers of the query to the result table
-            constructResult.ConstructResults = ApplyModifiers(deleteWhereOperation, filledResultTable);
-            #endregion
-
-            #region DELETE
-            List<RDFPattern> deleteWhereTemplates = new List<RDFPattern>();
-            if (datasource.IsGraph())
-            {
-                RDFGraph deleteWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFTriple deleteWhereTriple in deleteWhereGraph)
-                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereTriple.Subject, deleteWhereTriple.Predicate, deleteWhereTriple.Object));
-            }
-            else if (datasource.IsStore())
-            {
-                RDFMemoryStore deleteWhereStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFQuadruple deleteWhereQuadruple in deleteWhereStore)
-                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereQuadruple.Context, deleteWhereQuadruple.Subject, deleteWhereQuadruple.Predicate, deleteWhereQuadruple.Object));
-            }
-            operationResult.DeleteResults = PopulateDeleteOperationResults(deleteWhereTemplates, datasource);
-            #endregion
-
-            return operationResult;
+            constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable);
+            return constructResult;
         }
 
         /// <summary>
         /// Populates a datatble with data from the given INSERT templates
         /// </summary>
-        internal DataTable PopulateInsertOperationResults(List<RDFPattern> insertDataTemplates, RDFDataSource datasource)
+        private DataTable PopulateInsertOperationResults(List<RDFPattern> insertDataTemplates, RDFDataSource datasource)
         {
             DataTable resultTable = new DataTable("INSERT_RESULTS");
             if (datasource.IsStore())
@@ -314,7 +256,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Populates a datatble with data from the given DELETE templates
         /// </summary>
-        internal DataTable PopulateDeleteOperationResults(List<RDFPattern> deleteDataTemplates, RDFDataSource datasource)
+        private DataTable PopulateDeleteOperationResults(List<RDFPattern> deleteDataTemplates, RDFDataSource datasource)
         {
             DataTable resultTable = new DataTable("DELETE_RESULTS");
             if (datasource.IsStore())
