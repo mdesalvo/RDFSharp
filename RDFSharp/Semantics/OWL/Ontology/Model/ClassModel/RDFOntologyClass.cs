@@ -48,7 +48,6 @@ namespace RDFSharp.Semantics.OWL
             {
                 this.Value = className;
                 this.Nature = nature;
-                this.SetLazyPatternMemberID();
             }
             else
             {

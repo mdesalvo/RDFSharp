@@ -30,8 +30,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the pattern group member
         /// </summary>
-        public long PatternGroupMemberID
-            => RDFModelUtilities.CreateHash(this.ToString());
+        public long PatternGroupMemberID => LazyPatternGroupMemberID.Value;
+
+        /// <summary>
+        /// Lazy evaluation of the pattern group member identifier
+        /// </summary>
+        protected Lazy<long> LazyPatternGroupMemberID;
 
         /// <summary>
         /// Flag indicating that the pattern group member is evaluable by the engine

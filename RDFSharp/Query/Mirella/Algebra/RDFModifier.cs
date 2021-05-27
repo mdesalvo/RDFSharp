@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using System;
 using System.Data;
 
@@ -31,6 +32,14 @@ namespace RDFSharp.Query
         /// Gives the string representation of the modifier
         /// </summary>
         public override string ToString() => base.ToString();
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build an empty modifier
+        /// </summary>
+        internal RDFModifier()
+            => this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.GetQueryMemberString()));
         #endregion
 
         #region Methods

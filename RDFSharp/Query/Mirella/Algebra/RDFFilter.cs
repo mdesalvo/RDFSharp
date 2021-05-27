@@ -37,6 +37,14 @@ namespace RDFSharp.Query
         internal abstract string ToString(List<RDFNamespace> prefixes);
         #endregion
 
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build an empty filter
+        /// </summary>
+        internal RDFFilter()
+            => this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
+        #endregion
+
         #region Methods
         /// <summary>
         /// Applies the filter on the given datarow

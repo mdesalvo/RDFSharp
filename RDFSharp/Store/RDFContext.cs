@@ -52,7 +52,6 @@ namespace RDFSharp.Store
                 if (!tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                 {
                     this.Context = tempUri;
-                    this.SetLazyPatternMemberID();
                 }
                 else
                 {
@@ -78,7 +77,6 @@ namespace RDFSharp.Store
                     if (!tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                     {
                         this.Context = tempUri;
-                        this.SetLazyPatternMemberID();
                     }
                     else
                     {

@@ -69,6 +69,7 @@ namespace RDFSharp.Query
                 this.JoinAsUnion = false;
                 this.GroupMembers = new List<RDFPatternGroupMember>();
                 this.Variables = new List<RDFVariable>();
+                this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.GetQueryMemberString()));
             }
             else
             {
@@ -82,9 +83,7 @@ namespace RDFSharp.Query
         public RDFPatternGroup(string patternGroupName, List<RDFPattern> patterns) : this(patternGroupName)
         {
             if (patterns != null)
-            {
                 patterns.ForEach(p => this.AddPattern(p));
-            }
         }
 
         /// <summary>
@@ -93,9 +92,7 @@ namespace RDFSharp.Query
         public RDFPatternGroup(string patternGroupName, List<RDFPattern> patterns, List<RDFFilter> filters) : this(patternGroupName, patterns)
         {
             if (filters != null)
-            {
                 filters.ForEach(f => this.AddFilter(f));
-            }
         }
         #endregion
 
@@ -126,36 +123,28 @@ namespace RDFSharp.Query
                     if (pattern.Context != null && pattern.Context is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(pattern.Context)))
-                        {
                             this.Variables.Add((RDFVariable)pattern.Context);
-                        }
                     }
 
                     //Subject
                     if (pattern.Subject is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(pattern.Subject)))
-                        {
                             this.Variables.Add((RDFVariable)pattern.Subject);
-                        }
                     }
 
                     //Predicate
                     if (pattern.Predicate is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(pattern.Predicate)))
-                        {
                             this.Variables.Add((RDFVariable)pattern.Predicate);
-                        }
                     }
 
                     //Object
                     if (pattern.Object is RDFVariable)
                     {
                         if (!this.Variables.Any(v => v.Equals(pattern.Object)))
-                        {
                             this.Variables.Add((RDFVariable)pattern.Object);
-                        }
                     }
 
                 }
@@ -171,9 +160,7 @@ namespace RDFSharp.Query
             if (propertyPath != null)
             {
                 if (!this.GetPropertyPaths().Any(p => p.Equals(propertyPath)))
-                {
                     this.GroupMembers.Add(propertyPath);
-                }
             }
             return this;
         }
@@ -186,9 +173,7 @@ namespace RDFSharp.Query
             if (values != null)
             {
                 if (!this.GetValues().Any(v => v.Equals(values)))
-                {
                     this.GroupMembers.Add(values);
-                }
             }
             return this;
         }
@@ -201,9 +186,7 @@ namespace RDFSharp.Query
             if (filter != null)
             {
                 if (!this.GetFilters().Any(f => f.Equals(filter)))
-                {
                     this.GroupMembers.Add(filter);
-                }
             }
             return this;
         }

@@ -46,7 +46,6 @@ namespace RDFSharp.Model
         {
             this.Value = value ?? string.Empty;
             this.Language = string.Empty;
-            this.SetLazyPatternMemberID();
         }
 
         /// <summary>
@@ -55,10 +54,7 @@ namespace RDFSharp.Model
         public RDFPlainLiteral(string value, string language) : this(value)
         {
             if (language != null && LangTag.Match(language).Success)
-            {
                 this.Language = language.ToUpperInvariant();
-                this.SetLazyPatternMemberID();
-            }
         }
         #endregion
 

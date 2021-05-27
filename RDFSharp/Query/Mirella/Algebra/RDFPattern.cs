@@ -145,6 +145,9 @@ namespace RDFSharp.Query
             {
                 throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
             }
+
+            //LazyPatternGroupMemberID
+            this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         }
 
         /// <summary>

@@ -42,7 +42,6 @@ namespace RDFSharp.Query
             if (variableName != null && variableName.Trim(new char[] { ' ', '?', '$' }) != string.Empty)
             {
                 this.VariableName = string.Concat("?", variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant());
-                this.SetLazyPatternMemberID();
             }
             else
             {

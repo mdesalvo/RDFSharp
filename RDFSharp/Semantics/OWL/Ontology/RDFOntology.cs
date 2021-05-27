@@ -56,7 +56,6 @@ namespace RDFSharp.Semantics.OWL
                 this.Model = new RDFOntologyModel();
                 this.Data = new RDFOntologyData();
                 this.Annotations = new RDFOntologyAnnotations();
-                this.SetLazyPatternMemberID();
             }
             else
             {

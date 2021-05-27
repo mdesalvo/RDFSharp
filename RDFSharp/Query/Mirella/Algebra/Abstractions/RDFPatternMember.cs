@@ -52,11 +52,11 @@ namespace RDFSharp.Query
             => other != null && this.PatternMemberID.Equals(other.PatternMemberID);
         #endregion
 
-        #region Methods
+        #region Ctors
         /// <summary>
-        /// Sets the lazy calculation of PatternMemberID
+        /// Default-ctor to build a pattern member
         /// </summary>
-        internal void SetLazyPatternMemberID()
+        internal RDFPatternMember()
             => this.LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         #endregion
 

@@ -54,7 +54,6 @@ namespace RDFSharp.Model
             {
                 this.URI = tempUri;
                 this.IsBlank = this.URI.ToString().StartsWith("bnode:");
-                this.SetLazyPatternMemberID();
             }
             else
             {

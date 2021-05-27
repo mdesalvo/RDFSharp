@@ -30,7 +30,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Unique representation of the query member
         /// </summary>
-        public long QueryMemberID => RDFModelUtilities.CreateHash(this.GetQueryMemberString());
+        public long QueryMemberID => LazyQueryMemberID.Value;
+
+        /// <summary>
+        /// Lazy evaluation of the query member identifier
+        /// </summary>
+        protected Lazy<long> LazyQueryMemberID;
 
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine

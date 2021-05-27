@@ -55,6 +55,7 @@ namespace RDFSharp.Query
             this.Bindings = new Dictionary<string, List<RDFPatternMember>>();
             this.IsEvaluable = false;
             this.IsInjected = false;
+            this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         }
         #endregion
 

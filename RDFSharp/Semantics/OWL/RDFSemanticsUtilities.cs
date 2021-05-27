@@ -172,16 +172,12 @@ namespace RDFSharp.Semantics.OWL
             //Expand with BASE ontology
             ontology = new RDFOntology(new RDFResource(ontGraph.Context.ToString())).UnionWith(RDFBASEOntology.Instance);
             ontology.Value = new RDFResource(ontGraph.Context.ToString());
-            ontology.SetLazyPatternMemberID();
 
             if (!prefetchContext[nameof(RDFVocabulary.RDF.TYPE)].ContainsTriple(new RDFTriple((RDFResource)ontology.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ONTOLOGY)))
             {
                 RDFTriple ontologyTriple = prefetchContext[nameof(RDFVocabulary.RDF.TYPE)].SelectTriplesByObject(RDFVocabulary.OWL.ONTOLOGY).FirstOrDefault();
                 if (ontologyTriple != null)
-                {
                     ontology.Value = ontologyTriple.Subject;
-                    ontology.SetLazyPatternMemberID();
-                }
             }
         }
 
@@ -2020,10 +2016,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             seeAlso = ontology.Data.SelectFact(t.Object.ToString());
                             if (seeAlso == null)
-                            {
                                 seeAlso = new RDFOntologyResource { Value = t.Object };
-                                seeAlso.SetLazyPatternMemberID();
-                            }
                         }
                     }
                     ontology.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, seeAlso);
@@ -2046,10 +2039,7 @@ namespace RDFSharp.Semantics.OWL
                         {
                             isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                             if (isDefBy == null)
-                            {
                                 isDefBy = new RDFOntologyResource { Value = t.Object };
-                                isDefBy.SetLazyPatternMemberID();
-                            }
                         }
                     }
                     ontology.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, isDefBy);
@@ -2126,10 +2116,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
                                 if (custAnnValue == null)
-                                {
                                     custAnnValue = new RDFOntologyResource { Value = t.Object };
-                                    custAnnValue.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, custAnnValue);
@@ -2201,10 +2188,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 seeAlso = ontology.Data.SelectFact(t.Object.ToString());
                                 if (seeAlso == null)
-                                {
                                     seeAlso = new RDFOntologyResource { Value = t.Object };
-                                    seeAlso.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.Model.ClassModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, c, seeAlso);
@@ -2227,10 +2211,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                 if (isDefBy == null)
-                                {
                                     isDefBy = new RDFOntologyResource { Value = t.Object };
-                                    isDefBy.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.Model.ClassModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, c, isDefBy);
@@ -2256,10 +2237,7 @@ namespace RDFSharp.Semantics.OWL
                                 {
                                     custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
                                     if (custAnnValue == null)
-                                    {
                                         custAnnValue = new RDFOntologyResource { Value = t.Object };
-                                        custAnnValue.SetLazyPatternMemberID();
-                                    }
                                 }
                             }
                             ontology.Model.ClassModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, c, custAnnValue);
@@ -2332,10 +2310,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 seeAlso = ontology.Data.SelectFact(t.Object.ToString());
                                 if (seeAlso == null)
-                                {
                                     seeAlso = new RDFOntologyResource { Value = t.Object };
-                                    seeAlso.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.Model.PropertyModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, p, seeAlso);
@@ -2358,10 +2333,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                 if (isDefBy == null)
-                                {
                                     isDefBy = new RDFOntologyResource { Value = t.Object };
-                                    isDefBy.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.Model.PropertyModel.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, p, isDefBy);
@@ -2387,10 +2359,7 @@ namespace RDFSharp.Semantics.OWL
                                 {
                                     custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
                                     if (custAnnValue == null)
-                                    {
                                         custAnnValue = new RDFOntologyResource { Value = t.Object };
-                                        custAnnValue.SetLazyPatternMemberID();
-                                    }
                                 }
                             }
                             ontology.Model.PropertyModel.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, p, custAnnValue);
@@ -2462,10 +2431,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 seeAlso = ontology.Data.SelectFact(t.Object.ToString());
                                 if (seeAlso == null)
-                                {
                                     seeAlso = new RDFOntologyResource { Value = t.Object };
-                                    seeAlso.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.Data.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.SeeAlso, f, seeAlso);
@@ -2488,10 +2454,7 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 isDefBy = ontology.Data.SelectFact(t.Object.ToString());
                                 if (isDefBy == null)
-                                {
                                     isDefBy = new RDFOntologyResource { Value = t.Object };
-                                    isDefBy.SetLazyPatternMemberID();
-                                }
                             }
                         }
                         ontology.Data.AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation.IsDefinedBy, f, isDefBy);
@@ -2517,10 +2480,7 @@ namespace RDFSharp.Semantics.OWL
                                 {
                                     custAnnValue = ontology.Data.SelectFact(t.Object.ToString());
                                     if (custAnnValue == null)
-                                    {
                                         custAnnValue = new RDFOntologyResource { Value = t.Object };
-                                        custAnnValue.SetLazyPatternMemberID();
-                                    }
                                 }
                             }
                             ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, f, custAnnValue);
@@ -2540,7 +2500,6 @@ namespace RDFSharp.Semantics.OWL
             RDFPatternMember ontologyValue = ontology.Value;
             ontology = ontology.DifferenceWith(RDFBASEOntology.Instance);
             ontology.Value = ontologyValue;
-            ontology.SetLazyPatternMemberID();
         }
 
         /// <summary>

@@ -97,6 +97,8 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
             }
 
+            //LazyPatternGroupMemberID
+            this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         }
         #endregion
 

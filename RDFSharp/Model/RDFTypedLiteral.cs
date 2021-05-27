@@ -60,9 +60,7 @@ namespace RDFSharp.Model
             this.Datatype = datatype;
 
             //Validation against semantic of given datatype
-            if (RDFModelUtilities.ValidateTypedLiteral(this))
-                this.SetLazyPatternMemberID();
-            else
+            if (!RDFModelUtilities.ValidateTypedLiteral(this))
                 throw new RDFModelException("Cannot create RDFTypedLiteral because given \"value\" parameter (" + value + ") is not well-formed against given \"datatype\" parameter (" + RDFModelUtilities.GetDatatypeFromEnum(datatype) + ")");
         }
         #endregion
