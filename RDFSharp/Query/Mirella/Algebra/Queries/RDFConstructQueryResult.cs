@@ -46,8 +46,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty CONSTRUCT result
         /// </summary>
-        internal RDFConstructQueryResult(string tableName)
-            => this.ConstructResults = new DataTable(tableName);
+        internal RDFConstructQueryResult()
+            => this.ConstructResults = new DataTable("CONSTRUCT_RESULTS");
         #endregion
 
         #region Methods
@@ -88,7 +88,7 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFConstructQueryResult FromRDFGraph(RDFGraph graph)
         {
-            RDFConstructQueryResult result = new RDFConstructQueryResult(string.Empty);
+            RDFConstructQueryResult result = new RDFConstructQueryResult();
             if (graph != null)
             {
 

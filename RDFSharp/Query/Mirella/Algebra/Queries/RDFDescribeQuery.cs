@@ -179,7 +179,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQueryResult ApplyToGraph(RDFGraph graph)
             => graph != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, graph)
-                             : new RDFDescribeQueryResult(this.ToString());
+                             : new RDFDescribeQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given graph
@@ -192,7 +192,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQueryResult ApplyToStore(RDFStore store)
             => store != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, store)
-                             : new RDFDescribeQueryResult(this.ToString());
+                             : new RDFDescribeQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given store
@@ -205,7 +205,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQueryResult ApplyToFederation(RDFFederation federation)
             => federation != null ? new RDFQueryEngine().EvaluateDescribeQuery(this, federation)
-                                  : new RDFDescribeQueryResult(this.ToString());
+                                  : new RDFDescribeQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given federation
@@ -219,7 +219,7 @@ namespace RDFSharp.Query
         public RDFDescribeQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
             string describeQueryString = this.ToString();
-            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult(describeQueryString);
+            RDFDescribeQueryResult describeResult = new RDFDescribeQueryResult();
             if (sparqlEndpoint != null)
             {
                 //Establish a connection to the given SPARQL endpoint

@@ -73,84 +73,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                {
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember is RDFPatternGroup)
-                    {
-                        //Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
-                        {
-                            if (gm is RDFExistsFilter)
-                                ((RDFExistsFilter)gm).PatternResults?.Clear();
-                        });
-
-                        //Get the intermediate result tables of the pattern group
-                        if (datasource.IsFederation())
-                        {
-                            //Ensure to skip tricky empty federations
-                            if (((RDFFederation)datasource).DataSourcesCount == 0)
-                            {
-                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                            }
-
-                            #region TrueFederations
-                            foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                            {
-                                //Evaluate the pattern group on the current data source
-                                EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
-
-                                //Federate the results of the pattern group on the current data source
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                                    fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                else
-                                    fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                             }
-                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-                        }
-                        else
-                        {
-                            EvaluatePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
-                        }
-
-                        //Get the result table of the pattern group
-                        FinalizePatternGroup(selectQuery, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Apply the filters of the pattern group to its result table
-                        ApplyFilters(selectQuery, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                    #region SUBQUERY
-                    else if (evaluableQueryMember is RDFQuery)
-                    {
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
-                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                        {
-                            //Populate its name
-                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
-
-                            //Populate its metadata (IsOptional)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
-
-                            //Populate its metadata (JoinAsUnion)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
-                        }
-                    }
-                    #endregion
-                }
+                EvaluateQueryMembers(selectQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
@@ -159,7 +82,7 @@ namespace RDFSharp.Query
                 queryResult.SelectResults = ApplyModifiers(selectQuery, queryResultTable);
             }
             
-            queryResult.SelectResults.TableName = selectQuery.ToString();
+            queryResult.SelectResults.TableName = "SELECT_RESULTS";
             return queryResult;
         }
 
@@ -168,98 +91,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource)
         {
-            //Inject SPARQL values within every evaluable member
-            describeQuery.InjectValues(describeQuery.GetValues());
-
-            RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult(this.ToString());
-            List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Any())
+            DataTable FillDescribeTerms(DataTable qResultTable)
             {
-                //Iterate the evaluable members of the query
-                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                {
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember is RDFPatternGroup)
-                    {
-                        //Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
-                        {
-                            if (gm is RDFExistsFilter)
-                                ((RDFExistsFilter)gm).PatternResults?.Clear();
-                        });
+                DataTable resultTable = new DataTable();
 
-                        //Get the intermediate result tables of the pattern group
-                        if (datasource.IsFederation())
-                        {
-                            //Ensure to skip tricky empty federations
-                            if (((RDFFederation)datasource).DataSourcesCount == 0)
-                            {
-                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                            }
-
-                            #region TrueFederations
-                            foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                            {
-                                //Evaluate the pattern group on the data source
-                                EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
-
-                                //Federate the results of the pattern group on the data source
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                                    fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                else
-                                    fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                            }
-                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-                        }
-                        else
-                        {
-                            EvaluatePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
-                        }
-
-                        //Get the result table of the pattern group
-                        FinalizePatternGroup(describeQuery, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Apply the filters of the pattern group to its result table
-                        ApplyFilters(describeQuery, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                    #region SUBQUERY
-                    else if (evaluableQueryMember is RDFQuery)
-                    {
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
-                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                        {
-                            //Populate its name
-                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
-
-                            //Populate its metadata (IsOptional)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
-
-                            //Populate its metadata (JoinAsUnion)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
-                        }
-                    }
-                    #endregion
-                }
-
-                //Get the result table of the query
-                DataTable queryResultTable = CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
-
-                //Describe the terms from the result table
-                DataTable describeResultTable = new DataTable(this.ToString());
                 if (datasource.IsFederation())
                 {
                     #region TrueFederations
@@ -268,49 +103,40 @@ namespace RDFSharp.Query
                         //Ensure to skip tricky empty federations
                         if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
                             continue;
-                        describeResultTable.Merge(DescribeTerms(describeQuery, fedDataSource, queryResultTable), true, MissingSchemaAction.Add);
+                        resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
                     }
                     #endregion
                 }
                 else
                 {
-                    describeResultTable = DescribeTerms(describeQuery, datasource, queryResultTable);
+                    resultTable = DescribeTerms(describeQuery, datasource, qResultTable);
                 }
 
-                //Apply the modifiers of the query to the result table
-                queryResult.DescribeResults = ApplyModifiers(describeQuery, describeResultTable);
+                return resultTable;
             }
-            else
+
+            //Inject SPARQL values within every evaluable member
+            describeQuery.InjectValues(describeQuery.GetValues());
+
+            DataTable queryResultTable = new DataTable();
+            RDFDescribeQueryResult queryResult = new RDFDescribeQueryResult();
+            List<RDFQueryMember> evaluableQueryMembers = describeQuery.GetEvaluableQueryMembers().ToList();
+            if (evaluableQueryMembers.Any())
             {
-                //In this case the only chance to proceed is to have resources in the describe terms,
-                //which will be used to search for S-P-O data. Variables are ignored in this scenario.
-                if (describeQuery.DescribeTerms.Any(dt => dt is RDFResource))
-                {
-                    //Describe the terms from the result table
-                    DataTable describeResultTable = new DataTable(this.ToString());
-                    if (datasource.IsFederation())
-                    {
-                        #region TrueFederations
-                        foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                        {
-                            //Ensure to skip tricky empty federations
-                            if (fedDataSource.IsFederation() && ((RDFFederation)fedDataSource).DataSourcesCount == 0)
-                                continue;
-                            describeResultTable.Merge(DescribeTerms(describeQuery, fedDataSource, new DataTable()), true, MissingSchemaAction.Add);
-                        }
-                        #endregion
-                    }
-                    else
-                    {
-                        describeResultTable = DescribeTerms(describeQuery, datasource, new DataTable());
-                    }
+                //Iterate the evaluable members of the query
+                EvaluateQueryMembers(describeQuery, evaluableQueryMembers, datasource);
 
-                    //Apply the modifiers of the query to the result table
-                    queryResult.DescribeResults = ApplyModifiers(describeQuery, describeResultTable);
-                }
+                //Get the result table of the query
+                queryResultTable = CombineTables(this.QueryMemberFinalResultTables.Values.ToList(), false);
             }
+
+            //Describe the terms from the result table
+            DataTable describeResultTable = FillDescribeTerms(queryResultTable);
+
+            //Apply the modifiers of the query to the result table
+            queryResult.DescribeResults = ApplyModifiers(describeQuery, describeResultTable);
             
-            queryResult.DescribeResults.TableName = describeQuery.ToString();
+            queryResult.DescribeResults.TableName = "DESCRIBE_RESULTS";
             return queryResult;
         }
 
@@ -323,89 +149,12 @@ namespace RDFSharp.Query
             constructQuery.InjectValues(constructQuery.GetValues());
 
             DataTable queryResultTable = new DataTable();
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(this.ToString());
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = constructQuery.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                {
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember is RDFPatternGroup)
-                    {
-                        //Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
-                        {
-                            if (gm is RDFExistsFilter)
-                                ((RDFExistsFilter)gm).PatternResults?.Clear();
-                        });
-
-                        //Get the intermediate result tables of the pattern group
-                        if (datasource.IsFederation())
-                        {
-                            //Ensure to skip tricky empty federations
-                            if (((RDFFederation)datasource).DataSourcesCount == 0)
-                            {
-                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                            }
-
-                            #region TrueFederations
-                            foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                            {
-                                //Evaluate the current pattern group on the data source
-                                EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
-
-                                //Federate the results of the pattern group on the data source
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                                    fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                else
-                                    fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                            }
-                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-                        }
-                        else
-                        {
-                            EvaluatePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
-                        }
-
-                        //Get the result table of the pattern group
-                        FinalizePatternGroup(constructQuery, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Apply the filters of the pattern group to its result table
-                        ApplyFilters(constructQuery, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                    #region SUBQUERY
-                    else if (evaluableQueryMember is RDFQuery)
-                    {
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
-                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                        {
-                            //Populate its name
-                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
-
-                            //Populate its metadata (IsOptional)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
-
-                            //Populate its metadata (JoinAsUnion)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
-                        }
-                    }
-                    #endregion
-                }
+                EvaluateQueryMembers(constructQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
@@ -417,7 +166,7 @@ namespace RDFSharp.Query
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
 
-            constructResult.ConstructResults.TableName = constructQuery.ToString();
+            constructResult.ConstructResults.TableName = "CONSTRUCT_RESULTS";
             return constructResult;
         }
 
@@ -434,84 +183,7 @@ namespace RDFSharp.Query
             if (evaluableQueryMembers.Any())
             {
                 //Iterate the evaluable members of the query
-                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                {
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember is RDFPatternGroup)
-                    {
-                        //Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
-                        {
-                            if (gm is RDFExistsFilter)
-                                ((RDFExistsFilter)gm).PatternResults?.Clear();
-                        });
-
-                        //Get the intermediate result tables of the pattern group
-                        if (datasource.IsFederation())
-                        {
-                            //Ensure to skip tricky empty federations
-                            if (((RDFFederation)datasource).DataSourcesCount == 0)
-                            {
-                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                                QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
-                            }
-
-                            #region TrueFederations
-                            foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
-                            {
-                                //Evaluate the current pattern group on the data source
-                                EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
-
-                                //Federate the results of the current pattern group on the data source
-                                if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                                    fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
-                                else
-                                    fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
-                                       fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
-                            }
-                            QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
-                            #endregion
-                        }
-                        else
-                        {
-                            EvaluatePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember, datasource, false);
-                        }
-
-                        //Get the result table of the pattern group
-                        FinalizePatternGroup(askQuery, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Apply the filters of the pattern group to its result table
-                        ApplyFilters(askQuery, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                    #region SUBQUERY
-                    else if (evaluableQueryMember is RDFQuery)
-                    {
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
-                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                        {
-                            //Populate its name
-                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
-
-                            //Populate its metadata (IsOptional)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
-
-                            //Populate its metadata (JoinAsUnion)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
-                        }
-                    }
-                    #endregion
-                }
+                EvaluateQueryMembers(askQuery, evaluableQueryMembers, datasource);
 
                 //Get the result table of the query
                 DataTable queryResultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
@@ -521,6 +193,91 @@ namespace RDFSharp.Query
             }
             
             return askResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given list of query members against the given datasource
+        /// </summary>
+        internal void EvaluateQueryMembers(RDFQuery query, List<RDFQueryMember> evaluableQueryMembers, RDFDataSource datasource)
+        {
+            Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
+            foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
+            {
+                #region PATTERN GROUP
+                if (evaluableQueryMember is RDFPatternGroup)
+                {
+                    //Cleanup eventual data from stateful pattern group members
+                    ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
+                    {
+                        if (gm is RDFExistsFilter)
+                            ((RDFExistsFilter)gm).PatternResults?.Clear();
+                    });
+
+                    //Get the intermediate result tables of the pattern group
+                    if (datasource.IsFederation())
+                    {
+                        //Ensure to skip tricky empty federations
+                        if (((RDFFederation)datasource).DataSourcesCount == 0)
+                        {
+                            fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                            QueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, new List<DataTable>());
+                        }
+
+                        #region TrueFederations
+                        foreach (RDFDataSource fedDataSource in (RDFFederation)datasource)
+                        {
+                            //Evaluate the pattern group on the current data source
+                            EvaluatePatternGroup(query, (RDFPatternGroup)evaluableQueryMember, fedDataSource, true);
+
+                            //Federate the results of the pattern group on the current data source
+                            if (!fedQueryMemberTemporaryResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                                fedQueryMemberTemporaryResultTables.Add(evaluableQueryMember.QueryMemberID, QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID]);
+                            else
+                                fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].ForEach(fqmtrt =>
+                                   fqmtrt.Merge(QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID].Single(qmtrt => qmtrt.TableName.Equals(fqmtrt.TableName, StringComparison.Ordinal)), true, MissingSchemaAction.Add));
+                        }
+                        QueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID] = fedQueryMemberTemporaryResultTables[evaluableQueryMember.QueryMemberID];
+                        #endregion
+                    }
+                    else
+                    {
+                        EvaluatePatternGroup(query, (RDFPatternGroup)evaluableQueryMember, datasource, false);
+                    }
+
+                    //Get the result table of the pattern group
+                    FinalizePatternGroup(query, (RDFPatternGroup)evaluableQueryMember);
+
+                    //Apply the filters of the pattern group to its result table
+                    ApplyFilters(query, (RDFPatternGroup)evaluableQueryMember);
+                }
+                #endregion
+
+                #region SUBQUERY
+                else if (evaluableQueryMember is RDFQuery)
+                {
+                    //Get the result table of the subquery
+                    RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
+                    if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
+                    {
+                        //Populate its name
+                        QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
+
+                        //Populate its metadata (IsOptional)
+                        if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
+                            QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
+                        else
+                            QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
+                                                                                                                                    || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
+
+                        //Populate its metadata (JoinAsUnion)
+                        if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
+                            QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
+                        else
+                            QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
+                    }
+                }
+                #endregion
+            }
         }
 
         /// <summary>

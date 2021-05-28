@@ -47,8 +47,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty DESCRIBE result
         /// </summary>
-        internal RDFDescribeQueryResult(string tableName)
-            => this.DescribeResults = new DataTable(tableName);
+        internal RDFDescribeQueryResult()
+            => this.DescribeResults = new DataTable("DESCRIBE_RESULTS");
         #endregion
 
         #region Methods
@@ -125,7 +125,7 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFDescribeQueryResult FromRDFGraph(RDFGraph graph)
         {
-            RDFDescribeQueryResult result = new RDFDescribeQueryResult(string.Empty);
+            RDFDescribeQueryResult result = new RDFDescribeQueryResult();
             if (graph != null)
             {
 
@@ -147,7 +147,7 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFDescribeQueryResult FromRDFMemoryStore(RDFMemoryStore store)
         {
-            RDFDescribeQueryResult result = new RDFDescribeQueryResult(string.Empty);
+            RDFDescribeQueryResult result = new RDFDescribeQueryResult();
             if (store != null)
             {
 

@@ -190,7 +190,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
             => graph != null ? new RDFQueryEngine().EvaluateConstructQuery(this, graph)
-                             : new RDFConstructQueryResult(this.ToString());
+                             : new RDFConstructQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given graph
@@ -203,7 +203,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQueryResult ApplyToStore(RDFStore store)
             => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store)
-                             : new RDFConstructQueryResult(this.ToString());
+                             : new RDFConstructQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given store
@@ -216,7 +216,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
             => federation != null ? new RDFQueryEngine().EvaluateConstructQuery(this, federation)
-                                  : new RDFConstructQueryResult(this.ToString());
+                                  : new RDFConstructQueryResult();
 
         /// <summary>
         /// Asynchronously applies the query to the given federation
@@ -230,7 +230,7 @@ namespace RDFSharp.Query
         public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
         {
             string constructQueryString = this.ToString();
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(constructQueryString);
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             if (sparqlEndpoint != null)
             {
                 //Establish a connection to the given SPARQL endpoint

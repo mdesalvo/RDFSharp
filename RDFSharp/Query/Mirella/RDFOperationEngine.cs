@@ -123,7 +123,7 @@ namespace RDFSharp.Query
             operation.InjectValues(operation.GetValues());
 
             DataTable resultTable = new DataTable();
-            RDFConstructQueryResult constructResult = new RDFConstructQueryResult(operation.ToString());
+            RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
             {

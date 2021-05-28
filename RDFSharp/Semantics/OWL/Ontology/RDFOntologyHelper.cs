@@ -1996,7 +1996,7 @@ namespace RDFSharp.Semantics.OWL
             if (constructQuery != null && ontology != null)
                 return constructQuery.ApplyToGraph(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
-            return new RDFConstructQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString());
+            return new RDFConstructQueryResult();
         }
 
         /// <summary>
@@ -2019,7 +2019,7 @@ namespace RDFSharp.Semantics.OWL
             if (describeQuery != null && ontology != null)
                 return describeQuery.ApplyToGraph(ontology.ToRDFGraph(ontologyInferenceExportBehavior));
 
-            return new RDFDescribeQueryResult(RDFNamespaceRegister.DefaultNamespace.ToString());
+            return new RDFDescribeQueryResult();
         }
 
         /// <summary>
