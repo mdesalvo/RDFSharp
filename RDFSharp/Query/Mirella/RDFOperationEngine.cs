@@ -127,68 +127,20 @@ namespace RDFSharp.Query
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Any())
             {
-                //Iterate the evaluable members of the query
-                Dictionary<long, List<DataTable>> fedQueryMemberTemporaryResultTables = new Dictionary<long, List<DataTable>>();
-                foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
-                {
-                    #region PATTERN GROUP
-                    if (evaluableQueryMember is RDFPatternGroup)
-                    {
-                        //Cleanup eventual data from stateful pattern group members
-                        ((RDFPatternGroup)evaluableQueryMember).GroupMembers.ForEach(gm =>
-                        {
-                            if (gm is RDFExistsFilter)
-                                ((RDFExistsFilter)gm).PatternResults?.Clear();
-                        });
+                //Iterate the evaluable members of the operation
+                EvaluateQueryMembers(operation, evaluableQueryMembers, datasource);
 
-                        //Get the intermediate result tables of the pattern group
-                        EvaluatePatternGroup(operation, (RDFPatternGroup)evaluableQueryMember, datasource, false);
-
-                        //Get the result table of the pattern group
-                        FinalizePatternGroup(operation, (RDFPatternGroup)evaluableQueryMember);
-
-                        //Apply the filters of the pattern group to its result table
-                        ApplyFilters(operation, (RDFPatternGroup)evaluableQueryMember);
-                    }
-                    #endregion
-
-                    #region SUBQUERY
-                    else if (evaluableQueryMember is RDFQuery)
-                    {
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = ((RDFSelectQuery)evaluableQueryMember).ApplyToDataSource(datasource);
-                        if (!QueryMemberFinalResultTables.ContainsKey(evaluableQueryMember.QueryMemberID))
-                        {
-                            //Populate its name
-                            QueryMemberFinalResultTables.Add(evaluableQueryMember.QueryMemberID, subQueryResult.SelectResults);
-
-                            //Populate its metadata (IsOptional)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("IsOptional"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("IsOptional", ((RDFSelectQuery)evaluableQueryMember).IsOptional);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"] = ((RDFSelectQuery)evaluableQueryMember).IsOptional
-                                                                                                                                        || (bool)QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["IsOptional"];
-
-                            //Populate its metadata (JoinAsUnion)
-                            if (!QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.ContainsKey("JoinAsUnion"))
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties.Add("JoinAsUnion", ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion);
-                            else
-                                QueryMemberFinalResultTables[evaluableQueryMember.QueryMemberID].ExtendedProperties["JoinAsUnion"] = ((RDFSelectQuery)evaluableQueryMember).JoinAsUnion;
-                        }
-                    }
-                    #endregion
-                }
-
-                //Get the result table of the query
+                //Get the result table of the operation
                 resultTable = CombineTables(QueryMemberFinalResultTables.Values.ToList(), false);
             }
 
             //Fill the templates from the result table
-            bool isDeleteOperation = operation.IsDeleteData || operation.IsDeleteWhere;
-            DataTable filledResultTable = FillTemplates(isDeleteOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
+            DataTable filledResultTable = FillTemplates(operation.IsDeleteData || operation.IsDeleteWhere ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable);
+
+            constructResult.ConstructResults.TableName = "CONSTRUCT_RESULTS";
             return constructResult;
         }
 
