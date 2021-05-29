@@ -2096,10 +2096,6 @@ namespace RDFSharp.Query
                     DataRow joinRow = finalResult.NewRow();
                     foreach (DataColumn finalResCol in finalResult.Columns)
                     {
-                        //Quick-Exit in case of join invalidation
-                        if (joinInvalidationFlag)
-                            break;
-
                         strFinalResCol = finalResCol.ToString();
 
                         //NON-COMMON column
@@ -2160,8 +2156,7 @@ namespace RDFSharp.Query
                                     {
                                         //Raise the join invalidation flag
                                         joinInvalidationFlag = true;
-                                        //Reject changes on the join row
-                                        joinRow.RejectChanges();
+                                        break;
                                     }
                                 }
                             }
