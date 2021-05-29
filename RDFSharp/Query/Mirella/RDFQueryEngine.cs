@@ -2049,7 +2049,7 @@ namespace RDFSharp.Query
             bool dt2IsOptionalTable = (dt2.ExtendedProperties.ContainsKey("IsOptional") && dt2.ExtendedProperties["IsOptional"].Equals(true));
             bool joinInvalidationFlag = false;
             bool foundAnyResult = false;
-            string strResCol = string.Empty;
+            string strFinalResCol = string.Empty;
 
             //Determine common columns
             DataColumn[] commonColumns = dt1Columns.Intersect(dt2Columns, dtComparer)
@@ -2060,6 +2060,25 @@ namespace RDFSharp.Query
             finalResult.Columns.AddRange(dt1Columns.Union(dt2Columns.Except(commonColumns), dtComparer)
                                .Select(c => new DataColumn(c.Caption, c.DataType))
                                .ToArray());
+
+            //Calculate finalResult columns attribution
+            Dictionary<string, (bool,string)> finalResColumnsAttribution = new Dictionary<string, (bool,string)>();
+            foreach (DataColumn finalResCol in finalResult.Columns)
+            {
+                string finalResColString = finalResCol.ToString();
+
+                //COMMON attribution
+                bool commonAttribution = false;
+                if (commonColumns.Any(col => col.ToString().Equals(finalResColString, StringComparison.Ordinal)))
+                    commonAttribution = true;
+
+                //DT attribution
+                string dtAttribution = "DT2";
+                if (dt1Columns.Any(col => col.ToString().Equals(finalResColString, StringComparison.Ordinal)))
+                    dtAttribution = "DT1";
+
+                finalResColumnsAttribution.Add(finalResColString, (commonAttribution, dtAttribution));
+            }
 
             //Loop through dt1 table
             finalResult.AcceptChanges();
@@ -2075,73 +2094,74 @@ namespace RDFSharp.Query
 
                     //Create a temporary join row
                     DataRow joinRow = finalResult.NewRow();
-                    foreach (DataColumn resCol in finalResult.Columns)
+                    foreach (DataColumn finalResCol in finalResult.Columns)
                     {
-                        if (!joinInvalidationFlag)
+                        //Quick-Exit in case of join invalidation
+                        if (joinInvalidationFlag)
+                            break;
+
+                        strFinalResCol = finalResCol.ToString();
+
+                        //NON-COMMON column
+                        if (!finalResColumnsAttribution[strFinalResCol].Item1)
                         {
-                            strResCol = resCol.ToString();
+                            //Take value from left
+                            if (finalResColumnsAttribution[strFinalResCol].Item2 == "DT1")
+                                joinRow[strFinalResCol] = leftRow[strFinalResCol];
 
-                            //NON-COMMON column
-                            if (!commonColumns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal)))
-                            {
-                                //Take value from left
-                                if (dt1Columns.Any(col => col.ToString().Equals(strResCol, StringComparison.Ordinal)))
-                                    joinRow[strResCol] = leftRow[strResCol];
-
-                                //Take value from right
-                                else
-                                    joinRow[strResCol] = rightRow[strResCol];
-                            }
-
-                            //COMMON column
+                            //Take value from right
                             else
-                            {
-                                //Left value is NULL
-                                if (leftRow.IsNull(strResCol))
-                                {
-                                    //Right value is NULL
-                                    if (rightRow.IsNull(strResCol))
-                                    {
-                                        //Take NULL value
-                                        joinRow[strResCol] = DBNull.Value;
-                                    }
+                                joinRow[strFinalResCol] = rightRow[strFinalResCol];
+                        }
 
-                                    //Right value is NOT NULL
-                                    else
-                                    {
-                                        //Take value from right
-                                        joinRow[strResCol] = rightRow[strResCol];
-                                    }
+                        //COMMON column
+                        else
+                        {
+                            //Left value is NULL
+                            if (leftRow.IsNull(strFinalResCol))
+                            {
+                                //Right value is NULL
+                                if (rightRow.IsNull(strFinalResCol))
+                                {
+                                    //Take NULL value
+                                    joinRow[strFinalResCol] = DBNull.Value;
                                 }
 
-                                //Left value is NOT NULL
+                                //Right value is NOT NULL
                                 else
                                 {
-                                    //Right value is NULL
-                                    if (rightRow.IsNull(strResCol))
+                                    //Take value from right
+                                    joinRow[strFinalResCol] = rightRow[strFinalResCol];
+                                }
+                            }
+
+                            //Left value is NOT NULL
+                            else
+                            {
+                                //Right value is NULL
+                                if (rightRow.IsNull(strFinalResCol))
+                                {
+                                    //Take value from left
+                                    joinRow[strFinalResCol] = leftRow[strFinalResCol];
+                                }
+
+                                //Right value is NOT NULL
+                                else
+                                {
+                                    //Left value is EQUAL TO right value
+                                    if (leftRow[strFinalResCol].ToString().Equals(rightRow[strFinalResCol].ToString(), StringComparison.Ordinal))
                                     {
-                                        //Take value from left
-                                        joinRow[strResCol] = leftRow[strResCol];
+                                        //Take value from left (it's the same)
+                                        joinRow[strFinalResCol] = leftRow[strFinalResCol];
                                     }
 
-                                    //Right value is NOT NULL
+                                    //Left value is NOT EQUAL TO right value
                                     else
                                     {
-                                        //Left value is EQUAL TO right value
-                                        if (leftRow[strResCol].ToString().Equals(rightRow[strResCol].ToString(), StringComparison.Ordinal))
-                                        {
-                                            //Take value from left (it's the same)
-                                            joinRow[strResCol] = leftRow[strResCol];
-                                        }
-
-                                        //Left value is NOT EQUAL TO right value
-                                        else
-                                        {
-                                            //Raise the join invalidation flag
-                                            joinInvalidationFlag = true;
-                                            //Reject changes on the join row
-                                            joinRow.RejectChanges();
-                                        }
+                                        //Raise the join invalidation flag
+                                        joinInvalidationFlag = true;
+                                        //Reject changes on the join row
+                                        joinRow.RejectChanges();
                                     }
                                 }
                             }
