@@ -1742,14 +1742,14 @@ namespace RDFSharp.Query
             bool rowAdded = false;
 
             DataRow resultRow = table.NewRow();
-            bindings.Keys.ToList().ForEach(k =>
+            foreach (string bindingKey in bindings.Keys)
             {
-                if (table.Columns.Contains(k))
+                if (table.Columns.Contains(bindingKey))
                 {
-                    resultRow[k] = bindings[k];
+                    resultRow[bindingKey] = bindings[bindingKey];
                     rowAdded = true;
                 }
-            });
+            }
 
             if (rowAdded)
                 table.Rows.Add(resultRow);
