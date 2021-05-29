@@ -1730,8 +1730,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void AddColumn(DataTable table, string columnName)
         {
-            if (!table.Columns.Contains(columnName.Trim().ToUpperInvariant()))
-                table.Columns.Add(columnName.Trim().ToUpperInvariant(), SystemString);
+            string colName = columnName.Trim().ToUpperInvariant();
+            if (!table.Columns.Contains(colName))
+                table.Columns.Add(colName, SystemString);
         }
 
         /// <summary>
