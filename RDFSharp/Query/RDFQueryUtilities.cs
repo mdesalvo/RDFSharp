@@ -19,6 +19,7 @@ using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
 using System.Xml;
 
 namespace RDFSharp.Query
@@ -266,6 +267,30 @@ namespace RDFSharp.Query
                 });
             }
             return results;
+        }
+        
+        /// <summary>
+        /// RDFWebClient extends WebClient with support for customization of timeout
+        /// </summary>
+        internal class RDFWebClient : WebClient
+        {
+            #region Properties
+            private int TimeOut { get; set; }
+            #endregion
+
+            #region Ctors
+            internal RDFWebClient(int timeout) : base()
+                => this.TimeOut = timeout;
+            #endregion
+
+            #region Methods
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                WebRequest webRequest = base.GetWebRequest(address);
+                webRequest.Timeout = this.TimeOut;
+                return webRequest;
+            }
+            #endregion
         }
         #endregion
     }
