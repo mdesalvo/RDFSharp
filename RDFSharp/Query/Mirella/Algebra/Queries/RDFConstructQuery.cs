@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
@@ -228,16 +229,24 @@ namespace RDFSharp.Query
         /// Applies the query to the given SPARQL endpoint
         /// </summary>
         public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+            => this.ApplyToSPARQLEndpoint(sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Applies the query to the given SPARQL endpoint, observing given query options
+        /// </summary>
+        public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
-            string constructQueryString = this.ToString();
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             if (sparqlEndpoint != null)
             {
+                if (sparqlEndpointQueryOptions == null)
+                    sparqlEndpointQueryOptions = new RDFSPARQLEndpointQueryOptions();
+
                 //Establish a connection to the given SPARQL endpoint
-                using (WebClient webClient = new WebClient())
+                using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(constructQueryString));
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -246,15 +255,31 @@ namespace RDFSharp.Query
                     webClient.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
                     webClient.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
 
-                    //Send querystring to SPARQL endpoint
-                    byte[] sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+                    byte[] sparqlResponse = default;
+                    try
+                    {
+                        //Send querystring to SPARQL endpoint
+                        sparqlResponse = webClient.DownloadData(sparqlEndpoint.BaseAddress);
+                    }
+                    catch (WebException webex)
+                    {
+                        if (webex.Status == WebExceptionStatus.Timeout)
+                        {
+                            if (sparqlEndpointQueryOptions.TimeoutBehavior == RDFQueryEnums.RDFSPARQLEndpointTimeoutBehaviors.ThrowException)
+                                throw new RDFQueryException($"Query on SPARQL endpoint failed because: {webex.Message}");
+                        }
+                        else
+                        {
+                            throw new RDFQueryException($"Query on SPARQL endpoint failed because: {webex.Message}");
+                        }
+                    }
 
                     //Parse response from SPARQL endpoint
                     if (sparqlResponse != null)
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             constructResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                        constructResult.ConstructResults.TableName = constructQueryString;
+                        constructResult.ConstructResults.TableName = "CONSTRUCT_RESULTS";
                     }
                 }
 
@@ -273,7 +298,13 @@ namespace RDFSharp.Query
         /// Asynchronously applies the query to the given SPARQL endpoint
         /// </summary>
         public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
-            => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint));
+            => this.ApplyToSPARQLEndpointAsync(sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Asynchronously applies the query to the given SPARQL endpoint, observing given query options
+        /// </summary>
+        public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
         #endregion
     }
 
