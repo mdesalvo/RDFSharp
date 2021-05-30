@@ -93,37 +93,37 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Represents the timeout (in milliseconds) observed by the query sent to the SPARQL endpoint
+        /// Represents the timeout observed for the query sent to the SPARQL endpoint (defaults to: -1)
         /// </summary>
         public int TimeoutMilliseconds { get; set; }
 
         /// <summary>
-        /// Represents the behavior observed by the query when given timeout is reached
+        /// Represents the behavior used by the query in case of runtime errors (defaults to: ThrowException)
         /// </summary>
-        public RDFQueryEnums.RDFSPARQLEndpointTimeoutBehaviors TimeoutBehavior { get; set; }
+        public RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors ErrorBehavior { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to configure timeout behavior for a SPARQL endpoint query
+        /// Default-ctor to configure options a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions()
         {
             this.TimeoutMilliseconds = -1;
-            this.TimeoutBehavior = RDFQueryEnums.RDFSPARQLEndpointTimeoutBehaviors.GiveEmptyResult;
+            this.ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors.ThrowException;
         }
 
         /// <summary>
-        /// Custom-ctor to configure timeout behavior for a SPARQL endpoint query
+        /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds) : this()
             => this.TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
 
         /// <summary>
-        /// Custom-ctor to configure timeout behavior for a SPARQL endpoint query
+        /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
-        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointTimeoutBehaviors timeoutBehavior) : this(timeoutMilliseconds)
-            => this.TimeoutBehavior = timeoutBehavior;
+        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors errorBehavior) : this(timeoutMilliseconds)
+            => this.ErrorBehavior = errorBehavior;
         #endregion
     }
 }

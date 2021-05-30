@@ -105,18 +105,18 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFSPARQLEndpointTimeoutBehaviors represents an enumeration for possible behaviors of SPARQL endpoint timeout
+        /// RDFSPARQLEndpointErrorBehaviors represents an enumeration for possible handling behaviors of SPARQL endpoint errors
         /// </summary>
-        public enum RDFSPARQLEndpointTimeoutBehaviors
+        public enum RDFSPARQLEndpointErrorBehaviors
         {
             /// <summary>
-            /// SPARQL endpoint timeout will deliver an empty result to the application
+            /// An exception will be delivered to the application
             /// </summary>
-            GiveEmptyResult = 1,
+            ThrowException = 1,
             /// <summary>
-            /// SPARQL endpoint timeout will deliver an exception to the application
+            /// An empty SPARQL result will be delivered to the application
             /// </summary>
-            ThrowException = 2
+            GiveEmptyResult = 2
         }
 
     }
