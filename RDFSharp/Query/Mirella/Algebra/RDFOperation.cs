@@ -103,12 +103,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the operation to the given SPARQL UPDATE endpoint
         /// </summary>
-        public abstract bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlEndpoint);
+        public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint)
+            => sparqlUpdateEndpoint != null ? new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint)
+                                            : false;
 
         /// <summary>
         /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
         /// </summary>
-        public abstract Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint);
+        public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint)
+            => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint));
         #endregion
     }
 }

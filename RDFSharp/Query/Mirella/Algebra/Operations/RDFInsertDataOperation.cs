@@ -98,19 +98,6 @@ namespace RDFSharp.Query
         /// </summary>
         public override Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
             => Task.Run(() => ApplyToStore(store));
-
-        /// <summary>
-        /// Applies the operation to the given SPARQL UPDATE endpoint
-        /// </summary>
-        public override bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint)
-            => sparqlUpdateEndpoint != null ? new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint)
-                                            : false;
-
-        /// <summary>
-        /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
-        /// </summary>
-        public override Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint)
-            => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint));
         #endregion
     }
 }
