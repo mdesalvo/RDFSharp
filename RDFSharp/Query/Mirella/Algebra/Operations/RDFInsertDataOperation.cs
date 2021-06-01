@@ -16,8 +16,11 @@
 
 using RDFSharp.Model;
 using RDFSharp.Store;
+using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
@@ -95,6 +98,19 @@ namespace RDFSharp.Query
         /// </summary>
         public override Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
             => Task.Run(() => ApplyToStore(store));
+
+        /// <summary>
+        /// Applies the operation to the given SPARQL UPDATE endpoint
+        /// </summary>
+        public override bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint)
+            => sparqlUpdateEndpoint != null ? new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint)
+                                            : false;
+
+        /// <summary>
+        /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
+        /// </summary>
+        public override Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint)
+            => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint));
         #endregion
     }
 }

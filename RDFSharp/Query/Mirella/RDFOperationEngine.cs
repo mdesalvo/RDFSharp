@@ -20,7 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
@@ -112,6 +114,38 @@ namespace RDFSharp.Query
             operationResult.DeleteResults = PopulateDeleteOperationResults(deleteWhereTemplates, datasource);
 
             return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given operation on the given SPARQL UPDATE endpoint
+        /// </summary>
+        internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint)
+        {
+            bool opResult = false;
+
+            //Establish a connection to the given SPARQL UPDATE endpoint (30s timeout)
+            using (RDFWebClient webClient = new RDFWebClient(30000))
+            {
+                //Insert user-provided parameters
+                webClient.QueryString.Add(sparqlUpdateEndpoint.QueryParams);
+
+                //Insert request headers
+                webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
+
+                //Send operation to SPARQL UPDATE endpoint
+                string sparqlUpdateResponse = default;
+                try
+                {
+                    sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operation.ToString());
+                    opResult = true;
+                }
+                catch (Exception ex)
+                {
+                    throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);
+                }
+            }
+
+            return opResult;
         }
 
         /// <summary>
