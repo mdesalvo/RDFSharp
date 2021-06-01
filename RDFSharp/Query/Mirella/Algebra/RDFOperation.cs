@@ -104,14 +104,26 @@ namespace RDFSharp.Query
         /// Applies the operation to the given SPARQL UPDATE endpoint
         /// </summary>
         public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint)
-            => sparqlUpdateEndpoint != null ? new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint)
+            => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint, new RDFSPARQLEndpointOperationOptions());
+
+        /// <summary>
+        /// Applies the operation to the given SPARQL UPDATE endpoint
+        /// </summary>
+        public bool ApplyToSPARQLUpdateEndpoint(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+            => sparqlUpdateEndpoint != null ? new RDFOperationEngine().EvaluateOperationOnSPARQLUpdateEndpoint(this, sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions)
                                             : false;
 
         /// <summary>
         /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
         /// </summary>
         public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint)
-            => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint));
+            => ApplyToSPARQLUpdateEndpointAsync(sparqlUpdateEndpoint, new RDFSPARQLEndpointOperationOptions());
+
+        /// <summary>
+        /// Asynchronously applies the operation to the given SPARQL UPDATE endpoint
+        /// </summary>
+        public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+            => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions));
         #endregion
     }
 }

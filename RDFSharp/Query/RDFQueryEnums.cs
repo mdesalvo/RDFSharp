@@ -119,6 +119,21 @@ namespace RDFSharp.Query
             GiveEmptyResult = 2
         }
 
+        /// <summary>
+        /// RDFSPARQLEndpointOperationContentTypes represents an enumeration for supported content type headers to be sent for SPARQL UPDATE operations
+        /// </summary>
+        public enum RDFSPARQLEndpointOperationContentTypes
+        {
+            /// <summary>
+            /// Posts the SPARQL UPDATE operation with "application/sparql-update" Content-Type header
+            /// </summary>
+            Sparql_Update = 1,
+            /// <summary>
+            /// Posts the SPARQL UPDATE operation with "application/x-www-form-urlencoded" Content-Type header
+            /// </summary>
+            X_WWW_FormUrlencoded = 2
+        }
+
     }
 
 }

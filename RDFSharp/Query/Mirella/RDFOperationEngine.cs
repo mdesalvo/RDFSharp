@@ -22,6 +22,7 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
@@ -119,9 +120,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Evaluates the given operation on the given SPARQL UPDATE endpoint
         /// </summary>
-        internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint)
+        internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
         {
             bool opResult = false;
+
+            if (sparqlUpdateEndpointOperationOptions == null)
+                sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
 
             //Establish a connection to the given SPARQL UPDATE endpoint (30s timeout)
             using (RDFWebClient webClient = new RDFWebClient(30000))
@@ -130,13 +134,22 @@ namespace RDFSharp.Query
                 webClient.QueryString.Add(sparqlUpdateEndpoint.QueryParams);
 
                 //Insert request headers
-                webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
+                string operationString = operation.ToString();
+                if (sparqlUpdateEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded)
+                {
+                    operationString = string.Concat("update=", HttpUtility.UrlEncode(operation.ToString()));
+                    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+                }
+                else
+                { 
+                    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
+                }
 
                 //Send operation to SPARQL UPDATE endpoint
                 string sparqlUpdateResponse = default;
                 try
                 {
-                    sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operation.ToString());
+                    sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
                     opResult = true;
                 }
                 catch (Exception ex)
