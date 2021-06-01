@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Model
 {
@@ -191,7 +192,7 @@ namespace RDFSharp.Model
             string lookupString = lookupMode == 1 ? string.Concat("http://prefix.cc/", data, ".file.txt")
                                                   : string.Concat("http://prefix.cc/reverse?uri=", data, "&format=txt");
 
-            using (WebClient webclient = new WebClient())
+            using (RDFWebClient webclient = new RDFWebClient(1000))
             {
                 try
                 {
