@@ -105,7 +105,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to configure options a SPARQL endpoint query
+        /// Default-ctor to configure options for a SPARQL endpoint query
         /// </summary>
         public RDFSPARQLEndpointQueryOptions()
         {
@@ -134,14 +134,14 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Represents the Content-Type header to be used for posting the SPARQL UPDATE operation (defaults to: application/sparql-update)
+        /// Represents the Content-Type header to be used when posting the operation to the SPARQL UPDATE endpoint (defaults to: application/sparql-update)
         /// </summary>
         public RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes RequestContentType { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to configure options a SPARQL UPDATE endpoint operation
+        /// Default-ctor to configure options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions()
             => this.RequestContentType = RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update;
