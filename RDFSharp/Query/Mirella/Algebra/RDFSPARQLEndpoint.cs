@@ -100,7 +100,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Represents the behavior used by the query in case of runtime errors (defaults to: ThrowException)
         /// </summary>
-        public RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors ErrorBehavior { get; set; }
+        public RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors ErrorBehavior { get; set; }
         #endregion
 
         #region Ctors
@@ -110,7 +110,7 @@ namespace RDFSharp.Query
         public RDFSPARQLEndpointQueryOptions()
         {
             this.TimeoutMilliseconds = -1;
-            this.ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors.ThrowException;
+            this.ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException;
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Custom-ctor to configure options for a SPARQL endpoint query
         /// </summary>
-        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors errorBehavior) : this(timeoutMilliseconds)
+        public RDFSPARQLEndpointQueryOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors errorBehavior) : this(timeoutMilliseconds)
             => this.ErrorBehavior = errorBehavior;
         #endregion
     }

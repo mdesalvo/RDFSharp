@@ -105,9 +105,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFSPARQLEndpointErrorBehaviors represents an enumeration for possible handling behaviors of SPARQL endpoint errors
+        /// RDFSPARQLEndpointQueryErrorBehaviors represents an enumeration for possible handling behaviors of SPARQL endpoint query errors
         /// </summary>
-        public enum RDFSPARQLEndpointErrorBehaviors
+        public enum RDFSPARQLEndpointQueryErrorBehaviors
         {
             /// <summary>
             /// An exception will be delivered to the application
@@ -120,7 +120,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFSPARQLEndpointOperationContentTypes represents an enumeration for supported content type headers to be sent for SPARQL UPDATE operations
+        /// RDFSPARQLEndpointOperationContentTypes represents an enumeration for supported Content-Type headers to be sent for SPARQL UPDATE operations
         /// </summary>
         public enum RDFSPARQLEndpointOperationContentTypes
         {

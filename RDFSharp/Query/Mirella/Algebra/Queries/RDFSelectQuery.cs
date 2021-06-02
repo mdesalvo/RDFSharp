@@ -219,7 +219,7 @@ namespace RDFSharp.Query
                     }
                     catch (Exception ex)
                     {
-                        if (sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointErrorBehaviors.ThrowException)
+                        if (sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)
                             throw new RDFQueryException($"SELECT query on SPARQL endpoint failed because: {ex.Message}", ex);
                     }
 
