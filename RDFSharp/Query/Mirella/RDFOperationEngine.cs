@@ -124,6 +124,7 @@ namespace RDFSharp.Query
         {
             bool opResult = false;
 
+            //Initialize operation options if not provided
             if (sparqlUpdateEndpointOperationOptions == null)
                 sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
 
@@ -135,14 +136,16 @@ namespace RDFSharp.Query
 
                 //Insert request headers
                 string operationString = operation.ToString();
-                if (sparqlUpdateEndpointOperationOptions.RequestContentType == RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded)
+                switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
                 {
-                    operationString = string.Concat("update=", HttpUtility.UrlEncode(operation.ToString()));
-                    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
-                }
-                else
-                { 
-                    webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
+                    case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded:
+                        operationString = string.Concat("update=", HttpUtility.UrlEncode(operationString));
+                        webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+                        break;
+
+                    case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update:
+                        webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
+                        break;
                 }
 
                 //Send operation to SPARQL UPDATE endpoint
