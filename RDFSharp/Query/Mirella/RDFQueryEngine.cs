@@ -328,7 +328,7 @@ namespace RDFSharp.Query
                     QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesResultsTable);
 
                     //Inject SPARQL values filter
-                    patternGroup.AddFilter(((RDFValues)evaluablePGMember).GetValuesFilter());
+                    patternGroup.AddFilter(values.GetValuesFilter());
                 }
                 #endregion
 
@@ -338,19 +338,19 @@ namespace RDFSharp.Query
                     DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
 
                     //Set name and metadata of result datatable
-                    existsFilterResultsTable.TableName = ((RDFExistsFilter)evaluablePGMember).Pattern.ToString();
+                    existsFilterResultsTable.TableName = existsFilter.Pattern.ToString();
                     existsFilterResultsTable.ExtendedProperties.Add("IsOptional", false);
                     existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
 
                     //Initialize result datatable if needed
-                    if (((RDFExistsFilter)evaluablePGMember).PatternResults == null)
-                        ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable.Clone();
+                    if (existsFilter.PatternResults == null)
+                        existsFilter.PatternResults = existsFilterResultsTable.Clone();
 
                     //Assign result datatable (federation merges data)
                     if (withinFederation)
-                        ((RDFExistsFilter)evaluablePGMember).PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
+                        existsFilter.PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
                     else
-                        ((RDFExistsFilter)evaluablePGMember).PatternResults = existsFilterResultsTable;
+                        existsFilter.PatternResults = existsFilterResultsTable;
                 }
                 #endregion
             }
