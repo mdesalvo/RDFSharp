@@ -48,7 +48,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty DESCRIBE result
         /// </summary>
         internal RDFDescribeQueryResult()
-            => this.DescribeResults = new DataTable("DESCRIBE_RESULTS");
+            => this.DescribeResults = new DataTable();
         #endregion
 
         #region Methods

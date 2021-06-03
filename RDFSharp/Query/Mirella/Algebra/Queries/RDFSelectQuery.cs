@@ -203,7 +203,8 @@ namespace RDFSharp.Query
                 using (RDFWebClient webClient = new RDFWebClient(sparqlEndpointQueryOptions.TimeoutMilliseconds))
                 {
                     //Insert reserved "query" parameter
-                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(this.ToString()));
+                    string sparqlQuery = this.ToString();
+                    webClient.QueryString.Add("query", HttpUtility.UrlEncode(sparqlQuery));
 
                     //Insert user-provided parameters
                     webClient.QueryString.Add(sparqlEndpoint.QueryParams);
@@ -228,7 +229,7 @@ namespace RDFSharp.Query
                     {
                         using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             selResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                        selResult.SelectResults.TableName = "SELECT_RESULTS";
+                        selResult.SelectResults.TableName = sparqlQuery;
                     }
                 }
 

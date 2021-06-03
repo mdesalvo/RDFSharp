@@ -47,7 +47,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty CONSTRUCT result
         /// </summary>
         internal RDFConstructQueryResult()
-            => this.ConstructResults = new DataTable("CONSTRUCT_RESULTS");
+            => this.ConstructResults = new DataTable();
         #endregion
 
         #region Methods

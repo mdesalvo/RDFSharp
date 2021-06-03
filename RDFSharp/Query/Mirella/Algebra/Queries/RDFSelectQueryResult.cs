@@ -52,7 +52,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build an empty SELECT result
         /// </summary>
         internal RDFSelectQueryResult()
-            => this.SelectResults = new DataTable("SELECT_RESULTS");
+            => this.SelectResults = new DataTable();
         #endregion
 
         #region Methods

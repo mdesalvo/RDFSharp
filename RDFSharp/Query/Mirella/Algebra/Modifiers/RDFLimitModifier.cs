@@ -68,13 +68,9 @@ namespace RDFSharp.Query
             string tableName = table.TableName;
             string tableSort = table.DefaultView.Sort;
             if (table.Rows.Count == 0 || this.Limit == 0)
-            {
                 table = table.Clone();
-            }
             else
-            {
                 table = table.AsEnumerable().Take(this.Limit).CopyToDataTable();
-            }
             table.TableName = tableName;
             table.DefaultView.Sort = tableSort;
             return table;
