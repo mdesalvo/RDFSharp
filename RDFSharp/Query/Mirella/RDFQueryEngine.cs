@@ -311,15 +311,8 @@ namespace RDFSharp.Query
                     existsFilterResultsTable.ExtendedProperties.Add("IsOptional", false);
                     existsFilterResultsTable.ExtendedProperties.Add("JoinAsUnion", false);
 
-                    //Initialize result datatable if needed
-                    if (existsFilter.PatternResults == null)
-                        existsFilter.PatternResults = existsFilterResultsTable.Clone();
-
-                    //Assign result datatable (federation merges data)
-                    if (dataSource.IsFederation())
-                        existsFilter.PatternResults.Merge(existsFilterResultsTable, true, MissingSchemaAction.Add);
-                    else
-                        existsFilter.PatternResults = existsFilterResultsTable;
+                    //Save result datatable (directly into the filter)
+                    existsFilter.PatternResults = existsFilterResultsTable;
                 }
                 #endregion
             }
