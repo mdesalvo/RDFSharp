@@ -244,7 +244,6 @@ namespace RDFSharp.Query
                 case "DELETE":
                     filledResultTable = FillTemplates(operation.DeleteTemplates, resultTable, datasource.IsStore());
                     break;
-
                 case "INSERT":
                     filledResultTable = FillTemplates(operation.InsertTemplates, resultTable, datasource.IsStore());
                     break;
