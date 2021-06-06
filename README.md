@@ -1,6 +1,6 @@
 # RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp)
 
-RDFSharp has a modular API made up of four layers ([RDF/SPARQL/SHACL docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.23.0/RDFSharp-2.23.0.pdf), [OWL/SKOS docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.23.0/RDFSharp.Semantics-2.23.0.pdf)): 
+RDFSharp has a modular API made up of four layers ([RDF/SPARQL/SHACL docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.24.0/RDFSharp-2.24.0.pdf), [OWL/SKOS docs](https://github.com/mdesalvo/RDFSharp/releases/download/v2.24.0/RDFSharp.Semantics-2.24.0.pdf)): 
 
 <ul>
     <li><b>RDFSharp.Model</b></li> 
@@ -21,7 +21,8 @@ RDFSharp has a modular API made up of four layers ([RDF/SPARQL/SHACL docs](https
     <li><b>RDFSharp.Query</b></li> 
     <ul>
         <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple data sources</li>
-        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>        
+        <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
+        <li>Create and execute <i>SPARQL updates</i> on graphs, stores and <i>SPARQL UPDATE endpoints</i></li>
     </ul>
 </ul>
 <ul>
