@@ -58,20 +58,20 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(insertWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> insertWhereTemplates = new List<RDFPattern>();
+            List<RDFPattern> insertTemplates = new List<RDFPattern>();
             if (datasource.IsGraph())
             {
-                RDFGraph insertWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFTriple insertWhereTriple in insertWhereGraph)
-                    insertWhereTemplates.Add(new RDFPattern(insertWhereTriple.Subject, insertWhereTriple.Predicate, insertWhereTriple.Object));
+                RDFGraph insertGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFTriple insertTriple in insertGraph)
+                    insertTemplates.Add(new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object));
             }
             else if (datasource.IsStore())
             {
-                RDFMemoryStore insertWhereStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFQuadruple insertWhereQuadruple in insertWhereStore)
-                    insertWhereTemplates.Add(new RDFPattern(insertWhereQuadruple.Context, insertWhereQuadruple.Subject, insertWhereQuadruple.Predicate, insertWhereQuadruple.Object));
+                RDFMemoryStore insertStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFQuadruple insertQuadruple in insertStore)
+                    insertTemplates.Add(new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object));
             }
-            operationResult.InsertResults = PopulateInsertOperationResults(insertWhereTemplates, datasource);
+            operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
 
             return operationResult;
         }
@@ -99,20 +99,73 @@ namespace RDFSharp.Query
             RDFConstructQueryResult constructResult = ExecuteConstructQueryFromOperation(deleteWhereOperation, datasource);
 
             //Use materialized templates for execution of the operation
-            List<RDFPattern> deleteWhereTemplates = new List<RDFPattern>();
+            List<RDFPattern> deleteTemplates = new List<RDFPattern>();
             if (datasource.IsGraph())
             {
-                RDFGraph deleteWhereGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFTriple deleteWhereTriple in deleteWhereGraph)
-                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereTriple.Subject, deleteWhereTriple.Predicate, deleteWhereTriple.Object));
+                RDFGraph deleteGraph = RDFGraph.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFTriple deleteTriple in deleteGraph)
+                    deleteTemplates.Add(new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object));
             }
             else if (datasource.IsStore())
             {
-                RDFMemoryStore deleteWhereStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
-                foreach (RDFQuadruple deleteWhereQuadruple in deleteWhereStore)
-                    deleteWhereTemplates.Add(new RDFPattern(deleteWhereQuadruple.Context, deleteWhereQuadruple.Subject, deleteWhereQuadruple.Predicate, deleteWhereQuadruple.Object));
+                RDFMemoryStore deleteStore = RDFMemoryStore.FromDataTable(constructResult.ConstructResults);
+                foreach (RDFQuadruple deleteQuadruple in deleteStore)
+                    deleteTemplates.Add(new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object));
             }
-            operationResult.DeleteResults = PopulateDeleteOperationResults(deleteWhereTemplates, datasource);
+            operationResult.DeleteResults = PopulateDeleteOperationResults(deleteTemplates, datasource);
+
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL DELETE/INSERT DATA operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateDeleteInsertDataOperation(RDFDeleteInsertDataOperation deleteInsertDataOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult()
+            {
+                DeleteResults = PopulateDeleteOperationResults(deleteInsertDataOperation.DeleteTemplates, datasource),
+                InsertResults = PopulateInsertOperationResults(deleteInsertDataOperation.InsertTemplates, datasource)
+            };
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL DELETE/INSERT WHERE operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateDeleteInsertWhereOperation(RDFDeleteInsertWhereOperation deleteInsertWhereOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult();
+
+            //Execute the CONSTRUCT query for materialization of the operation templates
+            RDFConstructQueryResult constructDeleteResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "DELETE");
+            RDFConstructQueryResult constructInsertResult = new RDFOperationEngine().ExecuteConstructQueryFromOperation(deleteInsertWhereOperation, datasource, "INSERT");
+
+            //Use materialized templates for execution of the operation
+            List<RDFPattern> deleteTemplates = new List<RDFPattern>();
+            List<RDFPattern> insertTemplates = new List<RDFPattern>();
+            if (datasource.IsGraph())
+            {
+                RDFGraph deleteGraph = RDFGraph.FromDataTable(constructDeleteResult.ConstructResults);
+                foreach (RDFTriple deleteTriple in deleteGraph)
+                    deleteTemplates.Add(new RDFPattern(deleteTriple.Subject, deleteTriple.Predicate, deleteTriple.Object));
+
+                RDFGraph insertGraph = RDFGraph.FromDataTable(constructInsertResult.ConstructResults);
+                foreach (RDFTriple insertTriple in insertGraph)
+                    insertTemplates.Add(new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object));
+            }
+            else if (datasource.IsStore())
+            {
+                RDFMemoryStore deleteStore = RDFMemoryStore.FromDataTable(constructDeleteResult.ConstructResults);
+                foreach (RDFQuadruple deleteQuadruple in deleteStore)
+                    deleteTemplates.Add(new RDFPattern(deleteQuadruple.Context, deleteQuadruple.Subject, deleteQuadruple.Predicate, deleteQuadruple.Object));
+
+                RDFMemoryStore insertStore = RDFMemoryStore.FromDataTable(constructInsertResult.ConstructResults);
+                foreach (RDFQuadruple insertQuadruple in insertStore)
+                    insertTemplates.Add(new RDFPattern(insertQuadruple.Context, insertQuadruple.Subject, insertQuadruple.Predicate, insertQuadruple.Object));
+            }
+            operationResult.DeleteResults = PopulateDeleteOperationResults(deleteTemplates, datasource);
+            operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
 
             return operationResult;
         }
@@ -167,7 +220,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the CONSTRUCT query for materialization of the operation templates
         /// </summary>
-        private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource)
+        private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand=null)
         {
             //Inject SPARQL values within every evaluable member
             operation.InjectValues(operation.GetValues());
@@ -185,7 +238,21 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(operation.IsDeleteData || operation.IsDeleteWhere ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
+            DataTable filledResultTable;
+            switch (deleteInsertCommand)
+            {
+                case "DELETE":
+                    filledResultTable = FillTemplates(operation.DeleteTemplates, resultTable, datasource.IsStore());
+                    break;
+
+                case "INSERT":
+                    filledResultTable = FillTemplates(operation.InsertTemplates, resultTable, datasource.IsStore());
+                    break;
+
+                default:
+                    filledResultTable = FillTemplates(operation.IsDeleteData || operation.IsDeleteWhere ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
+                    break;
+            }
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable);
