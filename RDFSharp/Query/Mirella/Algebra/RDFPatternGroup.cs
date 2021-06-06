@@ -69,7 +69,6 @@ namespace RDFSharp.Query
                 this.JoinAsUnion = false;
                 this.GroupMembers = new List<RDFPatternGroupMember>();
                 this.Variables = new List<RDFVariable>();
-                this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.GetQueryMemberString()));
             }
             else
             {

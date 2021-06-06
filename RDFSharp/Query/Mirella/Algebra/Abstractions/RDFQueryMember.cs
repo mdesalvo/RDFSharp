@@ -43,6 +43,14 @@ namespace RDFSharp.Query
         public bool IsEvaluable { get; internal set; }
         #endregion
 
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build a query member
+        /// </summary>
+        internal RDFQueryMember()
+            => this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.GetQueryMemberString()));
+        #endregion
+
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the query member

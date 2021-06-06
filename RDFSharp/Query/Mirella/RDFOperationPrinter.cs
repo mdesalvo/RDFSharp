@@ -37,13 +37,14 @@ namespace RDFSharp.Query
             if (insertDataOperation != null)
             {
                 #region PREFIXES
-                sb.Append(PrintPrefixes(insertDataOperation.GetPrefixes()));
+                List<RDFNamespace> prefixes = insertDataOperation.GetPrefixes();
+                sb.Append(prefixes);
                 #endregion
 
                 #region TEMPLATES
-                sb.Append("INSERT DATA\n{\n");
-                insertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(insertDataOperation.Prefixes, tp)));
-                sb.Append("}\n");
+                sb.Append("INSERT DATA {\n");
+                insertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
+                sb.Append("}");
                 #endregion
             }
 
@@ -60,27 +61,19 @@ namespace RDFSharp.Query
             if (insertWhereOperation != null)
             {
                 #region PREFIXES
-                List<RDFNamespace> insertWhereOperationPrefixes = insertWhereOperation.GetPrefixes();
-                sb.Append(PrintPrefixes(insertWhereOperationPrefixes));
-                #endregion
-
-                #region HEADER
-
-                #region BEGININSERT
-                sb.Append("INSERT");
+                List<RDFNamespace> prefixes = insertWhereOperation.GetPrefixes();
+                sb.Append(PrintPrefixes(prefixes));
                 #endregion
 
                 #region TEMPLATES
-                sb.Append("\n{\n");
-                insertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(insertWhereOperation.Prefixes, tp)));
+                sb.Append("INSERT {\n");
+                insertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.Append("}\n");
-                #endregion
-
                 #endregion
 
                 #region BODY
                 sb.Append("WHERE {\n");
-                sb.Append(PrintBodyMembers(insertWhereOperationPrefixes, insertWhereOperation));
+                sb.Append(PrintBodyMembers(prefixes, insertWhereOperation));
                 sb.Append("}");
                 #endregion
             }
@@ -98,13 +91,14 @@ namespace RDFSharp.Query
             if (deleteDataOperation != null)
             {
                 #region PREFIXES
-                sb.Append(PrintPrefixes(deleteDataOperation.GetPrefixes()));
+                List<RDFNamespace> prefixes = deleteDataOperation.GetPrefixes();
+                sb.Append(PrintPrefixes(prefixes));
                 #endregion
 
                 #region TEMPLATES
-                sb.Append("DELETE DATA\n{\n");
-                deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(deleteDataOperation.Prefixes, tp)));
-                sb.Append("}\n");
+                sb.Append("DELETE DATA {\n");
+                deleteDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
+                sb.Append("}");
                 #endregion
             }
 
@@ -121,27 +115,79 @@ namespace RDFSharp.Query
             if (deleteWhereOperation != null)
             {
                 #region PREFIXES
-                List<RDFNamespace> deleteWhereOperationPrefixes = deleteWhereOperation.GetPrefixes();
-                sb.Append(PrintPrefixes(deleteWhereOperationPrefixes));
-                #endregion
-
-                #region HEADER
-
-                #region BEGINDELETE
-                sb.Append("DELETE");
+                List<RDFNamespace> prefixes = deleteWhereOperation.GetPrefixes();
+                sb.Append(PrintPrefixes(prefixes));
                 #endregion
 
                 #region TEMPLATES
-                sb.Append("\n{\n");
-                deleteWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(deleteWhereOperation.Prefixes, tp)));
+                sb.Append("DELETE {\n");
+                deleteWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
                 sb.Append("}\n");
-                #endregion
-
                 #endregion
 
                 #region BODY
                 sb.Append("WHERE {\n");
-                sb.Append(PrintBodyMembers(deleteWhereOperationPrefixes, deleteWhereOperation));
+                sb.Append(PrintBodyMembers(prefixes, deleteWhereOperation));
+                sb.Append("}");
+                #endregion
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL DELETE/INSERT DATA operation
+        /// </summary>
+        internal static string PrintDeleteInsertDataOperation(RDFDeleteInsertDataOperation deleteInsertDataOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (deleteInsertDataOperation != null)
+            {
+                #region PREFIXES
+                List<RDFNamespace> prefixes = deleteInsertDataOperation.GetPrefixes();
+                sb.Append(PrintPrefixes(prefixes));
+                #endregion
+
+                #region TEMPLATES
+                sb.Append("DELETE DATA {\n");
+                deleteInsertDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
+                sb.Append("}\n");
+                sb.Append("INSERT DATA {\n");
+                deleteInsertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
+                sb.Append("}");
+                #endregion
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL DELETE/INSERT WHERE operation
+        /// </summary>
+        internal static string PrintDeleteInsertWhereOperation(RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (deleteInsertWhereOperation != null)
+            {
+                #region PREFIXES
+                List<RDFNamespace> prefixes = deleteInsertWhereOperation.GetPrefixes();
+                sb.Append(PrintPrefixes(prefixes));
+                #endregion
+
+                #region TEMPLATES
+                sb.Append("DELETE {\n");
+                deleteInsertWhereOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
+                sb.Append("}\n");
+                sb.Append("INSERT {\n");
+                deleteInsertWhereOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
+                sb.Append("}\n");
+                #endregion
+
+                #region BODY
+                sb.Append("WHERE {\n");
+                sb.Append(PrintBodyMembers(prefixes, deleteInsertWhereOperation));
                 sb.Append("}");
                 #endregion
             }

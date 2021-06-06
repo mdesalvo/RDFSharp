@@ -43,6 +43,14 @@ namespace RDFSharp.Query
         public bool IsEvaluable { get; internal set; }
         #endregion
 
+        #region Ctors
+        /// <summary>
+        /// Default-ctor to build a pattern group member
+        /// </summary>
+        internal RDFPatternGroupMember()
+            => this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
+        #endregion
+
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the pattern group member
