@@ -67,7 +67,6 @@ namespace RDFSharp.Query
             this.IsEvaluable = true;
             this.IsOptional = false;
             this.JoinAsUnion = false;
-            this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.GetQueryMemberString()));
         }
         #endregion
 
