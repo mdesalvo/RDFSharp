@@ -38,7 +38,7 @@ namespace RDFSharp.Query
             {
                 #region PREFIXES
                 List<RDFNamespace> prefixes = insertDataOperation.GetPrefixes();
-                sb.Append(prefixes);
+                sb.Append(PrintPrefixes(prefixes));
                 #endregion
 
                 #region TEMPLATES

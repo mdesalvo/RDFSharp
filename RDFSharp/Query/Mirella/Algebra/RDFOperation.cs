@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using RDFSharp.Store;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Query
@@ -106,6 +107,154 @@ namespace RDFSharp.Query
         /// </summary>
         public Task<bool> ApplyToSPARQLUpdateEndpointAsync(RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
             => Task.Run(() => ApplyToSPARQLUpdateEndpoint(sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions));
+        #endregion
+
+        #region Utilities
+        /// <summary>
+        /// Adds the given ground pattern to the DELETE templates of the operation
+        /// </summary>
+        protected RDFOperation AddDeleteGroundTemplate(RDFPattern template)
+        {
+            if (template?.Variables.Count == 0)
+            {
+                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
+                    this.DeleteTemplates.Add(template);
+                return this;
+            }
+            throw new RDFQueryException("Cannot add DELETE template to DATA operation because it is not ground. Please ensure it doesn't contain any variables.");
+        }
+
+        /// <summary>
+        /// Adds the given pattern to the DELETE templates of the operation
+        /// </summary>
+        protected RDFOperation AddDeleteNonGroundTemplate(RDFPattern template)
+        {
+            if (template != null)
+            {
+                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
+                {
+                    this.DeleteTemplates.Add(template);
+                    this.CollectVariables(template);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given ground pattern to the INSERT templates of the operation
+        /// </summary>
+        protected RDFOperation AddInsertGroundTemplate(RDFPattern template)
+        {
+            if (template?.Variables.Count == 0)
+            {
+                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
+                    this.InsertTemplates.Add(template);
+                return this;
+            }
+            throw new RDFQueryException("Cannot add INSERT template to DATA operation because it is not ground. Please ensure it doesn't contain any variables.");
+        }
+
+        /// <summary>
+        /// Adds the given pattern to the INSERT templates of the operation
+        /// </summary>
+        protected RDFOperation AddInsertNonGroundTemplate(RDFPattern template)
+        {
+            if (template != null)
+            {
+                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
+                {
+                    this.InsertTemplates.Add(template);
+                    this.CollectVariables(template);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given prefix declaration to the operation
+        /// </summary>
+        protected RDFOperation AddPrefix(RDFNamespace prefix)
+        {
+            if (prefix != null)
+            {
+                if (!this.Prefixes.Any(p => p.Equals(prefix)))
+                    this.Prefixes.Add(prefix);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given pattern group to the body of the operation
+        /// </summary>
+        protected RDFOperation AddPatternGroup(RDFPatternGroup patternGroup)
+        {
+            if (patternGroup != null)
+            {
+                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                    this.QueryMembers.Add(patternGroup);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given modifier to the operation
+        /// </summary>
+        protected RDFOperation AddModifier(RDFDistinctModifier modifier)
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
+                    this.QueryMembers.Add(modifier);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given subquery to the operation
+        /// </summary>
+        protected RDFOperation AddSubQuery(RDFSelectQuery subQuery)
+        {
+            if (subQuery != null)
+            {
+                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
+                    this.QueryMembers.Add(subQuery.SubQuery());
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Collects the variables contained in the given non-ground template
+        /// </summary>
+        private void CollectVariables(RDFPattern template)
+        {
+            //Context
+            if (template.Context != null && template.Context is RDFVariable)
+            {
+                if (!this.Variables.Any(v => v.Equals(template.Context)))
+                    this.Variables.Add((RDFVariable)template.Context);
+            }
+
+            //Subject
+            if (template.Subject is RDFVariable)
+            {
+                if (!this.Variables.Any(v => v.Equals(template.Subject)))
+                    this.Variables.Add((RDFVariable)template.Subject);
+            }
+
+            //Predicate
+            if (template.Predicate is RDFVariable)
+            {
+                if (!this.Variables.Any(v => v.Equals(template.Predicate)))
+                    this.Variables.Add((RDFVariable)template.Predicate);
+            }
+
+            //Object
+            if (template.Object is RDFVariable)
+            {
+                if (!this.Variables.Any(v => v.Equals(template.Object)))
+                    this.Variables.Add((RDFVariable)template.Object);
+            }
+        }
         #endregion
     }
 }

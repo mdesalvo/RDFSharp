@@ -43,28 +43,13 @@ namespace RDFSharp.Query
         /// Adds the given ground pattern to the templates of the operation
         /// </summary>
         public RDFDeleteDataOperation AddDeleteTemplate(RDFPattern template)
-        {
-            //This operation accepts only ground patterns
-            if (template?.Variables.Count == 0)
-            {
-                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
-                    this.DeleteTemplates.Add(template);
-            }
-            return this;
-        }
+            => (RDFDeleteDataOperation)AddDeleteGroundTemplate(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public RDFDeleteDataOperation AddPrefix(RDFNamespace prefix)
-        {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
-            return this;
-        }
+        public new RDFDeleteDataOperation AddPrefix(RDFNamespace prefix)
+            => (RDFDeleteDataOperation)base.AddPrefix(prefix);
         #endregion
     }
 }

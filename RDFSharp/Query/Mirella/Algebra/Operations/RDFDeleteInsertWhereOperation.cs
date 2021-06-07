@@ -42,139 +42,37 @@ namespace RDFSharp.Query
         /// Adds the given pattern to the DELETE templates of the operation
         /// </summary>
         public RDFDeleteInsertWhereOperation AddDeleteTemplate(RDFPattern template)
-        {
-            if (template != null)
-            {
-                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
-                {
-                    this.DeleteTemplates.Add(template);
-
-                    //Context
-                    if (template.Context != null && template.Context is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Context)))
-                            this.Variables.Add((RDFVariable)template.Context);
-                    }
-
-                    //Subject
-                    if (template.Subject is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                            this.Variables.Add((RDFVariable)template.Subject);
-                    }
-
-                    //Predicate
-                    if (template.Predicate is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                            this.Variables.Add((RDFVariable)template.Predicate);
-                    }
-
-                    //Object
-                    if (template.Object is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Object)))
-                            this.Variables.Add((RDFVariable)template.Object);
-                    }
-                }
-            }            
-            return this;
-        }
+            => (RDFDeleteInsertWhereOperation)AddDeleteNonGroundTemplate(template);
 
         /// <summary>
         /// Adds the given pattern to the INSERT templates of the operation
         /// </summary>
         public RDFDeleteInsertWhereOperation AddInsertTemplate(RDFPattern template)
-        {
-            if (template != null)
-            {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                {
-                    this.InsertTemplates.Add(template);
-
-                    //Context
-                    if (template.Context != null && template.Context is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Context)))
-                            this.Variables.Add((RDFVariable)template.Context);
-                    }
-
-                    //Subject
-                    if (template.Subject is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                            this.Variables.Add((RDFVariable)template.Subject);
-                    }
-
-                    //Predicate
-                    if (template.Predicate is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                            this.Variables.Add((RDFVariable)template.Predicate);
-                    }
-
-                    //Object
-                    if (template.Object is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Object)))
-                            this.Variables.Add((RDFVariable)template.Object);
-                    }
-                }
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given pattern group to the body of the operation
-        /// </summary>
-        public RDFDeleteInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
-        {
-            if (patternGroup != null)
-            {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                    this.QueryMembers.Add(patternGroup);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given modifier to the operation
-        /// </summary>
-        public RDFDeleteInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
-        {
-            if (modifier != null)
-            {
-                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
-                    this.QueryMembers.Add(modifier);
-            }
-            return this;
-        }
+            => (RDFDeleteInsertWhereOperation)AddInsertNonGroundTemplate(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public RDFDeleteInsertWhereOperation AddPrefix(RDFNamespace prefix)
-        {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
-            return this;
-        }
+        public new RDFDeleteInsertWhereOperation AddPrefix(RDFNamespace prefix)
+            => (RDFDeleteInsertWhereOperation)base.AddPrefix(prefix);
+
+        /// <summary>
+        /// Adds the given pattern group to the body of the operation
+        /// </summary>
+        public new RDFDeleteInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
+            => (RDFDeleteInsertWhereOperation)base.AddPatternGroup(patternGroup);
+
+        /// <summary>
+        /// Adds the given modifier to the operation
+        /// </summary>
+        public new RDFDeleteInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
+            => (RDFDeleteInsertWhereOperation)base.AddModifier(modifier);
 
         /// <summary>
         /// Adds the given subquery to the operation
         /// </summary>
-        public RDFDeleteInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
-        {
-            if (subQuery != null)
-            {
-                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                    this.QueryMembers.Add(subQuery.SubQuery());
-            }
-            return this;
-        }
+        public new RDFDeleteInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
+            => (RDFDeleteInsertWhereOperation)base.AddSubQuery(subQuery);
         #endregion
     }
 }

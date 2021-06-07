@@ -40,45 +40,22 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given ground pattern to the DELETE templates of the operation
+        /// Adds the given ground pattern to the templates of the operation
         /// </summary>
         public RDFDeleteInsertDataOperation AddDeleteTemplate(RDFPattern template)
-        {
-            //This operation accepts only ground patterns
-            if (template?.Variables.Count == 0)
-            {
-                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
-                    this.DeleteTemplates.Add(template);
-            }
-            return this;
-        }
+            => (RDFDeleteInsertDataOperation)AddDeleteGroundTemplate(template);
 
         /// <summary>
-        /// Adds the given ground pattern to the INSERT templates of the operation
+        /// Adds the given ground pattern to the templates of the operation
         /// </summary>
         public RDFDeleteInsertDataOperation AddInsertTemplate(RDFPattern template)
-        {
-            //This operation accepts only ground patterns
-            if (template?.Variables.Count == 0)
-            {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                    this.InsertTemplates.Add(template);
-            }
-            return this;
-        }
+            => (RDFDeleteInsertDataOperation)AddInsertGroundTemplate(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public RDFDeleteInsertDataOperation AddPrefix(RDFNamespace prefix)
-        {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
-            return this;
-        }
+        public new RDFDeleteInsertDataOperation AddPrefix(RDFNamespace prefix)
+            => (RDFDeleteInsertDataOperation)base.AddPrefix(prefix);
         #endregion
     }
 }

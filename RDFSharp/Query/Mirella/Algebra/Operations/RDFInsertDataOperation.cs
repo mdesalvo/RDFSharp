@@ -42,28 +42,13 @@ namespace RDFSharp.Query
         /// Adds the given ground pattern to the templates of the operation
         /// </summary>
         public RDFInsertDataOperation AddInsertTemplate(RDFPattern template)
-        {
-            //This operation accepts only ground patterns
-            if (template?.Variables.Count == 0)
-            {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                    this.InsertTemplates.Add(template);
-            }
-            return this;
-        }
+            => (RDFInsertDataOperation)AddInsertGroundTemplate(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public RDFInsertDataOperation AddPrefix(RDFNamespace prefix)
-        {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
-            return this;
-        }
+        public new RDFInsertDataOperation AddPrefix(RDFNamespace prefix)
+            => (RDFInsertDataOperation)base.AddPrefix(prefix);
         #endregion
     }
 }
