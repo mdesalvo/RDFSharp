@@ -37,17 +37,6 @@ namespace RDFSharp.Query
             => RDFOperationPrinter.PrintDeleteInsertWhereOperation(this);
         #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to build an empty DELETE/INSERT WHERE operation
-        /// </summary>
-        public RDFDeleteInsertWhereOperation() : base()
-        {
-            this.IsDeleteWhere = true;
-            this.IsInsertWhere = true;
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Adds the given pattern to the DELETE templates of the operation
@@ -186,32 +175,6 @@ namespace RDFSharp.Query
             }
             return this;
         }
-
-        /// <summary>
-        /// Applies the operation to the given graph
-        /// </summary>
-        public override RDFOperationResult ApplyToGraph(RDFGraph graph)
-            => graph != null ? new RDFOperationEngine().EvaluateDeleteInsertWhereOperation(this, graph)
-                             : new RDFOperationResult();
-
-        /// <summary>
-        /// Asynchronously applies the operation to the given graph
-        /// </summary>
-        public override Task<RDFOperationResult> ApplyToGraphAsync(RDFGraph graph)
-            => Task.Run(() => ApplyToGraph(graph));
-
-        /// <summary>
-        /// Applies the operation to the given store
-        /// </summary>
-        public override RDFOperationResult ApplyToStore(RDFStore store)
-            => store != null ? new RDFOperationEngine().EvaluateDeleteInsertWhereOperation(this, store)
-                             : new RDFOperationResult();
-
-        /// <summary>
-        /// Asynchronously applies the operation to the given store
-        /// </summary>
-        public override Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => ApplyToStore(store));
         #endregion
     }
 }

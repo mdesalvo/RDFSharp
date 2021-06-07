@@ -24,29 +24,9 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFOperation is the foundation class for modeling SPARQL UPDATE operations
     /// </summary>
-    public abstract class RDFOperation : RDFQuery
+    public class RDFOperation : RDFQuery
     {
         #region Properties
-        /// <summary>
-        /// Flag indicating that operation is compatible with SPARQL "DELETE DATA"
-        /// </summary>
-        public bool IsDeleteData { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that operation is compatible with SPARQL "DELETE WHERE"
-        /// </summary>
-        public bool IsDeleteWhere { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that operation is compatible with SPARQL "INSERT DATA"
-        /// </summary>
-        public bool IsInsertData { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that operation is compatible with SPARQL "INSERT WHERE"
-        /// </summary>
-        public bool IsInsertWhere { get; internal set; }
-
         /// <summary>
         /// Templates for SPARQL DELETE operation
         /// </summary>
@@ -67,15 +47,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build an empty operation
         /// </summary>
-        internal RDFOperation() : base()
+        internal RDFOperation()
         {
             this.DeleteTemplates = new List<RDFPattern>();
             this.InsertTemplates = new List<RDFPattern>();
             this.Variables = new List<RDFVariable>();
-            this.IsDeleteData = false;
-            this.IsDeleteWhere = false;
-            this.IsInsertData = false;
-            this.IsInsertWhere = false;
         }
         #endregion
 
@@ -83,22 +59,28 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the operation to the given graph
         /// </summary>
-        public abstract RDFOperationResult ApplyToGraph(RDFGraph graph);
+        public RDFOperationResult ApplyToGraph(RDFGraph graph)
+            => graph != null ? new RDFOperationEngine().EvaluateOperationOnGraphOrStore(this, graph)
+                             : new RDFOperationResult();
 
         /// <summary>
         /// Asynchronously applies the operation to the given graph
         /// </summary>
-        public abstract Task<RDFOperationResult> ApplyToGraphAsync(RDFGraph graph);
+        public Task<RDFOperationResult> ApplyToGraphAsync(RDFGraph graph)
+            => Task.Run(() => ApplyToGraph(graph));
 
         /// <summary>
         /// Applies the operation to the given store
         /// </summary>
-        public abstract RDFOperationResult ApplyToStore(RDFStore store);
+        public RDFOperationResult ApplyToStore(RDFStore store)
+            => store != null ? new RDFOperationEngine().EvaluateOperationOnGraphOrStore(this, store)
+                             : new RDFOperationResult();
 
         /// <summary>
         /// Asynchronously applies the operation to the given store
         /// </summary>
-        public abstract Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store);
+        public Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
+            => Task.Run(() => ApplyToStore(store));
 
         /// <summary>
         /// Applies the operation to the given SPARQL UPDATE endpoint

@@ -36,6 +36,29 @@ namespace RDFSharp.Query
 
         #region MIRELLA SPARQL UPDATE
         /// <summary>
+        /// Evaluates the given SPARQL UPDATE operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateOperationOnGraphOrStore(RDFOperation operation, RDFDataSource datasource)
+        {
+            RDFOperationResult result = new RDFOperationResult();
+
+            if (operation is RDFDeleteDataOperation deleteDataOperation)
+                result = EvaluateDeleteDataOperation(deleteDataOperation, datasource);
+            else if (operation is RDFDeleteWhereOperation deleteWhereOperation)
+                result = EvaluateDeleteWhereOperation(deleteWhereOperation, datasource);
+            else if (operation is RDFInsertDataOperation insertDataOperation)
+                result = EvaluateInsertDataOperation(insertDataOperation, datasource);
+            else if (operation is RDFInsertWhereOperation insertWhereOperation)
+                result = EvaluateInsertWhereOperation(insertWhereOperation, datasource);
+            else if (operation is RDFDeleteInsertDataOperation deleteInsertDataOperation)
+                result = EvaluateDeleteInsertDataOperation(deleteInsertDataOperation, datasource);
+            else if (operation is RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
+                result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
+
+            return result;
+        }
+
+        /// <summary>
         /// Evaluates the given SPARQL INSERT DATA operation on the given RDF datasource
         /// </summary>
         internal RDFOperationResult EvaluateInsertDataOperation(RDFInsertDataOperation insertDataOperation, RDFDataSource datasource)
@@ -244,12 +267,13 @@ namespace RDFSharp.Query
                 case "DELETE":
                     filledResultTable = FillTemplates(operation.DeleteTemplates, resultTable, datasource.IsStore());
                     break;
+
                 case "INSERT":
                     filledResultTable = FillTemplates(operation.InsertTemplates, resultTable, datasource.IsStore());
                     break;
 
                 default:
-                    filledResultTable = FillTemplates(operation.IsDeleteData || operation.IsDeleteWhere ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
+                    filledResultTable = FillTemplates(operation is RDFDeleteDataOperation || operation is RDFDeleteWhereOperation ? operation.DeleteTemplates : operation.InsertTemplates, resultTable, datasource.IsStore());
                     break;
             }
 

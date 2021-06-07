@@ -38,14 +38,6 @@ namespace RDFSharp.Query
             => RDFOperationPrinter.PrintDeleteDataOperation(this);
         #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to build an empty DELETE DATA operation
-        /// </summary>
-        public RDFDeleteDataOperation() : base()
-            => this.IsDeleteData = true;
-        #endregion
-
         #region Methods
         /// <summary>
         /// Adds the given ground pattern to the templates of the operation
@@ -73,32 +65,6 @@ namespace RDFSharp.Query
             }
             return this;
         }
-
-        /// <summary>
-        /// Applies the operation to the given graph
-        /// </summary>
-        public override RDFOperationResult ApplyToGraph(RDFGraph graph)
-            => graph != null ? new RDFOperationEngine().EvaluateDeleteDataOperation(this, graph)
-                             : new RDFOperationResult();
-
-        /// <summary>
-        /// Asynchronously applies the operation to the given graph
-        /// </summary>
-        public override Task<RDFOperationResult> ApplyToGraphAsync(RDFGraph graph)
-            => Task.Run(() => ApplyToGraph(graph));
-
-        /// <summary>
-        /// Applies the operation to the given store
-        /// </summary>
-        public override RDFOperationResult ApplyToStore(RDFStore store)
-            => store != null ? new RDFOperationEngine().EvaluateDeleteDataOperation(this, store)
-                             : new RDFOperationResult();
-
-        /// <summary>
-        /// Asynchronously applies the operation to the given store
-        /// </summary>
-        public override Task<RDFOperationResult> ApplyToStoreAsync(RDFStore store)
-            => Task.Run(() => ApplyToStore(store));
         #endregion
     }
 }
