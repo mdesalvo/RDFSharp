@@ -42,31 +42,31 @@ namespace RDFSharp.Query
         /// Adds the given pattern to the templates of the operation
         /// </summary>
         public RDFDeleteWhereOperation AddDeleteTemplate(RDFPattern template)
-            => (RDFDeleteWhereOperation)AddDeleteNonGroundTemplate(template);
+            => AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public new RDFDeleteWhereOperation AddPrefix(RDFNamespace prefix)
-            => (RDFDeleteWhereOperation)base.AddPrefix(prefix);
+        public RDFDeleteWhereOperation AddPrefix(RDFNamespace prefix)
+            => AddPrefix<RDFDeleteWhereOperation>(prefix);
 
         /// <summary>
         /// Adds the given pattern group to the body of the operation
         /// </summary>
-        public new RDFDeleteWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
-            => (RDFDeleteWhereOperation)base.AddPatternGroup(patternGroup);
+        public RDFDeleteWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
+            => AddPatternGroup<RDFDeleteWhereOperation>(patternGroup);
 
         /// <summary>
         /// Adds the given modifier to the operation
         /// </summary>
-        public new RDFDeleteWhereOperation AddModifier(RDFDistinctModifier modifier)
-            => (RDFDeleteWhereOperation)base.AddModifier(modifier);
+        public RDFDeleteWhereOperation AddModifier(RDFDistinctModifier modifier)
+            => AddModifier<RDFDeleteWhereOperation>(modifier);
 
         /// <summary>
         /// Adds the given subquery to the operation
         /// </summary>
-        public new RDFDeleteWhereOperation AddSubQuery(RDFSelectQuery subQuery)
-            => (RDFDeleteWhereOperation)base.AddSubQuery(subQuery);
+        public RDFDeleteWhereOperation AddSubQuery(RDFSelectQuery subQuery)
+            => AddSubQuery<RDFDeleteWhereOperation>(subQuery);
         #endregion
     }
 }

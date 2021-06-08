@@ -42,37 +42,37 @@ namespace RDFSharp.Query
         /// Adds the given pattern to the DELETE templates of the operation
         /// </summary>
         public RDFDeleteInsertWhereOperation AddDeleteTemplate(RDFPattern template)
-            => (RDFDeleteInsertWhereOperation)AddDeleteNonGroundTemplate(template);
+            => AddDeleteNonGroundTemplate<RDFDeleteInsertWhereOperation>(template);
 
         /// <summary>
         /// Adds the given pattern to the INSERT templates of the operation
         /// </summary>
         public RDFDeleteInsertWhereOperation AddInsertTemplate(RDFPattern template)
-            => (RDFDeleteInsertWhereOperation)AddInsertNonGroundTemplate(template);
+            => AddInsertNonGroundTemplate<RDFDeleteInsertWhereOperation>(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public new RDFDeleteInsertWhereOperation AddPrefix(RDFNamespace prefix)
-            => (RDFDeleteInsertWhereOperation)base.AddPrefix(prefix);
+        public RDFDeleteInsertWhereOperation AddPrefix(RDFNamespace prefix)
+            => AddPrefix<RDFDeleteInsertWhereOperation>(prefix);
 
         /// <summary>
         /// Adds the given pattern group to the body of the operation
         /// </summary>
-        public new RDFDeleteInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
-            => (RDFDeleteInsertWhereOperation)base.AddPatternGroup(patternGroup);
+        public RDFDeleteInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
+            => AddPatternGroup<RDFDeleteInsertWhereOperation>(patternGroup);
 
         /// <summary>
         /// Adds the given modifier to the operation
         /// </summary>
-        public new RDFDeleteInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
-            => (RDFDeleteInsertWhereOperation)base.AddModifier(modifier);
+        public RDFDeleteInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
+            => AddModifier<RDFDeleteInsertWhereOperation>(modifier);
 
         /// <summary>
         /// Adds the given subquery to the operation
         /// </summary>
-        public new RDFDeleteInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
-            => (RDFDeleteInsertWhereOperation)base.AddSubQuery(subQuery);
+        public RDFDeleteInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
+            => AddSubQuery<RDFDeleteInsertWhereOperation>(subQuery);
         #endregion
     }
 }

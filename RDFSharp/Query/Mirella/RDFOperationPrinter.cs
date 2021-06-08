@@ -136,33 +136,6 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Prints the string representation of a SPARQL DELETE/INSERT DATA operation
-        /// </summary>
-        internal static string PrintDeleteInsertDataOperation(RDFDeleteInsertDataOperation deleteInsertDataOperation)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            if (deleteInsertDataOperation != null)
-            {
-                #region PREFIXES
-                List<RDFNamespace> prefixes = deleteInsertDataOperation.GetPrefixes();
-                sb.Append(PrintPrefixes(prefixes));
-                #endregion
-
-                #region TEMPLATES
-                sb.Append("DELETE DATA {\n");
-                deleteInsertDataOperation.DeleteTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.Append("}\n");
-                sb.Append("INSERT DATA {\n");
-                deleteInsertDataOperation.InsertTemplates.ForEach(tp => sb.Append(PrintPattern(prefixes, tp)));
-                sb.Append("}");
-                #endregion
-            }
-
-            return sb.ToString();
-        }
-
-        /// <summary>
         /// Prints the string representation of a SPARQL DELETE/INSERT WHERE operation
         /// </summary>
         internal static string PrintDeleteInsertWhereOperation(RDFDeleteInsertWhereOperation deleteInsertWhereOperation)

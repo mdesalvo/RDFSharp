@@ -50,8 +50,6 @@ namespace RDFSharp.Query
                 result = EvaluateInsertDataOperation(insertDataOperation, datasource);
             else if (operation is RDFInsertWhereOperation insertWhereOperation)
                 result = EvaluateInsertWhereOperation(insertWhereOperation, datasource);
-            else if (operation is RDFDeleteInsertDataOperation deleteInsertDataOperation)
-                result = EvaluateDeleteInsertDataOperation(deleteInsertDataOperation, datasource);
             else if (operation is RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
                 result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
 
@@ -137,19 +135,6 @@ namespace RDFSharp.Query
             }
             operationResult.DeleteResults = PopulateDeleteOperationResults(deleteTemplates, datasource);
 
-            return operationResult;
-        }
-
-        /// <summary>
-        /// Evaluates the given SPARQL DELETE/INSERT DATA operation on the given RDF datasource
-        /// </summary>
-        internal RDFOperationResult EvaluateDeleteInsertDataOperation(RDFDeleteInsertDataOperation deleteInsertDataOperation, RDFDataSource datasource)
-        {
-            RDFOperationResult operationResult = new RDFOperationResult()
-            {
-                DeleteResults = PopulateDeleteOperationResults(deleteInsertDataOperation.DeleteTemplates, datasource),
-                InsertResults = PopulateInsertOperationResults(deleteInsertDataOperation.InsertTemplates, datasource)
-            };
             return operationResult;
         }
 

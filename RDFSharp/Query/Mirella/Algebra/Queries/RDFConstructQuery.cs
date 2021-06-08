@@ -112,79 +112,37 @@ namespace RDFSharp.Query
         /// Adds the given pattern group to the body of the query
         /// </summary>
         public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup)
-        {
-            if (patternGroup != null)
-            {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                    this.QueryMembers.Add(patternGroup);
-            }
-            return this;
-        }
+            => AddPatternGroup<RDFConstructQuery>(patternGroup);
 
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
         public RDFConstructQuery AddModifier(RDFDistinctModifier modifier)
-        {
-            if (modifier != null)
-            {
-                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
-                    this.QueryMembers.Add(modifier);
-            }
-            return this;
-        }
+            => AddModifier<RDFConstructQuery>(modifier);
 
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
         public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
-        {
-            if (modifier != null)
-            {
-                if (!this.GetModifiers().Any(m => m is RDFLimitModifier))
-                    this.QueryMembers.Add(modifier);
-            }
-            return this;
-        }
+            => AddModifier<RDFConstructQuery>(modifier);
 
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
         public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
-        {
-            if (modifier != null)
-            {
-                if (!this.GetModifiers().Any(m => m is RDFOffsetModifier))
-                    this.QueryMembers.Add(modifier);
-            }
-            return this;
-        }
+            => AddModifier<RDFConstructQuery>(modifier);
 
         /// <summary>
         /// Adds the given prefix declaration to the query
         /// </summary>
         public RDFConstructQuery AddPrefix(RDFNamespace prefix)
-        {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
-            return this;
-        }
+            => AddPrefix<RDFConstructQuery>(prefix);
 
         /// <summary>
         /// Adds the given subquery to the query
         /// </summary>
         public RDFConstructQuery AddSubQuery(RDFSelectQuery subQuery)
-        {
-            if (subQuery != null)
-            {
-                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                    this.QueryMembers.Add(subQuery.SubQuery());
-            }
-            return this;
-        }
+            => AddSubQuery<RDFConstructQuery>(subQuery);
 
         /// <summary>
         /// Applies the query to the given graph

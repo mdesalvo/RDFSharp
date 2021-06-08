@@ -52,40 +52,19 @@ namespace RDFSharp.Query
         /// Adds the given pattern group to the query
         /// </summary>
         public RDFAskQuery AddPatternGroup(RDFPatternGroup patternGroup)
-        {
-            if (patternGroup != null)
-            {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                    this.QueryMembers.Add(patternGroup);
-            }
-            return this;
-        }
+            => AddPatternGroup<RDFAskQuery>(patternGroup);
 
         /// <summary>
         /// Adds the given prefix declaration to the query
         /// </summary>
         public RDFAskQuery AddPrefix(RDFNamespace prefix)
-        {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
-            return this;
-        }
+            => AddPrefix<RDFAskQuery>(prefix);
 
         /// <summary>
         /// Adds the given subquery to the query
         /// </summary>
         public RDFAskQuery AddSubQuery(RDFSelectQuery subQuery)
-        {
-            if (subQuery != null)
-            {
-                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                    this.QueryMembers.Add(subQuery.SubQuery());
-            }
-            return this;
-        }
+            => AddSubQuery<RDFAskQuery>(subQuery);
 
         /// <summary>
         /// Applies the query to the given graph

@@ -42,31 +42,31 @@ namespace RDFSharp.Query
         /// Adds the given pattern to the templates of the operation
         /// </summary>
         public RDFInsertWhereOperation AddInsertTemplate(RDFPattern template)
-            => (RDFInsertWhereOperation)AddInsertNonGroundTemplate(template);
+            => AddInsertNonGroundTemplate<RDFInsertWhereOperation>(template);
 
         /// <summary>
         /// Adds the given prefix declaration to the operation
         /// </summary>
-        public new RDFInsertWhereOperation AddPrefix(RDFNamespace prefix)
-            => (RDFInsertWhereOperation)base.AddPrefix(prefix);
+        public RDFInsertWhereOperation AddPrefix(RDFNamespace prefix)
+            => AddPrefix<RDFInsertWhereOperation>(prefix);
 
         /// <summary>
         /// Adds the given pattern group to the body of the operation
         /// </summary>
-        public new RDFInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
-            => (RDFInsertWhereOperation)base.AddPatternGroup(patternGroup);
+        public RDFInsertWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
+            => AddPatternGroup<RDFInsertWhereOperation>(patternGroup);
 
         /// <summary>
         /// Adds the given modifier to the operation
         /// </summary>
-        public new RDFInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
-            => (RDFInsertWhereOperation)base.AddModifier(modifier);
+        public RDFInsertWhereOperation AddModifier(RDFDistinctModifier modifier)
+            => AddModifier<RDFInsertWhereOperation>(modifier);
 
         /// <summary>
         /// Adds the given subquery to the operation
         /// </summary>
-        public new RDFInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
-            => (RDFInsertWhereOperation)base.AddSubQuery(subQuery);
+        public RDFInsertWhereOperation AddSubQuery(RDFSelectQuery subQuery)
+            => AddSubQuery<RDFInsertWhereOperation>(subQuery);
         #endregion
     }
 }

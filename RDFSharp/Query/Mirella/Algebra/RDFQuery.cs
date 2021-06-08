@@ -26,7 +26,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQuery is the foundation class for modeling SPARQL queries
     /// </summary>
-    public abstract class RDFQuery : RDFQueryMember
+    public class RDFQuery : RDFQueryMember
     {
 
         #region Properties
@@ -71,6 +71,84 @@ namespace RDFSharp.Query
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Adds the given pattern group to the body of the query
+        /// </summary>
+        internal T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T: RDFQuery
+        {
+            if (patternGroup != null)
+            {
+                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                    this.QueryMembers.Add(patternGroup);
+            }
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        internal T AddModifier<T>(RDFDistinctModifier modifier) where T : RDFQuery
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
+                    this.QueryMembers.Add(modifier);
+            }
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        internal T AddModifier<T>(RDFLimitModifier modifier) where T : RDFQuery
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFLimitModifier))
+                    this.QueryMembers.Add(modifier);
+            }
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        internal T AddModifier<T>(RDFOffsetModifier modifier) where T : RDFQuery
+        {
+            if (modifier != null)
+            {
+                if (!this.GetModifiers().Any(m => m is RDFOffsetModifier))
+                    this.QueryMembers.Add(modifier);
+            }
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Adds the given prefix declaration to the query
+        /// </summary>
+        internal T AddPrefix<T>(RDFNamespace prefix) where T : RDFQuery
+        {
+            if (prefix != null)
+            {
+                if (!this.Prefixes.Any(p => p.Equals(prefix)))
+                    this.Prefixes.Add(prefix);
+            }
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Adds the given subquery to the query
+        /// </summary>
+        internal T AddSubQuery<T>(RDFSelectQuery subQuery) where T : RDFQuery
+        {
+            if (subQuery != null)
+            {
+                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
+                    this.QueryMembers.Add(subQuery.SubQuery());
+            }
+            return (T)this;
+        }
+
         /// <summary>
         /// Gets the query members of type: pattern group
         /// </summary>
