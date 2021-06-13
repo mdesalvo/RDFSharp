@@ -258,6 +258,10 @@ namespace RDFSharp.Query
                 }
                 catch (Exception ex)
                 {
+                    //Certain types of operation (e.g: LOAD) can opt for silencing the error
+                    if (operation is RDFLoadOperation loadOperation && loadOperation.Silent)
+                        return opResult;
+
                     throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);
                 }
             }
