@@ -179,7 +179,7 @@ namespace RDFSharp.Query
             {
                 sb.Append("LOAD ");
 
-                if (loadOperation.Silent)
+                if (loadOperation.IsSilent)
                     sb.Append("SILENT ");
 
                 sb.Append($"<{loadOperation.FromContext}>");

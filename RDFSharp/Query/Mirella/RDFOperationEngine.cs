@@ -211,7 +211,7 @@ namespace RDFSharp.Query
             catch
             {
                 //In case the operation is silent, the exception must be suppressed
-                if (!loadOperation.Silent)
+                if (!loadOperation.IsSilent)
                     throw;
             }
 
@@ -255,13 +255,12 @@ namespace RDFSharp.Query
                 {
                     sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
 
-                    //We assume that by design the SPARQL UPDATE endpoint should raise an exception in case of operation failures
+                    //We assume that (by design) the SPARQL UPDATE endpoint should raise an exception in case of operation failure
                     opResult = true;
                 }
                 catch (Exception ex)
                 {
-                    //Certain types of operation can opt for silencing the error
-                    if (operation is RDFLoadOperation loadOperation && loadOperation.Silent)
+                    if (operation is RDFLoadOperation loadOperation && loadOperation.IsSilent)
                         return opResult;
 
                     throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);

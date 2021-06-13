@@ -28,7 +28,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the operation will hide errors from the SPARQL UPDATE endpoint
         /// </summary>
-        public bool Silent { get; internal set; }
+        public bool IsSilent { get; internal set; }
 
         /// <summary>
         /// Represents the Uri of the remote graph from which RDF data will be fetched
@@ -45,14 +45,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Default-ctor to build a LOAD operation for the given remote graph Uri
         /// </summary>
-        public RDFLoadOperation(Uri fromContext, Uri toContext=null, bool silent=false)
+        public RDFLoadOperation(Uri fromContext)
         {
             if (fromContext == null)
                 throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
 
             this.FromContext = fromContext;
-            this.ToContext = toContext;
-            this.Silent = silent;
         }
         #endregion
 
@@ -62,6 +60,26 @@ namespace RDFSharp.Query
         /// </summary>
         public override string ToString()
             => RDFOperationPrinter.PrintLoadOperation(this);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets the context of the graph into which RDF data will be inserted
+        /// </summary>
+        public RDFLoadOperation SetContext(Uri toContext)
+        {
+            this.ToContext = toContext;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the operation as silent, so that errors will not be delivered to the application
+        /// </summary>
+        public RDFLoadOperation Silent()
+        {
+            this.IsSilent = true;
+            return this;
+        }
         #endregion
     }
 }
