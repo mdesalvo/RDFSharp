@@ -189,24 +189,23 @@ namespace RDFSharp.Query
 
             try
             {
-                //Dereference the graph Uri in order to try fetching RDF data
-                RDFGraph fromGraph = RDFGraph.FromUri(loadOperation.FromContext);
+                //Dereference graph Uri in order to try fetching RDF data
+                RDFGraph insertGraph = RDFGraph.FromUri(loadOperation.FromContext);
+
+                //Use fetched RDF data for execution of the operation
+                List<RDFPattern> insertTemplates = new List<RDFPattern>();
                 if (datasource.IsGraph())
                 {
-                    foreach (RDFTriple triple in fromGraph)
-                        ((RDFGraph)datasource).AddTriple(triple);
+                    foreach (RDFTriple insertTriple in insertGraph)
+                        insertTemplates.Add(new RDFPattern(insertTriple.Subject, insertTriple.Predicate, insertTriple.Object));
                 }
                 else if (datasource.IsStore())
                 {
                     RDFContext context = new RDFContext(loadOperation.ToContext ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
-                    foreach (RDFTriple triple in fromGraph)
-                    {
-                        RDFQuadruple quadruple = triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
-                                                    ? new RDFQuadruple(context, (RDFResource)triple.Subject, (RDFResource)triple.Predicate, (RDFResource)triple.Object)
-                                                    : new RDFQuadruple(context, (RDFResource)triple.Subject, (RDFResource)triple.Predicate, (RDFLiteral)triple.Object);
-                        ((RDFStore)datasource).AddQuadruple(quadruple);
-                    }   
+                    foreach (RDFTriple insertTriple in insertGraph)
+                        insertTemplates.Add(new RDFPattern(context, insertTriple.Subject, insertTriple.Predicate, insertTriple.Object)); 
                 }
+                operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
             }
             catch
             {
