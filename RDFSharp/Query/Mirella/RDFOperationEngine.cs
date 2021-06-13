@@ -254,6 +254,8 @@ namespace RDFSharp.Query
                 try
                 {
                     sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
+
+                    //We assume that by design the remote SPARQL UPDATE endpoint should raise an exception in case of operation failures
                     opResult = true;
                 }
                 catch (Exception ex)
