@@ -182,10 +182,10 @@ namespace RDFSharp.Query
                 if (loadOperation.Silent)
                     sb.Append("SILENT ");
 
-                sb.Append(loadOperation.FromContext);
+                sb.Append($"<{loadOperation.FromContext}>");
 
                 if (loadOperation.ToContext != null)
-                    sb.Append($" INTO GRAPH {loadOperation.ToContext}");
+                    sb.Append($" INTO GRAPH <{loadOperation.ToContext}>");
             }
 
             return sb.ToString();
