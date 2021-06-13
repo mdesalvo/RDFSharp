@@ -229,8 +229,8 @@ namespace RDFSharp.Query
             if (sparqlUpdateEndpointOperationOptions == null)
                 sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
 
-            //Establish a connection to the given SPARQL UPDATE endpoint (30s timeout)
-            using (RDFWebClient webClient = new RDFWebClient(30000))
+            //Establish a connection to the given SPARQL UPDATE endpoint (60s timeout)
+            using (RDFWebClient webClient = new RDFWebClient(60000))
             {
                 //Insert user-provided parameters
                 webClient.QueryString.Add(sparqlUpdateEndpoint.QueryParams);
