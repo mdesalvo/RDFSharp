@@ -255,12 +255,12 @@ namespace RDFSharp.Query
                 {
                     sparqlUpdateResponse = webClient.UploadString(sparqlUpdateEndpoint.BaseAddress, operationString);
 
-                    //We assume that by design the remote SPARQL UPDATE endpoint should raise an exception in case of operation failures
+                    //We assume that by design the SPARQL UPDATE endpoint should raise an exception in case of operation failures
                     opResult = true;
                 }
                 catch (Exception ex)
                 {
-                    //Certain types of operation (e.g: LOAD) can opt for silencing the error
+                    //Certain types of operation can opt for silencing the error
                     if (operation is RDFLoadOperation loadOperation && loadOperation.Silent)
                         return opResult;
 
