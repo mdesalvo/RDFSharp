@@ -167,6 +167,29 @@ namespace RDFSharp.Query
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL LAOD operation
+        /// </summary>
+        internal static string PrintLoadOperation(RDFLoadOperation loadOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (loadOperation != null)
+            {
+                sb.Append("LOAD ");
+
+                if (loadOperation.Silent)
+                    sb.Append("SILENT ");
+
+                sb.Append(loadOperation.FromContext);
+
+                if (loadOperation.ToContext != null)
+                    sb.Append($" INTO GRAPH {loadOperation.ToContext}");
+            }
+
+            return sb.ToString();
+        }
         #endregion
 
         #region Utilities

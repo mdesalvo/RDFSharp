@@ -52,6 +52,8 @@ namespace RDFSharp.Query
                 result = EvaluateInsertWhereOperation(insertWhereOperation, datasource);
             else if (operation is RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
                 result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
+            else if (operation is RDFLoadOperation loadOperation)
+                result = EvaluateLoadOperation(loadOperation, datasource);
 
             return result;
         }
@@ -174,6 +176,44 @@ namespace RDFSharp.Query
             }
             operationResult.DeleteResults = PopulateDeleteOperationResults(deleteTemplates, datasource);
             operationResult.InsertResults = PopulateInsertOperationResults(insertTemplates, datasource);
+
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL LOAD operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateLoadOperation(RDFLoadOperation loadOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult();
+
+            try
+            {
+                //Dereference the graph Uri in order to try fetching RDF data
+                RDFGraph fromGraph = RDFGraph.FromUri(loadOperation.FromContext);
+                if (datasource.IsGraph())
+                {
+                    foreach (RDFTriple triple in fromGraph)
+                        ((RDFGraph)datasource).AddTriple(triple);
+                }
+                else if (datasource.IsStore())
+                {
+                    RDFContext context = new RDFContext(loadOperation.ToContext ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
+                    foreach (RDFTriple triple in fromGraph)
+                    {
+                        RDFQuadruple quadruple = triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                                                    ? new RDFQuadruple(context, (RDFResource)triple.Subject, (RDFResource)triple.Predicate, (RDFResource)triple.Object)
+                                                    : new RDFQuadruple(context, (RDFResource)triple.Subject, (RDFResource)triple.Predicate, (RDFLiteral)triple.Object);
+                        ((RDFStore)datasource).AddQuadruple(quadruple);
+                    }   
+                }
+            }
+            catch
+            {
+                //In case the operation is silent, the exception must be suppressed
+                if (!loadOperation.Silent)
+                    throw;
+            }
 
             return operationResult;
         }

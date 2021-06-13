@@ -15,12 +15,6 @@
 */
 
 using RDFSharp.Model;
-using RDFSharp.Store;
-using System;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
