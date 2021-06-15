@@ -134,6 +134,25 @@ namespace RDFSharp.Query
             X_WWW_FormUrlencoded = 2
         }
 
+        /// <summary>
+        /// RDFClearOperationFlavor represents an enumeration for supported flavors of implicit SPARQL CLEAR operation 
+        /// </summary>
+        public enum RDFClearOperationFlavor
+        {
+            /// <summary>
+            /// Indicates to remove only triples belonging to the default graph
+            /// </summary>
+            DEFAULT = 0,
+            /// <summary>
+            /// Indicates to remove only triples belonging to the named graphs
+            /// </summary>
+            NAMED = 1,
+            /// <summary>
+            /// Indicates to remove only triples belonging to the both default and named graphs
+            /// </summary>
+            ALL = 2
+        }
+
     }
 
 }

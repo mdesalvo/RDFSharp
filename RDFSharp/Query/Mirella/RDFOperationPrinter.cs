@@ -169,7 +169,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Prints the string representation of a SPARQL LAOD operation
+        /// Prints the string representation of a SPARQL LOAD operation
         /// </summary>
         internal static string PrintLoadOperation(RDFLoadOperation loadOperation)
         {
@@ -186,6 +186,44 @@ namespace RDFSharp.Query
 
                 if (loadOperation.ToContext != null)
                     sb.Append($" INTO GRAPH <{loadOperation.ToContext}>");
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL CLEAR operation
+        /// </summary>
+        internal static string PrintClearOperation(RDFClearOperation clearOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (clearOperation != null)
+            {
+                sb.Append("CLEAR ");
+
+                if (clearOperation.IsSilent)
+                    sb.Append("SILENT ");
+
+                if (clearOperation.FromContext != null)
+                    sb.Append($"GRAPH <{clearOperation.FromContext}>");
+                else
+                {
+                    switch (clearOperation.OperationFlavor)
+                    {
+                        case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
+                            sb.Append("DEFAULT");
+                            break;
+
+                        case RDFQueryEnums.RDFClearOperationFlavor.NAMED:
+                            sb.Append("NAMED");
+                            break;
+
+                        case RDFQueryEnums.RDFClearOperationFlavor.ALL:
+                            sb.Append("ALL");
+                            break;
+                    }
+                }                    
             }
 
             return sb.ToString();

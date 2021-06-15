@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web;
 using static RDFSharp.Query.RDFQueryUtilities;
 
@@ -54,6 +53,8 @@ namespace RDFSharp.Query
                 result = EvaluateDeleteInsertWhereOperation(deleteInsertWhereOperation, datasource);
             else if (operation is RDFLoadOperation loadOperation)
                 result = EvaluateLoadOperation(loadOperation, datasource);
+            else if (operation is RDFClearOperation clearOperation)
+                result = EvaluateClearOperation(clearOperation, datasource);
 
             return result;
         }
@@ -211,6 +212,72 @@ namespace RDFSharp.Query
             {
                 //In case the operation is silent, the exception must be suppressed
                 if (!loadOperation.IsSilent)
+                    throw;
+            }
+
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL CLEAR operation on the given RDF datasource
+        /// </summary>
+        internal RDFOperationResult EvaluateClearOperation(RDFClearOperation clearOperation, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult();
+
+            try
+            {
+                RDFDeleteWhereOperation deleteWhereOperation = new RDFDeleteWhereOperation();
+                RDFVariable c = new RDFVariable("C");
+                RDFVariable s = new RDFVariable("S");
+                RDFVariable p = new RDFVariable("P");
+                RDFVariable o = new RDFVariable("O");
+
+                //Transform SPARQL "CLEAR" operation into an equivalent SPARQL "DELETE WHERE" operation (explicit)
+                if (clearOperation.FromContext != null)
+                {
+                    deleteWhereOperation
+                        .AddPatternGroup(new RDFPatternGroup("PG1")
+                            .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), s, p, o)))
+                        .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), s, p, o));
+                }
+
+                //Transform SPARQL "CLEAR" operation into an equivalent SPARQL "DELETE WHERE" operation (implicit)
+                else
+                {
+                    switch (clearOperation.OperationFlavor)
+                    {
+                        case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
+                            deleteWhereOperation
+                                .AddPatternGroup(new RDFPatternGroup("PG1")
+                                    .AddPattern(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), s, p, o)))
+                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), s, p, o));
+                            break;
+
+                        case RDFQueryEnums.RDFClearOperationFlavor.NAMED:
+                            deleteWhereOperation
+                                .AddPatternGroup(new RDFPatternGroup("PG1")
+                                    .AddPattern(new RDFPattern(c, s, p, o))
+                                    .AddFilter(new RDFBooleanNotFilter(new RDFSameTermFilter(c, new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri)))))
+                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(c, s, p, o));
+                            break;
+
+                        case RDFQueryEnums.RDFClearOperationFlavor.ALL:
+                            deleteWhereOperation
+                                .AddPatternGroup(new RDFPatternGroup("PG1")
+                                    .AddPattern(new RDFPattern(c, s, p, o)))
+                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(c, s, p, o));
+                            break;
+                    }
+                }
+
+                //Evaluate equivalent SPARQL "DELETE WHERE" operation on the datasource
+                operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
+            }
+            catch
+            {
+                //In case the operation is silent, the exception must be suppressed
+                if (!clearOperation.IsSilent)
                     throw;
             }
 
