@@ -225,60 +225,70 @@ namespace RDFSharp.Query
         {
             RDFOperationResult operationResult = new RDFOperationResult();
 
-            try
+            //Graphs => automatically execute as "CLEAR ALL" (since they are contextless by design)
+            if (datasource.IsGraph())
             {
-                RDFDeleteWhereOperation deleteWhereOperation = new RDFDeleteWhereOperation();
-                RDFVariable c = new RDFVariable("C");
-                RDFVariable s = new RDFVariable("S");
-                RDFVariable p = new RDFVariable("P");
-                RDFVariable o = new RDFVariable("O");
-
-                //Transform SPARQL "CLEAR" operation into an equivalent SPARQL "DELETE WHERE" operation (explicit)
-                if (clearOperation.FromContext != null)
-                {
-                    deleteWhereOperation
-                        .AddPatternGroup(new RDFPatternGroup("PG1")
-                            .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), s, p, o)))
-                        .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), s, p, o));
-                }
-
-                //Transform SPARQL "CLEAR" operation into an equivalent SPARQL "DELETE WHERE" operation (implicit)
-                else
-                {
-                    switch (clearOperation.OperationFlavor)
-                    {
-                        case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
-                            deleteWhereOperation
-                                .AddPatternGroup(new RDFPatternGroup("PG1")
-                                    .AddPattern(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), s, p, o)))
-                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), s, p, o));
-                            break;
-
-                        case RDFQueryEnums.RDFClearOperationFlavor.NAMED:
-                            deleteWhereOperation
-                                .AddPatternGroup(new RDFPatternGroup("PG1")
-                                    .AddPattern(new RDFPattern(c, s, p, o))
-                                    .AddFilter(new RDFBooleanNotFilter(new RDFSameTermFilter(c, new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri)))))
-                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(c, s, p, o));
-                            break;
-
-                        case RDFQueryEnums.RDFClearOperationFlavor.ALL:
-                            deleteWhereOperation
-                                .AddPatternGroup(new RDFPatternGroup("PG1")
-                                    .AddPattern(new RDFPattern(c, s, p, o)))
-                                .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(c, s, p, o));
-                            break;
-                    }
-                }
-
-                //Evaluate equivalent SPARQL "DELETE WHERE" operation on the datasource
-                operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
+                operationResult.DeleteResults = ((RDFGraph)datasource).ToDataTable();
+                ((RDFGraph)datasource).ClearTriples();
             }
-            catch
+
+            //Stores => transform into an equivalent "DELETE WHERE"
+            else if (datasource.IsStore())
             {
-                //In case the operation is silent, the exception must be suppressed
-                if (!clearOperation.IsSilent)
-                    throw;
+                try
+                {
+                    RDFDeleteWhereOperation deleteWhereOperation = new RDFDeleteWhereOperation();
+
+                    //Explicit => delete quadruples having the given context
+                    if (clearOperation.FromContext != null)
+                    {
+                        deleteWhereOperation
+                            .AddPatternGroup(new RDFPatternGroup("PG1")
+                                .AddPattern(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                            .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                    }
+
+                    //Implicit => delete quadruples in respect of the given operation flavor
+                    else
+                    {
+                        switch (clearOperation.OperationFlavor)
+                        {
+                            //Default => delete quadruples having the default namespace as context
+                            case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
+                                deleteWhereOperation
+                                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                                        .AddPattern(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                                    .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                                break;
+
+                            //Default => delete quadruples NOT having the default namespace as context
+                            case RDFQueryEnums.RDFClearOperationFlavor.NAMED:
+                                deleteWhereOperation
+                                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                                        .AddPattern(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")))
+                                        .AddFilter(new RDFBooleanNotFilter(new RDFSameTermFilter(new RDFVariable("C"), new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri)))))
+                                    .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                                break;
+
+                            //Default => delete all quadruples
+                            case RDFQueryEnums.RDFClearOperationFlavor.ALL:
+                                deleteWhereOperation
+                                    .AddPatternGroup(new RDFPatternGroup("PG1")
+                                        .AddPattern(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                                    .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFVariable("C"), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+                                break;
+                        }
+                    }
+
+                    //Evaluate equivalent SPARQL "DELETE WHERE" operation on the datasource
+                    operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
+                }
+                catch
+                {
+                    //In case the operation is silent, the exception must be suppressed
+                    if (!clearOperation.IsSilent)
+                        throw;
+                }
             }
 
             return operationResult;
