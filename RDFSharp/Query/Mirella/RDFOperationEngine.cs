@@ -232,7 +232,7 @@ namespace RDFSharp.Query
                 ((RDFGraph)datasource).ClearTriples();
             }
 
-            //Stores => transform into an equivalent "DELETE WHERE"
+            //Stores => transform into a targeted "DELETE WHERE"
             else if (datasource.IsStore())
             {
                 try
@@ -248,7 +248,7 @@ namespace RDFSharp.Query
                             .AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(new RDFPattern(new RDFContext(clearOperation.FromContext), new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
                     }
 
-                    //Implicit => delete quadruples in respect of the given operation flavor
+                    //Implicit => delete quadruples according to the given operation flavor
                     else
                     {
                         switch (clearOperation.OperationFlavor)
@@ -280,7 +280,6 @@ namespace RDFSharp.Query
                         }
                     }
 
-                    //Evaluate equivalent SPARQL "DELETE WHERE" operation on the datasource
                     operationResult = EvaluateOperationOnGraphOrStore(deleteWhereOperation, datasource);
                 }
                 catch
