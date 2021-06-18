@@ -32,7 +32,6 @@ namespace RDFSharp.Store
     /// </summary>
     public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     {
-
         #region Properties
         /// <summary>
         /// Unique representation of the store
@@ -255,7 +254,6 @@ namespace RDFSharp.Store
             Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
             foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
             {
-
                 // Step 1: Cache-Update
                 if (!graphs.ContainsKey(q.Context.PatternMemberID))
                 {
@@ -276,9 +274,22 @@ namespace RDFSharp.Store
                                                                               (RDFResource)q.Predicate,
                                                                               (RDFLiteral)q.Object));
                 }
-
             }
             return graphs.Values.ToList();
+        }
+
+        /// <summary>
+        /// Gets a list containing the contexts saved in the store
+        /// </summary>
+        public List<RDFContext> ExtractContexts()
+        {
+            Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
+            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
+            {
+                if (!contexts.ContainsKey(q.Context.PatternMemberID))
+                    contexts.Add(q.Context.PatternMemberID, q.Context);
+            }
+            return contexts.Values.OfType<RDFContext>().ToList();
         }
 
         /// <summary>
@@ -455,7 +466,6 @@ namespace RDFSharp.Store
         #endregion
 
         #endregion
-
     }
 
 }
