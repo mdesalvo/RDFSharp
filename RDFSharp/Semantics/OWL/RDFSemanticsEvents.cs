@@ -41,7 +41,7 @@ namespace RDFSharp.Semantics.OWL
         /// Internal invoker of the subscribed information event handler
         /// </summary>
         internal static void RaiseSemanticsInfo(string eventMessage)
-            => Parallel.Invoke(() => OnSemanticsInfo(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";SEMANTICS_INFO;", eventMessage)));
+            => Parallel.Invoke(() => OnSemanticsInfo(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), ";SEMANTICS_INFO;", eventMessage)));
         #endregion
 
         #region OnSemanticsWarning
@@ -59,7 +59,7 @@ namespace RDFSharp.Semantics.OWL
         /// Internal invoker of the subscribed warning event handler
         /// </summary>
         internal static void RaiseSemanticsWarning(string eventMessage)
-            => Parallel.Invoke(() => OnSemanticsWarning(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"), ";SEMANTICS_WARNING;", eventMessage)));
+            => Parallel.Invoke(() => OnSemanticsWarning(string.Concat(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), ";SEMANTICS_WARNING;", eventMessage)));
         #endregion
 
     }
