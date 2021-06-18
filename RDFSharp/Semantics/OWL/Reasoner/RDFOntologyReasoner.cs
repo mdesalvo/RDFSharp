@@ -98,43 +98,32 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge.", ontology.Value));
 
-                //STEP 1: Expand ontology
+                //STEP 1: Expand working ontology
                 RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
 
-                //STEP 2: Initialize caches
-                Dictionary<string, List<RDFOntologyResource>> caches = new Dictionary<string, List<RDFOntologyResource>>()
-                {
-                    { "TB_FreeClasses", expOntology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)).OfType<RDFOntologyResource>().ToList() },
-                    { "TB_FreeProperties", expOntology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)).OfType<RDFOntologyResource>().ToList() }
-                };
-
-                //STEP 3: Execute standard rules
-                #region Standard rules
+                //STEP 2: Execute standard rules
                 Parallel.ForEach(this.Rules.Where(x => x.IsStandardRule), 
                     standardRule =>
                     {
                         RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoner rule '{0}'...", standardRule));
 
-                        RDFOntologyReasonerReport sRuleReport = standardRule.ExecuteRule(expOntology, caches);
+                        RDFOntologyReasonerReport sRuleReport = standardRule.ExecuteRule(expOntology);
                         report.Merge(sRuleReport);
 
                         RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoner rule '{0}': found {1} evidences.", standardRule, sRuleReport.EvidencesCount));
                     });
-                #endregion
 
-                //STEP 4: Execute custom rules
-                #region Custom rules
+                //STEP 3: Execute custom rules
                 Parallel.ForEach(this.Rules.Where(x => !x.IsStandardRule), 
                     customRule =>
                     {
                         RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoner rule '{0}'...", customRule));
 
-                        RDFOntologyReasonerReport cRuleReport = customRule.ExecuteRule(expOntology, caches);
+                        RDFOntologyReasonerReport cRuleReport = customRule.ExecuteRule(expOntology);
                         report.Merge(cRuleReport);
 
                         RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoner rule '{0}': found {1} evidences.", customRule, cRuleReport.EvidencesCount));
                     });
-                #endregion
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " unique evidences.", ontology.Value));
             }

@@ -40,7 +40,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Delegate for the function which will be executed as body of the rule
         /// </summary>
-        public delegate RDFOntologyReasonerReport ReasonerRuleDelegate(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null);
+        public delegate RDFOntologyReasonerReport ReasonerRuleDelegate(RDFOntology ontology);
 
         /// <summary>
         /// Function which will be executed as body of the rule

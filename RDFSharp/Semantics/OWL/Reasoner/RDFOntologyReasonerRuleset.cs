@@ -353,11 +353,11 @@ namespace RDFSharp.Semantics.OWL
         /// ((C1 SUBCLASSOF C2)      AND (C2 EQUIVALENTCLASS C3)) => (C1 SUBCLASSOF C3)<br/>
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 SUBCLASSOF C3))      => (C1 SUBCLASSOF C3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SubClassTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport SubClassTransitivityExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var subClassOf = RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty();
-            foreach (var c in caches["TB_FreeClasses"].OfType<RDFOntologyClass>())
+            foreach (var c in ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)))
             {
 
                 //Enlist the superclasses of the current class
@@ -382,13 +382,14 @@ namespace RDFSharp.Semantics.OWL
         /// ((P1 SUBPROPERTYOF P2)      AND (P2 EQUIVALENTPROPERTY P3)) => (P1 SUBPROPERTYOF P3)<br/>
         /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 SUBPROPERTYOF P3))      => (P1 SUBPROPERTYOF P3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SubPropertyTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport SubPropertyTransitivityExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var subPropertyOf = RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && !p.IsAnnotationProperty()).ToList();
             foreach (var p in availableprops)
             {
                 //Enlist the superproperties of the current property
@@ -411,13 +412,14 @@ namespace RDFSharp.Semantics.OWL
         /// ((F TYPE C1) AND (C1 SUBCLASSOF C2))      => (F TYPE C2)<br/>
         /// ((F TYPE C1) AND (C1 EQUIVALENTCLASS C2)) => (F TYPE C2)
         /// </summary>
-        internal static RDFOntologyReasonerReport ClassTypeEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport ClassTypeEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available classes on which to perform the reasoning (exclude BASE classes and literal-compatible classes)
-            var availableclasses = caches["TB_FreeClasses"].OfType<RDFOntologyClass>().Where(cls => !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(cls));
+            var availableclasses = ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)
+                                                                            && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(c));
             var membersCache = new Dictionary<long, RDFOntologyData>();
 
             //Evaluate enumerations
@@ -504,12 +506,13 @@ namespace RDFSharp.Semantics.OWL
         /// ((F1 P1 F2) AND (P1 SUBPROPERTYOF P2))      => (F1 P2 F2)<br/>
         /// ((F1 P1 F2) AND (P1 EQUIVALENTPROPERTY P2)) => (F1 P2 F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport PropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport PropertyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && !p.IsAnnotationProperty()).ToList();
             foreach (var p1 in availableprops)
             {
 
@@ -549,13 +552,14 @@ namespace RDFSharp.Semantics.OWL
         /// DomainEntailment (rdfs2) implements structural entailments based on 'rdfs:domain' taxonomy:<br/>
         /// ((F1 P F2) AND (P DOMAIN C)) => (F1 TYPE C)"
         /// </summary>
-        internal static RDFOntologyReasonerReport DomainEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport DomainEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && !p.IsAnnotationProperty()).ToList();
             foreach (var p in availableprops)
             {
                 if (p.Domain != null)
@@ -584,13 +588,14 @@ namespace RDFSharp.Semantics.OWL
         /// RangeEntailment (rdfs3) implements structural entailments based on 'rdfs:range' taxonomy:<br/>
         /// ((F1 P F2) AND (P RANGE C)) => (F2 TYPE C)"
         /// </summary>
-        internal static RDFOntologyReasonerReport RangeEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport RangeEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && !p.IsAnnotationProperty()).ToList();
             foreach (var p in availableprops)
             {
                 if (p.Range != null)
@@ -627,11 +632,11 @@ namespace RDFSharp.Semantics.OWL
         /// EquivalentClassTransitivity implements structural entailments based on 'owl:EquivalentClass' taxonomy:<br/>
         /// ((C1 EQUIVALENTCLASS C2) AND (C2 EQUIVALENTCLASS C3)) => (C1 EQUIVALENTCLASS C3)
         /// </summary>
-        internal static RDFOntologyReasonerReport EquivalentClassTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport EquivalentClassTransitivityExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var equivalentClass = RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty();
-            foreach (var c in caches["TB_FreeClasses"].OfType<RDFOntologyClass>())
+            foreach (var c in ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)))
             {
 
                 //Enlist the equivalent classes of the current class
@@ -659,11 +664,11 @@ namespace RDFSharp.Semantics.OWL
         /// ((C1 SUBCLASSOF C2)      AND (C2 DISJOINTWITH C3))    => (C1 DISJOINTWITH C3)<br/>
         /// ((C1 DISJOINTWITH C2)    AND (C2 EQUIVALENTCLASS C3)) => (C1 DISJOINTWITH C3)
         /// </summary>
-        internal static RDFOntologyReasonerReport DisjointWithEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport DisjointWithEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var disjointWith = RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty();
-            foreach (var c in caches["TB_FreeClasses"].OfType<RDFOntologyClass>())
+            foreach (var c in ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)))
             {
 
                 //Enlist the disjoint classes of the current class
@@ -689,13 +694,14 @@ namespace RDFSharp.Semantics.OWL
         /// EquivalentPropertyTransitivity implements structural entailments based on 'owl:EquivalentProperty' taxonomy:<br/>
         /// ((P1 EQUIVALENTPROPERTY P2) AND (P2 EQUIVALENTPROPERTY P3)) => (P1 EQUIVALENTPROPERTY P3)
         /// </summary>
-        internal static RDFOntologyReasonerReport EquivalentPropertyTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport EquivalentPropertyTransitivityExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var equivProperty = RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && !p.IsAnnotationProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -722,7 +728,7 @@ namespace RDFSharp.Semantics.OWL
         /// SameAsTransitivity implements structural entailments based on 'owl:sameAs' taxonomy:<br/>
         /// ((F1 SAMEAS F2) AND (F2 SAMEAS F3)) => (F1 SAMEAS F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SameAsTransitivityExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport SameAsTransitivityExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var sameAs = RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty();
@@ -753,7 +759,7 @@ namespace RDFSharp.Semantics.OWL
         /// ((F1 SAMEAS F2)        AND (F2 DIFFERENTFROM F3)) => (F1 DIFFERENTFROM F3)<br/>
         /// ((F1 DIFFERENTFROM F2) AND (F2 SAMEAS F3))        => (F1 DIFFERENTFROM F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport DifferentFromEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport DifferentFromEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var differentFrom = RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty();
@@ -783,12 +789,13 @@ namespace RDFSharp.Semantics.OWL
         /// InverseOfEntailment implements data entailments based on 'owl:inverseOf' taxonomy:<br/>
         /// ((F1 P1 F2) AND (P1 INVERSEOF P2)) => (F2 P2 F1)
         /// </summary>
-        internal static RDFOntologyReasonerReport InverseOfEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport InverseOfEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation/datatype properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => prop.IsObjectProperty()).ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && p.IsObjectProperty()).ToList();
             foreach (var p1 in availableprops)
             {
 
@@ -828,7 +835,7 @@ namespace RDFSharp.Semantics.OWL
         /// ((F1 P F2) AND (F1 SAMEAS F3)) => (F3 P F2)<br/>
         /// ((F1 P F2) AND (F2 SAMEAS F3)) => (F1 P F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport SameAsEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport SameAsEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             foreach (var f1 in ontology.Data)
@@ -897,12 +904,13 @@ namespace RDFSharp.Semantics.OWL
         /// SymmetricPropertyEntailment implements data entailments based on 'owl:SymmetricProperty' axiom:<br/>
         /// ((F1 P F2) AND (P TYPE SYMMETRICPROPERTY)) => (F2 P F1)
         /// </summary>
-        internal static RDFOntologyReasonerReport SymmetricPropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport SymmetricPropertyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-symmetric properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => prop.IsSymmetricProperty()).ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && p.IsSymmetricProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -935,13 +943,14 @@ namespace RDFSharp.Semantics.OWL
         /// TransitivePropertyEntailment implements data entailments based on 'owl:TransitiveProperty' axiom:<br/>
         /// ((F1 P F2) AND (F2 P F3) AND (P TYPE TRANSITIVEPROPERTY)) => (F1 P F3)
         /// </summary>
-        internal static RDFOntologyReasonerReport TransitivePropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport TransitivePropertyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var transPropCache = new Dictionary<long, RDFOntologyData>();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-transitive properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => prop.IsTransitiveProperty()).ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && p.IsTransitiveProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -981,12 +990,12 @@ namespace RDFSharp.Semantics.OWL
         /// HasValueEntailment implements data entailments based on 'owl:hasValue' restrictions:<br/>
         /// ((F1 TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASVALUE F2)) => (F1 P F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport HasValueEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport HasValueEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Fetch owl:hasValue restrictions from the class model (R, P, F2)
-            var hvRestrictions = caches["TB_FreeClasses"].OfType<RDFOntologyHasValueRestriction>();
+            var hvRestrictions = ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)).OfType<RDFOntologyHasValueRestriction>();
             foreach (var hvRestriction in hvRestrictions)
             {
                 //Calculate subclasses of the current owl:hasValue restriction (C)
@@ -1016,12 +1025,13 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) ReflexivePropertyEntailment implements data entailments based on 'owl:ReflexiveProperty' axiom:<br/>
         /// ((F1 P F2) AND (P TYPE REFLEXIVEPROPERTY)) => (F1 P F1)
         /// </summary>
-        internal static RDFOntologyReasonerReport ReflexivePropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport ReflexivePropertyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and not-reflexive properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => prop.IsReflexiveProperty()).ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && p.IsReflexiveProperty()).ToList();
             foreach (var p in availableprops)
             {
 
@@ -1048,7 +1058,7 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) HasKeyEntailment implements data entailments based on 'owl:hasKey' axiom:<br/>
         /// ((C HASKEY P) AND (F1 TYPE C) AND (F2 TYPE C) AND (F1 P K) AND (F2 P K)) => (F1 SAMEAS F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport HasKeyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport HasKeyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var sameAs = RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty();
@@ -1111,7 +1121,7 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) PropertyChainEntailment implements data entailments based on 'owl:propertyChainAxiom' axiom:<br/>
         /// ((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) AND (F1 P1 X) AND (X P2 F2)) => (F1 PCA F2)
         /// </summary>
-        internal static RDFOntologyReasonerReport PropertyChainEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport PropertyChainEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
@@ -1135,7 +1145,7 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) NamedIndividualEntailment implements data entailments based on 'owl:NamedIndividual' declaration:<br/>
         /// ((F TYPE C) AND (F ISNOT BLANK) => (F TYPE NAMEDINDIVIDUAL)
         /// </summary>
-        internal static RDFOntologyReasonerReport NamedIndividualEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport NamedIndividualEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var rdfType = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
@@ -1160,12 +1170,12 @@ namespace RDFSharp.Semantics.OWL
         /// (OWL2) HasSelfEntailment implements data entailments based on 'owl:hasSelf' restrictions:<br/>
         /// ((F TYPE C) AND (C SUBCLASSOF R) AND (R TYPE RESTRICTION) AND (R ONPROPERTY P) AND (R HASSELF TRUE)) => (F P F)
         /// </summary>
-        internal static RDFOntologyReasonerReport HasSelfEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport HasSelfEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
 
             //Fetch owl:hasSelf restrictions from the class model (R, P)
-            var hsRestrictions = caches["TB_FreeClasses"].OfType<RDFOntologyHasSelfRestriction>();
+            var hsRestrictions = ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)).OfType<RDFOntologyHasSelfRestriction>();
             foreach (var hsRestriction in hsRestrictions)
             {
                 //Calculate subclasses of the current owl:hasSelf restriction (C)
@@ -1194,7 +1204,7 @@ namespace RDFSharp.Semantics.OWL
         /// ((P TYPE OBJECTPROPERTY)   => (P SUBPROPERTYOF TOPOBJECTPROPERTY)<br/>
         /// ((P TYPE DATATYPEPROPERTY) => (P SUBPROPERTYOF TOPDATAPROPERTY)
         /// </summary>
-        internal static RDFOntologyReasonerReport TopPropertyEntailmentExec(RDFOntology ontology, Dictionary<string, List<RDFOntologyResource>> caches = null)
+        internal static RDFOntologyReasonerReport TopPropertyEntailmentExec(RDFOntology ontology)
         {
             var report = new RDFOntologyReasonerReport();
             var subPropertyOf = RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty();
@@ -1202,7 +1212,8 @@ namespace RDFSharp.Semantics.OWL
             var topDataProperty = RDFVocabulary.OWL.TOP_DATA_PROPERTY.ToRDFOntologyDatatypeProperty();
 
             //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            var availableprops = caches["TB_FreeProperties"].Where(prop => !prop.IsAnnotationProperty()).OfType<RDFOntologyProperty>().ToList();
+            var availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                            && !p.IsAnnotationProperty()).ToList();
             foreach (var op in availableprops.OfType<RDFOntologyObjectProperty>())
             {
                 //Create the inference as a taxonomy entry
