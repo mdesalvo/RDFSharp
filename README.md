@@ -22,7 +22,7 @@ RDFSharp has a modular API made up of four layers ([RDF/SPARQL/SHACL docs](https
     <ul>
         <li>Create and manage <i>RDF federations</i> giving integrated query access to multiple data sources</li>
         <li>Create and execute <i>SPARQL queries</i> on graphs, stores, federations and <i>SPARQL endpoints</i></li>
-        <li>Create and execute <i>SPARQL updates</i> on graphs, stores and <i>SPARQL UPDATE endpoints</i></li>
+        <li>Create and execute <i>SPARQL operations</i> on graphs, stores and <i>SPARQL UPDATE endpoints</i></li>
     </ul>
 </ul>
 <ul>
