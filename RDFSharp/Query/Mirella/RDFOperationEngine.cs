@@ -331,9 +331,9 @@ namespace RDFSharp.Query
                         webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
                         //Handle user-provided parameters
                         if (!string.IsNullOrEmpty(defaultGraphUri))
-                            webClient.QueryString.Add("using-graph-uri=", defaultGraphUri);
+                            webClient.QueryString.Add("using-graph-uri", defaultGraphUri);
                         if (!string.IsNullOrEmpty(namedGraphUri))
-                            webClient.QueryString.Add("using-named-graph-uri=", namedGraphUri);
+                            webClient.QueryString.Add("using-named-graph-uri", namedGraphUri);
                         break;
                 }
 
