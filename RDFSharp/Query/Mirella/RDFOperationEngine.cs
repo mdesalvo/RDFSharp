@@ -307,20 +307,33 @@ namespace RDFSharp.Query
             //Establish a connection to the given SPARQL UPDATE endpoint (60s timeout)
             using (RDFWebClient webClient = new RDFWebClient(60000))
             {
-                //Insert user-provided parameters
-                webClient.QueryString.Add(sparqlUpdateEndpoint.QueryParams);
+                //Parse user-provided parameters
+                string defaultGraphUri = sparqlUpdateEndpoint.QueryParams.Get("default-graph-uri");
+                string namedGraphUri = sparqlUpdateEndpoint.QueryParams.Get("named-graph-uri");
 
                 //Insert request headers
                 string operationString = operation.ToString();
                 switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
                 {
+                    //update via POST with URL-encoded parameters
                     case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded:
-                        operationString = string.Concat("update=", HttpUtility.UrlEncode(operationString));
                         webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+                        operationString = string.Concat("update=", HttpUtility.UrlEncode(operationString));
+                        //Handle user-provided parameters
+                        if (!string.IsNullOrEmpty(defaultGraphUri))
+                            operationString = string.Concat("using-graph-uri=", HttpUtility.UrlEncode(defaultGraphUri), "&", operationString);
+                        if (!string.IsNullOrEmpty(namedGraphUri))
+                            operationString = string.Concat("using-named-graph-uri=", HttpUtility.UrlEncode(namedGraphUri), "&", operationString);                        
                         break;
 
+                    //update via POST directly
                     case RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.Sparql_Update:
                         webClient.Headers.Add(HttpRequestHeader.ContentType, "application/sparql-update");
+                        //Handle user-provided parameters
+                        if (!string.IsNullOrEmpty(defaultGraphUri))
+                            webClient.QueryString.Add("using-graph-uri=", defaultGraphUri);
+                        if (!string.IsNullOrEmpty(namedGraphUri))
+                            webClient.QueryString.Add("using-named-graph-uri=", namedGraphUri);
                         break;
                 }
 
