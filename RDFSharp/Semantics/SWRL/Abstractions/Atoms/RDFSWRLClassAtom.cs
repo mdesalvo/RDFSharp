@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -23,15 +25,12 @@ namespace RDFSharp.Semantics.SWRL
     /// </summary>
     public class RDFSWRLClassAtom : RDFSWRLAtom
     {
-        #region Properties
-        /// <summary>
-        /// Represents the ontology class checked by the atom
-        /// </summary>
-        public RDFOntologyClass OntologyClass { get; internal set; }
-        #endregion
-
         #region Ctors
-        
+        /// <summary>
+        /// Default-ctor to build a class atom with the given ontology class, predicate name and arguments
+        /// </summary>
+        public RDFSWRLClassAtom(RDFOntologyClass ontologyClass, string predicateName, List<RDFPatternMember> arguments)
+            : base(ontologyClass, predicateName, arguments) { }
         #endregion
 
         #region Interfaces
