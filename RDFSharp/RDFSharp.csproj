@@ -47,4 +47,8 @@
 	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Semantics\SWRL\Abstractions\Atoms\BuiltIns\" />
+  </ItemGroup>
+
 </Project>
