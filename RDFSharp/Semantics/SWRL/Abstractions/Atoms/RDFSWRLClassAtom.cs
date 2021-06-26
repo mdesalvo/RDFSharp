@@ -24,11 +24,14 @@ namespace RDFSharp.Semantics.SWRL
     public class RDFSWRLClassAtom : RDFSWRLAtom
     {
         #region Properties
-
+        /// <summary>
+        /// Represents the ontology class checked by the atom
+        /// </summary>
+        public RDFOntologyClass OntologyClass { get; internal set; }
         #endregion
 
         #region Ctors
-
+        
         #endregion
 
         #region Interfaces

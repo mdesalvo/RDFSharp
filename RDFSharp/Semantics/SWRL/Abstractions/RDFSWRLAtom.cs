@@ -14,7 +14,9 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -24,11 +26,32 @@ namespace RDFSharp.Semantics.SWRL
     public abstract class RDFSWRLAtom
     {
         #region Properties
+        /// <summary>
+        /// Represents the predicate given to the atom
+        /// </summary>
+        public string Predicate { get; internal set; }
 
+        /// <summary>
+        /// Represents the arguments given to the atom
+        /// </summary>
+        public List<RDFPatternMember> Arguments { get; internal set; }
         #endregion
 
         #region Ctors
+        /// <summary>
+        /// Default-ctor to build an atom with given predicate and arguments (e.g.: predicate(arg1,arg2,...))
+        /// </summary>
+        internal RDFSWRLAtom(string predicate, List<RDFPatternMember> arguments)
+        {
+            if (string.IsNullOrWhiteSpace(predicate))
+                throw new RDFSemanticsException("Cannot create SWRL atom because given \"predicate\" parameter is null or empty");
 
+            if (arguments?.Count == 0)
+                throw new RDFSemanticsException("Cannot create SWRL atom because given \"arguments\" parameter is null or does not contain elements");
+
+            this.Predicate = predicate.ToUpperInvariant().Trim();
+            this.Arguments = arguments;
+        }
         #endregion
 
         #region Interfaces

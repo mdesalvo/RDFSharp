@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -24,11 +25,18 @@ namespace RDFSharp.Semantics.SWRL
     public class RDFSWRLRuleAntecedent
     {
         #region Properties
-
+        /// <summary>
+        /// Atoms composing the antecedent
+        /// </summary>
+        internal List<RDFSWRLAtom> Atoms { get; set; }
         #endregion
 
         #region Ctors
-
+        /// <summary>
+        /// Default-ctor to build an empty antecedent
+        /// </summary>
+        public RDFSWRLRuleAntecedent()
+            => this.Atoms = new List<RDFSWRLAtom>();
         #endregion
 
         #region Interfaces
@@ -36,7 +44,15 @@ namespace RDFSharp.Semantics.SWRL
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// Adds the given atom to the antecedent
+        /// </summary>
+        public RDFSWRLRuleAntecedent AddAtom(RDFSWRLAtom atom)
+        {
+            if (atom != null)
+                this.Atoms.Add(atom);
+            return this;
+        }
         #endregion
     }
 }

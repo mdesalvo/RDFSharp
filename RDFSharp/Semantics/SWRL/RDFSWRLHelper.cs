@@ -19,24 +19,9 @@ using RDFSharp.Semantics.OWL;
 namespace RDFSharp.Semantics.SWRL
 {
     /// <summary>
-    /// RDFSWRLBuiltInAtom represents an atom describing one or more conditions to be satisfied by 
+    /// RDFSWRLHelper contains utility methods supporting SWRL modeling and reasoning
     /// </summary>
-    public abstract class RDFSWRLBuiltInAtom : RDFSWRLAtom
+    public static class RDFSWRLHelper
     {
-        #region Properties
-
-        #endregion
-
-        #region Ctors
-
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
-        #endregion
     }
 }

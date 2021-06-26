@@ -27,14 +27,13 @@ namespace RDFSharp.Semantics.SKOS
     /// </summary>
     internal static class RDFSKOSChecker
     {
-
         #region Methods
         /// <summary>
         /// Checks if the skos:broader/skos:broaderTransitive/skos:broadMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
         internal static bool CheckBroaderRelation(RDFSKOSConceptScheme conceptScheme,
-                                                     RDFSKOSConcept aConcept,
-                                                     RDFSKOSConcept bConcept)
+                                                  RDFSKOSConcept aConcept,
+                                                  RDFSKOSConcept bConcept)
         {
             var canAddBroaderRel = false;
 
@@ -63,8 +62,8 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the skos:narrower/skos:narrowerTransitive/skos:narrowMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
         internal static bool CheckNarrowerRelation(RDFSKOSConceptScheme conceptScheme,
-                                                      RDFSKOSConcept aConcept,
-                                                      RDFSKOSConcept bConcept)
+                                                   RDFSKOSConcept aConcept,
+                                                   RDFSKOSConcept bConcept)
         {
             var canAddNarrowerRel = false;
 
@@ -93,8 +92,8 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the skos:related/skos:relatedMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
         internal static bool CheckRelatedRelation(RDFSKOSConceptScheme conceptScheme,
-                                                     RDFSKOSConcept aConcept,
-                                                     RDFSKOSConcept bConcept)
+                                                  RDFSKOSConcept aConcept,
+                                                  RDFSKOSConcept bConcept)
         {
             var canAddRelatedRel = false;
 
@@ -118,8 +117,8 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the skos:closeMatch/skos:exactMatch relation can be added to the given aConcept with the given bConcept
         /// </summary>
         internal static bool CheckCloseOrExactMatchRelation(RDFSKOSConceptScheme conceptScheme,
-                                                               RDFSKOSConcept aConcept,
-                                                               RDFSKOSConcept bConcept)
+                                                            RDFSKOSConcept aConcept,
+                                                            RDFSKOSConcept bConcept)
         {
             var canAddCloseOrExactMatchRel = false;
 
@@ -142,8 +141,8 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the skos:prefLabel/skosxl:prefLabel informations can be added to the given concept
         /// </summary>
         internal static bool CheckPrefLabel(RDFSKOSConceptScheme conceptScheme,
-                                               RDFOntologyFact concept,
-                                               RDFOntologyLiteral literal)
+                                            RDFOntologyFact concept,
+                                            RDFOntologyLiteral literal)
         {
             var canAddPrefLabelInfo = false;
             var prefLabelLiteralLang = ((RDFPlainLiteral)literal.Value).Language;
@@ -232,8 +231,8 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the skos:altLabel/skosxl:altLabel informations can be added to the given concept
         /// </summary>
         internal static bool CheckAltLabel(RDFSKOSConceptScheme conceptScheme,
-                                              RDFOntologyFact concept,
-                                              RDFOntologyLiteral literal)
+                                           RDFOntologyFact concept,
+                                           RDFOntologyLiteral literal)
         {
             var canAddAltLabelInfo = false;
 
@@ -269,8 +268,8 @@ namespace RDFSharp.Semantics.SKOS
         /// Checks if the skos:hiddenLabel/skosxl:hiddenLabel informations can be added to the given concept
         /// </summary>
         internal static bool CheckHiddenLabel(RDFSKOSConceptScheme conceptScheme,
-                                                 RDFOntologyFact concept,
-                                                 RDFOntologyLiteral literal)
+                                              RDFOntologyFact concept,
+                                              RDFOntologyLiteral literal)
         {
             var canAddHiddenLabelInfo = false;
 
@@ -302,7 +301,6 @@ namespace RDFSharp.Semantics.SKOS
             return canAddHiddenLabelInfo;
         }
         #endregion
-
     }
 
 }

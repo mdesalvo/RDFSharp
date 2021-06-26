@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -24,11 +25,18 @@ namespace RDFSharp.Semantics.SWRL
     public class RDFSWRLRuleConsequent
     {
         #region Properties
-
+        /// <summary>
+        /// Atoms composing the consequent
+        /// </summary>
+        internal List<RDFSWRLAtom> Atoms { get; set; }
         #endregion
 
         #region Ctors
-
+        /// <summary>
+        /// Default-ctor to build an empty consequent
+        /// </summary>
+        public RDFSWRLRuleConsequent()
+            => this.Atoms = new List<RDFSWRLAtom>();
         #endregion
 
         #region Interfaces
@@ -36,7 +44,15 @@ namespace RDFSharp.Semantics.SWRL
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// Adds the given atom to the consequent
+        /// </summary>
+        public RDFSWRLRuleConsequent AddAtom(RDFSWRLAtom atom)
+        {
+            if (atom != null)
+                this.Atoms.Add(atom);
+            return this;
+        }
         #endregion
     }
 }
