@@ -28,39 +28,36 @@ namespace RDFSharp.Semantics.SWRL
     {
         #region Properties
         /// <summary>
-        /// Represents the predicate checked on the ontology (e.g: "http://xmlns.com/foaf/0.1/Person")
+        /// Represents the atom's predicate
         /// </summary>
         public RDFOntologyResource Predicate { get; internal set; }
 
         /// <summary>
-        /// Represents the friendly name used for printing the atom's predicate (e.g: "Person")
+        /// Represents the left argument given to the atom's predicate
         /// </summary>
-        public string PredicateName { get; internal set; }
+        public RDFPatternMember LeftArgument { get; internal set; }
 
         /// <summary>
-        /// Represents the arguments given to the atom's predicate
+        /// Represents the right argument given to the atom's predicate
         /// </summary>
-        public List<RDFPatternMember> Arguments { get; internal set; }
+        public RDFPatternMember RightArgument { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an atom with given predicate and arguments (e.g. "hasBrother(?x,?y)")
+        /// Default-ctor to build an atom with given predicate and arguments
         /// </summary>
-        internal RDFSWRLAtom(RDFOntologyResource predicate, string predicateName, List<RDFPatternMember> arguments)
+        internal RDFSWRLAtom(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
         {
             if (predicate == null)
                 throw new RDFSemanticsException("Cannot create SWRL atom because given \"predicate\" parameter is null");
 
-            if (string.IsNullOrWhiteSpace(predicateName))
-                throw new RDFSemanticsException("Cannot create SWRL atom because given \"predicateName\" parameter is null or empty");
-
-            if (arguments?.Count == 0)
-                throw new RDFSemanticsException("Cannot create SWRL atom because given \"arguments\" parameter is null or does not contain elements");
+            if (leftArgument == null)
+                throw new RDFSemanticsException("Cannot create SWRL atom because given \"leftArgument\" parameter is null");
 
             this.Predicate = predicate;
-            this.PredicateName = predicateName;            
-            this.Arguments = arguments;
+            this.LeftArgument = leftArgument;
+            this.RightArgument = rightArgument;
         }
         #endregion
 

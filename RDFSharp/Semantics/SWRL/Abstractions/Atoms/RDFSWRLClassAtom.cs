@@ -16,7 +16,6 @@
 
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
-using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -27,18 +26,10 @@ namespace RDFSharp.Semantics.SWRL
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a class atom with the given ontology class, predicate name and arguments
+        /// Default-ctor to build a class atom with the given class and arguments
         /// </summary>
-        public RDFSWRLClassAtom(RDFOntologyClass ontologyClass, string predicateName, List<RDFPatternMember> arguments)
-            : base(ontologyClass, predicateName, arguments) { }
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+        public RDFSWRLClassAtom(RDFOntologyClass ontologyClass, RDFVariable leftArgument)
+            : base(ontologyClass, leftArgument, null) { }
         #endregion
     }
 }

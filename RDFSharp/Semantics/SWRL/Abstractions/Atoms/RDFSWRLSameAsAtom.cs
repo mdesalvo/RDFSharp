@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
 
 namespace RDFSharp.Semantics.SWRL
@@ -21,22 +23,14 @@ namespace RDFSharp.Semantics.SWRL
     /// <summary>
     /// RDFSWRLSameAsAtom represents an atom describing owl:sameAs assertions relating ontology facts 
     /// </summary>
-    public class RDFSWRLSameAsAtom : RDFSWRLAtom
+    public class RDFSWRLSameAsAtom : RDFSWRLIndividualPropertyAtom
     {
-        #region Properties
-
-        #endregion
-
         #region Ctors
-
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+        /// <summary>
+        /// Default-ctor to build an owl:sameAs atom with the given arguments
+        /// </summary>
+        public RDFSWRLSameAsAtom(RDFVariable leftArgument, RDFVariable rightArgument)
+            : base(RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
     }
 }

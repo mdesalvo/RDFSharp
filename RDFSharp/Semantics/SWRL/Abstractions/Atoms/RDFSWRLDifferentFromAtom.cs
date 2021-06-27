@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
 
 namespace RDFSharp.Semantics.SWRL
@@ -21,22 +23,14 @@ namespace RDFSharp.Semantics.SWRL
     /// <summary>
     /// RDFSWRLDifferentFromAtom represents an atom describing owl:differentFrom assertions relating ontology facts 
     /// </summary>
-    public class RDFSWRLDifferentFromAtom : RDFSWRLAtom
+    public class RDFSWRLDifferentFromAtom : RDFSWRLIndividualPropertyAtom
     {
-        #region Properties
-
-        #endregion
-
         #region Ctors
-
-        #endregion
-
-        #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+        /// <summary>
+        /// Default-ctor to build an owl:differentFrom atom with the given arguments
+        /// </summary>
+        public RDFSWRLDifferentFromAtom(RDFVariable leftArgument, RDFVariable rightArgument)
+            : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
     }
 }
