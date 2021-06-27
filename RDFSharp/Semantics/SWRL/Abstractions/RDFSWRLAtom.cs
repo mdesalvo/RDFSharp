@@ -31,7 +31,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Represents the atom's predicate
         /// </summary>
-        public RDFResource Predicate { get; internal set; }
+        public RDFOntologyResource Predicate { get; internal set; }
 
         /// <summary>
         /// Represents the left argument given to the atom's predicate
@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Default-ctor to build an atom with given predicate and arguments
         /// </summary>
-        internal RDFSWRLAtom(RDFResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
+        internal RDFSWRLAtom(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
         {
             if (predicate == null)
                 throw new RDFSemanticsException("Cannot create SWRL atom because given \"predicate\" parameter is null");
@@ -70,7 +70,7 @@ namespace RDFSharp.Semantics.SWRL
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(this.Predicate.URI.Segments.Last());
+            sb.Append(((RDFResource)this.Predicate.Value).URI.Segments.Last());
             sb.Append("(");
             sb.Append(this.LeftArgument);
             if (this.RightArgument != null)

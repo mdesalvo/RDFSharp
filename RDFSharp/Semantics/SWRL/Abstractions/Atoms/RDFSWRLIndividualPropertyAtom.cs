@@ -36,12 +36,6 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public RDFSWRLIndividualPropertyAtom(RDFOntologyObjectProperty ontologyObjectProperty, RDFVariable leftArgument, RDFOntologyFact rightArgument)
             : base(ontologyObjectProperty, leftArgument, rightArgument) { }
-
-        /// <summary>
-        /// Default-ctor to build an individual atom with the given property and arguments
-        /// </summary>
-        public RDFSWRLIndividualPropertyAtom(RDFOntologyObjectProperty ontologyObjectProperty, RDFOntologyFact leftArgument, RDFVariable rightArgument)
-            : base(ontologyObjectProperty, leftArgument, rightArgument) { }
         #endregion
     }
 }
