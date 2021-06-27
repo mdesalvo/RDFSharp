@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Semantics.OWL;
+using System.Text;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -53,11 +54,11 @@ namespace RDFSharp.Semantics.SWRL
         #endregion
 
         #region Interfaces
-
-        #endregion
-
-        #region Methods
-
+        /// <summary>
+        /// Gives the string representation of the rule
+        /// </summary>
+        public override string ToString()
+            => string.Concat(this.Antecedent, " ⇒ ", this.Consequent);
         #endregion
     }
 }

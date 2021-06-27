@@ -70,9 +70,11 @@ namespace RDFSharp.Semantics.SWRL
         {
             StringBuilder sb = new StringBuilder();
 
+            //Predicate
             sb.Append(((RDFResource)this.Predicate.Value).URI.Segments.Last());
-            sb.Append("(");
-            sb.Append(this.LeftArgument);
+
+            //Arguments
+            sb.Append($"({this.LeftArgument}");
             if (this.RightArgument != null)
                 sb.Append($",{this.RightArgument}");
             sb.Append(")");

@@ -16,6 +16,7 @@
 
 using RDFSharp.Semantics.OWL;
 using System.Collections.Generic;
+using System.Text;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -40,7 +41,11 @@ namespace RDFSharp.Semantics.SWRL
         #endregion
 
         #region Interfaces
-
+        /// <summary>
+        /// Gives the string representation of the antecedent
+        /// </summary>
+        public override string ToString()
+            => string.Join(" ∧ ", this.Atoms);
         #endregion
 
         #region Methods
