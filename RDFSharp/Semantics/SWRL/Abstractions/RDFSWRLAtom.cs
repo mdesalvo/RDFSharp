@@ -14,10 +14,11 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -30,7 +31,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Represents the atom's predicate
         /// </summary>
-        public RDFOntologyResource Predicate { get; internal set; }
+        public RDFResource Predicate { get; internal set; }
 
         /// <summary>
         /// Represents the left argument given to the atom's predicate
@@ -47,7 +48,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Default-ctor to build an atom with given predicate and arguments
         /// </summary>
-        internal RDFSWRLAtom(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
+        internal RDFSWRLAtom(RDFResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
         {
             if (predicate == null)
                 throw new RDFSemanticsException("Cannot create SWRL atom because given \"predicate\" parameter is null");
@@ -62,11 +63,22 @@ namespace RDFSharp.Semantics.SWRL
         #endregion
 
         #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the atom
+        /// </summary>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
 
-        #endregion
+            sb.Append(this.Predicate.URI.Segments.Last());
+            sb.Append("(");
+            sb.Append(this.LeftArgument);
+            if (this.RightArgument != null)
+                sb.Append($",{this.RightArgument}");
+            sb.Append(")");
 
-        #region Methods
-
+            return sb.ToString();
+        }
         #endregion
     }
 }
