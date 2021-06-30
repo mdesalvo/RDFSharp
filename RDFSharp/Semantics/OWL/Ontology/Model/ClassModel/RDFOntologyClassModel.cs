@@ -29,7 +29,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyClassModel : IEnumerable<RDFOntologyClass>
     {
-
         #region Properties
         /// <summary>
         /// Count of the classes composing the class model
@@ -802,18 +801,16 @@ namespace RDFSharp.Semantics.OWL
 
         #region Select
         /// <summary>
-        /// Selects the ontology class represented by the given string from the ontology class model
+        /// Selects the ontology class represented by the given identifier
+        /// </summary>
+        public RDFOntologyClass SelectClass(long ontClassID)
+            => this.Classes.ContainsKey(ontClassID) ? this.Classes[ontClassID] : null;
+
+        /// <summary>
+        /// Selects the ontology class represented by the given string
         /// </summary>
         public RDFOntologyClass SelectClass(string ontClass)
-        {
-            if (ontClass != null)
-            {
-                long classID = RDFModelUtilities.CreateHash(ontClass);
-                if (this.Classes.ContainsKey(classID))
-                    return this.Classes[classID];
-            }
-            return null;
-        }
+            => ontClass != null ? SelectClass(RDFModelUtilities.CreateHash(ontClass)) : null;
         #endregion
 
         #region Set
@@ -1199,7 +1196,6 @@ namespace RDFSharp.Semantics.OWL
         #endregion
 
         #endregion
-
     }
 
 }
