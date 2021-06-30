@@ -202,22 +202,38 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectAssertions(bool enableInference)
+        public List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)> ObjectAssertions(bool enableInference)
         {
-            List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>();
+            List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)>();
 
-            RDFOntologyTaxonomy sftaxonomy = this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.OntologyFact);
+            //Subject
+            RDFOntologyTaxonomy sfstaxonomy = this.Ontology.Data.Relations.Assertions.SelectEntriesBySubject(this.OntologyFact);
             if (enableInference)
             {
                 //Inference-enabled discovery of assigned object relations
-                foreach (RDFOntologyTaxonomyEntry sf in sftaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty()))
-                    result.Add((sf.IsInference(), (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                foreach (RDFOntologyTaxonomyEntry sf in sfstaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty()))
+                    result.Add((sf.IsInference(), this.OntologyFact, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
             }
             else
             {
                 //First-level enlisting of assigned object relations
-                foreach (RDFOntologyTaxonomyEntry sf in sftaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty() && !te.IsInference()))
-                    result.Add((false, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                foreach (RDFOntologyTaxonomyEntry sf in sfstaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty() && !te.IsInference()))
+                    result.Add((false, this.OntologyFact, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+            }
+
+            //Object
+            RDFOntologyTaxonomy sfotaxonomy = this.Ontology.Data.Relations.Assertions.SelectEntriesByObject(this.OntologyFact);
+            if (enableInference)
+            {
+                //Inference-enabled discovery of assigned object relations
+                foreach (RDFOntologyTaxonomyEntry sf in sfotaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty()))
+                    result.Add((sf.IsInference(), (RDFOntologyFact)sf.TaxonomySubject, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, this.OntologyFact));
+            }
+            else
+            {
+                //First-level enlisting of assigned object relations
+                foreach (RDFOntologyTaxonomyEntry sf in sfotaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty() && !te.IsInference()))
+                    result.Add((false, (RDFOntologyFact)sf.TaxonomySubject, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, this.OntologyFact));
             }
 
             return result;
@@ -226,28 +242,44 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Asynchronously enlists the object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public Task<List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>> ObjectAssertionsAsync(bool enableInference)
+        public Task<List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)>> ObjectAssertionsAsync(bool enableInference)
             => Task.Run(() => ObjectAssertions(enableInference));
 
         /// <summary>
         /// Enlists the negative object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> NegativeObjectAssertions(bool enableInference)
+        public List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)> NegativeObjectAssertions(bool enableInference)
         {
-            List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>();
+            List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)> result = new List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)>();
 
-            RDFOntologyTaxonomy sftaxonomy = this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.OntologyFact);
+            //Subject
+            RDFOntologyTaxonomy sfstaxonomy = this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesBySubject(this.OntologyFact);
             if (enableInference)
             {
                 //Inference-enabled discovery of assigned object negative relations
-                foreach (RDFOntologyTaxonomyEntry sf in sftaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty()))
-                    result.Add((sf.IsInference(), (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                foreach (RDFOntologyTaxonomyEntry sf in sfstaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty()))
+                    result.Add((sf.IsInference(), this.OntologyFact, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
             }
             else
             {
                 //First-level enlisting of assigned object negative relations
-                foreach (RDFOntologyTaxonomyEntry sf in sftaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty() && !te.IsInference()))
-                    result.Add((false, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+                foreach (RDFOntologyTaxonomyEntry sf in sfstaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty() && !te.IsInference()))
+                    result.Add((false, this.OntologyFact, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, (RDFOntologyFact)sf.TaxonomyObject));
+            }
+
+            //Object
+            RDFOntologyTaxonomy sfotaxonomy = this.Ontology.Data.Relations.NegativeAssertions.SelectEntriesByObject(this.OntologyFact);
+            if (enableInference)
+            {
+                //Inference-enabled discovery of assigned object relations
+                foreach (RDFOntologyTaxonomyEntry sf in sfotaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty()))
+                    result.Add((sf.IsInference(), (RDFOntologyFact)sf.TaxonomySubject, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, this.OntologyFact));
+            }
+            else
+            {
+                //First-level enlisting of assigned object relations
+                foreach (RDFOntologyTaxonomyEntry sf in sfotaxonomy.Where(te => te.TaxonomyPredicate.IsObjectProperty() && !te.IsInference()))
+                    result.Add((false, (RDFOntologyFact)sf.TaxonomySubject, (RDFOntologyObjectProperty)sf.TaxonomyPredicate, this.OntologyFact));
             }
 
             return result;
@@ -256,7 +288,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Asynchronously enlists the negative object assertions which are directly (or indirectly, if inference is requested) assigned to the lens fact
         /// </summary>
-        public Task<List<(bool, RDFOntologyObjectProperty, RDFOntologyFact)>> NegativeObjectAssertionsAsync(bool enableInference)
+        public Task<List<(bool, RDFOntologyFact, RDFOntologyObjectProperty, RDFOntologyFact)>> NegativeObjectAssertionsAsync(bool enableInference)
             => Task.Run(() => NegativeObjectAssertions(enableInference));
 
         /// <summary>
