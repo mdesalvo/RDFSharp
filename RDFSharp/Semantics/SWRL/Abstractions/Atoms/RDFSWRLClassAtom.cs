@@ -39,7 +39,7 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         internal override RDFSWRLAtomResult ApplyToOntology(RDFOntology ontology)
         {
-            //Initialize the structure of the atom result
+            //Initialize the structure of the atom's result
             RDFSWRLAtomResult atomResult = new RDFSWRLAtomResult(this);
             RDFQueryEngine.AddColumn(atomResult.Results, this.LeftArgument.ToString());
 
