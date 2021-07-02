@@ -48,6 +48,7 @@ namespace RDFSharp.Semantics.SWRL
             foreach (RDFOntologyFact ontologyFact in ontologyData)
                 RDFQueryEngine.AddRow(atomResult.Results, new Dictionary<string, string>() { { this.LeftArgument.ToString(), ontologyFact.ToString() } });
 
+            //Return the atom's result
             return atomResult;
         }
         #endregion
