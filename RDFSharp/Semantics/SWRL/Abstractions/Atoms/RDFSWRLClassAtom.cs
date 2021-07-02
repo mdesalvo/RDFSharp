@@ -16,6 +16,7 @@
 
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -30,6 +31,25 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public RDFSWRLClassAtom(RDFOntologyClass ontologyClass, RDFVariable leftArgument)
             : base(ontologyClass, leftArgument, null) { }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the class atom to the given ontology
+        /// </summary>
+        internal override RDFSWRLAtomResult ApplyToOntology(RDFOntology ontology)
+        {
+            //Initialize the structure of the atom result
+            RDFSWRLAtomResult atomResult = new RDFSWRLAtomResult(this);
+            RDFQueryEngine.AddColumn(atomResult.Results, this.LeftArgument.ToString());
+
+            //Exploit ontology helper to materialize members of the atom's class
+            RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.LeftArgument);
+            foreach (RDFOntologyFact ontologyFact in ontologyData)
+                RDFQueryEngine.AddRow(atomResult.Results, new Dictionary<string, string>() { { this.LeftArgument.ToString(), ontologyFact.ToString() } });
+
+            return atomResult;
+        }
         #endregion
     }
 }

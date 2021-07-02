@@ -82,5 +82,12 @@ namespace RDFSharp.Semantics.SWRL
             return sb.ToString();
         }
         #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the atom to the given ontology
+        /// </summary>
+        internal abstract RDFSWRLAtomResult ApplyToOntology(RDFOntology ontology);
+        #endregion
     }
 }
