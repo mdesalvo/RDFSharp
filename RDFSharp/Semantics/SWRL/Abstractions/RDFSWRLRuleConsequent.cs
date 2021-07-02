@@ -14,38 +14,18 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.OWL;
-using System.Collections.Generic;
-using System.Text;
-
 namespace RDFSharp.Semantics.SWRL
 {
     /// <summary>
     /// RDFSWRLRuleConsequent represents the consequent of a SWRL rule
     /// </summary>
-    public class RDFSWRLRuleConsequent
+    public class RDFSWRLRuleConsequent : RDFSWRLAtomCollection
     {
-        #region Properties
-        /// <summary>
-        /// Atoms composing the consequent
-        /// </summary>
-        internal List<RDFSWRLAtom> Atoms { get; set; }
-        #endregion
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty consequent
         /// </summary>
-        public RDFSWRLRuleConsequent()
-            => this.Atoms = new List<RDFSWRLAtom>();
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the consequent
-        /// </summary>
-        public override string ToString()
-            => string.Join(" ∧ ", this.Atoms);
+        public RDFSWRLRuleConsequent() : base() { }
         #endregion
 
         #region Methods
@@ -53,11 +33,7 @@ namespace RDFSharp.Semantics.SWRL
         /// Adds the given atom to the consequent
         /// </summary>
         public RDFSWRLRuleConsequent AddAtom(RDFSWRLAtom atom)
-        {
-            if (atom != null)
-                this.Atoms.Add(atom);
-            return this;
-        }
+            => AddAtom<RDFSWRLRuleConsequent>(atom);
         #endregion
     }
 }
