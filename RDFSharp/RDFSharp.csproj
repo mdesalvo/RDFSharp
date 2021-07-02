@@ -4,7 +4,7 @@
     <AssemblyTitle>RDFSharp</AssemblyTitle>
     <AssemblyName>RDFSharp</AssemblyName>
     <AssemblyVersion>$(Version)</AssemblyVersion>
-    <Version>2.24.1</Version>
+    <Version>2.25.0</Version>
     <Authors>Marco De Salvo</Authors>
     <Copyright>Marco De Salvo</Copyright>
     <Description>Lightweight and friendly .NET library for realizing Semantic Web applications</Description>
@@ -12,7 +12,7 @@
     <SignAssembly>false</SignAssembly>
     <Product>RDFSharp</Product>
     <PackageId>RDFSharp</PackageId>
-    <PackageTags>rdf sparql sparql-update shacl triplestore rdfs owl-dl owl2 ontology reasoner skos semantic-web linked-data</PackageTags>
+    <PackageTags>rdf sparql sparql-update shacl rdfs owl-dl owl2 skos swrl ontology reasoner semantic-web linked-data</PackageTags>
     <PackageProjectUrl>https://github.com/mdesalvo/RDFSharp</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mdesalvo/RDFSharp.git</RepositoryUrl>
