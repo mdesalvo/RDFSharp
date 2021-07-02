@@ -17,6 +17,7 @@
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
 using System.Collections.Generic;
+using System.Data;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -37,18 +38,18 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Applies the class atom to the given ontology
         /// </summary>
-        internal override RDFSWRLAtomResult ApplyToOntology(RDFOntology ontology)
+        internal override DataTable ApplyToOntology(RDFOntology ontology)
         {
-            //Initialize the structure of the atom's result
-            RDFSWRLAtomResult atomResult = new RDFSWRLAtomResult(this);
-            RDFQueryEngine.AddColumn(atomResult.Results, this.LeftArgument.ToString());
+            //Initialize the structure of the atom result
+            DataTable atomResult = new DataTable(this.ToString());
+            RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
 
-            //Exploit ontology helper to materialize members of the atom's class
+            //Exploit the ontology helper to materialize members of the atom class
             RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.LeftArgument);
             foreach (RDFOntologyFact ontologyFact in ontologyData)
-                RDFQueryEngine.AddRow(atomResult.Results, new Dictionary<string, string>() { { this.LeftArgument.ToString(), ontologyFact.ToString() } });
+                RDFQueryEngine.AddRow(atomResult, new Dictionary<string, string>() { { this.LeftArgument.ToString(), ontologyFact.ToString() } });
 
-            //Return the atom's result
+            //Return the atom result
             return atomResult;
         }
         #endregion

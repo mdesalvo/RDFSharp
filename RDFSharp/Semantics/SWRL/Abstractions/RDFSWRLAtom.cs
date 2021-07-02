@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -87,7 +88,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Applies the atom to the given ontology
         /// </summary>
-        internal abstract RDFSWRLAtomResult ApplyToOntology(RDFOntology ontology);
+        internal abstract DataTable ApplyToOntology(RDFOntology ontology);
         #endregion
     }
 }
