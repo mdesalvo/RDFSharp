@@ -14,8 +14,10 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
@@ -62,11 +64,43 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
 
-            //TODO
+            //Guard: the antecedent results table MUST have a column corresponding to the atom's left argument
+            if (!antecedentResults.Columns.Contains(this.LeftArgument.ToString()))
+                return report;
+
+            //Iterate the antecedent results table to materialize the atom's reasoner evidences
+            IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
+            while (rowsEnum.MoveNext())
+            {
+                DataRow currentRow = (DataRow)rowsEnum.Current;
+
+                //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's left argument
+                if (currentRow.IsNull(this.LeftArgument.ToString()))
+                    continue;
+
+                //Parse the value of the column corresponding to the atom's left argument
+                RDFPatternMember columnValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[this.LeftArgument.ToString()].ToString());
+                if (columnValue is RDFResource columnValueResource)
+                {
+                    //Search the fact in the ontology
+                    RDFOntologyFact fact = ontology.Data.SelectFact(columnValueResource.ToString());
+                    if (fact == null)
+                        fact = new RDFOntologyFact(columnValueResource);
+
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, (RDFOntologyClass)this.Predicate)
+                                                            .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
+                        this.ToString(), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                }
+            }
 
             return report;
         }

@@ -71,7 +71,7 @@ namespace RDFSharp.Semantics.SWRL
             DataTable antecedentResults = this.Antecedent.Evaluate(ontology);
 
             //Materialize results of the rule's consequent
-            RDFOntologyReasonerReport consequentResults = this.Consequent.Evaluate(antecedentResults);
+            RDFOntologyReasonerReport consequentResults = this.Consequent.Evaluate(antecedentResults, ontology);
             return consequentResults;
         }
         #endregion

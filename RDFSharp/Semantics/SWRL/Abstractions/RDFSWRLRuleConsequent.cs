@@ -41,12 +41,12 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the consequent in the context of the given antecedent results
         /// </summary>
-        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults)
+        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults, RDFOntology ontology)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
 
             //Execute the consequent atoms
-            this.Atoms.ForEach(atom => report.Merge(atom.EvaluateOnConsequent(antecedentResults)));
+            this.Atoms.ForEach(atom => report.Merge(atom.EvaluateOnConsequent(antecedentResults, ontology)));
 
             //Return the consequent result
             return report;
