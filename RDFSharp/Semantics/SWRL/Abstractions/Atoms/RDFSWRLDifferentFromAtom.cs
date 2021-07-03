@@ -23,13 +23,19 @@ namespace RDFSharp.Semantics.SWRL
     /// <summary>
     /// RDFSWRLDifferentFromAtom represents an atom describing owl:differentFrom assertions relating ontology facts 
     /// </summary>
-    public class RDFSWRLDifferentFromAtom : RDFSWRLIndividualPropertyAtom
+    public class RDFSWRLDifferentFromAtom : RDFSWRLObjectPropertyAtom
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build an owl:differentFrom atom with the given arguments
         /// </summary>
         public RDFSWRLDifferentFromAtom(RDFVariable leftArgument, RDFVariable rightArgument)
+            : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an owl:differentFrom atom with the given arguments
+        /// </summary>
+        public RDFSWRLDifferentFromAtom(RDFVariable leftArgument, RDFOntologyFact rightArgument)
             : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
     }

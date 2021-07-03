@@ -45,10 +45,15 @@ namespace RDFSharp.Semantics.SWRL
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
             atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLClassAtom));
 
-            //Exploit the ontology helper to materialize members of the atom class
+            //Materialize members of the atom class
             RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.LeftArgument);
             foreach (RDFOntologyFact ontologyFact in ontologyData)
-                RDFQueryEngine.AddRow(atomResult, new Dictionary<string, string>() { { this.LeftArgument.ToString(), ontologyFact.ToString() } });
+            {
+                Dictionary<string, string> bindings = new Dictionary<string, string>();
+                bindings.Add(this.LeftArgument.ToString(), ontologyFact.ToString());
+
+                RDFQueryEngine.AddRow(atomResult, bindings);
+            }
 
             //Return the atom result
             return atomResult;

@@ -17,13 +17,14 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Data;
 
 namespace RDFSharp.Semantics.SWRL
 {
     /// <summary>
-    /// RDFSWRLSameAsAtom represents an atom describing owl:sameAs assertions relating ontology facts 
+    /// RDFSWRLSameAsAtom represents an atom describing owl:sameAs relations between ontology facts 
     /// </summary>
-    public class RDFSWRLSameAsAtom : RDFSWRLIndividualPropertyAtom
+    public class RDFSWRLSameAsAtom : RDFSWRLObjectPropertyAtom
     {
         #region Ctors
         /// <summary>
@@ -31,6 +32,30 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public RDFSWRLSameAsAtom(RDFVariable leftArgument, RDFVariable rightArgument)
             : base(RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
+
+        /// <summary>
+        /// Default-ctor to build an owl:sameAs atom with the given arguments
+        /// </summary>
+        public RDFSWRLSameAsAtom(RDFVariable leftArgument, RDFOntologyFact rightArgument)
+            : base(RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
+
+        /// <summary>
+        /// Applies the owl:sameAs atom to the given ontology
+        /// </summary>
+        internal override DataTable ApplyToOntology(RDFOntology ontology)
+        {
+            //Initialize the structure of the atom result
+            DataTable atomResult = new DataTable(this.ToString());
+            RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
+            RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
+            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLSameAsAtom));
+
+            //Materialize owl:sameAs inferences of the atom variables
+            
+
+            //Return the atom result
+            return atomResult;
+        }
     }
 }
