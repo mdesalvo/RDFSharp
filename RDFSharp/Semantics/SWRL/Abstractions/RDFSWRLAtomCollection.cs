@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -60,23 +58,6 @@ namespace RDFSharp.Semantics.SWRL
             if (atom != null && !this.Atoms.Any(x => x.ToString().Equals(atom.ToString(), StringComparison.OrdinalIgnoreCase)))
                 this.Atoms.Add(atom);
             return (T)this;
-        }
-
-        /// <summary>
-        /// Applies the atom collection to the given ontology
-        /// </summary>
-        public DataTable ApplyToOntology(RDFOntology ontology)
-        {
-            //Execute the antecedent atoms
-            List<DataTable> atomResults = new List<DataTable>();
-            this.Atoms.ForEach(atom => atomResults.Add(atom.ApplyToOntology(ontology)));
-
-            //Exploit the query engine to join results of antecedent atoms
-            DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);
-            antecedentResult.TableName = this.ToString();
-
-            //Return the antecedent result
-            return antecedentResult;
         }
         #endregion
     }

@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Semantics.OWL;
+using System.Data;
 using System.Text;
 
 namespace RDFSharp.Semantics.SWRL
@@ -59,6 +60,18 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public override string ToString()
             => string.Concat(this.Antecedent, "->", this.Consequent);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the rule to the given ontology
+        /// </summary>
+        public void ApplyToOntology(RDFOntology ontology)
+        {
+            //Materialize results of the rule's antecedent
+            DataTable antecedentResult = this.Antecedent.ApplyToOntology(ontology);
+
+        }
         #endregion
     }
 }

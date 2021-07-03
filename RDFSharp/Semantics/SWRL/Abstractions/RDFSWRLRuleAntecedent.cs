@@ -14,6 +14,11 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
+using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
+using System.Data;
+
 namespace RDFSharp.Semantics.SWRL
 {
     /// <summary>
@@ -34,6 +39,23 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public RDFSWRLRuleAntecedent AddAtom(RDFSWRLAtom atom)
             => AddAtom<RDFSWRLRuleAntecedent>(atom);
+
+        /// <summary>
+        /// Applies the atom collection to the given ontology
+        /// </summary>
+        internal DataTable ApplyToOntology(RDFOntology ontology)
+        {
+            //Execute the antecedent atoms
+            List<DataTable> atomResults = new List<DataTable>();
+            this.Atoms.ForEach(atom => atomResults.Add(atom.ApplyToOntology(ontology)));
+
+            //Join results of antecedent atoms
+            DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);
+            antecedentResult.TableName = this.ToString();
+
+            //Return the antecedent result
+            return antecedentResult;
+        }
         #endregion
     }
 }
