@@ -16,7 +16,6 @@
 
 using RDFSharp.Semantics.OWL;
 using System.Data;
-using System.Text;
 
 namespace RDFSharp.Semantics.SWRL
 {
