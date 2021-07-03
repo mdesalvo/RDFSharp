@@ -2145,7 +2145,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Merges / Joins / Products the given list of data tables, based on presence of common columns and dynamic detection of Optional / Union operators
+        /// Combines the given list of data tables, depending on presence of common columns and dynamic detection of Optional / Union operators
         /// </summary>
         internal DataTable CombineTables(List<DataTable> dataTables, bool isMerge)
         {
