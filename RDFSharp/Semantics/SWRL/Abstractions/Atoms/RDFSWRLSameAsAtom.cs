@@ -85,6 +85,18 @@ namespace RDFSharp.Semantics.SWRL
             //Return the atom result
             return atomResult;
         }
+
+        /// <summary>
+        /// Evaluates the atom in the context of an consequent
+        /// </summary>
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            //TODO
+
+            return report;
+        }
         #endregion
     }
 }

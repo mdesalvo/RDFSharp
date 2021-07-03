@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Semantics.OWL;
 using System.Data;
 
 namespace RDFSharp.Semantics.SWRL
@@ -40,9 +41,15 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the consequent in the context of the given antecedent results
         /// </summary>
-        internal DataTable Evaluate(DataTable antecedentResults)
+        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults)
         {
-            
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            //Execute the consequent atoms
+            this.Atoms.ForEach(atom => report.Merge(atom.EvaluateOnConsequent(antecedentResults)));
+
+            //Return the consequent result
+            return report;
         }
         #endregion
     }
