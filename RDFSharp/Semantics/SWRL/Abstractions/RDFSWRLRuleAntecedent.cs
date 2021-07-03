@@ -41,13 +41,13 @@ namespace RDFSharp.Semantics.SWRL
             => AddAtom<RDFSWRLRuleAntecedent>(atom);
 
         /// <summary>
-        /// Applies the atom collection to the given ontology
+        /// Evaluates the antecedent in the context of the given ontology
         /// </summary>
-        internal DataTable ApplyToOntology(RDFOntology ontology)
+        internal DataTable Evaluate(RDFOntology ontology)
         {
             //Execute the antecedent atoms
             List<DataTable> atomResults = new List<DataTable>();
-            this.Atoms.ForEach(atom => atomResults.Add(atom.ApplyToOntology(ontology)));
+            this.Atoms.ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology)));
 
             //Join results of antecedent atoms
             DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);

@@ -86,9 +86,14 @@ namespace RDFSharp.Semantics.SWRL
 
         #region Methods
         /// <summary>
-        /// Applies the atom to the given ontology
+        /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal abstract DataTable ApplyToOntology(RDFOntology ontology);
+        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology);
+
+        /// <summary>
+        /// Evaluates the atom in the context of a consequent
+        /// </summary>
+        internal abstract DataTable EvaluateOnConsequent(DataTable ontology);
         #endregion
     }
 }

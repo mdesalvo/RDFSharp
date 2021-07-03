@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
 using System.Collections.Generic;
@@ -43,9 +42,9 @@ namespace RDFSharp.Semantics.SWRL
 
         #region Methods
         /// <summary>
-        /// Applies the data property atom to the given ontology
+        /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable ApplyToOntology(RDFOntology ontology)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());

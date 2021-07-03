@@ -36,9 +36,9 @@ namespace RDFSharp.Semantics.SWRL
 
         #region Methods
         /// <summary>
-        /// Applies the class atom to the given ontology
+        /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable ApplyToOntology(RDFOntology ontology)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());

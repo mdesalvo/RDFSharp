@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using System.Data;
+
 namespace RDFSharp.Semantics.SWRL
 {
     /// <summary>
@@ -34,6 +36,14 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public RDFSWRLRuleConsequent AddAtom(RDFSWRLAtom atom)
             => AddAtom<RDFSWRLRuleConsequent>(atom);
+
+        /// <summary>
+        /// Evaluates the consequent in the context of the given antecedent results
+        /// </summary>
+        internal DataTable Evaluate(DataTable antecedentResults)
+        {
+            
+        }
         #endregion
     }
 }
