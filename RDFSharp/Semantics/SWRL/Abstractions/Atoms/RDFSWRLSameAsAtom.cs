@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
 using System.Data;
 
 namespace RDFSharp.Semantics.SWRL
@@ -40,6 +41,7 @@ namespace RDFSharp.Semantics.SWRL
             : base(RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
 
+        #region Methods
         /// <summary>
         /// Applies the owl:sameAs atom to the given ontology
         /// </summary>
@@ -48,14 +50,41 @@ namespace RDFSharp.Semantics.SWRL
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
-            RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
+            if (this.RightArgument is RDFVariable)
+                RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
             atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLSameAsAtom));
 
-            //Materialize owl:sameAs inferences of the atom variables
-            
+            //Materialize owl:sameAs inferences of the atom
+            if (this.RightArgument is RDFOntologyFact rightArgumentFact)
+            { 
+                RDFOntologyData sameFacts = RDFOntologyHelper.GetSameFactsAs(ontology.Data, rightArgumentFact);
+                foreach (RDFOntologyFact sameFact in sameFacts)
+                {
+                    Dictionary<string, string> bindings = new Dictionary<string, string>();
+                    bindings.Add(this.LeftArgument.ToString(), sameFact.ToString());
+
+                    RDFQueryEngine.AddRow(atomResult, bindings);
+                }
+            }
+            else
+            {
+                foreach (RDFOntologyFact ontologyFact in ontology.Data)
+                {
+                    RDFOntologyData sameFacts = RDFOntologyHelper.GetSameFactsAs(ontology.Data, ontologyFact);
+                    foreach (RDFOntologyFact sameFact in sameFacts)
+                    {
+                        Dictionary<string, string> bindings = new Dictionary<string, string>();
+                        bindings.Add(this.LeftArgument.ToString(), ontologyFact.ToString());
+                        bindings.Add(this.RightArgument.ToString(), sameFact.ToString());
+
+                        RDFQueryEngine.AddRow(atomResult, bindings);
+                    }
+                }
+            }
 
             //Return the atom result
             return atomResult;
         }
+        #endregion
     }
 }

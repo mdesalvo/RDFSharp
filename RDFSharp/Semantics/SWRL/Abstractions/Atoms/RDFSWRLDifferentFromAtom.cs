@@ -17,6 +17,8 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections.Generic;
+using System.Data;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -37,6 +39,52 @@ namespace RDFSharp.Semantics.SWRL
         /// </summary>
         public RDFSWRLDifferentFromAtom(RDFVariable leftArgument, RDFOntologyFact rightArgument)
             : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the owl:differentFrom atom to the given ontology
+        /// </summary>
+        internal override DataTable ApplyToOntology(RDFOntology ontology)
+        {
+            //Initialize the structure of the atom result
+            DataTable atomResult = new DataTable(this.ToString());
+            RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
+            if (this.RightArgument is RDFVariable)
+                RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
+            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLDifferentFromAtom));
+
+            //Materialize owl:differentFrom inferences of the atom
+            if (this.RightArgument is RDFOntologyFact rightArgumentFact)
+            {
+                RDFOntologyData differentFacts = RDFOntologyHelper.GetDifferentFactsFrom(ontology.Data, rightArgumentFact);
+                foreach (RDFOntologyFact differentFact in differentFacts)
+                {
+                    Dictionary<string, string> bindings = new Dictionary<string, string>();
+                    bindings.Add(this.LeftArgument.ToString(), differentFact.ToString());
+
+                    RDFQueryEngine.AddRow(atomResult, bindings);
+                }
+            }
+            else
+            {
+                foreach (RDFOntologyFact ontologyFact in ontology.Data)
+                {
+                    RDFOntologyData differentFacts = RDFOntologyHelper.GetDifferentFactsFrom(ontology.Data, ontologyFact);
+                    foreach (RDFOntologyFact differentFact in differentFacts)
+                    {
+                        Dictionary<string, string> bindings = new Dictionary<string, string>();
+                        bindings.Add(this.LeftArgument.ToString(), ontologyFact.ToString());
+                        bindings.Add(this.RightArgument.ToString(), differentFact.ToString());
+
+                        RDFQueryEngine.AddRow(atomResult, bindings);
+                    }
+                }
+            }
+
+            //Return the atom result
+            return atomResult;
+        }
         #endregion
     }
 }
