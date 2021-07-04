@@ -125,13 +125,17 @@ namespace RDFSharp.Semantics.SWRL
                     if (literal == null)
                         literal = new RDFOntologyLiteral(rightArgumentValueLiteral);
 
-                    //Create the inference as a taxonomy entry
-                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, this.Predicate, literal)
-                                                            .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    //Protect atom's inferences with implicit taxonomy checks
+                    if (RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, fact, (RDFOntologyDatatypeProperty)this.Predicate, literal))
+                    {
+                        //Create the inference as a taxonomy entry
+                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, (RDFOntologyDatatypeProperty)this.Predicate, literal)
+                                                                .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
-                        this.ToString(), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                        //Add the inference to the report
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, this.ToString(), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                    }
                 }
             }
 
