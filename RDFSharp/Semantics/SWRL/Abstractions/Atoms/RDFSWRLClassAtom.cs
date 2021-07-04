@@ -68,9 +68,10 @@ namespace RDFSharp.Semantics.SWRL
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             RDFOntologyObjectProperty type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
+            string leftArgumentString = this.LeftArgument.ToString();
 
             //Guard: the antecedent results table MUST have a column corresponding to the atom's left argument
-            if (!antecedentResults.Columns.Contains(this.LeftArgument.ToString()))
+            if (!antecedentResults.Columns.Contains(leftArgumentString))
                 return report;
 
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
@@ -80,17 +81,17 @@ namespace RDFSharp.Semantics.SWRL
                 DataRow currentRow = (DataRow)rowsEnum.Current;
 
                 //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's left argument
-                if (currentRow.IsNull(this.LeftArgument.ToString()))
+                if (currentRow.IsNull(leftArgumentString))
                     continue;
 
                 //Parse the value of the column corresponding to the atom's left argument
-                RDFPatternMember columnValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[this.LeftArgument.ToString()].ToString());
-                if (columnValue is RDFResource columnValueResource)
+                RDFPatternMember leftArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[leftArgumentString].ToString());
+                if (leftArgumentValue is RDFResource leftArgumentValueResource)
                 {
                     //Search the fact in the ontology
-                    RDFOntologyFact fact = ontology.Data.SelectFact(columnValueResource.ToString());
+                    RDFOntologyFact fact = ontology.Data.SelectFact(leftArgumentValueResource.ToString());
                     if (fact == null)
-                        fact = new RDFOntologyFact(columnValueResource);
+                        fact = new RDFOntologyFact(leftArgumentValueResource);
 
                     //Create the inference as a taxonomy entry
                     RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, (RDFOntologyClass)this.Predicate)
