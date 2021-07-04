@@ -115,7 +115,7 @@ namespace RDFSharp.Semantics.SWRL
                     continue;
 
                 //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's right argument
-                if (currentRow.IsNull(rightArgumentString))
+                if (this.RightArgument is RDFVariable && currentRow.IsNull(rightArgumentString))
                     continue;
 
                 //Parse the value of the column corresponding to the atom's left argument
