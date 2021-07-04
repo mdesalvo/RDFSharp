@@ -94,7 +94,7 @@ namespace RDFSharp.Semantics.SWRL
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
                     //Create the inference as a taxonomy entry
-                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, (RDFOntologyClass)this.Predicate)
+                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, this.Predicate)
                                                             .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                     //Add the inference to the report
