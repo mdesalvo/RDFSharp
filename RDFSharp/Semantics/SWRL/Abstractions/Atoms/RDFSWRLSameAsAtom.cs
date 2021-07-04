@@ -139,7 +139,7 @@ namespace RDFSharp.Semantics.SWRL
                     if (rightFact == null)
                         rightFact = new RDFOntologyFact(rightArgumentValueResource);
 
-                    //Protect this kind of inference with implicit taxonomy checks
+                    //Protect atom's inferences with implicit taxonomy checks
                     if (!RDFOntologyHelper.CheckIsDifferentFactFrom(ontology.Data, leftFact, rightFact))
                     {
                         //Create the inference as a taxonomy entry
@@ -149,10 +149,10 @@ namespace RDFSharp.Semantics.SWRL
                                                                  .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
-                            this.ToString(), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
-                            this.ToString(), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                        if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infA))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, this.ToString(), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
+                        if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infB))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, this.ToString(), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
                     }
                 }
             }
