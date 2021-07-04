@@ -74,7 +74,7 @@ namespace RDFSharp.Semantics.SWRL
             if (!antecedentResults.Columns.Contains(leftArgumentString))
                 return report;
 
-            //Materialize members of atom's class
+            //Materialize members of the atom class
             RDFOntologyData atomClassMembers = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate);
 
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
