@@ -72,7 +72,7 @@ namespace RDFSharp.Semantics.SWRL
             StringBuilder sb = new StringBuilder();
 
             //Predicate
-            sb.Append(((RDFResource)this.Predicate.Value).URI.Segments.Last());
+            sb.Append(RDFModelUtilities.GetShortUri(((RDFResource)this.Predicate.Value).URI));
 
             //Arguments
             sb.Append($"({this.LeftArgument}");

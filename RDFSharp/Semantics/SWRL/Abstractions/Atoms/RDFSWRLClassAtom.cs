@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics.SWRL
             atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLClassAtom));
 
             //Materialize members of the atom class
-            RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.LeftArgument);
+            RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate);
             foreach (RDFOntologyFact ontologyFact in ontologyData)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
