@@ -125,6 +125,8 @@ namespace RDFSharp.Semantics.SWRL
                 RDFPatternMember rightArgumentValue = this.RightArgument;
                 if (this.RightArgument is RDFVariable)
                     rightArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[rightArgumentString].ToString());
+                else
+                    rightArgumentValue = ((RDFOntologyFact)rightArgumentValue).Value;
 
                 if (leftArgumentValue is RDFResource leftArgumentValueResource
                         && rightArgumentValue is RDFResource rightArgumentValueResource)
