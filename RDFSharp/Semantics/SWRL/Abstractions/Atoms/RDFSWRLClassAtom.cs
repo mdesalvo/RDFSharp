@@ -93,13 +93,17 @@ namespace RDFSharp.Semantics.SWRL
                     if (fact == null)
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
-                    //Create the inference as a taxonomy entry
-                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, this.Predicate)
-                                                            .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    //Protect this kind of inference with implicit taxonomy checks
+                    if (RDFOntologyHelper.CheckIsMemberOf(ontology, fact, (RDFOntologyClass)this.Predicate))
+                    {
+                        //Create the inference as a taxonomy entry
+                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, this.Predicate)
+                                                                .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
-                    //Add the inference to the report
-                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
-                        this.ToString(), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                        //Add the inference to the report
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
+                            this.ToString(), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                    }
                 }
             }
 
