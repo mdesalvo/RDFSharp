@@ -74,6 +74,9 @@ namespace RDFSharp.Semantics.SWRL
             if (!antecedentResults.Columns.Contains(leftArgumentString))
                 return report;
 
+            //Materialize members of atom's class
+            RDFOntologyData atomClassMembers = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate);
+
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
             IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
             while (rowsEnum.MoveNext())
@@ -94,7 +97,7 @@ namespace RDFSharp.Semantics.SWRL
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks
-                    if (RDFOntologyHelper.CheckIsMemberOf(ontology, fact, (RDFOntologyClass)this.Predicate))
+                    if (atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
                     {
                         //Create the inference as a taxonomy entry
                         RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, (RDFOntologyClass)this.Predicate)
