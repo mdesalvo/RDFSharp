@@ -17,6 +17,7 @@
 using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Semantics.OWL;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
@@ -92,8 +93,69 @@ namespace RDFSharp.Semantics.SWRL
         internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            string leftArgumentString = this.LeftArgument.ToString();
+            string rightArgumentString = this.RightArgument.ToString();
 
-            //TODO
+            //Guard: the antecedent results table MUST have a column corresponding to the atom's left argument
+            if (!antecedentResults.Columns.Contains(leftArgumentString))
+                return report;
+
+            //Guard: the antecedent results table MUST have a column corresponding to the atom's right argument (if variable)
+            if (this.RightArgument is RDFVariable && !antecedentResults.Columns.Contains(rightArgumentString))
+                return report;
+
+            //Iterate the antecedent results table to materialize the atom's reasoner evidences
+            IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
+            while (rowsEnum.MoveNext())
+            {
+                DataRow currentRow = (DataRow)rowsEnum.Current;
+
+                //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's left argument
+                if (currentRow.IsNull(leftArgumentString))
+                    continue;
+
+                //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's right argument
+                if (currentRow.IsNull(rightArgumentString))
+                    continue;
+
+                //Parse the value of the column corresponding to the atom's left argument
+                RDFPatternMember leftArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[leftArgumentString].ToString());
+
+                //Parse the value of the column corresponding to the atom's right argument
+                RDFPatternMember rightArgumentValue = this.RightArgument;
+                if (this.RightArgument is RDFVariable)
+                    rightArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[rightArgumentString].ToString());
+
+                if (leftArgumentValue is RDFResource leftArgumentValueResource
+                        && rightArgumentValue is RDFResource rightArgumentValueResource)
+                {
+                    //Search the left fact in the ontology
+                    RDFOntologyFact leftFact = ontology.Data.SelectFact(leftArgumentValueResource.ToString());
+                    if (leftFact == null)
+                        leftFact = new RDFOntologyFact(leftArgumentValueResource);
+
+                    //Search the right fact in the ontology
+                    RDFOntologyFact rightFact = ontology.Data.SelectFact(rightArgumentValueResource.ToString());
+                    if (rightFact == null)
+                        rightFact = new RDFOntologyFact(rightArgumentValueResource);
+
+                    //Protect this kind of inference with implicit taxonomy checks
+                    if (!RDFOntologyHelper.CheckIsDifferentFactFrom(ontology.Data, leftFact, rightFact))
+                    {
+                        //Create the inference as a taxonomy entry
+                        RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(leftFact, this.Predicate, rightFact)
+                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                        RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(rightFact, this.Predicate, leftFact)
+                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                        //Add the inference to the report
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
+                            this.ToString(), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data,
+                            this.ToString(), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                    }
+                }
+            }
 
             return report;
         }
