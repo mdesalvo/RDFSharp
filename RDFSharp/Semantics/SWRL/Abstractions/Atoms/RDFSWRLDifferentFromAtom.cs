@@ -143,9 +143,9 @@ namespace RDFSharp.Semantics.SWRL
                     if (!RDFOntologyHelper.CheckIsSameFactAs(ontology.Data, leftFact, rightFact))
                     {
                         //Create the inference as a taxonomy entry
-                        RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(leftFact, this.Predicate, rightFact)
+                        RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact)
                                                                  .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
-                        RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(rightFact, this.Predicate, leftFact)
+                        RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(rightFact, (RDFOntologyObjectProperty)this.Predicate, leftFact)
                                                                  .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report
