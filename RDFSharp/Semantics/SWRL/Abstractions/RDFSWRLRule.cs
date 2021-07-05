@@ -65,13 +65,13 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Applies the rule to the given ontology
         /// </summary>
-        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology)
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             //Materialize results of the rule's antecedent
-            DataTable antecedentResults = this.Antecedent.Evaluate(ontology);
+            DataTable antecedentResults = this.Antecedent.Evaluate(ontology, ruleOptions);
 
             //Materialize results of the rule's consequent
-            RDFOntologyReasonerReport consequentResults = this.Consequent.Evaluate(antecedentResults, ontology);
+            RDFOntologyReasonerReport consequentResults = this.Consequent.Evaluate(antecedentResults, ontology, ruleOptions);
             return consequentResults;
         }
         #endregion

@@ -43,11 +43,11 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the antecedent in the context of the given ontology
         /// </summary>
-        internal DataTable Evaluate(RDFOntology ontology)
+        internal DataTable Evaluate(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             //Execute the antecedent atoms
             List<DataTable> atomResults = new List<DataTable>();
-            this.Atoms.ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology)));
+            this.Atoms.ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology, ruleOptions)));
 
             //Join results of antecedent atoms
             DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);

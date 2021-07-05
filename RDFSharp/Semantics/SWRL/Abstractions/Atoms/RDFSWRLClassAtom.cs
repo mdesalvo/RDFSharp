@@ -40,7 +40,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
@@ -64,7 +64,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             RDFOntologyObjectProperty type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
@@ -75,7 +75,9 @@ namespace RDFSharp.Semantics.SWRL
                 return report;
 
             //Materialize members of the atom class
-            RDFOntologyData atomClassMembers = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate);
+            RDFOntologyData atomClassMembers =
+                ruleOptions.EnforceRealTimeTaxonomyProtection ? RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate)
+                                                              : new RDFOntologyData();
 
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
             IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
@@ -97,7 +99,8 @@ namespace RDFSharp.Semantics.SWRL
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks
-                    if (atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
+                    if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
+                            atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
                     {
                         //Create the inference as a taxonomy entry
                         RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, (RDFOntologyClass)this.Predicate)

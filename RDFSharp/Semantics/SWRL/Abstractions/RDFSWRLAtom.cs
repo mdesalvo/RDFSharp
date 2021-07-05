@@ -88,12 +88,12 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology);
+        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions);
 
         /// <summary>
         /// Evaluates the atom in the context of a consequent
         /// </summary>
-        internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology);
+        internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions);
         #endregion
     }
 }

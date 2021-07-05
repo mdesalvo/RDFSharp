@@ -46,7 +46,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
@@ -76,7 +76,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             string leftArgumentString = this.LeftArgument.ToString();
@@ -128,7 +128,8 @@ namespace RDFSharp.Semantics.SWRL
                         literal = new RDFOntologyLiteral(rightArgumentValueLiteral);
 
                     //Protect atom's inferences with implicit taxonomy checks
-                    if (RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, fact, (RDFOntologyDatatypeProperty)this.Predicate, literal))
+                    if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
+                            RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, fact, (RDFOntologyDatatypeProperty)this.Predicate, literal))
                     {
                         //Create the inference as a taxonomy entry
                         RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, (RDFOntologyDatatypeProperty)this.Predicate, literal)
