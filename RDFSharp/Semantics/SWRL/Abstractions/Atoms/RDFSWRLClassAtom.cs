@@ -76,7 +76,7 @@ namespace RDFSharp.Semantics.SWRL
 
             //Materialize members of the atom class (only if taxonomy protection has been requested)
             RDFOntologyData atomClassMembers =
-                ruleOptions.EnforceRealTimeTaxonomyProtection ? RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate)
+                ruleOptions.ForceRealTimeTaxonomyProtection ? RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate)
                                                               : new RDFOntologyData();
 
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
@@ -99,7 +99,7 @@ namespace RDFSharp.Semantics.SWRL
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
-                    if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
+                    if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
                             atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
                     {
                         //Create the inference as a taxonomy entry

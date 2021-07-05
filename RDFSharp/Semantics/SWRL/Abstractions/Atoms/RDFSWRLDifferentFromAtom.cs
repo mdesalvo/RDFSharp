@@ -140,7 +140,7 @@ namespace RDFSharp.Semantics.SWRL
                         rightFact = new RDFOntologyFact(rightArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
-                    if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
+                    if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
                             !RDFOntologyHelper.CheckIsSameFactAs(ontology.Data, leftFact, rightFact))
                     {
                         //Create the inference as a taxonomy entry

@@ -23,9 +23,9 @@ namespace RDFSharp.Semantics.SWRL
     {
         #region Properties
         /// <summary>
-        /// Flag indicating that the SWRL rule should perform additional real-time checks to protect ontology consistency during its execution (Default: true)
+        /// Flag driving the SWRL rule to execute additional real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
         /// </summary>
-        public bool EnforceRealTimeTaxonomyProtection { get; set; }
+        public bool ForceRealTimeTaxonomyProtection { get; set; }
         #endregion
 
         #region Ctors
@@ -33,7 +33,7 @@ namespace RDFSharp.Semantics.SWRL
         /// Default-ctor to build options for execution of an SWRL rule
         /// </summary>
         public RDFSWRLRuleOptions()
-            => this.EnforceRealTimeTaxonomyProtection = true;
+            => this.ForceRealTimeTaxonomyProtection = true;
         #endregion
     }
 }

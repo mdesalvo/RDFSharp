@@ -126,7 +126,7 @@ namespace RDFSharp.Semantics.SWRL
                         rightFact = new RDFOntologyFact(rightArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
-                    if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
+                    if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
                             RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact))
                     {
                         //Create the inference as a taxonomy entry
