@@ -46,6 +46,8 @@ namespace RDFSharp.Model
             #endregion
 
             #region Extended Properties
+
+            #region SWRLB
             /// <summary>
             /// SWRLB represents the Built-Ins extension to the W3C Semantic Web Rule Language vocabulary.
             /// </summary>
@@ -70,6 +72,35 @@ namespace RDFSharp.Model
                 #endregion
 
             }
+            #endregion
+
+            #region RULEML
+            /// <summary>
+            /// RULEML represents a subset of the W3C Rule Markup Language vocabulary.
+            /// </summary>
+            public static class RULEML
+            {
+
+                #region Properties
+                /// <summary>
+                /// ruleml
+                /// </summary>
+                public static readonly string PREFIX = "ruleml";
+
+                /// <summary>
+                /// http://www.w3.org/2003/11/ruleml
+                /// </summary>
+                public static readonly string BASE_URI = "http://www.w3.org/2003/11/ruleml";
+
+                /// <summary>
+                /// http://www.w3.org/2003/11/ruleml
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/ruleml";
+                #endregion
+
+            }
+            #endregion
+
             #endregion
 
         }
