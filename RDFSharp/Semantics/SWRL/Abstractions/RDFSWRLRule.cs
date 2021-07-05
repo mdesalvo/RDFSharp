@@ -16,6 +16,7 @@
 
 using RDFSharp.Semantics.OWL;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.SWRL
 {
@@ -65,6 +66,12 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Applies the rule to the given ontology
         /// </summary>
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology)
+            => ApplyToOntology(ontology, new RDFSWRLRuleOptions());
+
+        /// <summary>
+        /// Applies the rule to the given ontology with the given options
+        /// </summary>
         public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
         {
             //Materialize results of the rule's antecedent
@@ -74,6 +81,18 @@ namespace RDFSharp.Semantics.SWRL
             RDFOntologyReasonerReport consequentResults = this.Consequent.Evaluate(antecedentResults, ontology, ruleOptions);
             return consequentResults;
         }
+
+        /// <summary>
+        /// Asynchronously applies the rule to the given ontology
+        /// </summary>
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology)
+            => ApplyToOntologyAsync(ontology, new RDFSWRLRuleOptions());
+
+        /// <summary>
+        /// Asynchronously applies the rule to the given ontology with the given options
+        /// </summary>
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+            => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
         #endregion
     }
 }
