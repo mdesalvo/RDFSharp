@@ -58,7 +58,7 @@ namespace RDFSharp.Semantics.SWRL
         /// Gives the string representation of the rule
         /// </summary>
         public override string ToString()
-            => string.Concat(this.Antecedent, " -> ", this.Consequent);
+            => string.Concat(this.Antecedent, " ⇒ ", this.Consequent);
         #endregion
 
         #region Methods

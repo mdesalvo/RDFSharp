@@ -45,7 +45,7 @@ namespace RDFSharp.Semantics.SWRL
         /// Gives the string representation of the atom collection
         /// </summary>
         public override string ToString()
-            => string.Join(", ", this.Atoms);
+            => string.Join(" ∧ ", this.Atoms);
         #endregion
 
         #region Methods
