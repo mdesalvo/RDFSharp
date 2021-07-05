@@ -23,7 +23,7 @@ namespace RDFSharp.Model
     {
         #region SWRL
         /// <summary>
-        /// SWRL represents the Semantic Web Rule Language vocabulary.
+        /// SWRL represents the W3C Semantic Web Rule Language vocabulary.
         /// </summary>
         public static class SWRL
         {
@@ -32,17 +32,44 @@ namespace RDFSharp.Model
             /// <summary>
             /// swrlb
             /// </summary>
-            public static readonly string PREFIX = "swrlb";
+            public static readonly string PREFIX = "swrl";
+
+            /// <summary>
+            /// http://www.w3.org/2003/11/swrl
+            /// </summary>
+            public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrl";
 
             /// <summary>
             /// http://www.w3.org/2003/11/swrlb
             /// </summary>
-            public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrlb";
+            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrl";
+            #endregion
 
+            #region Extended Properties
             /// <summary>
-            /// http://www.w3.org/2003/11/swrlb
+            /// SWRLB represents the Built-Ins extension to the W3C Semantic Web Rule Language vocabulary.
             /// </summary>
-            public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb";
+            public static class SWRLB
+            {
+
+                #region Properties
+                /// <summary>
+                /// swrlb
+                /// </summary>
+                public static readonly string PREFIX = "swrlb";
+
+                /// <summary>
+                /// http://www.w3.org/2003/11/swrlb
+                /// </summary>
+                public static readonly string BASE_URI = "http://www.w3.org/2003/11/swrlb";
+
+                /// <summary>
+                /// http://www.w3.org/2003/11/swrlb
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://www.w3.org/2003/11/swrlb";
+                #endregion
+
+            }
             #endregion
 
         }
