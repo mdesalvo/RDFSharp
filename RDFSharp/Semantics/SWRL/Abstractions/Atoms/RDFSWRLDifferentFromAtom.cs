@@ -122,11 +122,9 @@ namespace RDFSharp.Semantics.SWRL
                 RDFPatternMember leftArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[leftArgumentString].ToString());
 
                 //Parse the value of the column corresponding to the atom's right argument
-                RDFPatternMember rightArgumentValue = this.RightArgument;
-                if (this.RightArgument is RDFVariable)
-                    rightArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[rightArgumentString].ToString());
-                else
-                    rightArgumentValue = ((RDFOntologyFact)rightArgumentValue).Value;
+                RDFPatternMember rightArgumentValue =
+                    this.RightArgument is RDFVariable ? RDFQueryUtilities.ParseRDFPatternMember(currentRow[rightArgumentString].ToString())
+                                                      : ((RDFOntologyFact)this.RightArgument).Value;
 
                 if (leftArgumentValue is RDFResource leftArgumentValueResource
                         && rightArgumentValue is RDFResource rightArgumentValueResource)
@@ -141,7 +139,7 @@ namespace RDFSharp.Semantics.SWRL
                     if (rightFact == null)
                         rightFact = new RDFOntologyFact(rightArgumentValueResource);
 
-                    //Protect atom's inferences with implicit taxonomy checks
+                    //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
                     if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
                             !RDFOntologyHelper.CheckIsSameFactAs(ontology.Data, leftFact, rightFact))
                     {

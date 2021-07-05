@@ -74,7 +74,7 @@ namespace RDFSharp.Semantics.SWRL
             if (!antecedentResults.Columns.Contains(leftArgumentString))
                 return report;
 
-            //Materialize members of the atom class
+            //Materialize members of the atom class (only if taxonomy protection has been requested)
             RDFOntologyData atomClassMembers =
                 ruleOptions.EnforceRealTimeTaxonomyProtection ? RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate)
                                                               : new RDFOntologyData();
@@ -98,7 +98,7 @@ namespace RDFSharp.Semantics.SWRL
                     if (fact == null)
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
-                    //Protect atom's inferences with implicit taxonomy checks
+                    //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
                     if (!ruleOptions.EnforceRealTimeTaxonomyProtection || 
                             atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
                     {
