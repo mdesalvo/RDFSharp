@@ -27,6 +27,11 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Properties
         /// <summary>
+        /// Name of the rule
+        /// </summary>
+        public string RuleName { get; internal set; }
+
+        /// <summary>
         /// Antecedent of the rule
         /// </summary>
         public RDFOntologyReasonerRuleAntecedent Antecedent { get; internal set; }
@@ -41,14 +46,18 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build a rule with given antecedent and consequent
         /// </summary>
-        public RDFOntologyReasonerRule(RDFOntologyReasonerRuleAntecedent antecedent, RDFOntologyReasonerRuleConsequent consequent)
+        public RDFOntologyReasonerRule(string ruleName, RDFOntologyReasonerRuleAntecedent antecedent, RDFOntologyReasonerRuleConsequent consequent)
         {
+            if (string.IsNullOrEmpty(ruleName))
+                throw new RDFSemanticsException("Cannot create rule because given \"ruleName\" parameter is null or empty");
+
             if (antecedent == null)
                 throw new RDFSemanticsException("Cannot create rule because given \"antecedent\" parameter is null");
 
             if (consequent == null)
                 throw new RDFSemanticsException("Cannot create rule because given \"consequent\" parameter is null");
 
+            this.RuleName = ruleName;
             this.Antecedent = antecedent;
             this.Consequent = consequent;
         }

@@ -72,7 +72,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyReasoner AddRule(RDFOntologyReasonerRule rule)
         {
-            if (rule != null && !this.Rules.Any(r => r.ToString().Equals(rule.ToString(), StringComparison.OrdinalIgnoreCase)))
+            if (rule != null && !this.Rules.Any(r => r.RuleName.Equals(rule.RuleName, StringComparison.OrdinalIgnoreCase)))
                 this.Rules.Add(rule);
             return this;
         }
