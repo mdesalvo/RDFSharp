@@ -22,7 +22,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerRuleConsequent represents the consequent of a rule
     /// </summary>
-    public class RDFOntologyReasonerRuleConsequent : RDFOntologyReasonerRuleMolecule
+    public class RDFOntologyReasonerRuleConsequent : RDFOntologyReasonerRuleAtomSet
     {
         #region Ctors
         /// <summary>

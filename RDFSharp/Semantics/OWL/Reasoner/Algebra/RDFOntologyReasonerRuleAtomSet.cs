@@ -22,28 +22,28 @@ namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFOntologyReasonerRuleMolecule represents a collection of atoms
+    /// RDFOntologyReasonerRuleAtomSet represents a collection of atoms
     /// </summary>
-    public class RDFOntologyReasonerRuleMolecule
+    public class RDFOntologyReasonerRuleAtomSet
     {
         #region Properties
         /// <summary>
-        /// Atoms composing the molecule
+        /// Atoms composing the set
         /// </summary>
         internal List<RDFOntologyReasonerRuleAtom> Atoms { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty molecule
+        /// Default-ctor to build an empty atom set
         /// </summary>
-        internal RDFOntologyReasonerRuleMolecule()
+        internal RDFOntologyReasonerRuleAtomSet()
             => this.Atoms = new List<RDFOntologyReasonerRuleAtom>();
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the molecule
+        /// Gives the string representation of the atom set
         /// </summary>
         public override string ToString()
             => string.Join(" ^ ", this.Atoms);
@@ -51,9 +51,9 @@ namespace RDFSharp.Semantics.OWL
 
         #region Methods
         /// <summary>
-        /// Adds the given atom to the molecule
+        /// Adds the given atom to the set
         /// </summary>
-        internal T AddAtom<T>(RDFOntologyReasonerRuleAtom atom) where T : RDFOntologyReasonerRuleMolecule
+        internal T AddAtom<T>(RDFOntologyReasonerRuleAtom atom) where T : RDFOntologyReasonerRuleAtomSet
         {
             if (atom != null && !this.Atoms.Any(x => x.ToString().Equals(atom.ToString(), StringComparison.OrdinalIgnoreCase)))
                 this.Atoms.Add(atom);

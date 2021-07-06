@@ -24,7 +24,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFSWRLRuleAntecedent represents the antecedent of a rule
     /// </summary>
-    public class RDFOntologyReasonerRuleAntecedent : RDFOntologyReasonerRuleMolecule
+    public class RDFOntologyReasonerRuleAntecedent : RDFOntologyReasonerRuleAtomSet
     {
         #region Ctors
         /// <summary>
