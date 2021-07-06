@@ -14,34 +14,33 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.OWL;
 using System.Data;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLRuleConsequent represents the consequent of a SWRL rule
+    /// RDFOntologyReasonerRuleConsequent represents the consequent of a rule
     /// </summary>
-    public class RDFSWRLRuleConsequent : RDFSWRLAtomCollection
+    public class RDFOntologyReasonerRuleConsequent : RDFOntologyReasonerRuleMolecule
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty consequent
         /// </summary>
-        public RDFSWRLRuleConsequent() : base() { }
+        public RDFOntologyReasonerRuleConsequent() : base() { }
         #endregion
 
         #region Methods
         /// <summary>
         /// Adds the given atom to the consequent
         /// </summary>
-        public RDFSWRLRuleConsequent AddAtom(RDFSWRLAtom atom)
-            => AddAtom<RDFSWRLRuleConsequent>(atom);
+        public RDFOntologyReasonerRuleConsequent AddAtom(RDFOntologyReasonerRuleAtom atom)
+            => AddAtom<RDFOntologyReasonerRuleConsequent>(atom);
 
         /// <summary>
         /// Evaluates the consequent in the context of the given antecedent results
         /// </summary>
-        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
 

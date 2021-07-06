@@ -16,17 +16,15 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System.Data;
-using System.Linq;
 using System.Text;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLAtom represents an atom contained in a SWRL rule's antecedent/consequent
+    /// RDFOntologyReasonerRuleAtom represents an atom contained in a rule's antecedent/consequent
     /// </summary>
-    public abstract class RDFSWRLAtom
+    public abstract class RDFOntologyReasonerRuleAtom
     {
         #region Properties
         /// <summary>
@@ -49,13 +47,13 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Default-ctor to build an atom with given predicate and arguments
         /// </summary>
-        internal RDFSWRLAtom(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
+        internal RDFOntologyReasonerRuleAtom(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
         {
             if (predicate == null)
-                throw new RDFSemanticsException("Cannot create SWRL atom because given \"predicate\" parameter is null");
+                throw new RDFSemanticsException("Cannot create atom because given \"predicate\" parameter is null");
 
             if (leftArgument == null)
-                throw new RDFSemanticsException("Cannot create SWRL atom because given \"leftArgument\" parameter is null");
+                throw new RDFSemanticsException("Cannot create atom because given \"leftArgument\" parameter is null");
 
             this.Predicate = predicate;
             this.LeftArgument = leftArgument;
@@ -88,12 +86,12 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions);
+        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions);
 
         /// <summary>
         /// Evaluates the atom in the context of a consequent
         /// </summary>
-        internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions);
+        internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions);
         #endregion
     }
 }

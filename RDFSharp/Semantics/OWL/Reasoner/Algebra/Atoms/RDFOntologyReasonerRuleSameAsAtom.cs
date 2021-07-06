@@ -16,29 +16,28 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLSameAsAtom represents an atom describing owl:sameAs relations between ontology facts 
+    /// RDFOntologyReasonerRuleSameAsAtom represents an atom inferring owl:sameAs relations between ontology facts 
     /// </summary>
-    public class RDFSWRLSameAsAtom : RDFSWRLObjectPropertyAtom
+    public class RDFOntologyReasonerRuleSameAsAtom : RDFOntologyReasonerRuleObjectPropertyAtom
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build an owl:sameAs atom with the given arguments
         /// </summary>
-        public RDFSWRLSameAsAtom(RDFVariable leftArgument, RDFVariable rightArgument)
+        public RDFOntologyReasonerRuleSameAsAtom(RDFVariable leftArgument, RDFVariable rightArgument)
             : base(RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
 
         /// <summary>
         /// Default-ctor to build an owl:sameAs atom with the given arguments
         /// </summary>
-        public RDFSWRLSameAsAtom(RDFVariable leftArgument, RDFOntologyFact rightArgument)
+        public RDFOntologyReasonerRuleSameAsAtom(RDFVariable leftArgument, RDFOntologyFact rightArgument)
             : base(RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
 
@@ -46,14 +45,14 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
             if (this.RightArgument is RDFVariable)
                 RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
-            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLSameAsAtom));
+            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFOntologyReasonerRuleSameAsAtom));
 
             //Materialize owl:sameAs inferences of the atom
             if (this.RightArgument is RDFOntologyFact rightArgumentFact)
@@ -90,7 +89,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             string leftArgumentString = this.LeftArgument.ToString();

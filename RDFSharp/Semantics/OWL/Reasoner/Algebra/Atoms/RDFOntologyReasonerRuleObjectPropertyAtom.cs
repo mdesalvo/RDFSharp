@@ -16,71 +16,56 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLDifferentFromAtom represents an atom describing owl:differentFrom assertions relating ontology facts 
+    /// RDFOntologyReasonerRuleObjectPropertyAtom represents an atom inferring assertions between ontology facts 
     /// </summary>
-    public class RDFSWRLDifferentFromAtom : RDFSWRLObjectPropertyAtom
+    public class RDFOntologyReasonerRuleObjectPropertyAtom : RDFOntologyReasonerRuleAtom
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an owl:differentFrom atom with the given arguments
+        /// Default-ctor to build an object property atom with the given property and arguments
         /// </summary>
-        public RDFSWRLDifferentFromAtom(RDFVariable leftArgument, RDFVariable rightArgument)
-            : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
+        public RDFOntologyReasonerRuleObjectPropertyAtom(RDFOntologyObjectProperty ontologyObjectProperty, RDFVariable leftArgument, RDFVariable rightArgument)
+            : base(ontologyObjectProperty, leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an owl:differentFrom atom with the given arguments
+        /// Default-ctor to build an object property atom with the given property and arguments
         /// </summary>
-        public RDFSWRLDifferentFromAtom(RDFVariable leftArgument, RDFOntologyFact rightArgument)
-            : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
+        public RDFOntologyReasonerRuleObjectPropertyAtom(RDFOntologyObjectProperty ontologyObjectProperty, RDFVariable leftArgument, RDFOntologyFact rightArgument)
+            : base(ontologyObjectProperty, leftArgument, rightArgument) { }
         #endregion
 
         #region Methods
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
             if (this.RightArgument is RDFVariable)
                 RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
-            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLDifferentFromAtom));
+            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFOntologyReasonerRuleObjectPropertyAtom));
 
-            //Materialize owl:differentFrom inferences of the atom
+            //Materialize object property assertions of the atom predicate
+            RDFOntologyTaxonomy assertions = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(this.Predicate);
             if (this.RightArgument is RDFOntologyFact rightArgumentFact)
+                assertions = assertions.SelectEntriesByObject(rightArgumentFact);
+            foreach (RDFOntologyTaxonomyEntry assertion in assertions)
             {
-                RDFOntologyData differentFacts = RDFOntologyHelper.GetDifferentFactsFrom(ontology.Data, rightArgumentFact);
-                foreach (RDFOntologyFact differentFact in differentFacts)
-                {
-                    Dictionary<string, string> bindings = new Dictionary<string, string>();
-                    bindings.Add(this.LeftArgument.ToString(), differentFact.ToString());
+                Dictionary<string, string> bindings = new Dictionary<string, string>();
+                bindings.Add(this.LeftArgument.ToString(), assertion.TaxonomySubject.ToString());
+                if (this.RightArgument is RDFVariable)
+                    bindings.Add(this.RightArgument.ToString(), assertion.TaxonomyObject.ToString());
 
-                    RDFQueryEngine.AddRow(atomResult, bindings);
-                }
-            }
-            else
-            {
-                foreach (RDFOntologyFact ontologyFact in ontology.Data)
-                {
-                    RDFOntologyData differentFacts = RDFOntologyHelper.GetDifferentFactsFrom(ontology.Data, ontologyFact);
-                    foreach (RDFOntologyFact differentFact in differentFacts)
-                    {
-                        Dictionary<string, string> bindings = new Dictionary<string, string>();
-                        bindings.Add(this.LeftArgument.ToString(), ontologyFact.ToString());
-                        bindings.Add(this.RightArgument.ToString(), differentFact.ToString());
-
-                        RDFQueryEngine.AddRow(atomResult, bindings);
-                    }
-                }
+                RDFQueryEngine.AddRow(atomResult, bindings);
             }
 
             //Return the atom result
@@ -90,7 +75,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             string leftArgumentString = this.LeftArgument.ToString();
@@ -141,19 +126,15 @@ namespace RDFSharp.Semantics.SWRL
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
                     if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
-                            !RDFOntologyHelper.CheckIsSameFactAs(ontology.Data, leftFact, rightFact))
+                            RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact))
                     {
                         //Create the inference as a taxonomy entry
-                        RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact)
-                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
-                        RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(rightFact, (RDFOntologyObjectProperty)this.Predicate, leftFact)
-                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact)
+                                                                .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report
-                        if (!ontology.Data.Relations.DifferentFrom.ContainsEntry(sem_infA))
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, this.ToString(), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infA));
-                        if (!ontology.Data.Relations.DifferentFrom.ContainsEntry(sem_infB))
-                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, this.ToString(), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infB));
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, this.ToString(), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
                     }
                 }
             }

@@ -18,31 +18,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLAtomCollection represents a collection of SWRL atoms
+    /// RDFOntologyReasonerRuleMolecule represents a collection of atoms
     /// </summary>
-    public class RDFSWRLAtomCollection
+    public class RDFOntologyReasonerRuleMolecule
     {
         #region Properties
         /// <summary>
-        /// Atoms composing the collection
+        /// Atoms composing the molecule
         /// </summary>
-        internal List<RDFSWRLAtom> Atoms { get; set; }
+        internal List<RDFOntologyReasonerRuleAtom> Atoms { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an empty atom collection
+        /// Default-ctor to build an empty molecule
         /// </summary>
-        internal RDFSWRLAtomCollection()
-            => this.Atoms = new List<RDFSWRLAtom>();
+        internal RDFOntologyReasonerRuleMolecule()
+            => this.Atoms = new List<RDFOntologyReasonerRuleAtom>();
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the atom collection
+        /// Gives the string representation of the molecule
         /// </summary>
         public override string ToString()
             => string.Join(", ", this.Atoms);
@@ -50,9 +50,9 @@ namespace RDFSharp.Semantics.SWRL
 
         #region Methods
         /// <summary>
-        /// Adds the given atom to the collection
+        /// Adds the given atom to the molecule
         /// </summary>
-        internal T AddAtom<T>(RDFSWRLAtom atom) where T : RDFSWRLAtomCollection
+        internal T AddAtom<T>(RDFOntologyReasonerRuleAtom atom) where T : RDFOntologyReasonerRuleMolecule
         {
             if (atom != null && !this.Atoms.Any(x => x.ToString().Equals(atom.ToString(), StringComparison.OrdinalIgnoreCase)))
                 this.Atoms.Add(atom);

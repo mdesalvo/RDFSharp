@@ -14,40 +14,39 @@
    limitations under the License.
 */
 
-using RDFSharp.Semantics.OWL;
 using System.Data;
 using System.Threading.Tasks;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLRule represents a rule expressed in SWRL
+    /// RDFOntologyReasonerRule represents a reasoner rule expressed in SWRL
     /// </summary>
-    public class RDFSWRLRule
+    public class RDFOntologyReasonerRule
     {
         #region Properties
         /// <summary>
-        /// Antecedent of the SRWL rule
+        /// Antecedent of the rule
         /// </summary>
-        public RDFSWRLRuleAntecedent Antecedent { get; internal set; }
+        public RDFOntologyReasonerRuleAntecedent Antecedent { get; internal set; }
 
         /// <summary>
-        /// Consequent of the SRWL rule
+        /// Consequent of the rule
         /// </summary>
-        public RDFSWRLRuleConsequent Consequent { get; internal set; }
+        public RDFOntologyReasonerRuleConsequent Consequent { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a SWRL rule with given antecedent and consequent
+        /// Default-ctor to build a rule with given antecedent and consequent
         /// </summary>
-        public RDFSWRLRule(RDFSWRLRuleAntecedent antecedent, RDFSWRLRuleConsequent consequent)
+        public RDFOntologyReasonerRule(RDFOntologyReasonerRuleAntecedent antecedent, RDFOntologyReasonerRuleConsequent consequent)
         {
             if (antecedent == null)
-                throw new RDFSemanticsException("Cannot create SWRL rule because given \"antecedent\" parameter is null");
+                throw new RDFSemanticsException("Cannot create rule because given \"antecedent\" parameter is null");
 
             if (consequent == null)
-                throw new RDFSemanticsException("Cannot create SWRL rule because given \"consequent\" parameter is null");
+                throw new RDFSemanticsException("Cannot create rule because given \"consequent\" parameter is null");
 
             this.Antecedent = antecedent;
             this.Consequent = consequent;
@@ -67,12 +66,12 @@ namespace RDFSharp.Semantics.SWRL
         /// Applies the rule to the given ontology
         /// </summary>
         public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology)
-            => ApplyToOntology(ontology, new RDFSWRLRuleOptions());
+            => ApplyToOntology(ontology, new RDFOntologyReasonerOptions());
 
         /// <summary>
         /// Applies the rule to the given ontology with the given options
         /// </summary>
-        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             //Materialize results of the rule's antecedent
             DataTable antecedentResults = this.Antecedent.Evaluate(ontology, ruleOptions);
@@ -86,12 +85,12 @@ namespace RDFSharp.Semantics.SWRL
         /// Asynchronously applies the rule to the given ontology
         /// </summary>
         public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology)
-            => ApplyToOntologyAsync(ontology, new RDFSWRLRuleOptions());
+            => ApplyToOntologyAsync(ontology, new RDFOntologyReasonerOptions());
 
         /// <summary>
         /// Asynchronously applies the rule to the given ontology with the given options
         /// </summary>
-        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
             => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
         #endregion
     }

@@ -16,23 +16,22 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLClassAtom represents an atom describing instances of a given ontology class 
+    /// RDFOntologyReasonerRuleClassAtom represents an atom inferring instances of a given ontology class 
     /// </summary>
-    public class RDFSWRLClassAtom : RDFSWRLAtom
+    public class RDFOntologyReasonerRuleClassAtom : RDFOntologyReasonerRuleAtom
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build a class atom with the given class and arguments
         /// </summary>
-        public RDFSWRLClassAtom(RDFOntologyClass ontologyClass, RDFVariable leftArgument)
+        public RDFOntologyReasonerRuleClassAtom(RDFOntologyClass ontologyClass, RDFVariable leftArgument)
             : base(ontologyClass, leftArgument, null) { }
         #endregion
 
@@ -40,12 +39,12 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
-            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLClassAtom));
+            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFOntologyReasonerRuleClassAtom));
 
             //Materialize members of the atom class
             RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate);
@@ -64,7 +63,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             RDFOntologyObjectProperty type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();

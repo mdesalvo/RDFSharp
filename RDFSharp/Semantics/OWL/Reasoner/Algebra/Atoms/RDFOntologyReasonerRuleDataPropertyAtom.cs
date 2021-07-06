@@ -16,49 +16,48 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLObjectPropertyAtom represents an atom describing assertions relating ontology facts 
+    /// RDFOntologyReasonerRuleDataPropertyAtom represents an atom inferring assertions relating ontology facts to literals
     /// </summary>
-    public class RDFSWRLObjectPropertyAtom : RDFSWRLAtom
+    public class RDFOntologyReasonerRuleDataPropertyAtom : RDFOntologyReasonerRuleAtom
     {
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an object property atom with the given property and arguments
+        /// Default-ctor to build a data property atom with the given property and arguments
         /// </summary>
-        public RDFSWRLObjectPropertyAtom(RDFOntologyObjectProperty ontologyObjectProperty, RDFVariable leftArgument, RDFVariable rightArgument)
-            : base(ontologyObjectProperty, leftArgument, rightArgument) { }
+        public RDFOntologyReasonerRuleDataPropertyAtom(RDFOntologyDatatypeProperty ontologyDatatypeProperty, RDFVariable leftArgument, RDFVariable rightArgument)
+            : base(ontologyDatatypeProperty, leftArgument, rightArgument) { }
 
         /// <summary>
-        /// Default-ctor to build an object property atom with the given property and arguments
+        /// Default-ctor to build a data property atom with the given property and arguments
         /// </summary>
-        public RDFSWRLObjectPropertyAtom(RDFOntologyObjectProperty ontologyObjectProperty, RDFVariable leftArgument, RDFOntologyFact rightArgument)
-            : base(ontologyObjectProperty, leftArgument, rightArgument) { }
+        public RDFOntologyReasonerRuleDataPropertyAtom(RDFOntologyDatatypeProperty ontologyDatatypeProperty, RDFVariable leftArgument, RDFOntologyLiteral rightArgument)
+            : base(ontologyDatatypeProperty, leftArgument, rightArgument) { }
         #endregion
 
         #region Methods
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
             if (this.RightArgument is RDFVariable)
                 RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
-            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFSWRLObjectPropertyAtom));
+            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFOntologyReasonerRuleDataPropertyAtom));
 
-            //Materialize object property assertions of the atom predicate
+            //Materialize data property assertions of the atom predicate
             RDFOntologyTaxonomy assertions = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(this.Predicate);
-            if (this.RightArgument is RDFOntologyFact rightArgumentFact)
-                assertions = assertions.SelectEntriesByObject(rightArgumentFact);
+            if (this.RightArgument is RDFOntologyLiteral rightArgumentLiteral)
+                assertions = assertions.SelectEntriesByObject(rightArgumentLiteral);
             foreach (RDFOntologyTaxonomyEntry assertion in assertions)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
@@ -76,7 +75,7 @@ namespace RDFSharp.Semantics.SWRL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             string leftArgumentString = this.LeftArgument.ToString();
@@ -110,27 +109,27 @@ namespace RDFSharp.Semantics.SWRL
                 //Parse the value of the column corresponding to the atom's right argument
                 RDFPatternMember rightArgumentValue =
                     this.RightArgument is RDFVariable ? RDFQueryUtilities.ParseRDFPatternMember(currentRow[rightArgumentString].ToString())
-                                                      : ((RDFOntologyFact)this.RightArgument).Value;
+                                                      : ((RDFOntologyLiteral)this.RightArgument).Value;
 
                 if (leftArgumentValue is RDFResource leftArgumentValueResource
-                        && rightArgumentValue is RDFResource rightArgumentValueResource)
+                        && rightArgumentValue is RDFLiteral rightArgumentValueLiteral)
                 {
-                    //Search the left fact in the ontology
-                    RDFOntologyFact leftFact = ontology.Data.SelectFact(leftArgumentValueResource.ToString());
-                    if (leftFact == null)
-                        leftFact = new RDFOntologyFact(leftArgumentValueResource);
+                    //Search the fact in the ontology
+                    RDFOntologyFact fact = ontology.Data.SelectFact(leftArgumentValueResource.ToString());
+                    if (fact == null)
+                        fact = new RDFOntologyFact(leftArgumentValueResource);
 
-                    //Search the right fact in the ontology
-                    RDFOntologyFact rightFact = ontology.Data.SelectFact(rightArgumentValueResource.ToString());
-                    if (rightFact == null)
-                        rightFact = new RDFOntologyFact(rightArgumentValueResource);
+                    //Search the literal in the ontology
+                    RDFOntologyLiteral literal = ontology.Data.SelectLiteral(rightArgumentValueLiteral.ToString());
+                    if (literal == null)
+                        literal = new RDFOntologyLiteral(rightArgumentValueLiteral);
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
                     if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
-                            RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact))
+                            RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, fact, (RDFOntologyDatatypeProperty)this.Predicate, literal))
                     {
                         //Create the inference as a taxonomy entry
-                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact)
+                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, (RDFOntologyDatatypeProperty)this.Predicate, literal)
                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
 
                         //Add the inference to the report

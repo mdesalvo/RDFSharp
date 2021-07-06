@@ -15,35 +15,34 @@
 */
 
 using RDFSharp.Query;
-using RDFSharp.Semantics.OWL;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLRuleAntecedent represents the antecedent of a SWRL rule
+    /// RDFSWRLRuleAntecedent represents the antecedent of a rule
     /// </summary>
-    public class RDFSWRLRuleAntecedent : RDFSWRLAtomCollection
+    public class RDFOntologyReasonerRuleAntecedent : RDFOntologyReasonerRuleMolecule
     {
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty antecedent
         /// </summary>
-        public RDFSWRLRuleAntecedent() : base() { }
+        public RDFOntologyReasonerRuleAntecedent() : base() { }
         #endregion
 
         #region Methods
         /// <summary>
         /// Adds the given atom to the antecedent
         /// </summary>
-        public RDFSWRLRuleAntecedent AddAtom(RDFSWRLAtom atom)
-            => AddAtom<RDFSWRLRuleAntecedent>(atom);
+        public RDFOntologyReasonerRuleAntecedent AddAtom(RDFOntologyReasonerRuleAtom atom)
+            => AddAtom<RDFOntologyReasonerRuleAntecedent>(atom);
 
         /// <summary>
         /// Evaluates the antecedent in the context of the given ontology
         /// </summary>
-        internal DataTable Evaluate(RDFOntology ontology, RDFSWRLRuleOptions ruleOptions)
+        internal DataTable Evaluate(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             //Execute the antecedent atoms
             List<DataTable> atomResults = new List<DataTable>();

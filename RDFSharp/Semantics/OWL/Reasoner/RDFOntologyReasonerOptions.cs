@@ -14,25 +14,25 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Semantics.SWRL
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFSWRLRuleOptions represents a customization of the execution behavior of an SWRL rule
+    /// RDFOntologyReasonerOptions represents a customization of the execution behavior of a reasoner
     /// </summary>
-    public class RDFSWRLRuleOptions
+    public class RDFOntologyReasonerOptions
     {
         #region Properties
         /// <summary>
-        /// Flag driving the SWRL rule to execute additional real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
+        /// Flag driving the reasoner to execute additional real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
         /// </summary>
         public bool ForceRealTimeTaxonomyProtection { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build options for execution of an SWRL rule
+        /// Default-ctor to build options for execution of a reasoner
         /// </summary>
-        public RDFSWRLRuleOptions()
+        public RDFOntologyReasonerOptions()
             => this.ForceRealTimeTaxonomyProtection = true;
         #endregion
     }

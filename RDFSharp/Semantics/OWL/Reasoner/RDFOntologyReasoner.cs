@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -76,54 +75,38 @@ namespace RDFSharp.Semantics.OWL
         {
             if (rule != null)
             {
-                if (this.SelectRule(rule.RuleName) == null)
+                if (this.Rules.Any(r => r.ToString().Equals(rule.ToString(), StringComparison.OrdinalIgnoreCase)))
                     this.Rules.Add(rule);
             }
             return this;
         }
 
         /// <summary>
-        /// Selects the given rule from the resoner
-        /// </summary>
-        public RDFOntologyReasonerRule SelectRule(string ruleName)
-            => this.Rules.FirstOrDefault(r => r.RuleName.Equals(ruleName?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase));
-
-        /// <summary>
-        /// Applies the reasoner on the given ontology, producing a reasoning report.
+        /// Applies the reasoner on the given ontology
         /// </summary>
         public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology)
+            => ApplyToOntology(ontology, new RDFOntologyReasonerOptions());
+
+        /// <summary>
+        /// Applies the reasoner on the given ontology with given options
+        /// </summary>
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             if (ontology != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge.", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge and rules.", ontology.Value));
 
-                //STEP 1: Expand working ontology
                 RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
+                Parallel.ForEach(this.Rules, rule =>
+                {
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching reasoner rule '{0}'...", rule));
 
-                //STEP 2: Execute standard rules
-                Parallel.ForEach(this.Rules.Where(x => x.IsStandardRule), 
-                    standardRule =>
-                    {
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoner rule '{0}'...", standardRule));
+                    RDFOntologyReasonerReport ruleReport = rule.ApplyToOntology(expOntology, ruleOptions);
+                    report.Merge(ruleReport);
 
-                        RDFOntologyReasonerReport sRuleReport = standardRule.ExecuteRule(expOntology);
-                        report.Merge(sRuleReport);
-
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoner rule '{0}': found {1} evidences.", standardRule, sRuleReport.EvidencesCount));
-                    });
-
-                //STEP 3: Execute custom rules
-                Parallel.ForEach(this.Rules.Where(x => !x.IsStandardRule), 
-                    customRule =>
-                    {
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoner rule '{0}'...", customRule));
-
-                        RDFOntologyReasonerReport cRuleReport = customRule.ExecuteRule(expOntology);
-                        report.Merge(cRuleReport);
-
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoner rule '{0}': found {1} evidences.", customRule, cRuleReport.EvidencesCount));
-                    });
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed reasoner rule '{0}': found {1} evidences.", rule, ruleReport.EvidencesCount));
+                });
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " unique evidences.", ontology.Value));
             }
@@ -131,10 +114,16 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Asynchronously applies the reasoner on the given ontology, producing a reasoning report.
+        /// Asynchronously applies the reasoner on the given ontology
         /// </summary>
         public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology)
-            => Task.Run(() => ApplyToOntology(ontology));
+            => ApplyToOntologyAsync(ontology, new RDFOntologyReasonerOptions());
+
+        /// <summary>
+        /// Asynchronously applies the reasoner on the given ontology with the given options
+        /// </summary>
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+            => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
 
         #endregion
 
