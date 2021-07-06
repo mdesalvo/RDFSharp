@@ -24,7 +24,7 @@ namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFOntologyReasoner represents an inference engine applied on a given ontology
+    /// RDFOntologyReasoner represents a SWRL inference engine applied on a given ontology
     /// </summary>
     public class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule>
     {
