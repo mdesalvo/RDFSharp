@@ -21,6 +21,7 @@ using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
+
     /// <summary>
     /// RDFOntologyReasonerRuleAtom represents an atom contained in a rule's antecedent/consequent
     /// </summary>
@@ -94,4 +95,5 @@ namespace RDFSharp.Semantics.OWL
         internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions);
         #endregion
     }
+
 }

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
+
     /// <summary>
     /// RDFOntologyReasonerRule represents a reasoner rule expressed in SWRL
     /// </summary>
@@ -94,4 +95,5 @@ namespace RDFSharp.Semantics.OWL
             => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
         #endregion
     }
+
 }

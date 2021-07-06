@@ -28,7 +28,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule>
     {
-
         #region Properties
         /// <summary>
         /// Count of the rules composing the reasoner
@@ -73,11 +72,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyReasoner AddRule(RDFOntologyReasonerRule rule)
         {
-            if (rule != null)
-            {
-                if (this.Rules.Any(r => r.ToString().Equals(rule.ToString(), StringComparison.OrdinalIgnoreCase)))
-                    this.Rules.Add(rule);
-            }
+            if (rule != null && !this.Rules.Any(r => r.ToString().Equals(rule.ToString(), StringComparison.OrdinalIgnoreCase)))
+                this.Rules.Add(rule);
             return this;
         }
 
@@ -126,7 +122,6 @@ namespace RDFSharp.Semantics.OWL
             => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
 
         #endregion
-
     }
 
 }

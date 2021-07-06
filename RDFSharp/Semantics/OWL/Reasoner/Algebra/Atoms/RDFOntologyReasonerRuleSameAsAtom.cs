@@ -22,6 +22,7 @@ using System.Data;
 
 namespace RDFSharp.Semantics.OWL
 {
+
     /// <summary>
     /// RDFOntologyReasonerRuleSameAsAtom represents an atom inferring owl:sameAs relations between ontology facts 
     /// </summary>
@@ -161,4 +162,5 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
     }
+
 }

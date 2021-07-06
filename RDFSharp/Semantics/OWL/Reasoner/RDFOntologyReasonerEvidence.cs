@@ -25,7 +25,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyReasonerEvidence
     {
-
         #region Properties
         /// <summary>
         /// Category of the evidence
@@ -83,7 +82,6 @@ namespace RDFSharp.Semantics.OWL
         /// <returns></returns>
         public RDFTriple ToRDFTriple() => EvidenceContent.ToRDFTriple();
         #endregion
-
     }
 
 }

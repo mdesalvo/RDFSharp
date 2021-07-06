@@ -20,6 +20,7 @@ using System.Linq;
 
 namespace RDFSharp.Semantics.OWL
 {
+
     /// <summary>
     /// RDFOntologyReasonerRuleMolecule represents a collection of atoms
     /// </summary>
@@ -60,4 +61,5 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
     }
+
 }

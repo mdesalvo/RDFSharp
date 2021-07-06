@@ -22,6 +22,7 @@ using System.Data;
 
 namespace RDFSharp.Semantics.OWL
 {
+
     /// <summary>
     /// RDFOntologyReasonerRuleDifferentFromAtom represents an atom inferring owl:differentFrom assertions between ontology facts 
     /// </summary>
@@ -161,4 +162,5 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
     }
+
 }
