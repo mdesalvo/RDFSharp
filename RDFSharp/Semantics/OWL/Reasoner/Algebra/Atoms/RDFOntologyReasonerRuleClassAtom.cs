@@ -40,7 +40,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
@@ -64,20 +64,22 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             RDFOntologyObjectProperty type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
             string leftArgumentString = this.LeftArgument.ToString();
 
-            //Guard: the antecedent results table MUST have a column corresponding to the atom's left argument
+            #region Guards
+            //The antecedent results table MUST have a column corresponding to the atom's left argument
             if (!antecedentResults.Columns.Contains(leftArgumentString))
                 return report;
+            #endregion
 
             //Materialize members of the atom class (only if taxonomy protection has been requested)
             RDFOntologyData atomClassMembers =
-                ruleOptions.ForceRealTimeTaxonomyProtection ? RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate)
-                                                              : new RDFOntologyData();
+                options.EnforceTaxonomyProtection ? RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate)
+                                                  : new RDFOntologyData();
 
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
             IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
@@ -85,9 +87,11 @@ namespace RDFSharp.Semantics.OWL
             {
                 DataRow currentRow = (DataRow)rowsEnum.Current;
 
-                //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's left argument
+                #region Guards
+                //The current row MUST have a BOUND value in the column corresponding to the atom's left argument
                 if (currentRow.IsNull(leftArgumentString))
                     continue;
+                #endregion
 
                 //Parse the value of the column corresponding to the atom's left argument
                 RDFPatternMember leftArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[leftArgumentString].ToString());
@@ -99,8 +103,7 @@ namespace RDFSharp.Semantics.OWL
                         fact = new RDFOntologyFact(leftArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
-                    if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
-                            atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
+                    if (!options.EnforceTaxonomyProtection || atomClassMembers.Facts.ContainsKey(fact.PatternMemberID))
                     {
                         //Create the inference as a taxonomy entry
                         RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(fact, type, (RDFOntologyClass)this.Predicate)

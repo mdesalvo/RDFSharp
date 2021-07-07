@@ -46,7 +46,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
@@ -76,19 +76,21 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Evaluates the atom in the context of an consequent
         /// </summary>
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             string leftArgumentString = this.LeftArgument.ToString();
             string rightArgumentString = this.RightArgument.ToString();
 
-            //Guard: the antecedent results table MUST have a column corresponding to the atom's left argument
+            #region Guards
+            //The antecedent results table MUST have a column corresponding to the atom's left argument
             if (!antecedentResults.Columns.Contains(leftArgumentString))
                 return report;
 
-            //Guard: the antecedent results table MUST have a column corresponding to the atom's right argument (if variable)
+            //The antecedent results table MUST have a column corresponding to the atom's right argument (if variable)
             if (this.RightArgument is RDFVariable && !antecedentResults.Columns.Contains(rightArgumentString))
                 return report;
+            #endregion
 
             //Iterate the antecedent results table to materialize the atom's reasoner evidences
             IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
@@ -96,13 +98,15 @@ namespace RDFSharp.Semantics.OWL
             {
                 DataRow currentRow = (DataRow)rowsEnum.Current;
 
-                //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's left argument
+                #region Guards
+                //The current row MUST have a BOUND value in the column corresponding to the atom's left argument
                 if (currentRow.IsNull(leftArgumentString))
                     continue;
 
-                //Guard: the current row MUST have a BOUND value in the column corresponding to the atom's right argument (if variable)
+                //The current row MUST have a BOUND value in the column corresponding to the atom's right argument (if variable)
                 if (this.RightArgument is RDFVariable && currentRow.IsNull(rightArgumentString))
                     continue;
+                #endregion
 
                 //Parse the value of the column corresponding to the atom's left argument
                 RDFPatternMember leftArgumentValue = RDFQueryUtilities.ParseRDFPatternMember(currentRow[leftArgumentString].ToString());
@@ -126,8 +130,7 @@ namespace RDFSharp.Semantics.OWL
                         rightFact = new RDFOntologyFact(rightArgumentValueResource);
 
                     //Protect atom's inferences with implicit taxonomy checks (only if taxonomy protection has been requested)
-                    if (!ruleOptions.ForceRealTimeTaxonomyProtection || 
-                            RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact))
+                    if (!options.EnforceTaxonomyProtection || RDFOntologyChecker.CheckAssertionCompatibility(ontology.Data, leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact))
                     {
                         //Create the inference as a taxonomy entry
                         RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(leftFact, (RDFOntologyObjectProperty)this.Predicate, rightFact)

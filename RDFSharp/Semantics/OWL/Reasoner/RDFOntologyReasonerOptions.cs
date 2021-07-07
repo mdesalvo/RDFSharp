@@ -24,9 +24,9 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Properties
         /// <summary>
-        /// Flag driving the reasoner to execute additional real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
+        /// Flag driving the reasoner to execute real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
         /// </summary>
-        public bool ForceRealTimeTaxonomyProtection { get; set; }
+        public bool EnforceTaxonomyProtection { get; set; }
         #endregion
 
         #region Ctors
@@ -34,7 +34,7 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build options for execution of a reasoner
         /// </summary>
         public RDFOntologyReasonerOptions()
-            => this.ForceRealTimeTaxonomyProtection = true;
+            => this.EnforceTaxonomyProtection = true;
         #endregion
     }
 

@@ -81,7 +81,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Applies the rule to the given ontology with the given options
         /// </summary>
-        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             //Materialize results of the rule's antecedent
             DataTable antecedentResults = this.Antecedent.Evaluate(ontology, ruleOptions);
@@ -100,7 +100,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Asynchronously applies the rule to the given ontology with the given options
         /// </summary>
-        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions options)
             => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
         #endregion
     }

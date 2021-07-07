@@ -41,7 +41,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Evaluates the consequent in the context of the given antecedent results
         /// </summary>
-        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        internal RDFOntologyReasonerReport Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
 

@@ -87,12 +87,12 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
         /// </summary>
-        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions);
+        internal abstract DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options);
 
         /// <summary>
         /// Evaluates the atom in the context of a consequent
         /// </summary>
-        internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions);
+        internal abstract RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options);
         #endregion
     }
 

@@ -86,7 +86,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Applies the reasoner on the given ontology with given options
         /// </summary>
-        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             if (ontology != null)
@@ -118,7 +118,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Asynchronously applies the reasoner on the given ontology with the given options
         /// </summary>
-        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions ruleOptions)
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions options)
             => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
 
         #endregion
