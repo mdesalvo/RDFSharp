@@ -29,7 +29,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyData : IEnumerable<RDFOntologyFact>
     {
-
         #region Properties
         /// <summary>
         /// Count of the facts composing the data
@@ -976,32 +975,28 @@ namespace RDFSharp.Semantics.OWL
 
         #region Select
         /// <summary>
-        /// Selects the fact represented by the given string from the data
+        /// Selects the fact represented by the given identifier
         /// </summary>
-        public RDFOntologyFact SelectFact(string fact)
-        {
-            if (fact != null)
-            {
-                long factID = RDFModelUtilities.CreateHash(fact);
-                if (this.Facts.ContainsKey(factID))
-                    return this.Facts[factID];
-            }
-            return null;
-        }
+        public RDFOntologyFact SelectFact(long factID)
+            => this.Facts.ContainsKey(factID) ? this.Facts[factID] : null;
 
         /// <summary>
-        /// Selects the literal represented by the given string from the data
+        /// Selects the fact represented by the given string
+        /// </summary>
+        public RDFOntologyFact SelectFact(string fact)
+            => fact != null ? SelectFact(RDFModelUtilities.CreateHash(fact)) : null;
+
+        /// <summary>
+        /// Selects the literal represented by the given identifier
+        /// </summary>
+        public RDFOntologyLiteral SelectLiteral(long literalID)
+            => this.Literals.ContainsKey(literalID) ? this.Literals[literalID] : null;
+
+        /// <summary>
+        /// Selects the literal represented by the given string
         /// </summary>
         public RDFOntologyLiteral SelectLiteral(string literal)
-        {
-            if (literal != null)
-            {
-                long literalID = RDFModelUtilities.CreateHash(literal);
-                if (this.Literals.ContainsKey(literalID))
-                    return this.Literals[literalID];
-            }
-            return null;
-        }
+            => literal != null ? SelectLiteral(RDFModelUtilities.CreateHash(literal)) : null;
         #endregion
 
         #region Set
@@ -1208,7 +1203,6 @@ namespace RDFSharp.Semantics.OWL
         #endregion
 
         #endregion
-
     }
 
 }

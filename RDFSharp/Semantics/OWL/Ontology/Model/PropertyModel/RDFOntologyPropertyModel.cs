@@ -29,7 +29,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyPropertyModel : IEnumerable<RDFOntologyProperty>
     {
-
         #region Properties
         /// <summary>
         /// Count of the properties composing the property model
@@ -972,18 +971,16 @@ namespace RDFSharp.Semantics.OWL
 
         #region Select
         /// <summary>
-        /// Selects the ontology property represented by the given string from the ontology property model
+        /// Selects the ontology property represented by the given identifier
+        /// </summary>
+        public RDFOntologyProperty SelectProperty(long ontPropertyID)
+            => this.Properties.ContainsKey(ontPropertyID) ? this.Properties[ontPropertyID] : null;
+
+        /// <summary>
+        /// Selects the ontology property represented by the given string
         /// </summary>
         public RDFOntologyProperty SelectProperty(string ontProperty)
-        {
-            if (ontProperty != null)
-            {
-                long propertyID = RDFModelUtilities.CreateHash(ontProperty);
-                if (this.Properties.ContainsKey(propertyID))
-                    return this.Properties[propertyID];
-            }
-            return null;
-        }
+            => ontProperty != null ? SelectProperty(RDFModelUtilities.CreateHash(ontProperty)) : null;
         #endregion
 
         #region Set
@@ -1230,7 +1227,6 @@ namespace RDFSharp.Semantics.OWL
         #endregion
 
         #endregion
-
     }
 
 }
