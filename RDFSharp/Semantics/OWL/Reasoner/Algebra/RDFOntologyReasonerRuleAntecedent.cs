@@ -15,8 +15,10 @@
 */
 
 using RDFSharp.Query;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -24,13 +26,29 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFSWRLRuleAntecedent represents the antecedent of a rule
     /// </summary>
-    public class RDFOntologyReasonerRuleAntecedent : RDFOntologyReasonerRuleAtomSet
+    public class RDFOntologyReasonerRuleAntecedent
     {
+        #region Properties
+        /// <summary>
+        /// Atoms composing the antecedent
+        /// </summary>
+        internal List<RDFOntologyReasonerRuleAtom> Atoms { get; set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty antecedent
         /// </summary>
-        public RDFOntologyReasonerRuleAntecedent() : base() { }
+        public RDFOntologyReasonerRuleAntecedent()
+            => this.Atoms = new List<RDFOntologyReasonerRuleAtom>();
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the antecedent
+        /// </summary>
+        public override string ToString()
+            => string.Join(" ^ ", this.Atoms);
         #endregion
 
         #region Methods
@@ -38,7 +56,11 @@ namespace RDFSharp.Semantics.OWL
         /// Adds the given atom to the antecedent
         /// </summary>
         public RDFOntologyReasonerRuleAntecedent AddAtom(RDFOntologyReasonerRuleAtom atom)
-            => AddAtom<RDFOntologyReasonerRuleAntecedent>(atom);
+        {
+            if (atom != null && !this.Atoms.Any(x => x.ToString().Equals(atom.ToString(), StringComparison.OrdinalIgnoreCase)))
+                this.Atoms.Add(atom);
+            return this;
+        }
 
         /// <summary>
         /// Evaluates the antecedent in the context of the given ontology

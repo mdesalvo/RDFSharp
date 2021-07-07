@@ -14,7 +14,10 @@
    limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -22,13 +25,29 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerRuleConsequent represents the consequent of a rule
     /// </summary>
-    public class RDFOntologyReasonerRuleConsequent : RDFOntologyReasonerRuleAtomSet
+    public class RDFOntologyReasonerRuleConsequent
     {
+        #region Properties
+        /// <summary>
+        /// Atoms composing the consequent
+        /// </summary>
+        internal List<RDFOntologyReasonerRuleAtom> Atoms { get; set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Default-ctor to build an empty consequent
         /// </summary>
-        public RDFOntologyReasonerRuleConsequent() : base() { }
+        public RDFOntologyReasonerRuleConsequent()
+            => this.Atoms = new List<RDFOntologyReasonerRuleAtom>();
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the consequent
+        /// </summary>
+        public override string ToString()
+            => string.Join(" ^ ", this.Atoms);
         #endregion
 
         #region Methods
@@ -36,7 +55,11 @@ namespace RDFSharp.Semantics.OWL
         /// Adds the given atom to the consequent
         /// </summary>
         public RDFOntologyReasonerRuleConsequent AddAtom(RDFOntologyReasonerRuleAtom atom)
-            => AddAtom<RDFOntologyReasonerRuleConsequent>(atom);
+        {
+            if (atom != null && !this.Atoms.Any(x => x.ToString().Equals(atom.ToString(), StringComparison.OrdinalIgnoreCase)))
+                this.Atoms.Add(atom);
+            return this;
+        }
 
         /// <summary>
         /// Evaluates the consequent in the context of the given antecedent results
