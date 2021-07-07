@@ -96,12 +96,12 @@ namespace RDFSharp.Semantics.OWL
                 RDFOntology tempOntology = ontology.UnionWith(RDFBASEOntology.Instance);
                 Parallel.ForEach(this.Rules, rule =>
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching reasoner rule '{0}'...", rule));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching rule '{0}': {1}", rule.RuleName, rule));
 
                     RDFOntologyReasonerReport ruleReport = rule.ApplyToOntology(tempOntology, options);
                     report.Merge(ruleReport);
 
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed reasoner rule '{0}': found {1} evidences.", rule, ruleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed rule '{0}': found {1} evidences.", rule.RuleName, ruleReport.EvidencesCount));
                 });
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " unique evidences.", ontology.Value));
