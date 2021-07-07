@@ -46,7 +46,7 @@ namespace RDFSharp.Semantics.OWL
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
 
             //Execute the consequent atoms
-            this.Atoms.ForEach(atom => report.Merge(atom.EvaluateOnConsequent(antecedentResults, ontology, ruleOptions)));
+            this.Atoms.ForEach(atom => report.Merge(atom.EvaluateOnConsequent(antecedentResults, ontology, options)));
 
             //Return the consequent result
             return report;

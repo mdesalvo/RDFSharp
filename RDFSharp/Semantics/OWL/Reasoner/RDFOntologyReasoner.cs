@@ -93,12 +93,12 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge and rules.", ontology.Value));
 
-                RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
+                RDFOntology tempOntology = ontology.UnionWith(RDFBASEOntology.Instance);
                 Parallel.ForEach(this.Rules, rule =>
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching reasoner rule '{0}'...", rule));
 
-                    RDFOntologyReasonerReport ruleReport = rule.ApplyToOntology(expOntology, ruleOptions);
+                    RDFOntologyReasonerReport ruleReport = rule.ApplyToOntology(tempOntology, options);
                     report.Merge(ruleReport);
 
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed reasoner rule '{0}': found {1} evidences.", rule, ruleReport.EvidencesCount));
@@ -119,7 +119,7 @@ namespace RDFSharp.Semantics.OWL
         /// Asynchronously applies the reasoner on the given ontology with the given options
         /// </summary>
         public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions options)
-            => Task.Run(() => ApplyToOntology(ontology, ruleOptions));
+            => Task.Run(() => ApplyToOntology(ontology, options));
 
         #endregion
     }

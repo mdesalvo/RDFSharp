@@ -47,7 +47,7 @@ namespace RDFSharp.Semantics.OWL
         {
             //Execute the antecedent atoms
             List<DataTable> atomResults = new List<DataTable>();
-            this.Atoms.ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology, ruleOptions)));
+            this.Atoms.ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology, options)));
 
             //Join results of antecedent atoms
             DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);
