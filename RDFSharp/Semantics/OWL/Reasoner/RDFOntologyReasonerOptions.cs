@@ -24,7 +24,7 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Properties
         /// <summary>
-        /// Flag driving the reasoner to execute real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
+        /// Instructs the reasoner to execute additional real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
         /// </summary>
         public bool EnforceTaxonomyProtection { get; set; }
         #endregion
