@@ -25,6 +25,24 @@ namespace RDFSharp.Semantics.OWL.Reasoner.Algebra.Built_Ins
         /// Default-ctor to build a swrlb:equal built-in with given arguments
         /// </summary>
         public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument)
+            : this(leftArgument, rightArgument as RDFPatternMember) { }
+
+        /// <summary>
+        /// Default-ctor to build a swrlb:equal built-in with given arguments
+        /// </summary>
+        public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFOntologyFact rightArgument)
+            : this(leftArgument, rightArgument as RDFPatternMember) { }
+
+        /// <summary>
+        /// Default-ctor to build a swrlb:equal built-in with given arguments
+        /// </summary>
+        public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFOntologyLiteral rightArgument)
+            : this(leftArgument, rightArgument as RDFPatternMember) { }
+
+        /// <summary>
+        /// Internal-ctor to build a swrlb:equal built-in with given arguments
+        /// </summary>
+        internal RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFPatternMember rightArgument)
             : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
                 => this.BuiltInFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, leftArgument, rightArgument);
         #endregion
