@@ -26,7 +26,7 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Properties
         /// <summary>
-        /// Represents the equivalent SPARQL filter
+        /// Represents the built-in equivalent SPARQL filter
         /// </summary>
         internal RDFFilter BuiltInFilter { get; set; }
         #endregion
@@ -36,7 +36,7 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build a built-in with given predicate and arguments
         /// </summary>
         internal RDFOntologyReasonerRuleBuiltIn(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
-            :base(predicate, leftArgument, rightArgument) { }
+            : base(predicate, leftArgument, rightArgument) { }
         #endregion
 
         #region Methods
