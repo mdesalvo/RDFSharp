@@ -15,20 +15,35 @@
 */
 
 using RDFSharp.Query;
+using System.Data;
 
 namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFOntologyReasonerRuleBuiltIn represents a special kind of atom filtering inferences of a rule's antecedent
+    /// RDFOntologyReasonerRuleBuiltIn represents a predefined kind of atom filtering inferences of a rule's antecedent
     /// </summary>
     public abstract class RDFOntologyReasonerRuleBuiltIn : RDFOntologyReasonerRuleAtom
     {
+        #region Properties
+        /// <summary>
+        /// Represents the equivalent SPARQL filter
+        /// </summary>
+        internal RDFFilter BuiltInFilter { get; set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Default-ctor to build a built-in with given predicate and arguments
         /// </summary>
         internal RDFOntologyReasonerRuleBuiltIn(RDFOntologyResource predicate, RDFPatternMember leftArgument, RDFPatternMember rightArgument)
             :base(predicate, leftArgument, rightArgument) { }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Evaluates the built-in in the context of the given antecedent results
+        /// </summary>
+        internal abstract DataTable Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options);
         #endregion
     }
 }

@@ -75,13 +75,22 @@ namespace RDFSharp.Semantics.OWL
         {
             //Execute the antecedent atoms
             List<DataTable> atomResults = new List<DataTable>();
-            this.Atoms.ForEach(atom => atomResults.Add(atom.EvaluateOnAntecedent(ontology, options)));
+            this.Atoms.Where(atom => !atom.IsBuiltIn).ToList().ForEach(atom =>
+            {
+                atomResults.Add(atom.EvaluateOnAntecedent(ontology, options));
+            });
 
             //Join results of antecedent atoms
             DataTable antecedentResult = new RDFQueryEngine().CombineTables(atomResults, false);
-            antecedentResult.TableName = this.ToString();
+
+            //Execute the antecedent built-ins
+            this.Atoms.Where(atom => atom.IsBuiltIn).OfType<RDFOntologyReasonerRuleBuiltIn>().ToList().ForEach(builtin =>
+            {
+                antecedentResult = builtin.Evaluate(antecedentResult, ontology, options);
+            });
 
             //Return the antecedent result
+            antecedentResult.TableName = this.ToString();
             return antecedentResult;
         }
         #endregion

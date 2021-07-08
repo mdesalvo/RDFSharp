@@ -29,6 +29,11 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Properties
         /// <summary>
+        /// Checks if the atom represents a built-in
+        /// </summary>
+        public bool IsBuiltIn => this is RDFOntologyReasonerRuleBuiltIn;
+
+        /// <summary>
         /// Represents the atom's predicate
         /// </summary>
         public RDFOntologyResource Predicate { get; internal set; }
