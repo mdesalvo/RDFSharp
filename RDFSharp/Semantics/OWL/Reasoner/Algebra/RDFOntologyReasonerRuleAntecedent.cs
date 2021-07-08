@@ -63,6 +63,12 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Adds the given built-in to the antecedent
+        /// </summary>
+        public RDFOntologyReasonerRuleAntecedent AddBuiltIn(RDFOntologyReasonerRuleBuiltIn builtIn)
+            => AddAtom(builtIn);
+
+        /// <summary>
         /// Evaluates the antecedent in the context of the given ontology
         /// </summary>
         internal DataTable Evaluate(RDFOntology ontology, RDFOntologyReasonerOptions options)
