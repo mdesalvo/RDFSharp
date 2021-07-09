@@ -1,4 +1,4 @@
-/*
+﻿/*
    Copyright 2012-2020 Marco De Salvo
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,42 +20,42 @@ using System.Data;
 namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFOntologyReasonerRuleEqualBuiltIn represents a built-in of type swrlb:equal
+    /// RDFOntologyReasonerRuleLessThanBuiltIn represents a built-in of type swrlb:lessThan
     /// </summary>
-    public class RDFOntologyReasonerRuleEqualBuiltIn : RDFOntologyReasonerRuleBuiltIn
+    public class RDFOntologyReasonerRuleLessThanBuiltIn : RDFOntologyReasonerRuleBuiltIn
     {
         #region Properties
         /// <summary>
-        /// Represents the Uri of the built-in (swrlb:equal)
+        /// Represents the Uri of the built-in (swrlb:lessThan)
         /// </summary>
-        private static RDFResource BuiltInUri = new RDFResource($"{RDFVocabulary.SWRL.SWRLB.PREFIX}:equal");
+        private static RDFResource BuiltInUri = new RDFResource($"{RDFVocabulary.SWRL.SWRLB.PREFIX}:lessThan");
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a swrlb:equal built-in with given arguments
+        /// Default-ctor to build a swrlb:lessThan built-in with given arguments
         /// </summary>
-        public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument)
+        public RDFOntologyReasonerRuleLessThanBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument)
             : this(leftArgument, rightArgument as RDFPatternMember) { }
 
         /// <summary>
-        /// Default-ctor to build a swrlb:equal built-in with given arguments
+        /// Default-ctor to build a swrlb:lessThan built-in with given arguments
         /// </summary>
-        public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFOntologyFact rightArgument)
+        public RDFOntologyReasonerRuleLessThanBuiltIn(RDFVariable leftArgument, RDFOntologyFact rightArgument)
             : this(leftArgument, rightArgument?.Value as RDFPatternMember) { }
 
         /// <summary>
-        /// Default-ctor to build a swrlb:equal built-in with given arguments
+        /// Default-ctor to build a swrlb:lessThan built-in with given arguments
         /// </summary>
-        public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFOntologyLiteral rightArgument)
+        public RDFOntologyReasonerRuleLessThanBuiltIn(RDFVariable leftArgument, RDFOntologyLiteral rightArgument)
             : this(leftArgument, rightArgument?.Value as RDFPatternMember) { }
 
         /// <summary>
-        /// Internal-ctor to build a swrlb:equal built-in with given arguments
+        /// Internal-ctor to build a swrlb:lessThan built-in with given arguments
         /// </summary>
-        internal RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFPatternMember rightArgument)
+        internal RDFOntologyReasonerRuleLessThanBuiltIn(RDFVariable leftArgument, RDFPatternMember rightArgument)
             : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
-                => this.BuiltInFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, leftArgument, rightArgument);
+                => this.BuiltInFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.LessThan, leftArgument, rightArgument);
         #endregion
 
         #region Methods
