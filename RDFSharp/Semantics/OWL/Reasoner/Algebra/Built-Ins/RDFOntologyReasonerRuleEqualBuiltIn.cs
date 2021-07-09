@@ -1,4 +1,17 @@
-﻿using RDFSharp.Model;
+/*
+   Copyright 2012-2020 Marco De Salvo
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections;
@@ -6,7 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace RDFSharp.Semantics.OWL.Reasoner.Algebra.Built_Ins
+namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
     /// RDFOntologyReasonerRuleEqualBuiltIn represents a built-in of type swrlb:equal
@@ -31,13 +44,13 @@ namespace RDFSharp.Semantics.OWL.Reasoner.Algebra.Built_Ins
         /// Default-ctor to build a swrlb:equal built-in with given arguments
         /// </summary>
         public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFOntologyFact rightArgument)
-            : this(leftArgument, rightArgument as RDFPatternMember) { }
+            : this(leftArgument, rightArgument?.Value as RDFPatternMember) { }
 
         /// <summary>
         /// Default-ctor to build a swrlb:equal built-in with given arguments
         /// </summary>
         public RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFOntologyLiteral rightArgument)
-            : this(leftArgument, rightArgument as RDFPatternMember) { }
+            : this(leftArgument, rightArgument?.Value as RDFPatternMember) { }
 
         /// <summary>
         /// Internal-ctor to build a swrlb:equal built-in with given arguments
