@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -49,6 +50,21 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public override string ToString()
             => string.Join(" ^ ", this.Atoms);
+
+        /// <summary>
+        /// Gives the SWRLX representation of the antecedent
+        /// </summary>
+        internal string ToSwrlxString(string indentSpaces)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{indentSpaces}<ruleml:_body>");
+
+            //Atoms
+            this.Atoms.ForEach(atom => sb.Append($"{atom.ToSwrlxString(string.Concat(indentSpaces, indentSpaces))}"));
+
+            sb.AppendLine($"{indentSpaces}</ruleml:_body>");
+            return sb.ToString();
+        }
         #endregion
 
         #region Methods

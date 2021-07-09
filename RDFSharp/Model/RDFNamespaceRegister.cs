@@ -75,9 +75,6 @@ namespace RDFSharp.Model
                     new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFS.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.OWL.PREFIX, RDFVocabulary.OWL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.OWL.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.SHACL.PREFIX, RDFVocabulary.SHACL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SHACL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SWRL.PREFIX, RDFVocabulary.SWRL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SWRL.SWRLB.PREFIX, RDFVocabulary.SWRL.SWRLB.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.SWRLB.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SWRL.RULEML.PREFIX, RDFVocabulary.SWRL.RULEML.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.RULEML.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.XSD.PREFIX, RDFVocabulary.XSD.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.XSD.DEREFERENCE_URI)),
                     new RDFNamespace(RDFVocabulary.XML.PREFIX, RDFVocabulary.XML.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.XML.DEREFERENCE_URI)),
 

@@ -86,6 +86,11 @@ namespace RDFSharp.Semantics.OWL
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Gives the SWRLX representation of the atom
+        /// </summary>
+        internal abstract string ToSwrlxString(string indentSpaces);
         #endregion
 
         #region Methods

@@ -19,6 +19,7 @@ using RDFSharp.Query;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -34,6 +35,20 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyReasonerRuleClassAtom(RDFOntologyClass ontologyClass, RDFVariable leftArgument)
             : base(ontologyClass, leftArgument, null) { }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the SWRLX representation of the atom
+        /// </summary>
+        internal override string ToSwrlxString(string indentSpaces)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            //TODO
+
+            return sb.ToString();
+        }
         #endregion
 
         #region Methods

@@ -16,6 +16,7 @@ using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Data;
+using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -28,7 +29,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Represents the Uri of the built-in (swrlb:greaterThan)
         /// </summary>
-        private static RDFResource BuiltInUri = new RDFResource($"{RDFVocabulary.SWRL.SWRLB.PREFIX}:greaterThan");
+        private static RDFResource BuiltInUri = new RDFResource($"swrlb:greaterThan");
         #endregion
 
         #region Ctors
@@ -56,6 +57,20 @@ namespace RDFSharp.Semantics.OWL
         internal RDFOntologyReasonerRuleGreaterThanBuiltIn(RDFVariable leftArgument, RDFPatternMember rightArgument)
             : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
                 => this.BuiltInFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, leftArgument, rightArgument);
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the SWRLX representation of the built-in
+        /// </summary>
+        internal override string ToSwrlxString(string indentSpaces)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            //TODO
+
+            return sb.ToString();
+        }
         #endregion
 
         #region Methods

@@ -29,6 +29,7 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     internal static class RDFSemanticsUtilities
     {
+        internal const string SwrlxIndentSpaces = "  ";
         internal static readonly Regex NumberRegex = new Regex(@"^[0-9]+$", RegexOptions.Compiled);
         internal static readonly HashSet<long> StandardAnnotationProperties = new HashSet<long>()
         {
