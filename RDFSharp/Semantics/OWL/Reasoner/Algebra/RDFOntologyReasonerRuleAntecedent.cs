@@ -49,7 +49,7 @@ namespace RDFSharp.Semantics.OWL
         /// Gives the string representation of the antecedent
         /// </summary>
         public override string ToString()
-            => string.Join(", ", this.Atoms);
+            => string.Join(" ^ ", this.Atoms);
         #endregion
 
         #region Methods
