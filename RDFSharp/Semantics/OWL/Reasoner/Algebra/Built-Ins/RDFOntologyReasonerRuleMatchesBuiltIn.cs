@@ -16,6 +16,7 @@ using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Data;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RDFSharp.Semantics.OWL
@@ -38,7 +39,25 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyReasonerRuleMatchesBuiltIn(RDFVariable leftArgument, Regex matchesRegex)
             : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, null)
-                => this.BuiltInFilter = new RDFRegexFilter(leftArgument, matchesRegex);
+        {
+            if (matchesRegex == null)
+                throw new RDFSemanticsException("Cannot create built-in because given \"matchesRegex\" parameter is null.");
+
+            //For printing, this built-in requires simulation of the right argument as plain literal
+            StringBuilder regexFlags = new StringBuilder();
+            if (matchesRegex.Options.HasFlag(RegexOptions.IgnoreCase))
+                regexFlags.Append("i");
+            if (matchesRegex.Options.HasFlag(RegexOptions.Singleline))
+                regexFlags.Append("s");
+            if (matchesRegex.Options.HasFlag(RegexOptions.Multiline))
+                regexFlags.Append("m");
+            if (matchesRegex.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+                regexFlags.Append("x");
+            this.RightArgument = regexFlags.ToString() != string.Empty ? new RDFOntologyLiteral(new RDFPlainLiteral($"{matchesRegex},{regexFlags}"))
+                                                                       : new RDFOntologyLiteral(new RDFPlainLiteral($"{matchesRegex}"));
+
+            this.BuiltInFilter = new RDFRegexFilter(leftArgument, matchesRegex);
+        }
         #endregion
 
         #region Methods
