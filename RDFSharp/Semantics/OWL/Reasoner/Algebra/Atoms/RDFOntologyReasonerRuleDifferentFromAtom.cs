@@ -43,20 +43,6 @@ namespace RDFSharp.Semantics.OWL
             : base(RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), leftArgument, rightArgument) { }
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the SWRLX representation of the atom
-        /// </summary>
-        internal override string ToSwrlxString(string indentSpaces)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            //TODO
-
-            return sb.ToString();
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Evaluates the atom in the context of an antecedent

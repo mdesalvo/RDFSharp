@@ -26,7 +26,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyClass : RDFOntologyResource
     {
-
         #region Properties
         /// <summary>
         /// Flag indicating that this ontology class is "owl:DeprecatedClass"
@@ -57,18 +56,6 @@ namespace RDFSharp.Semantics.OWL
         }
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the SWRLX representation of the ontology class
-        /// </summary>
-        internal virtual string ToSwrlxString(string indentSpaces)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{indentSpaces}<owlx:Class owlx:name=\"{this}\"/>");
-            return sb.ToString();
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Sets or unsets this ontology class as "owl:DeprecatedClass"
@@ -82,7 +69,6 @@ namespace RDFSharp.Semantics.OWL
             return this;
         }
         #endregion
-
     }
 
 }

@@ -25,7 +25,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyFact : RDFOntologyResource
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build an ontology fact with the given name.
@@ -42,19 +41,6 @@ namespace RDFSharp.Semantics.OWL
             }
         }
         #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the SWRLX representation of the ontology fact
-        /// </summary>
-        internal virtual string ToSwrlxString(string indentSpaces)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{indentSpaces}<owlx:Individual owlx:name=\"{this}\"/>");
-            return sb.ToString();
-        }
-        #endregion
-
     }
 
 }

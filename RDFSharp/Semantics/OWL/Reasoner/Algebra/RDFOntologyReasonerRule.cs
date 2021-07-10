@@ -77,34 +77,6 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public override string ToString()
             => string.Concat(this.Antecedent, " -> ", this.Consequent);
-
-        /// <summary>
-        /// Gives the SWRLX representation of the rule
-        /// </summary>
-        /// <returns></returns>
-        public string ToSwrlxString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"<ruleml:imp>");
-
-            //Metadata
-            sb.AppendLine($"{RDFSemanticsUtilities.SwrlxIndentSpaces}<ruleml:_rlab ruleml:href=\"{this.RuleName}\"/>");
-            if (!string.IsNullOrEmpty(this.RuleDescription))
-            {
-                sb.AppendLine($"{RDFSemanticsUtilities.SwrlxIndentSpaces}<owlx:Annotation>");
-                sb.AppendLine($"{RDFSemanticsUtilities.SwrlxIndentSpaces}{RDFSemanticsUtilities.SwrlxIndentSpaces}<owlx:Documentation>{this.RuleDescription}</owlx:Documentation>");
-                sb.AppendLine($"{RDFSemanticsUtilities.SwrlxIndentSpaces}</owlx:Annotation>");
-            }
-
-            //Antecedent
-            sb.Append(this.Antecedent.ToSwrlxString(RDFSemanticsUtilities.SwrlxIndentSpaces));
-
-            //Consequent
-            sb.Append(this.Consequent.ToSwrlxString(RDFSemanticsUtilities.SwrlxIndentSpaces));
-
-            sb.AppendLine($"</ruleml:imp>");
-            return sb.ToString();
-        }
         #endregion
 
         #region Methods

@@ -59,20 +59,6 @@ namespace RDFSharp.Semantics.OWL
                 => this.BuiltInFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo, leftArgument, rightArgument);
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the SWRLX representation of the built-in
-        /// </summary>
-        internal override string ToSwrlxString(string indentSpaces)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            //TODO
-
-            return sb.ToString();
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Evaluates the built-in in the context of the given antecedent results

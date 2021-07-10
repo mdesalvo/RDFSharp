@@ -37,26 +37,6 @@ namespace RDFSharp.Semantics.OWL
             : base(ontologyClass, leftArgument, null) { }
         #endregion
 
-        #region Interfaces
-        /// <summary>
-        /// Gives the SWRLX representation of the atom
-        /// </summary>
-        internal override string ToSwrlxString(string indentSpaces)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{indentSpaces}<swrlx:classAtom>");
-
-            //Predicate
-            sb.AppendLine(this.Predicate.ToSwrlxString(string.Concat(indentSpaces, indentSpaces)));
-
-            //LeftArgument
-            sb.AppendLine($"{indentSpaces}{indentSpaces}<ruleml:var>{this.LeftArgument}</ruleml:var>");
-
-            sb.AppendLine($"{indentSpaces}</swrlx:classAtom>");
-            return sb.ToString();
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Evaluates the atom in the context of an antecedent
