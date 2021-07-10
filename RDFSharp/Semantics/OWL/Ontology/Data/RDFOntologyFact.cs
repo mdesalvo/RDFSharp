@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -39,6 +40,18 @@ namespace RDFSharp.Semantics.OWL
             {
                 throw new RDFSemanticsException("Cannot create RDFOntologyFact because given \"factName\" parameter is null.");
             }
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the SWRLX representation of the ontology fact
+        /// </summary>
+        internal virtual string ToSwrlxString(string indentSpaces)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{indentSpaces}<owlx:Individual owlx:name=\"{this}\"/>");
+            return sb.ToString();
         }
         #endregion
 

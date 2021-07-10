@@ -44,9 +44,15 @@ namespace RDFSharp.Semantics.OWL
         internal override string ToSwrlxString(string indentSpaces)
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{indentSpaces}<swrlx:classAtom>");
 
-            //TODO
+            //Predicate
+            sb.AppendLine(this.Predicate.ToSwrlxString(string.Concat(indentSpaces, indentSpaces)));
 
+            //LeftArgument
+            sb.AppendLine($"{indentSpaces}{indentSpaces}<ruleml:var>{this.LeftArgument}</ruleml:var>");
+
+            sb.AppendLine($"{indentSpaces}</swrlx:classAtom>");
             return sb.ToString();
         }
         #endregion

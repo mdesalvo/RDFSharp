@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using System;
+using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -53,6 +54,18 @@ namespace RDFSharp.Semantics.OWL
             {
                 throw new RDFSemanticsException("Cannot create RDFOntologyClass because given \"className\" parameter is null.");
             }
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the SWRLX representation of the ontology class
+        /// </summary>
+        internal virtual string ToSwrlxString(string indentSpaces)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{indentSpaces}<owlx:Class owlx:name=\"{this}\"/>");
+            return sb.ToString();
         }
         #endregion
 
