@@ -54,7 +54,6 @@ namespace RDFSharp.Semantics.OWL
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
             if (this.RightArgument is RDFVariable)
                 RDFQueryEngine.AddColumn(atomResult, this.RightArgument.ToString());
-            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFOntologyReasonerRuleDifferentFromAtom));
 
             //Materialize owl:differentFrom inferences of the atom
             if (this.RightArgument is RDFOntologyFact rightArgumentFact)

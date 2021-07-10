@@ -46,7 +46,6 @@ namespace RDFSharp.Semantics.OWL
             //Initialize the structure of the atom result
             DataTable atomResult = new DataTable(this.ToString());
             RDFQueryEngine.AddColumn(atomResult, this.LeftArgument.ToString());
-            atomResult.ExtendedProperties.Add("ATOM_TYPE", nameof(RDFOntologyReasonerRuleClassAtom));
 
             //Materialize members of the atom class
             RDFOntologyData ontologyData = RDFOntologyHelper.GetMembersOf(ontology, (RDFOntologyClass)this.Predicate);
