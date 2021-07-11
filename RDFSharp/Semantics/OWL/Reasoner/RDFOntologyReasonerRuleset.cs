@@ -28,7 +28,6 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Methods
         /// <summary>
-        /// SubClassTransitivity (rdfs11) implements structural entailments based on SubClassOf model taxonomy<br/>
         /// SUBCLASS(C1,C2) ^ SUBCLASS(C2,C3) -> SUBCLASS(C1,C3)<br/>
         /// SUBCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> SUBCLASS(C1,C3)<br/>
         /// EQUIVALENTCLASS(C1,C2) ^ SUBCLASSOF(C2,C3) -> SUBCLASS(C1,C3)
@@ -56,7 +55,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// EquivalentClassTransitivity implements structural entailments based on EquivalentClass model taxonomy<br/>
         /// EQUIVALENTCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> EQUIVALENTCLASS(C1,C3)
         /// </summary>
         internal static RDFOntologyReasonerReport EquivalentClassTransitivity(RDFOntology ontology)
@@ -86,7 +84,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-		/// DisjointWithEntailment implements structural entailments based on DisjointWith model taxonomy<br/>
 		/// EQUIVALENTCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
 		/// SUBCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
 		/// DISJOINTWITH(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> DISJOINTWITH(C1,C3)
@@ -118,7 +115,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
         /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
         /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
         /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
@@ -147,7 +143,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// EquivalentPropertyTransitivity implements structural entailments based on EquivalentProperty model taxonomy<br/>
         /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
         /// </summary>
         internal static RDFOntologyReasonerReport EquivalentPropertyTransitivity(RDFOntology ontology)
@@ -178,7 +173,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// DomainEntailment (RDFS-2) implements structural entailments based on Domain model informations<br/>
         /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
         /// </summary>
         internal static RDFOntologyReasonerReport DomainEntailment(RDFOntology ontology)
@@ -208,7 +202,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// RangeEntailment (RDFS-3) implements structural entailments based on Range model informations<br/>
         /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
         /// </summary>
         internal static RDFOntologyReasonerReport RangeEntailment(RDFOntology ontology)
@@ -238,7 +231,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// SameAsTransitivity implements structural entailments based on SameAs data taxonomy<br/>
         /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3)
         /// </summary>
         internal static RDFOntologyReasonerReport SameAsTransitivity(RDFOntology ontology)
@@ -268,7 +260,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// DifferentFromEntailment implements structural entailments based on DifferentFrom data taxonomy<br/>
         /// SAMEAS(F1,F2) ^ DIFFERENTFROM(F2,F3) -> DIFFERENTFROM(F1,F3)<br/>
         /// DIFFERENTFROM(F1,F2) ^ SAMEAS(F2,F3) -> DIFFERENTFROM(F1,F3)
         /// </summary>
@@ -299,7 +290,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// ClassTypeEntailment (RDFS-9) implements structural entailments based on Type data taxonomy<br/>
         /// C1(F) ^ SUBCLASSOF(C1,C2) -> C2(F)<br/>
         /// C1(F) ^ EQUIVALENTCLASS(C1,C2) -> C2(F)
         /// </summary>
@@ -389,7 +379,6 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// (OWL2) NamedIndividualEntailment implements data entailments based on NamedIndividual data declaration<br/>
         /// C(F) -> NAMEDINDIVIDUAL(F)
         /// </summary>
         internal static RDFOntologyReasonerReport NamedIndividualEntailment(RDFOntology ontology)
@@ -406,6 +395,35 @@ namespace RDFSharp.Semantics.OWL
 
                 //Add the inference to the report
                 report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(NamedIndividualEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+            }
+
+            return report;
+        }
+
+        /// <summary>
+        /// P(F1,F2) ^ SYMMETRICPROPERTY(P) -> P(F2,F1)
+        /// </summary>
+        internal static RDFOntologyReasonerReport SymmetricPropertyEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            foreach (RDFOntologyProperty p in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                                        && p.IsSymmetricProperty()))
+            {
+                //Filter the assertions using the current property (F1 P F2)
+                RDFOntologyTaxonomy pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                //Iterate those assertions
+                foreach (RDFOntologyTaxonomyEntry pAsn in pAsns.Where(x => x.TaxonomyObject.IsFact()))
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, p, pAsn.TaxonomySubject)
+                                                             .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SymmetricPropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                }
             }
 
             return report;

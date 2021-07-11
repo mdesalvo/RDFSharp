@@ -132,6 +132,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.NamedIndividualEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.NamedIndividualEntailment(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SymmetricPropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SymmetricPropertyEntailment(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 

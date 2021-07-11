@@ -186,68 +186,61 @@ namespace RDFSharp.Semantics.OWL
         public enum RDFOntologyStandardReasonerRule
         {
             /// <summary>
-            /// SubClassTransitivity (RDFS-11) implements structural entailments based on SubClassOf model taxonomy<br/>
             /// SUBCLASS(C1,C2) ^ SUBCLASS(C2,C3) -> SUBCLASS(C1,C3)<br/>
             /// SUBCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> SUBCLASS(C1,C3)<br/>
             /// EQUIVALENTCLASS(C1,C2) ^ SUBCLASSOF(C2,C3) -> SUBCLASS(C1,C3)
             /// </summary>
             SubClassTransitivity = 1,
             /// <summary>
-            /// EquivalentClassTransitivity implements structural entailments based on EquivalentClass model taxonomy<br/>
             /// EQUIVALENTCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> EQUIVALENTCLASS(C1,C3)
             /// </summary>
             EquivalentClassTransitivity = 2,
             /// <summary>
-            /// DisjointWithEntailment implements structural entailments based on DisjointWith model taxonomy<br/>
             /// EQUIVALENTCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
             /// SUBCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
             /// DISJOINTWITH(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> DISJOINTWITH(C1,C3)
             /// </summary>
             DisjointWithEntailment = 3,
             /// <summary>
-            /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
             /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
             /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
             /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
             /// </summary>
             SubPropertyTransitivity = 4,
             /// <summary>
-            /// EquivalentPropertyTransitivity implements structural entailments based on EquivalentProperty model taxonomy<br/>
             /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
             /// </summary>
             EquivalentPropertyTransitivity = 5,
             /// <summary>
-            /// DomainEntailment (RDFS-2) implements structural entailments based on Domain model taxonomy<br/>
             /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
             /// </summary>
             DomainEntailment = 6,
             /// <summary>
-            /// RangeEntailment (RDFS-3) implements structural entailments based on Range model informations<br/>
             /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
             /// </summary>
             RangeEntailment = 7,
             /// <summary>
-            /// SameAsTransitivity implements structural entailments based on SameAs data taxonomy<br/>
             /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3
             /// </summary>
             SameAsTransitivity = 8,
             /// <summary>
-            /// DifferentFromEntailment implements structural entailments based on DifferentFrom data taxonomy<br/>
             /// SAMEAS(F1,F2) ^ DIFFERENTFROM(F2,F3) -> DIFFERENTFROM(F1,F3)<br/>
             /// DIFFERENTFROM(F1,F2) ^ SAMEAS(F2,F3) -> DIFFERENTFROM(F1,F3)
             /// </summary>
             DifferentFromEntailment = 9,
             /// <summary>
-            /// ClassTypeEntailment (RDFS-9) implements structural entailments based on Type data taxonomy<br/>
             /// C1(F) ^ SUBCLASSOF(C1,C2) -> C2(F)<br/>
             /// C1(F) ^ EQUIVALENTCLASS(C1,C2) -> C2(F)
             /// </summary>
             ClassTypeEntailment = 10,
             /// <summary>
-            /// (OWL2) NamedIndividualEntailment implements data entailments based on NamedIndividual data declaration<br/>
             /// C(F) -> NAMEDINDIVIDUAL(F)
             /// </summary>
             NamedIndividualEntailment = 11,
+            /// <summary>
+            /// P(F1,F2) ^ SYMMETRICPROPERTY(P) -> P(F2,F1)
+            /// </summary>
+            SymmetricPropertyEntailment = 12,
         }
 
     }
