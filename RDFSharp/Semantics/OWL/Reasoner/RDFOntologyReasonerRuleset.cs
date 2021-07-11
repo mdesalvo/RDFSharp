@@ -145,6 +145,37 @@ namespace RDFSharp.Semantics.OWL
             }
             return report;
         }
+
+        /// <summary>
+        /// EquivalentPropertyTransitivity implements structural entailments based on EquivalentProperty model taxonomy<br/>
+        /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
+        /// </summary>
+        internal static RDFOntologyReasonerReport EquivalentPropertyTransitivity(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty equivProperty = RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty();
+            foreach (RDFOntologyProperty p in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                        && !p.IsAnnotationProperty()))
+            {
+                //Enlist the equivalent properties of the current property
+                RDFOntologyPropertyModel equivprops = ontology.Model.PropertyModel.GetEquivalentPropertiesOf(p);
+                foreach (RDFOntologyProperty ep in equivprops)
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(p, equivProperty, ep)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(ep, equivProperty, p)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Model.PropertyModel.Relations.EquivalentProperty.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(EquivalentPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty), sem_infA));
+                    if (!ontology.Model.PropertyModel.Relations.EquivalentProperty.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.PropertyModel, nameof(EquivalentPropertyTransitivity), nameof(RDFOntologyPropertyModel.Relations.EquivalentProperty), sem_infB));
+                }
+            }
+            return report;
+        }
         #endregion
     }
 

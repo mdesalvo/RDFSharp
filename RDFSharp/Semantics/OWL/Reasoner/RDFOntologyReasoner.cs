@@ -102,17 +102,17 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubClassTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.SubClassTransitivity(tempOntology);
                             break;
-
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.EquivalentClassTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.EquivalentClassTransitivity(tempOntology);
                             break;
-
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DisjointWithEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.DisjointWithEntailment(tempOntology);
                             break;
-
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubPropertyTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.SubPropertyTransitivity(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.EquivalentPropertyTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.EquivalentPropertyTransitivity(tempOntology);
                             break;
                     }
                     report.Merge(standardRuleReport);

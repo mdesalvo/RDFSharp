@@ -214,6 +214,12 @@ namespace RDFSharp.Semantics.OWL
             /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
             /// </summary>
             SubPropertyTransitivity = 3,
+
+            /// <summary>
+            /// EquivalentPropertyTransitivity implements structural entailments based on EquivalentProperty model taxonomy<br/>
+            /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
+            /// </summary>
+            EquivalentPropertyTransitivity = 4,
         }
 
     }
