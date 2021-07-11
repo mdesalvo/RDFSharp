@@ -44,7 +44,7 @@ namespace RDFSharp.Semantics.OWL
                 throw new RDFSemanticsException("Cannot create built-in because given \"endString\" parameter is null.");
 
             //For printing, this built-in requires simulation of the right argument as plain literal
-            this.RightArgument = new RDFOntologyLiteral(new RDFPlainLiteral($"\"{containString}\""));
+            this.RightArgument = new RDFOntologyLiteral(new RDFPlainLiteral(containString));
 
             this.BuiltInFilter = new RDFRegexFilter(leftArgument, new Regex($"{containString}"));
         }

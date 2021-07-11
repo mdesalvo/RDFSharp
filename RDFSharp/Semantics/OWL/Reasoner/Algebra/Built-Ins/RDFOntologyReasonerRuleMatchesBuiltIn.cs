@@ -53,8 +53,8 @@ namespace RDFSharp.Semantics.OWL
                 regexFlags.Append("m");
             if (matchesRegex.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                 regexFlags.Append("x");
-            this.RightArgument = regexFlags.ToString() != string.Empty ? new RDFOntologyLiteral(new RDFPlainLiteral($"\"{matchesRegex}\",\"{regexFlags}\""))
-                                                                       : new RDFOntologyLiteral(new RDFPlainLiteral($"\"{matchesRegex}\""));
+            this.RightArgument = regexFlags.ToString() != string.Empty ? new RDFOntologyLiteral(new RDFPlainLiteral($"{matchesRegex}\",\"{regexFlags}"))
+                                                                       : new RDFOntologyLiteral(new RDFPlainLiteral($"{matchesRegex}"));
 
             this.BuiltInFilter = new RDFRegexFilter(leftArgument, matchesRegex);
         }

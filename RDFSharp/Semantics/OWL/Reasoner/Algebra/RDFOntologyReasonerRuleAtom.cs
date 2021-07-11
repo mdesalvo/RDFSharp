@@ -81,7 +81,14 @@ namespace RDFSharp.Semantics.OWL
             //Arguments
             sb.Append($"({this.LeftArgument}");
             if (this.RightArgument != null)
-                sb.Append($",{this.RightArgument}");
+            {
+                if (this.RightArgument is RDFOntologyFact rightArgumentFact)
+                    sb.Append($",{RDFModelUtilities.GetShortUri(((RDFResource)rightArgumentFact.Value).URI)}");
+                else if (this.RightArgument is RDFOntologyLiteral rightArgumentLiteral)
+                    sb.Append($",{RDFQueryPrinter.PrintPatternMember(rightArgumentLiteral.Value, RDFNamespaceRegister.Instance.Register)}");
+                else if (this.RightArgument is RDFVariable rightArgumentVariable)
+                    sb.Append($",{RDFQueryPrinter.PrintPatternMember(rightArgumentVariable, RDFNamespaceRegister.Instance.Register)}");
+            }
             sb.Append(")");
 
             return sb.ToString();
