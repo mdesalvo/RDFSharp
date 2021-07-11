@@ -493,6 +493,40 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// P1(F1,F2) ^ INVERSEOF(P1,P2) -> P2(F2,F1)
+        /// </summary>
+        internal static RDFOntologyReasonerReport InverseOfEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            foreach (RDFOntologyProperty p1 in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                                          && p.IsObjectProperty()))
+            {
+                //Filter the assertions using the current property
+                RDFOntologyTaxonomy p1Asns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p1);
+
+                //Enlist the inverse properties of the current property
+                RDFOntologyPropertyModel inverseprops = ontology.Model.PropertyModel.GetInversePropertiesOf((RDFOntologyObjectProperty)p1);
+                foreach (RDFOntologyProperty p2 in inverseprops.Where(x => x.IsObjectProperty()))
+                {
+                    //Iterate the compatible assertions
+                    foreach (RDFOntologyTaxonomyEntry p1Asn in p1Asns.Where(x => x.TaxonomyObject.IsFact()))
+                    {
+                        //Create the inference as a taxonomy entry
+                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomyObject, p2, p1Asn.TaxonomySubject)
+                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                        //Add the inference to the report
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(InverseOfEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                    }
+                }
+            }
+
+            return report;
+        }
         #endregion
     }
 

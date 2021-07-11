@@ -249,6 +249,10 @@ namespace RDFSharp.Semantics.OWL
             /// P(F1,F2) ^ REFLEXIVEPROPERTY(P) -> P(F1,F1)
             /// </summary>
             ReflexivePropertyEntailment = 14,
+            /// <summary>
+            /// P1(F1,F2) ^ INVERSEOF(P1,P2) -> P2(F2,F1)
+            /// </summary>
+            InverseOfEntailment = 15,
         }
 
     }
