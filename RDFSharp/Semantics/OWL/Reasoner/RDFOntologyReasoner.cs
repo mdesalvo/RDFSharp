@@ -156,6 +156,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.HasSelfEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.HasSelfEntailment(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.HasKeyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.HasKeyEntailment(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 

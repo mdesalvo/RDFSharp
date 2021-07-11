@@ -20,7 +20,6 @@ using System.Linq;
 
 namespace RDFSharp.Semantics.OWL
 {
-
     /// <summary>
     /// RDFOntologyReasonerRuleset implements a subset of RDFS/OWL-DL/OWL2 entailment rules
     /// </summary>
@@ -698,7 +697,70 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// HASKEY(C,P) ^ C(F1) ^ C(F2) ^ P(F1,"K") ^ P(F2,"K") -> SAMEAS(F1,F2)
+        /// </summary>
+        internal static RDFOntologyReasonerReport HasKeyEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty sameAs = RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty();
+
+            foreach (IGrouping<string, RDFOntologyTaxonomyEntry> hasKeyRelation in ontology.Model.ClassModel.Relations.HasKey.GroupBy(te => te.TaxonomySubject.ToString()))
+            {
+                RDFOntologyClass hasKeyRelationClass = ontology.Model.ClassModel.SelectClass(hasKeyRelation.Key);
+
+                #region Collision Detection
+                //Calculate key values for members of the constrained class
+                Dictionary<string, List<RDFOntologyResource>> hasKeyRelationMemberValues = ontology.GetKeyValuesOf(hasKeyRelationClass, false);
+
+                //Reverse key values in order to detect eventual collisions between members
+                Dictionary<string, List<string>> hasKeyRelationLookup = new Dictionary<string, List<string>>();
+                foreach (KeyValuePair<string, List<RDFOntologyResource>> hasKeyRelationMemberValue in hasKeyRelationMemberValues)
+                {
+                    string hasKeyRelationMemberValueKey = string.Join("§§", hasKeyRelationMemberValue.Value);
+                    if (!hasKeyRelationLookup.ContainsKey(hasKeyRelationMemberValueKey))
+                        hasKeyRelationLookup.Add(hasKeyRelationMemberValueKey, new List<string>() { hasKeyRelationMemberValue.Key });
+                    else
+                        hasKeyRelationLookup[hasKeyRelationMemberValueKey].Add(hasKeyRelationMemberValue.Key);
+                }
+                hasKeyRelationLookup = hasKeyRelationLookup.Where(hkrl => hkrl.Value.Count > 1)
+                                                           .ToDictionary(kv => kv.Key, kv => kv.Value);
+                #endregion
+
+                //Analyze detected collisions in order to decide if they can be tolerate or not,
+                //depending on semantic compatibility between facts (they must not be different)
+                foreach (KeyValuePair<string, List<string>> hasKeyRelationLookupEntry in hasKeyRelationLookup)
+                {
+                    #region Collision Analysis
+                    for (int i = 0; i < hasKeyRelationLookupEntry.Value.Count; i++)
+                    {
+                        RDFOntologyFact outerFact = ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[i]);
+                        for (int j = i + 1; j < hasKeyRelationLookupEntry.Value.Count; j++)
+                        {
+                            RDFOntologyFact innerFact = ontology.Data.SelectFact(hasKeyRelationLookupEntry.Value[j]);
+                            if (RDFOntologyChecker.CheckSameAsCompatibility(ontology.Data, outerFact, innerFact))
+                            {
+                                //Create the inference as a taxonomy entry
+                                RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(outerFact, sameAs, innerFact)
+                                                                          .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                                RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(innerFact, sameAs, outerFact)
+                                                                          .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                                //Add the inference to the report
+                                if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infA))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasKeyEntailment), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
+                                if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infB))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasKeyEntailment), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                            }
+                        }
+                    }
+                    #endregion
+                }
+            }
+
+            return report;
+        }
         #endregion
     }
-
 }
