@@ -231,6 +231,12 @@ namespace RDFSharp.Semantics.OWL
             /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3
             /// </summary>
             SameAsTransitivity = 8,
+            /// <summary>
+            /// DifferentFromEntailment implements structural entailments based on DifferentFrom data taxonomy<br/>
+            /// SAMEAS(F1,F2) ^ DIFFERENTFROM(F2,F3) -> DIFFERENTFROM(F1,F3)<br/>
+            /// DIFFERENTFROM(F1,F2) ^ SAMEAS(F2,F3) -> DIFFERENTFROM(F1,F3)
+            /// </summary>
+            DifferentFromEntailment = 9,
         }
 
     }

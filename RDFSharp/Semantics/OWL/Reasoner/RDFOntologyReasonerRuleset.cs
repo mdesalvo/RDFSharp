@@ -239,7 +239,7 @@ namespace RDFSharp.Semantics.OWL
 
         /// <summary>
         /// SameAsTransitivity implements structural entailments based on SameAs data taxonomy<br/>
-        /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3
+        /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3)
         /// </summary>
         internal static RDFOntologyReasonerReport SameAsTransitivity(RDFOntology ontology)
         {
@@ -262,6 +262,37 @@ namespace RDFSharp.Semantics.OWL
                         report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
                     if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infB))
                         report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                }
+            }
+            return report;
+        }
+
+        /// <summary>
+        /// DifferentFromEntailment implements structural entailments based on DifferentFrom data taxonomy<br/>
+        /// SAMEAS(F1,F2) ^ DIFFERENTFROM(F2,F3) -> DIFFERENTFROM(F1,F3)<br/>
+        /// DIFFERENTFROM(F1,F2) ^ SAMEAS(F2,F3) -> DIFFERENTFROM(F1,F3)
+        /// </summary>
+        internal static RDFOntologyReasonerReport DifferentFromEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty differentFrom = RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty();
+            foreach (RDFOntologyFact f in ontology.Data)
+            {
+                //Enlist the different facts of the current fact
+                RDFOntologyData differfacts = ontology.Data.GetDifferentFactsFrom(f);
+                foreach (RDFOntologyFact df in differfacts)
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(f, differentFrom, df)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(df, differentFrom, f)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.DifferentFrom.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DifferentFromEntailment), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infA));
+                    if (!ontology.Data.Relations.DifferentFrom.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DifferentFromEntailment), nameof(RDFOntologyData.Relations.DifferentFrom), sem_infB));
                 }
             }
             return report;
