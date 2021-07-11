@@ -58,6 +58,36 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// EquivalentClassTransitivity implements structural entailments based on EquivalentClass model taxonomy<br/>
+        /// EQUIVALENTCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> EQUIVALENTCLASS(C1,C3)
+        /// </summary>
+        internal static RDFOntologyReasonerReport EquivalentClassTransitivity(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty equivalentClass = RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty();
+            foreach (RDFOntologyClass c in ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)))
+            {
+                //Enlist the equivalent classes of the current class
+                RDFOntologyClassModel equivclasses = ontology.Model.ClassModel.GetEquivalentClassesOf(c);
+                foreach (RDFOntologyClass ec in equivclasses)
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(c, equivalentClass, ec)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(ec, equivalentClass, c)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Model.ClassModel.Relations.EquivalentClass.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(EquivalentClassTransitivity), nameof(RDFOntologyClassModel.Relations.EquivalentClass), sem_infA));
+                    if (!ontology.Model.ClassModel.Relations.EquivalentClass.ContainsEntry(sem_infB))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(EquivalentClassTransitivity), nameof(RDFOntologyClassModel.Relations.EquivalentClass), sem_infB));
+                }
+            }
+            return report;
+        }
+
+        /// <summary>
         /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
         /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
         /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>

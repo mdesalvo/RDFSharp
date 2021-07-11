@@ -192,13 +192,20 @@ namespace RDFSharp.Semantics.OWL
             /// EQUIVALENTCLASS(C1,C2) ^ SUBCLASSOF(C2,C3) -> SUBCLASS(C1,C3)
             /// </summary>
             SubClassTransitivity = 0,
+
+            /// <summary>
+            /// EquivalentClassTransitivity implements structural entailments based on EquivalentClass model taxonomy<br/>
+            /// EQUIVALENTCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> EQUIVALENTCLASS(C1,C3)
+            /// </summary>
+            EquivalentClassTransitivity = 1,
+
             /// <summary>
             /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
             /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
             /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
             /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
             /// </summary>
-            SubPropertyTransitivity = 1,
+            SubPropertyTransitivity = 2,
         }
 
     }
