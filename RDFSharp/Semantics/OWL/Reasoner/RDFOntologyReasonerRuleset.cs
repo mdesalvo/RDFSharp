@@ -761,6 +761,29 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// PROPERTYCHAINAXIOM(PCA) ^ PCA(P1) ^ P1(F1,X) ^ P2(X,F2) => (F1 PCA F2)
+        /// </summary>
+        internal static RDFOntologyReasonerReport PropertyChainEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            Dictionary<string, RDFOntologyData> propertyChainAxiomsData = ontology.GetPropertyChainAxiomsData();
+            foreach (KeyValuePair<string,RDFOntologyData> propertyChainAxiom in propertyChainAxiomsData)
+            {
+                foreach (RDFOntologyTaxonomyEntry propertyChainAxiomAssertion in propertyChainAxiom.Value.Relations.Assertions)
+                {
+                    propertyChainAxiomAssertion.SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.Assertions.ContainsEntry(propertyChainAxiomAssertion))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(PropertyChainEntailment), nameof(RDFOntologyData.Relations.Assertions), propertyChainAxiomAssertion));
+                }
+            }
+
+            return report;
+        }
         #endregion
     }
 }

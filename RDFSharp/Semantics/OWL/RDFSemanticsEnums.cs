@@ -275,6 +275,10 @@ namespace RDFSharp.Semantics.OWL
             /// HASKEY(C,P) ^ C(F1) ^ C(F2) ^ P(F1,"K") ^ P(F2,"K") -> SAMEAS(F1,F2)
             /// </summary>
             HasKeyEntailment = 20,
+            /// <summary>
+            /// ((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) ^ P1(F1,X) ^ P2(X,F2) => (F1 PCA F2)
+            /// </summary>
+            PropertyChainEntailment = 21
         }
 
     }
