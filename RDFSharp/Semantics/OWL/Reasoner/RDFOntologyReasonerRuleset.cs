@@ -495,7 +495,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// P1(F1,F2) ^ INVERSEOF(P1,P2) -> P2(F2,F1)
+        /// P1(F1,F2) ^ INVERSE(P1,P2) -> P2(F2,F1)
         /// </summary>
         internal static RDFOntologyReasonerReport InverseOfEntailment(RDFOntology ontology)
         {
@@ -521,6 +521,46 @@ namespace RDFSharp.Semantics.OWL
                         //Add the inference to the report
                         if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
                             report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(InverseOfEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                    }
+                }
+            }
+
+            return report;
+        }
+
+        /// <summary>
+        /// P1(F1,F2) ^ SUBPROPERTY(P1,P2) -> P2(F1,F2)<br/>
+        /// P1(F1,F2) ^ EQUIVALENTPROPERTY(P1,P2) -> P2(F1,F2)
+        /// </summary>
+        internal static RDFOntologyReasonerReport PropertyEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            foreach (RDFOntologyProperty p1 in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                                          && !p.IsAnnotationProperty()))
+            {
+                //Filter the assertions using the current property (F1 P1 F2)
+                RDFOntologyTaxonomy p1Asns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p1);
+
+                //Enlist the compatible properties of the current property (P1 [SUBPROPERTYOF|EQUIVALENTPROPERTY] P2)
+                foreach (RDFOntologyProperty p2 in ontology.Model.PropertyModel.GetSuperPropertiesOf(p1)
+                                                                               .UnionWith(ontology.Model.PropertyModel.GetEquivalentPropertiesOf(p1)))
+                {
+                    //Iterate the compatible assertions
+                    foreach (RDFOntologyTaxonomyEntry p1Asn in p1Asns)
+                    {
+                        //Taxonomy-check for securing inference consistency
+                        if ((p2.IsObjectProperty() && p1Asn.TaxonomyObject.IsFact())
+                                || (p2.IsDatatypeProperty() && p1Asn.TaxonomyObject.IsLiteral()))
+                        {
+                            //Create the inference as a taxonomy entry
+                            RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(p1Asn.TaxonomySubject, p2, p1Asn.TaxonomyObject)
+                                                                     .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                            //Add the inference to the report
+                            if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(PropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                        }
                     }
                 }
             }

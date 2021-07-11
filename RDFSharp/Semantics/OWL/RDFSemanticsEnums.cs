@@ -253,6 +253,11 @@ namespace RDFSharp.Semantics.OWL
             /// P1(F1,F2) ^ INVERSEOF(P1,P2) -> P2(F2,F1)
             /// </summary>
             InverseOfEntailment = 15,
+            /// <summary>
+            /// P1(F1,F2) ^ SUBPROPERTY(P1,P2) -> P2(F1,F2)<br/>
+            /// P1(F1,F2) ^ EQUIVALENTPROPERTY(P1,P2) -> P2(F1,F2)
+            /// </summary>
+            PropertyEntailment = 16,
         }
 
     }

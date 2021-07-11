@@ -144,6 +144,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.InverseOfEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.InverseOfEntailment(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.PropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.PropertyEntailment(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 
