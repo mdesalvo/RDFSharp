@@ -107,6 +107,10 @@ namespace RDFSharp.Semantics.OWL
                             standardRuleReport = RDFOntologyReasonerRuleset.EquivalentClassTransitivity(tempOntology);
                             break;
 
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DisjointWithEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.DisjointWithEntailment(tempOntology);
+                            break;
+
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubPropertyTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.SubPropertyTransitivity(tempOntology);
                             break;

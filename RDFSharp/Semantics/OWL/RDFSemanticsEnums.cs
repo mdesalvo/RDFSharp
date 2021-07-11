@@ -200,12 +200,20 @@ namespace RDFSharp.Semantics.OWL
             EquivalentClassTransitivity = 1,
 
             /// <summary>
+            /// DisjointWithEntailment implements structural entailments based on DisjointWith model taxonomy<br/>
+            /// EQUIVALENTCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
+            /// SUBCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
+            /// DISJOINTWITH(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> DISJOINTWITH(C1,C3)
+            /// </summary>
+            DisjointWithEntailment = 2,
+
+            /// <summary>
             /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
             /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
             /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
             /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
             /// </summary>
-            SubPropertyTransitivity = 2,
+            SubPropertyTransitivity = 3,
         }
 
     }

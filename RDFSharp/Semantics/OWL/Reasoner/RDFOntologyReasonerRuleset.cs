@@ -39,7 +39,6 @@ namespace RDFSharp.Semantics.OWL
             RDFOntologyObjectProperty subClassOf = RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty();
             foreach (RDFOntologyClass c in ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)))
             {
-
                 //Enlist the superclasses of the current class
                 RDFOntologyClassModel superclasses = ontology.Model.ClassModel.GetSuperClassesOf(c);
                 foreach (RDFOntologyClass sc in superclasses)
@@ -52,7 +51,6 @@ namespace RDFSharp.Semantics.OWL
                     if (!ontology.Model.ClassModel.Relations.SubClassOf.ContainsEntry(sem_inf))
                         report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(SubClassTransitivity), nameof(RDFOntologyClassModel.Relations.SubClassOf), sem_inf));
                 }
-
             }
             return report;
         }
@@ -88,6 +86,38 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+		/// DisjointWithEntailment implements structural entailments based on DisjointWith model taxonomy<br/>
+		/// EQUIVALENTCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
+		/// SUBCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
+		/// DISJOINTWITH(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> DISJOINTWITH(C1,C3)
+		/// </summary>
+        internal static RDFOntologyReasonerReport DisjointWithEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty disjointWith = RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty();
+            foreach (RDFOntologyClass c in ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)))
+            {
+                //Enlist the disjoint classes of the current class
+                RDFOntologyClassModel disjclasses = ontology.Model.ClassModel.GetDisjointClassesWith(c);
+                foreach (RDFOntologyClass dwc in disjclasses)
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(c, disjointWith, dwc)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(dwc, disjointWith, c)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Model.ClassModel.Relations.DisjointWith.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(DisjointWithEntailment), nameof(RDFOntologyClassModel.Relations.DisjointWith), sem_infA));
+                    if (!ontology.Model.ClassModel.Relations.DisjointWith.ContainsEntry(sem_infB))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.ClassModel, nameof(DisjointWithEntailment), nameof(RDFOntologyClassModel.Relations.DisjointWith), sem_infB));
+                }
+            }
+            return report;
+        }
+
+        /// <summary>
         /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
         /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
         /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
@@ -97,11 +127,8 @@ namespace RDFSharp.Semantics.OWL
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             RDFOntologyObjectProperty subPropertyOf = RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty();
-
-            //Calculate the set of available properties on which to perform the reasoning (exclude BASE properties and annotation properties)
-            IEnumerable<RDFOntologyProperty> availableprops = ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
-                                                                                                        && !p.IsAnnotationProperty()).ToList();
-            foreach (RDFOntologyProperty p in availableprops)
+            foreach (RDFOntologyProperty p in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                                        && !p.IsAnnotationProperty()))
             {
                 //Enlist the superproperties of the current property
                 RDFOntologyPropertyModel superprops = ontology.Model.PropertyModel.GetSuperPropertiesOf(p);
