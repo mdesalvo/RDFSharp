@@ -192,13 +192,11 @@ namespace RDFSharp.Semantics.OWL
             /// EQUIVALENTCLASS(C1,C2) ^ SUBCLASSOF(C2,C3) -> SUBCLASS(C1,C3)
             /// </summary>
             SubClassTransitivity = 0,
-
             /// <summary>
             /// EquivalentClassTransitivity implements structural entailments based on EquivalentClass model taxonomy<br/>
             /// EQUIVALENTCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> EQUIVALENTCLASS(C1,C3)
             /// </summary>
             EquivalentClassTransitivity = 1,
-
             /// <summary>
             /// DisjointWithEntailment implements structural entailments based on DisjointWith model taxonomy<br/>
             /// EQUIVALENTCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
@@ -206,7 +204,6 @@ namespace RDFSharp.Semantics.OWL
             /// DISJOINTWITH(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> DISJOINTWITH(C1,C3)
             /// </summary>
             DisjointWithEntailment = 2,
-
             /// <summary>
             /// SubPropertyTransitivity (RDFS-5) implements structural entailments based on SubPropertyOf model taxonomy<br/>
             /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
@@ -214,18 +211,21 @@ namespace RDFSharp.Semantics.OWL
             /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
             /// </summary>
             SubPropertyTransitivity = 3,
-
             /// <summary>
             /// EquivalentPropertyTransitivity implements structural entailments based on EquivalentProperty model taxonomy<br/>
             /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
             /// </summary>
             EquivalentPropertyTransitivity = 4,
-
             /// <summary>
             /// DomainEntailment (RDFS-2) implements structural entailments based on Domain model taxonomy<br/>
             /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
             /// </summary>
             DomainEntailment = 5,
+            /// <summary>
+            /// RangeEntailment (RDFS-3) implements structural entailments based on Range model informations<br/>
+            /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
+            /// </summary>
+            RangeEntailment = 6,
         }
 
     }

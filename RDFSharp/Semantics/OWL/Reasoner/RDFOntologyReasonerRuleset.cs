@@ -178,7 +178,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// DomainEntailment (RDFS-2) implements structural entailments based on Domain model taxonomy<br/>
+        /// DomainEntailment (RDFS-2) implements structural entailments based on Domain model informations<br/>
         /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
         /// </summary>
         internal static RDFOntologyReasonerReport DomainEntailment(RDFOntology ontology)
@@ -202,6 +202,36 @@ namespace RDFSharp.Semantics.OWL
                     //Add the inference to the report
                     if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
                         report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(DomainEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                }
+            }
+            return report;
+        }
+
+        /// <summary>
+        /// RangeEntailment (RDFS-3) implements structural entailments based on Range model informations<br/>
+        /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
+        /// </summary>
+        internal static RDFOntologyReasonerReport RangeEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty type = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
+            foreach (RDFOntologyProperty p in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                                        && !p.IsAnnotationProperty()
+                                                                                            && p.Range != null))
+            {
+                //Filter the assertions using the current property
+                RDFOntologyTaxonomy pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                //Iterate the related assertions
+                foreach (RDFOntologyTaxonomyEntry pAsn in pAsns.Where(x => x.TaxonomyObject.IsFact()))
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomyObject, type, p.Range)
+                                                             .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(RangeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
                 }
             }
             return report;
