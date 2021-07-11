@@ -114,6 +114,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.EquivalentPropertyTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.EquivalentPropertyTransitivity(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DomainEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.DomainEntailment(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 

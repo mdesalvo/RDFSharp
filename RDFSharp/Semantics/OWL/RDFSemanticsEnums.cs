@@ -220,6 +220,12 @@ namespace RDFSharp.Semantics.OWL
             /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
             /// </summary>
             EquivalentPropertyTransitivity = 4,
+
+            /// <summary>
+            /// DomainEntailment (RDFS-2) implements structural entailments based on Domain model taxonomy<br/>
+            /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
+            /// </summary>
+            DomainEntailment = 5,
         }
 
     }
