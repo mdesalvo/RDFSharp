@@ -464,6 +464,35 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// P(F1,F2) ^ REFLEXIVEPROPERTY(P) -> P(F1,F1)
+        /// </summary>
+        internal static RDFOntologyReasonerReport ReflexivePropertyEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            foreach (RDFOntologyProperty p in ontology.Model.PropertyModel.Where(p => !RDFOntologyChecker.CheckReservedProperty(p)
+                                                                                         && p.IsReflexiveProperty()))
+            {
+                //Filter the assertions using the current property
+                RDFOntologyTaxonomy pAsns = ontology.Data.Relations.Assertions.SelectEntriesByPredicate(p);
+
+                //Iterate those assertions
+                foreach (RDFOntologyTaxonomyEntry pAsn in pAsns)
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(pAsn.TaxonomySubject, p, pAsn.TaxonomySubject)
+                                                             .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ReflexivePropertyEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                }
+            }
+
+            return report;
+        }
         #endregion
     }
 

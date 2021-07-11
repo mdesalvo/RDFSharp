@@ -245,6 +245,10 @@ namespace RDFSharp.Semantics.OWL
             /// P(F1,F2) ^ P(F2,F3) ^ TRANSITIVEPROPERTY(P) -> P(F1,F3)
             /// </summary>
             TransitivePropertyEntailment = 13,
+            /// <summary>
+            /// P(F1,F2) ^ REFLEXIVEPROPERTY(P) -> P(F1,F1)
+            /// </summary>
+            ReflexivePropertyEntailment = 14,
         }
 
     }
