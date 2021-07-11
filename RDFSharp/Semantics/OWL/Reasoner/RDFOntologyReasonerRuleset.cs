@@ -387,6 +387,29 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// (OWL2) NamedIndividualEntailment implements data entailments based on NamedIndividual data declaration<br/>
+        /// C(F) -> NAMEDINDIVIDUAL(F)
+        /// </summary>
+        internal static RDFOntologyReasonerReport NamedIndividualEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty rdfType = RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty();
+            RDFOntologyClass owlNamedIndividual = RDFVocabulary.OWL.NAMED_INDIVIDUAL.ToRDFOntologyClass();
+
+            foreach (RDFOntologyFact f in ontology.Data.Where(x => !((RDFResource)x.Value).IsBlank))
+            {
+                //Create the inference as a taxonomy entry
+                RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(f, rdfType, owlNamedIndividual)
+                                                         .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                //Add the inference to the report
+                report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(NamedIndividualEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+            }
+
+            return report;
+        }
         #endregion
     }
 

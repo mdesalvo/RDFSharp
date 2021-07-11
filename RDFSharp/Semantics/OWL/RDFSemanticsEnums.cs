@@ -243,6 +243,11 @@ namespace RDFSharp.Semantics.OWL
             /// C1(F) ^ EQUIVALENTCLASS(C1,C2) -> C2(F)
             /// </summary>
             ClassTypeEntailment = 10,
+            /// <summary>
+            /// (OWL2) NamedIndividualEntailment implements data entailments based on NamedIndividual data declaration<br/>
+            /// C(F) -> NAMEDINDIVIDUAL(F)
+            /// </summary>
+            NamedIndividualEntailment = 11,
         }
 
     }
