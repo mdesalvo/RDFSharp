@@ -96,6 +96,7 @@ namespace RDFSharp.Semantics.OWL
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching standard rule '{0}'", standardRule));
 
+                    #region Exec
                     RDFOntologyReasonerReport standardRuleReport = new RDFOntologyReasonerReport();
                     switch (standardRule)
                     {                        
@@ -164,6 +165,7 @@ namespace RDFSharp.Semantics.OWL
                             break;
                     }
                     report.Merge(standardRuleReport);
+                    #endregion
 
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed standard rule '{0}': found {1} evidences.", standardRule, standardRuleReport.EvidencesCount));
                 });
@@ -173,8 +175,10 @@ namespace RDFSharp.Semantics.OWL
                 {
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching custom rule '{0}': {1}", rule.RuleName, rule));
 
+                    #region Exec
                     RDFOntologyReasonerReport customRuleReport = rule.ApplyToOntology(tempOntology, options);
                     report.Merge(customRuleReport);
+                    #endregion
 
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed custom rule '{0}': found {1} evidences.", rule.RuleName, customRuleReport.EvidencesCount));
                 });
