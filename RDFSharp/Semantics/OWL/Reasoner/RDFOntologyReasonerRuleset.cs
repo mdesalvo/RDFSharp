@@ -236,6 +236,36 @@ namespace RDFSharp.Semantics.OWL
             }
             return report;
         }
+
+        /// <summary>
+        /// SameAsTransitivity implements structural entailments based on SameAs data taxonomy<br/>
+        /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3
+        /// </summary>
+        internal static RDFOntologyReasonerReport SameAsTransitivity(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+            RDFOntologyObjectProperty sameAs = RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty();
+            foreach (RDFOntologyFact f in ontology.Data)
+            {
+                //Enlist the same facts of the current fact
+                RDFOntologyData samefacts = ontology.Data.GetSameFactsAs(f);
+                foreach (RDFOntologyFact sf in samefacts)
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(f, sameAs, sf)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+                    RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(sf, sameAs, f)
+                                                              .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infA))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infA));
+                    if (!ontology.Data.Relations.SameAs.ContainsEntry(sem_infB))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsTransitivity), nameof(RDFOntologyData.Relations.SameAs), sem_infB));
+                }
+            }
+            return report;
+        }
         #endregion
     }
 

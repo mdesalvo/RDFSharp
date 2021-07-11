@@ -120,6 +120,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.RangeEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.RangeEntailment(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SameAsTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SameAsTransitivity(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 
