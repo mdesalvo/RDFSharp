@@ -135,6 +135,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SymmetricPropertyEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.SymmetricPropertyEntailment(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.TransitivePropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.TransitivePropertyEntailment(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 

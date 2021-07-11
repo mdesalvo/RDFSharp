@@ -241,6 +241,10 @@ namespace RDFSharp.Semantics.OWL
             /// P(F1,F2) ^ SYMMETRICPROPERTY(P) -> P(F2,F1)
             /// </summary>
             SymmetricPropertyEntailment = 12,
+            /// <summary>
+            /// P(F1,F2) ^ P(F2,F3) ^ TRANSITIVEPROPERTY(P) -> P(F1,F3)
+            /// </summary>
+            TransitivePropertyEntailment = 13,
         }
 
     }
