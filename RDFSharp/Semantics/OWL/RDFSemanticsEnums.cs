@@ -276,7 +276,7 @@ namespace RDFSharp.Semantics.OWL
             /// </summary>
             HasKeyEntailment = 20,
             /// <summary>
-            /// ((PCA PROPERTYCHAINAXIOM P1) AND (PCA PROPERTYCHAINAXIOM P2) ^ P1(F1,X) ^ P2(X,F2) => (F1 PCA F2)
+            /// PROPERTYCHAINAXIOM(PCA) ^ MEMBER(PCA,P1) ^ MEMBER(PCA,P2) ^ P1(F1,X) ^ P2(X,F2) => PCA(F1,F2)
             /// </summary>
             PropertyChainEntailment = 21
         }
