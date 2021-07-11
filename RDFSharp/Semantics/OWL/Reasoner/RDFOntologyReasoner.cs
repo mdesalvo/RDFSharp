@@ -126,6 +126,9 @@ namespace RDFSharp.Semantics.OWL
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DifferentFromEntailment:
                             standardRuleReport = RDFOntologyReasonerRuleset.DifferentFromEntailment(tempOntology);
                             break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.ClassTypeEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.ClassTypeEntailment(tempOntology);
+                            break;
                     }
                     report.Merge(standardRuleReport);
 

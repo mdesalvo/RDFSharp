@@ -237,6 +237,12 @@ namespace RDFSharp.Semantics.OWL
             /// DIFFERENTFROM(F1,F2) ^ SAMEAS(F2,F3) -> DIFFERENTFROM(F1,F3)
             /// </summary>
             DifferentFromEntailment = 9,
+            /// <summary>
+            /// ClassTypeEntailment (RDFS-9) implements structural entailments based on Type data taxonomy<br/>
+            /// C1(F) ^ SUBCLASSOF(C1,C2) -> C2(F)<br/>
+            /// C1(F) ^ EQUIVALENTCLASS(C1,C2) -> C2(F)
+            /// </summary>
+            ClassTypeEntailment = 10,
         }
 
     }
