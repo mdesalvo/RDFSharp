@@ -263,6 +263,10 @@ namespace RDFSharp.Semantics.OWL
             /// P(F1,F2) ^ SAMEAS(F2,F3) -> P(F1,F3)
             /// </summary>
             SameAsEntailment = 17,
+            /// <summary>
+            /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) => P(F1,F2)
+            /// </summary>
+            HasValueEntailment = 18,
         }
 
     }

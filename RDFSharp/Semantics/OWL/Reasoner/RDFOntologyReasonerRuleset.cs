@@ -630,6 +630,40 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) => P(F1,F2)
+        /// </summary>
+        internal static RDFOntologyReasonerReport HasValueEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            //Fetch owl:hasValue restrictions from the class model (R, P, F2)
+            IEnumerable<RDFOntologyHasValueRestriction> hvRestrictions = ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c))
+                                                                                                  .OfType<RDFOntologyHasValueRestriction>();
+            foreach (RDFOntologyHasValueRestriction hvRestriction in hvRestrictions)
+            {
+                //Calculate subclasses of the current owl:hasValue restriction (C)
+                RDFOntologyClassModel subClassesOfHVRestriction = ontology.Model.ClassModel.GetSubClassesOf(hvRestriction);
+                foreach (RDFOntologyClass subClassOfHVRestriction in subClassesOfHVRestriction)
+                {
+                    //Calculate members of the current subclass of the current owl:hasValue restriction (F1)
+                    RDFOntologyData membersOfSubClassOfHVRestriction = ontology.GetMembersOf(subClassOfHVRestriction);
+                    foreach (RDFOntologyFact memberOfSubClassOfHVRestriction in membersOfSubClassOfHVRestriction)
+                    {
+                        //Create the inference as a taxonomy entry
+                        RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(memberOfSubClassOfHVRestriction, hvRestriction.OnProperty, hvRestriction.RequiredValue)
+                                                                 .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                        //Add the inference to the report
+                        if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_inf))
+                            report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(HasValueEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_inf));
+                    }
+                }
+            }
+
+            return report;
+        }
         #endregion
     }
 
