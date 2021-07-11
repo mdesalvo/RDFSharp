@@ -258,6 +258,11 @@ namespace RDFSharp.Semantics.OWL
             /// P1(F1,F2) ^ EQUIVALENTPROPERTY(P1,P2) -> P2(F1,F2)
             /// </summary>
             PropertyEntailment = 16,
+            /// <summary>
+            /// P(F1,F2) ^ SAMEAS(F1,F3) -> P(F3,F2)<br/>
+            /// P(F1,F2) ^ SAMEAS(F2,F3) -> P(F1,F3)
+            /// </summary>
+            SameAsEntailment = 17,
         }
 
     }

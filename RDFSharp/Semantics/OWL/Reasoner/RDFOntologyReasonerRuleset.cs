@@ -567,6 +567,69 @@ namespace RDFSharp.Semantics.OWL
 
             return report;
         }
+
+        /// <summary>
+        /// P(F1,F2) ^ SAMEAS(F1,F3) -> P(F3,F2)<br/>
+        /// P(F1,F2) ^ SAMEAS(F2,F3) -> P(F1,F3)
+        /// </summary>
+        internal static RDFOntologyReasonerReport SameAsEntailment(RDFOntology ontology)
+        {
+            RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
+
+            foreach (RDFOntologyFact f1 in ontology.Data)
+            {
+                //Enlist the same facts of the current fact
+                RDFOntologyData sameFacts = ontology.Data.GetSameFactsAs(f1);
+                if (sameFacts.FactsCount > 0)
+                {
+                    //Filter the assertions using the current fact
+                    RDFOntologyTaxonomy f1AsnsSubj = ontology.Data.Relations.Assertions.SelectEntriesBySubject(f1);
+                    RDFOntologyTaxonomy f1AsnsObj = ontology.Data.Relations.Assertions.SelectEntriesByObject(f1);
+
+                    //Enlist the same facts of the current fact
+                    foreach (RDFOntologyFact f2 in sameFacts)
+                    {
+                        #region Subject-Side
+                        //Iterate the assertions having the current fact as subject
+                        foreach (RDFOntologyTaxonomyEntry f1Asn in f1AsnsSubj)
+                        {
+                            //Taxonomy-check for securing inference consistency
+                            if (f1Asn.TaxonomyPredicate.IsObjectProperty() && f1Asn.TaxonomyObject.IsFact())
+                            {
+                                //Create the inference as a taxonomy entry
+                                RDFOntologyTaxonomyEntry sem_infA = new RDFOntologyTaxonomyEntry(f2, f1Asn.TaxonomyPredicate, f1Asn.TaxonomyObject)
+                                                                          .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                                //Add the inference to the report
+                                if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_infA))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_infA));
+                            }   
+                        }
+                        #endregion
+
+                        #region Object-Side
+                        //Iterate the assertions having the current fact as object
+                        foreach (RDFOntologyTaxonomyEntry f1Asn in f1AsnsObj)
+                        {
+                            //Taxonomy-check for securing inference consistency
+                            if (f1Asn.TaxonomyPredicate.IsObjectProperty())
+                            {
+                                //Create the inference as a taxonomy entry
+                                RDFOntologyTaxonomyEntry sem_infB = new RDFOntologyTaxonomyEntry(f1Asn.TaxonomySubject, f1Asn.TaxonomyPredicate, f2)
+                                                                          .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                                //Add the inference to the report
+                                if (!ontology.Data.Relations.Assertions.ContainsEntry(sem_infB))
+                                    report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(SameAsEntailment), nameof(RDFOntologyData.Relations.Assertions), sem_infB));
+                            }
+                        }
+                        #endregion
+                    }
+                }
+            }
+
+            return report;
+        }
         #endregion
     }
 
