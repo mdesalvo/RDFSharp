@@ -267,6 +267,10 @@ namespace RDFSharp.Semantics.OWL
             /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) => P(F1,F2)
             /// </summary>
             HasValueEntailment = 18,
+            /// <summary>
+            /// C(F) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASSELF(R,"TRUE") => P(F,F)
+            /// </summary>
+            HasSelfEntailment = 19,
         }
 
     }
