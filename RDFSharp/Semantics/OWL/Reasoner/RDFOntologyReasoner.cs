@@ -98,24 +98,20 @@ namespace RDFSharp.Semantics.OWL
 
                     RDFOntologyReasonerReport standardRuleReport = new RDFOntologyReasonerReport();
                     switch (standardRule)
-                    {
-                        #region Standard Rules
+                    {                        
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubClassTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.SubClassTransitivity(tempOntology);
-                            report.Merge(standardRuleReport);
                             break;
 
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.EquivalentClassTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.EquivalentClassTransitivity(tempOntology);
-                            report.Merge(standardRuleReport);
                             break;
 
                         case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubPropertyTransitivity:
                             standardRuleReport = RDFOntologyReasonerRuleset.SubPropertyTransitivity(tempOntology);
-                            report.Merge(standardRuleReport);
                             break;
-                       #endregion
                     }
+                    report.Merge(standardRuleReport);
 
                     RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed standard rule '{0}': found {1} evidences.", standardRule, standardRuleReport.EvidencesCount));
                 });
