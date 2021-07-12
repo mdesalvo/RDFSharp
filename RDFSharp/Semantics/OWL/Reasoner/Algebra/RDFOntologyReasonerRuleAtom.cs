@@ -82,13 +82,10 @@ namespace RDFSharp.Semantics.OWL
             sb.Append($"({this.LeftArgument}");
             if (this.RightArgument != null)
             {
-                //If the right argument is a fact, it is printed in SWRL-shortened form
                 if (this.RightArgument is RDFOntologyFact rightArgumentFact)
                     sb.Append($",{RDFModelUtilities.GetShortUri(((RDFResource)rightArgumentFact.Value).URI)}");
-                //If the right argument is a literal, it is printed in standard plain/typed-literal form
                 else if (this.RightArgument is RDFOntologyLiteral rightArgumentLiteral)
                     sb.Append($",{RDFQueryPrinter.PrintPatternMember(rightArgumentLiteral.Value, RDFNamespaceRegister.Instance.Register)}");
-                //If the right argument is a variable, it is printed in standard variable form
                 else if (this.RightArgument is RDFVariable rightArgumentVariable)
                     sb.Append($",{RDFQueryPrinter.PrintPatternMember(rightArgumentVariable, RDFNamespaceRegister.Instance.Register)}");
             }
