@@ -50,7 +50,7 @@ namespace RDFSharp.Semantics.OWL
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the atom
+        /// Gives the string representation of the built-in
         /// </summary>
         public override string ToString()
         {
