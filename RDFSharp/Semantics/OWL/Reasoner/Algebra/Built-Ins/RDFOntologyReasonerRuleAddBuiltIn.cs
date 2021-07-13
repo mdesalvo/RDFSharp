@@ -18,7 +18,6 @@ using System.Collections;
 using System.Data;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace RDFSharp.Semantics.OWL
 {
