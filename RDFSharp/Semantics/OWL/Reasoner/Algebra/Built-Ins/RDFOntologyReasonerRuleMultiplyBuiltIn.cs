@@ -18,29 +18,29 @@ using System.Data;
 namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFOntologyReasonerRuleAddBuiltIn represents a built-in of type swrlb:add
+    /// RDFOntologyReasonerRuleMultiplyBuiltIn represents a built-in of type swrlb:multiply
     /// </summary>
-    public class RDFOntologyReasonerRuleAddBuiltIn : RDFOntologyReasonerRuleBuiltIn
+    public class RDFOntologyReasonerRuleMultiplyBuiltIn : RDFOntologyReasonerRuleBuiltIn
     {
         #region Properties
         /// <summary>
-        /// Represents the Uri of the built-in (swrlb:add)
+        /// Represents the Uri of the built-in (swrlb:multiply)
         /// </summary>
-        private static RDFResource BuiltInUri = new RDFResource($"swrlb:add");
+        private static RDFResource BuiltInUri = new RDFResource($"swrlb:multiply");
 
         /// <summary>
-        /// Represents the numeric value to be added to the RightArgument for checking equality of the LeftArgument
+        /// Represents the numeric value to be multiplied to the RightArgument for checking equality of the LeftArgument
         /// </summary>
-        private double AddValue { get; set; }
+        private double MultiplyValue { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to build a swrlb:add built-in with given arguments
+        /// Default-ctor to build a swrlb:multiply built-in with given arguments
         /// </summary>
-        public RDFOntologyReasonerRuleAddBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument, double addValue)
+        public RDFOntologyReasonerRuleMultiplyBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument, double multiplyValue)
             : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
-                => this.AddValue = addValue;
+                => this.MultiplyValue = multiplyValue;
         #endregion
 
         #region Interfaces
@@ -48,7 +48,7 @@ namespace RDFSharp.Semantics.OWL
         /// Gives the string representation of the built-in
         /// </summary>
         public override string ToString()
-            => PrintMathBuiltIn(this.AddValue);
+            => PrintMathBuiltIn(this.MultiplyValue);
         #endregion
 
         #region Methods
@@ -56,7 +56,7 @@ namespace RDFSharp.Semantics.OWL
         /// Evaluates the built-in in the context of the given antecedent results
         /// </summary>
         internal override DataTable Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
-            => EvaluateMathBuiltIn("+", this.AddValue, antecedentResults);
+            => EvaluateMathBuiltIn("*", this.MultiplyValue, antecedentResults);
 
         internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
         internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
