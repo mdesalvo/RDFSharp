@@ -13,25 +13,19 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Data;
 
 namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFOntologyReasonerRuleAddBuiltIn represents a built-in of type swrlb:add
+    /// RDFOntologyReasonerRuleAddBuiltIn represents a math built-in of type swrlb:add
     /// </summary>
-    public class RDFOntologyReasonerRuleAddBuiltIn : RDFOntologyReasonerRuleBuiltIn
+    public class RDFOntologyReasonerRuleAddBuiltIn : RDFOntologyReasonerRuleMathBuiltIn
     {
         #region Properties
         /// <summary>
         /// Represents the Uri of the built-in (swrlb:add)
         /// </summary>
         private static RDFResource BuiltInUri = new RDFResource($"swrlb:add");
-
-        /// <summary>
-        /// Represents the numeric value to be added to the RightArgument for checking equality of the LeftArgument
-        /// </summary>
-        private double AddValue { get; set; }
         #endregion
 
         #region Ctors
@@ -39,27 +33,7 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build a swrlb:add built-in with given arguments
         /// </summary>
         public RDFOntologyReasonerRuleAddBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument, double addValue)
-            : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
-                => this.AddValue = addValue;
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the built-in
-        /// </summary>
-        public override string ToString()
-            => PrintMathBuiltIn(this.AddValue);
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates the built-in in the context of the given antecedent results
-        /// </summary>
-        internal override DataTable Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
-            => EvaluateMathBuiltIn("+", this.AddValue, antecedentResults);
-
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
+            : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument, addValue) { }
         #endregion
     }
 }

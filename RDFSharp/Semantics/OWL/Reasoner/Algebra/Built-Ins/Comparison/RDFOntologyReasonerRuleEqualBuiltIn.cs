@@ -13,17 +13,13 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System;
-using System.Collections;
-using System.Data;
-using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
     /// RDFOntologyReasonerRuleEqualBuiltIn represents a built-in of type swrlb:equal
     /// </summary>
-    public class RDFOntologyReasonerRuleEqualBuiltIn : RDFOntologyReasonerRuleBuiltIn
+    public class RDFOntologyReasonerRuleEqualBuiltIn : RDFOntologyReasonerRuleFilterBuiltIn
     {
         #region Properties
         /// <summary>
@@ -57,37 +53,6 @@ namespace RDFSharp.Semantics.OWL
         internal RDFOntologyReasonerRuleEqualBuiltIn(RDFVariable leftArgument, RDFPatternMember rightArgument)
             : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
                 => this.BuiltInFilter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, leftArgument, rightArgument);
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates the built-in in the context of the given antecedent results
-        /// </summary>
-        internal override DataTable Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
-        {
-            DataTable filteredTable = antecedentResults.Clone();
-            IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
-
-            //Iterate the rows of the antecedent result table
-            while (rowsEnum.MoveNext())
-            {
-                //Apply the built-in filter on the row
-                bool keepRow = this.BuiltInFilter.ApplyFilter((DataRow)rowsEnum.Current, false);
-
-                //If the row has passed the filter, keep it in the filtered result table
-                if (keepRow)
-                {
-                    DataRow newRow = filteredTable.NewRow();
-                    newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
-                    filteredTable.Rows.Add(newRow);
-                }
-            }
-
-            return filteredTable;
-        }
-
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
         #endregion
     }
 }

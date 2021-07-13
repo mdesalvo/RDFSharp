@@ -13,25 +13,19 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Data;
 
 namespace RDFSharp.Semantics.OWL
 {
     /// <summary>
-    /// RDFOntologyReasonerRuleDivideBuiltIn represents a built-in of type swrlb:divide
+    /// RDFOntologyReasonerRuleDivideBuiltIn represents a math built-in of type swrlb:divide
     /// </summary>
-    public class RDFOntologyReasonerRuleDivideBuiltIn : RDFOntologyReasonerRuleBuiltIn
+    public class RDFOntologyReasonerRuleDivideBuiltIn : RDFOntologyReasonerRuleMathBuiltIn
     {
         #region Properties
         /// <summary>
         /// Represents the Uri of the built-in (swrlb:divide)
         /// </summary>
         private static RDFResource BuiltInUri = new RDFResource($"swrlb:divide");
-
-        /// <summary>
-        /// Represents the numeric value to be divided to the RightArgument for checking equality of the LeftArgument
-        /// </summary>
-        private double DivideValue { get; set; }
         #endregion
 
         #region Ctors
@@ -39,32 +33,11 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build a swrlb:divide built-in with given arguments
         /// </summary>
         public RDFOntologyReasonerRuleDivideBuiltIn(RDFVariable leftArgument, RDFVariable rightArgument, double divideValue)
-            : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument)
+            : base(new RDFOntologyResource() { Value = BuiltInUri }, leftArgument, rightArgument, divideValue)
         {
             if (divideValue == 0d)
                 throw new RDFSemanticsException("Cannot create divide built-in because given \"divideValue\" is zero.");
-
-            this.DivideValue = divideValue;
         }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the built-in
-        /// </summary>
-        public override string ToString()
-            => PrintMathBuiltIn(this.DivideValue);
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates the built-in in the context of the given antecedent results
-        /// </summary>
-        internal override DataTable Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
-            => EvaluateMathBuiltIn("/", this.DivideValue, antecedentResults);
-
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
         #endregion
     }
 }

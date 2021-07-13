@@ -13,10 +13,6 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System;
-using System.Collections;
-using System.Data;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RDFSharp.Semantics.OWL
@@ -24,7 +20,7 @@ namespace RDFSharp.Semantics.OWL
     /// <summary>
     /// RDFOntologyReasonerRuleStartsWithBuiltIn represents a built-in of type swrlb:startsWith
     /// </summary>
-    public class RDFOntologyReasonerRuleStartsWithBuiltIn : RDFOntologyReasonerRuleBuiltIn
+    public class RDFOntologyReasonerRuleStartsWithBuiltIn : RDFOntologyReasonerRuleFilterBuiltIn
     {
         #region Properties
         /// <summary>
@@ -48,37 +44,6 @@ namespace RDFSharp.Semantics.OWL
 
             this.BuiltInFilter = new RDFRegexFilter(leftArgument, new Regex($"^{startString}"));
         }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Evaluates the built-in in the context of the given antecedent results
-        /// </summary>
-        internal override DataTable Evaluate(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options)
-        {
-            DataTable filteredTable = antecedentResults.Clone();
-            IEnumerator rowsEnum = antecedentResults.Rows.GetEnumerator();
-
-            //Iterate the rows of the antecedent result table
-            while (rowsEnum.MoveNext())
-            {
-                //Apply the built-in filter on the row
-                bool keepRow = this.BuiltInFilter.ApplyFilter((DataRow)rowsEnum.Current, false);
-
-                //If the row has passed the filter, keep it in the filtered result table
-                if (keepRow)
-                {
-                    DataRow newRow = filteredTable.NewRow();
-                    newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
-                    filteredTable.Rows.Add(newRow);
-                }
-            }
-
-            return filteredTable;
-        }
-
-        internal override DataTable EvaluateOnAntecedent(RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
-        internal override RDFOntologyReasonerReport EvaluateOnConsequent(DataTable antecedentResults, RDFOntology ontology, RDFOntologyReasonerOptions options) => null;
         #endregion
     }
 }
