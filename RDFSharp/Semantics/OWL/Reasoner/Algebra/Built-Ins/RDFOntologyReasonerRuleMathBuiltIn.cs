@@ -118,6 +118,10 @@ namespace RDFSharp.Semantics.OWL
                                 keepRow = (leftArgumentNumericValue == Math.Pow(rightArgumentNumericValue, this.MathValue));
                             else if (this is RDFOntologyReasonerRuleAbsBuiltIn)
                                 keepRow = (leftArgumentNumericValue == Math.Abs(rightArgumentNumericValue));
+                            else if (this is RDFOntologyReasonerRuleFloorBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Floor(rightArgumentNumericValue));
+                            else if (this is RDFOntologyReasonerRuleCeilingBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Ceiling(rightArgumentNumericValue));
 
                             //If the row has passed the built-in, keep it in the filtered result table
                             if (keepRow)
