@@ -122,6 +122,16 @@ namespace RDFSharp.Semantics.OWL
                                 keepRow = (leftArgumentNumericValue == Math.Floor(rightArgumentNumericValue));
                             else if (this is RDFOntologyReasonerRuleCeilingBuiltIn)
                                 keepRow = (leftArgumentNumericValue == Math.Ceiling(rightArgumentNumericValue));
+                            else if (this is RDFOntologyReasonerRuleRoundBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Round(rightArgumentNumericValue));
+                            else if (this is RDFOntologyReasonerRuleRoundHalfToEvenBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Round(rightArgumentNumericValue, MidpointRounding.ToEven));
+                            else if (this is RDFOntologyReasonerRuleSinBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Sin(rightArgumentNumericValue));
+                            else if (this is RDFOntologyReasonerRuleTanBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Tan(rightArgumentNumericValue));
+                            else if (this is RDFOntologyReasonerRuleCosBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Cos(rightArgumentNumericValue));
 
                             //If the row has passed the built-in, keep it in the filtered result table
                             if (keepRow)
