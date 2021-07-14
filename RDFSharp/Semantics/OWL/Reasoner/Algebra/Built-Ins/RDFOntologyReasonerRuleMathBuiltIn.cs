@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using RDFSharp.Query;
+using System;
 using System.Collections;
 using System.Data;
 using System.Globalization;
@@ -113,6 +114,8 @@ namespace RDFSharp.Semantics.OWL
                                 keepRow = (leftArgumentNumericValue == rightArgumentNumericValue * this.MathValue);
                             else if (this is RDFOntologyReasonerRuleDivideBuiltIn)
                                 keepRow = (leftArgumentNumericValue == rightArgumentNumericValue / this.MathValue);
+                            else if (this is RDFOntologyReasonerRulePowBuiltIn)
+                                keepRow = (leftArgumentNumericValue == Math.Pow(rightArgumentNumericValue, this.MathValue));
 
                             //If the row has passed the built-in, keep it in the filtered result table
                             if (keepRow)
