@@ -16,6 +16,7 @@
 
 using RDFSharp.Model;
 using System;
+using System.Text;
 
 namespace RDFSharp.Semantics.OWL
 {
@@ -25,7 +26,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyClass : RDFOntologyResource
     {
-
         #region Properties
         /// <summary>
         /// Flag indicating that this ontology class is "owl:DeprecatedClass"
@@ -69,7 +69,6 @@ namespace RDFSharp.Semantics.OWL
             return this;
         }
         #endregion
-
     }
 
 }

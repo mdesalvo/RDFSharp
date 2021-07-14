@@ -180,6 +180,107 @@ namespace RDFSharp.Semantics.OWL
             OWL = 1
         }
 
+        /// <summary>
+        /// RDFOntologyStandardReasonerRule represents an enumeration for available standard RDFS/OWL-DL/OWL2 reasoner rules
+        /// </summary>
+        public enum RDFOntologyStandardReasonerRule
+        {
+            /// <summary>
+            /// SUBCLASS(C1,C2) ^ SUBCLASS(C2,C3) -> SUBCLASS(C1,C3)<br/>
+            /// SUBCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> SUBCLASS(C1,C3)<br/>
+            /// EQUIVALENTCLASS(C1,C2) ^ SUBCLASSOF(C2,C3) -> SUBCLASS(C1,C3)
+            /// </summary>
+            SubClassTransitivity = 1,
+            /// <summary>
+            /// EQUIVALENTCLASS(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> EQUIVALENTCLASS(C1,C3)
+            /// </summary>
+            EquivalentClassTransitivity = 2,
+            /// <summary>
+            /// EQUIVALENTCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
+            /// SUBCLASS(C1,C2) ^ DISJOINTWITH(C2,C3) -> DISJOINTWITH(C1,C3)<br/>
+            /// DISJOINTWITH(C1,C2) ^ EQUIVALENTCLASS(C2,C3) -> DISJOINTWITH(C1,C3)
+            /// </summary>
+            DisjointWithEntailment = 3,
+            /// <summary>
+            /// SUBPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
+            /// SUBPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)<br/>
+            /// EQUIVALENTPROPERTY(P1,P2) ^ SUBPROPERTY(P2,P3) -> SUBPROPERTY(P1,P3)
+            /// </summary>
+            SubPropertyTransitivity = 4,
+            /// <summary>
+            /// EQUIVALENTPROPERTY(P1,P2) ^ EQUIVALENTPROPERTY(P2,P3) -> EQUIVALENTPROPERTY(P1,P3)
+            /// </summary>
+            EquivalentPropertyTransitivity = 5,
+            /// <summary>
+            /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
+            /// </summary>
+            DomainEntailment = 6,
+            /// <summary>
+            /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
+            /// </summary>
+            RangeEntailment = 7,
+            /// <summary>
+            /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3
+            /// </summary>
+            SameAsTransitivity = 8,
+            /// <summary>
+            /// SAMEAS(F1,F2) ^ DIFFERENTFROM(F2,F3) -> DIFFERENTFROM(F1,F3)<br/>
+            /// DIFFERENTFROM(F1,F2) ^ SAMEAS(F2,F3) -> DIFFERENTFROM(F1,F3)
+            /// </summary>
+            DifferentFromEntailment = 9,
+            /// <summary>
+            /// C1(F) ^ SUBCLASSOF(C1,C2) -> C2(F)<br/>
+            /// C1(F) ^ EQUIVALENTCLASS(C1,C2) -> C2(F)
+            /// </summary>
+            ClassTypeEntailment = 10,
+            /// <summary>
+            /// C(F) -> NAMEDINDIVIDUAL(F)
+            /// </summary>
+            NamedIndividualEntailment = 11,
+            /// <summary>
+            /// P(F1,F2) ^ SYMMETRICPROPERTY(P) -> P(F2,F1)
+            /// </summary>
+            SymmetricPropertyEntailment = 12,
+            /// <summary>
+            /// P(F1,F2) ^ P(F2,F3) ^ TRANSITIVEPROPERTY(P) -> P(F1,F3)
+            /// </summary>
+            TransitivePropertyEntailment = 13,
+            /// <summary>
+            /// P(F1,F2) ^ REFLEXIVEPROPERTY(P) -> P(F1,F1)
+            /// </summary>
+            ReflexivePropertyEntailment = 14,
+            /// <summary>
+            /// P1(F1,F2) ^ INVERSEOF(P1,P2) -> P2(F2,F1)
+            /// </summary>
+            InverseOfEntailment = 15,
+            /// <summary>
+            /// P1(F1,F2) ^ SUBPROPERTY(P1,P2) -> P2(F1,F2)<br/>
+            /// P1(F1,F2) ^ EQUIVALENTPROPERTY(P1,P2) -> P2(F1,F2)
+            /// </summary>
+            PropertyEntailment = 16,
+            /// <summary>
+            /// P(F1,F2) ^ SAMEAS(F1,F3) -> P(F3,F2)<br/>
+            /// P(F1,F2) ^ SAMEAS(F2,F3) -> P(F1,F3)
+            /// </summary>
+            SameAsEntailment = 17,
+            /// <summary>
+            /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) => P(F1,F2)
+            /// </summary>
+            HasValueEntailment = 18,
+            /// <summary>
+            /// C(F) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASSELF(R,"TRUE") => P(F,F)
+            /// </summary>
+            HasSelfEntailment = 19,
+            /// <summary>
+            /// HASKEY(C,P) ^ C(F1) ^ C(F2) ^ P(F1,"K") ^ P(F2,"K") -> SAMEAS(F1,F2)
+            /// </summary>
+            HasKeyEntailment = 20,
+            /// <summary>
+            /// PROPERTYCHAINAXIOM(PCA) ^ MEMBER(PCA,P1) ^ MEMBER(PCA,P2) ^ P1(F1,X) ^ P2(X,F2) => PCA(F1,F2)
+            /// </summary>
+            PropertyChainEntailment = 21
+        }
+
     }
 
 }

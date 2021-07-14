@@ -176,6 +176,22 @@ namespace RDFSharp.Model
 
             return source.Remove(source.LastIndexOf(value));
         }
+        
+        /// <summary>
+        /// Gets the short representation of the given Uri
+        /// </summary>
+        internal static string GetShortUri(this Uri uri)
+        {
+            if (uri == null)
+                return null;
+
+            string shortUri = uri.ToString();
+            if (!string.IsNullOrEmpty(uri.Fragment))
+                shortUri = uri.Fragment.TrimStart(new char[] { '#' });
+            else if (uri.Segments.Length > 1)
+                shortUri = uri.Segments.Last();
+            return shortUri;
+        }
         #endregion
 
         #region Graph

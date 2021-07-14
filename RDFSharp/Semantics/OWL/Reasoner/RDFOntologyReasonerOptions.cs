@@ -14,32 +14,27 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using System.Text;
-
 namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFOntologyFact represents an instance of an ontology class within an ontology data.
+    /// RDFOntologyReasonerOptions represents a customization of the execution behavior of a reasoner
     /// </summary>
-    public class RDFOntologyFact : RDFOntologyResource
+    public class RDFOntologyReasonerOptions
     {
+        #region Properties
+        /// <summary>
+        /// Instructs the reasoner to execute additional real-time checks to protect ontology consistency, resulting in slower but safer inferences (DEFAULT: true)
+        /// </summary>
+        public bool EnforceTaxonomyProtection { get; set; }
+        #endregion
+
         #region Ctors
         /// <summary>
-        /// Default-ctor to build an ontology fact with the given name.
+        /// Default-ctor to build options for execution of a reasoner
         /// </summary>
-        public RDFOntologyFact(RDFResource factName)
-        {
-            if (factName != null)
-            {
-                this.Value = factName;
-            }
-            else
-            {
-                throw new RDFSemanticsException("Cannot create RDFOntologyFact because given \"factName\" parameter is null.");
-            }
-        }
+        public RDFOntologyReasonerOptions()
+            => this.EnforceTaxonomyProtection = true;
         #endregion
     }
 

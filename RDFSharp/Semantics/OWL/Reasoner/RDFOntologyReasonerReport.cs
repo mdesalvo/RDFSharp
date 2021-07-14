@@ -29,7 +29,6 @@ namespace RDFSharp.Semantics.OWL
     /// </summary>
     public class RDFOntologyReasonerReport : IEnumerable<RDFOntologyReasonerEvidence>
     {
-
         #region Properties
         /// <summary>
         /// Counter of the evidences
@@ -276,7 +275,6 @@ namespace RDFSharp.Semantics.OWL
         #endregion
 
         #endregion
-
     }
 
 }

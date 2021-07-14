@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,26 +24,20 @@ namespace RDFSharp.Semantics.OWL
 {
 
     /// <summary>
-    /// RDFOntologyReasoner represents an inference engine applied on a given ontology
+    /// RDFOntologyReasoner represents a SWRL inference engine applied on a given ontology
     /// </summary>
-    public class RDFOntologyReasoner : IEnumerable<RDFOntologyReasonerRule>
+    public class RDFOntologyReasoner
     {
-
         #region Properties
         /// <summary>
-        /// Count of the rules composing the reasoner
+        /// List of standard rules applied by the reasoner
         /// </summary>
-        public int RulesCount => this.Rules.Count;
+        internal List<RDFSemanticsEnums.RDFOntologyStandardReasonerRule> StandardRules { get; set; }
 
         /// <summary>
-        /// Gets the enumerator on the reasoner's rules for iteration
+        /// List of custom rules applied by the reasoner
         /// </summary>
-        public IEnumerator<RDFOntologyReasonerRule> RulesEnumerator => this.Rules.GetEnumerator();
-
-        /// <summary>
-        /// List of rules applied by the reasoner
-        /// </summary>
-        internal List<RDFOntologyReasonerRule> Rules { get; set; }
+        internal List<RDFOntologyReasonerRule> CustomRules { get; set; }
         #endregion
 
         #region Ctors
@@ -52,78 +45,143 @@ namespace RDFSharp.Semantics.OWL
         /// Default-ctor to build an empty ontology reasoner
         /// </summary>
         public RDFOntologyReasoner()
-            => this.Rules = new List<RDFOntologyReasonerRule>();
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Exposes a typed enumerator on the reasoner's rules
-        /// </summary>
-        IEnumerator<RDFOntologyReasonerRule> IEnumerable<RDFOntologyReasonerRule>.GetEnumerator() => this.RulesEnumerator;
-
-        /// <summary>
-        /// Exposes an untyped enumerator on the reasoner's rules
-        /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.RulesEnumerator;
+        {
+            this.StandardRules = new List<RDFSemanticsEnums.RDFOntologyStandardReasonerRule>();
+            this.CustomRules = new List<RDFOntologyReasonerRule>();
+        }
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// Adds the given rule to the reasoner
+        /// Adds the given standard rule to the reasoner
         /// </summary>
-        public RDFOntologyReasoner AddRule(RDFOntologyReasonerRule rule)
+        public RDFOntologyReasoner AddStandardRule(RDFSemanticsEnums.RDFOntologyStandardReasonerRule standardRule)
         {
-            if (rule != null)
-            {
-                if (this.SelectRule(rule.RuleName) == null)
-                    this.Rules.Add(rule);
-            }
+            if (!this.StandardRules.Contains(standardRule))
+                this.StandardRules.Add(standardRule);
             return this;
         }
 
         /// <summary>
-        /// Selects the given rule from the resoner
+        /// Adds the given custom rule to the reasoner
         /// </summary>
-        public RDFOntologyReasonerRule SelectRule(string ruleName)
-            => this.Rules.FirstOrDefault(r => r.RuleName.Equals(ruleName?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase));
+        public RDFOntologyReasoner AddCustomRule(RDFOntologyReasonerRule customRule)
+        {
+            if (customRule != null && !this.CustomRules.Any(r => r.RuleName.Equals(customRule.RuleName, StringComparison.OrdinalIgnoreCase)))
+                this.CustomRules.Add(customRule);
+            return this;
+        }
 
         /// <summary>
-        /// Applies the reasoner on the given ontology, producing a reasoning report.
+        /// Applies the reasoner on the given ontology
         /// </summary>
         public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology)
+            => ApplyToOntology(ontology, new RDFOntologyReasonerOptions());
+
+        /// <summary>
+        /// Applies the reasoner on the given ontology with given options
+        /// </summary>
+        public RDFOntologyReasonerReport ApplyToOntology(RDFOntology ontology, RDFOntologyReasonerOptions options)
         {
             RDFOntologyReasonerReport report = new RDFOntologyReasonerReport();
             if (ontology != null)
             {
-                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge.", ontology.Value));
+                RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner is going to be applied on Ontology '{0}': this may require intensive processing, depending on size and complexity of domain knowledge and rules.", ontology.Value));
 
-                //STEP 1: Expand working ontology
-                RDFOntology expOntology = ontology.UnionWith(RDFBASEOntology.Instance);
+                RDFOntology tempOntology = ontology.UnionWith(RDFBASEOntology.Instance);
 
-                //STEP 2: Execute standard rules
-                Parallel.ForEach(this.Rules.Where(x => x.IsStandardRule), 
-                    standardRule =>
-                    {
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of standard reasoner rule '{0}'...", standardRule));
+                //Standard Rules
+                Parallel.ForEach(this.StandardRules, standardRule =>
+                {
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching standard rule '{0}'", standardRule));
 
-                        RDFOntologyReasonerReport sRuleReport = standardRule.ExecuteRule(expOntology);
-                        report.Merge(sRuleReport);
+                    #region Exec
+                    RDFOntologyReasonerReport standardRuleReport = new RDFOntologyReasonerReport();
+                    switch (standardRule)
+                    {                        
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubClassTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SubClassTransitivity(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.EquivalentClassTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.EquivalentClassTransitivity(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DisjointWithEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.DisjointWithEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SubPropertyTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SubPropertyTransitivity(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.EquivalentPropertyTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.EquivalentPropertyTransitivity(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DomainEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.DomainEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.RangeEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.RangeEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SameAsTransitivity:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SameAsTransitivity(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.DifferentFromEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.DifferentFromEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.ClassTypeEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.ClassTypeEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.NamedIndividualEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.NamedIndividualEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SymmetricPropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SymmetricPropertyEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.TransitivePropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.TransitivePropertyEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.ReflexivePropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.ReflexivePropertyEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.InverseOfEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.InverseOfEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.PropertyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.PropertyEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.SameAsEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.SameAsEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.HasValueEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.HasValueEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.HasSelfEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.HasSelfEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.HasKeyEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.HasKeyEntailment(tempOntology);
+                            break;
+                        case RDFSemanticsEnums.RDFOntologyStandardReasonerRule.PropertyChainEntailment:
+                            standardRuleReport = RDFOntologyReasonerRuleset.PropertyChainEntailment(tempOntology);
+                            break;
+                    }
+                    report.Merge(standardRuleReport);
+                    #endregion
 
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of standard reasoner rule '{0}': found {1} evidences.", standardRule, sRuleReport.EvidencesCount));
-                    });
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed standard rule '{0}': found {1} evidences.", standardRule, standardRuleReport.EvidencesCount));
+                });
 
-                //STEP 3: Execute custom rules
-                Parallel.ForEach(this.Rules.Where(x => !x.IsStandardRule), 
-                    customRule =>
-                    {
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching execution of custom reasoner rule '{0}'...", customRule));
+                //Custom Rules
+                Parallel.ForEach(this.CustomRules, rule =>
+                {
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching custom rule '{0}': {1}", rule.RuleName, rule));
 
-                        RDFOntologyReasonerReport cRuleReport = customRule.ExecuteRule(expOntology);
-                        report.Merge(cRuleReport);
+                    #region Exec
+                    RDFOntologyReasonerReport customRuleReport = rule.ApplyToOntology(tempOntology, options);
+                    report.Merge(customRuleReport);
+                    #endregion
 
-                        RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed execution of custom reasoner rule '{0}': found {1} evidences.", customRule, cRuleReport.EvidencesCount));
-                    });
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed custom rule '{0}': found {1} evidences.", rule.RuleName, customRuleReport.EvidencesCount));
+                });
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " unique evidences.", ontology.Value));
             }
@@ -131,13 +189,18 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Asynchronously applies the reasoner on the given ontology, producing a reasoning report.
+        /// Asynchronously applies the reasoner on the given ontology
         /// </summary>
         public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology)
-            => Task.Run(() => ApplyToOntology(ontology));
+            => ApplyToOntologyAsync(ontology, new RDFOntologyReasonerOptions());
+
+        /// <summary>
+        /// Asynchronously applies the reasoner on the given ontology with the given options
+        /// </summary>
+        public Task<RDFOntologyReasonerReport> ApplyToOntologyAsync(RDFOntology ontology, RDFOntologyReasonerOptions options)
+            => Task.Run(() => ApplyToOntology(ontology, options));
 
         #endregion
-
     }
 
 }
