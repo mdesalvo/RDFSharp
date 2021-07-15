@@ -1055,12 +1055,12 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public static RDFOntologyData GetMembersOf(this RDFOntology ontology, RDFOntologyClass ontClass)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
+
             if (ontClass != null && ontology != null)
             {
-
                 //Expand ontology
-                var expOnt = ontology.UnionWith(RDFBASEOntology.Instance);
+                RDFOntology expOnt = ontology.UnionWith(RDFBASEOntology.Instance);
 
                 //DataRange/Literal-Compatible
                 if (expOnt.Model.ClassModel.CheckIsLiteralCompatibleClass(ontClass))
@@ -1069,8 +1069,8 @@ namespace RDFSharp.Semantics.OWL
                 //Restriction/Composite/Enumerate/Class
                 else
                     result = expOnt.GetMembersOfNonLiteralCompatibleClass(ontClass);
-
             }
+
             return result;
         }
 
@@ -1079,20 +1079,21 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyData GetMembersOfClass(this RDFOntology ontology, RDFOntologyClass ontClass)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //Get the compatible classes
-            var compClasses = ontology.Model.ClassModel.GetSubClassesOf(ontClass)
-                                                       .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(ontClass))
-                                                       .AddClass(ontClass);
+            RDFOntologyClassModel compClasses = ontology.Model.ClassModel.GetSubClassesOf(ontClass)
+                                                                         .UnionWith(ontology.Model.ClassModel.GetEquivalentClassesOf(ontClass))
+                                                                         .AddClass(ontClass);
 
             //Get the facts belonging to compatible classes
-            var compFacts = ontology.Data.Relations.ClassType.Where(te => compClasses.Any(c => c.Equals(te.TaxonomyObject)))
-                                                             .Select(te => te.TaxonomySubject);
+            List<RDFOntologyResource> compFacts = ontology.Data.Relations.ClassType.Where(te => compClasses.Any(c => c.Equals(te.TaxonomyObject)))
+                                                                                   .Select(te => te.TaxonomySubject)
+                                                                                   .ToList();
 
             //Add the fact and its synonyms
-            var sameFactsCache = new Dictionary<long, RDFOntologyData> ();
-            foreach (var compFact in compFacts)
+            Dictionary<long, RDFOntologyData> sameFactsCache = new Dictionary<long, RDFOntologyData>();
+            foreach (RDFOntologyResource compFact in compFacts)
             {
                 if (!sameFactsCache.ContainsKey(compFact.PatternMemberID))
                 {
@@ -1111,16 +1112,15 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyData GetMembersOfComposite(this RDFOntology ontology, RDFOntologyClass ontCompClass, Dictionary<long, RDFOntologyData> membersCache = null)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             #region Intersection
             if (ontCompClass is RDFOntologyIntersectionClass)
             {
-
                 //Filter "intersectionOf" relations made with the given intersection class
-                var firstIter = true;
-                var iTaxonomy = ontology.Model.ClassModel.Relations.IntersectionOf.SelectEntriesBySubject(ontCompClass);
-                foreach (var tEntry in iTaxonomy)
+                bool firstIter = true;
+                RDFOntologyTaxonomy iTaxonomy = ontology.Model.ClassModel.Relations.IntersectionOf.SelectEntriesBySubject(ontCompClass);
+                foreach (RDFOntologyTaxonomyEntry tEntry in iTaxonomy)
                 {
                     if (firstIter)
                     {
@@ -1149,17 +1149,15 @@ namespace RDFSharp.Semantics.OWL
                             result = result.IntersectWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
                     }
                 }
-
             }
             #endregion
 
             #region Union
             else if (ontCompClass is RDFOntologyUnionClass)
             {
-
                 //Filter "unionOf" relations made with the given union class
-                var uTaxonomy = ontology.Model.ClassModel.Relations.UnionOf.SelectEntriesBySubject(ontCompClass);
-                foreach (var tEntry in uTaxonomy)
+                RDFOntologyTaxonomy uTaxonomy = ontology.Model.ClassModel.Relations.UnionOf.SelectEntriesBySubject(ontCompClass);
+                foreach (RDFOntologyTaxonomyEntry tEntry in uTaxonomy)
                 {
                     if (membersCache != null)
                     {
@@ -1171,7 +1169,6 @@ namespace RDFSharp.Semantics.OWL
                     else
                         result = result.UnionWith(ontology.GetMembersOf((RDFOntologyClass)tEntry.TaxonomyObject));
                 }
-
             }
             #endregion
 
@@ -1198,20 +1195,18 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyData GetMembersOfEnumerate(this RDFOntology ontology, RDFOntologyEnumerateClass ontEnumClass)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //Filter "oneOf" relations made with the given enumerate class
-            var enTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontEnumClass);
-            foreach (var tEntry in enTaxonomy)
+            RDFOntologyTaxonomy enTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontEnumClass);
+            foreach (RDFOntologyTaxonomyEntry tEntry in enTaxonomy)
             {
-
                 //Add the fact and its synonyms
                 if (tEntry.TaxonomySubject.IsEnumerateClass() && tEntry.TaxonomyObject.IsFact())
                 {
                     result = result.UnionWith(ontology.Data.GetSameFactsAs((RDFOntologyFact)tEntry.TaxonomyObject))
                                    .AddFact((RDFOntologyFact)tEntry.TaxonomyObject);
                 }
-
             }
 
             return result;
@@ -1222,7 +1217,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyData GetMembersOfRestriction(this RDFOntology ontology, RDFOntologyRestriction ontRestriction)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             //Enlist the properties which are compatible with the restriction's "OnProperty"
             var restrictionProperties = ontology.Model.PropertyModel.GetSubPropertiesOf(ontRestriction.OnProperty)
@@ -1529,25 +1524,19 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyData GetMembersOfLiteralCompatibleClass(this RDFOntology ontology, RDFOntologyClass ontClass)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
 
             #region DataRange
             if (ontClass.IsDataRangeClass())
             {
-
                 //Filter "oneOf" relations made with the given datarange class
-                var drTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontClass);
-                foreach (var tEntry in drTaxonomy)
+                RDFOntologyTaxonomy drTaxonomy = ontology.Model.ClassModel.Relations.OneOf.SelectEntriesBySubject(ontClass);
+                foreach (RDFOntologyTaxonomyEntry tEntry in drTaxonomy)
                 {
-
                     //Add the literal
                     if (tEntry.TaxonomySubject.IsDataRangeClass() && tEntry.TaxonomyObject.IsLiteral())
-                    {
                         result.AddLiteral((RDFOntologyLiteral)tEntry.TaxonomyObject);
-                    }
-
                 }
-
             }
             #endregion
 
@@ -1555,19 +1544,17 @@ namespace RDFSharp.Semantics.OWL
             //Asking for "rdfs:Literal" is the only way to get enlistment of plain literals, since they have really no semantic
             else if (ontClass.Equals(RDFVocabulary.RDFS.LITERAL.ToRDFOntologyClass()))
             {
-                foreach (var ontLit in ontology.Data.Literals.Values)
-                {
+                foreach (RDFOntologyLiteral ontLit in ontology.Data.Literals.Values)
                     result.AddLiteral(ontLit);
-                }
             }
             #endregion
 
             #region SubLiteral
             else
             {
-                foreach (var ontLit in ontology.Data.Literals.Values.Where(l => l.Value is RDFTypedLiteral))
+                foreach (RDFOntologyLiteral ontLit in ontology.Data.Literals.Values.Where(l => l.Value is RDFTypedLiteral))
                 {
-                    var dTypeClass = ontology.Model.ClassModel.SelectClass(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ontLit.Value).Datatype));
+                    RDFOntologyClass dTypeClass = ontology.Model.ClassModel.SelectClass(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)ontLit.Value).Datatype));
                     if (dTypeClass != null)
                     {
                         if (dTypeClass.Equals(ontClass)
@@ -1589,10 +1576,10 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         internal static RDFOntologyData GetMembersOfNonLiteralCompatibleClass(this RDFOntology ontology, RDFOntologyClass ontClass)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
+
             if (ontClass != null && ontology != null)
             {
-
                 //Restriction
                 if (ontClass.IsRestrictionClass())
                     result = ontology.GetMembersOfRestriction((RDFOntologyRestriction)ontClass);
@@ -1608,8 +1595,8 @@ namespace RDFSharp.Semantics.OWL
                 //Class
                 else
                     result = ontology.GetMembersOfClass(ontClass);
-
             }
+
             return result;
         }
         #endregion
