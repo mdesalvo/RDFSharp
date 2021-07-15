@@ -299,8 +299,26 @@ namespace RDFSharp.Semantics.OWL
             Dictionary<long, RDFOntologyData> membersCache = new Dictionary<long, RDFOntologyData>();
 
             //Calculate the set of available classes on which to perform the reasoning (exclude BASE classes and literal-compatible classes)
-            IEnumerable<RDFOntologyClass> availableclasses = ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)
-                                                                                                    && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(c));
+            List<RDFOntologyClass> availableclasses = ontology.Model.ClassModel.Where(c => !RDFOntologyChecker.CheckReservedClass(c)
+                                                                                               && !ontology.Model.ClassModel.CheckIsLiteralCompatibleClass(c)).ToList();
+
+            //Evaluate simple classes
+            foreach (RDFOntologyClass c in availableclasses.Where(cls => cls.IsSimpleClass()))
+            {
+                //Enlist the members of the current class
+                if (!membersCache.ContainsKey(c.PatternMemberID))
+                    membersCache.Add(c.PatternMemberID, ontology.GetMembersOfClass(c));
+                foreach (RDFOntologyFact f in membersCache[c.PatternMemberID])
+                {
+                    //Create the inference as a taxonomy entry
+                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(f, type, c)
+                                                             .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
+
+                    //Add the inference to the report
+                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
+                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
+                }
+            }
 
             //Evaluate enumerations
             foreach (RDFOntologyClass c in availableclasses.Where(cls => cls.IsEnumerateClass()))
@@ -326,24 +344,6 @@ namespace RDFSharp.Semantics.OWL
                 //Enlist the members of the current restriction
                 if (!membersCache.ContainsKey(c.PatternMemberID))
                     membersCache.Add(c.PatternMemberID, ontology.GetMembersOfRestriction((RDFOntologyRestriction)c));
-                foreach (RDFOntologyFact f in membersCache[c.PatternMemberID])
-                {
-                    //Create the inference as a taxonomy entry
-                    RDFOntologyTaxonomyEntry sem_inf = new RDFOntologyTaxonomyEntry(f, type, c)
-                                                             .SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.Reasoner);
-
-                    //Add the inference to the report
-                    if (!ontology.Data.Relations.ClassType.ContainsEntry(sem_inf))
-                        report.AddEvidence(new RDFOntologyReasonerEvidence(RDFSemanticsEnums.RDFOntologyReasonerEvidenceCategory.Data, nameof(ClassTypeEntailment), nameof(RDFOntologyData.Relations.ClassType), sem_inf));
-                }
-            }
-
-            //Evaluate simple classes
-            foreach (RDFOntologyClass c in availableclasses.Where(cls => cls.IsSimpleClass()))
-            {
-                //Enlist the members of the current class
-                if (!membersCache.ContainsKey(c.PatternMemberID))
-                    membersCache.Add(c.PatternMemberID, ontology.GetMembersOfClass(c));
                 foreach (RDFOntologyFact f in membersCache[c.PatternMemberID])
                 {
                     //Create the inference as a taxonomy entry
