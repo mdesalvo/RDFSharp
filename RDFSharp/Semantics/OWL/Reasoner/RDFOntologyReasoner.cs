@@ -68,7 +68,7 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyReasoner AddCustomRule(RDFOntologyReasonerRule customRule)
         {
-            if (customRule != null && !this.CustomRules.Any(r => r.RuleName.Equals(customRule.RuleName, StringComparison.OrdinalIgnoreCase)))
+            if (customRule != null && !this.CustomRules.Any(r => r.RuleUri.ToString().Equals(customRule.RuleUri.ToString(), StringComparison.OrdinalIgnoreCase)))
                 this.CustomRules.Add(customRule);
             return this;
         }
@@ -173,14 +173,14 @@ namespace RDFSharp.Semantics.OWL
                 //Custom Rules
                 Parallel.ForEach(this.CustomRules, rule =>
                 {
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching custom rule '{0}': {1}", rule.RuleName, rule));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Launching custom rule '{0}': {1}", rule.RuleUri, rule));
 
                     #region Exec
                     RDFOntologyReasonerReport customRuleReport = rule.ApplyToOntology(tempOntology, options);
                     report.Merge(customRuleReport);
                     #endregion
 
-                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed custom rule '{0}': found {1} evidences.", rule.RuleName, customRuleReport.EvidencesCount));
+                    RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Completed custom rule '{0}': found {1} evidences.", rule.RuleUri, customRuleReport.EvidencesCount));
                 });
 
                 RDFSemanticsEvents.RaiseSemanticsInfo(string.Format("Reasoner has been applied on Ontology '{0}': found " + report.EvidencesCount + " unique evidences.", ontology.Value));

@@ -172,7 +172,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
+        /// P(F1,F2) ^ DOMAIN(P,C) -> C(F1)
         /// </summary>
         internal static RDFOntologyReasonerReport DomainEntailment(RDFOntology ontology)
         {
@@ -201,7 +201,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
+        /// P(F1,F2) ^ RANGE(P,C) -> C(F2)
         /// </summary>
         internal static RDFOntologyReasonerReport RangeEntailment(RDFOntology ontology)
         {
@@ -631,7 +631,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) => P(F1,F2)
+        /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) -> P(F1,F2)
         /// </summary>
         internal static RDFOntologyReasonerReport HasValueEntailment(RDFOntology ontology)
         {
@@ -665,7 +665,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// C(F) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASSELF(R,"TRUE") => P(F,F)
+        /// C(F) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASSELF(R,"TRUE") -> P(F,F)
         /// </summary>
         internal static RDFOntologyReasonerReport HasSelfEntailment(RDFOntology ontology)
         {
@@ -763,7 +763,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// PROPERTYCHAINAXIOM(PCA) ^ MEMBER(PCA,P1) ^ MEMBER(PCA,P2) ^ P1(F1,X) ^ P2(X,F2) => PCA(F1,F2)
+        /// PROPERTYCHAINAXIOM(PCA) ^ MEMBER(PCA,P1) ^ MEMBER(PCA,P2) ^ P1(F1,X) ^ P2(X,F2) -> PCA(F1,F2)
         /// </summary>
         internal static RDFOntologyReasonerReport PropertyChainEntailment(RDFOntology ontology)
         {

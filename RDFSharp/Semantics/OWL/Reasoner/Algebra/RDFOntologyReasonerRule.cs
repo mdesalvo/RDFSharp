@@ -14,9 +14,8 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
+using System;
 using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
@@ -29,9 +28,9 @@ namespace RDFSharp.Semantics.OWL
     {
         #region Properties
         /// <summary>
-        /// Name of the rule
+        /// Uri of the rule
         /// </summary>
-        public string RuleName { get; internal set; }
+        public Uri RuleUri { get; internal set; }
 
         /// <summary>
         /// Description of the rule
@@ -53,18 +52,16 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Default-ctor to build a rule with given antecedent and consequent
         /// </summary>
-        public RDFOntologyReasonerRule(string ruleName, string ruleDescription, RDFOntologyReasonerRuleAntecedent antecedent, RDFOntologyReasonerRuleConsequent consequent)
+        public RDFOntologyReasonerRule(Uri ruleUri, string ruleDescription, RDFOntologyReasonerRuleAntecedent antecedent, RDFOntologyReasonerRuleConsequent consequent)
         {
-            if (string.IsNullOrEmpty(ruleName))
-                throw new RDFSemanticsException("Cannot create rule because given \"ruleName\" parameter is null or empty");
-
+            if (ruleUri == null)
+                throw new RDFSemanticsException("Cannot create rule because given \"ruleUri\" parameter is null");
             if (antecedent == null)
                 throw new RDFSemanticsException("Cannot create rule because given \"antecedent\" parameter is null");
-
             if (consequent == null)
                 throw new RDFSemanticsException("Cannot create rule because given \"consequent\" parameter is null");
 
-            this.RuleName = ruleName;
+            this.RuleUri = ruleUri;
             this.RuleDescription = ruleDescription;
             this.Antecedent = antecedent;
             this.Consequent = consequent;

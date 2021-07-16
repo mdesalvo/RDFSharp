@@ -212,15 +212,15 @@ namespace RDFSharp.Semantics.OWL
             /// </summary>
             EquivalentPropertyTransitivity = 5,
             /// <summary>
-            /// P(F1,F2) ^ DOMAIN(P,C) -> TYPE(F1,C)
+            /// P(F1,F2) ^ DOMAIN(P,C) -> C(F1)
             /// </summary>
             DomainEntailment = 6,
             /// <summary>
-            /// P(F1,F2) ^ RANGE(P,C) -> TYPE(F2,C)"
+            /// P(F1,F2) ^ RANGE(P,C) -> C(F2)
             /// </summary>
             RangeEntailment = 7,
             /// <summary>
-            /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3
+            /// SAMEAS(F1,F2) ^ SAMEAS(F2,F3) -> SAMEAS(F1,F3)
             /// </summary>
             SameAsTransitivity = 8,
             /// <summary>
@@ -264,11 +264,11 @@ namespace RDFSharp.Semantics.OWL
             /// </summary>
             SameAsEntailment = 17,
             /// <summary>
-            /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) => P(F1,F2)
+            /// C(F1) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASVALUE(R,F2) -> P(F1,F2)
             /// </summary>
             HasValueEntailment = 18,
             /// <summary>
-            /// C(F) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASSELF(R,"TRUE") => P(F,F)
+            /// C(F) ^ SUBCLASS(C,R) ^ RESTRICTION(R) ^ ONPROPERTY(R,P) ^ HASSELF(R,"TRUE") -> P(F,F)
             /// </summary>
             HasSelfEntailment = 19,
             /// <summary>
