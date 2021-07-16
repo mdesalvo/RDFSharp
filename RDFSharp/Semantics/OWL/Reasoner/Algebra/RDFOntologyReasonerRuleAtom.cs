@@ -57,7 +57,6 @@ namespace RDFSharp.Semantics.OWL
         {
             if (predicate == null)
                 throw new RDFSemanticsException("Cannot create atom because given \"predicate\" parameter is null");
-
             if (leftArgument == null)
                 throw new RDFSemanticsException("Cannot create atom because given \"leftArgument\" parameter is null");
 
@@ -82,12 +81,15 @@ namespace RDFSharp.Semantics.OWL
             sb.Append($"({this.LeftArgument}");
             if (this.RightArgument != null)
             {
+                //When the right argument is a fact, it is printened in a SWRL-shortened form
                 if (this.RightArgument is RDFOntologyFact rightArgumentFact)
                     sb.Append($",{RDFModelUtilities.GetShortUri(((RDFResource)rightArgumentFact.Value).URI)}");
+                //When the right argument is an ontology literal, its value is printed in normal form
                 else if (this.RightArgument is RDFOntologyLiteral rightArgumentLiteral)
                     sb.Append($",{RDFQueryPrinter.PrintPatternMember(rightArgumentLiteral.Value, RDFNamespaceRegister.Instance.Register)}");
-                else if (this.RightArgument is RDFVariable rightArgumentVariable)
-                    sb.Append($",{RDFQueryPrinter.PrintPatternMember(rightArgumentVariable, RDFNamespaceRegister.Instance.Register)}");
+                //Other cases of right argument (variable, plain/typed literal) are printed in normal form
+                else
+                    sb.Append($",{RDFQueryPrinter.PrintPatternMember(this.RightArgument, RDFNamespaceRegister.Instance.Register)}");
             }
             sb.Append(")");
 
