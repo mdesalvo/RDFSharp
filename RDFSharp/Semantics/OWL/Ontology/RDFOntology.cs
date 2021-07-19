@@ -735,6 +735,7 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.REFLEXIVE_PROPERTY.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY.ToRDFOntologyClass());
             Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION.ToRDFOntologyClass());
+            Instance.Model.ClassModel.AddClass(RDFVocabulary.OWL.AXIOM.ToRDFOntologyClass());
 
             #endregion
 
@@ -805,6 +806,9 @@ namespace RDFSharp.Semantics.OWL
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.TOP_DATA_PROPERTY.ToRDFOntologyDatatypeProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.BOTTOM_OBJECT_PROPERTY.ToRDFOntologyObjectProperty());
             Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.BOTTOM_DATA_PROPERTY.ToRDFOntologyDatatypeProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ANNOTATED_SOURCE.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ANNOTATION_PROPERTY.ToRDFOntologyObjectProperty());
+            Instance.Model.PropertyModel.AddProperty(RDFVocabulary.OWL.ANNOTATED_TARGET.ToRDFOntologyProperty()); //plain property
 
             #endregion
 

@@ -393,6 +393,26 @@ namespace RDFSharp.Model
             /// owl:bottomDataProperty [OWL2]
             /// </summary>
             public static readonly RDFResource BOTTOM_DATA_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI,"bottomDataProperty"));
+
+            /// <summary>
+            /// owl:Axiom [OWL2]
+            /// </summary>
+            public static readonly RDFResource AXIOM = new RDFResource(string.Concat(OWL.BASE_URI, "Axiom"));
+
+            /// <summary>
+            /// owl:annotatedSource [OWL2]
+            /// </summary>
+            public static readonly RDFResource ANNOTATED_SOURCE = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedSource"));
+
+            /// <summary>
+            /// owl:annotatedProperty [OWL2]
+            /// </summary>
+            public static readonly RDFResource ANNOTATED_PROPERTY = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedProperty"));
+
+            /// <summary>
+            /// owl:annotatedTarget [OWL2]
+            /// </summary>
+            public static readonly RDFResource ANNOTATED_TARGET = new RDFResource(string.Concat(OWL.BASE_URI, "annotatedTarget"));
             #endregion
 
         }
