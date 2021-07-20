@@ -1992,7 +1992,8 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Gets a graph representation of the given taxonomy, exporting inferences according to the selected behavior [OWL2]
         /// </summary>
-        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior, string taxonomyName)
+        internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior, string taxonomyName,
+            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData=null)
         {
             RDFGraph result = new RDFGraph();
 
@@ -2001,37 +2002,42 @@ namespace RDFSharp.Semantics.OWL
                 //Semantic-based reification
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
                 case nameof(RDFOntologyAnnotations.AxiomAnnotations):
-                    result = ReifySemanticTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior);
+                    result = ReifySemanticTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior, ontologyModel, ontologyData);
                     break;
 
                 //List-based reification
                 case nameof(RDFOntologyClassModelMetadata.HasKey):
                 case nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom):
                 case nameof(RDFOntologyDataMetadata.MemberList):
-                    result = ReifyListTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior);
+                    result = ReifyListTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior, ontologyModel, ontologyData);
                     break;
 
                 //Triple-based reification
                 default:
-                    result = ReifyTripleTaxonomyToGraph(taxonomy, infexpBehavior);
+                    result = ReifyTripleTaxonomyToGraph(taxonomy, infexpBehavior, ontologyModel, ontologyData);
                     break;
             }
 
             return result;
         }
-        private static RDFGraph ReifySemanticTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        private static RDFGraph ReifySemanticTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior,
+            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData = null)
         {
             RDFGraph result = new RDFGraph();
 
-            void BuildSemanticReification(RDFTriple teTriple, RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
+            void BuildSemanticReification(RDFOntologyTaxonomyEntry te, RDFTriple teAsnTriple, RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
             {
-                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
-                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, subjProp, (RDFResource)teTriple.Subject));
-                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, predProp, (RDFResource)teTriple.Predicate));
-                if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, litProp, (RDFLiteral)teTriple.Object));
+                //Axiom Reification
+                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
+                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, subjProp, (RDFResource)teAsnTriple.Subject));
+                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, predProp, (RDFResource)teAsnTriple.Predicate));
+                if (teAsnTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                    result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, litProp, (RDFLiteral)teAsnTriple.Object));
                 else
-                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, objProp, (RDFResource)teTriple.Object));
+                    result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, objProp, (RDFResource)teAsnTriple.Object));
+
+                //Axiom Annotation
+                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
             };
 
             //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
@@ -2063,14 +2069,20 @@ namespace RDFSharp.Semantics.OWL
 
             foreach (RDFOntologyTaxonomyEntry te in taxonomy)
             {
+                //Retrieve the assertion to which the annotation is referred (use numeric part of the axiom identifier)
+                string teID = te.TaxonomySubject.ToString().Replace("bnode:", string.Empty);
+                RDFOntologyTaxonomyEntry teAsn = ontologyData?.Relations.Assertions.SelectEntryByID(long.Parse(teID));
+                if (teAsn == null)
+                    continue;
+
                 //Build reification triples of taxonomy entry
-                RDFTriple teTriple = te.ToRDFTriple();
+                RDFTriple teAsnTriple = teAsn.ToRDFTriple();
 
                 //Do not export semantic inferences
                 if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
                 {
                     if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
 
                 //Export semantic inferences related only to ontology model
@@ -2079,12 +2091,12 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                            BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                            BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
@@ -2094,25 +2106,26 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                            BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                            BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
                 //Export semantic inferences related both to ontology model and data
                 else
                 {
-                    BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                    BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
             }
 
             return result;
         }
-        private static RDFGraph ReifyListTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        private static RDFGraph ReifyListTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior,
+            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData = null)
         {
             RDFGraph result = new RDFGraph();
 
@@ -2137,7 +2150,8 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
-        private static RDFGraph ReifyTripleTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        private static RDFGraph ReifyTripleTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior,
+            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData = null)
         {
             RDFGraph result = new RDFGraph();
             foreach (RDFOntologyTaxonomyEntry te in taxonomy)
