@@ -129,7 +129,7 @@ namespace RDFSharp.Semantics.OWL
         public enum RDFOntologyInferenceExportBehavior
         {
             /// <summary>
-            /// Does not export any semantic inference
+            /// Does not export any semantic inferences
             /// </summary>
             None = 0,
             /// <summary>

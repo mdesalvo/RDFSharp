@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
-
     /// <summary>
     /// RDFOntologyPropertyModel represents the property-oriented model component (T-BOX) of an ontology.
     /// </summary>
@@ -992,7 +991,6 @@ namespace RDFSharp.Semantics.OWL
             RDFOntologyPropertyModel result = new RDFOntologyPropertyModel();
             if (propertyModel != null)
             {
-
                 //Add intersection properties
                 foreach (RDFOntologyProperty p in this)
                 {
@@ -1014,7 +1012,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = this.Annotations.SeeAlso.IntersectWith(propertyModel.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.IntersectWith(propertyModel.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.IntersectWith(propertyModel.Annotations.CustomAnnotations);
-
+                result.Annotations.AxiomAnnotations = this.Annotations.AxiomAnnotations.IntersectWith(propertyModel.Annotations.AxiomAnnotations); //OWL2
             }
             return result;
         }
@@ -1044,11 +1042,11 @@ namespace RDFSharp.Semantics.OWL
             result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
             result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
             result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
+            result.Annotations.AxiomAnnotations = result.Annotations.AxiomAnnotations.UnionWith(this.Annotations.AxiomAnnotations); //OWL2
 
             //Manage the given property model
             if (propertyModel != null)
             {
-
                 //Add properties from the given property model
                 foreach (RDFOntologyProperty p in propertyModel)
                     result.AddProperty(p);
@@ -1067,7 +1065,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(propertyModel.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(propertyModel.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(propertyModel.Annotations.CustomAnnotations);
-
+                result.Annotations.AxiomAnnotations = result.Annotations.AxiomAnnotations.UnionWith(propertyModel.Annotations.AxiomAnnotations); //OWL2
             }
             return result;
         }
@@ -1080,13 +1078,10 @@ namespace RDFSharp.Semantics.OWL
             RDFOntologyPropertyModel result = new RDFOntologyPropertyModel();
             if (propertyModel != null)
             {
-
                 //Add difference properties
                 foreach (RDFOntologyProperty p in this)
-                {
                     if (!propertyModel.Properties.ContainsKey(p.PatternMemberID))
                         result.AddProperty(p);
-                }
 
                 //Add difference relations
                 result.Relations.SubPropertyOf = this.Relations.SubPropertyOf.DifferenceWith(propertyModel.Relations.SubPropertyOf);
@@ -1102,11 +1097,10 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = this.Annotations.SeeAlso.DifferenceWith(propertyModel.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.DifferenceWith(propertyModel.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.DifferenceWith(propertyModel.Annotations.CustomAnnotations);
-
+                result.Annotations.AxiomAnnotations = this.Annotations.AxiomAnnotations.DifferenceWith(propertyModel.Annotations.AxiomAnnotations); //OWL2
             }
             else
             {
-
                 //Add properties from this property model
                 foreach (RDFOntologyProperty p in this)
                     result.AddProperty(p);
@@ -1125,7 +1119,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
-
+                result.Annotations.AxiomAnnotations = result.Annotations.AxiomAnnotations.UnionWith(this.Annotations.AxiomAnnotations); //OWL2
             }
             return result;
         }
@@ -1140,65 +1134,39 @@ namespace RDFSharp.Semantics.OWL
             RDFGraph result = new RDFGraph();
 
             //Definitions
-            foreach (var p in this.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)))
+            foreach (RDFOntologyProperty p in this.Where(prop => !RDFOntologyChecker.CheckReservedProperty(prop)))
             {
                 if (p.IsAnnotationProperty())
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ANNOTATION_PROPERTY));
-                }
                 else if (p.IsDatatypeProperty())
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DATATYPE_PROPERTY));
-                }
                 else if (p.IsObjectProperty())
                 {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.OBJECT_PROPERTY));
                     if (p.IsSymmetricProperty())
-                    {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.SYMMETRIC_PROPERTY));
-                    }
                     if (p.IsAsymmetricProperty())
-                    {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.ASYMMETRIC_PROPERTY));
-                    }
                     if (p.IsReflexiveProperty())
-                    {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.REFLEXIVE_PROPERTY));
-                    }
                     if (p.IsIrreflexiveProperty())
-                    {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.IRREFLEXIVE_PROPERTY));
-                    }
                     if (p.IsTransitiveProperty())
-                    {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.TRANSITIVE_PROPERTY));
-                    }
                     if (p.IsInverseFunctionalProperty())
-                    {
                         result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.INVERSE_FUNCTIONAL_PROPERTY));
-                    }
                 }
                 else
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.PROPERTY));
-                }
 
                 if (p.IsFunctionalProperty())
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.FUNCTIONAL_PROPERTY));
-                }
                 if (p.IsDeprecatedProperty())
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.DEPRECATED_PROPERTY));
-                }
                 if (p.Domain != null)
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDFS.DOMAIN, (RDFResource)p.Domain.Value));
-                }
                 if (p.Range != null)
-                {
                     result.AddTriple(new RDFTriple((RDFResource)p.Value, RDFVocabulary.RDFS.RANGE, (RDFResource)p.Range.Value));
-                }
             }
 
             //Relations
@@ -1214,7 +1182,8 @@ namespace RDFSharp.Semantics.OWL
                            .UnionWith(this.Annotations.Label.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.Label)))
                            .UnionWith(this.Annotations.SeeAlso.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.SeeAlso)))
                            .UnionWith(this.Annotations.IsDefinedBy.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.IsDefinedBy)))
-                           .UnionWith(this.Annotations.CustomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.CustomAnnotations)));
+                           .UnionWith(this.Annotations.CustomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.CustomAnnotations)))
+                           .UnionWith(this.Annotations.AxiomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.AxiomAnnotations))); //OWL2
 
             return result;
         }
@@ -1228,5 +1197,4 @@ namespace RDFSharp.Semantics.OWL
 
         #endregion
     }
-
 }

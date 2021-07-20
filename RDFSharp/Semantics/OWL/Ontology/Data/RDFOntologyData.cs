@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 
 namespace RDFSharp.Semantics.OWL
 {
-
     /// <summary>
     /// RDFOntologyData represents the data component (A-BOX) of an ontology.
     /// </summary>
@@ -414,6 +413,31 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
+        /// Adds the "aFact -> objectProperty -> bFact" relation to the data, then annotates it with the "annotationProperty -> annotationLiteral" axiom annotation [OWL2]
+        /// </summary>
+        public RDFOntologyData AddAnnotatedAssertionRelation(RDFOntologyFact aFact,
+                                                             RDFOntologyObjectProperty objectProperty,
+                                                             RDFOntologyFact bFact,
+                                                             RDFOntologyAnnotationProperty annotationProperty,
+                                                             RDFOntologyLiteral annotationLiteral)
+        {
+            AddAssertionRelation(aFact, objectProperty, bFact);
+
+            if (annotationProperty != null && annotationLiteral != null)
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
+                if (this.Relations.Assertions.ContainsEntry(taxonomyEntry)
+                        || this.Relations.Member.ContainsEntry(taxonomyEntry) //SKOS
+                            || this.Relations.MemberList.ContainsEntry(taxonomyEntry)) //SKOS
+                {
+                    this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(new RDFOntologyFact(new RDFResource($"bnode:{taxonomyEntry.TaxonomyEntryID}")), annotationProperty, annotationLiteral));
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" relation to the data
         /// </summary>
         public RDFOntologyData AddAssertionRelation(RDFOntologyFact ontologyFact,
@@ -453,6 +477,29 @@ namespace RDFSharp.Semantics.OWL
                     RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Assertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
                 }
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the "aFact -> datatypeProperty -> ontologyLiteral" relation to the data, then annotates it with the "annotationProperty -> annotationLiteral" axiom annotation [OWL2]
+        /// </summary>
+        public RDFOntologyData AddAnnotatedAssertionRelation(RDFOntologyFact ontologyFact,
+                                                             RDFOntologyDatatypeProperty datatypeProperty,
+                                                             RDFOntologyLiteral ontologyLiteral,
+                                                             RDFOntologyAnnotationProperty annotationProperty,
+                                                             RDFOntologyLiteral annotationLiteral)
+        {
+            AddAssertionRelation(ontologyFact, datatypeProperty, ontologyLiteral);
+
+            if (annotationProperty != null && annotationLiteral != null)
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral);
+                if (this.Relations.Assertions.ContainsEntry(taxonomyEntry))
+                {
+                    this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(new RDFOntologyFact(new RDFResource($"bnode:{taxonomyEntry.TaxonomyEntryID}")), annotationProperty, annotationLiteral));
+                }
+            }
+
             return this;
         }
 
@@ -924,14 +971,19 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
-                //Cannot remove assertion in case of SKOS collection predicates:
-                //In this cases properly delegate the operation to SKOS layer
+                //Cannot remove assertion in case of reserved SKOS collection predicate:
+                //In this case we have to properly delegate the operation to SKOS layer
                 if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER))
                     this.RemoveMemberRelation(aFact, bFact);
                 else if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
                     this.RemoveMemberListRelation(aFact, bFact);
                 else
                     this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
+
+                //Also remove eventually linked OWL2 axiom annotations
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
+                RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:{taxonomyEntry.TaxonomyEntryID}"));
+                this.Annotations.AxiomAnnotations.Entries.RemoveAll(entry => entry.TaxonomySubject.Equals(taxonomyEntryRepresentative));
             }
             return this;
         }
@@ -944,7 +996,14 @@ namespace RDFSharp.Semantics.OWL
                                                        RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
+            {
                 this.Relations.Assertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
+
+                //Also remove eventually linked OWL2 axiom annotations
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral);
+                RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:{taxonomyEntry.TaxonomyEntryID}"));
+                this.Annotations.AxiomAnnotations.Entries.RemoveAll(entry => entry.TaxonomySubject.Equals(taxonomyEntryRepresentative));
+            }
             return this;
         }
 
@@ -1006,6 +1065,7 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyData IntersectWith(RDFOntologyData ontologyData)
         {
             RDFOntologyData result = new RDFOntologyData();
+
             if (ontologyData != null)
             {
                 //Add intersection facts
@@ -1034,7 +1094,9 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = this.Annotations.SeeAlso.IntersectWith(ontologyData.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.IntersectWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.IntersectWith(ontologyData.Annotations.CustomAnnotations);
+                result.Annotations.AxiomAnnotations = this.Annotations.AxiomAnnotations.IntersectWith(ontologyData.Annotations.AxiomAnnotations); //OWL2
             }
+
             return result;
         }
 
@@ -1069,6 +1131,7 @@ namespace RDFSharp.Semantics.OWL
             result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
             result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
             result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
+            result.Annotations.AxiomAnnotations = result.Annotations.AxiomAnnotations.UnionWith(this.Annotations.AxiomAnnotations); //OWL2
 
             //Manage the given data
             if (ontologyData != null)
@@ -1097,7 +1160,9 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(ontologyData.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(ontologyData.Annotations.CustomAnnotations);
+                result.Annotations.AxiomAnnotations = result.Annotations.AxiomAnnotations.UnionWith(ontologyData.Annotations.AxiomAnnotations); //OWL2
             }
+
             return result;
         }
 
@@ -1106,7 +1171,8 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyData DifferenceWith(RDFOntologyData ontologyData)
         {
-            var result = new RDFOntologyData();
+            RDFOntologyData result = new RDFOntologyData();
+
             if (ontologyData != null)
             {
                 //Add difference facts
@@ -1135,6 +1201,7 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = this.Annotations.SeeAlso.DifferenceWith(ontologyData.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = this.Annotations.IsDefinedBy.DifferenceWith(ontologyData.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = this.Annotations.CustomAnnotations.DifferenceWith(ontologyData.Annotations.CustomAnnotations);
+                result.Annotations.AxiomAnnotations = this.Annotations.AxiomAnnotations.DifferenceWith(ontologyData.Annotations.AxiomAnnotations); //OWL2
             }
             else
             {
@@ -1162,7 +1229,9 @@ namespace RDFSharp.Semantics.OWL
                 result.Annotations.SeeAlso = result.Annotations.SeeAlso.UnionWith(this.Annotations.SeeAlso);
                 result.Annotations.IsDefinedBy = result.Annotations.IsDefinedBy.UnionWith(this.Annotations.IsDefinedBy);
                 result.Annotations.CustomAnnotations = result.Annotations.CustomAnnotations.UnionWith(this.Annotations.CustomAnnotations);
+                result.Annotations.AxiomAnnotations = result.Annotations.AxiomAnnotations.UnionWith(this.Annotations.AxiomAnnotations); //OWL2
             }
+
             return result;
         }
         #endregion
@@ -1190,7 +1259,8 @@ namespace RDFSharp.Semantics.OWL
                            .UnionWith(this.Annotations.Label.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.Label)))
                            .UnionWith(this.Annotations.SeeAlso.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.SeeAlso)))
                            .UnionWith(this.Annotations.IsDefinedBy.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.IsDefinedBy)))
-                           .UnionWith(this.Annotations.CustomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.CustomAnnotations)));
+                           .UnionWith(this.Annotations.CustomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.CustomAnnotations)))
+                           .UnionWith(this.Annotations.AxiomAnnotations.ReifyToRDFGraph(infexpBehavior, nameof(this.Annotations.AxiomAnnotations))); //OWL2
 
             return result;
         }
@@ -1204,5 +1274,4 @@ namespace RDFSharp.Semantics.OWL
 
         #endregion
     }
-
 }

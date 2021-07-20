@@ -150,6 +150,10 @@ namespace RDFSharp.Semantics.OWL
                     { nameof(RDFVocabulary.OWL.ASSERTION_PROPERTY), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ASSERTION_PROPERTY) }, //OWL2
                     { nameof(RDFVocabulary.OWL.TARGET_VALUE), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.TARGET_VALUE) }, //OWL2
                     { nameof(RDFVocabulary.OWL.TARGET_INDIVIDUAL), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.TARGET_INDIVIDUAL) }, //OWL2
+                    { nameof(RDFVocabulary.OWL.AXIOM), ontGraph.SelectTriplesByObject(RDFVocabulary.OWL.AXIOM).SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)}, //OWL2
+                    { nameof(RDFVocabulary.OWL.ANNOTATED_SOURCE), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ANNOTATED_SOURCE) }, //OWL2
+                    { nameof(RDFVocabulary.OWL.ANNOTATED_PROPERTY), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ANNOTATED_PROPERTY) }, //OWL2
+                    { nameof(RDFVocabulary.OWL.ANNOTATED_TARGET), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.ANNOTATED_TARGET) }, //OWL2
                     { nameof(RDFVocabulary.OWL.NAMED_INDIVIDUAL), ontGraph.SelectTriplesByObject(RDFVocabulary.OWL.NAMED_INDIVIDUAL).SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)}, //OWL2
                     //Annotations
                     { nameof(RDFVocabulary.OWL.VERSION_INFO), ontGraph.SelectTriplesByPredicate(RDFVocabulary.OWL.VERSION_INFO) },
@@ -2486,6 +2490,91 @@ namespace RDFSharp.Semantics.OWL
                             ontology.Data.AddCustomAnnotation((RDFOntologyAnnotationProperty)annotProp, f, custAnnValue);
                         }
                     }
+                }
+                #endregion
+
+                #region AxiomAnnotations [OWL2]
+                foreach (RDFTriple axAsn in prefetchContext[nameof(RDFVocabulary.OWL.AXIOM)])
+                {
+                    #region owl:annotatedSource
+                    RDFPatternMember annotatedSource = prefetchContext[nameof(RDFVocabulary.OWL.ANNOTATED_SOURCE)].SelectTriplesBySubject((RDFResource)axAsn.Subject).FirstOrDefault()?.Object;
+                    if (annotatedSource == null || annotatedSource is RDFLiteral)
+                    {
+                        //Raise warning event to inform the user: axiom annotation cannot be imported from graph, because owl:annotatedSource triple is not found in the graph or it does not link a resource
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Axiom annotation '{0}' cannot be imported from graph, because owl:annotatedSource triple is not found in the graph or it does not link a resource.", axAsn.Subject));
+                        continue;
+                    }
+                    #endregion
+
+                    #region owl:annotatedProperty
+                    RDFPatternMember annotatedProperty = prefetchContext[nameof(RDFVocabulary.OWL.ANNOTATED_PROPERTY)].SelectTriplesBySubject((RDFResource)axAsn.Subject).FirstOrDefault()?.Object;
+                    if (annotatedProperty == null || annotatedProperty is RDFLiteral)
+                    {
+                        //Raise warning event to inform the user: axiom annotation cannot be imported from graph, because owl:annotatedProperty triple is not found in the graph or it does not link a resource
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Axiom annotation '{0}' cannot be imported from graph, because owl:annotatedProperty triple is not found in the graph or it does not link a resource.", axAsn.Subject));
+                        continue;
+                    }
+
+                    //Check if property exists in the property model
+                    RDFOntologyProperty annotatedOntologyProperty = ontology.Model.PropertyModel.SelectProperty(annotatedProperty.ToString());
+                    if (annotatedOntologyProperty == null)
+                    {
+                        //Raise warning event to inform the user: axiom annotation cannot be imported from graph, because owl:annotatedProperty is not a declared property
+                        RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Axiom annotation '{0}' cannot be imported from graph, because owl:annotatedProperty '{1}' is not a declared property.", axAsn.Subject, annotatedProperty));
+                        continue;
+                    }
+                    #endregion
+
+                    #region owl:annotatedTarget
+                    RDFPatternMember annotatedTarget = prefetchContext[nameof(RDFVocabulary.OWL.ANNOTATED_TARGET)].SelectTriplesBySubject((RDFResource)axAsn.Subject).FirstOrDefault()?.Object;
+                    if (annotatedTarget != null)
+                    {
+                        //At this point we must effectively fetch annotations linked to this axiom
+                        RDFGraph axiomAnnotations = ontGraph.SelectTriplesBySubject((RDFResource)axAsn.Subject)
+                                                            .RemoveTriplesByPredicateObject(RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.AXIOM)
+                                                            .RemoveTriplesByPredicate(RDFVocabulary.OWL.ANNOTATED_SOURCE)
+                                                            .RemoveTriplesByPredicate(RDFVocabulary.OWL.ANNOTATED_PROPERTY)
+                                                            .RemoveTriplesByPredicate(RDFVocabulary.OWL.ANNOTATED_TARGET);
+
+                        //We found owl:annotatedTarget, so we can accept it only if it's consistent
+                        //against the ontology type of assertion's property (object/datatype property)
+                        if (annotatedTarget is RDFResource && annotatedOntologyProperty is RDFOntologyObjectProperty)
+                        {
+                            foreach (RDFTriple axiomAnnotation in axiomAnnotations.Where(axn => axn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+                            {
+                                ontology.Data.AddAnnotatedAssertionRelation(
+                                    ((RDFResource)annotatedSource).ToRDFOntologyFact(),
+                                    ((RDFResource)annotatedProperty).ToRDFOntologyObjectProperty(),
+                                    ((RDFResource)annotatedTarget).ToRDFOntologyFact(), 
+                                    ((RDFResource)axiomAnnotation.Predicate).ToRDFOntologyAnnotationProperty(),
+                                    ((RDFLiteral)axiomAnnotation.Object).ToRDFOntologyLiteral());
+                            }
+                            continue;
+                        }
+                        else if (annotatedTarget is RDFLiteral && annotatedOntologyProperty is RDFOntologyDatatypeProperty)
+                        {
+                            foreach (RDFTriple axiomAnnotation in axiomAnnotations.Where(axn => axn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+                            {
+                                ontology.Data.AddAnnotatedAssertionRelation(
+                                    ((RDFResource)annotatedSource).ToRDFOntologyFact(),
+                                    ((RDFResource)annotatedProperty).ToRDFOntologyDatatypeProperty(),
+                                    ((RDFLiteral)annotatedTarget).ToRDFOntologyLiteral(),
+                                    ((RDFResource)axiomAnnotation.Predicate).ToRDFOntologyAnnotationProperty(),
+                                    ((RDFLiteral)axiomAnnotation.Object).ToRDFOntologyLiteral());
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            //Raise warning event to inform the user: axiom annotation cannot be imported from graph, because use of annotated target is not correct
+                            RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Axiom annotation '{0}' cannot be imported from graph, because use of owl:annotatedTarget is not correct.", axAsn.Subject));
+                            continue;
+                        }
+                    }
+                    #endregion
+
+                    //Raise warning event to inform the user: axiom annotation cannot be imported from graph, because owl:annotatedTarget triple is not found in the graph
+                    RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("Axiom annotation '{0}' cannot be imported from graph, because owl:annotatedTarget triple is not found in the graph.", axAsn.Subject));
                 }
                 #endregion
             }

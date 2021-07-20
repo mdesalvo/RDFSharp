@@ -1995,11 +1995,13 @@ namespace RDFSharp.Semantics.OWL
         internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior, string taxonomyName)
         {
             RDFGraph result = new RDFGraph();
+
             switch (taxonomyName)
             {
                 //Semantic-based reification
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
-                    result = ReifyNegativeAssertionsTaxonomyToGraph(taxonomy, infexpBehavior);
+                case nameof(RDFOntologyAnnotations.AxiomAnnotations):
+                    result = ReifySemanticTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior);
                     break;
 
                 //List-based reification
@@ -2011,17 +2013,56 @@ namespace RDFSharp.Semantics.OWL
 
                 //Triple-based reification
                 default:
-                    result = ReifyTaxonomyToGraph(taxonomy, infexpBehavior);
+                    result = ReifyTripleTaxonomyToGraph(taxonomy, infexpBehavior);
                     break;
             }
+
             return result;
         }
-        private static RDFGraph ReifyNegativeAssertionsTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        private static RDFGraph ReifySemanticTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
             RDFGraph result = new RDFGraph();
+
+            void BuildSemanticReification(RDFTriple teTriple, RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
+            {
+                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
+                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, subjProp, (RDFResource)teTriple.Subject));
+                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, predProp, (RDFResource)teTriple.Predicate));
+                if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, litProp, (RDFLiteral)teTriple.Object));
+                else
+                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, objProp, (RDFResource)teTriple.Object));
+            };
+
+            //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
+            RDFResource rdfType = new RDFResource();
+            RDFResource subjectProperty = new RDFResource();
+            RDFResource predicateProperty = new RDFResource();
+            RDFResource objectProperty = new RDFResource();
+            RDFResource literalProperty = new RDFResource();
+            switch (taxonomyName)
+            {
+                //NegativeAssertions [OWL2]
+                case nameof(RDFOntologyDataMetadata.NegativeAssertions):
+                    rdfType = RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION;
+                    subjectProperty = RDFVocabulary.OWL.SOURCE_INDIVIDUAL;
+                    predicateProperty = RDFVocabulary.OWL.ASSERTION_PROPERTY;
+                    objectProperty = RDFVocabulary.OWL.TARGET_INDIVIDUAL;
+                    literalProperty = RDFVocabulary.OWL.TARGET_VALUE;
+                    break;
+
+                //Axiom Annotations [OWL2]
+                case nameof(RDFOntologyAnnotations.AxiomAnnotations):
+                    rdfType = RDFVocabulary.OWL.AXIOM;
+                    subjectProperty = RDFVocabulary.OWL.ANNOTATED_SOURCE;
+                    predicateProperty = RDFVocabulary.OWL.ANNOTATED_PROPERTY;
+                    objectProperty = RDFVocabulary.OWL.ANNOTATED_TARGET;
+                    literalProperty = RDFVocabulary.OWL.ANNOTATED_TARGET;
+                    break;
+            }            
+
             foreach (RDFOntologyTaxonomyEntry te in taxonomy)
             {
-
                 //Build reification triples of taxonomy entry
                 RDFTriple teTriple = te.ToRDFTriple();
 
@@ -2029,15 +2070,7 @@ namespace RDFSharp.Semantics.OWL
                 if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
                 {
                     if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                    {
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
-                        if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
-                        else
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
-                    }
+                        BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
 
                 //Export semantic inferences related only to ontology model
@@ -2046,26 +2079,12 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
-                        if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
-                        else
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                        BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        {
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
-                            if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
-                            else
-                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
-                        }
+                            BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
@@ -2075,42 +2094,22 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
-                        if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
-                        else
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                        BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        {
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
-                            result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
-                            if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
-                            else
-                                result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
-                        }
+                            BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
                 //Export semantic inferences related both to ontology model and data
                 else
                 {
-                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION));
-                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.SOURCE_INDIVIDUAL, (RDFResource)teTriple.Subject));
-                    result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.ASSERTION_PROPERTY, (RDFResource)teTriple.Predicate));
-                    if (teTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_VALUE, (RDFLiteral)teTriple.Object));
-                    else
-                        result.AddTriple(new RDFTriple(teTriple.ReificationSubject, RDFVocabulary.OWL.TARGET_INDIVIDUAL, (RDFResource)teTriple.Object));
+                    BuildSemanticReification(teTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
-
             }
+
             return result;
         }
         private static RDFGraph ReifyListTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
@@ -2138,7 +2137,7 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
-        private static RDFGraph ReifyTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
+        private static RDFGraph ReifyTripleTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
             RDFGraph result = new RDFGraph();
             foreach (RDFOntologyTaxonomyEntry te in taxonomy)

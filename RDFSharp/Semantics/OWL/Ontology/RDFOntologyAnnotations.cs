@@ -16,13 +16,11 @@
 
 namespace RDFSharp.Semantics.OWL
 {
-
     /// <summary>
     /// RDFOntologyAnnotations represents a collector for annotations describing ontology resources.
     /// </summary>
     public class RDFOntologyAnnotations
     {
-
         #region Properties
         /// <summary>
         /// "owl:versionInfo" annotations
@@ -75,9 +73,14 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyTaxonomy Imports { get; internal set; }
 
         /// <summary>
-        /// Custom-property annotations
+        /// Custom annotations
         /// </summary>
         public RDFOntologyTaxonomy CustomAnnotations { get; internal set; }
+
+        /// <summary>
+        /// Axiom annotations [OWL2]
+        /// </summary>
+        public RDFOntologyTaxonomy AxiomAnnotations { get; internal set; }
         #endregion
 
         #region Ctors
@@ -97,8 +100,8 @@ namespace RDFSharp.Semantics.OWL
             this.IncompatibleWith = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
             this.Imports = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
             this.CustomAnnotations = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
+            this.AxiomAnnotations = new RDFOntologyTaxonomy(RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation, false);
         }
         #endregion
     }
-
 }
