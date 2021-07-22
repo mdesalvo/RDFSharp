@@ -2025,7 +2025,9 @@ namespace RDFSharp.Semantics.OWL
         {
             RDFGraph result = new RDFGraph();
 
-            void BuildSemanticReification(RDFOntologyTaxonomyEntry te, RDFTriple asnTriple, RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
+            //Executes the semantic reification of the given taxonomy entry
+            void BuildSemanticReification(bool isAxiomAnn, RDFOntologyTaxonomyEntry te, RDFTriple asnTriple,
+                RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
             {
                 //Reification
                 result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
@@ -2036,13 +2038,13 @@ namespace RDFSharp.Semantics.OWL
                 else
                     result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, objProp, (RDFResource)asnTriple.Object));
 
-                //Annotation
-                if (type.Equals(RDFVocabulary.OWL.AXIOM))
+                //AxiomAnnotation
+                if (isAxiomAnn)
                     result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
             };
 
             //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
-            bool needsAxiomLookup = false;
+            bool isAxiomAnnotation = false;
             RDFResource rdfType = new RDFResource();
             RDFResource subjectProperty = new RDFResource();
             RDFResource predicateProperty = new RDFResource();
@@ -2052,7 +2054,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 //NegativeAssertions [OWL2]
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
-                    needsAxiomLookup = false;
+                    isAxiomAnnotation = false;
                     rdfType = RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION;
                     subjectProperty = RDFVocabulary.OWL.SOURCE_INDIVIDUAL;
                     predicateProperty = RDFVocabulary.OWL.ASSERTION_PROPERTY;
@@ -2062,7 +2064,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Axiom Annotations [OWL2]
                 case nameof(RDFOntologyAnnotations.AxiomAnnotations):
-                    needsAxiomLookup = true;
+                    isAxiomAnnotation = true;
                     rdfType = RDFVocabulary.OWL.AXIOM;
                     subjectProperty = RDFVocabulary.OWL.ANNOTATED_SOURCE;
                     predicateProperty = RDFVocabulary.OWL.ANNOTATED_PROPERTY;
@@ -2075,8 +2077,8 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFTriple asn = te.ToRDFTriple();
 
-                //In case of axiom annotation, we have to resolve the linked assertion by its ID
-                if (needsAxiomLookup)
+                //In case of axiom annotation, we have first to lookup the linked assertion by its ID
+                if (isAxiomAnnotation)
                 {
                     string teID = te.TaxonomySubject.ToString().Replace("bnode:axiom", string.Empty);
                     RDFOntologyTaxonomyEntry axiomAsn = ontologyData?.Relations.Assertions.SelectEntryByID(long.Parse(teID));
@@ -2090,7 +2092,7 @@ namespace RDFSharp.Semantics.OWL
                 if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
                 {
                     if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(isAxiomAnnotation, te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
 
                 //Export semantic inferences related only to ontology model
@@ -2099,12 +2101,12 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(isAxiomAnnotation, te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                            BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                            BuildSemanticReification(isAxiomAnnotation, te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
@@ -2114,19 +2116,19 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(isAxiomAnnotation, te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                            BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                            BuildSemanticReification(isAxiomAnnotation, te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
                 //Export semantic inferences related both to ontology model and data
                 else
                 {
-                    BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                    BuildSemanticReification(isAxiomAnnotation, te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
             }
 
