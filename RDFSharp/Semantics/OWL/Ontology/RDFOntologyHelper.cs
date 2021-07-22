@@ -2025,22 +2025,24 @@ namespace RDFSharp.Semantics.OWL
         {
             RDFGraph result = new RDFGraph();
 
-            void BuildSemanticReification(RDFOntologyTaxonomyEntry te, RDFTriple teAsnTriple, RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
+            void BuildSemanticReification(RDFOntologyTaxonomyEntry te, RDFTriple asnTriple, RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
             {
-                //Axiom Reification
-                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
-                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, subjProp, (RDFResource)teAsnTriple.Subject));
-                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, predProp, (RDFResource)teAsnTriple.Predicate));
-                if (teAsnTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                    result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, litProp, (RDFLiteral)teAsnTriple.Object));
+                //Reification
+                result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
+                result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, subjProp, (RDFResource)asnTriple.Subject));
+                result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, predProp, (RDFResource)asnTriple.Predicate));
+                if (asnTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
+                    result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, litProp, (RDFLiteral)asnTriple.Object));
                 else
-                    result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, objProp, (RDFResource)teAsnTriple.Object));
+                    result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, objProp, (RDFResource)asnTriple.Object));
 
-                //Axiom Annotation
-                result.AddTriple(new RDFTriple(teAsnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
+                //Annotation
+                if (type.Equals(RDFVocabulary.OWL.AXIOM))
+                    result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
             };
 
             //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
+            bool needsAxiomLookup = false;
             RDFResource rdfType = new RDFResource();
             RDFResource subjectProperty = new RDFResource();
             RDFResource predicateProperty = new RDFResource();
@@ -2050,6 +2052,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 //NegativeAssertions [OWL2]
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
+                    needsAxiomLookup = false;
                     rdfType = RDFVocabulary.OWL.NEGATIVE_PROPERTY_ASSERTION;
                     subjectProperty = RDFVocabulary.OWL.SOURCE_INDIVIDUAL;
                     predicateProperty = RDFVocabulary.OWL.ASSERTION_PROPERTY;
@@ -2059,6 +2062,7 @@ namespace RDFSharp.Semantics.OWL
 
                 //Axiom Annotations [OWL2]
                 case nameof(RDFOntologyAnnotations.AxiomAnnotations):
+                    needsAxiomLookup = true;
                     rdfType = RDFVocabulary.OWL.AXIOM;
                     subjectProperty = RDFVocabulary.OWL.ANNOTATED_SOURCE;
                     predicateProperty = RDFVocabulary.OWL.ANNOTATED_PROPERTY;
@@ -2069,20 +2073,24 @@ namespace RDFSharp.Semantics.OWL
 
             foreach (RDFOntologyTaxonomyEntry te in taxonomy)
             {
-                //Retrieve the assertion to which the annotation is referred (use numeric part of the axiom identifier)
-                string teID = te.TaxonomySubject.ToString().Replace("bnode:", string.Empty);
-                RDFOntologyTaxonomyEntry teAsn = ontologyData?.Relations.Assertions.SelectEntryByID(long.Parse(teID));
-                if (teAsn == null)
-                    continue;
+                RDFTriple asn = te.ToRDFTriple();
 
-                //Build reification triples of taxonomy entry
-                RDFTriple teAsnTriple = teAsn.ToRDFTriple();
+                //In case of axiom annotation, we have to resolve the linked assertion by its ID
+                if (needsAxiomLookup)
+                {
+                    string teID = te.TaxonomySubject.ToString().Replace("bnode:axiom", string.Empty);
+                    RDFOntologyTaxonomyEntry axiomAsn = ontologyData?.Relations.Assertions.SelectEntryByID(long.Parse(teID));
+                    if (axiomAsn == null)
+                        continue;
+
+                    asn = axiomAsn.ToRDFTriple();
+                }
 
                 //Do not export semantic inferences
                 if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
                 {
                     if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
 
                 //Export semantic inferences related only to ontology model
@@ -2091,12 +2099,12 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Model ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                            BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                            BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
@@ -2106,19 +2114,19 @@ namespace RDFSharp.Semantics.OWL
                     if (taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Data ||
                             taxonomy.Category == RDFSemanticsEnums.RDFOntologyTaxonomyCategory.Annotation)
                     {
-                        BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                        BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                            BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                            BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                     }
                 }
 
                 //Export semantic inferences related both to ontology model and data
                 else
                 {
-                    BuildSemanticReification(te, teAsnTriple, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
+                    BuildSemanticReification(te, asn, rdfType, subjectProperty, predicateProperty, objectProperty, literalProperty);
                 }
             }
 
