@@ -705,9 +705,9 @@ namespace RDFSharp.Semantics.OWL
                 //Assertions
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesBySubject(ontologyFact))
                 {
-                    //We are not interested in reassigning eventually linked OWL2 axiom annotations: in fact,
-                    //they will be dropped along with their assertion at the latter execution of RemoveFact.
-                    //The new assertions being created here are fresh new, so won't have any axiom annotations.
+                    //We are not interested in reassigning eventually linked OWL2 axiom annotations
+                    //(they will be dropped along with their assertion at the execution of RemoveFact);
+                    //The new assertions created here are fresh new, so won't have axiom annotations.
                     if (taxonomyEntry.TaxonomyObject.Value is RDFLiteral)
                         this.AddAssertionRelation(newOntologyFact, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyLiteral)taxonomyEntry.TaxonomyObject);
                     else
@@ -789,6 +789,14 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyLiteral))
                 {
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+
+                    //Also remove eventually linked OWL2 axiom annotations
+                    RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
+                    foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(taxonomyEntryRepresentative))
+                        this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
+
+                    //We are not interested in reassigning eventually linked OWL2 axiom annotations;
+                    //The new assertions created here are fresh new, so won't have axiom annotations.
                     this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, newOntologyLiteral);
                 }
 
