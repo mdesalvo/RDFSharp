@@ -2542,12 +2542,14 @@ namespace RDFSharp.Semantics.OWL
                         {
                             foreach (RDFTriple axiomAnnotation in axiomAnnotations.Where(axn => axn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                             {
-                                ontology.Data.AddAnnotatedAssertionRelation(
+                                ontology.Data.AddAssertionRelation(
                                     ((RDFResource)annotatedSource).ToRDFOntologyFact(),
                                     ((RDFResource)annotatedProperty).ToRDFOntologyObjectProperty(),
                                     ((RDFResource)annotatedTarget).ToRDFOntologyFact(), 
-                                    ((RDFResource)axiomAnnotation.Predicate).ToRDFOntologyAnnotationProperty(),
-                                    ((RDFLiteral)axiomAnnotation.Object).ToRDFOntologyLiteral());
+                                    new RDFOntologyAxiomAnnotation(
+                                        ((RDFResource)axiomAnnotation.Predicate).ToRDFOntologyProperty(),
+                                        ((RDFLiteral)axiomAnnotation.Object).ToRDFOntologyLiteral())
+                                    );
                             }
                             continue;
                         }
@@ -2555,12 +2557,14 @@ namespace RDFSharp.Semantics.OWL
                         {
                             foreach (RDFTriple axiomAnnotation in axiomAnnotations.Where(axn => axn.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                             {
-                                ontology.Data.AddAnnotatedAssertionRelation(
+                                ontology.Data.AddAssertionRelation(
                                     ((RDFResource)annotatedSource).ToRDFOntologyFact(),
                                     ((RDFResource)annotatedProperty).ToRDFOntologyDatatypeProperty(),
                                     ((RDFLiteral)annotatedTarget).ToRDFOntologyLiteral(),
-                                    ((RDFResource)axiomAnnotation.Predicate).ToRDFOntologyAnnotationProperty(),
-                                    ((RDFLiteral)axiomAnnotation.Object).ToRDFOntologyLiteral());
+                                    new RDFOntologyAxiomAnnotation(
+                                        ((RDFResource)axiomAnnotation.Predicate).ToRDFOntologyProperty(),
+                                        ((RDFLiteral)axiomAnnotation.Object).ToRDFOntologyLiteral())
+                                    );
                             }
                             continue;
                         }
