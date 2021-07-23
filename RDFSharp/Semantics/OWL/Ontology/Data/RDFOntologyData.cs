@@ -706,7 +706,8 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesBySubject(ontologyFact))
                 {
                     //We are not interested in reassigning eventually linked OWL2 axiom annotations: in fact,
-                    //they will be dropped along with their assertion at the execution of RemoveFact.
+                    //they will be dropped along with their assertion at the latter execution of RemoveFact.
+                    //The new assertions being created here are fresh new, so won't have any axiom annotations.
                     if (taxonomyEntry.TaxonomyObject.Value is RDFLiteral)
                         this.AddAssertionRelation(newOntologyFact, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyLiteral)taxonomyEntry.TaxonomyObject);
                     else
