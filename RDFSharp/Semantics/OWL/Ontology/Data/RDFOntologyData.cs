@@ -713,17 +713,6 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyFact))
                     this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
 
-                //NegativeAssertions [OWL2]
-                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesBySubject(ontologyFact))
-                {
-                    if (taxonomyEntry.TaxonomyObject.Value is RDFLiteral)
-                        this.AddNegativeAssertionRelation(newOntologyFact, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyLiteral)taxonomyEntry.TaxonomyObject);
-                    else
-                        this.AddNegativeAssertionRelation(newOntologyFact, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
-                }
-                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesByObject(ontologyFact))
-                    this.AddNegativeAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
-
                 //Member [SKOS]
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Member.SelectEntriesBySubject(ontologyFact))
                     this.AddMemberRelation(newOntologyFact, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
@@ -735,6 +724,17 @@ namespace RDFSharp.Semantics.OWL
                     this.AddMemberListRelation(newOntologyFact, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.MemberList.SelectEntriesByObject(ontologyFact))
                     this.AddMemberListRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, newOntologyFact);
+
+                //NegativeAssertions [OWL2]
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesBySubject(ontologyFact))
+                {
+                    if (taxonomyEntry.TaxonomyObject.Value is RDFLiteral)
+                        this.AddNegativeAssertionRelation(newOntologyFact, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyLiteral)taxonomyEntry.TaxonomyObject);
+                    else
+                        this.AddNegativeAssertionRelation(newOntologyFact, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, (RDFOntologyFact)taxonomyEntry.TaxonomyObject);
+                }
+                foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesByObject(ontologyFact))
+                    this.AddNegativeAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyObjectProperty)taxonomyEntry.TaxonomyPredicate, newOntologyFact);
 
                 //Annotations
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Annotations.VersionInfo.SelectEntriesBySubject(ontologyFact))
