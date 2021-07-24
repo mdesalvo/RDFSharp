@@ -2009,12 +2009,12 @@ namespace RDFSharp.Semantics.OWL
                 case nameof(RDFOntologyClassModelMetadata.HasKey):
                 case nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom):
                 case nameof(RDFOntologyDataMetadata.MemberList):
-                    result = ReifyListTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior, ontologyModel, ontologyData);
+                    result = ReifyListTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior);
                     break;
 
                 //Triple-based reification
                 default:
-                    result = ReifyTripleTaxonomyToGraph(taxonomy, infexpBehavior, ontologyModel, ontologyData);
+                    result = ReifyTripleTaxonomyToGraph(taxonomy, infexpBehavior);
                     break;
             }
 
@@ -2025,6 +2025,7 @@ namespace RDFSharp.Semantics.OWL
         {
             RDFGraph result = new RDFGraph();
 
+            #region Utilities
             //Executes the semantic reification of the given taxonomy entry
             void BuildSemanticReification(bool isAxiomAnn, RDFOntologyTaxonomyEntry te, RDFTriple asnTriple,
                 RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
@@ -2042,6 +2043,7 @@ namespace RDFSharp.Semantics.OWL
                 if (isAxiomAnn)
                     result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
             };
+            #endregion
 
             //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
             bool isAxiomAnnotation = false;
@@ -2077,7 +2079,7 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFTriple asn = te.ToRDFTriple();
 
-                //In case of axiom annotation, we have first to lookup the linked assertion by its ID
+                //In case of axiom annotation, we have to lookup the linked assertion by its ID
                 if (isAxiomAnnotation)
                 {
                     string teID = te.TaxonomySubject.ToString().Replace("bnode:axiom", string.Empty);
@@ -2134,15 +2136,14 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
-        private static RDFGraph ReifyListTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior,
-            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData = null)
+        private static RDFGraph ReifyListTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
             RDFGraph result = new RDFGraph();
 
             RDFResource taxonomyPredicate = taxonomyName.Equals(nameof(RDFOntologyClassModelMetadata.HasKey)) ? RDFVocabulary.OWL.HAS_KEY :
                                                 taxonomyName.Equals(nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom)) ? RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM :
                                                     taxonomyName.Equals(nameof(RDFOntologyDataMetadata.MemberList)) ? RDFVocabulary.SKOS.MEMBER_LIST :
-                                                        null;
+                                                        null; //Unrecognized taxonomy predicates will not be handled
             if (taxonomyPredicate != null)
             {
                 foreach (IGrouping<RDFOntologyResource, RDFOntologyTaxonomyEntry> tgroup in taxonomy.GroupBy(t => t.TaxonomySubject))
@@ -2160,20 +2161,17 @@ namespace RDFSharp.Semantics.OWL
 
             return result;
         }
-        private static RDFGraph ReifyTripleTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior,
-            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData = null)
+        private static RDFGraph ReifyTripleTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior)
         {
             RDFGraph result = new RDFGraph();
+
             foreach (RDFOntologyTaxonomyEntry te in taxonomy)
             {
-
                 //Do not export semantic inferences
                 if (infexpBehavior == RDFSemanticsEnums.RDFOntologyInferenceExportBehavior.None)
                 {
                     if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                    {
                         result.AddTriple(te.ToRDFTriple());
-                    }
                 }
 
                 //Export semantic inferences related only to ontology model
@@ -2187,9 +2185,7 @@ namespace RDFSharp.Semantics.OWL
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        {
                             result.AddTriple(te.ToRDFTriple());
-                        }
                     }
                 }
 
@@ -2204,9 +2200,7 @@ namespace RDFSharp.Semantics.OWL
                     else
                     {
                         if (te.InferenceType == RDFSemanticsEnums.RDFOntologyInferenceType.None)
-                        {
                             result.AddTriple(te.ToRDFTriple());
-                        }
                     }
                 }
 
@@ -2215,8 +2209,8 @@ namespace RDFSharp.Semantics.OWL
                 {
                     result.AddTriple(te.ToRDFTriple());
                 }
-
             }
+
             return result;
         }
         #endregion
