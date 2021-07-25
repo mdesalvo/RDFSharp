@@ -2547,54 +2547,53 @@ namespace RDFSharp.Semantics.OWL
                 {
                     RDFOntologyAxiomAnnotation axiomAnnotation = new RDFOntologyAxiomAnnotation(((RDFResource)axiomAnnTriple.Predicate).ToRDFOntologyProperty(), ((RDFLiteral)axiomAnnTriple.Object).ToRDFOntologyLiteral());
 
+                    #region ClassModel(SubClassOf)
+                    if (annotatedProperty.Equals(RDFVocabulary.RDFS.SUB_CLASS_OF))
+                        ontology.Model.ClassModel.AddSubClassOfRelation(((RDFResource)annotatedSource).ToRDFOntologyClass(), ((RDFResource)annotatedTarget).ToRDFOntologyClass(), axiomAnnotation);
+                    #endregion
+
+                    #region ClassModel(EquivalentClass)
+                    else if (annotatedProperty.Equals(RDFVocabulary.OWL.EQUIVALENT_CLASS))
+                        ontology.Model.ClassModel.AddEquivalentClassRelation(((RDFResource)annotatedSource).ToRDFOntologyClass(), ((RDFResource)annotatedTarget).ToRDFOntologyClass(), axiomAnnotation);
+                    #endregion
+
+                    #region ClassModel(DisjointWith)
+                    else if (annotatedProperty.Equals(RDFVocabulary.OWL.DISJOINT_WITH))
+                        ontology.Model.ClassModel.AddDisjointWithRelation(((RDFResource)annotatedSource).ToRDFOntologyClass(), ((RDFResource)annotatedTarget).ToRDFOntologyClass(), axiomAnnotation);
+                    #endregion
+
                     #region Data(ClassType)
-                    if (annotatedProperty.Equals(RDFVocabulary.RDF.TYPE))
-                        ontology.Data.AddClassTypeRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                           ((RDFResource)annotatedTarget).ToRDFOntologyClass(),
-                                                           axiomAnnotation);
+                    else if (annotatedProperty.Equals(RDFVocabulary.RDF.TYPE))
+                        ontology.Data.AddClassTypeRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedTarget).ToRDFOntologyClass(), axiomAnnotation);
                     #endregion
 
                     #region Data(SameAs)
                     else if (annotatedProperty.Equals(RDFVocabulary.OWL.SAME_AS))
-                        ontology.Data.AddSameAsRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                        ((RDFResource)annotatedTarget).ToRDFOntologyFact(),
-                                                        axiomAnnotation);
+                        ontology.Data.AddSameAsRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedTarget).ToRDFOntologyFact(), axiomAnnotation);
                     #endregion
 
                     #region Data(DifferentFrom)
                     else if (annotatedProperty.Equals(RDFVocabulary.OWL.DIFFERENT_FROM))
-                        ontology.Data.AddDifferentFromRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                               ((RDFResource)annotatedTarget).ToRDFOntologyFact(),
-                                                               axiomAnnotation);
+                        ontology.Data.AddDifferentFromRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedTarget).ToRDFOntologyFact(), axiomAnnotation);
                     #endregion
 
                     #region Data(Member)
                     else if (annotatedProperty.Equals(RDFVocabulary.SKOS.MEMBER))
-                        ontology.Data.AddMemberRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                        ((RDFResource)annotatedTarget).ToRDFOntologyFact(),
-                                                        axiomAnnotation);
+                        ontology.Data.AddMemberRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedTarget).ToRDFOntologyFact(), axiomAnnotation);
                     #endregion
 
                     #region Data(MemberList)
                     else if (annotatedProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
-                        ontology.Data.AddMemberListRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                            ((RDFResource)annotatedTarget).ToRDFOntologyFact(),
-                                                            axiomAnnotation);
+                        ontology.Data.AddMemberListRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedTarget).ToRDFOntologyFact(), axiomAnnotation);
                     #endregion
 
                     #region Data(Assertions)
                     else
                     {
                         if (annotatedTargetIsResource)
-                            ontology.Data.AddAssertionRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                               ((RDFResource)annotatedProperty).ToRDFOntologyObjectProperty(),
-                                                               ((RDFResource)annotatedTarget).ToRDFOntologyFact(),
-                                                               axiomAnnotation);
+                            ontology.Data.AddAssertionRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedProperty).ToRDFOntologyObjectProperty(), ((RDFResource)annotatedTarget).ToRDFOntologyFact(), axiomAnnotation);
                         else
-                            ontology.Data.AddAssertionRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(),
-                                                               ((RDFResource)annotatedProperty).ToRDFOntologyDatatypeProperty(),
-                                                               ((RDFLiteral)annotatedTarget).ToRDFOntologyLiteral(),
-                                                               axiomAnnotation);
+                            ontology.Data.AddAssertionRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedProperty).ToRDFOntologyDatatypeProperty(), ((RDFLiteral)annotatedTarget).ToRDFOntologyLiteral(), axiomAnnotation);
                     }
                     #endregion
                 }

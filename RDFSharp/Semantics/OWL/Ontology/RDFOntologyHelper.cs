@@ -2049,10 +2049,6 @@ namespace RDFSharp.Semantics.OWL
                 => ontologyModel?.ClassModel.Relations.SubClassOf.SelectEntryByID(teID)
                 ?? ontologyModel?.ClassModel.Relations.EquivalentClass.SelectEntryByID(teID)
                 ?? ontologyModel?.ClassModel.Relations.DisjointWith.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.OneOf.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.IntersectionOf.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.UnionOf.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.HasKey.SelectEntryByID(teID) //OWL2
                 ?? ontologyModel?.PropertyModel.Relations.SubPropertyOf.SelectEntryByID(teID)
                 ?? ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID)
                 ?? ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID)

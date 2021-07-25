@@ -174,9 +174,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given standard annotation to the given ontology class
         /// </summary>
-        public RDFOntologyClassModel AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                           RDFOntologyClass ontologyClass,
-                                                           RDFOntologyResource annotationValue)
+        public RDFOntologyClassModel AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyClass ontologyClass, RDFOntologyResource annotationValue)
         {
             if (ontologyClass != null && annotationValue != null)
             {
@@ -262,9 +260,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given custom annotation to the given ontology class
         /// </summary>
-        public RDFOntologyClassModel AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                         RDFOntologyClass ontologyClass,
-                                                         RDFOntologyResource annotationValue)
+        public RDFOntologyClassModel AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyClass ontologyClass, RDFOntologyResource annotationValue)
         {
             if (ontologyAnnotationProperty != null && ontologyClass != null && annotationValue != null)
             {
@@ -320,10 +316,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "childClass -> rdfs:subClassOf -> motherClass" relation to the class model.
+        /// Adds the "childClass -> rdfs:subClassOf -> motherClass" relation to the class model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyClassModel AddSubClassOfRelation(RDFOntologyClass childClass,
-                                                           RDFOntologyClass motherClass)
+        public RDFOntologyClassModel AddSubClassOfRelation(RDFOntologyClass childClass, RDFOntologyClass motherClass, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (childClass != null && motherClass != null && !childClass.Equals(motherClass))
             {
@@ -333,7 +328,11 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the subClassOf relation
                     if (RDFOntologyChecker.CheckSubClassOfCompatibility(this, childClass, motherClass))
                     {
-                        this.Relations.SubClassOf.AddEntry(new RDFOntologyTaxonomyEntry(childClass, RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty(), motherClass));
+                        RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(childClass, RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty(), motherClass);
+                        this.Relations.SubClassOf.AddEntry(taxonomyEntry);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyClassModelMetadata.SubClassOf));
                     }
                     else
                     {
@@ -351,10 +350,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aClass -> owl:equivalentClass -> bClass" relation to the class model.
+        /// Adds the "aClass -> owl:equivalentClass -> bClass" relation to the class model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyClassModel AddEquivalentClassRelation(RDFOntologyClass aClass,
-                                                                RDFOntologyClass bClass)
+        public RDFOntologyClassModel AddEquivalentClassRelation(RDFOntologyClass aClass, RDFOntologyClass bClass, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aClass != null && bClass != null && !aClass.Equals(bClass))
             {
@@ -364,8 +362,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the equivalentClass relation
                     if (RDFOntologyChecker.CheckEquivalentClassCompatibility(this, aClass, bClass))
                     {
-                        this.Relations.EquivalentClass.AddEntry(new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), bClass));
-                        this.Relations.EquivalentClass.AddEntry(new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), aClass).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry equivclassLeft = new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), bClass);
+                        this.Relations.EquivalentClass.AddEntry(equivclassLeft);
+                        RDFOntologyTaxonomyEntry equivclassRight = new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), aClass).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.EquivalentClass.AddEntry(equivclassRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(equivclassLeft, axiomAnnotation, nameof(RDFOntologyClassModelMetadata.EquivalentClass));
                     }
                     else
                     {
@@ -383,10 +386,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aClass -> owl:disjointWith -> bClass" relation to the class model.
+        /// Adds the "aClass -> owl:disjointWith -> bClass" relation to the class model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyClassModel AddDisjointWithRelation(RDFOntologyClass aClass,
-                                                             RDFOntologyClass bClass)
+        public RDFOntologyClassModel AddDisjointWithRelation(RDFOntologyClass aClass, RDFOntologyClass bClass, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aClass != null && bClass != null && !aClass.Equals(bClass))
             {
@@ -396,8 +398,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the disjointWith relation
                     if (RDFOntologyChecker.CheckDisjointWithCompatibility(this, aClass, bClass))
                     {
-                        this.Relations.DisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), bClass));
-                        this.Relations.DisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), aClass).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry disjwithLeft = new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), bClass);
+                        this.Relations.DisjointWith.AddEntry(disjwithLeft);
+                        RDFOntologyTaxonomyEntry disjwithRight = new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), aClass).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.DisjointWith.AddEntry(disjwithRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(disjwithLeft, axiomAnnotation, nameof(RDFOntologyClassModelMetadata.DisjointWith));
                     }
                     else
                     {
@@ -417,8 +424,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Foreach of the given facts, adds the "ontologyEnumerateClass -> owl:oneOf -> ontologyFact" relation to the class model
         /// </summary>
-        public RDFOntologyClassModel AddOneOfRelation(RDFOntologyEnumerateClass ontologyEnumerateClass,
-                                                      List<RDFOntologyFact> ontologyFacts)
+        public RDFOntologyClassModel AddOneOfRelation(RDFOntologyEnumerateClass ontologyEnumerateClass, List<RDFOntologyFact> ontologyFacts)
         {
             if (ontologyEnumerateClass != null && ontologyFacts != null)
                 ontologyFacts.ForEach(f => this.Relations.OneOf.AddEntry(new RDFOntologyTaxonomyEntry(ontologyEnumerateClass, RDFVocabulary.OWL.ONE_OF.ToRDFOntologyObjectProperty(), f)));
@@ -428,8 +434,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Foreach of the given literals, adds the "ontologyDataRangeClass -> owl:oneOf -> ontologyLiteral" relation to the class model
         /// </summary>
-        public RDFOntologyClassModel AddOneOfRelation(RDFOntologyDataRangeClass ontologyDataRangeClass,
-                                                      List<RDFOntologyLiteral> ontologyLiterals)
+        public RDFOntologyClassModel AddOneOfRelation(RDFOntologyDataRangeClass ontologyDataRangeClass, List<RDFOntologyLiteral> ontologyLiterals)
         {
             if (ontologyDataRangeClass != null && ontologyLiterals != null)
                 ontologyLiterals.ForEach(l => this.Relations.OneOf.AddEntry(new RDFOntologyTaxonomyEntry(ontologyDataRangeClass, RDFVocabulary.OWL.ONE_OF.ToRDFOntologyDatatypeProperty(), l)));
@@ -439,8 +444,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Foreach of the given classes, adds the "ontologyIntersectionClass -> owl:intersectionOf -> ontologyClass" relation to the class model
         /// </summary>
-        public RDFOntologyClassModel AddIntersectionOfRelation(RDFOntologyIntersectionClass ontologyIntersectionClass,
-                                                               List<RDFOntologyClass> ontologyClasses)
+        public RDFOntologyClassModel AddIntersectionOfRelation(RDFOntologyIntersectionClass ontologyIntersectionClass, List<RDFOntologyClass> ontologyClasses)
         {
             if (ontologyIntersectionClass != null && ontologyClasses != null && !ontologyClasses.Any(c => c.Equals(ontologyIntersectionClass)))
                 ontologyClasses.ForEach(c => this.Relations.IntersectionOf.AddEntry(new RDFOntologyTaxonomyEntry(ontologyIntersectionClass, RDFVocabulary.OWL.INTERSECTION_OF.ToRDFOntologyObjectProperty(), c)));
@@ -450,8 +454,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Foreach of the given classes, adds the "ontologyUnionClass -> owl:unionOf -> ontologyClass" relation to the class model
         /// </summary>
-        public RDFOntologyClassModel AddUnionOfRelation(RDFOntologyUnionClass ontologyUnionClass,
-                                                        List<RDFOntologyClass> ontologyClasses)
+        public RDFOntologyClassModel AddUnionOfRelation(RDFOntologyUnionClass ontologyUnionClass, List<RDFOntologyClass> ontologyClasses)
         {
             if (ontologyUnionClass != null && ontologyClasses != null && !ontologyClasses.Any(c => c.Equals(ontologyUnionClass)))
                 ontologyClasses.ForEach(c => this.Relations.UnionOf.AddEntry(new RDFOntologyTaxonomyEntry(ontologyUnionClass, RDFVocabulary.OWL.UNION_OF.ToRDFOntologyObjectProperty(), c)));
@@ -462,8 +465,7 @@ namespace RDFSharp.Semantics.OWL
         /// Foreach of the given classes, adds the "ontologyUnionClass -> owl:unionOf -> ontologyClass" and the<br/>
         /// "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations to the class model [OWL2]
         /// </summary>
-        public RDFOntologyClassModel AddDisjointUnionRelation(RDFOntologyUnionClass ontologyUnionClass,
-                                                              List<RDFOntologyClass> ontologyClasses)
+        public RDFOntologyClassModel AddDisjointUnionRelation(RDFOntologyUnionClass ontologyUnionClass, List<RDFOntologyClass> ontologyClasses)
         {
             //Union
             this.AddUnionOfRelation(ontologyUnionClass, ontologyClasses);
@@ -488,17 +490,56 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// For each of the given properties, adds the "ontologyClass -> owl:hasKey -> keyProperty" relation to the class model [OWL2]
         /// </summary>
-        public RDFOntologyClassModel AddHasKeyRelation(RDFOntologyClass ontologyClass,
-                                                       List<RDFOntologyProperty> keyProperties)
+        public RDFOntologyClassModel AddHasKeyRelation(RDFOntologyClass ontologyClass, List<RDFOntologyProperty> keyProperties)
         {
-            if (ontologyClass != null && keyProperties != null)
-            {
-                keyProperties.ForEach(kp =>
+            if (ontologyClass != null)
+                keyProperties?.ForEach(kp =>
                 {
                     if (kp != null)
                         this.Relations.HasKey.AddEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), kp));
                 });
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given owl:Axiom annotation to the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyClassModel AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation, string targetTaxonomyName)
+        {
+            #region DetectTargetTaxonomy
+            RDFOntologyTaxonomy DetectTargetTaxonomy()
+            {
+                RDFOntologyTaxonomy targetTaxonomy = default;
+                switch (targetTaxonomyName)
+                {
+                    case nameof(RDFOntologyClassModelMetadata.SubClassOf):
+                        targetTaxonomy = this.Relations.SubClassOf;
+                        break;
+                    case nameof(RDFOntologyClassModelMetadata.EquivalentClass):
+                        targetTaxonomy = this.Relations.EquivalentClass;
+                        break;
+                    case nameof(RDFOntologyClassModelMetadata.DisjointWith):
+                        targetTaxonomy = this.Relations.DisjointWith;
+                        break;
+                    case nameof(RDFOntologyClassModelMetadata.OneOf):
+                        targetTaxonomy = this.Relations.OneOf;
+                        break;
+                    case nameof(RDFOntologyClassModelMetadata.IntersectionOf):
+                        targetTaxonomy = this.Relations.IntersectionOf;
+                        break;
+                    case nameof(RDFOntologyClassModelMetadata.UnionOf):
+                        targetTaxonomy = this.Relations.UnionOf;
+                        break;
+                    case nameof(RDFOntologyClassModelMetadata.HasKey):
+                        targetTaxonomy = this.Relations.HasKey;
+                        break;
+                }
+                return targetTaxonomy;
             }
+            #endregion
+
+            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
+                this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
             return this;
         }
         #endregion
@@ -526,9 +567,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given standard annotation from the given ontology class
         /// </summary>
-        public RDFOntologyClassModel RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                              RDFOntologyClass ontologyClass,
-                                                              RDFOntologyResource annotationValue)
+        public RDFOntologyClassModel RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyClass ontologyClass, RDFOntologyResource annotationValue)
         {
             if (ontologyClass != null && annotationValue != null)
             {
@@ -593,9 +632,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given custom annotation from the given ontology class
         /// </summary>
-        public RDFOntologyClassModel RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                            RDFOntologyClass ontologyClass,
-                                                            RDFOntologyResource annotationValue)
+        public RDFOntologyClassModel RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyClass ontologyClass, RDFOntologyResource annotationValue)
         {
             if (ontologyAnnotationProperty != null && ontologyClass != null && annotationValue != null)
             {
@@ -673,24 +710,34 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "childClass -> rdfs:subClassOf -> motherClass" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveSubClassOfRelation(RDFOntologyClass childClass,
-                                                              RDFOntologyClass motherClass)
+        public RDFOntologyClassModel RemoveSubClassOfRelation(RDFOntologyClass childClass, RDFOntologyClass motherClass)
         {
             if (childClass != null && motherClass != null)
-                this.Relations.SubClassOf.RemoveEntry(new RDFOntologyTaxonomyEntry(childClass, RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty(), motherClass));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(childClass, RDFVocabulary.RDFS.SUB_CLASS_OF.ToRDFOntologyObjectProperty(), motherClass);
+                this.Relations.SubClassOf.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
+                this.RemoveAxiomAnnotation(taxonomyEntry);
+            }
             return this;
         }
 
         /// <summary>
         /// Removes the "aClass -> owl:equivalentClass -> bClass" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveEquivalentClassRelation(RDFOntologyClass aClass,
-                                                                   RDFOntologyClass bClass)
+        public RDFOntologyClassModel RemoveEquivalentClassRelation(RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             if (aClass != null && bClass != null)
             {
-                this.Relations.EquivalentClass.RemoveEntry(new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), bClass));
-                this.Relations.EquivalentClass.RemoveEntry(new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), aClass));
+                RDFOntologyTaxonomyEntry equivclassLeft = new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), bClass);
+                this.Relations.EquivalentClass.RemoveEntry(equivclassLeft);
+                RDFOntologyTaxonomyEntry equivclassRight = new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.EQUIVALENT_CLASS.ToRDFOntologyObjectProperty(), aClass);
+                this.Relations.EquivalentClass.RemoveEntry(equivclassRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(equivclassLeft);
+                this.RemoveAxiomAnnotation(equivclassRight);
             }
             return this;
         }
@@ -698,13 +745,18 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aClass -> owl:disjointWith -> bClass" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveDisjointWithRelation(RDFOntologyClass aClass,
-                                                                RDFOntologyClass bClass)
+        public RDFOntologyClassModel RemoveDisjointWithRelation(RDFOntologyClass aClass, RDFOntologyClass bClass)
         {
             if (aClass != null && bClass != null)
             {
-                this.Relations.DisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), bClass));
-                this.Relations.DisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), aClass));
+                RDFOntologyTaxonomyEntry disjwithLeft = new RDFOntologyTaxonomyEntry(aClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), bClass);
+                this.Relations.DisjointWith.RemoveEntry(disjwithLeft);
+                RDFOntologyTaxonomyEntry disjwithRight = new RDFOntologyTaxonomyEntry(bClass, RDFVocabulary.OWL.DISJOINT_WITH.ToRDFOntologyObjectProperty(), aClass);
+                this.Relations.DisjointWith.RemoveEntry(disjwithRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(disjwithLeft);
+                this.RemoveAxiomAnnotation(disjwithRight);
             }
             return this;
         }
@@ -712,8 +764,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyEnumerateClass -> owl:oneOf -> ontologyFact" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveOneOfRelation(RDFOntologyEnumerateClass ontologyEnumerateClass,
-                                                         RDFOntologyFact ontologyFact)
+        public RDFOntologyClassModel RemoveOneOfRelation(RDFOntologyEnumerateClass ontologyEnumerateClass, RDFOntologyFact ontologyFact)
         {
             if (ontologyEnumerateClass != null && ontologyFact != null)
                 this.Relations.OneOf.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyEnumerateClass, RDFVocabulary.OWL.ONE_OF.ToRDFOntologyObjectProperty(), ontologyFact));
@@ -723,8 +774,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyDataRangeClass -> owl:oneOf -> ontologyLiteral" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveOneOfRelation(RDFOntologyDataRangeClass ontologyDataRangeClass,
-                                                         RDFOntologyLiteral ontologyLiteral)
+        public RDFOntologyClassModel RemoveOneOfRelation(RDFOntologyDataRangeClass ontologyDataRangeClass, RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyDataRangeClass != null && ontologyLiteral != null)
                 this.Relations.OneOf.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyDataRangeClass, RDFVocabulary.OWL.ONE_OF.ToRDFOntologyDatatypeProperty(), ontologyLiteral));
@@ -734,8 +784,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyIntersectionClass -> owl:intersectionOf -> ontologyClass" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveIntersectionOfRelation(RDFOntologyIntersectionClass ontologyIntersectionClass,
-                                                                  RDFOntologyClass ontologyClass)
+        public RDFOntologyClassModel RemoveIntersectionOfRelation(RDFOntologyIntersectionClass ontologyIntersectionClass, RDFOntologyClass ontologyClass)
         {
             if (ontologyIntersectionClass != null && ontologyClass != null)
                 this.Relations.IntersectionOf.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyIntersectionClass, RDFVocabulary.OWL.INTERSECTION_OF.ToRDFOntologyObjectProperty(), ontologyClass));
@@ -745,8 +794,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyUnionClass -> owl:unionOf -> ontologyClass" relation from the class model
         /// </summary>
-        public RDFOntologyClassModel RemoveUnionOfRelation(RDFOntologyUnionClass ontologyUnionClass,
-                                                           RDFOntologyClass ontologyClass)
+        public RDFOntologyClassModel RemoveUnionOfRelation(RDFOntologyUnionClass ontologyUnionClass, RDFOntologyClass ontologyClass)
         {
             if (ontologyUnionClass != null && ontologyClass != null)
                 this.Relations.UnionOf.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyUnionClass, RDFVocabulary.OWL.UNION_OF.ToRDFOntologyObjectProperty(), ontologyClass));
@@ -757,8 +805,7 @@ namespace RDFSharp.Semantics.OWL
         /// Foreach of the given classes, removes the "ontologyUnionClass -> owl:unionOf -> ontologyClass" and the<br/>
         /// "ontologyClassA -> owl:disjointWith -> ontologyClassB" relations from the class model [OWL2]
         /// </summary>
-        public RDFOntologyClassModel RemoveDisjointUnionRelation(RDFOntologyUnionClass ontologyUnionClass,
-                                                                 List<RDFOntologyClass> ontologyClasses)
+        public RDFOntologyClassModel RemoveDisjointUnionRelation(RDFOntologyUnionClass ontologyUnionClass, List<RDFOntologyClass> ontologyClasses)
         {
             ontologyClasses?.ForEach(outerClass =>
             {
@@ -789,11 +836,20 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyClass -> owl:hasKey -> keyProperty" relation from the class model [OWL2]
         /// </summary>
-        public RDFOntologyClassModel RemoveHasKeyRelation(RDFOntologyClass ontologyClass,
-                                                          RDFOntologyProperty keyProperty)
+        public RDFOntologyClassModel RemoveHasKeyRelation(RDFOntologyClass ontologyClass, RDFOntologyProperty keyProperty)
         {
             if (ontologyClass != null && keyProperty != null)
                 this.Relations.HasKey.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyClass, RDFVocabulary.OWL.HAS_KEY.ToRDFOntologyObjectProperty(), keyProperty));
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the given owl:Axiom annotation [OWL2]
+        /// </summary>
+        internal RDFOntologyClassModel RemoveAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry)
+        {
+            foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(this.GetTaxonomyEntryRepresentative(taxonomyEntry)))
+                this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
             return this;
         }
         #endregion
@@ -810,6 +866,12 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyClass SelectClass(string ontClass)
             => ontClass != null ? SelectClass(RDFModelUtilities.CreateHash(ontClass)) : null;
+
+        /// <summary>
+        /// Gets the representative of the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyFact GetTaxonomyEntryRepresentative(RDFOntologyTaxonomyEntry taxonomyEntry)
+            => new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
         #endregion
 
         #region Set

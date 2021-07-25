@@ -131,9 +131,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given standard annotation to the given ontology fact
         /// </summary>
-        public RDFOntologyData AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                     RDFOntologyFact ontologyFact,
-                                                     RDFOntologyResource annotationValue)
+        public RDFOntologyData AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyFact ontologyFact, RDFOntologyResource annotationValue)
         {
             if (ontologyFact != null && annotationValue != null)
             {
@@ -219,9 +217,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given custom annotation to the given ontology fact
         /// </summary>
-        public RDFOntologyData AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                   RDFOntologyFact ontologyFact,
-                                                   RDFOntologyResource annotationValue)
+        public RDFOntologyData AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyFact ontologyFact, RDFOntologyResource annotationValue)
         {
             if (ontologyAnnotationProperty != null && ontologyFact != null && annotationValue != null)
             {
@@ -380,10 +376,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "aFact -> objectProperty -> bFact" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact,
-                                                    RDFOntologyObjectProperty objectProperty,
-                                                    RDFOntologyFact bFact,
-                                                    RDFOntologyAxiomAnnotation axiomAnnotation=null)
+        public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact, RDFOntologyAxiomAnnotation axiomAnnotation=null)
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
@@ -434,10 +427,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyData AddAssertionRelation(RDFOntologyFact ontologyFact,
-                                                    RDFOntologyDatatypeProperty datatypeProperty,
-                                                    RDFOntologyLiteral ontologyLiteral,
-                                                    RDFOntologyAxiomAnnotation axiomAnnotation = null)
+        public RDFOntologyData AddAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
@@ -482,9 +472,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "aFact -> objectProperty -> bFact" negative relation to the data [OWL2]
         /// </summary>
-        public RDFOntologyData AddNegativeAssertionRelation(RDFOntologyFact aFact,
-                                                            RDFOntologyObjectProperty objectProperty,
-                                                            RDFOntologyFact bFact)
+        public RDFOntologyData AddNegativeAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
@@ -522,9 +510,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" negative relation to the data [OWL2]
         /// </summary>
-        public RDFOntologyData AddNegativeAssertionRelation(RDFOntologyFact ontologyFact,
-                                                            RDFOntologyDatatypeProperty datatypeProperty,
-                                                            RDFOntologyLiteral ontologyLiteral)
+        public RDFOntologyData AddNegativeAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
@@ -559,6 +545,45 @@ namespace RDFSharp.Semantics.OWL
                     RDFSemanticsEvents.RaiseSemanticsWarning(string.Format("NegativeAssertion relation between fact '{0}' and literal '{1}' cannot be added to the data because usage of BASE reserved properties compromises the taxonomy consistency.", ontologyFact, ontologyLiteral));
                 }
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given owl:Axiom annotation to the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyData AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation, string targetTaxonomyName)
+        {
+            #region DetectTargetTaxonomy
+            RDFOntologyTaxonomy DetectTargetTaxonomy()
+            {
+                RDFOntologyTaxonomy targetTaxonomy = default;
+                switch (targetTaxonomyName)
+                {
+                    case nameof(RDFOntologyDataMetadata.ClassType):
+                        targetTaxonomy = this.Relations.ClassType;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.SameAs):
+                        targetTaxonomy = this.Relations.SameAs;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.DifferentFrom):
+                        targetTaxonomy = this.Relations.DifferentFrom;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.Assertions):
+                        targetTaxonomy = this.Relations.Assertions;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.Member):
+                        targetTaxonomy = this.Relations.Member;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.MemberList):
+                        targetTaxonomy = this.Relations.MemberList;
+                        break;
+                }
+                return targetTaxonomy;
+            }
+            #endregion
+
+            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
+                this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
             return this;
         }
         #endregion
@@ -851,9 +876,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given standard annotation from the given ontology fact
         /// </summary>
-        public RDFOntologyData RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                        RDFOntologyFact ontologyFact,
-                                                        RDFOntologyResource annotationValue)
+        public RDFOntologyData RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyFact ontologyFact, RDFOntologyResource annotationValue)
         {
             if (ontologyFact != null && annotationValue != null)
             {
@@ -891,9 +914,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given custom annotation from the given ontology fact
         /// </summary>
-        public RDFOntologyData RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                      RDFOntologyFact ontologyFact,
-                                                      RDFOntologyResource annotationValue)
+        public RDFOntologyData RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyFact ontologyFact, RDFOntologyResource annotationValue)
         {
             if (ontologyAnnotationProperty != null && ontologyFact != null && annotationValue != null)
             {
@@ -1018,9 +1039,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aFact -> objectProperty -> bFact" relation from the data
         /// </summary>
-        public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact aFact,
-                                                       RDFOntologyObjectProperty objectProperty,
-                                                       RDFOntologyFact bFact)
+        public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && objectProperty != null && bFact != null)
             {
@@ -1043,9 +1062,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyFact -> datatypeProperty -> ontologyLiteral" relation from the data
         /// </summary>
-        public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact ontologyFact,
-                                                       RDFOntologyDatatypeProperty datatypeProperty,
-                                                       RDFOntologyLiteral ontologyLiteral)
+        public RDFOntologyData RemoveAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
@@ -1061,9 +1078,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aFact -> objectProperty -> bFact" negative relation from the data [OWL2]
         /// </summary>
-        public RDFOntologyData RemoveNegativeAssertionRelation(RDFOntologyFact aFact,
-                                                               RDFOntologyObjectProperty objectProperty,
-                                                               RDFOntologyFact bFact)
+        public RDFOntologyData RemoveNegativeAssertionRelation(RDFOntologyFact aFact, RDFOntologyObjectProperty objectProperty, RDFOntologyFact bFact)
         {
             if (aFact != null && objectProperty != null && bFact != null)
                 this.Relations.NegativeAssertions.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact));
@@ -1073,51 +1088,10 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyFact -> datatypeProperty -> ontologyLiteral" negative relation from the data [OWL2]
         /// </summary>
-        public RDFOntologyData RemoveNegativeAssertionRelation(RDFOntologyFact ontologyFact,
-                                                               RDFOntologyDatatypeProperty datatypeProperty,
-                                                               RDFOntologyLiteral ontologyLiteral)
+        public RDFOntologyData RemoveNegativeAssertionRelation(RDFOntologyFact ontologyFact, RDFOntologyDatatypeProperty datatypeProperty, RDFOntologyLiteral ontologyLiteral)
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
                 this.Relations.NegativeAssertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given owl:Axiom annotation to the given taxonomy entry
-        /// </summary>
-        internal RDFOntologyData AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation, string targetTaxonomyName)
-        {
-            #region DetectTargetTaxonomy
-            RDFOntologyTaxonomy DetectTargetTaxonomy()
-            {
-                RDFOntologyTaxonomy targetTaxonomy = default;
-                switch (targetTaxonomyName)
-                {
-                    case nameof(RDFOntologyDataMetadata.ClassType):
-                        targetTaxonomy = this.Relations.ClassType;
-                        break;
-                    case nameof(RDFOntologyDataMetadata.SameAs):
-                        targetTaxonomy = this.Relations.SameAs;
-                        break;
-                    case nameof(RDFOntologyDataMetadata.DifferentFrom):
-                        targetTaxonomy = this.Relations.DifferentFrom;
-                        break;
-                    case nameof(RDFOntologyDataMetadata.Assertions):
-                        targetTaxonomy = this.Relations.Assertions;
-                        break;
-                    case nameof(RDFOntologyDataMetadata.Member):
-                        targetTaxonomy = this.Relations.Member;
-                        break;
-                    case nameof(RDFOntologyDataMetadata.MemberList):
-                        targetTaxonomy = this.Relations.MemberList;
-                        break;
-                }
-                return targetTaxonomy;
-            }
-            #endregion
-
-            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
-                this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
             return this;
         }
 
@@ -1130,12 +1104,6 @@ namespace RDFSharp.Semantics.OWL
                 this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
             return this;
         }
-
-        /// <summary>
-        /// Gets the representative of the given taxonomy entry
-        /// </summary>
-        internal RDFOntologyFact GetTaxonomyEntryRepresentative(RDFOntologyTaxonomyEntry taxonomyEntry)
-            => new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
         #endregion
 
         #region Select
@@ -1162,6 +1130,12 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyLiteral SelectLiteral(string literal)
             => literal != null ? SelectLiteral(RDFModelUtilities.CreateHash(literal)) : null;
+
+        /// <summary>
+        /// Gets the representative of the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyFact GetTaxonomyEntryRepresentative(RDFOntologyTaxonomyEntry taxonomyEntry)
+            => new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
         #endregion
 
         #region Set
