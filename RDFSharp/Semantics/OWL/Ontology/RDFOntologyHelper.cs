@@ -2043,6 +2043,28 @@ namespace RDFSharp.Semantics.OWL
                 if (isAxiomAnn)
                     result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
             };
+
+            //Finds the taxonomy entry represented by the given ID in the ontology taxonomies
+            RDFOntologyTaxonomyEntry FindTaxonomyEntry(long teID)
+                => ontologyModel?.ClassModel.Relations.SubClassOf.SelectEntryByID(teID)
+                    ?? ontologyModel?.ClassModel.Relations.EquivalentClass.SelectEntryByID(teID)
+                    ?? ontologyModel?.ClassModel.Relations.DisjointWith.SelectEntryByID(teID)
+                    ?? ontologyModel?.ClassModel.Relations.OneOf.SelectEntryByID(teID)
+                    ?? ontologyModel?.ClassModel.Relations.IntersectionOf.SelectEntryByID(teID)
+                    ?? ontologyModel?.ClassModel.Relations.UnionOf.SelectEntryByID(teID)
+                    ?? ontologyModel?.ClassModel.Relations.HasKey.SelectEntryByID(teID)
+                    ?? ontologyModel?.PropertyModel.Relations.SubPropertyOf.SelectEntryByID(teID)
+                    ?? ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID)
+                    ?? ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID)
+                    ?? ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID)
+                    ?? ontologyModel?.PropertyModel.Relations.PropertyChainAxiom.SelectEntryByID(teID)
+                    ?? ontologyData?.Relations.ClassType.SelectEntryByID(teID)
+                    ?? ontologyData?.Relations.SameAs.SelectEntryByID(teID)
+                    ?? ontologyData?.Relations.DifferentFrom.SelectEntryByID(teID)
+                    ?? ontologyData?.Relations.Member.SelectEntryByID(teID)
+                    ?? ontologyData?.Relations.MemberList.SelectEntryByID(teID)
+                    ?? ontologyData?.Relations.Assertions.SelectEntryByID(teID)
+                    ?? null;
             #endregion
 
             //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
@@ -2079,11 +2101,11 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFTriple asn = te.ToRDFTriple();
 
-                //In case of axiom annotation, we have to lookup the linked assertion by its ID
+                //In case of owl:Axiom, we have to lookup the linked taxonomy entry by ID
                 if (isAxiomAnnotation)
                 {
                     string teID = te.TaxonomySubject.ToString().Replace("bnode:axiom", string.Empty);
-                    RDFOntologyTaxonomyEntry axiomAsn = ontologyData?.Relations.Assertions.SelectEntryByID(long.Parse(teID));
+                    RDFOntologyTaxonomyEntry axiomAsn = FindTaxonomyEntry(long.Parse(teID));
                     if (axiomAsn == null)
                         continue;
 
