@@ -2046,21 +2046,24 @@ namespace RDFSharp.Semantics.OWL
 
             //Finds the taxonomy entry represented by the given ID in the ontology taxonomies
             RDFOntologyTaxonomyEntry FindTaxonomyEntry(long teID)
-                => ontologyModel?.ClassModel.Relations.SubClassOf.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.EquivalentClass.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.DisjointWith.SelectEntryByID(teID)
-                ?? ontologyModel?.PropertyModel.Relations.SubPropertyOf.SelectEntryByID(teID)
-                ?? ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID)
-                ?? ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID)
-                ?? ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID) //OWL2
-                ?? ontologyModel?.PropertyModel.Relations.PropertyChainAxiom.SelectEntryByID(teID) //OWL2
-                ?? ontologyData?.Relations.ClassType.SelectEntryByID(teID)
-                ?? ontologyData?.Relations.SameAs.SelectEntryByID(teID)
-                ?? ontologyData?.Relations.DifferentFrom.SelectEntryByID(teID)
-                ?? ontologyData?.Relations.Member.SelectEntryByID(teID) //SKOS
-                ?? ontologyData?.Relations.MemberList.SelectEntryByID(teID) //SKOS
-                ?? ontologyData?.Relations.Assertions.SelectEntryByID(teID)
-                ?? null;
+                => //ClassModel
+                   ontologyModel?.ClassModel.Relations.SubClassOf.SelectEntryByID(teID) ?? 
+                   ontologyModel?.ClassModel.Relations.EquivalentClass.SelectEntryByID(teID) ??
+                   ontologyModel?.ClassModel.Relations.DisjointWith.SelectEntryByID(teID) ??
+                   //PropertyModel
+                   ontologyModel?.PropertyModel.Relations.SubPropertyOf.SelectEntryByID(teID) ??
+                   ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID) ??
+                   ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID) ??
+                   ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID) ??
+                   ontologyModel?.PropertyModel.Relations.PropertyChainAxiom.SelectEntryByID(teID) ??
+                   //Data
+                   ontologyData?.Relations.ClassType.SelectEntryByID(teID) ??
+                   ontologyData?.Relations.SameAs.SelectEntryByID(teID) ??
+                   ontologyData?.Relations.DifferentFrom.SelectEntryByID(teID) ??
+                   ontologyData?.Relations.Member.SelectEntryByID(teID) ??
+                   ontologyData?.Relations.MemberList.SelectEntryByID(teID) ??
+                   ontologyData?.Relations.Assertions.SelectEntryByID(teID) ??
+                   null;
             #endregion
 
             //Determine the semantic reification vocabulary to be used, depending on the working taxonomy
