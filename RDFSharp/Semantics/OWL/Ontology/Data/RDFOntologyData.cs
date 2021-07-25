@@ -389,13 +389,9 @@ namespace RDFSharp.Semantics.OWL
                                 this.AddMemberListRelation(aFact, bFact);
                             else
                             {
-                                //Add the assertion to the data
                                 RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
                                 this.Relations.Assertions.AddEntry(taxonomyEntry);
-
-                                //Link the axiom annotation to the assertion
-                                if (axiomAnnotation != null && this.Relations.Assertions.ContainsEntry(taxonomyEntry))
-                                    this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}")), axiomAnnotation.Property, axiomAnnotation.Value));
+                                this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation);
                             }
                         }
                         else
@@ -439,14 +435,10 @@ namespace RDFSharp.Semantics.OWL
                         if (!datatypeProperty.Equals(RDFVocabulary.SKOS.MEMBER)
                                 && !datatypeProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
                         {
-                            //Add the assertion to the data
                             RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral);
                             this.Relations.Assertions.AddEntry(taxonomyEntry);
                             this.AddLiteral(ontologyLiteral);
-
-                            //Link the axiom annotation to the assertion
-                            if (axiomAnnotation != null && this.Relations.Assertions.ContainsEntry(taxonomyEntry))
-                                this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}")), axiomAnnotation.Property, axiomAnnotation.Value));
+                            this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation);
                         }
                         else
                         {
@@ -585,20 +577,12 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesBySubject(ontologyFact))
                 { 
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
-
-                    //Also remove eventually linked OWL2 axiom annotations
-                    RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
-                    foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(taxonomyEntryRepresentative))
-                        this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
                 }
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyFact))
                 { 
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
-
-                    //Also remove eventually linked OWL2 axiom annotations
-                    RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
-                    foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(taxonomyEntryRepresentative))
-                        this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
                 }
 
                 //Member [SKOS]
@@ -748,12 +732,7 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyLiteral))
                 {
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
-
-                    //Also remove eventually linked OWL2 axiom annotations
-                    RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
-                    foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(taxonomyEntryRepresentative))
-                        this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
-
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
                     this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, newOntologyLiteral);
                 }
 
@@ -963,14 +942,9 @@ namespace RDFSharp.Semantics.OWL
                     this.RemoveMemberListRelation(aFact, bFact);
                 else
                 {
-                    //Remove the assertion from data
                     RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
-
-                    //Also remove eventually linked OWL2 axiom annotations
-                    RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
-                    foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(taxonomyEntryRepresentative))
-                        this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
                 }
             }
             return this;
@@ -985,14 +959,9 @@ namespace RDFSharp.Semantics.OWL
         {
             if (ontologyFact != null && datatypeProperty != null && ontologyLiteral != null)
             {
-                //Remove the assertion from data
                 RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral);
                 this.Relations.Assertions.RemoveEntry(taxonomyEntry);
-
-                //Also remove eventually linked OWL2 axiom annotations
-                RDFOntologyFact taxonomyEntryRepresentative = new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
-                foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(taxonomyEntryRepresentative))
-                    this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
+                this.RemoveAxiomAnnotation(taxonomyEntry);
             }
             return this;
         }
@@ -1020,6 +989,32 @@ namespace RDFSharp.Semantics.OWL
                 this.Relations.NegativeAssertions.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral));
             return this;
         }
+
+        /// <summary>
+        /// Adds the given owl:Axiom annotation to the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyData AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation)
+        {
+            if (axiomAnnotation != null && this.Relations.Assertions.ContainsEntry(taxonomyEntry))
+                this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the given owl:Axiom annotation [OWL2]
+        /// </summary>
+        internal RDFOntologyData RemoveAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry)
+        {
+            foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(this.GetTaxonomyEntryRepresentative(taxonomyEntry)))
+                this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
+            return this;
+        }
+
+        /// <summary>
+        /// Gets the representative of the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyFact GetTaxonomyEntryRepresentative(RDFOntologyTaxonomyEntry taxonomyEntry)
+            => new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
         #endregion
 
         #region Select
