@@ -279,9 +279,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "ontologyFact -> rdf:type -> ontologyClass" relation to the data (and also ontologyFact definition).
+        /// Adds the "ontologyFact -> rdf:type -> ontologyClass" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass)
+        public RDFOntologyData AddClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass, RDFOntologyAxiomAnnotation axiomAnnotation=null)
         {
             if (ontologyFact != null && ontologyClass != null)
             {
@@ -291,8 +291,12 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the ClassType relation
                     if (RDFOntologyChecker.CheckClassTypeCompatibility(ontologyClass))
                     {
+                        RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass);
+                        this.Relations.ClassType.AddEntry(taxonomyEntry);
                         this.AddFact(ontologyFact);
-                        this.Relations.ClassType.AddEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass));
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyDataMetadata.ClassType));
                     }
                     else
                     {
@@ -310,17 +314,22 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aFact -> owl:sameAs -> bFact" relation to the data
+        /// Adds the "aFact -> owl:sameAs -> bFact" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyData AddSameAsRelation(RDFOntologyFact aFact, RDFOntologyFact bFact)
+        public RDFOntologyData AddSameAsRelation(RDFOntologyFact aFact, RDFOntologyFact bFact, RDFOntologyAxiomAnnotation axiomAnnotation=null)
         {
             if (aFact != null && bFact != null && !aFact.Equals(bFact))
             {
                 //Enforce taxonomy checks before adding the SameAs relation
                 if (RDFOntologyChecker.CheckSameAsCompatibility(this, aFact, bFact))
                 {
-                    this.Relations.SameAs.AddEntry(new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), bFact));
-                    this.Relations.SameAs.AddEntry(new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), aFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                    RDFOntologyTaxonomyEntry sameAsLeft = new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), bFact);
+                    this.Relations.SameAs.AddEntry(sameAsLeft);
+                    RDFOntologyTaxonomyEntry sameAsRight = new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), aFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                    this.Relations.SameAs.AddEntry(sameAsRight);
+
+                    //Link owl:Axiom annotation
+                    this.AddAxiomAnnotation(sameAsLeft, axiomAnnotation, nameof(RDFOntologyDataMetadata.SameAs));
                 }
                 else
                 {
@@ -332,17 +341,22 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aFact -> owl:differentFrom -> bFact" relation to the data
+        /// Adds the "aFact -> owl:differentFrom -> bFact" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyData AddDifferentFromRelation(RDFOntologyFact aFact, RDFOntologyFact bFact)
+        public RDFOntologyData AddDifferentFromRelation(RDFOntologyFact aFact, RDFOntologyFact bFact, RDFOntologyAxiomAnnotation axiomAnnotation=null)
         {
             if (aFact != null && bFact != null && !aFact.Equals(bFact))
             {
                 //Enforce taxonomy checks before adding the DifferentFrom relation
                 if (RDFOntologyChecker.CheckDifferentFromCompatibility(this, aFact, bFact))
                 {
-                    this.Relations.DifferentFrom.AddEntry(new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), bFact));
-                    this.Relations.DifferentFrom.AddEntry(new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), aFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                    RDFOntologyTaxonomyEntry differentFromLeft = new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), bFact);
+                    this.Relations.DifferentFrom.AddEntry(differentFromLeft);
+                    RDFOntologyTaxonomyEntry differentFromRight = new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), aFact).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                    this.Relations.DifferentFrom.AddEntry(differentFromRight);
+
+                    //Link owl:Axiom annotation
+                    this.AddAxiomAnnotation(differentFromLeft, axiomAnnotation, nameof(RDFOntologyDataMetadata.DifferentFrom));
                 }
                 else
                 {
@@ -364,7 +378,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aFact -> objectProperty -> bFact" relation to the data and links it to the given axiom annotation if provided
+        /// Adds the "aFact -> objectProperty -> bFact" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
         public RDFOntologyData AddAssertionRelation(RDFOntologyFact aFact,
                                                     RDFOntologyObjectProperty objectProperty,
@@ -384,16 +398,16 @@ namespace RDFSharp.Semantics.OWL
                         if (RDFOntologyChecker.CheckAssertionCompatibility(this, aFact, objectProperty, bFact))
                         {
                             if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER))
-                                this.AddMemberRelation(aFact, bFact);
+                                this.AddMemberRelation(aFact, bFact, axiomAnnotation);
                             else if (objectProperty.Equals(RDFVocabulary.SKOS.MEMBER_LIST))
-                                this.AddMemberListRelation(aFact, bFact);
+                                this.AddMemberListRelation(aFact, bFact, axiomAnnotation);
                             else
                             {
                                 RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
                                 this.Relations.Assertions.AddEntry(taxonomyEntry);
 
                                 //Link owl:Axiom annotation
-                                this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation);
+                                this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyDataMetadata.Assertions));
                             }
                         }
                         else
@@ -418,7 +432,7 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" relation to the data and links it to the given axiom annotation if provided
+        /// Adds the "ontologyFact -> datatypeProperty -> ontologyLiteral" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
         public RDFOntologyData AddAssertionRelation(RDFOntologyFact ontologyFact,
                                                     RDFOntologyDatatypeProperty datatypeProperty,
@@ -442,7 +456,7 @@ namespace RDFSharp.Semantics.OWL
                             this.AddLiteral(ontologyLiteral);
 
                             //Link owl:Axiom annotation
-                            this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation);
+                            this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyDataMetadata.Assertions));
                         }
                         else
                         {
@@ -563,19 +577,44 @@ namespace RDFSharp.Semantics.OWL
 
                 //ClassType
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.ClassType.SelectEntriesBySubject(ontologyFact))
+                {
                     this.Relations.ClassType.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }   
 
                 //SameAs
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.SameAs.SelectEntriesBySubject(ontologyFact))
+                {
                     this.Relations.SameAs.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.SameAs.SelectEntriesByObject(ontologyFact))
+                { 
                     this.Relations.SameAs.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }
 
                 //DifferentFrom
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.DifferentFrom.SelectEntriesBySubject(ontologyFact))
+                {
                     this.Relations.DifferentFrom.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }                    
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.DifferentFrom.SelectEntriesByObject(ontologyFact))
+                {
                     this.Relations.DifferentFrom.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }   
 
                 //Assertions
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesBySubject(ontologyFact))
@@ -595,15 +634,35 @@ namespace RDFSharp.Semantics.OWL
 
                 //Member [SKOS]
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Member.SelectEntriesBySubject(ontologyFact))
+                {
                     this.Relations.Member.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }                    
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Member.SelectEntriesByObject(ontologyFact))
+                {
                     this.Relations.Member.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }                    
 
                 //MemberList [SKOS]
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.MemberList.SelectEntriesBySubject(ontologyFact))
+                {
                     this.Relations.MemberList.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }   
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.MemberList.SelectEntriesByObject(ontologyFact))
+                {
                     this.Relations.MemberList.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
+                    this.RemoveAxiomAnnotation(taxonomyEntry);
+                }   
 
                 //NegativeAssertions [OWL2]
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.NegativeAssertions.SelectEntriesBySubject(ontologyFact))
@@ -893,7 +952,13 @@ namespace RDFSharp.Semantics.OWL
         public RDFOntologyData RemoveClassTypeRelation(RDFOntologyFact ontologyFact, RDFOntologyClass ontologyClass)
         {
             if (ontologyFact != null && ontologyClass != null)
-                this.Relations.ClassType.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, RDFVocabulary.RDF.TYPE.ToRDFOntologyObjectProperty(), ontologyClass);
+                this.Relations.ClassType.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
+                this.RemoveAxiomAnnotation(taxonomyEntry);
+            }                
             return this;
         }
 
@@ -904,8 +969,14 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && bFact != null)
             {
-                this.Relations.SameAs.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), bFact));
-                this.Relations.SameAs.RemoveEntry(new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), aFact));
+                RDFOntologyTaxonomyEntry sameAsLeft = new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), bFact);
+                this.Relations.SameAs.RemoveEntry(sameAsLeft);
+                RDFOntologyTaxonomyEntry sameAsRight = new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.SAME_AS.ToRDFOntologyObjectProperty(), aFact);
+                this.Relations.SameAs.RemoveEntry(sameAsRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(sameAsLeft);
+                this.RemoveAxiomAnnotation(sameAsRight);
             }
             return this;
         }
@@ -917,8 +988,14 @@ namespace RDFSharp.Semantics.OWL
         {
             if (aFact != null && bFact != null)
             {
-                this.Relations.DifferentFrom.RemoveEntry(new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), bFact));
-                this.Relations.DifferentFrom.RemoveEntry(new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), aFact));
+                RDFOntologyTaxonomyEntry differentFromLeft = new RDFOntologyTaxonomyEntry(aFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), bFact);
+                this.Relations.DifferentFrom.RemoveEntry(differentFromLeft);
+                RDFOntologyTaxonomyEntry differentFromRight = new RDFOntologyTaxonomyEntry(bFact, RDFVocabulary.OWL.DIFFERENT_FROM.ToRDFOntologyObjectProperty(), aFact);
+                this.Relations.DifferentFrom.RemoveEntry(differentFromRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(differentFromLeft);
+                this.RemoveAxiomAnnotation(differentFromRight);
             }
             return this;
         }
@@ -1008,9 +1085,38 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given owl:Axiom annotation to the given taxonomy entry
         /// </summary>
-        internal RDFOntologyData AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation)
+        internal RDFOntologyData AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation, string targetTaxonomyName)
         {
-            if (axiomAnnotation != null && this.Relations.Assertions.ContainsEntry(taxonomyEntry))
+            #region DetectTargetTaxonomy
+            RDFOntologyTaxonomy DetectTargetTaxonomy()
+            {
+                RDFOntologyTaxonomy targetTaxonomy = default;
+                switch (targetTaxonomyName)
+                {
+                    case nameof(RDFOntologyDataMetadata.ClassType):
+                        targetTaxonomy = this.Relations.ClassType;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.SameAs):
+                        targetTaxonomy = this.Relations.SameAs;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.DifferentFrom):
+                        targetTaxonomy = this.Relations.DifferentFrom;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.Assertions):
+                        targetTaxonomy = this.Relations.Assertions;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.Member):
+                        targetTaxonomy = this.Relations.Member;
+                        break;
+                    case nameof(RDFOntologyDataMetadata.MemberList):
+                        targetTaxonomy = this.Relations.MemberList;
+                        break;
+                }
+                return targetTaxonomy;
+            }
+            #endregion
+
+            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
                 this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
             return this;
         }

@@ -992,26 +992,40 @@ namespace RDFSharp.Semantics.SKOS
 
         #region Extensions
         /// <summary>
-        /// Adds the "skosCollection -> skos:member -> skosMember" relation to the data.
+        /// Adds the "skosCollection -> skos:member -> skosMember" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
         internal static RDFOntologyData AddMemberRelation(this RDFOntologyData ontologyData,
                                                           RDFOntologyFact skosCollection,
-                                                          RDFOntologyFact skosMember)
+                                                          RDFOntologyFact skosMember,
+                                                          RDFOntologyAxiomAnnotation axiomAnnotation=null)
         {
             if (ontologyData != null && skosCollection != null && skosMember != null)
-                ontologyData.Relations.Member.AddEntry(new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember);
+                ontologyData.Relations.Member.AddEntry(taxonomyEntry);
+
+                //Link owl:Axiom annotation
+                ontologyData.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyDataMetadata.Member));
+            }   
             return ontologyData;
         }
 
         /// <summary>
-        /// Adds the "skosOrderedCollection -> skos:memberList -> skosMember" relation to the data.
+        /// Adds the "skosOrderedCollection -> skos:memberList -> skosMember" relation to the data (and links the given axiom annotation if provided)
         /// </summary>
         internal static RDFOntologyData AddMemberListRelation(this RDFOntologyData ontologyData,
                                                               RDFOntologyFact skosOrderedCollection,
-                                                              RDFOntologyFact skosMember)
+                                                              RDFOntologyFact skosMember,
+                                                              RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (ontologyData != null && skosOrderedCollection != null && skosMember != null)
-                ontologyData.Relations.MemberList.AddEntry(new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember);
+                ontologyData.Relations.MemberList.AddEntry(taxonomyEntry);
+
+                //Link owl:Axiom annotation
+                ontologyData.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyDataMetadata.MemberList));
+            }
             return ontologyData;
         }
 
@@ -1023,7 +1037,13 @@ namespace RDFSharp.Semantics.SKOS
                                                              RDFOntologyFact skosMember)
         {
             if (ontologyData != null && skosCollection != null && skosMember != null)
-                ontologyData.Relations.Member.RemoveEntry(new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(skosCollection, RDFVocabulary.SKOS.MEMBER.ToRDFOntologyObjectProperty(), skosMember);
+                ontologyData.Relations.Member.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
+                ontologyData.RemoveAxiomAnnotation(taxonomyEntry);
+            }
             return ontologyData;
         }
 
@@ -1035,7 +1055,13 @@ namespace RDFSharp.Semantics.SKOS
                                                                  RDFOntologyFact skosMember)
         {
             if (ontologyData != null && skosOrderedCollection != null && skosMember != null)
-                ontologyData.Relations.MemberList.RemoveEntry(new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(skosOrderedCollection, RDFVocabulary.SKOS.MEMBER_LIST.ToRDFOntologyObjectProperty(), skosMember);
+                ontologyData.Relations.MemberList.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
+                ontologyData.RemoveAxiomAnnotation(taxonomyEntry);
+            }   
             return ontologyData;
         }
         #endregion
