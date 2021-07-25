@@ -2052,17 +2052,17 @@ namespace RDFSharp.Semantics.OWL
                 ?? ontologyModel?.ClassModel.Relations.OneOf.SelectEntryByID(teID)
                 ?? ontologyModel?.ClassModel.Relations.IntersectionOf.SelectEntryByID(teID)
                 ?? ontologyModel?.ClassModel.Relations.UnionOf.SelectEntryByID(teID)
-                ?? ontologyModel?.ClassModel.Relations.HasKey.SelectEntryByID(teID)
+                ?? ontologyModel?.ClassModel.Relations.HasKey.SelectEntryByID(teID) //OWL2
                 ?? ontologyModel?.PropertyModel.Relations.SubPropertyOf.SelectEntryByID(teID)
                 ?? ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID)
-                ?? ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID)
                 ?? ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID)
-                ?? ontologyModel?.PropertyModel.Relations.PropertyChainAxiom.SelectEntryByID(teID)
+                ?? ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID) //OWL2
+                ?? ontologyModel?.PropertyModel.Relations.PropertyChainAxiom.SelectEntryByID(teID) //OWL2
                 ?? ontologyData?.Relations.ClassType.SelectEntryByID(teID)
                 ?? ontologyData?.Relations.SameAs.SelectEntryByID(teID)
                 ?? ontologyData?.Relations.DifferentFrom.SelectEntryByID(teID)
-                ?? ontologyData?.Relations.Member.SelectEntryByID(teID)
-                ?? ontologyData?.Relations.MemberList.SelectEntryByID(teID)
+                ?? ontologyData?.Relations.Member.SelectEntryByID(teID) //SKOS
+                ?? ontologyData?.Relations.MemberList.SelectEntryByID(teID) //SKOS
                 ?? ontologyData?.Relations.Assertions.SelectEntryByID(teID)
                 ?? null;
             #endregion
