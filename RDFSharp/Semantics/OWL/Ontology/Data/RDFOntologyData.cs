@@ -391,6 +391,8 @@ namespace RDFSharp.Semantics.OWL
                             {
                                 RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
                                 this.Relations.Assertions.AddEntry(taxonomyEntry);
+
+                                //Link owl:Axiom annotation
                                 this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation);
                             }
                         }
@@ -438,6 +440,8 @@ namespace RDFSharp.Semantics.OWL
                             RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral);
                             this.Relations.Assertions.AddEntry(taxonomyEntry);
                             this.AddLiteral(ontologyLiteral);
+
+                            //Link owl:Axiom annotation
                             this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation);
                         }
                         else
@@ -577,11 +581,15 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesBySubject(ontologyFact))
                 { 
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
                     this.RemoveAxiomAnnotation(taxonomyEntry);
                 }
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyFact))
                 { 
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
                     this.RemoveAxiomAnnotation(taxonomyEntry);
                 }
 
@@ -732,7 +740,10 @@ namespace RDFSharp.Semantics.OWL
                 foreach (RDFOntologyTaxonomyEntry taxonomyEntry in this.Relations.Assertions.SelectEntriesByObject(ontologyLiteral))
                 {
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
                     this.RemoveAxiomAnnotation(taxonomyEntry);
+
                     this.AddAssertionRelation((RDFOntologyFact)taxonomyEntry.TaxonomySubject, (RDFOntologyDatatypeProperty)taxonomyEntry.TaxonomyPredicate, newOntologyLiteral);
                 }
 
@@ -944,6 +955,8 @@ namespace RDFSharp.Semantics.OWL
                 {
                     RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(aFact, objectProperty, bFact);
                     this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+
+                    //Unlink owl:Axiom annotation
                     this.RemoveAxiomAnnotation(taxonomyEntry);
                 }
             }
@@ -961,6 +974,8 @@ namespace RDFSharp.Semantics.OWL
             {
                 RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(ontologyFact, datatypeProperty, ontologyLiteral);
                 this.Relations.Assertions.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
                 this.RemoveAxiomAnnotation(taxonomyEntry);
             }
             return this;
