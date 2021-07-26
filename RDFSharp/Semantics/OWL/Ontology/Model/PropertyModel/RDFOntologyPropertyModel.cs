@@ -252,9 +252,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given standard annotation to the given ontology property
         /// </summary>
-        public RDFOntologyPropertyModel AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                              RDFOntologyProperty ontologyProperty,
-                                                              RDFOntologyResource annotationValue)
+        public RDFOntologyPropertyModel AddStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyProperty ontologyProperty, RDFOntologyResource annotationValue)
         {
             if (ontologyProperty != null && annotationValue != null)
             {
@@ -340,9 +338,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Adds the given custom annotation to the given ontology property
         /// </summary>
-        public RDFOntologyPropertyModel AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                            RDFOntologyProperty ontologyProperty,
-                                                            RDFOntologyResource annotationValue)
+        public RDFOntologyPropertyModel AddCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyProperty ontologyProperty, RDFOntologyResource annotationValue)
         {
             if (ontologyAnnotationProperty != null && ontologyProperty != null && annotationValue != null)
             {
@@ -398,10 +394,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "childProperty -> rdfs:subPropertyOf -> motherProperty" relation to the property model.
+        /// Adds the "childProperty -> rdfs:subPropertyOf -> motherProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddSubPropertyOfRelation(RDFOntologyObjectProperty childProperty,
-                                                                 RDFOntologyObjectProperty motherProperty)
+        public RDFOntologyPropertyModel AddSubPropertyOfRelation(RDFOntologyObjectProperty childProperty, RDFOntologyObjectProperty motherProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty))
             {
@@ -411,7 +406,11 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the subPropertyOf relation
                     if (RDFOntologyChecker.CheckSubPropertyOfCompatibility(this, childProperty, motherProperty))
                     {
-                        this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty));
+                        RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty);
+                        this.Relations.SubPropertyOf.AddEntry(taxonomyEntry);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.SubPropertyOf));
                     }
                     else
                     {
@@ -429,10 +428,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "childProperty -> rdfs:subPropertyOf -> motherProperty" relation to the property model.
+        /// Adds the "childProperty -> rdfs:subPropertyOf -> motherProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddSubPropertyOfRelation(RDFOntologyDatatypeProperty childProperty,
-                                                                 RDFOntologyDatatypeProperty motherProperty)
+        public RDFOntologyPropertyModel AddSubPropertyOfRelation(RDFOntologyDatatypeProperty childProperty, RDFOntologyDatatypeProperty motherProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (childProperty != null && motherProperty != null && !childProperty.Equals(motherProperty))
             {
@@ -442,7 +440,11 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the subPropertyOf relation
                     if (RDFOntologyChecker.CheckSubPropertyOfCompatibility(this, childProperty, motherProperty))
                     {
-                        this.Relations.SubPropertyOf.AddEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty));
+                        RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty);
+                        this.Relations.SubPropertyOf.AddEntry(taxonomyEntry);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(taxonomyEntry, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.SubPropertyOf));
                     }
                     else
                     {
@@ -460,10 +462,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aProperty -> owl:equivalentProperty -> bProperty" relation to the property model
+        /// Adds the "aProperty -> owl:equivalentProperty -> bProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddEquivalentPropertyRelation(RDFOntologyObjectProperty aProperty,
-                                                                      RDFOntologyObjectProperty bProperty)
+        public RDFOntologyPropertyModel AddEquivalentPropertyRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
@@ -473,8 +474,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the equivalentProperty relation
                     if (RDFOntologyChecker.CheckEquivalentPropertyCompatibility(this, aProperty, bProperty))
                     {
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty));
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry equivpropLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty);
+                        this.Relations.EquivalentProperty.AddEntry(equivpropLeft);
+                        RDFOntologyTaxonomyEntry equivpropRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.EquivalentProperty.AddEntry(equivpropRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(equivpropLeft, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.EquivalentProperty));
                     }
                     else
                     {
@@ -492,10 +498,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aProperty -> owl:equivalentProperty -> bProperty" relation to the property model
+        /// Adds the "aProperty -> owl:equivalentProperty -> bProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddEquivalentPropertyRelation(RDFOntologyDatatypeProperty aProperty,
-                                                                      RDFOntologyDatatypeProperty bProperty)
+        public RDFOntologyPropertyModel AddEquivalentPropertyRelation(RDFOntologyDatatypeProperty aProperty, RDFOntologyDatatypeProperty bProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
@@ -505,8 +510,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the equivalentProperty relation
                     if (RDFOntologyChecker.CheckEquivalentPropertyCompatibility(this, aProperty, bProperty))
                     {
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty));
-                        this.Relations.EquivalentProperty.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry equivpropLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty);
+                        this.Relations.EquivalentProperty.AddEntry(equivpropLeft);
+                        RDFOntologyTaxonomyEntry equivpropRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.EquivalentProperty.AddEntry(equivpropRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(equivpropLeft, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.EquivalentProperty));
                     }
                     else
                     {
@@ -524,10 +534,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aProperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
+        /// Adds the "aProperty -> owl:propertyDisjointWith -> bProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty,
-                                                                        RDFOntologyObjectProperty bProperty)
+        public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
@@ -537,8 +546,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the propertyDisjointWith relation
                     if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty))
                     {
-                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
-                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry propdisjwithLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty);
+                        this.Relations.PropertyDisjointWith.AddEntry(propdisjwithLeft);
+                        RDFOntologyTaxonomyEntry propdisjwithRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.PropertyDisjointWith.AddEntry(propdisjwithRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(propdisjwithLeft, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.PropertyDisjointWith));
                     }
                     else
                     {
@@ -556,10 +570,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aProperty -> owl:propertyDisjointWith -> bProperty" relation to the property model.
+        /// Adds the "aProperty -> owl:propertyDisjointWith -> bProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty,
-                                                                        RDFOntologyDatatypeProperty bProperty)
+        public RDFOntologyPropertyModel AddPropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty, RDFOntologyDatatypeProperty bProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
@@ -569,8 +582,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the propertyDisjointWith relation
                     if (RDFOntologyChecker.CheckPropertyDisjointWithCompatibility(this, aProperty, bProperty))
                     {
-                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
-                        this.Relations.PropertyDisjointWith.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry propdisjwithLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty);
+                        this.Relations.PropertyDisjointWith.AddEntry(propdisjwithLeft);
+                        RDFOntologyTaxonomyEntry propdisjwithRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.PropertyDisjointWith.AddEntry(propdisjwithRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(propdisjwithLeft, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.PropertyDisjointWith));
                     }
                     else
                     {
@@ -588,10 +606,9 @@ namespace RDFSharp.Semantics.OWL
         }
 
         /// <summary>
-        /// Adds the "aProperty -> owl:inverseOf -> bProperty" relation to the property model
+        /// Adds the "aProperty -> owl:inverseOf -> bProperty" relation to the property model (and links the given axiom annotation if provided)
         /// </summary>
-        public RDFOntologyPropertyModel AddInverseOfRelation(RDFOntologyObjectProperty aProperty,
-                                                             RDFOntologyObjectProperty bProperty)
+        public RDFOntologyPropertyModel AddInverseOfRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty, RDFOntologyAxiomAnnotation axiomAnnotation = null)
         {
             if (aProperty != null && bProperty != null && !aProperty.Equals(bProperty))
             {
@@ -601,8 +618,13 @@ namespace RDFSharp.Semantics.OWL
                     //Enforce taxonomy checks before adding the inverseOf relation
                     if (RDFOntologyChecker.CheckInverseOfPropertyCompatibility(this, aProperty, bProperty))
                     {
-                        this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), bProperty));
-                        this.Relations.InverseOf.AddEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API));
+                        RDFOntologyTaxonomyEntry invpropLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), bProperty);
+                        this.Relations.InverseOf.AddEntry(invpropLeft);
+                        RDFOntologyTaxonomyEntry invpropRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), aProperty).SetInference(RDFSemanticsEnums.RDFOntologyInferenceType.API);
+                        this.Relations.InverseOf.AddEntry(invpropRight);
+
+                        //Link owl:Axiom annotation
+                        this.AddAxiomAnnotation(invpropLeft, axiomAnnotation, nameof(RDFOntologyPropertyModelMetadata.InverseOf));
                     }
                     else
                     {
@@ -642,8 +664,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// For each of the given properties, adds the "ontologyProperty -> owl:propertyChainAxiom -> chainProperty" relation to the property model [OWL2]
         /// </summary>
-        public RDFOntologyPropertyModel AddPropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty,
-                                                                      List<RDFOntologyObjectProperty> chainProperties)
+        public RDFOntologyPropertyModel AddPropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty, List<RDFOntologyObjectProperty> chainProperties)
         {
             if (ontologyProperty != null && chainProperties != null)
             {
@@ -670,6 +691,42 @@ namespace RDFSharp.Semantics.OWL
             }
             return this;
         }
+
+        /// <summary>
+        /// Adds the given owl:Axiom annotation to the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyPropertyModel AddAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry, RDFOntologyAxiomAnnotation axiomAnnotation, string targetTaxonomyName)
+        {
+            #region DetectTargetTaxonomy
+            RDFOntologyTaxonomy DetectTargetTaxonomy()
+            {
+                RDFOntologyTaxonomy targetTaxonomy = default;
+                switch (targetTaxonomyName)
+                {
+                    case nameof(RDFOntologyPropertyModelMetadata.SubPropertyOf):
+                        targetTaxonomy = this.Relations.SubPropertyOf;
+                        break;
+                    case nameof(RDFOntologyPropertyModelMetadata.EquivalentProperty):
+                        targetTaxonomy = this.Relations.EquivalentProperty;
+                        break;
+                    case nameof(RDFOntologyPropertyModelMetadata.PropertyDisjointWith):
+                        targetTaxonomy = this.Relations.PropertyDisjointWith;
+                        break;
+                    case nameof(RDFOntologyPropertyModelMetadata.InverseOf):
+                        targetTaxonomy = this.Relations.InverseOf;
+                        break;
+                    case nameof(RDFOntologyPropertyModelMetadata.PropertyChainAxiom):
+                        targetTaxonomy = this.Relations.PropertyChainAxiom;
+                        break;
+                }
+                return targetTaxonomy;
+            }
+            #endregion
+
+            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
+                this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
+            return this;
+        }
         #endregion
 
         #region Remove
@@ -689,9 +746,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given standard annotation from the given ontology property
         /// </summary>
-        public RDFOntologyPropertyModel RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation,
-                                                                 RDFOntologyProperty ontologyProperty,
-                                                                 RDFOntologyResource annotationValue)
+        public RDFOntologyPropertyModel RemoveStandardAnnotation(RDFSemanticsEnums.RDFOntologyStandardAnnotation standardAnnotation, RDFOntologyProperty ontologyProperty, RDFOntologyResource annotationValue)
         {
             if (ontologyProperty != null && annotationValue != null)
             {
@@ -756,9 +811,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the given custom annotation from the given ontology property
         /// </summary>
-        public RDFOntologyPropertyModel RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty,
-                                                               RDFOntologyProperty ontologyProperty,
-                                                               RDFOntologyResource annotationValue)
+        public RDFOntologyPropertyModel RemoveCustomAnnotation(RDFOntologyAnnotationProperty ontologyAnnotationProperty, RDFOntologyProperty ontologyProperty, RDFOntologyResource annotationValue)
         {
             if (ontologyAnnotationProperty != null && ontologyProperty != null && annotationValue != null)
             {
@@ -836,35 +889,31 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "childProperty -> rdfs:subPropertyOf -> motherProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemoveSubPropertyOfRelation(RDFOntologyObjectProperty childProperty,
-                                                                    RDFOntologyObjectProperty motherProperty)
+        public RDFOntologyPropertyModel RemoveSubPropertyOfRelation(RDFOntologyObjectProperty childProperty, RDFOntologyObjectProperty motherProperty)
         {
             if (childProperty != null && motherProperty != null)
-                this.Relations.SubPropertyOf.RemoveEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty));
+            {
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty);
+                this.Relations.SubPropertyOf.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
+                this.RemoveAxiomAnnotation(taxonomyEntry);
+            }
             return this;
         }
 
         /// <summary>
         /// Removes the "childProperty -> rdfs:subPropertyOf -> motherProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemoveSubPropertyOfRelation(RDFOntologyDatatypeProperty childProperty,
-                                                                    RDFOntologyDatatypeProperty motherProperty)
+        public RDFOntologyPropertyModel RemoveSubPropertyOfRelation(RDFOntologyDatatypeProperty childProperty, RDFOntologyDatatypeProperty motherProperty)
         {
             if (childProperty != null && motherProperty != null)
-                this.Relations.SubPropertyOf.RemoveEntry(new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty));
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the "aProperty -> owl:equivalentProperty -> bProperty" relation from the property model
-        /// </summary>
-        public RDFOntologyPropertyModel RemoveEquivalentPropertyRelation(RDFOntologyObjectProperty aProperty,
-                                                                         RDFOntologyObjectProperty bProperty)
-        {
-            if (aProperty != null && bProperty != null)
             {
-                this.Relations.EquivalentProperty.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty));
-                this.Relations.EquivalentProperty.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty));
+                RDFOntologyTaxonomyEntry taxonomyEntry = new RDFOntologyTaxonomyEntry(childProperty, RDFVocabulary.RDFS.SUB_PROPERTY_OF.ToRDFOntologyObjectProperty(), motherProperty);
+                this.Relations.SubPropertyOf.RemoveEntry(taxonomyEntry);
+
+                //Unlink owl:Axiom annotation
+                this.RemoveAxiomAnnotation(taxonomyEntry);
             }
             return this;
         }
@@ -872,13 +921,37 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aProperty -> owl:equivalentProperty -> bProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemoveEquivalentPropertyRelation(RDFOntologyDatatypeProperty aProperty,
-                                                                         RDFOntologyDatatypeProperty bProperty)
+        public RDFOntologyPropertyModel RemoveEquivalentPropertyRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             if (aProperty != null && bProperty != null)
             {
-                this.Relations.EquivalentProperty.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty));
-                this.Relations.EquivalentProperty.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty));
+                RDFOntologyTaxonomyEntry equivpropLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty);
+                this.Relations.EquivalentProperty.RemoveEntry(equivpropLeft);
+                RDFOntologyTaxonomyEntry equivpropRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty);
+                this.Relations.EquivalentProperty.RemoveEntry(equivpropRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(equivpropLeft);
+                this.RemoveAxiomAnnotation(equivpropRight);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the "aProperty -> owl:equivalentProperty -> bProperty" relation from the property model
+        /// </summary>
+        public RDFOntologyPropertyModel RemoveEquivalentPropertyRelation(RDFOntologyDatatypeProperty aProperty, RDFOntologyDatatypeProperty bProperty)
+        {
+            if (aProperty != null && bProperty != null)
+            {
+                RDFOntologyTaxonomyEntry equivpropLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), bProperty);
+                this.Relations.EquivalentProperty.RemoveEntry(equivpropLeft);
+                RDFOntologyTaxonomyEntry equivpropRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.EQUIVALENT_PROPERTY.ToRDFOntologyObjectProperty(), aProperty);
+                this.Relations.EquivalentProperty.RemoveEntry(equivpropRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(equivpropLeft);
+                this.RemoveAxiomAnnotation(equivpropRight);
             }
             return this;
         }
@@ -886,13 +959,18 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aProperty -> owl:propertyDisjointWith -> bProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemovePropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty,
-                                                                           RDFOntologyObjectProperty bProperty)
+        public RDFOntologyPropertyModel RemovePropertyDisjointWithRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             if (aProperty != null && bProperty != null)
             {
-                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
-                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty));
+                RDFOntologyTaxonomyEntry propdisjwithLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty);
+                this.Relations.PropertyDisjointWith.RemoveEntry(propdisjwithLeft);
+                RDFOntologyTaxonomyEntry propdisjwithRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty);
+                this.Relations.PropertyDisjointWith.RemoveEntry(propdisjwithRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(propdisjwithLeft);
+                this.RemoveAxiomAnnotation(propdisjwithRight);
             }
             return this;
         }
@@ -900,28 +978,37 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "aProperty -> owl:propertyDisjointWith -> bProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemovePropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty,
-                                                                           RDFOntologyDatatypeProperty bProperty)
+        public RDFOntologyPropertyModel RemovePropertyDisjointWithRelation(RDFOntologyDatatypeProperty aProperty, RDFOntologyDatatypeProperty bProperty)
         {
             if (aProperty != null && bProperty != null)
             {
-                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty));
-                this.Relations.PropertyDisjointWith.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty));
+                RDFOntologyTaxonomyEntry propdisjwithLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), bProperty);
+                this.Relations.PropertyDisjointWith.RemoveEntry(propdisjwithLeft);
+                RDFOntologyTaxonomyEntry propdisjwithRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH.ToRDFOntologyObjectProperty(), aProperty);
+                this.Relations.PropertyDisjointWith.RemoveEntry(propdisjwithRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(propdisjwithLeft);
+                this.RemoveAxiomAnnotation(propdisjwithRight);
             }
             return this;
         }
-
 
         /// <summary>
         /// Removes the "aProperty -> owl:inverseOf -> bProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemoveInverseOfRelation(RDFOntologyObjectProperty aProperty,
-                                                                RDFOntologyObjectProperty bProperty)
+        public RDFOntologyPropertyModel RemoveInverseOfRelation(RDFOntologyObjectProperty aProperty, RDFOntologyObjectProperty bProperty)
         {
             if (aProperty != null && bProperty != null)
             {
-                this.Relations.InverseOf.RemoveEntry(new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), bProperty));
-                this.Relations.InverseOf.RemoveEntry(new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), aProperty));
+                RDFOntologyTaxonomyEntry invpropLeft = new RDFOntologyTaxonomyEntry(aProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), bProperty);
+                this.Relations.InverseOf.RemoveEntry(invpropLeft);
+                RDFOntologyTaxonomyEntry invpropRight = new RDFOntologyTaxonomyEntry(bProperty, RDFVocabulary.OWL.INVERSE_OF.ToRDFOntologyObjectProperty(), aProperty);
+                this.Relations.InverseOf.RemoveEntry(invpropRight);
+
+                //Unlink owl:Axiom annotations
+                this.RemoveAxiomAnnotation(invpropLeft);
+                this.RemoveAxiomAnnotation(invpropRight);
             }
             return this;
         }
@@ -959,11 +1046,20 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Removes the "ontologyProperty -> owl:propertyChainAxiom -> chainProperty" relation from the property model
         /// </summary>
-        public RDFOntologyPropertyModel RemovePropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty,
-                                                                         RDFOntologyObjectProperty chainProperty)
+        public RDFOntologyPropertyModel RemovePropertyChainAxiomRelation(RDFOntologyObjectProperty ontologyProperty, RDFOntologyObjectProperty chainProperty)
         {
             if (ontologyProperty != null && chainProperty != null)
                 this.Relations.PropertyChainAxiom.RemoveEntry(new RDFOntologyTaxonomyEntry(ontologyProperty, RDFVocabulary.OWL.PROPERTY_CHAIN_AXIOM.ToRDFOntologyObjectProperty(), chainProperty));
+            return this;
+        }
+
+        /// <summary>
+        /// Removes the given owl:Axiom annotation [OWL2]
+        /// </summary>
+        internal RDFOntologyPropertyModel RemoveAxiomAnnotation(RDFOntologyTaxonomyEntry taxonomyEntry)
+        {
+            foreach (RDFOntologyTaxonomyEntry axnTaxonomyEntry in this.Annotations.AxiomAnnotations.SelectEntriesBySubject(this.GetTaxonomyEntryRepresentative(taxonomyEntry)))
+                this.Annotations.AxiomAnnotations.RemoveEntry(axnTaxonomyEntry);
             return this;
         }
         #endregion
@@ -980,6 +1076,12 @@ namespace RDFSharp.Semantics.OWL
         /// </summary>
         public RDFOntologyProperty SelectProperty(string ontProperty)
             => ontProperty != null ? SelectProperty(RDFModelUtilities.CreateHash(ontProperty)) : null;
+
+        /// <summary>
+        /// Gets the representative of the given taxonomy entry
+        /// </summary>
+        internal RDFOntologyFact GetTaxonomyEntryRepresentative(RDFOntologyTaxonomyEntry taxonomyEntry)
+            => new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
         #endregion
 
         #region Set

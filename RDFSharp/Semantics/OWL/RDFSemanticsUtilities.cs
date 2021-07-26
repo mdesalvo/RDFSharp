@@ -2562,6 +2562,26 @@ namespace RDFSharp.Semantics.OWL
                         ontology.Model.ClassModel.AddDisjointWithRelation(((RDFResource)annotatedSource).ToRDFOntologyClass(), ((RDFResource)annotatedTarget).ToRDFOntologyClass(), axiomAnnotation);
                     #endregion
 
+                    #region PropertyModel(SubPropertyOf)
+                    else if (annotatedProperty.Equals(RDFVocabulary.RDFS.SUB_PROPERTY_OF))
+                        ontology.Model.PropertyModel.AddSubPropertyOfRelation(((RDFResource)annotatedSource).ToRDFOntologyObjectProperty(), ((RDFResource)annotatedTarget).ToRDFOntologyObjectProperty(), axiomAnnotation);
+                    #endregion
+
+                    #region PropertyModel(EquivalentProperty)
+                    else if (annotatedProperty.Equals(RDFVocabulary.OWL.EQUIVALENT_PROPERTY))
+                        ontology.Model.PropertyModel.AddEquivalentPropertyRelation(((RDFResource)annotatedSource).ToRDFOntologyObjectProperty(), ((RDFResource)annotatedTarget).ToRDFOntologyObjectProperty(), axiomAnnotation);
+                    #endregion
+
+                    #region PropertyModel(PropertyDisjointWith)
+                    else if (annotatedProperty.Equals(RDFVocabulary.OWL.PROPERTY_DISJOINT_WITH))
+                        ontology.Model.PropertyModel.AddPropertyDisjointWithRelation(((RDFResource)annotatedSource).ToRDFOntologyObjectProperty(), ((RDFResource)annotatedTarget).ToRDFOntologyObjectProperty(), axiomAnnotation);
+                    #endregion
+
+                    #region PropertyModel(InverseOf)
+                    else if (annotatedProperty.Equals(RDFVocabulary.OWL.INVERSE_OF))
+                        ontology.Model.PropertyModel.AddInverseOfRelation(((RDFResource)annotatedSource).ToRDFOntologyObjectProperty(), ((RDFResource)annotatedTarget).ToRDFOntologyObjectProperty(), axiomAnnotation);
+                    #endregion
+
                     #region Data(ClassType)
                     else if (annotatedProperty.Equals(RDFVocabulary.RDF.TYPE))
                         ontology.Data.AddClassTypeRelation(((RDFResource)annotatedSource).ToRDFOntologyFact(), ((RDFResource)annotatedTarget).ToRDFOntologyClass(), axiomAnnotation);

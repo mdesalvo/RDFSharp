@@ -2055,7 +2055,6 @@ namespace RDFSharp.Semantics.OWL
                    ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID) ??
                    ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID) ??
                    ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID) ??
-                   ontologyModel?.PropertyModel.Relations.PropertyChainAxiom.SelectEntryByID(teID) ??
                    //Data
                    ontologyData?.Relations.ClassType.SelectEntryByID(teID) ??
                    ontologyData?.Relations.SameAs.SelectEntryByID(teID) ??
