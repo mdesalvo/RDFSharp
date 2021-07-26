@@ -1993,7 +1993,7 @@ namespace RDFSharp.Semantics.OWL
         /// Gets a graph representation of the given taxonomy, exporting inferences according to the selected behavior [OWL2]
         /// </summary>
         internal static RDFGraph ReifyToRDFGraph(this RDFOntologyTaxonomy taxonomy, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior, string taxonomyName,
-            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData=null)
+            RDFOntologyClassModel ontologyClassModel = null, RDFOntologyPropertyModel ontologyPropertyModel = null, RDFOntologyData ontologyData=null)
         {
             RDFGraph result = new RDFGraph();
 
@@ -2002,7 +2002,7 @@ namespace RDFSharp.Semantics.OWL
                 //Semantic-based reification
                 case nameof(RDFOntologyDataMetadata.NegativeAssertions):
                 case nameof(RDFOntologyAnnotations.AxiomAnnotations):
-                    result = ReifySemanticTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior, ontologyModel, ontologyData);
+                    result = ReifySemanticTaxonomyToGraph(taxonomy, taxonomyName, infexpBehavior, ontologyClassModel, ontologyPropertyModel, ontologyData);
                     break;
 
                 //List-based reification
@@ -2021,7 +2021,7 @@ namespace RDFSharp.Semantics.OWL
             return result;
         }
         private static RDFGraph ReifySemanticTaxonomyToGraph(RDFOntologyTaxonomy taxonomy, string taxonomyName, RDFSemanticsEnums.RDFOntologyInferenceExportBehavior infexpBehavior,
-            RDFOntologyModel ontologyModel = null, RDFOntologyData ontologyData = null)
+            RDFOntologyClassModel ontologyClassModel = null, RDFOntologyPropertyModel ontologyPropertyModel = null, RDFOntologyData ontologyData = null)
         {
             RDFGraph result = new RDFGraph();
 
@@ -2047,14 +2047,14 @@ namespace RDFSharp.Semantics.OWL
             //Finds the taxonomy entry represented by the given ID in the ontology taxonomies
             RDFOntologyTaxonomyEntry FindTaxonomyEntry(long teID)
                 => //ClassModel
-                   ontologyModel?.ClassModel.Relations.SubClassOf.SelectEntryByID(teID) ?? 
-                   ontologyModel?.ClassModel.Relations.EquivalentClass.SelectEntryByID(teID) ??
-                   ontologyModel?.ClassModel.Relations.DisjointWith.SelectEntryByID(teID) ??
+                   ontologyClassModel?.Relations.SubClassOf.SelectEntryByID(teID) ?? 
+                   ontologyClassModel?.Relations.EquivalentClass.SelectEntryByID(teID) ??
+                   ontologyClassModel?.Relations.DisjointWith.SelectEntryByID(teID) ??
                    //PropertyModel
-                   ontologyModel?.PropertyModel.Relations.SubPropertyOf.SelectEntryByID(teID) ??
-                   ontologyModel?.PropertyModel.Relations.EquivalentProperty.SelectEntryByID(teID) ??
-                   ontologyModel?.PropertyModel.Relations.InverseOf.SelectEntryByID(teID) ??
-                   ontologyModel?.PropertyModel.Relations.PropertyDisjointWith.SelectEntryByID(teID) ??
+                   ontologyPropertyModel?.Relations.SubPropertyOf.SelectEntryByID(teID) ??
+                   ontologyPropertyModel?.Relations.EquivalentProperty.SelectEntryByID(teID) ??
+                   ontologyPropertyModel?.Relations.InverseOf.SelectEntryByID(teID) ??
+                   ontologyPropertyModel?.Relations.PropertyDisjointWith.SelectEntryByID(teID) ??
                    //Data
                    ontologyData?.Relations.ClassType.SelectEntryByID(teID) ??
                    ontologyData?.Relations.SameAs.SelectEntryByID(teID) ??
