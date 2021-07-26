@@ -582,7 +582,8 @@ namespace RDFSharp.Semantics.OWL
             }
             #endregion
 
-            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
+            RDFOntologyTaxonomy taxonomy = DetectTargetTaxonomy();
+            if (axiomAnnotation != null && taxonomy != null && taxonomy.ContainsEntry(taxonomyEntry))
                 this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
             return this;
         }

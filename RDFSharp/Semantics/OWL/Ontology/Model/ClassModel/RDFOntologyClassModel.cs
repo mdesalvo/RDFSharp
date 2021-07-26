@@ -521,24 +521,13 @@ namespace RDFSharp.Semantics.OWL
                     case nameof(RDFOntologyClassModelMetadata.DisjointWith):
                         targetTaxonomy = this.Relations.DisjointWith;
                         break;
-                    case nameof(RDFOntologyClassModelMetadata.OneOf):
-                        targetTaxonomy = this.Relations.OneOf;
-                        break;
-                    case nameof(RDFOntologyClassModelMetadata.IntersectionOf):
-                        targetTaxonomy = this.Relations.IntersectionOf;
-                        break;
-                    case nameof(RDFOntologyClassModelMetadata.UnionOf):
-                        targetTaxonomy = this.Relations.UnionOf;
-                        break;
-                    case nameof(RDFOntologyClassModelMetadata.HasKey):
-                        targetTaxonomy = this.Relations.HasKey;
-                        break;
                 }
                 return targetTaxonomy;
             }
             #endregion
 
-            if (axiomAnnotation != null && DetectTargetTaxonomy().ContainsEntry(taxonomyEntry))
+            RDFOntologyTaxonomy taxonomy = DetectTargetTaxonomy();
+            if (axiomAnnotation != null && taxonomy != null && taxonomy.ContainsEntry(taxonomyEntry))
                 this.Annotations.AxiomAnnotations.AddEntry(new RDFOntologyTaxonomyEntry(this.GetTaxonomyEntryRepresentative(taxonomyEntry), axiomAnnotation.Property, axiomAnnotation.Value));
             return this;
         }
