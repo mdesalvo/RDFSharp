@@ -1764,7 +1764,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static bool IsBLANK_NODE_LABEL_StartChar(int codePoint)
         {
-            return IsPN_CHARS_U(codePoint) || char.IsNumber((char)codePoint) || codePoint == '-';
+            return IsPN_CHARS_U(codePoint) || char.IsNumber((char)codePoint);
         }
 
         /// <summary>

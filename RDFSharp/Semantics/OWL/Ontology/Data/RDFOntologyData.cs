@@ -1136,7 +1136,7 @@ namespace RDFSharp.Semantics.OWL
         /// Gets the representative of the given taxonomy entry
         /// </summary>
         internal RDFOntologyFact GetTaxonomyEntryRepresentative(RDFOntologyTaxonomyEntry taxonomyEntry)
-            => new RDFOntologyFact(new RDFResource($"bnode:axiom{taxonomyEntry.TaxonomyEntryID}"));
+            => new RDFOntologyFact(new RDFResource($"bnode:semref{taxonomyEntry.TaxonomyEntryID}"));
         #endregion
 
         #region Set

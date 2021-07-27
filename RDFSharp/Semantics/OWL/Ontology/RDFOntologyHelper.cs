@@ -2031,17 +2031,18 @@ namespace RDFSharp.Semantics.OWL
                 RDFResource type, RDFResource subjProp, RDFResource predProp, RDFResource objProp, RDFResource litProp)
             {
                 //Reification
-                result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, RDFVocabulary.RDF.TYPE, type));
-                result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, subjProp, (RDFResource)asnTriple.Subject));
-                result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, predProp, (RDFResource)asnTriple.Predicate));
+                RDFResource axiomRepresentative = new RDFResource(asnTriple.ReificationSubject.ToString().Replace("bnode:", "bnode:semref"));
+                result.AddTriple(new RDFTriple(axiomRepresentative, RDFVocabulary.RDF.TYPE, type));
+                result.AddTriple(new RDFTriple(axiomRepresentative, subjProp, (RDFResource)asnTriple.Subject));
+                result.AddTriple(new RDFTriple(axiomRepresentative, predProp, (RDFResource)asnTriple.Predicate));
                 if (asnTriple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL)
-                    result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, litProp, (RDFLiteral)asnTriple.Object));
+                    result.AddTriple(new RDFTriple(axiomRepresentative, litProp, (RDFLiteral)asnTriple.Object));
                 else
-                    result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, objProp, (RDFResource)asnTriple.Object));
+                    result.AddTriple(new RDFTriple(axiomRepresentative, objProp, (RDFResource)asnTriple.Object));
 
                 //AxiomAnnotation
                 if (isAxiomAnn)
-                    result.AddTriple(new RDFTriple(asnTriple.ReificationSubject, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
+                    result.AddTriple(new RDFTriple(axiomRepresentative, (RDFResource)te.TaxonomyPredicate.Value, (RDFLiteral)te.TaxonomyObject.Value));
             };
 
             //Finds the taxonomy entry represented by the given ID in the ontology taxonomies
@@ -2102,7 +2103,7 @@ namespace RDFSharp.Semantics.OWL
                 //In case of owl:Axiom, we have to lookup the linked taxonomy entry by ID
                 if (isAxiomAnnotation)
                 {
-                    string teID = te.TaxonomySubject.ToString().Replace("bnode:axiom", string.Empty);
+                    string teID = te.TaxonomySubject.ToString().Replace("bnode:semref", string.Empty);
                     RDFOntologyTaxonomyEntry axiomAsn = FindTaxonomyEntry(long.Parse(teID));
                     if (axiomAsn == null)
                         continue;
