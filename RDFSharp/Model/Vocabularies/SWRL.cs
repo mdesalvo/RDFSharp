@@ -54,7 +54,7 @@ namespace RDFSharp.Model
 
                 #region Properties
                 /// <summary>
-                /// swrl
+                /// swrlb
                 /// </summary>
                 public static readonly string PREFIX = "swrlb";
 
