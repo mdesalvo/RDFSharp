@@ -63,7 +63,15 @@ namespace RDFSharp.Model
         /// Gives the string representation of the plain literal
         /// </summary>
         public override string ToString()
-            => string.IsNullOrEmpty(this.Language) ? base.ToString() : string.Concat(base.ToString(), "@", this.Language);
+            => HasLanguage() ? string.Concat(base.ToString(), "@", this.Language) : base.ToString();
+        #endregion
+
+        /// <summary>
+        /// Checks if the plain literal has a language tag
+        /// </summary>
+        #region Methods
+        public bool HasLanguage()
+            => !string.IsNullOrEmpty(this.Language);
         #endregion
 
     }
