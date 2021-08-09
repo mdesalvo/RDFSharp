@@ -66,10 +66,10 @@ namespace RDFSharp.Model
             => HasLanguage() ? string.Concat(base.ToString(), "@", this.Language) : base.ToString();
         #endregion
 
+        #region Methods
         /// <summary>
         /// Checks if the plain literal has a language tag
         /// </summary>
-        #region Methods
         public bool HasLanguage()
             => !string.IsNullOrEmpty(this.Language);
         #endregion
