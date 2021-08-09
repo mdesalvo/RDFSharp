@@ -28,7 +28,6 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFTriX
     {
-
         #region Methods
 
         #region Write
@@ -382,7 +381,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

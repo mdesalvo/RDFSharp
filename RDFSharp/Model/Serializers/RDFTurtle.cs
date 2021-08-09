@@ -31,7 +31,6 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFTurtle
     {
-
         #region Properties
         /// <summary>
         /// Regex to catch literals which must be escaped as long literals in Turtle
@@ -1820,7 +1819,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

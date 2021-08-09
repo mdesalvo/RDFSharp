@@ -32,7 +32,6 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFXml
     {
-
         #region Methods
 
         #region Write
@@ -1161,7 +1160,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

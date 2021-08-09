@@ -28,7 +28,6 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFNTriples
     {
-
         #region Properties
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
@@ -608,7 +607,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }
