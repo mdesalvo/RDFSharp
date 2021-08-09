@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFResource : RDFPatternMember
     {
-
         #region Properties
         /// <summary>
         /// Uri of the resource
@@ -68,7 +67,6 @@ namespace RDFSharp.Model
         /// </summary>
         public override string ToString() => this.URI.ToString();
         #endregion
-
     }
 
 }

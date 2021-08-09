@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     /// </summary>
     public sealed class RDFCollection : IEnumerable<RDFPatternMember>
     {
-
         #region Properties
         /// <summary>
         /// Type of the items of the collection
@@ -226,7 +225,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

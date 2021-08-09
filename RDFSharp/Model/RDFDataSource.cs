@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public abstract class RDFDataSource
     {
-
         #region Methods
         /// <summary>
         /// Checks if this data source is a graph
@@ -59,7 +58,6 @@ namespace RDFSharp.Model
             return this is RDFSPARQLEndpoint;
         }
         #endregion
-
     }
 
 }

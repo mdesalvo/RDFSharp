@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     /// </summary>
     public sealed class RDFContainer : IEnumerable<RDFPatternMember>
     {
-
         #region Properties
         /// <summary>
         /// Type of the container
@@ -205,7 +204,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

@@ -32,7 +32,6 @@ namespace RDFSharp.Model
     /// </summary>
     public static class RDFModelUtilities
     {
-
         #region Hashing
         /// <summary>
         /// Creates a unique long representation of the given string
@@ -1016,7 +1015,6 @@ namespace RDFSharp.Model
             }
         }
         #endregion
-
     }
 
 }

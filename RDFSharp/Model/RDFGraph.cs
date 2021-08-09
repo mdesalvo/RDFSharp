@@ -31,7 +31,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>
     {
-
         #region Properties
         /// <summary>
         /// Uri of the graph
@@ -901,7 +900,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

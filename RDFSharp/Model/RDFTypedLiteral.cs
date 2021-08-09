@@ -18,11 +18,10 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFTypedLiteral represents a RDFLiteral which is denoted by a Datatype.
+    /// RDFTypedLiteral represents a literal decorated with an XML Schema datatype.
     /// </summary>
     public class RDFTypedLiteral : RDFLiteral
     {
-
         #region Properties
         /// <summary>
         /// Mandatory datatype of the typed literal
@@ -170,7 +169,6 @@ namespace RDFSharp.Model
             return hasDecimalDatatype;
         }
         #endregion
-
     }
 
 }

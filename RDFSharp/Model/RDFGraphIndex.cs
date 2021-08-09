@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     internal class RDFGraphIndex
     {
-
         #region Properties
         /// <summary>
         /// Index on the subjects of the graph's triples
@@ -230,7 +229,6 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 
 }

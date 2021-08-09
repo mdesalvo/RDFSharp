@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public abstract class RDFLiteral : RDFPatternMember
     {
-
         #region Properties
         /// <summary>
         /// Value of the literal
@@ -39,7 +38,6 @@ namespace RDFSharp.Model
         /// </summary>
         public override string ToString() => this.Value;
         #endregion
-
     }
 
 }

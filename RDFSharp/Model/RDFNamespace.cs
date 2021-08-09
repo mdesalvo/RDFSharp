@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFNamespace : IEquatable<RDFNamespace>
     {
-
         #region Properties
         /// <summary>
         /// Regex for validation of prefixes
@@ -156,7 +155,6 @@ namespace RDFSharp.Model
             return this;
         }
         #endregion
-
     }
 
 }

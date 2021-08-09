@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     [Serializable]
     public class RDFModelException : Exception
     {
-
         #region Ctors
         /// <summary>
         /// Basic ctor to throw an empty RDFModelException
@@ -48,7 +47,6 @@ namespace RDFSharp.Model
         /// </summary>
         protected RDFModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
-
     }
 
 }

@@ -24,11 +24,10 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFNamespaceRegister is a singleton container for registered RDF namespaces.
+    /// RDFNamespaceRegister is a singleton in-memory container for registered RDF namespaces.
     /// </summary>
     public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     {
-
         #region Properties
         /// <summary>
         /// Default namespace of the library
@@ -221,7 +220,6 @@ namespace RDFSharp.Model
         internal static void RemoveTemporaryNamespaces()
             => Instance.Register.RemoveAll(x => x.IsTemporary);
         #endregion
-
     }
 
 }

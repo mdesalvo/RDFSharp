@@ -21,11 +21,10 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFPlainLiteral represents a literal which can be decorated with a language tag.
+    /// RDFPlainLiteral represents a literal eventually decorated with a language tag.
     /// </summary>
     public class RDFPlainLiteral : RDFLiteral
     {
-
         #region Properties
         /// <summary>
         /// Regex for validation of language tags
@@ -73,7 +72,6 @@ namespace RDFSharp.Model
         public bool HasLanguage()
             => !string.IsNullOrEmpty(this.Language);
         #endregion
-
     }
 
 }

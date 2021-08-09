@@ -22,7 +22,6 @@ namespace RDFSharp.Model
     /// </summary>
     public static class RDFModelEnums
     {
-
         /// <summary>
         /// RDFFormats represents an enumeration for supported RDF graph serialization data formats.
         /// </summary>
@@ -277,7 +276,6 @@ namespace RDFSharp.Model
             /// </summary>
             Literal = 2
         };
-
     }
 
 }

@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFTriple : IEquatable<RDFTriple>
     {
-
         #region Properties
         /// <summary>
         /// Unique representation of the triple
@@ -165,7 +164,6 @@ namespace RDFSharp.Model
             return reifGraph;
         }
         #endregion
-
     }
 
 }
