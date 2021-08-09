@@ -26,7 +26,6 @@ namespace RDFSharp.Store
     /// </summary>
     public class RDFQuadruple : IEquatable<RDFQuadruple>
     {
-
         #region Properties
         /// <summary>
         /// Unique representation of the quadruple
@@ -178,7 +177,6 @@ namespace RDFSharp.Store
             return reifStore;
         }
         #endregion
-
     }
 
 }

@@ -32,7 +32,6 @@ namespace RDFSharp.Store
     /// </summary>
     public class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>
     {
-
         #region Properties
         /// <summary>
         /// Count of the store's quadruples
@@ -865,7 +864,6 @@ namespace RDFSharp.Store
         #endregion
 
         #endregion
-
     }
 
 }

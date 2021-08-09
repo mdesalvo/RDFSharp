@@ -25,7 +25,6 @@ namespace RDFSharp.Store
     /// </summary>
     internal class RDFStoreIndex
     {
-
         #region Properties
         /// <summary>
         /// Index on the contexts of the store's quadruples
@@ -264,7 +263,6 @@ namespace RDFSharp.Store
         #endregion
 
         #endregion
-
     }
 
 }

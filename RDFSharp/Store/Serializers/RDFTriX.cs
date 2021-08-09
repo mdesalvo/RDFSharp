@@ -30,7 +30,6 @@ namespace RDFSharp.Store
     /// </summary>
     internal static class RDFTriX
     {
-
         #region Methods
 
         #region Write
@@ -405,7 +404,6 @@ namespace RDFSharp.Store
         #endregion
 
         #endregion
-
     }
 
 }

@@ -29,7 +29,6 @@ namespace RDFSharp.Store
     /// </summary>
     internal static class RDFNQuads
     {
-
         #region Properties
         /// <summary>
         /// Regex to detect S->P->B->C form of N-Quad
@@ -879,7 +878,6 @@ namespace RDFSharp.Store
         #endregion
 
         #endregion
-
     }
 
 }

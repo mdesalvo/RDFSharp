@@ -22,7 +22,6 @@ namespace RDFSharp.Store
     /// </summary>
     public static class RDFStoreEnums
     {
-
         /// <summary>
         /// RDFStoreSQLErrors represents an enumeration for situations which can be found on a SQL-backing store
         /// </summary>
@@ -56,7 +55,6 @@ namespace RDFSharp.Store
             /// </summary>
             TriX = 2
         };
-
     }
 
 }

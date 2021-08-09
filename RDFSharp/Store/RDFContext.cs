@@ -27,7 +27,6 @@ namespace RDFSharp.Store
     /// </summary>
     public class RDFContext : RDFPatternMember
     {
-
         #region Properties
         /// <summary>
         /// Uri representing the context of the pattern
@@ -104,7 +103,6 @@ namespace RDFSharp.Store
             return this.Context.ToString();
         }
         #endregion
-
     }
 
 }

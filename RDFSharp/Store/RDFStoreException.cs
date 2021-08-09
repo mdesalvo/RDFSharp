@@ -26,7 +26,6 @@ namespace RDFSharp.Store
     [Serializable]
     public class RDFStoreException : Exception
     {
-
         #region Ctors
         /// <summary>
         /// Basic ctor to throw an empty RDFStoreException
@@ -48,7 +47,6 @@ namespace RDFSharp.Store
         /// </summary>
         protected RDFStoreException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
-
     }
 
 }

@@ -29,7 +29,6 @@ namespace RDFSharp.Store
     /// </summary>
     internal static class RDFStoreUtilities
     {
-
         #region Select
         /// <summary>
         /// Parses the current quadruple of the data reader
@@ -222,7 +221,6 @@ namespace RDFSharp.Store
             return matchResult;
         }
         #endregion
-
     }
 
 }
