@@ -21,7 +21,7 @@ namespace RDFSharp.Model
 {
 
     /// <summary>
-    /// RDFPlainLiteral represents a RDFLiteral which can be denoted by a Language.
+    /// RDFPlainLiteral represents a literal which can be decorated with a language tag.
     /// </summary>
     public class RDFPlainLiteral : RDFLiteral
     {
