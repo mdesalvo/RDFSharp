@@ -250,10 +250,8 @@ namespace RDFSharp.Model
 
                 //Fetch Turtle data
                 string turtleData = string.Empty;
-                using (var sReader = new StreamReader(inputStream, Encoding.UTF8))
-                {
+                using (StreamReader sReader = new StreamReader(inputStream, Encoding.UTF8))
                     turtleData = sReader.ReadToEnd();
-                }
 
                 //Parse Turtle data
                 int bufferChar = SkipWhitespace(turtleData, turtleContext, result);
