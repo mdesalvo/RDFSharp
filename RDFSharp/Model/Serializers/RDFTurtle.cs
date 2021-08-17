@@ -241,7 +241,7 @@ namespace RDFSharp.Model
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
 
                 //Initialize Turtle context
-                var turtleContext = new Dictionary<string, object>() {
+                Dictionary<string, object> turtleContext = new Dictionary<string, object>() {
                     { "SUBJECT",    null },
                     { "PREDICATE",  null },
                     { "OBJECT",     null },
@@ -249,7 +249,7 @@ namespace RDFSharp.Model
                 };
 
                 //Fetch Turtle data
-                var turtleData = string.Empty;
+                string turtleData = string.Empty;
                 using (var sReader = new StreamReader(inputStream, Encoding.UTF8))
                 {
                     turtleData = sReader.ReadToEnd();
@@ -1668,139 +1668,109 @@ namespace RDFSharp.Model
         /// Check if the supplied code point represents a whitespace character
         /// </summary>
         private static bool IsWhitespace(int codePoint)
-        {
-            // Whitespace character are space, tab, newline and carriage return:
-            return codePoint == 0x20 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD;
-        }
+            => codePoint == 0x20 || codePoint == 0x9 || codePoint == 0xA || codePoint == 0xD; // Whitespace character are space, tab, newline and carriage return
 
         /// <summary>
         /// Check if the supplied code point represents a numeric character
         /// </summary>
         private static bool IsNumber(int codePoint)
-        {
-            return char.IsNumber((char)codePoint);
-        }
+            => char.IsNumber((char)codePoint);
 
         /// <summary>
         /// Determines whether the given scalar value is in the supplementary plane and thus
         /// requires 2 characters to be represented in UTF-16 (as a surrogate pair).
         /// </summary>
         private static bool IsSupplementaryCodePoint(int codePoint)
-        {
-            return (codePoint & ~((int)char.MaxValue)) != 0;
-        }
+            => (codePoint & ~((int)char.MaxValue)) != 0;
 
         /// <summary>
         /// Check if the supplied code point represents a valid name start character
         /// </summary>
         private static bool IsNameStartChar(int codePoint)
-        {
-            return IsPN_CHARS_U(codePoint)
-                    || codePoint == ':'
-                    || IsNumber(codePoint)
-                    || codePoint == '\\'
-                    || codePoint == '%';
-        }
+            => IsPN_CHARS_U(codePoint)
+                || codePoint == ':'
+                || IsNumber(codePoint)
+                || codePoint == '\\'
+                || codePoint == '%';
 
         /// <summary>
         /// Check if the supplied code point represents a valid name character
         /// </summary>
         private static bool IsNameChar(int codePoint)
-        {
-            return IsPN_CHARS(codePoint)
-                    || codePoint == '.'
-                    || codePoint == ':'
-                    || codePoint == '\\'
-                    || codePoint == '%';
-        }
+            => IsPN_CHARS(codePoint)
+                || codePoint == '.'
+                || codePoint == ':'
+                || codePoint == '\\'
+                || codePoint == '%';
 
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name start character
         /// </summary>
         private static bool IsPrefixStartChar(int codePoint)
-        {
-            return IsPN_CHARS_BASE(codePoint);
-        }
+            => IsPN_CHARS_BASE(codePoint);
 
         /// <summary>
         /// Check if the supplied code point represents a valid prefix character
         /// </summary>
         private static bool IsPrefixChar(int codePoint)
-        {
-            return IsPN_CHARS_BASE(codePoint)
-                    || IsPN_CHARS(codePoint)
-                    || codePoint == '.';
-        }
+            => IsPN_CHARS_BASE(codePoint)
+                || IsPN_CHARS(codePoint)
+                || codePoint == '.';
 
         /// <summary>
         /// Check if the supplied code point represents a valid language tag start character
         /// </summary>
         private static bool IsLanguageStartChar(int codePoint)
-        {
-            return char.IsLetter((char)codePoint);
-        }
+            => char.IsLetter((char)codePoint);
 
         /// <summary>
         /// Check if the supplied code point represents a valid language tag character
         /// </summary>
         private static bool IsLanguageChar(int codePoint)
-        {
-            return char.IsLetter((char)codePoint)
-                   || char.IsNumber((char)codePoint)
-                   || codePoint == '-';
-        }
+            => char.IsLetter((char)codePoint)
+                || char.IsNumber((char)codePoint)
+                || codePoint == '-';
 
         /// <summary>
         /// Check if the supplied code point represents a valid local escaped character.
         /// </summary>
         private static bool IsLocalEscapedChar(int codePoint)
-        {
-            return "_~.-!$&\'()*+,;=/?#@%".IndexOf((char)codePoint) > -1;
-        }
+            => "_~.-!$&\'()*+,;=/?#@%".IndexOf((char)codePoint) > -1;
 
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name start character
         /// </summary>
         private static bool IsBLANK_NODE_LABEL_StartChar(int codePoint)
-        {
-            return IsPN_CHARS_U(codePoint) || char.IsNumber((char)codePoint);
-        }
+            => IsPN_CHARS_U(codePoint) || char.IsNumber((char)codePoint);
 
         /// <summary>
         /// Check if the supplied code point represents a valid blank node label character
         /// </summary>
         private static bool IsBLANK_NODE_LABEL_Char(int codePoint)
-        {
-            return IsPN_CHARS(codePoint) || codePoint == '.';
-        }
+            => IsPN_CHARS(codePoint) || codePoint == '.';
 
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name character
         /// </summary>
         private static bool IsPN_CHARS(int codePoint)
-        {
-            return IsPN_CHARS_U(codePoint)
-                    || char.IsNumber((char)codePoint)
-                    || codePoint == '-'
-                    || codePoint == 0x00B7
-                    || codePoint >= 0x0300 && codePoint <= 0x036F
-                    || codePoint >= 0x203F && codePoint <= 0x2040;
-        }
+            => IsPN_CHARS_U(codePoint)
+                || char.IsNumber((char)codePoint)
+                || codePoint == '-'
+                || codePoint == 0x00B7
+                || codePoint >= 0x0300 && codePoint <= 0x036F
+                || codePoint >= 0x203F && codePoint <= 0x2040;
 
         /// <summary>
         /// Check if the supplied code point represents either a valid prefixed name base character or an underscore
         /// </summary>
         private static bool IsPN_CHARS_U(int codePoint)
-        {
-            return IsPN_CHARS_BASE(codePoint) || codePoint == '_';
-        }
+            => IsPN_CHARS_BASE(codePoint) || codePoint == '_';
 
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name base character
         /// </summary>
         private static bool IsPN_CHARS_BASE(int codePoint)
-        {
-            return char.IsLetter((char)codePoint)
+            => char.IsLetter((char)codePoint)
                 || codePoint >= 0x00C0 && codePoint <= 0x00D6
                 || codePoint >= 0x00D8 && codePoint <= 0x00F6
                 || codePoint >= 0x00F8 && codePoint <= 0x02FF
@@ -1813,7 +1783,6 @@ namespace RDFSharp.Model
                 || codePoint >= 0xF900 && codePoint <= 0xFDCF
                 || codePoint >= 0xFDF0 && codePoint <= 0xFFFD
                 || codePoint >= 0x10000 && codePoint <= 0xEFFFF;
-        }
         #endregion
 
         #endregion
