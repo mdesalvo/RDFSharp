@@ -25,3 +25,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("RDFSharp.RDFMySQLStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFPostgreSQLStore")]
 [assembly: InternalsVisibleTo("RDFSharp.RDFOracleStore")]
+[assembly: InternalsVisibleTo("RDFSharp.Test")]
