@@ -68,17 +68,13 @@ namespace RDFSharp.Model
         /// </summary>
         internal static Uri GetUriFromString(string uriString)
         {
-            Uri tempUri = null;
-            if (uriString != null)
-            {
+            // blank node detection and normalization
+            if (uriString?.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) ?? false)
+                uriString = string.Concat("bnode:", uriString.Substring(6));
+            if (uriString?.StartsWith("_:") ?? false)
+                uriString = string.Concat("bnode:", uriString.Substring(2));
 
-                // blank detection
-                if (uriString.StartsWith("_:"))
-                    uriString = string.Concat("bnode:", uriString.Substring(2));
-
-                Uri.TryCreate(uriString, UriKind.Absolute, out tempUri);
-
-            }
+            Uri.TryCreate(uriString, UriKind.Absolute, out Uri tempUri);
             return tempUri;
         }
 

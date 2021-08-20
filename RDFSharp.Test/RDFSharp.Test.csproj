@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
     <Folder Include="Semantics\" />
     <Folder Include="Store\" />
     <Folder Include="Query\" />
