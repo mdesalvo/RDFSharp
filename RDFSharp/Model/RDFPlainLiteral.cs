@@ -48,7 +48,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a plain literal with language
+        /// Default-ctor to build a plain literal with language (if not well-formed, the language will be discarded)
         /// </summary>
         public RDFPlainLiteral(string value, string language) : this(value)
         {
