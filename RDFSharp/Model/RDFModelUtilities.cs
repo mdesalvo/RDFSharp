@@ -71,7 +71,7 @@ namespace RDFSharp.Model
             // blank node detection and normalization
             if (uriString?.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) ?? false)
                 uriString = string.Concat("bnode:", uriString.Substring(6));
-            if (uriString?.StartsWith("_:") ?? false)
+            else if (uriString?.StartsWith("_:") ?? false)
                 uriString = string.Concat("bnode:", uriString.Substring(2));
 
             Uri.TryCreate(uriString, UriKind.Absolute, out Uri tempUri);
