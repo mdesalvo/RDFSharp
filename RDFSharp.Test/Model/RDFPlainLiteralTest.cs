@@ -48,6 +48,12 @@ namespace RDFSharp.Test.Model
         [DataRow("donald duck", "en-US-")]
         [DataRow("donald duck", "en-US-123456789")]
         [DataRow("donald duck", "@en-US")]
+        [DataRow("", "@en-US")]
+        [DataRow("", "")]
+        [DataRow("", null)]
+        [DataRow(null, "@en-US")]
+        [DataRow(null, "")]
+        [DataRow(null, null)]
         public void ShouldCreatePlainLiteralDueToUnacceptableLanguage(string value, string language)
         {
             RDFPlainLiteral pl = new RDFPlainLiteral(value, language);
