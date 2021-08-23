@@ -26,7 +26,7 @@ namespace RDFSharp.Test.Model
         [DataTestMethod]
         [DataRow("donald duck")]
         [DataRow("donald duck@")]
-        [DataRow("donald duck@en-US")] //Even if well-formed, this languaged value will be threated as unlanguaged
+        [DataRow("donald duck@en-US")] //Even if well-formed, this input will be threated as unlanguaged (in fact the ctor is for unlanguaged ones)
         [DataRow("@en")]
         [DataRow("")]
         [DataRow(null)]
