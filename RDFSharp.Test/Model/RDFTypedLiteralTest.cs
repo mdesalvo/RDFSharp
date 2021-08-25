@@ -87,6 +87,45 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("True", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("tRue", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow(" True", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("1", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("oNe", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("yES", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("Y", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("oN", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("oK", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("Up", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("High", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("False", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("falSe", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow(" False", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("0", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("zERo", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("No", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("F", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("oFf", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("Ko", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("DoWN", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("LoW", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        public void ShouldCreateTypedLiteralOfBooleanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+        {
+            RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
+
+            Assert.IsNotNull(tl);
+            Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsTrue(tl.HasBooleanDatatype());
+            Assert.IsFalse(tl.HasDatetimeDatatype());
+            Assert.IsFalse(tl.HasDecimalDatatype());
+            Assert.IsFalse(tl.HasTimespanDatatype());
+            Assert.IsTrue(tl.ToString().Equals(string.Concat("true^^", RDFModelUtilities.GetDatatypeFromEnum(datatype)))
+                            || tl.ToString().Equals(string.Concat("false^^", RDFModelUtilities.GetDatatypeFromEnum(datatype))));
+        }
+
+        [DataTestMethod]
         [DataRow("<value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("<value attr=yes", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
@@ -153,6 +192,13 @@ namespace RDFSharp.Test.Model
         [DataRow("faf", RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)]
         [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)]
         public void ShouldNotCreateTypedLiteralOfStringCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+            => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+
+        [DataTestMethod]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        public void ShouldNotCreateTypedLiteralOfBooleanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
         #endregion
     }

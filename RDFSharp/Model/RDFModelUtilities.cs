@@ -64,6 +64,15 @@ namespace RDFSharp.Model
         internal static readonly Regex hexBinary = new Regex(@"^([0-9a-fA-F]{2})*$", RegexOptions.Compiled);
 
         /// <summary>
+        /// Alternative representations of boolean True
+        /// </summary>
+        internal static string[] AlternativesBoolTrue = new string[] { "1", "one", "yes", "y", "t", "on", "ok", "up", "high" };
+        /// <summary>
+        /// Alternative representations of boolean False
+        /// </summary>
+        internal static string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "f", "off", "ko", "down", "low" };
+
+        /// <summary>
         /// Gets the Uri corresponding to the given string
         /// </summary>
         internal static Uri GetUriFromString(string uriString)
@@ -731,11 +740,10 @@ namespace RDFSharp.Model
                         typedLiteral.Value = outBool ? "true" : "false";
                     else
                     {
-                        //Even if lexical space of XSD:BOOLEAN allows 1/0,
-                        //it must be converted to true/false value space
-                        if (typedLiteral.Value.Equals("1"))
+                        //Support intelligent detection of alternative boolean representations
+                        if (AlternativesBoolTrue.Any(tl => tl.Equals(typedLiteral.Value, StringComparison.OrdinalIgnoreCase)))
                             typedLiteral.Value = "true";
-                        else if (typedLiteral.Value.Equals("0"))
+                        else if (AlternativesBoolFalse.Any(tl => tl.Equals(typedLiteral.Value, StringComparison.OrdinalIgnoreCase)))
                             typedLiteral.Value = "false";
                         else
                             return false;
