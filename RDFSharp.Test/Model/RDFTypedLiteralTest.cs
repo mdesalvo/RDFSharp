@@ -97,8 +97,6 @@ namespace RDFSharp.Test.Model
         [DataRow("Y", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("oN", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("oK", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
-        [DataRow("Up", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
-        [DataRow("High", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("False", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("falSe", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
@@ -106,11 +104,9 @@ namespace RDFSharp.Test.Model
         [DataRow("0", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("zERo", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("No", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
-        [DataRow("F", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("N", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("oFf", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow("Ko", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
-        [DataRow("DoWN", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
-        [DataRow("LoW", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         public void ShouldCreateTypedLiteralOfBooleanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);

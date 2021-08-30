@@ -66,11 +66,11 @@ namespace RDFSharp.Model
         /// <summary>
         /// Alternative representations of boolean True
         /// </summary>
-        internal static string[] AlternativesBoolTrue = new string[] { "1", "one", "yes", "y", "t", "on", "ok", "up", "high" };
+        internal static string[] AlternativesBoolTrue = new string[] { "1", "one", "yes", "y", "on", "ok" };
         /// <summary>
         /// Alternative representations of boolean False
         /// </summary>
-        internal static string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "f", "off", "ko", "down", "low" };
+        internal static string[] AlternativesBoolFalse = new string[] { "0", "zero", "no", "n", "off", "ko" };
 
         /// <summary>
         /// Gets the Uri corresponding to the given string
