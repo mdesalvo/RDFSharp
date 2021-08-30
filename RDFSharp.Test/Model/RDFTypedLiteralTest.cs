@@ -122,6 +122,57 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("2021-08-31T20:00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.00+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.000", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0000", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.00000", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.00000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.00000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.000000", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.000000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.000000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.0Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.0+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.00+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.0000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.0000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.00000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.00000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.000000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.000000+00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-31Z", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-31+00:00", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        public void ShouldCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+        {
+            RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
+            
+            Assert.IsNotNull(tl);
+            Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasBooleanDatatype());
+            Assert.IsTrue(tl.HasDatetimeDatatype());
+            Assert.IsFalse(tl.HasDecimalDatatype());
+            Assert.IsFalse(tl.HasTimespanDatatype());
+        }
+
+        [DataTestMethod]
         [DataRow("<value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("<value attr=yes", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
@@ -195,6 +246,47 @@ namespace RDFSharp.Test.Model
         [DataRow("", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
         public void ShouldNotCreateTypedLiteralOfBooleanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+            => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+
+        [DataTestMethod]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:LL", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-32T20:00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T26:00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:76", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:0", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00L", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.L", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00.0000000", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00+26:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31T20:00:00+00:75", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("2021-08-31 00:00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-32T20:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T26:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:76Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:0Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00LZ", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.LZ", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00.0000000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00+26:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31T20:00:00+00:75Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("2021-08-31 00:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-32", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-32Z", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-31+00:0", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-32+00:00", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-31+26:00", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("2021-08-31+00:75", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
         #endregion
     }
