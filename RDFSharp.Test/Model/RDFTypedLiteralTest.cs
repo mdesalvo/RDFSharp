@@ -208,6 +208,22 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("P1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow("P1Y", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow("PT4H", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        public void ShouldCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+        {
+            RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
+
+            Assert.IsNotNull(tl);
+            Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasBooleanDatatype());
+            Assert.IsFalse(tl.HasDatetimeDatatype());
+            Assert.IsFalse(tl.HasDecimalDatatype());
+            Assert.IsTrue(tl.HasTimespanDatatype());
+        }
+
+        [DataTestMethod]
         [DataRow("<value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("<value attr=yes", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("value", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
@@ -383,6 +399,15 @@ namespace RDFSharp.Test.Model
         [DataRow("31+26:00", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         [DataRow("31+00:76", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+            => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+
+        [DataTestMethod]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow("1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow("P1YM", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        public void ShouldNotCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
         #endregion
     }

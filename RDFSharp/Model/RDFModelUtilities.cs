@@ -616,9 +616,6 @@ namespace RDFSharp.Model
         /// </summary>
         internal static bool ValidateTypedLiteral(RDFTypedLiteral typedLiteral)
         {
-            if (typedLiteral == null)
-                throw new RDFModelException("Cannot validate RDFTypedLiteral because given \"typedLiteral\" parameter is null.");
-
             //Tries to parse the given value into a DateTime having exactly the specified input/output formats.
             //RDFSharp datetime-based typed literals are automatically converted in UTC timezone (Z)
             bool TryParseDateTime(string value, string formatToParse, string formatToConvert)
