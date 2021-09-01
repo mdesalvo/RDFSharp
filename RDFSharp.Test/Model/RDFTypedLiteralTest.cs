@@ -208,6 +208,21 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("400", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        [DataRow("400.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        public void ShouldCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+        {
+            RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
+
+            Assert.IsNotNull(tl);
+            Assert.IsFalse(tl.HasStringDatatype());
+            Assert.IsFalse(tl.HasBooleanDatatype());
+            Assert.IsFalse(tl.HasDatetimeDatatype());
+            Assert.IsTrue(tl.HasDecimalDatatype());
+            Assert.IsFalse(tl.HasTimespanDatatype());
+        }
+
+        [DataTestMethod]
         [DataRow("P1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
         [DataRow("P1Y", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
         [DataRow("PT4H", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
@@ -399,6 +414,15 @@ namespace RDFSharp.Test.Model
         [DataRow("31+26:00", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         [DataRow("31+00:76", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
         public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
+            => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
+
+        [DataTestMethod]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        [DataRow("400,00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        [DataRow("400000000000000000000000000000000", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
         [DataTestMethod]
