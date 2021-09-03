@@ -227,6 +227,19 @@ namespace RDFSharp.Test.Model
         [DataRow("4.5E-2", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
         [DataRow("-4.5E-2", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
         [DataRow("0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+        [DataRow("4", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("-4", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow(" 4 ", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow(" -4 ", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("-4.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4E2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("-4E2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4E+2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("-4E+2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4.5E-2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("-4.5E-2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("0E0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
         public void ShouldCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
@@ -446,6 +459,13 @@ namespace RDFSharp.Test.Model
         [DataRow("4.0.E+2", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
         [DataRow("E+55", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
         [DataRow("4E", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4,00", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4.0.E+2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("E+55", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4E", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
         public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
