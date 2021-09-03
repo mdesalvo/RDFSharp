@@ -55,7 +55,7 @@ namespace RDFSharp.Test.Model
         [DataRow(null, "@en-US")]
         [DataRow(null, "")]
         [DataRow(null, null)]
-        public void ShouldCreatePlainLiteralDueToUnacceptableLanguage(string value, string language)
+        public void ShouldCreatePlainLiteralWithEmptyLanguage(string value, string language)
         {
             RDFPlainLiteral pl = new RDFPlainLiteral(value, language);
 
