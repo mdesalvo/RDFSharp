@@ -240,6 +240,10 @@ namespace RDFSharp.Test.Model
         [DataRow("4.5E-2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
         [DataRow("-4.5E-2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
         [DataRow("0E0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("4", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("-4", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow(" 4 ", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow(" -4 ", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
         public void ShouldCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
@@ -466,6 +470,13 @@ namespace RDFSharp.Test.Model
         [DataRow("4.0.E+2", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
         [DataRow("E+55", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
         [DataRow("4E", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("4.00", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("4,00", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("4E2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("79228162514264337593543950336", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
         public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
