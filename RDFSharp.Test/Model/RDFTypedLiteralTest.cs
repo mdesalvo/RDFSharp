@@ -273,6 +273,10 @@ namespace RDFSharp.Test.Model
         [DataRow("-1", RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER)]
         [DataRow("-1", RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)]
         [DataRow(" -1 ", RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)]
+        [DataRow("0", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow(" 0 ", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow("1", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
+        [DataRow(" 1 ", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
         public void ShouldCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
@@ -574,6 +578,14 @@ namespace RDFSharp.Test.Model
         [DataRow("", RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)]
         [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)]
         [DataRow("0", RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow("-1", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
+        [DataRow("", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
+        [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
+        [DataRow("0", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
         public void ShouldNotCreateTypedLiteralOfDecimalCategory(string value, RDFModelEnums.RDFDatatypes datatype)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTypedLiteral(value, datatype));
 
