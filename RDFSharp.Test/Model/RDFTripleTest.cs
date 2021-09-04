@@ -50,6 +50,62 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("http://example.org/pred")]
+        public void ShouldCreateSPOTripleFromNullInputs(string p)
+        {
+            RDFResource pred = new RDFResource(p);
+
+            RDFTriple triple = new RDFTriple(null, pred, null as RDFResource);
+            Assert.IsNotNull(triple);
+            Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO);
+            Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
+            Assert.IsTrue(triple.Predicate.Equals(pred));
+            Assert.IsTrue(((RDFResource)triple.Object).IsBlank);
+            Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/subj", "http://example.org/pred", "test")]
+        public void ShouldCreateSPLTriple(string s, string p, string l)
+        {
+            RDFResource subj = new RDFResource(s);
+            RDFResource pred = new RDFResource(p);
+            RDFPlainLiteral lit = new RDFPlainLiteral(l);
+
+            RDFTriple triple = new RDFTriple(subj, pred, lit);
+            Assert.IsNotNull(triple);
+            Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+            Assert.IsTrue(triple.Subject.Equals(subj));
+            Assert.IsTrue(triple.Predicate.Equals(pred));
+            Assert.IsTrue(triple.Object.Equals(lit));
+            Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+
+            string tripleString = triple.ToString();
+            Assert.IsTrue(tripleString.Equals(string.Concat(triple.Subject.ToString(), " ", triple.Predicate.ToString(), " ", triple.Object.ToString())));
+
+            long tripleID = RDFModelUtilities.CreateHash(tripleString);
+            Assert.IsTrue(triple.TripleID.Equals(tripleID));
+
+            RDFTriple triple2 = new RDFTriple(subj, pred, lit);
+            Assert.IsTrue(triple.Equals(triple2));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/pred")]
+        public void ShouldCreateSPLTripleFromNullInputs(string p)
+        {
+            RDFResource pred = new RDFResource(p);
+            
+            RDFTriple triple = new RDFTriple(null, pred, null as RDFPlainLiteral);
+            Assert.IsNotNull(triple);
+            Assert.IsTrue(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+            Assert.IsTrue(((RDFResource)triple.Subject).IsBlank);
+            Assert.IsTrue(triple.Predicate.Equals(pred));
+            Assert.IsTrue(((RDFPlainLiteral)triple.Object).Equals(new RDFPlainLiteral(string.Empty)));
+            Assert.IsTrue(triple.ReificationSubject.Equals(new RDFResource(string.Concat("bnode:", triple.TripleID.ToString()))));
+        }
+
+        [DataTestMethod]
         [DataRow("http://example.org/subj", "bnode:hdh744", "http://example.org/obj")]
         public void ShouldNotCreateSPOTripleBecauseOfBlankPredicate(string s, string p, string o)
             => Assert.ThrowsException<RDFModelException>(() => new RDFTriple(new RDFResource(s), new RDFResource(p), new RDFResource(o)));
