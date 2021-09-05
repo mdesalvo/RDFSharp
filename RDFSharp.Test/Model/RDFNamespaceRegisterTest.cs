@@ -44,6 +44,9 @@ namespace RDFSharp.Test.Model
             var nsEnumerator = RDFNamespaceRegister.NamespacesEnumerator;
             while (nsEnumerator.MoveNext())
                 Assert.IsNotNull(nsEnumerator.Current);
+
+            foreach (RDFNamespace ns in RDFNamespaceRegister.Instance.Register)
+                Assert.IsNotNull(ns);
         }
         #endregion
     }
