@@ -125,6 +125,80 @@ namespace RDFSharp.Test.Model
             nsCountAfter = RDFNamespaceRegister.NamespacesCount;
             Assert.IsTrue(nsCountBefore == nsCountAfter);
         }
+
+        [TestMethod]
+        public void ShouldGetNamespaceByPrefix()
+        {
+            RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX, false);
+
+            Assert.IsNotNull(ns);
+            Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX));
+            Assert.IsTrue(ns.NamespaceUri.Equals(new Uri(RDFVocabulary.RDF.BASE_URI)));
+        }
+
+        [TestMethod]
+        public void ShouldGetNamespaceByPrefixWithLookupService()
+        {
+            RDFNamespace ns = RDFNamespaceRegister.GetByPrefix("dbo", true);
+
+            Assert.IsNotNull(ns);
+            Assert.IsTrue(ns.NamespacePrefix.Equals("dbo"));
+            Assert.IsTrue(ns.NamespaceUri.Equals(new Uri("http://dbpedia.org/ontology/")));
+            Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
+            RDFNamespaceRegister.RemoveByPrefix("dbo");
+            Assert.IsFalse(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetNamespaceByPrefix()
+        {
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exx", false));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, false));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetNamespaceByPrefixWithLookupService()
+        {
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exx", true));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, true));
+        }
+
+        [TestMethod]
+        public void ShouldGetNamespaceByUri()
+        {
+            RDFNamespace ns = RDFNamespaceRegister.GetByUri(RDFVocabulary.RDF.BASE_URI, false);
+
+            Assert.IsNotNull(ns);
+            Assert.IsTrue(ns.NamespacePrefix.Equals(RDFVocabulary.RDF.PREFIX));
+            Assert.IsTrue(ns.NamespaceUri.Equals(new Uri(RDFVocabulary.RDF.BASE_URI)));
+        }
+
+        [TestMethod]
+        public void ShouldGetNamespaceByUriWithLookupService()
+        {
+            RDFNamespace ns = RDFNamespaceRegister.GetByUri("http://dbpedia.org/ontology/", true);
+
+            Assert.IsNotNull(ns);
+            Assert.IsTrue(ns.NamespacePrefix.Equals("dbo"));
+            Assert.IsTrue(ns.NamespaceUri.Equals(new Uri("http://dbpedia.org/ontology/")));
+            Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
+            RDFNamespaceRegister.RemoveByPrefix("dbo");
+            Assert.IsFalse(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetNamespaceByUri()
+        {
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("http://exx.org/", false));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, false));
+        }
+
+        [TestMethod]
+        public void ShouldNotGetNamespaceByUriWithLookupService()
+        {
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("http://exx.org/", true));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, true));
+        }
         #endregion
     }
 }
