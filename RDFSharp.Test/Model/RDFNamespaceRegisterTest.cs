@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace RDFSharp.Test.Model
 {
@@ -26,7 +27,11 @@ namespace RDFSharp.Test.Model
     {
         #region Tests
         [TestMethod]
-        public void ShouldAccessInstance() => Assert.IsNotNull(RDFNamespaceRegister.Instance);
+        public void ShouldAccessInstance()
+        {
+            Assert.IsNotNull(RDFNamespaceRegister.Instance);
+            Assert.IsTrue(RDFNamespaceRegister.Instance is IEnumerable<RDFNamespace>);
+        }
 
         [TestMethod]
         public void ShouldAccessAndModifyDefaultNamespace()
@@ -59,6 +64,9 @@ namespace RDFSharp.Test.Model
                 Assert.IsNotNull(nsEnumerator.Current);
 
             foreach (RDFNamespace ns in RDFNamespaceRegister.Instance.Register)
+                Assert.IsNotNull(ns);
+
+            foreach (RDFNamespace ns in RDFNamespaceRegister.Instance)
                 Assert.IsNotNull(ns);
         }
 
