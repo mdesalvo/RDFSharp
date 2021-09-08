@@ -88,7 +88,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Searches the given Uri in the namespace register for getting its dereferencable representation;<br/>
+        /// Searches the given Uri in the namespace register for getting its dereferenceable representation;<br/>
         /// if not found, just returns the given Uri
         /// </summary>
         internal static Uri RemapUriForDereference(Uri uri)
