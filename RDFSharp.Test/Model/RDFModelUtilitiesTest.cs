@@ -113,6 +113,18 @@ namespace RDFSharp.Test.Model
         [DataRow("\\u09AP")]
         public void ShouldNotMatchRegexU4(string input)
             => Assert.IsFalse(RDFModelUtilities.regexU4.IsMatch(input));
+
+        [DataTestMethod]
+        [DataRow("09AFaf09")]
+        public void ShouldMatchHexBinary(string input)
+           => Assert.IsTrue(RDFModelUtilities.hexBinary.IsMatch(input));
+
+        [DataTestMethod]
+        [DataRow("0")]
+        [DataRow("09A")]
+        [DataRow("000P")]
+        public void ShouldNotMatchHexBinary(string input)
+            => Assert.IsFalse(RDFModelUtilities.hexBinary.IsMatch(input));
         #endregion
     }
 }
