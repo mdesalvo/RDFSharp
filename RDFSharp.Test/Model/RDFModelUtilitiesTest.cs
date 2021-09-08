@@ -89,6 +89,30 @@ namespace RDFSharp.Test.Model
                                                .Invoke(null, new object[] { uriString });
             Assert.IsNull(result);
         }
+
+        [DataTestMethod]
+        [DataRow("\\U09AFaf90")]
+        public void ShouldMatchRegexU8(string input)
+            => Assert.IsTrue(RDFModelUtilities.regexU8.IsMatch(input));
+
+        [DataTestMethod]
+        [DataRow("\\u09AFaf90")]
+        [DataRow("\\U09AFaf9")]
+        [DataRow("\\U09AFaf9P")]
+        public void ShouldNotMatchRegexU8(string input)
+            => Assert.IsFalse(RDFModelUtilities.regexU8.IsMatch(input));
+
+        [DataTestMethod]
+        [DataRow("\\u09Af")]
+        public void ShouldMatchRegexU4(string input)
+           => Assert.IsTrue(RDFModelUtilities.regexU4.IsMatch(input));
+
+        [DataTestMethod]
+        [DataRow("\\U09Af")]
+        [DataRow("\\u09A")]
+        [DataRow("\\u09AP")]
+        public void ShouldNotMatchRegexU4(string input)
+            => Assert.IsFalse(RDFModelUtilities.regexU4.IsMatch(input));
         #endregion
     }
 }
