@@ -125,6 +125,51 @@ namespace RDFSharp.Test.Model
         [DataRow("000P")]
         public void ShouldNotMatchHexBinary(string input)
             => Assert.IsFalse(RDFModelUtilities.hexBinary.IsMatch(input));
+
+        [DataTestMethod]
+        [DataRow("http://xmlns.com/foaf/0.1/")]
+        public void ShouldRemapSameUriForDereference(string uriString)
+        {
+            Uri uri = new Uri(uriString);
+            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
+                                               .Invoke(null, new object[] { uri });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(((Uri)result).Equals(new Uri(RDFVocabulary.FOAF.BASE_URI)));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://purl.org/dc/elements/1.1/")]
+        public void ShouldRemapDifferentUriForDereference(string uriString)
+        {
+            Uri uri = new Uri(uriString);
+            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
+                                               .Invoke(null, new object[] { uri });
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(((Uri)result).Equals(new Uri(RDFVocabulary.DC.BASE_URI)));
+        }
+
+        [TestMethod]
+        public void ShouldNotRemapNullUriForDereference()
+        {
+            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
+                                               .Invoke(null, new object[] { null });
+
+            Assert.IsNull(result);
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/test#")]
+        public void ShouldNotRemapUnknownUriForDereference(string uriString)
+        {
+            Uri uri = new Uri(uriString);
+            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
+                                               .Invoke(null, new object[] { uri });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(((Uri)result).Equals(new Uri("http://example.org/test#")));
+        }
         #endregion
     }
 }
