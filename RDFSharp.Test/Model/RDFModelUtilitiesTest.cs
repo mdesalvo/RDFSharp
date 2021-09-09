@@ -170,6 +170,40 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(result);
             Assert.IsTrue(((Uri)result).Equals(new Uri("http://example.org/test#")));
         }
+
+        [DataTestMethod]
+        [DataRow("This is delta: \\U00000394; This is tilde: \\U0000007E")]
+        [DataRow("This is delta: \\U00000394; This is tilde: \\u007E")]
+        [DataRow("This is delta: \\u0394; This is tilde: \\u007E")]
+        [DataRow("This is delta: \\u0394; This is tilde: \\U0000007E")]
+        [DataRow("This is nothing")]
+        public void ShouldTransformASCII_To_Unicode(string input)
+        {
+            string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") == -1);
+            Assert.IsTrue(output.IndexOf("\\u") == -1);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        public void ShouldNotTransformASCII_To_Unicode(string input)
+        {
+            string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+            Assert.IsNull(output);
+        }
+
+        [DataTestMethod]
+        [DataRow("\\U9\\u8")]
+        public void ShouldNotTransformBadFormedASCII_To_Unicode(string input)
+        {
+            string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.Equals(input, StringComparison.Ordinal));
+        }
         #endregion
     }
 }
