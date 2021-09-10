@@ -120,30 +120,34 @@ namespace RDFSharp.Model
         /// </summary>
         public static string Unicode_To_ASCII(string unicodeString)
         {
-            if (unicodeString != null)
+            if (string.IsNullOrEmpty(unicodeString))
+                return unicodeString;
+
+            //https://docs.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-5.0&viewFallbackFrom=netstandard-2.0
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < unicodeString.Length; i++)
             {
-                StringBuilder b = new StringBuilder();
-                foreach (char c in unicodeString)
+                //ASCII
+                if (unicodeString[i] <= 127)
+                    b.Append(unicodeString[i]);
+
+                //UNICODE (UTF-8)
+                else if (!char.IsSurrogate(unicodeString[i]))
+                    b.Append(string.Concat("\\u", ((int)unicodeString[i]).ToString("X4")));
+
+                //UNICODE (UTF-16)
+                else if (i + 1 < unicodeString.Length && char.IsSurrogatePair(unicodeString[i], unicodeString[i + 1]))
                 {
-                    if (c <= 127)
-                    {
-                        b.Append(c);
-                    }
-                    else
-                    {
-                        if (c <= 65535)
-                        {
-                            b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
-                        }
-                        else
-                        {
-                            b.Append(string.Concat("\\U", ((int)c).ToString("X8")));
-                        }
-                    }
+                    int codePoint = char.ConvertToUtf32(unicodeString[i], unicodeString[i+1]);
+                    b.Append(string.Concat("\\U", ((int)codePoint).ToString("X8")));
+                    i++;
                 }
-                unicodeString = b.ToString();
+
+                //ERROR
+                else
+                    throw new RDFModelException("Cannot convert string '" + unicodeString + "' to ASCII because it is not well-formed UTF-16");
             }
-            return unicodeString;
+            return b.ToString();
         }
 
         /// <summary>

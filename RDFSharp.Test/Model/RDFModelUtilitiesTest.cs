@@ -204,6 +204,50 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(output);
             Assert.IsTrue(output.Equals(input, StringComparison.Ordinal));
         }
+
+        [DataTestMethod]
+        [DataRow("This is a smiling face: 😃; This is Euro: €")]
+        public void ShouldTransformUnicode_To_ASCIIWithSurrogatesAndUnicode(string input)
+        {
+            string output = RDFModelUtilities.Unicode_To_ASCII(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") > -1);
+            Assert.IsTrue(output.IndexOf("\\u") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is a smiling face: 😃;")]
+        public void ShouldTransformUnicode_To_ASCIIWithSurrogates(string input)
+        {
+            string output = RDFModelUtilities.Unicode_To_ASCII(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") > -1);
+            Assert.IsTrue(output.IndexOf("\\u") == -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is Euro: €;")]
+        public void ShouldTransformUnicode_To_ASCIIWithUnicode(string input)
+        {
+            string output = RDFModelUtilities.Unicode_To_ASCII(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") == -1);
+            Assert.IsTrue(output.IndexOf("\\u") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is nothing!")]
+        public void ShouldTransformUnicode_To_ASCIIWithNoSurrogatesAndNoUnicode(string input)
+        {
+            string output = RDFModelUtilities.Unicode_To_ASCII(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") == -1);
+            Assert.IsTrue(output.IndexOf("\\u") == -1);
+        }
         #endregion
     }
 }
