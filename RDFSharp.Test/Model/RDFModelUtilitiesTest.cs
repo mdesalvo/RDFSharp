@@ -172,8 +172,11 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("This is smiling face: \\U0001F603\\U0001F603; This is tilde: \\U0000007E\\U0001F603")]
         [DataRow("This is smiling face: \\U0001F603; This is tilde: \\U0000007E")]
         [DataRow("This is smiling face: \\U0001F603; This is tilde: \\u007E")]
+        [DataRow("This is smiling face: \\U0001F603; This is tilde: \\u007E\\U0001F603")]
+        [DataRow("This is smiling face: \\U0001F603\\u007E; This is tilde: \\u007E\\u007E")]
         public void ShouldTransformASCII_To_UnicodeWithSurrogatesAndUnicode(string input)
         {
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
@@ -189,6 +192,7 @@ namespace RDFSharp.Test.Model
         [DataRow("This is delta: \\U00000394; This is tilde: \\U0000007E")]
         [DataRow("This is delta: \\U00000394; This is tilde: \\u007E")]
         [DataRow("This is delta: \\u0394; This is tilde: \\u007E")]
+        [DataRow("This is delta: \\u0394\\u0394; This is tilde: \\u007E\\u007E\\u007E")]
         [DataRow("This is delta: \\u0394; This is tilde: \\U0000007E")]
         public void ShouldTransformASCII_To_UnicodeWithUnicode(string input)
         {
@@ -234,6 +238,8 @@ namespace RDFSharp.Test.Model
 
         [DataTestMethod]
         [DataRow("This is a smiling face: 😃; This is Euro: €")]
+        [DataRow("This is a smiling face: 😃😃; This is Euro: €😃")]
+        [DataRow("This is a smiling face: 😃€; This is Euro: €😃€")]
         public void ShouldTransformUnicode_To_ASCIIWithSurrogatesAndUnicode(string input)
         {
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
@@ -256,6 +262,7 @@ namespace RDFSharp.Test.Model
 
         [DataTestMethod]
         [DataRow("This is Euro: €;")]
+        [DataRow("This is Euro: €€€;")]
         public void ShouldTransformUnicode_To_ASCIIWithUnicode(string input)
         {
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
@@ -274,6 +281,15 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(output);
             Assert.IsTrue(output.IndexOf("\\U") == -1);
             Assert.IsTrue(output.IndexOf("\\u") == -1);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        public void ShouldNotTransformUnicode_To_ASCII(string input)
+        {
+            string output = RDFModelUtilities.Unicode_To_ASCII(input);
+
+            Assert.IsNull(output);
         }
         #endregion
     }
