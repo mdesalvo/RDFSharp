@@ -218,6 +218,17 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
+        [DataRow("This is nothing!")]
+        public void ShouldTransformASCII_To_UnicodeWithNoSurrogatesAndNoUnicode(string input)
+        {
+            string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") == -1);
+            Assert.IsTrue(output.IndexOf("\\u") == -1);
+        }
+
+        [DataTestMethod]
         [DataRow(null)]
         public void ShouldNotTransformASCII_To_Unicode(string input)
         {
