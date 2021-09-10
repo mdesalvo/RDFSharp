@@ -172,18 +172,45 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
-        [DataRow("This is delta: \\U00000394; This is tilde: \\U0000007E")]
-        [DataRow("This is delta: \\U00000394; This is tilde: \\u007E")]
-        [DataRow("This is delta: \\u0394; This is tilde: \\u007E")]
-        [DataRow("This is delta: \\u0394; This is tilde: \\U0000007E")]
-        [DataRow("This is nothing")]
-        public void ShouldTransformASCII_To_Unicode(string input)
+        [DataRow("This is smiling face: \\U0001F603; This is tilde: \\U0000007E")]
+        [DataRow("This is smiling face: \\U0001F603; This is tilde: \\u007E")]
+        public void ShouldTransformASCII_To_UnicodeWithSurrogatesAndUnicode(string input)
         {
             string output = RDFModelUtilities.ASCII_To_Unicode(input);
 
             Assert.IsNotNull(output);
             Assert.IsTrue(output.IndexOf("\\U") == -1);
             Assert.IsTrue(output.IndexOf("\\u") == -1);
+            Assert.IsTrue(output.IndexOf("😃") > -1);
+            Assert.IsTrue(output.IndexOf("~") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is delta: \\U00000394; This is tilde: \\U0000007E")]
+        [DataRow("This is delta: \\U00000394; This is tilde: \\u007E")]
+        [DataRow("This is delta: \\u0394; This is tilde: \\u007E")]
+        [DataRow("This is delta: \\u0394; This is tilde: \\U0000007E")]
+        public void ShouldTransformASCII_To_UnicodeWithUnicode(string input)
+        {
+            string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") == -1);
+            Assert.IsTrue(output.IndexOf("\\u") == -1);
+            Assert.IsTrue(output.IndexOf("~") > -1);
+            Assert.IsTrue(output.IndexOf("Δ") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is smiling face: \\U0001F603; These are smiling faces: \\U0001F603\\U0001F603")]
+        public void ShouldTransformASCII_To_UnicodeWithSurrogates(string input)
+        {
+            string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+            Assert.IsNotNull(output);
+            Assert.IsTrue(output.IndexOf("\\U") == -1);
+            Assert.IsTrue(output.IndexOf("\\u") == -1);
+            Assert.IsTrue(output.IndexOf("😃") > -1);
         }
 
         [DataTestMethod]
@@ -212,8 +239,8 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") > -1);
-            Assert.IsTrue(output.IndexOf("\\u") > -1);
+            Assert.IsTrue(output.IndexOf("\\U0001F603") > -1);
+            Assert.IsTrue(output.IndexOf("\\u20AC") > -1);
         }
 
         [DataTestMethod]
@@ -223,7 +250,7 @@ namespace RDFSharp.Test.Model
             string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(output.IndexOf("\\U") > -1);
+            Assert.IsTrue(output.IndexOf("\\U0001F603") > -1);
             Assert.IsTrue(output.IndexOf("\\u") == -1);
         }
 
@@ -235,7 +262,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(output);
             Assert.IsTrue(output.IndexOf("\\U") == -1);
-            Assert.IsTrue(output.IndexOf("\\u") > -1);
+            Assert.IsTrue(output.IndexOf("\\u20AC") > -1);
         }
 
         [DataTestMethod]

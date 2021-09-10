@@ -107,12 +107,18 @@ namespace RDFSharp.Model
         /// </summary>
         public static string ASCII_To_Unicode(string asciiString)
         {
-            if (asciiString != null)
-            {
-                asciiString = regexU8.Replace(asciiString, match => ((char)long.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-                asciiString = regexU4.Replace(asciiString, match => ((char)int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)).ToString(CultureInfo.InvariantCulture));
-            }
-            return asciiString;
+            if (string.IsNullOrEmpty(asciiString))
+                return asciiString;
+
+            //UNICODE (UTF-16)
+            StringBuilder sbRegexU8 = new StringBuilder();
+            sbRegexU8.Append(regexU8.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+
+            //UNICODE (UTF-8)
+            StringBuilder sbRegexU4 = new StringBuilder();
+            sbRegexU4.Append(regexU4.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+
+            return sbRegexU4.ToString();
         }
 
         /// <summary>
@@ -139,7 +145,7 @@ namespace RDFSharp.Model
                 else if (i + 1 < unicodeString.Length && char.IsSurrogatePair(unicodeString[i], unicodeString[i + 1]))
                 {
                     int codePoint = char.ConvertToUtf32(unicodeString[i], unicodeString[i+1]);
-                    b.Append(string.Concat("\\U", ((int)codePoint).ToString("X8")));
+                    b.Append(string.Concat("\\U", codePoint.ToString("X8")));
                     i++;
                 }
 
