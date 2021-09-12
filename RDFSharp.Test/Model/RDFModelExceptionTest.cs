@@ -17,9 +17,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Runtime.Serialization;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test
 {
     [TestClass]
     public class RDFModelExceptionTest

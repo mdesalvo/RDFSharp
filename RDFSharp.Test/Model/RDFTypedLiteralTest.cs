@@ -17,7 +17,7 @@
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test
 {
     [TestClass]
     public class RDFTypedLiteralTest

@@ -18,26 +18,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
 using System.Linq;
-using System.Reflection;
 
-namespace RDFSharp.Test.Model
+namespace RDFSharp.Test
 {
     [TestClass]
     public class RDFModelUtilitiesTest
     {
-        #region Properties
-        private Type ModelUtilities { get; set; }
-        #endregion
-
-        #region Ctors
-        [TestInitialize]
-        public void InitializeTestClass()
-            => this.ModelUtilities = AppDomain.CurrentDomain.GetAssemblies()
-                                                            .ToList()
-                                                            .Find(asm => asm.GetName().Name.Equals("RDFSharp"))
-                                                            .GetType("RDFSharp.Model.RDFModelUtilities");
-        #endregion
-
         #region Tests
         [TestMethod]
         public void ShouldCreateHash()
@@ -54,10 +40,9 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org/test#")]
         public void ShouldGetUriFromString(string uriString)
         {
-            object result = this.ModelUtilities.GetMethod("GetUriFromString", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uriString });
-            Assert.IsInstanceOfType(result, typeof(Uri));
-            Assert.IsTrue(((Uri)result).Equals(new Uri(uriString)));
+            Uri result = RDFModelUtilities.GetUriFromString(uriString);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Equals(new Uri(uriString)));
         }
 
         [DataTestMethod]
@@ -66,18 +51,16 @@ namespace RDFSharp.Test.Model
         [DataRow("_://example.org/test#")]
         public void ShouldGetBlankUriFromString(string uriString)
         {
-            object result = this.ModelUtilities.GetMethod("GetUriFromString", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uriString });
-            Assert.IsInstanceOfType(result, typeof(Uri));
-            Assert.IsTrue(((Uri)result).Equals(new Uri("bnode://example.org/test#")));
+            Uri result = RDFModelUtilities.GetUriFromString(uriString);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Equals(new Uri("bnode://example.org/test#")));
         }
 
         [DataTestMethod]
         [DataRow(null)]
         public void ShouldNotGetUriFromString(string uriString)
         {
-            object result = this.ModelUtilities.GetMethod("GetUriFromString", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uriString });
+            Uri result = RDFModelUtilities.GetUriFromString(uriString);
             Assert.IsNull(result);
         }
 
@@ -85,8 +68,7 @@ namespace RDFSharp.Test.Model
         [DataRow("/file/system")]
         public void ShouldNotGetRelativeUriFromString(string uriString)
         {
-            object result = this.ModelUtilities.GetMethod("GetUriFromString", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uriString });
+            Uri result = RDFModelUtilities.GetUriFromString(uriString);
             Assert.IsNull(result);
         }
 
@@ -130,32 +112,24 @@ namespace RDFSharp.Test.Model
         [DataRow("http://xmlns.com/foaf/0.1/")]
         public void ShouldRemapSameUriForDereference(string uriString)
         {
-            Uri uri = new Uri(uriString);
-            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uri });
-
+            Uri result = RDFModelUtilities.RemapUriForDereference(new Uri(uriString));
             Assert.IsNotNull(result);
-            Assert.IsTrue(((Uri)result).Equals(new Uri(RDFVocabulary.FOAF.BASE_URI)));
+            Assert.IsTrue(result.Equals(new Uri(RDFVocabulary.FOAF.BASE_URI)));
         }
 
         [DataTestMethod]
         [DataRow("http://purl.org/dc/elements/1.1/")]
         public void ShouldRemapDifferentUriForDereference(string uriString)
         {
-            Uri uri = new Uri(uriString);
-            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uri });
-
+            Uri result = RDFModelUtilities.RemapUriForDereference(new Uri(uriString));
             Assert.IsNotNull(result);
-            Assert.IsFalse(((Uri)result).Equals(new Uri(RDFVocabulary.DC.BASE_URI)));
+            Assert.IsFalse(result.Equals(new Uri(RDFVocabulary.DC.BASE_URI)));
         }
 
         [TestMethod]
         public void ShouldNotRemapNullUriForDereference()
         {
-            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { null });
-
+            Uri result = RDFModelUtilities.RemapUriForDereference(null);
             Assert.IsNull(result);
         }
 
@@ -163,12 +137,9 @@ namespace RDFSharp.Test.Model
         [DataRow("http://example.org/test#")]
         public void ShouldNotRemapUnknownUriForDereference(string uriString)
         {
-            Uri uri = new Uri(uriString);
-            object result = this.ModelUtilities.GetMethod("RemapUriForDereference", BindingFlags.NonPublic | BindingFlags.Static)
-                                               .Invoke(null, new object[] { uri });
-
+            Uri result = RDFModelUtilities.RemapUriForDereference(new Uri(uriString));
             Assert.IsNotNull(result);
-            Assert.IsTrue(((Uri)result).Equals(new Uri("http://example.org/test#")));
+            Assert.IsTrue(result.Equals(new Uri("http://example.org/test#")));
         }
 
         [DataTestMethod]
