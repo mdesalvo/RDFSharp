@@ -161,23 +161,18 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string EscapeControlCharsForXML(string data)
         {
-            if (data != null)
+            if (string.IsNullOrEmpty(data))
+                return data;
+
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
             {
-                StringBuilder b = new StringBuilder();
-                foreach (char c in data)
-                {
-                    if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')
-                    {
-                        b.Append(string.Concat("\\u", ((int)c).ToString("X4")));
-                    }
-                    else
-                    {
-                        b.Append(c);
-                    }
-                }
-                data = b.ToString();
+                if (char.IsControl(data[i]) && data[i] != '\u0009' && data[i] != '\u000A' && data[i] != '\u000D')
+                    b.Append(string.Concat("\\u", ((int)data[i]).ToString("X4")));
+                else
+                    b.Append(data[i]);
             }
-            return data;
+            return b.ToString();
         }
 
         /// <summary>

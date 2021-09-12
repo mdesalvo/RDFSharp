@@ -273,6 +273,49 @@ namespace RDFSharp.Test
 
             Assert.IsNull(output);
         }
+
+        [DataTestMethod]
+        [DataRow("This string contains escapeable control char: \0")]
+        public void ShouldEscapeControlCharsForXML(string input)
+        {
+            string result = RDFModelUtilities.EscapeControlCharsForXML(input);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.ToList().TrueForAll(chr => !char.IsControl(chr)));
+            Assert.IsFalse(result.IndexOf("\0") == -1);
+            Assert.IsTrue(result.IndexOf("\\u0000") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This string contains allowed control char: \n")]
+        public void ShouldNotEscapeAllowedControlCharsForXML(string input)
+        {
+            string result = RDFModelUtilities.EscapeControlCharsForXML(input);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.ToList().Any(chr => char.IsControl(chr)));
+            Assert.IsTrue(result.IndexOf('\n') > -1);
+            Assert.IsTrue(result.IndexOf('\u0009') == -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This string does not contain escapeable control char")]
+        public void ShouldNotEscapeZeroControlCharsForXML(string input)
+        {
+            string result = RDFModelUtilities.EscapeControlCharsForXML(input);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.ToList().Any(chr => char.IsControl(chr)));
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        public void ShouldNotEscapeNullControlCharsForXML(string input)
+        {
+            string result = RDFModelUtilities.EscapeControlCharsForXML(input);
+
+            Assert.IsNull(result);
+        }
         #endregion
     }
 }
