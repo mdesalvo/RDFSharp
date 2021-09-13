@@ -275,7 +275,7 @@ namespace RDFSharp.Test
         }
 
         [DataTestMethod]
-        [DataRow("This string contains escapeable control char: \0")]
+        [DataRow("This string contains XML-escapeable control chars: \0")]
         public void ShouldEscapeControlCharsForXML(string input)
         {
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
@@ -287,7 +287,7 @@ namespace RDFSharp.Test
         }
 
         [DataTestMethod]
-        [DataRow("This string contains allowed control char: \n")]
+        [DataRow("This string contains XML-allowed control chars: \n")]
         public void ShouldNotEscapeAllowedControlCharsForXML(string input)
         {
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
@@ -299,7 +299,7 @@ namespace RDFSharp.Test
         }
 
         [DataTestMethod]
-        [DataRow("This string does not contain escapeable control char")]
+        [DataRow("This string does not contain XML-escapeable control chars")]
         public void ShouldNotEscapeZeroControlCharsForXML(string input)
         {
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
@@ -315,6 +315,125 @@ namespace RDFSharp.Test
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
             Assert.IsNull(result);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is a string containing hello")]
+        public void ShouldTrimEndString(string input)
+        {
+            string result = input.TrimEnd("hello");
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IndexOf("hello") == -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is a string containing hellooo")]
+        public void ShouldTrimEndStringFromTwiceOccurrences(string input)
+        {
+            string result = input.TrimEnd("o");
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IndexOf("hellooo") == -1);
+            Assert.IsTrue(result.IndexOf("helloo") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is a string hello containing hello")]
+        public void ShouldTrimEndStringFromIntermediateOccurrences(string input)
+        {
+            string result = input.TrimEnd("hello");
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IndexOf("hello") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is a string containing hello")]
+        public void ShouldTrimEndStringFromEmptyValue(string input)
+        {
+            string result = input.TrimEnd(string.Empty);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IndexOf("hello") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("This is a string containing hello")]
+        public void ShouldTrimEndStringFromNullValue(string input)
+        {
+            string result = input.TrimEnd(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IndexOf("hello") > -1);
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        public void ShouldTrimEndEmptyStringFromValue(string input)
+        {
+            string result = input.TrimEnd("hello");
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IndexOf("hello") == -1);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        public void ShouldTrimEndNullStringFromValue(string input)
+        {
+            string result = input.TrimEnd("hello");
+
+            Assert.IsNull(result);
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/test#test1")]
+        public void ShouldGetShortUriAsFragment(string input)
+        {
+            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+
+            Assert.IsNotNull(shortUri);
+            Assert.IsTrue(shortUri.Equals("test1"));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/test#test1/test2#test3")]
+        public void ShouldGetShortUriAsEffectiveFragment(string input)
+        {
+            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+
+            Assert.IsNotNull(shortUri);
+            Assert.IsTrue(shortUri.Equals("test1/test2#test3"));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/test")]
+        public void ShouldGetShortUriAsLastSegment(string input)
+        {
+            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+
+            Assert.IsNotNull(shortUri);
+            Assert.IsTrue(shortUri.Equals("test"));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org")]
+        public void ShouldGetShortUriAsUniqueSegment(string input)
+        {
+            string shortUri = RDFModelUtilities.GetShortUri(new Uri(input));
+
+            Assert.IsNotNull(shortUri);
+            Assert.IsTrue(shortUri.Equals("http://example.org/"));
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        public void ShouldNotGetShortUriFromNullInput(string input)
+        {
+            string shortUri = RDFModelUtilities.GetShortUri(null);
+
+            Assert.IsNull(shortUri);
         }
         #endregion
     }

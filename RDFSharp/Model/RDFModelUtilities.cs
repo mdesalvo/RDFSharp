@@ -180,7 +180,9 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string TrimEnd(this string source, string value)
         {
-            if (!source.EndsWith(value))
+            if (string.IsNullOrEmpty(source) 
+                    || string.IsNullOrEmpty(value) 
+                        || !source.EndsWith(value))
                 return source;
 
             return source.Remove(source.LastIndexOf(value));
