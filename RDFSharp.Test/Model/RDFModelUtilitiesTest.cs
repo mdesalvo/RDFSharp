@@ -811,6 +811,57 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectPredicateLiteralBecauseFaultingSubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectPredicateLiteralBecauseFaultingPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectPredicateLiteralBecauseFaultingLiteral()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPLTriplesBySubjectPredicate()
         {
             RDFGraph graph = new RDFGraph(
@@ -829,6 +880,40 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectPredicateBecauseFaultingSubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectPredicateBecauseFaultingPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPLTriplesBySubjectLiteral()
         {
             RDFGraph graph = new RDFGraph(
@@ -844,6 +929,40 @@ namespace RDFSharp.Test
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 1);
             Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectLiteralBecauseFaultingSubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubjectLiteralBecauseFaultingLiteral()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
 
         [TestMethod]
@@ -866,6 +985,23 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPLTriplesBySubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPLTriplesByPredicateLiteral()
         {
             RDFGraph graph = new RDFGraph(
@@ -882,6 +1018,40 @@ namespace RDFSharp.Test
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesByPredicateLiteralBecauseFaultingPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesByPredicateLiteralBecauseFaultingLiteral()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
 
         [TestMethod]
@@ -904,6 +1074,23 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPLTriplesByPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPLTriplesByLiteral()
         {
             RDFGraph graph = new RDFGraph(
@@ -920,6 +1107,23 @@ namespace RDFSharp.Test
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPLTriplesByLiteral()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
 
         [TestMethod]
@@ -941,6 +1145,15 @@ namespace RDFSharp.Test
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit1")))));
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectTriplesBecauseNullGraph()
+        {
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(null, null, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
         #endregion
     }
