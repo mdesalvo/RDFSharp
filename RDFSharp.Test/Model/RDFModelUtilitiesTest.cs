@@ -456,6 +456,57 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingSubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectPredicateObjectBecauseFaultingObject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj6/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPOTriplesBySubjectPredicate()
         {
             RDFGraph graph = new RDFGraph(
@@ -474,6 +525,40 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectPredicateBecauseFaultingSubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectPredicateBecauseFaultingPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPOTriplesBySubjectObject()
         {
             RDFGraph graph = new RDFGraph(
@@ -489,6 +574,40 @@ namespace RDFSharp.Test
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 1);
             Assert.IsTrue(result.Single().Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectObjectBecauseFaultingSubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, new RDFResource("http://obj2/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubjectObjectBecauseFaultingObject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj1/"), null, new RDFResource("http://obj6/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
 
         [TestMethod]
@@ -511,6 +630,23 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPOTriplesBySubject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, new RDFResource("http://subj6/"), null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPOTriplesByPredicateObject()
         {
             RDFGraph graph = new RDFGraph(
@@ -527,6 +663,40 @@ namespace RDFSharp.Test
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesByPredicateObjectBecauseFaultingPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), new RDFResource("http://obj2/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesByPredicateObjectBecauseFaultingObject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred1/"), new RDFResource("http://obj6/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
 
         [TestMethod]
@@ -549,6 +719,23 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldNotSelectSPOTriplesByPredicate()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, new RDFResource("http://pred6/"), null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
         public void ShouldSelectSPOTriplesByObject()
         {
             RDFGraph graph = new RDFGraph(
@@ -565,6 +752,23 @@ namespace RDFSharp.Test
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
             Assert.IsTrue(result.Any(t => t.Equals(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")))));
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectSPOTriplesByObject()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
+                });
+            List<RDFTriple> result = RDFModelUtilities.SelectTriples(graph, null, null, new RDFResource("http://obj6/"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
 
         [TestMethod]
