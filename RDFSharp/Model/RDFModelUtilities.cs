@@ -317,7 +317,6 @@ namespace RDFSharp.Model
             HashSet<long> itemRestVisitCache = new HashSet<long>() { itemRest.PatternMemberID };
             while (!nilFound)
             {
-
                 #region rdf:first
                 RDFTriple first = rdfFirst.SelectTriplesBySubject(itemRest).FirstOrDefault();
                 if (first != null && first.TripleFlavor == expectedFlavor)
@@ -334,27 +333,30 @@ namespace RDFSharp.Model
                 #endregion
 
                 #region rdf:rest
-                RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest).FirstOrDefault();
-                if (rest != null)
+                //Ensure considering exit signal from bad-formed rdf:first
+                if (!nilFound)
                 {
-                    if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
-                        nilFound = true;
+                    RDFTriple rest = rdfRest.SelectTriplesBySubject(itemRest).FirstOrDefault();
+                    if (rest != null)
+                    {
+                        if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
+                            nilFound = true;
+                        else
+                        {
+                            itemRest = (RDFResource)rest.Object;
+                            //Avoid bad-formed cyclic lists to generate infinite loops
+                            if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
+                                itemRestVisitCache.Add(itemRest.PatternMemberID);
+                            else
+                                nilFound = true;
+                        }
+                    }
                     else
                     {
-                        itemRest = (RDFResource)rest.Object;
-                        //Avoid bad-formed cyclic lists to generate infinite loops
-                        if (!itemRestVisitCache.Contains(itemRest.PatternMemberID))
-                            itemRestVisitCache.Add(itemRest.PatternMemberID);
-                        else
-                            nilFound = true;
+                        nilFound = true;
                     }
                 }
-                else
-                {
-                    nilFound = true;
-                }
                 #endregion
-
             }
             #endregion
 
