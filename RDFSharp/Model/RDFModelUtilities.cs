@@ -511,7 +511,7 @@ namespace RDFSharp.Model
                 return RDFModelEnums.RDFDatatypes.XSD_NOTATION;
 
             else
-                //Unknown datatypes are threated as rdfs:Literal
+                //Unknown datatypes fallback to rdfs:Literal
                 return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
         }
 
