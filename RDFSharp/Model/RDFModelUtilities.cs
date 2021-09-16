@@ -511,7 +511,7 @@ namespace RDFSharp.Model
                 return RDFModelEnums.RDFDatatypes.XSD_NOTATION;
 
             else
-                //Unknown datatypes fallback to rdfs:Literal
+                //Unrecognized datatypes fallback to rdfs:Literal
                 return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
         }
 
@@ -611,7 +611,7 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
                     return RDFVocabulary.XSD.UNSIGNED_BYTE.ToString();
 
-                //Unrecognized datatypes are threated as rdfs:Literal
+                //Unrecognized datatypes fallback to rdfs:Literal
                 default:
                     return RDFVocabulary.RDFS.LITERAL.ToString();
             }
