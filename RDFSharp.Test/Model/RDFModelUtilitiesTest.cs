@@ -1477,6 +1477,72 @@ namespace RDFSharp.Test
 
             Assert.IsNotNull(coll1);
             Assert.IsTrue(coll1.ItemsCount == 0);        }
+
+        [TestMethod]
+        public void ShouldDetectSPOCollectionFlavorFromGraph()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
+                });
+            RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll1/"));
+
+            Assert.IsNotNull(tripleFlavor);
+            Assert.IsTrue(tripleFlavor.Equals(RDFModelEnums.RDFTripleFlavors.SPO));
+        }
+
+        [TestMethod]
+        public void ShouldDetectSPLCollectionFlavorFromGraph()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item1")),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item2")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFPlainLiteral("item3")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
+                });
+            RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll1/"));
+
+            Assert.IsNotNull(tripleFlavor);
+            Assert.IsTrue(tripleFlavor.Equals(RDFModelEnums.RDFTripleFlavors.SPL));
+        }
+
+        [TestMethod]
+        public void ShouldNotDetectCollectionFlavorFromGraphAndDefaultToSPO()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item1/")),
+                    new RDFTriple(new RDFResource("bnode://coll1/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item2/")),
+                    new RDFTriple(new RDFResource("bnode://coll2/"),RDFVocabulary.RDF.REST,new RDFResource("bnode://coll3/")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.TYPE,RDFVocabulary.RDF.LIST),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.FIRST,new RDFResource("http://item3/")),
+                    new RDFTriple(new RDFResource("bnode://coll3/"),RDFVocabulary.RDF.REST,RDFVocabulary.RDF.NIL)
+                });
+            RDFModelEnums.RDFTripleFlavors tripleFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, new RDFResource("bnode://coll2/"));
+
+            Assert.IsNotNull(tripleFlavor);
+            Assert.IsTrue(tripleFlavor.Equals(RDFModelEnums.RDFTripleFlavors.SPO));
+        }
         #endregion
     }
 }
