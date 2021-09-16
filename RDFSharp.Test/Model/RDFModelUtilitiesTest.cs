@@ -1564,6 +1564,20 @@ namespace RDFSharp.Test
             Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.GEO.PREFIX))));
             Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.XSD.PREFIX))));
         }
+
+        [TestMethod]
+        public void ShouldNotGetGraphNamespaces()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/"))
+                });
+            List<RDFNamespace> graphNS = RDFModelUtilities.GetGraphNamespaces(graph);
+
+            Assert.IsNotNull(graphNS);
+            Assert.IsTrue(graphNS.Count == 0);
+        }
         #endregion
     }
 }
