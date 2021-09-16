@@ -145,6 +145,7 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        [TestProperty("Warning", "This is a physical test! It tries to contact prefix.cc service, which may be unavailable! We are not going to mock tests like this.")]
         public void ShouldGetNamespaceByPrefixWithLookupService()
         {
             RDFNamespace ns = RDFNamespaceRegister.GetByPrefix("dbo", true);
@@ -165,6 +166,7 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        [TestProperty("Warning", "This is a physical test! It tries to contact prefix.cc service, which may be unavailable! We are not going to mock tests like this.")]
         public void ShouldNotGetNamespaceByPrefixWithLookupService()
         {
             Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exx", true));

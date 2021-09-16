@@ -382,25 +382,24 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph)
         {
-            var result = new List<RDFNamespace>();
-            foreach (var t in graph)
+            List<RDFNamespace> result = new List<RDFNamespace>();
+            foreach (RDFTriple t in graph)
             {
-                var subj = t.Subject.ToString();
-                var pred = t.Predicate.ToString();
-                var obj = t.Object is RDFResource ? t.Object.ToString() :
+                string subj = t.Subject.ToString();
+                string pred = t.Predicate.ToString();
+                string obj = t.Object is RDFResource ? t.Object.ToString() :
                                 (t.Object is RDFTypedLiteral ? GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype) : string.Empty);
 
                 //Resolve subject Uri
-                var subjNS = RDFNamespaceRegister.Instance.Register.Where(x => subj.StartsWith(x.ToString()));
+                IEnumerable<RDFNamespace> subjNS = RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString()));
+                result.AddRange(subjNS);
 
                 //Resolve predicate Uri
-                var predNS = RDFNamespaceRegister.Instance.Register.Where(x => pred.StartsWith(x.ToString()));
+                IEnumerable<RDFNamespace> predNS = RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString()));
+                result.AddRange(predNS);
 
                 //Resolve object Uri
-                var objNS = RDFNamespaceRegister.Instance.Register.Where(x => obj.StartsWith(x.ToString()));
-
-                result.AddRange(subjNS);
-                result.AddRange(predNS);
+                IEnumerable<RDFNamespace> objNS = RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString()));
                 result.AddRange(objNS);
             }
             return result.Distinct().ToList();

@@ -1543,6 +1543,27 @@ namespace RDFSharp.Test
             Assert.IsNotNull(tripleFlavor);
             Assert.IsTrue(tripleFlavor.Equals(RDFModelEnums.RDFTripleFlavors.SPO));
         }
+
+        [TestMethod]
+        public void ShouldGetGraphNamespaces()
+        {
+            RDFGraph graph = new RDFGraph(
+                new List<RDFTriple>()
+                {
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(RDFVocabulary.RDF.BAG,new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),RDFVocabulary.GEO.LAT,new RDFResource("http://obj1/")),
+                    new RDFTriple(new RDFResource("http://subj1/"),new RDFResource("http://pred1/"),new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                    new RDFTriple(RDFVocabulary.RDF.BAG,RDFVocabulary.GEO.LAT,RDFVocabulary.XSD.INT)
+                });
+            List<RDFNamespace> graphNS = RDFModelUtilities.GetGraphNamespaces(graph);
+
+            Assert.IsNotNull(graphNS);
+            Assert.IsTrue(graphNS.Count == 3);
+            Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))));
+            Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.GEO.PREFIX))));
+            Assert.IsTrue(graphNS.Any(ns => ns.Equals(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.XSD.PREFIX))));
+        }
         #endregion
     }
 }
