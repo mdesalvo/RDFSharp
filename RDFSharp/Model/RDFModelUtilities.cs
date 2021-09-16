@@ -478,7 +478,7 @@ namespace RDFSharp.Model
             else if (datatypeString.Equals(RDFVocabulary.XSD.DURATION.ToString(), StringComparison.Ordinal))
                 return RDFModelEnums.RDFDatatypes.XSD_DURATION;
 
-            //Less-likely to be used, so we can check for them with lower priority
+            //Less-likely to be used, so recognized with lower priority
             else if (datatypeString.Equals(RDFVocabulary.RDF.XML_LITERAL.ToString(), StringComparison.Ordinal))
                 return RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL;
             else if (datatypeString.Equals(RDFVocabulary.RDF.HTML.ToString(), StringComparison.Ordinal))
