@@ -423,8 +423,6 @@ namespace RDFSharp.Model
                 return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
             else if (datatypeString.Equals(RDFVocabulary.XSD.STRING.ToString(), StringComparison.Ordinal))
                 return RDFModelEnums.RDFDatatypes.XSD_STRING;
-            else if (datatypeString.Equals(RDFVocabulary.XSD.ANY_URI.ToString(), StringComparison.Ordinal))
-                return RDFModelEnums.RDFDatatypes.XSD_ANYURI;
             else if (datatypeString.Equals(RDFVocabulary.XSD.BOOLEAN.ToString(), StringComparison.Ordinal))
                 return RDFModelEnums.RDFDatatypes.XSD_BOOLEAN;
             else if (datatypeString.Equals(RDFVocabulary.XSD.DECIMAL.ToString(), StringComparison.Ordinal))
@@ -487,6 +485,8 @@ namespace RDFSharp.Model
                 return RDFModelEnums.RDFDatatypes.RDF_HTML;
             else if (datatypeString.Equals(RDFVocabulary.RDF.JSON.ToString(), StringComparison.Ordinal))
                 return RDFModelEnums.RDFDatatypes.RDF_JSON;
+            else if (datatypeString.Equals(RDFVocabulary.XSD.ANY_URI.ToString(), StringComparison.Ordinal))
+                return RDFModelEnums.RDFDatatypes.XSD_ANYURI;
             else if (datatypeString.Equals(RDFVocabulary.XSD.BASE64_BINARY.ToString(), StringComparison.Ordinal))
                 return RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY;
             else if (datatypeString.Equals(RDFVocabulary.XSD.HEX_BINARY.ToString(), StringComparison.Ordinal))
