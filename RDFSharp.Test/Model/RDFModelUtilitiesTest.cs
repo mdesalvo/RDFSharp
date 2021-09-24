@@ -1578,6 +1578,16 @@ namespace RDFSharp.Test
             Assert.IsNotNull(graphNS);
             Assert.IsTrue(graphNS.Count == 0);
         }
+
+        [DataTestMethod]
+        [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral")]
+        [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML")]
+        [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON")]
+        public void ShouldGetDatatypeFromString(string input)
+        {
+            RDFModelEnums.RDFDatatypes datatype = RDFModelUtilities.GetDatatypeFromString(input);
+            Assert.IsTrue(datatype != RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
+        }
         #endregion
     }
 }
