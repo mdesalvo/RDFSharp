@@ -92,6 +92,25 @@ namespace RDFSharp.Test
             RDFGraph graph = new RDFGraph().SetContext(new Uri("bnode:12345"));
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
         }
+
+        [TestMethod]
+        public void ShouldEnumerateGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>()
+            {
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+                new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
+            });
+
+            int i = 0;
+            foreach (RDFTriple t in graph) i++;
+            Assert.IsTrue(i == 2);
+
+            int j = 0;
+            IEnumerator<RDFTriple> triplesEnumerator = graph.TriplesEnumerator;
+            while(triplesEnumerator.MoveNext()) j++;
+            Assert.IsTrue(j == 2);
+        }
         #endregion
     }
 }
