@@ -460,7 +460,7 @@ namespace RDFSharp.Model
 
         #region Datatypes
         /// <summary>
-        /// Parses the given string in order to give the corresponding RDF/RDFS/XSD datatype
+        /// Parses the given string in order to give the corresponding datatype
         /// </summary>
         public static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
         {
@@ -471,15 +471,15 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri.");
             #endregion
 
-            //Lookup for the datatype corresponding to the given string (fallback to rdfs:Literal)
             if (DatatypeStringMapper.TryGetValue(datatypeString.Trim(), out RDFModelEnums.RDFDatatypes datatype))
                 return datatype;
             else
+                //Fallback to rdfs:Literal
                 return RDFModelEnums.RDFDatatypes.RDFS_LITERAL;
         }
 
         /// <summary>
-        /// Gives the string representation of the given RDF/RDFS/XSD datatype
+        /// Gives the string representation of the given datatype
         /// </summary>
         public static string GetDatatypeFromEnum(RDFModelEnums.RDFDatatypes datatype)
         {
@@ -491,8 +491,6 @@ namespace RDFSharp.Model
                     return RDFVocabulary.RDF.HTML.ToString();
                 case RDFModelEnums.RDFDatatypes.RDF_JSON:
                     return RDFVocabulary.RDF.JSON.ToString();
-                case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
-                    return RDFVocabulary.RDFS.LITERAL.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_STRING:
                     return RDFVocabulary.XSD.STRING.ToString();
                 case RDFModelEnums.RDFDatatypes.XSD_ANYURI:
@@ -574,7 +572,8 @@ namespace RDFSharp.Model
                 case RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE:
                     return RDFVocabulary.XSD.UNSIGNED_BYTE.ToString();
 
-                //Unrecognized datatypes fallback to rdfs:Literal
+                //Fallback to rdfs:Literal
+                case RDFModelEnums.RDFDatatypes.RDFS_LITERAL:
                 default:
                     return RDFVocabulary.RDFS.LITERAL.ToString();
             }
