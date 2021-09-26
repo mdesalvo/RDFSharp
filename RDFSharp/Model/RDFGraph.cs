@@ -104,26 +104,28 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() => this.TriplesEnumerator;
+        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator()
+            => this.TriplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.TriplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.TriplesEnumerator;
         #endregion
 
         #region Methods
 
         #region Add
         /// <summary>
-        /// Sets the context of the graph to the given Uri (null or blank-node Uris are not accepted)
+        /// Sets the context of the graph to the given absolute Uri
         /// </summary>
         public RDFGraph SetContext(Uri contextUri)
         {
-            if (contextUri != null && !contextUri.ToString().ToUpperInvariant().StartsWith("BNODE:"))
-            {
+            if (contextUri != null
+                    && contextUri.IsAbsoluteUri
+                        && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                 this.Context = contextUri;
-            }
             return this;
         }
 

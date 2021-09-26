@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace RDFSharp.Test
 {
@@ -60,6 +61,35 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.GraphIndex.Objects.Count == 1);
             Assert.IsTrue(graph.GraphIndex.Literals.Count == 1);
             Assert.IsNotNull(graph.Context);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [DataTestMethod]
+        [DataRow("http://example.org/")]
+        public void ShouldSetContext(string input)
+        {
+            RDFGraph graph = new RDFGraph().SetContext(new Uri(input));
+            Assert.IsTrue(graph.Context.Equals(new Uri(input)));
+        }
+
+        [TestMethod]
+        public void ShouldNotSetContextBecauseNullUri()
+        {
+            RDFGraph graph = new RDFGraph().SetContext(null);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [TestMethod]
+        public void ShouldNotSetContextBecauseRelativeUri()
+        {
+            RDFGraph graph = new RDFGraph().SetContext(new Uri("file/system", UriKind.Relative));
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+        }
+
+        [TestMethod]
+        public void ShouldNotSetContextBecauseBlankNodeUri()
+        {
+            RDFGraph graph = new RDFGraph().SetContext(new Uri("bnode:12345"));
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
         }
         #endregion
