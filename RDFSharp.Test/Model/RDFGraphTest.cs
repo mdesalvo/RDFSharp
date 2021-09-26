@@ -125,6 +125,59 @@ namespace RDFSharp.Test
             while(triplesEnumerator.MoveNext()) j++;
             Assert.IsTrue(j == 2);
         }
+
+        [TestMethod]
+        public void ShouldCompareEquallyToEmptyGraph()
+        {
+            RDFGraph graphA = new RDFGraph();
+            RDFGraph graphB = new RDFGraph();
+
+            Assert.IsTrue(graphA.Equals(graphB));
+        }
+
+        [TestMethod]
+        public void ShouldCompareEquallyToGraph()
+        {
+            RDFGraph graphA = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFGraph graphB = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+
+            Assert.IsTrue(graphA.Equals(graphB));
+        }
+
+        [TestMethod]
+        public void ShouldCompareEquallyToSelf()
+        {
+            RDFGraph graphA = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+
+            Assert.IsTrue(graphA.Equals(graphA));
+        }
+
+        [TestMethod]
+        public void ShouldNotCompareEquallyToNullGraph()
+        {
+            RDFGraph graphA = new RDFGraph();
+
+            Assert.IsFalse(graphA.Equals(null));
+        }
+
+        [TestMethod]
+        public void ShouldNotCompareEquallyToMoreNumerousGraph()
+        {
+            RDFGraph graphA = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFGraph graphB = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")))
+                                            .AddTriple(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")));
+
+            Assert.IsFalse(graphA.Equals(graphB));
+        }
+
+        [TestMethod]
+        public void ShouldNotCompareEquallyToDifferentGraph()
+        {
+            RDFGraph graphA = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFGraph graphB = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")));
+
+            Assert.IsFalse(graphA.Equals(graphB));
+        }
         #endregion
     }
 }
