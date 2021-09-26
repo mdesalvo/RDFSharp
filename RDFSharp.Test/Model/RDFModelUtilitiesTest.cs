@@ -1580,14 +1580,73 @@ namespace RDFSharp.Test
         }
 
         [DataTestMethod]
+        [DataRow("http://www.w3.org/2000/01/rdf-schema#Literal", RDFModelEnums.RDFDatatypes.RDFS_LITERAL)]
         [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL)]
         [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML", RDFModelEnums.RDFDatatypes.RDF_HTML)]
         [DataRow("http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON", RDFModelEnums.RDFDatatypes.RDF_JSON)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#string", RDFModelEnums.RDFDatatypes.XSD_STRING)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#boolean", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#decimal", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#float", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#double", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#positiveInteger", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#negativeInteger", RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#nonPositiveInteger", RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#nonNegativeInteger", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#integer", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#long", RDFModelEnums.RDFDatatypes.XSD_LONG)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#int", RDFModelEnums.RDFDatatypes.XSD_INT)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#short", RDFModelEnums.RDFDatatypes.XSD_SHORT)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#byte", RDFModelEnums.RDFDatatypes.XSD_BYTE)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#unsignedLong", RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#unsignedInt", RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#unsignedShort", RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#unsignedByte", RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#duration", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#dateTime", RDFModelEnums.RDFDatatypes.XSD_DATETIME)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#dateTimeStamp", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#date", RDFModelEnums.RDFDatatypes.XSD_DATE)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#time", RDFModelEnums.RDFDatatypes.XSD_TIME)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#gYear", RDFModelEnums.RDFDatatypes.XSD_GYEAR)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#gMonth", RDFModelEnums.RDFDatatypes.XSD_GMONTH)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#gDay", RDFModelEnums.RDFDatatypes.XSD_GDAY)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#gYearMonth", RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#gMonthDay", RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#hexBinary", RDFModelEnums.RDFDatatypes.XSD_HEXBINARY)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#base64Binary", RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#anyURI", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#QName", RDFModelEnums.RDFDatatypes.XSD_QNAME)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#NOTATION", RDFModelEnums.RDFDatatypes.XSD_NOTATION)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#language", RDFModelEnums.RDFDatatypes.XSD_LANGUAGE)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#normalizedString", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#token", RDFModelEnums.RDFDatatypes.XSD_TOKEN)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#NMToken", RDFModelEnums.RDFDatatypes.XSD_NMTOKEN)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#Name", RDFModelEnums.RDFDatatypes.XSD_NAME)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#NCName", RDFModelEnums.RDFDatatypes.XSD_NCNAME)]
+        [DataRow("http://www.w3.org/2001/XMLSchema#ID", RDFModelEnums.RDFDatatypes.XSD_ID)]
+        [DataRow(" http://www.w3.org/2001/XMLSchema#ID ", RDFModelEnums.RDFDatatypes.XSD_ID)] //trimmed case
         public void ShouldGetDatatypeFromString(string input, RDFModelEnums.RDFDatatypes datatype)
         {
             RDFModelEnums.RDFDatatypes output = RDFModelUtilities.GetDatatypeFromString(input);
             Assert.IsTrue(output == datatype);
         }
+
+        [DataTestMethod]
+        [DataRow("http://www.w3.org/2000/01/rdf-schema#UnexistingDatatype")]
+        [DataRow("http://www.w3.org/2001/XMLSchema#Id")]
+        public void ShouldGetDefaultDatatypeFromUnrecognizedString(string input)
+        {
+            RDFModelEnums.RDFDatatypes output = RDFModelUtilities.GetDatatypeFromString(input);
+            Assert.IsTrue(output == RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("http:/example.org/test#")]
+        [DataRow("/file/system")]
+        public void ShouldThrowExceptionOnGettingDatatypeFromString(string input)
+            => Assert.ThrowsException<RDFModelException>(() => RDFModelUtilities.GetDatatypeFromString(input));
         #endregion
     }
 }

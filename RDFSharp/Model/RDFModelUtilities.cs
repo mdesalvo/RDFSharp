@@ -465,13 +465,13 @@ namespace RDFSharp.Model
         public static RDFModelEnums.RDFDatatypes GetDatatypeFromString(string datatypeString)
         {
             #region Guards
-            if (datatypeString == null)
-                throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is null.");
+            if (string.IsNullOrEmpty(datatypeString))
+                throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is null or empty.");
             if (!Uri.TryCreate(datatypeString, UriKind.Absolute, out _))
                 throw new RDFModelException("Cannot recognize datatype representation of given \"datatypeString\" parameter because it is not a valid absolute Uri.");
             #endregion
 
-            //Lookup for the datatype corresponding to the given string (fallback is rdfs:Literal)
+            //Lookup for the datatype corresponding to the given string (fallback to rdfs:Literal)
             if (DatatypeStringMapper.TryGetValue(datatypeString.Trim(), out RDFModelEnums.RDFDatatypes datatype))
                 return datatype;
             else
