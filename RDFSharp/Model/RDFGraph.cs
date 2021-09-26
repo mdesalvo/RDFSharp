@@ -40,12 +40,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public long TriplesCount => this.Triples.Count;
+        public long TriplesCount
+            => this.Triples.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
         /// </summary>
-        public IEnumerator<RDFTriple> TriplesEnumerator => this.Triples.Values.GetEnumerator();
+        public IEnumerator<RDFTriple> TriplesEnumerator
+            => this.Triples.Values.GetEnumerator();
 
         /// <summary>
         /// Index on the triples of the graph
@@ -80,7 +82,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override string ToString() => this.Context.ToString();
+        public override string ToString()
+            => this.Context.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two graphs
@@ -88,15 +91,12 @@ namespace RDFSharp.Model
         public bool Equals(RDFGraph other)
         {
             if (other == null || this.TriplesCount != other.TriplesCount)
-            {
                 return false;
-            }
+
             foreach (RDFTriple t in this)
             {
                 if (!other.ContainsTriple(t))
-                {
                     return false;
-                }
             }
             return true;
         }
