@@ -94,6 +94,20 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldGetDefaultStringRepresentation()
+        {
+            RDFGraph graph = new RDFGraph();
+            Assert.IsTrue(graph.ToString().Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
+        }
+
+        [TestMethod]
+        public void ShouldGetCustomStringRepresentation()
+        {
+            RDFGraph graph = new RDFGraph().SetContext(new Uri("http://example.org/"));
+            Assert.IsTrue(graph.ToString().Equals("http://example.org/"));
+        }
+
+        [TestMethod]
         public void ShouldEnumerateGraph()
         {
             RDFGraph graph = new RDFGraph(new List<RDFTriple>()
