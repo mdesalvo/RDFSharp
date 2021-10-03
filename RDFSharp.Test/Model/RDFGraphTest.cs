@@ -209,6 +209,66 @@ namespace RDFSharp.Test
 
             Assert.IsTrue(graph.TriplesCount == 0);
         }
+
+        [TestMethod]
+        public void ShouldAddContainer()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            cont.AddItem(new RDFPlainLiteral("hello"));
+            graph.AddContainer(cont);
+
+            Assert.IsTrue(graph.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldAddEmptyContainer()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            graph.AddContainer(cont);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldNotAddNullContainer()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddContainer(null);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldAddFilledCollection()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(new RDFPlainLiteral("hello"));
+            graph.AddCollection(coll);
+
+            Assert.IsTrue(graph.TriplesCount == 3);
+        }
+
+        [TestMethod]
+        public void ShouldNotAddEmptyCollection()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            graph.AddCollection(coll);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotAddNullCollection()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddCollection(null);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
         #endregion
     }
 }
