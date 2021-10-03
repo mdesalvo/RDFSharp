@@ -178,6 +178,37 @@ namespace RDFSharp.Test
 
             Assert.IsFalse(graphA.Equals(graphB));
         }
+
+        [TestMethod]
+        public void ShouldAddTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldNotAddDuplicateTriples()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple).AddTriple(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldNotAddNullTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(null);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
         #endregion
     }
 }
