@@ -755,6 +755,30 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.GraphIndex.Objects.Count == 0);
             Assert.IsTrue(graph.GraphIndex.Literals.Count == 0);
         }
+
+        [TestMethod]
+        public void ShouldUnreifySPOTriples()
+        {
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph = triple.ReifyTriple();
+            graph.UnreifyTriples();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldUnreifySPLTriples()
+        {
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFGraph graph = triple.ReifyTriple();
+            graph.UnreifyTriples();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
         #endregion
     }
 }
