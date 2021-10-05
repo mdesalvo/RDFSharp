@@ -410,6 +410,41 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
         }
+
+        [TestMethod]
+        public void ShouldRemoveTriplesByLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en","US"));
+            graph.AddTriple(triple);
+            graph.RemoveTriplesByLiteral((RDFLiteral)triple.Object);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotRemoveTriplesByLiteralBecauseUnexisting()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US"));
+            graph.AddTriple(triple);
+            graph.RemoveTriplesByLiteral(new RDFPlainLiteral("en"));
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldNotRemoveTriplesByLiteralBecauseNull()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US"));
+            graph.AddTriple(triple);
+            graph.RemoveTriplesByLiteral(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
         #endregion
     }
 }
