@@ -740,6 +740,21 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
         }
+
+        [TestMethod]
+        public void ShouldClearTriples()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            graph.AddTriple(triple);
+            graph.ClearTriples();
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+            Assert.IsTrue(graph.GraphIndex.Subjects.Count == 0);
+            Assert.IsTrue(graph.GraphIndex.Predicates.Count == 0);
+            Assert.IsTrue(graph.GraphIndex.Objects.Count == 0);
+            Assert.IsTrue(graph.GraphIndex.Literals.Count == 0);
+        }
         #endregion
     }
 }
