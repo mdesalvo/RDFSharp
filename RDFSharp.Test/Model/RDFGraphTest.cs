@@ -269,6 +269,42 @@ namespace RDFSharp.Test
 
             Assert.IsTrue(graph.TriplesCount == 0);
         }
+
+        [TestMethod]
+        public void ShouldRemoveTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple);
+            graph.RemoveTriple(triple);
+
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotRemoveUnexistingTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"));
+            graph.AddTriple(triple1);
+            graph.RemoveTriple(triple2);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple1.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldNotRemoveNullTriple()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple);
+            graph.RemoveTriple(null);
+
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Triples.ContainsKey(triple.TripleID));
+        }
         #endregion
     }
 }

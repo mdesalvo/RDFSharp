@@ -186,7 +186,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriple(RDFTriple triple)
         {
-            if (this.ContainsTriple(triple))
+            if (triple != null)
             {
                 //Remove triple
                 this.Triples.Remove(triple.TripleID);
