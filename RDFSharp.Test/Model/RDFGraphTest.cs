@@ -1117,6 +1117,75 @@ namespace RDFSharp.Test
             Assert.IsNotNull(union12);
             Assert.IsTrue(union12.TriplesCount == 2);
         }
+
+        [TestMethod]
+        public void ShouldDifferenceGraphs()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            RDFGraph graph2 = new RDFGraph();
+            graph2.AddTriple(triple1).AddTriple(triple3);
+
+            RDFGraph difference12 = graph1.DifferenceWith(graph2);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 1);
+            Assert.IsTrue(difference12.Triples.ContainsKey(triple2.TripleID));
+            RDFGraph difference21 = graph2.DifferenceWith(graph1);
+            Assert.IsNotNull(difference21);
+            Assert.IsTrue(difference21.TriplesCount == 1);
+            Assert.IsTrue(difference21.Triples.ContainsKey(triple3.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldDifferenceGraphWithEmpty()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph difference12 = graph1.DifferenceWith(graph2);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 2);
+            Assert.IsTrue(difference12.Triples.ContainsKey(triple2.TripleID));
+            RDFGraph difference21 = graph2.DifferenceWith(graph1);
+            Assert.IsNotNull(difference21);
+            Assert.IsTrue(difference21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDifferenceEmptyWithGraph()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph2 = new RDFGraph();
+            graph2.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph difference12 = graph1.DifferenceWith(graph2);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 0);
+            RDFGraph difference21 = graph2.DifferenceWith(graph1);
+            Assert.IsNotNull(difference21);
+            Assert.IsTrue(difference21.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldDifferenceGraphWithNull()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph difference12 = graph1.DifferenceWith(null);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 2);
+        }
         #endregion
     }
 }
