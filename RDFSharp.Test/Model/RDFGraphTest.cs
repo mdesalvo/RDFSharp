@@ -810,6 +810,166 @@ namespace RDFSharp.Test
 
             Assert.IsFalse(graph.ContainsTriple(null));
         }
+
+        [TestMethod]
+        public void ShouldSelectTriplesBySubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
+
+            RDFGraph select = graph.SelectTriplesBySubject(new RDFResource("http://subj/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectTriplesBySubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesBySubject(new RDFResource("http://subj2/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesBySubjectEvenIfNull()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesBySubject(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesByPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
+
+            RDFGraph select = graph.SelectTriplesByPredicate(new RDFResource("http://pred/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectTriplesByPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesByPredicate(new RDFResource("http://pred2/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesByPredicateEvenIfNull()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesByPredicate(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesByObject()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
+
+            RDFGraph select = graph.SelectTriplesByObject(new RDFResource("http://obj/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectTriplesByObject()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesByObject(new RDFResource("http://obj2/"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesByObjectEvenIfNull()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesByObject(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesByLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
+
+            RDFGraph select = graph.SelectTriplesByLiteral(new RDFPlainLiteral("lit"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectTriplesByLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesByLiteral(new RDFPlainLiteral("lit", "en-US"));
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldSelectTriplesByLiteralEvenIfNull()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph select = graph.SelectTriplesByLiteral(null);
+            Assert.IsNotNull(select);
+            Assert.IsTrue(select.TriplesCount == 2);
+        }
         #endregion
     }
 }
