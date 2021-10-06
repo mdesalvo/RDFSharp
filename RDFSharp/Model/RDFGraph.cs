@@ -134,15 +134,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph AddTriple(RDFTriple triple)
         {
-            if (triple != null)
+            if (triple != null && !this.Triples.ContainsKey(triple.TripleID))
             {
-                if (!this.Triples.ContainsKey(triple.TripleID))
-                {
-                    //Add triple
-                    this.Triples.Add(triple.TripleID, triple);
-                    //Add index
-                    this.GraphIndex.AddIndex(triple);
-                }
+                //Add triple
+                this.Triples.Add(triple.TripleID, triple);
+                //Add index
+                this.GraphIndex.AddIndex(triple);
             }
             return this;
         }
@@ -472,16 +469,12 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (graph != null)
             {
-
                 //Add intersection triples
                 foreach (RDFTriple t in this)
                 {
-                    if (graph.ContainsTriple(t))
-                    {
+                    if (graph.Triples.ContainsKey(t.TripleID))
                         result.AddTriple(t);
-                    }
                 }
-
             }
             return result;
         }
@@ -495,20 +488,14 @@ namespace RDFSharp.Model
 
             //Add triples from this graph
             foreach (RDFTriple t in this)
-            {
                 result.AddTriple(t);
-            }
-
+            
             //Manage the given graph
             if (graph != null)
             {
-
                 //Add triples from the given graph
                 foreach (RDFTriple t in graph)
-                {
                     result.AddTriple(t);
-                }
-
             }
 
             return result;
@@ -522,26 +509,18 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (graph != null)
             {
-
                 //Add difference triples
                 foreach (RDFTriple t in this)
                 {
-                    if (!graph.ContainsTriple(t))
-                    {
+                    if (!graph.Triples.ContainsKey(t.TripleID))
                         result.AddTriple(t);
-                    }
                 }
-
             }
             else
             {
-
                 //Add triples from this graph
                 foreach (RDFTriple t in this)
-                {
                     result.AddTriple(t);
-                }
-
             }
             return result;
         }

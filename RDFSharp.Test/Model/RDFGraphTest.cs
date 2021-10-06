@@ -970,6 +970,153 @@ namespace RDFSharp.Test
             Assert.IsNotNull(select);
             Assert.IsTrue(select.TriplesCount == 2);
         }
+
+        [TestMethod]
+        public void ShouldIntersectGraphs()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            RDFGraph graph2 = new RDFGraph();
+            graph2.AddTriple(triple1);
+
+            RDFGraph intersect12 = graph1.IntersectWith(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 1);
+            Assert.IsTrue(intersect12.Triples.ContainsKey(triple1.TripleID));
+            RDFGraph intersect21 = graph2.IntersectWith(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 1);
+            Assert.IsTrue(intersect21.Triples.ContainsKey(triple1.TripleID));
+        }
+
+        [TestMethod]
+        public void ShouldIntersectGraphWithEmpty()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph intersect12 = graph1.IntersectWith(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+            RDFGraph intersect21 = graph2.IntersectWith(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldIntersectEmptyWithGraph()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph2 = new RDFGraph();
+            graph2.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph intersect12 = graph1.IntersectWith(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+            RDFGraph intersect21 = graph2.IntersectWith(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldIntersectEmptyWithEmpty()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph intersect12 = graph1.IntersectWith(graph2);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+            RDFGraph intersect21 = graph2.IntersectWith(graph1);
+            Assert.IsNotNull(intersect21);
+            Assert.IsTrue(intersect21.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldIntersectGraphWithNull()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            
+            RDFGraph intersect12 = graph1.IntersectWith(null);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldUnionGraphs()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            RDFGraph graph2 = new RDFGraph();
+            graph2.AddTriple(triple1).AddTriple(triple3);
+
+            RDFGraph union12 = graph1.UnionWith(graph2);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 3);
+            RDFGraph union21 = graph2.UnionWith(graph1);
+            Assert.IsNotNull(union21);
+            Assert.IsTrue(union21.TriplesCount == 3);
+        }
+
+        [TestMethod]
+        public void ShouldUnionGraphWithEmpty()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            RDFGraph graph2 = new RDFGraph();
+
+            RDFGraph union12 = graph1.UnionWith(graph2);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+            RDFGraph union21 = graph2.UnionWith(graph1);
+            Assert.IsNotNull(union21);
+            Assert.IsTrue(union21.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldUnionEmptyWithGraph()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            RDFGraph graph2 = new RDFGraph();
+            graph2.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph union12 = graph1.UnionWith(graph2);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+            RDFGraph union21 = graph2.UnionWith(graph1);
+            Assert.IsNotNull(union21);
+            Assert.IsTrue(union21.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldUnionGraphWithNull()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph union12 = graph1.UnionWith(null);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+        }
         #endregion
     }
 }
