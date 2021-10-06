@@ -1053,6 +1053,19 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldIntersectGraphWithSelf()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            
+            RDFGraph intersect12 = graph1.IntersectWith(graph1);
+            Assert.IsNotNull(intersect12);
+            Assert.IsTrue(intersect12.TriplesCount == 2);
+        }
+
+        [TestMethod]
         public void ShouldUnionGraphs()
         {
             RDFGraph graph1 = new RDFGraph();
@@ -1114,6 +1127,19 @@ namespace RDFSharp.Test
             graph1.AddTriple(triple1).AddTriple(triple2);
 
             RDFGraph union12 = graph1.UnionWith(null);
+            Assert.IsNotNull(union12);
+            Assert.IsTrue(union12.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldUnionGraphWithSelf()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph union12 = graph1.UnionWith(graph1);
             Assert.IsNotNull(union12);
             Assert.IsTrue(union12.TriplesCount == 2);
         }
@@ -1185,6 +1211,19 @@ namespace RDFSharp.Test
             RDFGraph difference12 = graph1.DifferenceWith(null);
             Assert.IsNotNull(difference12);
             Assert.IsTrue(difference12.TriplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldDifferenceGraphWithSelf()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+
+            RDFGraph difference12 = graph1.DifferenceWith(graph1);
+            Assert.IsNotNull(difference12);
+            Assert.IsTrue(difference12.TriplesCount == 0);
         }
         #endregion
     }
