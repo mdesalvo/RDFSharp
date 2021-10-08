@@ -1246,6 +1246,23 @@ namespace RDFSharp.Test
             Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}").Length > 100);
         }
 
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldExportToFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+            await graph.ToFileAsync(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
+            Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}").Length > 100);
+        }
+
         [TestMethod]
         public void ShouldExportToDataTable()
         {
