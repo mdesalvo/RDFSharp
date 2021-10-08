@@ -19,6 +19,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Test
 {
@@ -1224,6 +1226,80 @@ namespace RDFSharp.Test
             RDFGraph difference12 = graph1.DifferenceWith(graph1);
             Assert.IsNotNull(difference12);
             Assert.IsTrue(difference12.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldExportToDataTable()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit","en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+            DataTable table = graph.ToDataTable();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 3);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 2);
+            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        }
+
+        [TestMethod]
+        public void ShouldExportEmptyToDataTable()
+        {
+            RDFGraph graph = new RDFGraph();
+            DataTable table = graph.ToDataTable();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 3);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldExportToDataTableAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+            DataTable table = await graph.ToDataTableAsync();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 3);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 2);
+            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        }
+
+        [TestMethod]
+        public async Task ShouldExportEmptyToDataTableAsync()
+        {
+            RDFGraph graph = new RDFGraph();
+            DataTable table = await graph.ToDataTableAsync();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 3);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 0);
         }
         #endregion
     }

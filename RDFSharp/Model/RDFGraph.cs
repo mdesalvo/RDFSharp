@@ -534,27 +534,23 @@ namespace RDFSharp.Model
         /// </summary>
         public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!string.IsNullOrEmpty(filepath))
-            {
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        RDFNTriples.Serialize(this, filepath);
-                        break;
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        RDFXml.Serialize(this, filepath);
-                        break;
-                    case RDFModelEnums.RDFFormats.TriX:
-                        RDFTriX.Serialize(this, filepath);
-                        break;
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        RDFTurtle.Serialize(this, filepath);
-                        break;
-                }
-            }
-            else
-            {
+            if (string.IsNullOrEmpty(filepath))
                 throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
+
+            switch (rdfFormat)
+            {
+                case RDFModelEnums.RDFFormats.NTriples:
+                    RDFNTriples.Serialize(this, filepath);
+                    break;
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    RDFXml.Serialize(this, filepath);
+                    break;
+                case RDFModelEnums.RDFFormats.TriX:
+                    RDFTriX.Serialize(this, filepath);
+                    break;
+                case RDFModelEnums.RDFFormats.Turtle:
+                    RDFTurtle.Serialize(this, filepath);
+                    break;
             }
         }
 
@@ -569,27 +565,23 @@ namespace RDFSharp.Model
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
         {
-            if (outputStream != null)
-            {
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        RDFNTriples.Serialize(this, outputStream);
-                        break;
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        RDFXml.Serialize(this, outputStream);
-                        break;
-                    case RDFModelEnums.RDFFormats.TriX:
-                        RDFTriX.Serialize(this, outputStream);
-                        break;
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        RDFTurtle.Serialize(this, outputStream);
-                        break;
-                }
-            }
-            else
-            {
+            if (outputStream == null)
                 throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
+
+            switch (rdfFormat)
+            {
+                case RDFModelEnums.RDFFormats.NTriples:
+                    RDFNTriples.Serialize(this, outputStream);
+                    break;
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    RDFXml.Serialize(this, outputStream);
+                    break;
+                case RDFModelEnums.RDFFormats.TriX:
+                    RDFTriX.Serialize(this, outputStream);
+                    break;
+                case RDFModelEnums.RDFFormats.Turtle:
+                    RDFTurtle.Serialize(this, outputStream);
+                    break;
             }
         }
 
