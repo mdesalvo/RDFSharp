@@ -1271,6 +1271,50 @@ namespace RDFSharp.Test
         public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
             => Assert.ThrowsExceptionAsync<RDFModelException>(() => new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldExportToStream(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+            graph.ToStream(format, stream);
+
+            Assert.IsTrue(stream.GetBuffer().Length > 100);
+            Assert.IsTrue(stream.ToArray().Length > 100);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullStream()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFGraph().ToStream(RDFModelEnums.RDFFormats.NTriples, null));
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public async Task ShouldExportToStreamAsync(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+            await graph.ToStreamAsync(format, stream);
+
+            Assert.IsTrue(stream.GetBuffer().Length > 100);
+            Assert.IsTrue(stream.ToArray().Length > 100);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullStreamAsync()
+            => Assert.ThrowsExceptionAsync<RDFModelException>(() => new RDFGraph().ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
+
         [TestMethod]
         public void ShouldExportToDataTable()
         {

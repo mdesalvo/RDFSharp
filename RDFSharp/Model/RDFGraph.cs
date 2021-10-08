@@ -561,7 +561,7 @@ namespace RDFSharp.Model
             => Task.Run(() => ToFile(rdfFormat, filepath));
 
         /// <summary>
-        /// Writes the graph into a stream in the given RDF format.
+        /// Writes the graph into a stream in the given RDF format (at the end the stream is closed).
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
         {
@@ -586,7 +586,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously writes the graph into a stream in the given RDF format.
+        /// Asynchronously writes the graph into a stream in the given RDF format (at the end the stream is closed).
         /// </summary>
         public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
             => Task.Run(() => ToStream(rdfFormat, outputStream));
