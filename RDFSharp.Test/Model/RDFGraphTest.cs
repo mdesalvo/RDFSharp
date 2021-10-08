@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System;
 using System.Data;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace RDFSharp.Test
 {
@@ -1228,6 +1229,23 @@ namespace RDFSharp.Test
             Assert.IsTrue(difference12.TriplesCount == 0);
         }
 
+        [DataTestMethod]
+        [DataRow(".nt",RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldExportToFile(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph.AddTriple(triple1).AddTriple(triple2);
+            graph.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}"));
+            Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}").Length > 100);
+        }
+
         [TestMethod]
         public void ShouldExportToDataTable()
         {
@@ -1300,6 +1318,13 @@ namespace RDFSharp.Test
             Assert.IsTrue(table.Columns[1].ColumnName.Equals("?PREDICATE"));
             Assert.IsTrue(table.Columns[2].ColumnName.Equals("?OBJECT"));
             Assert.IsTrue(table.Rows.Count == 0);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            foreach (string testOutput in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldExportToFile*"))
+                File.Delete(testOutput);
         }
         #endregion
     }
