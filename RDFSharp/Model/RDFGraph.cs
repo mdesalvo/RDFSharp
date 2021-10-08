@@ -632,25 +632,24 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!string.IsNullOrEmpty(filepath))
-            {
-                if (File.Exists(filepath))
-                {
-                    switch (rdfFormat)
-                    {
-                        case RDFModelEnums.RDFFormats.RdfXml:
-                            return RDFXml.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.Turtle:
-                            return RDFTurtle.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.NTriples:
-                            return RDFNTriples.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.TriX:
-                            return RDFTriX.Deserialize(filepath);
-                    }
-                }
+            if (string.IsNullOrEmpty(filepath))
+                throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
+            if (!File.Exists(filepath))
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+
+            switch (rdfFormat)
+            {
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    return RDFXml.Deserialize(filepath);
+                case RDFModelEnums.RDFFormats.Turtle:
+                    return RDFTurtle.Deserialize(filepath);
+                case RDFModelEnums.RDFFormats.NTriples:
+                    return RDFNTriples.Deserialize(filepath);
+                case RDFModelEnums.RDFFormats.TriX:
+                    return RDFTriX.Deserialize(filepath);
+                default:
+                    throw new RDFModelException("Cannot read RDF graph from file because given \"rdfFormat\" parameter is not supported.");
             }
-            throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
         }
 
         /// <summary>
@@ -665,21 +664,22 @@ namespace RDFSharp.Model
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext)
         {
-            if (inputStream != null)
+            if (inputStream == null)
+                throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
+
+            switch (rdfFormat)
             {
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        return RDFXml.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        return RDFTurtle.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        return RDFNTriples.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.TriX:
-                        return RDFTriX.Deserialize(inputStream, graphContext);
-                }
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    return RDFXml.Deserialize(inputStream, graphContext);
+                case RDFModelEnums.RDFFormats.Turtle:
+                    return RDFTurtle.Deserialize(inputStream, graphContext);
+                case RDFModelEnums.RDFFormats.NTriples:
+                    return RDFNTriples.Deserialize(inputStream, graphContext);
+                case RDFModelEnums.RDFFormats.TriX:
+                    return RDFTriX.Deserialize(inputStream, graphContext);
+                default:
+                    throw new RDFModelException("Cannot read RDF graph from stream because given \"rdfFormat\" parameter is not supported.");
             }
-            throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
         }
 
         /// <summary>
@@ -803,59 +803,58 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
+            if (uri == null)
+                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null.");
+            if (!uri.IsAbsoluteUri)
+                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+
             RDFGraph result = new RDFGraph();
-
-            if (uri?.IsAbsoluteUri ?? false)
+            try
             {
+                //Grab eventual dereference Uri
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
-                try
+
+                HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
+                webRequest.MaximumAutomaticRedirections = 3;
+                webRequest.AllowAutoRedirect = true;
+                webRequest.Timeout = timeoutMilliseconds;
+                //RDF/XML
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                //TURTLE
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/x-turtle");
+                //N-TRIPLES
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                //TRIX
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+
+                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
+                if (webRequest.HaveResponse)
                 {
-                    HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-                    webRequest.MaximumAutomaticRedirections = 3;
-                    webRequest.AllowAutoRedirect = true;
-                    webRequest.Timeout = timeoutMilliseconds;
                     //RDF/XML
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                    if (string.IsNullOrEmpty(webResponse.ContentType) ||
+                            webResponse.ContentType.Contains("application/rdf+xml"))
+                        result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
+
                     //TURTLE
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/x-turtle");
+                    else if (webResponse.ContentType.Contains("text/turtle") ||
+                                webResponse.ContentType.Contains("application/turtle") ||
+                                    webResponse.ContentType.Contains("application/x-turtle"))
+                        result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
+
                     //N-TRIPLES
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                    else if (webResponse.ContentType.Contains("application/n-triples"))
+                        result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
+
                     //TRIX
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-
-                    HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-                    if (webRequest.HaveResponse)
-                    {
-                        //RDF/XML
-                        if (string.IsNullOrEmpty(webResponse.ContentType) ||
-                                webResponse.ContentType.Contains("application/rdf+xml"))
-                            result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
-
-                        //TURTLE
-                        else if (webResponse.ContentType.Contains("text/turtle") ||
-                                    webResponse.ContentType.Contains("application/turtle") ||
-                                        webResponse.ContentType.Contains("application/x-turtle"))
-                            result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
-
-                        //N-TRIPLES
-                        else if (webResponse.ContentType.Contains("application/n-triples"))
-                            result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
-
-                        //TRIX
-                        else if (webResponse.ContentType.Contains("application/trix"))
-                            result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new RDFModelException("Cannot read RDF graph from Uri because: " + ex.Message);
+                    else if (webResponse.ContentType.Contains("application/trix"))
+                        result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
+                throw new RDFModelException("Cannot read RDF graph from Uri because: " + ex.Message);
             }
 
             return result;
