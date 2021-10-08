@@ -1246,6 +1246,10 @@ namespace RDFSharp.Test
             Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}").Length > 100);
         }
 
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepath()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFGraph().ToFile(RDFModelEnums.RDFFormats.NTriples, null));
+
         [DataTestMethod]
         [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
         [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
@@ -1262,6 +1266,10 @@ namespace RDFSharp.Test
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
             Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}").Length > 100);
         }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
+            => Assert.ThrowsExceptionAsync<RDFModelException>(() => new RDFGraph().ToFileAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
         [TestMethod]
         public void ShouldExportToDataTable()
