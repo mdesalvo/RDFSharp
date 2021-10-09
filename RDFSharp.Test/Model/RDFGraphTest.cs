@@ -1389,11 +1389,72 @@ namespace RDFSharp.Test
             Assert.IsTrue(table.Rows.Count == 0);
         }
 
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldImportFromFile(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            graph1.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportFromFile{fileExtension}");
+            RDFGraph graph2 = RDFGraph.FromFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportFromFile{fileExtension}");
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            { 
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount == 0);
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount == 2);
+            }
+            else
+            { 
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(".ttl", RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldImportEmptyFromFile(string fileExtension, RDFModelEnums.RDFFormats format)
+        {
+            RDFGraph graph1 = new RDFGraph();
+            graph1.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}");
+            RDFGraph graph2 = RDFGraph.FromFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}");
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepath()
+            => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromUnexistingFilepath()
+            => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
+
         [TestCleanup]
         public void Cleanup()
         {
-            foreach (string testOutput in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldExportToFile*"))
-                File.Delete(testOutput);
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldExportToFile*"))
+                File.Delete(file);
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldExportEmptyToFile*"))
+                File.Delete(file);
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldImportFromFile*"))
+                File.Delete(file);
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldImportEmptyFromFile*"))
+                File.Delete(file);
         }
         #endregion
     }
