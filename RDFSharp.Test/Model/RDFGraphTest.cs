@@ -1285,7 +1285,6 @@ namespace RDFSharp.Test
             graph.AddTriple(triple1).AddTriple(triple2);
             graph.ToStream(format, stream);
 
-            Assert.IsTrue(stream.GetBuffer().Length > 100);
             Assert.IsTrue(stream.ToArray().Length > 100);
         }
 
@@ -1307,7 +1306,6 @@ namespace RDFSharp.Test
             graph.AddTriple(triple1).AddTriple(triple2);
             await graph.ToStreamAsync(format, stream);
 
-            Assert.IsTrue(stream.GetBuffer().Length > 100);
             Assert.IsTrue(stream.ToArray().Length > 100);
         }
 
@@ -1498,6 +1496,58 @@ namespace RDFSharp.Test
         [TestMethod]
         public void ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
             => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "blablabla"));
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldImportFromStream(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            graph1.ToStream(format, stream);
+            RDFGraph graph2 = RDFGraph.FromStream(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            //RDF/XML uses xsd:qname for encoding predicates. In this test we demonstrate that
+            //triples with a predicate ending with "/" will loose this character once abbreviated:
+            //this is correct (being a glitch of RDF/XML specs) so at the end the graphs will differ
+            if (format == RDFModelEnums.RDFFormats.RdfXml)
+            {
+                Assert.IsFalse(graph2.Equals(graph1));
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred/")).TriplesCount == 0);
+                Assert.IsTrue(graph2.SelectTriplesByPredicate(new RDFResource("http://ex/pred")).TriplesCount == 2);
+            }
+            else
+            {
+                Assert.IsTrue(graph2.Equals(graph1));
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFFormats.NTriples)]
+        [DataRow(RDFModelEnums.RDFFormats.RdfXml)]
+        [DataRow(RDFModelEnums.RDFFormats.TriX)]
+        [DataRow(RDFModelEnums.RDFFormats.Turtle)]
+        public void ShouldImportFromEmptyStream(RDFModelEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph1 = new RDFGraph();
+            graph1.ToStream(format, stream);
+            RDFGraph graph2 = RDFGraph.FromStream(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullStream()
+            => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromStream(RDFModelEnums.RDFFormats.NTriples, null));
 
         [TestCleanup]
         public void Cleanup()
