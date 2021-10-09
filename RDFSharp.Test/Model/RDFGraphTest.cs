@@ -1738,6 +1738,18 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullObject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "http://pred/", null);
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
         public void ShouldImportEmptyFromDataTableButGivingNameToGraph()
         {
             RDFGraph graph1 = new RDFGraph().SetContext(new Uri("http://context/"));
