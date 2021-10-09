@@ -702,20 +702,15 @@ namespace RDFSharp.Model
                         && table.Columns.Contains("?PREDICATE")
                             && table.Columns.Contains("?OBJECT"))
                 {
-
                     #region CONTEXT
                     //Parse the name of the datatable for Uri, in order to assign the graph name
-                    Uri graphUri;
-                    if (Uri.TryCreate(table.TableName, UriKind.Absolute, out graphUri))
-                    {
+                    if (Uri.TryCreate(table.TableName, UriKind.Absolute, out Uri graphUri))
                         result.SetContext(graphUri);
-                    }
                     #endregion
 
                     //Iterate the rows of the datatable
                     foreach (DataRow tableRow in table.Rows)
                     {
-
                         #region SUBJECT
                         //Parse the triple subject
                         if (!tableRow.IsNull("?SUBJECT") && !string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
@@ -723,7 +718,6 @@ namespace RDFSharp.Model
                             RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
                             if (rowSubj is RDFResource)
                             {
-
                                 #region PREDICATE
                                 //Parse the triple predicate
                                 if (!tableRow.IsNull("?PREDICATE") && !string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
@@ -731,27 +725,21 @@ namespace RDFSharp.Model
                                     RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
                                     if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank)
                                     {
-
                                         #region OBJECT
                                         //Parse the triple object
                                         if (!tableRow.IsNull("?OBJECT"))
                                         {
                                             RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                                             if (rowObj is RDFResource)
-                                            {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
-                                            }
                                             else
-                                            {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
-                                            }
                                         }
                                         else
                                         {
                                             throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
                                         }
                                         #endregion
-
                                     }
                                     else
                                     {
@@ -763,7 +751,6 @@ namespace RDFSharp.Model
                                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
                                 }
                                 #endregion
-
                             }
                             else
                             {
@@ -775,9 +762,7 @@ namespace RDFSharp.Model
                             throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
                         }
                         #endregion
-
                     }
-
                 }
                 else
                 {

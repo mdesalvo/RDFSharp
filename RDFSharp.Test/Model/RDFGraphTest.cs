@@ -1601,6 +1601,58 @@ namespace RDFSharp.Test
         public void ShouldRaiseExceptionOnImportingFromNullStreamAsync()
             => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.NTriples, null));
 
+        [TestMethod]
+        public void ShouldImportFromDataTable()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = RDFGraph.FromDataTable(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public void ShouldImportEmptyFromDataTable()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = RDFGraph.FromDataTable(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullDataTable()
+            => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHaving3Columns()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingExactColumns()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECTTTTT", typeof(string));
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
