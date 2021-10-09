@@ -800,7 +800,7 @@ namespace RDFSharp.Model
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
                 HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-                webRequest.MaximumAutomaticRedirections = 3;
+                webRequest.MaximumAutomaticRedirections = 4;
                 webRequest.AllowAutoRedirect = true;
                 webRequest.Timeout = timeoutMilliseconds;
                 //RDF/XML
