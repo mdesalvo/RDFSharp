@@ -839,7 +839,7 @@ namespace RDFSharp.Model
             }
             catch (Exception ex)
             {
-                throw new RDFModelException("Cannot read RDF graph from Uri because: " + ex.Message);
+                throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
             }
 
             return result;

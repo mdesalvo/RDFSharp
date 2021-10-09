@@ -1923,6 +1923,42 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
         }
 
+        [TestMethod]
+        public void ShouldImportFromUri()
+        {
+            RDFGraph graph = RDFGraph.FromUri(new Uri(RDFVocabulary.RDF.BASE_URI));
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDF.BASE_URI)));
+            Assert.IsTrue(graph.TriplesCount > 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullUri()
+            => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromRelativeUri()
+            => Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromUri(new Uri("/file/system", UriKind.Relative)));
+
+        [TestMethod]
+        public async Task ShouldImportFromUriAsync()
+        {
+            RDFGraph graph = await RDFGraph.FromUriAsync(new Uri(RDFVocabulary.RDFS.BASE_URI));
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(new Uri(RDFVocabulary.RDFS.BASE_URI)));
+            Assert.IsTrue(graph.TriplesCount > 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullUriAsync()
+            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
+            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
+
         [TestCleanup]
         public void Cleanup()
         {
