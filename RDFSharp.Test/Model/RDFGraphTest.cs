@@ -1762,6 +1762,167 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
         }
 
+        [TestMethod]
+        public async Task ShouldImportFromDataTableAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            graph1.AddTriple(triple1).AddTriple(triple2);
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 2);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportEmptyFromDataTableAsync()
+        {
+            RDFGraph graph1 = new RDFGraph();
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullDataTableAsync()
+            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHaving3ColumnsAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingExactColumnsAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECTTTTT", typeof(string));
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullSubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add(null, "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptySubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralSubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("hello@en", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", null, "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithBlankPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "bnode:12345", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "hello@en", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullObjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "http://pred/", null);
+
+            Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportEmptyFromDataTableButGivingNameToGraphAsync()
+        {
+            RDFGraph graph1 = new RDFGraph().SetContext(new Uri("http://context/"));
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = await RDFGraph.FromDataTableAsync(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+            Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
