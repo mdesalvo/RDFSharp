@@ -1653,6 +1653,19 @@ namespace RDFSharp.Test
             Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
         }
 
+        [TestMethod]
+        public void ShouldImportEmptyFromDataTableButGivingNameToGraph()
+        {
+            RDFGraph graph1 = new RDFGraph().SetContext(new Uri("http://context/"));
+            DataTable table = graph1.ToDataTable();
+            RDFGraph graph2 = RDFGraph.FromDataTable(table);
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+            Assert.IsTrue(graph2.Equals(graph1));
+            Assert.IsTrue(graph2.Context.Equals(new Uri("http://context/")));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
