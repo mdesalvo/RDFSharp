@@ -1678,6 +1678,18 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralSubject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("hello@en", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
         public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicate()
         {
             DataTable table = new DataTable();
@@ -1697,6 +1709,30 @@ namespace RDFSharp.Test
             table.Columns.Add("?PREDICATE", typeof(string));
             table.Columns.Add("?OBJECT", typeof(string));
             table.Rows.Add("http://subj/", "", "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithBlankPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "bnode:12345", "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "hello@en", "http://obj/");
 
             Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
         }
