@@ -1654,6 +1654,54 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullSubject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add(null, "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptySubject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", null, "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://subj/", "", "http://obj/");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFGraph.FromDataTable(table));
+        }
+
+        [TestMethod]
         public void ShouldImportEmptyFromDataTableButGivingNameToGraph()
         {
             RDFGraph graph1 = new RDFGraph().SetContext(new Uri("http://context/"));
