@@ -237,6 +237,36 @@ namespace RDFSharp.Test
             }
             Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
         }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
+        public void ShouldReifyCollectionWithTwoItems(RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFCollection coll = new RDFCollection(itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            { 
+                coll.AddItem(new RDFPlainLiteral("lit1"));
+                coll.AddItem(new RDFPlainLiteral("lit2"));
+            }
+            else
+            { 
+                coll.AddItem(new RDFResource("http://item1/"));
+                coll.AddItem(new RDFResource("http://item2/"));
+            }
+            RDFGraph graph = coll.ReifyCollection();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 6);
+            Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+                               .SelectTriplesByObject(RDFVocabulary.RDF.LIST)
+                               .TriplesCount == 2);
+            Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+                               .TriplesCount == 2);
+            Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
+                               .TriplesCount == 2);
+            
+        }
         #endregion
     }
 }
