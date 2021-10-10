@@ -209,6 +209,34 @@ namespace RDFSharp.Test
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 0);
         }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
+        public void ShouldReifyCollectionWithOneItem(RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFCollection coll = new RDFCollection(itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+                coll.AddItem(new RDFPlainLiteral("lit1"));
+            else
+                coll.AddItem(new RDFResource("http://item1/"));
+            RDFGraph graph = coll.ReifyCollection();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 3);
+            Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
+            
+            switch (itemType)
+            {
+                case RDFModelEnums.RDFItemTypes.Literal:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFPlainLiteral("lit1")).TripleID));
+                    break;
+                case RDFModelEnums.RDFItemTypes.Resource:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFResource("http://item1/")).TripleID));
+                    break;
+            }
+            Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
+        }
         #endregion
     }
 }
