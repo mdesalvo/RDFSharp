@@ -44,6 +44,15 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.GraphIndex.Literals.Count == 0);
             Assert.IsNotNull(graph.Context);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+
+            int i = 0;
+            foreach (RDFTriple t in graph) i++;
+            Assert.IsTrue(i == 0);
+
+            int j = 0;
+            IEnumerator<RDFTriple> triplesEnumerator = graph.TriplesEnumerator;
+            while (triplesEnumerator.MoveNext()) j++;
+            Assert.IsTrue(j == 0);
         }
 
         [TestMethod]

@@ -16,7 +16,6 @@
 
 using RDFSharp.Query;
 using RDFSharp.Store;
-using System.Diagnostics.CodeAnalysis;
 
 namespace RDFSharp.Model
 {
@@ -24,7 +23,6 @@ namespace RDFSharp.Model
     /// <summary>
     /// RDFDataSource is the foundation class for modeling RDF data sources
     /// </summary>
-    [ExcludeFromCodeCoverage]
     public abstract class RDFDataSource
     {
         #region Methods
