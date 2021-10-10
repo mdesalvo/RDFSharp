@@ -197,6 +197,18 @@ namespace RDFSharp.Test
             Assert.IsTrue(coll.ItemsCount == 0);
             Assert.IsTrue(coll.ReificationSubject.Equals(RDFVocabulary.RDF.NIL));
         }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFItemTypes.Resource)]
+        public void ShouldReifyEmptyCollection(RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFCollection coll = new RDFCollection(itemType);
+            RDFGraph graph = coll.ReifyCollection();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
         #endregion
     }
 }
