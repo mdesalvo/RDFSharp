@@ -133,6 +133,128 @@ namespace RDFSharp.Test
             Assert.IsTrue(cont.ItemsCount == 0);
         }
 
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldRemoveItemsFromContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.RemoveItem(new RDFPlainLiteral("lit"));
+            }
+            else
+            {
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.RemoveItem(new RDFResource("http://item/"));
+            }
+
+            Assert.IsTrue(cont.ItemsCount == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldNotRemoveItemsFromContainerBecauseWrongType(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.RemoveItem(new RDFResource("http://item/"));
+            }
+            else
+            {
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.RemoveItem(new RDFPlainLiteral("lit"));
+            }
+
+            switch (containerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    Assert.IsTrue(cont.ItemsCount == 1);
+                    break;
+
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    Assert.IsTrue(cont.ItemsCount == 2);
+                    break;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldNotRemoveItemsFromContainerBecauseNull(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.RemoveItem(null as RDFLiteral);
+            }
+            else
+            {
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.RemoveItem(null as RDFResource);
+            }
+
+            switch (containerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    Assert.IsTrue(cont.ItemsCount == 1);
+                    break;
+
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    Assert.IsTrue(cont.ItemsCount == 2);
+                    break;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldClearContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.AddItem(new RDFPlainLiteral("lit"));
+            }
+            else
+            {
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.AddItem(new RDFResource("http://item/"));
+            }
+
+            cont.ClearItems();
+            Assert.IsTrue(cont.ItemsCount == 0);
+        }
         #endregion
     }
 }
