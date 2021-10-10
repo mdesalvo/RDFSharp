@@ -29,6 +29,10 @@ namespace RDFSharp.Model
     internal static class RDFNTriples
     {
         #region Properties
+        private const string TemplateSPO  = "<{SUBJ}> <{PRED}> <{OBJ}> .";
+        private const string TemplateSPLL = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} .";
+        private const string TemplateSPLT = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
+
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
         /// </summary>
@@ -111,41 +115,21 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
                     string tripleTemplate = string.Empty;
-                    foreach (var t in graph)
+                    foreach (RDFTriple t in graph)
                     {
-
                         #region template
-                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
-                            tripleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> .";
-                        }
-                        else
-                        {
-                            if (t.Object is RDFPlainLiteral)
-                            {
-                                tripleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} .";
-                            }
-                            else
-                            {
-                                tripleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
-                            }
-                        }
+                        tripleTemplate = t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? TemplateSPO
+                                            : t.Object is RDFPlainLiteral ? TemplateSPLL
+                                                : TemplateSPLT;
                         #endregion
 
                         #region subj
-                        if (((RDFResource)t.Subject).IsBlank)
-                        {
-                            tripleTemplate = tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"));
-                        }
-                        else
-                        {
-                            tripleTemplate = tripleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()));
-                        }
+                        tripleTemplate = ((RDFResource)t.Subject).IsBlank ? tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"))
+                                            : tripleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()));
                         #endregion
 
                         #region pred
@@ -154,48 +138,28 @@ namespace RDFSharp.Model
 
                         #region object
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
-                            if (((RDFResource)t.Object).IsBlank)
-                            {
-                                tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
-                            }
-                            else
-                            {
-                                tripleTemplate = tripleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString()));
-                            }
-                        }
+                            tripleTemplate = ((RDFResource)t.Object).IsBlank ? tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:")
+                                                : tripleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString()));
                         #endregion
 
                         #region literal
                         else
                         {
-
-                            tripleTemplate = tripleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))));
-                            tripleTemplate = tripleTemplate.Replace("\n", "\\n")
-                                                               .Replace("\t", "\\t")
-                                                               .Replace("\r", "\\r");
+                            tripleTemplate = tripleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))))
+                                                           .Replace("\n", "\\n")
+                                                           .Replace("\t", "\\t")
+                                                           .Replace("\r", "\\r");
 
                             #region plain literal
                             if (t.Object is RDFPlainLiteral)
-                            {
-                                if (((RDFPlainLiteral)t.Object).Language != string.Empty)
-                                {
-                                    tripleTemplate = tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language);
-                                }
-                                else
-                                {
-                                    tripleTemplate = tripleTemplate.Replace("@{LANG}", string.Empty);
-                                }
-                            }
+                                tripleTemplate = ((RDFPlainLiteral)t.Object).HasLanguage() ? tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language)
+                                                    : tripleTemplate.Replace("@{LANG}", string.Empty);
                             #endregion
 
                             #region typed literal
                             else
-                            {
                                 tripleTemplate = tripleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
-                            }
                             #endregion
-
                         }
                         #endregion
 
@@ -203,7 +167,6 @@ namespace RDFSharp.Model
                     }
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
