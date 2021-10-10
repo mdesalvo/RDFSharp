@@ -33,7 +33,7 @@ namespace RDFSharp.Model
         public RDFModelEnums.RDFItemTypes ItemType { get; internal set; }
 
         /// <summary>
-        /// Subject of the collection's reification
+        /// Subject of the collection's reification (rdf:nil when the collection is empty)
         /// </summary>
         public RDFResource ReificationSubject { get; internal set; }
 
