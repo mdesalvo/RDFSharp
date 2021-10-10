@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 
 namespace RDFSharp.Model
 {

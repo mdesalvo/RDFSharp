@@ -50,8 +50,8 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Default-ctor to build a typed literal with given value and given datatype.
-        /// Semantic validation of given value against given datatype is performed.
+        /// Default-ctor to build a typed literal with given value and given datatype
+        /// (semantic validation of given value against given datatype is performed).
         /// </summary>
         public RDFTypedLiteral(string value, RDFModelEnums.RDFDatatypes datatype)
         {

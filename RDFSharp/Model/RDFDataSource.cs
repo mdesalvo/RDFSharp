@@ -29,34 +29,22 @@ namespace RDFSharp.Model
         /// <summary>
         /// Checks if this data source is a graph
         /// </summary>
-        internal bool IsGraph()
-        {
-            return this is RDFGraph;
-        }
+        internal bool IsGraph() => this is RDFGraph;
 
         /// <summary>
         /// Checks if this data source is a store
         /// </summary>
-        internal bool IsStore()
-        {
-            return this is RDFStore;
-        }
+        internal bool IsStore() => this is RDFStore;
 
         /// <summary>
         /// Checks if this data source is a federation
         /// </summary>
-        internal bool IsFederation()
-        {
-            return this is RDFFederation;
-        }
+        internal bool IsFederation() => this is RDFFederation;
 
         /// <summary>
         /// Checks if this data source is a SPARQL endpoint
         /// </summary>
-        internal bool IsSPARQLEndpoint()
-        {
-            return this is RDFSPARQLEndpoint;
-        }
+        internal bool IsSPARQLEndpoint() => this is RDFSPARQLEndpoint;
         #endregion
     }
 

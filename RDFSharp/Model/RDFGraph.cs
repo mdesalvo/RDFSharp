@@ -40,12 +40,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the graph's triples
         /// </summary>
-        public long TriplesCount => this.Triples.Count;
+        public long TriplesCount
+            => this.Triples.Count;
 
         /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
         /// </summary>
-        public IEnumerator<RDFTriple> TriplesEnumerator => this.Triples.Values.GetEnumerator();
+        public IEnumerator<RDFTriple> TriplesEnumerator
+            => this.Triples.Values.GetEnumerator();
 
         /// <summary>
         /// Index on the triples of the graph
@@ -80,7 +82,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the graph
         /// </summary>
-        public override string ToString() => this.Context.ToString();
+        public override string ToString()
+            => this.Context.ToString();
 
         /// <summary>
         /// Performs the equality comparison between two graphs
@@ -88,15 +91,12 @@ namespace RDFSharp.Model
         public bool Equals(RDFGraph other)
         {
             if (other == null || this.TriplesCount != other.TriplesCount)
-            {
                 return false;
-            }
+
             foreach (RDFTriple t in this)
             {
                 if (!other.ContainsTriple(t))
-                {
                     return false;
-                }
             }
             return true;
         }
@@ -104,26 +104,28 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the graph's triples
         /// </summary>
-        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator() => this.TriplesEnumerator;
+        IEnumerator<RDFTriple> IEnumerable<RDFTriple>.GetEnumerator()
+            => this.TriplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the graph's triples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.TriplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.TriplesEnumerator;
         #endregion
 
         #region Methods
 
         #region Add
         /// <summary>
-        /// Sets the context of the graph to the given Uri (null or blank-node Uris are not accepted)
+        /// Sets the context of the graph to the given absolute Uri
         /// </summary>
         public RDFGraph SetContext(Uri contextUri)
         {
-            if (contextUri != null && !contextUri.ToString().ToUpperInvariant().StartsWith("BNODE:"))
-            {
+            if (contextUri != null
+                    && contextUri.IsAbsoluteUri
+                        && !contextUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
                 this.Context = contextUri;
-            }
             return this;
         }
 
@@ -132,15 +134,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph AddTriple(RDFTriple triple)
         {
-            if (triple != null)
+            if (triple != null && !this.Triples.ContainsKey(triple.TripleID))
             {
-                if (!this.Triples.ContainsKey(triple.TripleID))
-                {
-                    //Add triple
-                    this.Triples.Add(triple.TripleID, triple);
-                    //Add index
-                    this.GraphIndex.AddIndex(triple);
-                }
+                //Add triple
+                this.Triples.Add(triple.TripleID, triple);
+                //Add index
+                this.GraphIndex.AddIndex(triple);
             }
             return this;
         }
@@ -184,7 +183,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph RemoveTriple(RDFTriple triple)
         {
-            if (this.ContainsTriple(triple))
+            if (triple != null)
             {
                 //Remove triple
                 this.Triples.Remove(triple.TripleID);
@@ -373,11 +372,10 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Compacts the reified triples by removing their 4 standard statements
+        /// Turns back the reified triples into their compact representation
         /// </summary>
         public void UnreifyTriples()
         {
-
             //Create SPARQL SELECT query for detecting reified triples
             RDFVariable T = new RDFVariable("T");
             RDFVariable S = new RDFVariable("S");
@@ -427,7 +425,6 @@ namespace RDFSharp.Model
                 }
 
             }
-
         }
         #endregion
 
@@ -472,16 +469,12 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (graph != null)
             {
-
                 //Add intersection triples
                 foreach (RDFTriple t in this)
                 {
-                    if (graph.ContainsTriple(t))
-                    {
+                    if (graph.Triples.ContainsKey(t.TripleID))
                         result.AddTriple(t);
-                    }
                 }
-
             }
             return result;
         }
@@ -495,20 +488,14 @@ namespace RDFSharp.Model
 
             //Add triples from this graph
             foreach (RDFTriple t in this)
-            {
                 result.AddTriple(t);
-            }
-
+            
             //Manage the given graph
             if (graph != null)
             {
-
                 //Add triples from the given graph
                 foreach (RDFTriple t in graph)
-                {
                     result.AddTriple(t);
-                }
-
             }
 
             return result;
@@ -522,26 +509,18 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (graph != null)
             {
-
                 //Add difference triples
                 foreach (RDFTriple t in this)
                 {
-                    if (!graph.ContainsTriple(t))
-                    {
+                    if (!graph.Triples.ContainsKey(t.TripleID))
                         result.AddTriple(t);
-                    }
                 }
-
             }
             else
             {
-
                 //Add triples from this graph
                 foreach (RDFTriple t in this)
-                {
                     result.AddTriple(t);
-                }
-
             }
             return result;
         }
@@ -555,27 +534,23 @@ namespace RDFSharp.Model
         /// </summary>
         public void ToFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!string.IsNullOrEmpty(filepath))
-            {
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        RDFNTriples.Serialize(this, filepath);
-                        break;
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        RDFXml.Serialize(this, filepath);
-                        break;
-                    case RDFModelEnums.RDFFormats.TriX:
-                        RDFTriX.Serialize(this, filepath);
-                        break;
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        RDFTurtle.Serialize(this, filepath);
-                        break;
-                }
-            }
-            else
-            {
+            if (string.IsNullOrEmpty(filepath))
                 throw new RDFModelException("Cannot write RDF graph to file because given \"filepath\" parameter is null or empty.");
+
+            switch (rdfFormat)
+            {
+                case RDFModelEnums.RDFFormats.NTriples:
+                    RDFNTriples.Serialize(this, filepath);
+                    break;
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    RDFXml.Serialize(this, filepath);
+                    break;
+                case RDFModelEnums.RDFFormats.TriX:
+                    RDFTriX.Serialize(this, filepath);
+                    break;
+                case RDFModelEnums.RDFFormats.Turtle:
+                    RDFTurtle.Serialize(this, filepath);
+                    break;
             }
         }
 
@@ -586,36 +561,32 @@ namespace RDFSharp.Model
             => Task.Run(() => ToFile(rdfFormat, filepath));
 
         /// <summary>
-        /// Writes the graph into a stream in the given RDF format.
+        /// Writes the graph into a stream in the given RDF format (at the end the stream is closed).
         /// </summary>
         public void ToStream(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
         {
-            if (outputStream != null)
-            {
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        RDFNTriples.Serialize(this, outputStream);
-                        break;
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        RDFXml.Serialize(this, outputStream);
-                        break;
-                    case RDFModelEnums.RDFFormats.TriX:
-                        RDFTriX.Serialize(this, outputStream);
-                        break;
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        RDFTurtle.Serialize(this, outputStream);
-                        break;
-                }
-            }
-            else
-            {
+            if (outputStream == null)
                 throw new RDFModelException("Cannot write RDF graph to stream because given \"outputStream\" parameter is null.");
+
+            switch (rdfFormat)
+            {
+                case RDFModelEnums.RDFFormats.NTriples:
+                    RDFNTriples.Serialize(this, outputStream);
+                    break;
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    RDFXml.Serialize(this, outputStream);
+                    break;
+                case RDFModelEnums.RDFFormats.TriX:
+                    RDFTriX.Serialize(this, outputStream);
+                    break;
+                case RDFModelEnums.RDFFormats.Turtle:
+                    RDFTurtle.Serialize(this, outputStream);
+                    break;
             }
         }
 
         /// <summary>
-        /// Asynchronously writes the graph into a stream in the given RDF format.
+        /// Asynchronously writes the graph into a stream in the given RDF format (at the end the stream is closed).
         /// </summary>
         public Task ToStreamAsync(RDFModelEnums.RDFFormats rdfFormat, Stream outputStream)
             => Task.Run(() => ToStream(rdfFormat, outputStream));
@@ -661,25 +632,24 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromFile(RDFModelEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!string.IsNullOrEmpty(filepath))
-            {
-                if (File.Exists(filepath))
-                {
-                    switch (rdfFormat)
-                    {
-                        case RDFModelEnums.RDFFormats.RdfXml:
-                            return RDFXml.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.Turtle:
-                            return RDFTurtle.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.NTriples:
-                            return RDFNTriples.Deserialize(filepath);
-                        case RDFModelEnums.RDFFormats.TriX:
-                            return RDFTriX.Deserialize(filepath);
-                    }
-                }
+            if (string.IsNullOrEmpty(filepath))
+                throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
+            if (!File.Exists(filepath))
                 throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+
+            switch (rdfFormat)
+            {
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    return RDFXml.Deserialize(filepath);
+                case RDFModelEnums.RDFFormats.Turtle:
+                    return RDFTurtle.Deserialize(filepath);
+                case RDFModelEnums.RDFFormats.NTriples:
+                    return RDFNTriples.Deserialize(filepath);
+                case RDFModelEnums.RDFFormats.TriX:
+                    return RDFTriX.Deserialize(filepath);
+                default:
+                    throw new RDFModelException("Cannot read RDF graph from file because given \"rdfFormat\" parameter is not supported.");
             }
-            throw new RDFModelException("Cannot read RDF graph from file because given \"filepath\" parameter is null or empty.");
         }
 
         /// <summary>
@@ -694,21 +664,22 @@ namespace RDFSharp.Model
         public static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream) => FromStream(rdfFormat, inputStream, null);
         internal static RDFGraph FromStream(RDFModelEnums.RDFFormats rdfFormat, Stream inputStream, Uri graphContext)
         {
-            if (inputStream != null)
+            if (inputStream == null)
+                throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
+
+            switch (rdfFormat)
             {
-                switch (rdfFormat)
-                {
-                    case RDFModelEnums.RDFFormats.RdfXml:
-                        return RDFXml.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.Turtle:
-                        return RDFTurtle.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.NTriples:
-                        return RDFNTriples.Deserialize(inputStream, graphContext);
-                    case RDFModelEnums.RDFFormats.TriX:
-                        return RDFTriX.Deserialize(inputStream, graphContext);
-                }
+                case RDFModelEnums.RDFFormats.RdfXml:
+                    return RDFXml.Deserialize(inputStream, graphContext);
+                case RDFModelEnums.RDFFormats.Turtle:
+                    return RDFTurtle.Deserialize(inputStream, graphContext);
+                case RDFModelEnums.RDFFormats.NTriples:
+                    return RDFNTriples.Deserialize(inputStream, graphContext);
+                case RDFModelEnums.RDFFormats.TriX:
+                    return RDFTriX.Deserialize(inputStream, graphContext);
+                default:
+                    throw new RDFModelException("Cannot read RDF graph from stream because given \"rdfFormat\" parameter is not supported.");
             }
-            throw new RDFModelException("Cannot read RDF graph from stream because given \"inputStream\" parameter is null.");
         }
 
         /// <summary>
@@ -731,20 +702,15 @@ namespace RDFSharp.Model
                         && table.Columns.Contains("?PREDICATE")
                             && table.Columns.Contains("?OBJECT"))
                 {
-
                     #region CONTEXT
                     //Parse the name of the datatable for Uri, in order to assign the graph name
-                    Uri graphUri;
-                    if (Uri.TryCreate(table.TableName, UriKind.Absolute, out graphUri))
-                    {
+                    if (Uri.TryCreate(table.TableName, UriKind.Absolute, out Uri graphUri))
                         result.SetContext(graphUri);
-                    }
                     #endregion
 
                     //Iterate the rows of the datatable
                     foreach (DataRow tableRow in table.Rows)
                     {
-
                         #region SUBJECT
                         //Parse the triple subject
                         if (!tableRow.IsNull("?SUBJECT") && !string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
@@ -752,7 +718,6 @@ namespace RDFSharp.Model
                             RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
                             if (rowSubj is RDFResource)
                             {
-
                                 #region PREDICATE
                                 //Parse the triple predicate
                                 if (!tableRow.IsNull("?PREDICATE") && !string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
@@ -760,27 +725,21 @@ namespace RDFSharp.Model
                                     RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
                                     if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank)
                                     {
-
                                         #region OBJECT
                                         //Parse the triple object
                                         if (!tableRow.IsNull("?OBJECT"))
                                         {
                                             RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
                                             if (rowObj is RDFResource)
-                                            {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
-                                            }
                                             else
-                                            {
                                                 result.AddTriple(new RDFTriple((RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
-                                            }
                                         }
                                         else
                                         {
                                             throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
                                         }
                                         #endregion
-
                                     }
                                     else
                                     {
@@ -792,7 +751,6 @@ namespace RDFSharp.Model
                                     throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
                                 }
                                 #endregion
-
                             }
                             else
                             {
@@ -804,9 +762,7 @@ namespace RDFSharp.Model
                             throw new RDFModelException("Cannot read RDF graph from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
                         }
                         #endregion
-
                     }
-
                 }
                 else
                 {
@@ -832,59 +788,58 @@ namespace RDFSharp.Model
         /// </summary>
         public static RDFGraph FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
+            if (uri == null)
+                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null.");
+            if (!uri.IsAbsoluteUri)
+                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+
             RDFGraph result = new RDFGraph();
-
-            if (uri?.IsAbsoluteUri ?? false)
+            try
             {
+                //Grab eventual dereference Uri
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
-                try
+
+                HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
+                webRequest.MaximumAutomaticRedirections = 4;
+                webRequest.AllowAutoRedirect = true;
+                webRequest.Timeout = timeoutMilliseconds;
+                //RDF/XML
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                //TURTLE
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/x-turtle");
+                //N-TRIPLES
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                //TRIX
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+
+                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
+                if (webRequest.HaveResponse)
                 {
-                    HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-                    webRequest.MaximumAutomaticRedirections = 3;
-                    webRequest.AllowAutoRedirect = true;
-                    webRequest.Timeout = timeoutMilliseconds;
                     //RDF/XML
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/rdf+xml");
+                    if (string.IsNullOrEmpty(webResponse.ContentType) ||
+                            webResponse.ContentType.Contains("application/rdf+xml"))
+                        result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
+
                     //TURTLE
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "text/turtle");
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/turtle");
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/x-turtle");
+                    else if (webResponse.ContentType.Contains("text/turtle") ||
+                                webResponse.ContentType.Contains("application/turtle") ||
+                                    webResponse.ContentType.Contains("application/x-turtle"))
+                        result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
+
                     //N-TRIPLES
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-triples");
+                    else if (webResponse.ContentType.Contains("application/n-triples"))
+                        result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
+
                     //TRIX
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-
-                    HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-                    if (webRequest.HaveResponse)
-                    {
-                        //RDF/XML
-                        if (string.IsNullOrEmpty(webResponse.ContentType) ||
-                                webResponse.ContentType.Contains("application/rdf+xml"))
-                            result = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), webRequest.Address);
-
-                        //TURTLE
-                        else if (webResponse.ContentType.Contains("text/turtle") ||
-                                    webResponse.ContentType.Contains("application/turtle") ||
-                                        webResponse.ContentType.Contains("application/x-turtle"))
-                            result = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), webRequest.Address);
-
-                        //N-TRIPLES
-                        else if (webResponse.ContentType.Contains("application/n-triples"))
-                            result = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), webRequest.Address);
-
-                        //TRIX
-                        else if (webResponse.ContentType.Contains("application/trix"))
-                            result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new RDFModelException("Cannot read RDF graph from Uri because: " + ex.Message);
+                    else if (webResponse.ContentType.Contains("application/trix"))
+                        result = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), webRequest.Address);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
+                throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
             }
 
             return result;

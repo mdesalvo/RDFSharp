@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Model
@@ -29,6 +28,11 @@ namespace RDFSharp.Model
     public sealed class RDFNamespaceRegister : IEnumerable<RDFNamespace>
     {
         #region Properties
+        /// <summary>
+        /// Default namespace of the library (rdfsharp)
+        /// </summary>
+        private static RDFNamespace RDFSharpNS = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI));
+
         /// <summary>
         /// Default namespace of the library
         /// </summary>
@@ -61,13 +65,11 @@ namespace RDFSharp.Model
         /// </summary>
         static RDFNamespaceRegister()
         {
-            RDFNamespace rdfsharp = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI));
-
             Instance = new RDFNamespaceRegister()
             {
                 Register = new List<RDFNamespace>()
                 {
-                    rdfsharp,
+                    RDFSharpNS,
 
                     //Basic
                     new RDFNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDF.DEREFERENCE_URI)),
@@ -96,7 +98,7 @@ namespace RDFSharp.Model
                 }
             };
 
-            DefaultNamespace = rdfsharp;
+            DefaultNamespace = RDFSharpNS;
         }
         #endregion
 
@@ -126,6 +128,11 @@ namespace RDFSharp.Model
                 AddNamespace(nSpace);
             }
         }
+
+        /// <summary>
+        /// Resets the default namespace of the library.
+        /// </summary>
+        public static void ResetDefaultNamespace() => DefaultNamespace = RDFSharpNS;
 
         /// <summary>
         /// Adds the given namespace to the register, if it has unique prefix and uri.

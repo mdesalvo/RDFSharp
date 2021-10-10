@@ -92,22 +92,7 @@ namespace RDFSharp.Model
         public RDFContainer AddItem(RDFResource item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            {
-                switch (this.ContainerType)
-                {
-                    case RDFModelEnums.RDFContainerTypes.Alt:
-                        //Avoid duplicates in case of "rdf:Alt" container
-                        if (this.Items.Find(x => x.Equals(item)) == null)
-                            this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Bag:
-                        this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Seq:
-                        this.Items.Add(item);
-                        break;
-                }
-            }
+                this.AddItemInternal(item);
             return this;
         }
 
@@ -117,23 +102,27 @@ namespace RDFSharp.Model
         public RDFContainer AddItem(RDFLiteral item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            {
-                switch (this.ContainerType)
-                {
-                    case RDFModelEnums.RDFContainerTypes.Alt:
-                        //Avoid duplicates in case of "rdf:Alt" container
-                        if (this.Items.Find(x => x.Equals(item)) == null)
-                            this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Bag:
-                        this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Seq:
-                        this.Items.Add(item);
-                        break;
-                }
-            }
+                this.AddItemInternal(item);
             return this;
+        }
+
+        /// <summary>
+        /// Adds the given item to the container
+        /// </summary>
+        internal void AddItemInternal(RDFPatternMember item)
+        {
+            switch (this.ContainerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    //Avoid duplicates in case of "rdf:Alt" container
+                    if (this.Items.Find(x => x.Equals(item)) == null)
+                        this.Items.Add(item);
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    this.Items.Add(item);
+                    break;
+            }
         }
         #endregion
 
@@ -166,9 +155,9 @@ namespace RDFSharp.Model
 
         #region Reify
         /// <summary>
-        /// Builds the reification graph of the container:
-        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
-        /// Subject -> rdf:_N   -> RDFContainer.ITEM(N)
+        /// Builds the reification graph of the container:<br/>
+        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]<br/>
+        /// Subject -> rdf:_N   -> item(N)
         /// </summary>
         public RDFGraph ReifyContainer()
         {
@@ -190,7 +179,7 @@ namespace RDFSharp.Model
 
             //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
             int index = 0;
-            foreach (object item in this)
+            foreach (RDFPatternMember item in this)
             {
                 RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", (++index).ToString()));
                 if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)

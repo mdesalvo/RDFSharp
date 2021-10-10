@@ -812,43 +812,42 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
+            if (uri == null)
+                throw new RDFModelException("Cannot read RDF memory store from Uri because given \"uri\" parameter is null.");
+            if (!uri.IsAbsoluteUri)
+                throw new RDFModelException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+
             RDFMemoryStore result = new RDFMemoryStore();
-
-            if (uri?.IsAbsoluteUri ?? false)
+            try
             {
+                //Grab eventual dereference Uri
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
-                try
+
+                HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
+                webRequest.MaximumAutomaticRedirections = 4;
+                webRequest.AllowAutoRedirect = true;
+                webRequest.Timeout = timeoutMilliseconds;
+                //N-QUADS
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-quads");
+                //TRIX
+                webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
+
+                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
+                if (webRequest.HaveResponse)
                 {
-                    HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
-                    webRequest.MaximumAutomaticRedirections = 3;
-                    webRequest.AllowAutoRedirect = true;
-                    webRequest.Timeout = timeoutMilliseconds;
                     //N-QUADS
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/n-quads");
+                    if (string.IsNullOrEmpty(webResponse.ContentType) ||
+                            webResponse.ContentType.Contains("application/n-quads"))
+                        result = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
+
                     //TRIX
-                    webRequest.Headers.Add(HttpRequestHeader.Accept, "application/trix");
-
-                    HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-                    if (webRequest.HaveResponse)
-                    {
-                        //N-QUADS
-                        if (string.IsNullOrEmpty(webResponse.ContentType) ||
-                                webResponse.ContentType.Contains("application/n-quads"))
-                            result = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
-
-                        //TRIX
-                        else if (webResponse.ContentType.Contains("application/trix"))
-                            result = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
+                    else if (webResponse.ContentType.Contains("application/trix"))
+                        result = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
                 }
             }
-            else
+            catch (Exception ex)
             {
-                throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter is null, or it does not represent an absolute Uri.");
+                throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
             }
 
             return result;
