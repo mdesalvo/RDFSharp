@@ -92,22 +92,7 @@ namespace RDFSharp.Model
         public RDFContainer AddItem(RDFResource item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            {
-                switch (this.ContainerType)
-                {
-                    case RDFModelEnums.RDFContainerTypes.Alt:
-                        //Avoid duplicates in case of "rdf:Alt" container
-                        if (this.Items.Find(x => x.Equals(item)) == null)
-                            this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Bag:
-                        this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Seq:
-                        this.Items.Add(item);
-                        break;
-                }
-            }
+                this.AddItemInternal(item);
             return this;
         }
 
@@ -117,23 +102,27 @@ namespace RDFSharp.Model
         public RDFContainer AddItem(RDFLiteral item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            {
-                switch (this.ContainerType)
-                {
-                    case RDFModelEnums.RDFContainerTypes.Alt:
-                        //Avoid duplicates in case of "rdf:Alt" container
-                        if (this.Items.Find(x => x.Equals(item)) == null)
-                            this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Bag:
-                        this.Items.Add(item);
-                        break;
-                    case RDFModelEnums.RDFContainerTypes.Seq:
-                        this.Items.Add(item);
-                        break;
-                }
-            }
+                this.AddItemInternal(item);
             return this;
+        }
+
+        /// <summary>
+        /// Adds the given item to the container
+        /// </summary>
+        internal void AddItemInternal(RDFPatternMember item)
+        {
+            switch (this.ContainerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    //Avoid duplicates in case of "rdf:Alt" container
+                    if (this.Items.Find(x => x.Equals(item)) == null)
+                        this.Items.Add(item);
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    this.Items.Add(item);
+                    break;
+            }
         }
         #endregion
 

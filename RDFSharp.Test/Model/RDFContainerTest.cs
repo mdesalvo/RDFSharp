@@ -62,6 +62,77 @@ namespace RDFSharp.Test
             while (itemsEnumerator.MoveNext()) j++;
             Assert.IsTrue(j == 1);
         }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldAddItemsToContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            { 
+                cont.AddItem(new RDFPlainLiteral("lit"));
+                cont.AddItem(new RDFPlainLiteral("lit"));
+            }
+            else
+            { 
+                cont.AddItem(new RDFResource("http://item/"));
+                cont.AddItem(new RDFResource("http://item/"));
+            }
+
+            switch (containerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    Assert.IsTrue(cont.ItemsCount == 1);
+                    break;
+
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    Assert.IsTrue(cont.ItemsCount == 2);
+                    break;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldNotAddItemsToContainerBecauseWrongType(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+                cont.AddItem(new RDFResource("http://item/"));
+            else
+                cont.AddItem(new RDFPlainLiteral("lit"));
+            
+            Assert.IsTrue(cont.ItemsCount == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldNotAddItemsToContainerBecauseNull(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+                cont.AddItem(null as RDFLiteral);
+            else
+                cont.AddItem(null as RDFResource);
+
+            Assert.IsTrue(cont.ItemsCount == 0);
+        }
+
         #endregion
     }
 }
