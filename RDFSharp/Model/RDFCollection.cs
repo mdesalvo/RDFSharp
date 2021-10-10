@@ -100,16 +100,7 @@ namespace RDFSharp.Model
         public RDFCollection AddItem(RDFResource item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            {
-                if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
-                {
-                    //Add item to collection
-                    this.Items.Add(item);
-                    //Update ReificationSubject (if collection has left "rdf:Nil" configuration)
-                    if (this.ItemsCount == 1)
-                        this.ReificationSubject = this.InternalReificationSubject;
-                }
-            }
+                this.AddItemInternal(item);
             return this;
         }
 
@@ -119,17 +110,23 @@ namespace RDFSharp.Model
         public RDFCollection AddItem(RDFLiteral item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            {
-                if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
-                {
-                    //Add item to collection
-                    this.Items.Add(item);
-                    //Update ReificationSubject (if collection has left "rdf:Nil" configuration)
-                    if (this.ItemsCount == 1)
-                        this.ReificationSubject = this.InternalReificationSubject;
-                }
-            }
+                this.AddItemInternal(item);
             return this;
+        }
+
+        /// <summary>
+        /// Adds the given item to the collection
+        /// </summary>
+        internal void AddItemInternal(RDFPatternMember item)
+        {
+            if (this.AcceptDuplicates || this.Items.Find(x => x.Equals(item)) == null)
+            {
+                //Add item to collection
+                this.Items.Add(item);
+                //Update ReificationSubject (if collection has left "rdf:nil" configuration)
+                if (this.ItemsCount == 1)
+                    this.ReificationSubject = this.InternalReificationSubject;
+            }
         }
         #endregion
 
