@@ -186,34 +186,31 @@ namespace RDFSharp.Model
             int itemCount = 0;
 
             //Collection can be reified only if it has at least one item
-            if (this.ItemsCount > 0)
+            foreach (RDFPatternMember listEnum in this)
             {
-                foreach (RDFPatternMember listEnum in this)
+                //Count the items to keep track of the last one, which will be connected to rdf:nil
+                itemCount++;
+
+                //  Subject -> rdf:type  -> rdf:List
+                reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
+
+                //  Subject -> rdf:first -> RDFCollection.ITEM[i]
+                if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
+                else
+                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)listEnum));
+
+                //Not the last one: Subject -> rdf:rest  -> NEWBLANK
+                if (itemCount < this.ItemsCount)
                 {
-                    //Count the items to keep track of the last one, which will be connected to rdf:nil
-                    itemCount++;
-
-                    //  Subject -> rdf:type  -> rdf:List
-                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
-
-                    //  Subject -> rdf:first -> RDFCollection.ITEM[i]
-                    if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-                        reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFResource)listEnum));
-                    else
-                        reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.FIRST, (RDFLiteral)listEnum));
-
-                    //Not the last one: Subject -> rdf:rest  -> NEWBLANK
-                    if (itemCount < this.ItemsCount)
-                    {
-                        RDFResource newSub = new RDFResource();
-                        reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, newSub));
-                        reifSubj = newSub;
-                    }
-                    //The last one:     Subject -> rdf:rest  -> rdf:nil
-                    else
-                    {
-                        reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
-                    }
+                    RDFResource newSub = new RDFResource();
+                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, newSub));
+                    reifSubj = newSub;
+                }
+                //The last one:     Subject -> rdf:rest  -> rdf:nil
+                else
+                {
+                    reifColl.AddTriple(new RDFTriple(reifSubj, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL));
                 }
             }
 
