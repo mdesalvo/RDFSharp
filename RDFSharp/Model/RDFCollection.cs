@@ -188,7 +188,7 @@ namespace RDFSharp.Model
             //Collection can be reified only if it has at least one item
             if (this.ItemsCount > 0)
             {
-                foreach (object listEnum in this)
+                foreach (RDFPatternMember listEnum in this)
                 {
                     //Count the items to keep track of the last one, which will be connected to rdf:nil
                     itemCount++;
