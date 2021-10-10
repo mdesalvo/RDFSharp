@@ -255,6 +255,83 @@ namespace RDFSharp.Test
             cont.ClearItems();
             Assert.IsTrue(cont.ItemsCount == 0);
         }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldReifyEmptyContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            RDFGraph graph = cont.ReifyContainer();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            switch (containerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT).TripleID));
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG).TripleID));
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ).TripleID));
+                    break;
+            }
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Resource)]
+        [DataRow(RDFModelEnums.RDFContainerTypes.Seq, RDFModelEnums.RDFItemTypes.Literal)]
+        public void ShouldReifyContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+        {
+            RDFContainer cont = new RDFContainer(containerType, itemType);
+            if (itemType == RDFModelEnums.RDFItemTypes.Literal)
+            {
+                cont.AddItem(new RDFPlainLiteral("lit1"));
+                cont.AddItem(new RDFPlainLiteral("lit2"));
+            }
+            else
+            {
+                cont.AddItem(new RDFResource("http://item1/"));
+                cont.AddItem(new RDFResource("http://item2/"));
+            }
+            RDFGraph graph = cont.ReifyContainer();
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 3);
+            switch (containerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT).TripleID));
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG).TripleID));
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ).TripleID));
+                    break;
+            }
+            switch (itemType)
+            {
+                case RDFModelEnums.RDFItemTypes.Literal:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_1")), new RDFPlainLiteral("lit1")).TripleID));
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_2")), new RDFPlainLiteral("lit2")).TripleID));
+                    break;
+                case RDFModelEnums.RDFItemTypes.Resource:
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_1")), new RDFResource("http://item1/")).TripleID));
+                    Assert.IsTrue(graph.Triples.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_2")), new RDFResource("http://item2/")).TripleID));
+                    break;
+            }
+        }
         #endregion
     }
 }

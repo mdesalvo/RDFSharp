@@ -155,9 +155,9 @@ namespace RDFSharp.Model
 
         #region Reify
         /// <summary>
-        /// Builds the reification graph of the container:
-        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
-        /// Subject -> rdf:_N   -> RDFContainer.ITEM(N)
+        /// Builds the reification graph of the container:<br/>
+        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]<br/>
+        /// Subject -> rdf:_N   -> item(N)
         /// </summary>
         public RDFGraph ReifyContainer()
         {
@@ -179,7 +179,7 @@ namespace RDFSharp.Model
 
             //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
             int index = 0;
-            foreach (object item in this)
+            foreach (RDFPatternMember item in this)
             {
                 RDFResource ordPred = new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, "_", (++index).ToString()));
                 if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
