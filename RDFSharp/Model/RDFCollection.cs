@@ -137,13 +137,7 @@ namespace RDFSharp.Model
         public RDFCollection RemoveItem(RDFResource item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            {
-                //Remove item from collection
-                this.Items.RemoveAll(x => x.Equals(item));
-                //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
-                if (this.ItemsCount == 0)
-                    this.ReificationSubject = RDFVocabulary.RDF.NIL;
-            }
+                this.RemoveItemInternal(item);
             return this;
         }
 
@@ -153,14 +147,20 @@ namespace RDFSharp.Model
         public RDFCollection RemoveItem(RDFLiteral item)
         {
             if (item != null && this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            {
-                //Remove item from collection
-                this.Items.RemoveAll(x => x.Equals(item));
-                //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
-                if (this.ItemsCount == 0)
-                    this.ReificationSubject = RDFVocabulary.RDF.NIL;
-            }
+                this.RemoveItemInternal(item);
             return this;
+        }
+
+        /// <summary>
+        /// Removes the given item from the collection
+        /// </summary>
+        internal void RemoveItemInternal(RDFPatternMember item)
+        {
+            //Remove item from collection
+            this.Items.RemoveAll(x => x.Equals(item));
+            //Update ReificationSubject (if collection has turned back into "rdf:Nil" configuration)
+            if (this.ItemsCount == 0)
+                this.ReificationSubject = RDFVocabulary.RDF.NIL;
         }
 
         /// <summary>
