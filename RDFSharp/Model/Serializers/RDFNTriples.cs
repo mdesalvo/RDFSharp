@@ -201,6 +201,10 @@ namespace RDFSharp.Model
                     RDFResource P = null;
                     RDFResource O = null;
                     RDFLiteral L = null;
+                    char[] openingBrackets = new char[] { '<' };
+                    char[] closingBrackets = new char[] { '>' };
+                    char[] trimmableChars  = new char[] { ' ', '\t', '\r', '\n' };
+
                     while ((ntriple = sr.ReadLine()) != null)
                     {
                         ntripleIndex++;
@@ -212,7 +216,7 @@ namespace RDFSharp.Model
                         O = null; L = null; tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
-                        ntriple = ntriple.Trim(new char[] { ' ', '\t', '\r', '\n' });
+                        ntriple = ntriple.Trim(trimmableChars);
 
                         //Skip empty or comment lines
                         if (ntriple == string.Empty || ntriple.StartsWith("#"))
@@ -223,27 +227,27 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region subj
-                        string subj = tokens[0].TrimStart(new char[] { '<' })
-                                               .TrimEnd(new char[] { '>' })
+                        string subj = tokens[0].TrimStart(openingBrackets)
+                                               .TrimEnd(closingBrackets)
                                                .Replace("_:", "bnode:");
                         S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
-                        string pred = tokens[1].TrimStart(new char[] { '<' })
-                                               .TrimEnd(new char[] { '>' });
+                        string pred = tokens[1].TrimStart(openingBrackets)
+                                               .TrimEnd(closingBrackets);
                         P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
 
                         #region object
-                        if (tokens[2].StartsWith("<") ||
-                            tokens[2].StartsWith("bnode:") ||
-                            tokens[2].StartsWith("_:"))
+                        if (tokens[2].StartsWith("<")
+                                || tokens[2].StartsWith("bnode:")
+                                    || tokens[2].StartsWith("_:"))
                         {
-                            string obj = tokens[2].TrimStart(new char[] { '<' })
-                                                  .TrimEnd(new char[] { '>' })
+                            string obj = tokens[2].TrimStart(openingBrackets)
+                                                  .TrimEnd(closingBrackets)
                                                   .Replace("_:", "bnode:")
-                                                  .Trim(new char[] { ' ', '\n', '\t', '\r' });
+                                                  .Trim(trimmableChars);
                             O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
                         }
                         #endregion
