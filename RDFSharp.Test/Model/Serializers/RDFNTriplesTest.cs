@@ -145,39 +145,75 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
-        public void ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInSubject()
+        public void ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject()
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj😃/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInSubject.nt");
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt");
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInSubject.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInSubject.nt");
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt");
             Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
         }
 
         [TestMethod]
-        public void ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInPredicate()
+        public void ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate()
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred😃/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInPredicate.nt");
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt");
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInPredicate.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInPredicate.nt");
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt");
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> .{Environment.NewLine}"));
         }
 
         [TestMethod]
-        public void ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInObject()
+        public void ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject()
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj😃/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInObject.nt");
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt");
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInObject.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingUnicodeCharInObject.nt");
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt");
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/frag#pageβ2"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt");
+            Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/frag#pageβ2"), new RDFResource("http://obj/")));
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt");
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/frag#pageβ2")));
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt");
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> .{Environment.NewLine}"));
         }
 
         [TestCleanup]
