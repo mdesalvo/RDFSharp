@@ -300,6 +300,33 @@ namespace RDFSharp.Test
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US .{Environment.NewLine}"));
         }
 
+        [TestMethod]
+        public void ShouldSerializeEmptyGraphToStream()
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            RDFNTriples.Serialize(graph, stream);
+
+            string fileContent;
+            using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
+                fileContent = reader.ReadToEnd();
+            Assert.IsTrue(fileContent.Equals(string.Empty));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphToStream()
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNTriples.Serialize(graph, stream);
+
+            string fileContent;
+            using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
+                fileContent = reader.ReadToEnd();
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
