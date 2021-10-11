@@ -327,6 +327,30 @@ namespace RDFSharp.Test
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
         }
 
+        [TestMethod]
+        public void ShouldDeserializeEmptyGraph()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeEmptyGraph.nt");
+            RDFGraph graph2 = RDFNTriples.Deserialize($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeEmptyGraph.nt");
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraph()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeGraph.nt");
+            RDFGraph graph2 = RDFNTriples.Deserialize($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeGraph.nt");
+
+            Assert.IsNotNull(graph2);
+            Assert.IsTrue(graph2.TriplesCount == 1);
+            Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
