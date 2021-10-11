@@ -364,6 +364,18 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         }
 
+        [TestMethod]
+        public void ShouldDeserializeGraphWithCommentedSPOTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#<http://subj/> <http://pred/> <http://obj/> .");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
