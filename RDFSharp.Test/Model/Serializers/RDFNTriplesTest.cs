@@ -181,6 +181,18 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃","en-US")));
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt");
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject()
         {
             RDFGraph graph = new RDFGraph();
@@ -214,6 +226,18 @@ namespace RDFSharp.Test
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt");
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US")));
+            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt");
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US .{Environment.NewLine}"));
         }
 
         [TestCleanup]
