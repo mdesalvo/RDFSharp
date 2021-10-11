@@ -188,9 +188,9 @@ namespace RDFSharp.Model
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             long ntripleIndex = 0;
+
             try
             {
-
                 #region deserialize
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
@@ -207,13 +207,9 @@ namespace RDFSharp.Model
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
-                        S = null;
-                        tokens[0] = string.Empty;
-                        P = null;
-                        tokens[1] = string.Empty;
-                        O = null;
-                        L = null;
-                        tokens[2] = string.Empty;
+                        S = null; tokens[0] = string.Empty;
+                        P = null; tokens[1] = string.Empty;
+                        O = null; L = null; tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
                         ntriple = ntriple.Trim(new char[] { ' ', '\t', '\r', '\n' });
@@ -315,7 +311,6 @@ namespace RDFSharp.Model
                     return result;
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
