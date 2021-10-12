@@ -526,6 +526,81 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.TriplesCount == 0);
         }
 
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithCommentedBPLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> \"hello\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"@en-US .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithCommentedBPLLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> \"hello\"@en-US .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithCommentedBPLTTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
