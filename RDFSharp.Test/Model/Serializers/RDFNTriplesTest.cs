@@ -885,6 +885,71 @@ namespace RDFSharp.Test
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US"))));
         }
 
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingCarriageReturnCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\r\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\r"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingNewLineCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\n\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\n"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingTabCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\t\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\t"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingSlashCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\\\\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\\"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingDoubleQuotesCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\\"\" .{Environment.NewLine}");
+            RDFGraph graph = RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\""))));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
