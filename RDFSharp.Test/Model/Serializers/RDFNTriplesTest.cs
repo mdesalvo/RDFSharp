@@ -626,7 +626,7 @@ namespace RDFSharp.Test
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"<http://subj> <bnode:12345> <http://obj> .{Environment.NewLine}");
+                writer.WriteLine($"<http://subj> <_:12345> <http://obj> .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
@@ -676,13 +676,13 @@ namespace RDFSharp.Test
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"<http://subj> <bnode:12345> \"hello\" .{Environment.NewLine}");
+                writer.WriteLine($"<http://subj> <_:12345> \"hello\" .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingBadFormedTriple()
+        public void ShouldThrowExceptionOnDeserializingBadFormedSTriple()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
@@ -692,11 +692,91 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingAttachedTriples()
+        public void ShouldThrowExceptionOnDeserializingAttachedSTriples()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"<http://subj> <http://pred/> <http://obj/> . <http://subj> <http://pred/> <http://obj/> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOTripleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> http://pred/ <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOTripleBecauseBlankPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <_:12345> <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOTripleBecauseBadFormedObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <http://pred/> http://obj .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLTripleBecauseBadFormedLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <http://pred/> \"hello .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLTripleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> http://pred/ \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLTripleBecauseBlankPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <_:12345> \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBadFormedBTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <http://pred/> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAttachedBTriples()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <http://pred/> <http://obj/> . <_:12345> <http://pred/> <http://obj/> .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
