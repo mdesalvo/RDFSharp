@@ -652,6 +652,26 @@ namespace RDFSharp.Test
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLTripleBecauseBadFormedPLLiteral1()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLTripleBecauseBadFormedPLLiteral2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@ .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingSPLTripleBecauseBadFormedTLiteral()
         {
             MemoryStream stream = new MemoryStream();
@@ -747,6 +767,26 @@ namespace RDFSharp.Test
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"<_:12345> <http://pred/> \"hello .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLTripleBecauseBadFormedPLLiteral1()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLTripleBecauseBadFormedPLLiteral2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<_:12345> <http://pred/> \"hello\"@ .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
