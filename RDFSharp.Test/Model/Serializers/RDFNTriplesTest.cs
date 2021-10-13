@@ -1,13 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RDFSharp.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFNTriplesTest

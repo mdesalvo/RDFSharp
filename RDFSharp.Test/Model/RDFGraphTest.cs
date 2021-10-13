@@ -23,7 +23,7 @@ using System.Data;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace RDFSharp.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFGraphTest

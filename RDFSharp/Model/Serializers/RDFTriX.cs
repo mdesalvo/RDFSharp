@@ -44,7 +44,6 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region serialize
                 using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
                 {
@@ -152,7 +151,6 @@ namespace RDFSharp.Model
                     trixDoc.Save(trixWriter);
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {

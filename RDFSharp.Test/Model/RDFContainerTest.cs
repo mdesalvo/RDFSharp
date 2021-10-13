@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFContainerTest

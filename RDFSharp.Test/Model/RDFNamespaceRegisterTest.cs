@@ -20,7 +20,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace RDFSharp.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFNamespaceRegisterTest
