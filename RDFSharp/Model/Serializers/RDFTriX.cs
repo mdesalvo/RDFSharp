@@ -70,7 +70,7 @@ namespace RDFSharp.Model
                     graphElement.AppendChild(graphUriElement);
 
                     #region triple
-                    foreach (var t in graph)
+                    foreach (RDFTriple t in graph)
                     {
                         XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
 
@@ -103,15 +103,14 @@ namespace RDFSharp.Model
                         #region literal
                         else
                         {
-
                             #region plain literal
-                            if (t.Object is RDFPlainLiteral)
+                            if (t.Object is RDFPlainLiteral objLit)
                             {
                                 XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
-                                if (((RDFPlainLiteral)t.Object).Language != string.Empty)
+                                if (objLit.HasLanguage())
                                 {
                                     XmlAttribute xmlLang = trixDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
-                                    XmlText xmlLangText = trixDoc.CreateTextNode(((RDFPlainLiteral)t.Object).Language);
+                                    XmlText xmlLangText = trixDoc.CreateTextNode(objLit.Language);
                                     xmlLang.AppendChild(xmlLangText);
                                     plainLiteralElement.Attributes.Append(xmlLang);
                                 }
@@ -134,7 +133,6 @@ namespace RDFSharp.Model
                                 tripleElement.AppendChild(typedLiteralElement);
                             }
                             #endregion
-
                         }
                         #endregion
 
