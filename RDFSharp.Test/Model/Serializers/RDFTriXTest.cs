@@ -271,6 +271,33 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://example.org/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
+        [TestMethod]
+        public void ShouldSerializeEmptyGraphToStream()
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            RDFTriX.Serialize(graph, stream);
+
+            string fileContent;
+            using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
+                fileContent = reader.ReadToEnd();
+            Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>https://rdfsharp.codeplex.com/</uri>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphToStream()
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFTriX.Serialize(graph, stream);
+
+            string fileContent;
+            using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
+                fileContent = reader.ReadToEnd();
+            Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>https://rdfsharp.codeplex.com/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <uri>http://obj/</uri>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
