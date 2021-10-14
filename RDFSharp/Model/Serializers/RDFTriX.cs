@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -170,7 +171,6 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region deserialize
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
@@ -189,22 +189,18 @@ namespace RDFSharp.Model
                         if (trixDoc.DocumentElement != null)
                         {
                             if (trixDoc.DocumentElement.ChildNodes.Count > 1)
-                            {
                                 throw new Exception(" given TriX file seems to encode more than one graph.");
-                            }
-
-                            var graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
+                            
+                            IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                             while (graphEnum != null && graphEnum.MoveNext())
                             {
                                 XmlNode graph = (XmlNode)graphEnum.Current;
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))
-                                {
                                     throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
-                                }
 
                                 #region triple
-                                var encodedUris = 0;
-                                var tripleEnum = graph.ChildNodes.GetEnumerator();
+                                long encodedUris = 0;
+                                IEnumerator tripleEnum = graph.ChildNodes.GetEnumerator();
                                 while (tripleEnum != null && tripleEnum.MoveNext())
                                 {
                                     XmlNode triple = (XmlNode)tripleEnum.Current;
@@ -214,9 +210,8 @@ namespace RDFSharp.Model
                                     {
                                         encodedUris++;
                                         if (encodedUris > 1)
-                                        {
                                             throw new Exception(" given file encodes a graph with more than one \"<uri>\" element.");
-                                        }
+
                                         result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText));
                                     }
                                     #endregion
@@ -224,19 +219,16 @@ namespace RDFSharp.Model
                                     #region triple
                                     else if (triple.Name.Equals("triple", StringComparison.Ordinal) && triple.ChildNodes.Count == 3)
                                     {
-
                                         #region subj
                                         //Subject is a resource ("<uri>") or a blank node ("<id>")
-                                        if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal) ||
-                                            triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
+                                        if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal)
+                                                || triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                         {
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                             {
                                                 if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:"))
-                                                {
                                                     triple.ChildNodes[0].InnerText = string.Concat("bnode:", triple.ChildNodes[0].InnerText.Replace("_:", string.Empty));
-                                                }
                                             }
                                         }
                                         //Subject is not valid: exception must be raised
@@ -249,24 +241,22 @@ namespace RDFSharp.Model
                                         #region pred
                                         //Predicate is not valid: exception must be raised
                                         if (!triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
-                                        {
                                             throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
-                                        }
                                         #endregion
 
                                         #region object
                                         //Object is a resource ("<uri>") or a blank node ("<id>")
-                                        if (triple.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal) ||
-                                            triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
+                                        if (triple.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
+                                                || triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                         {
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                             {
                                                 if (!triple.ChildNodes[2].InnerText.StartsWith("bnode:"))
-                                                {
                                                     triple.ChildNodes[2].InnerText = string.Concat("bnode:", triple.ChildNodes[2].InnerText.Replace("_:", string.Empty));
-                                                }
                                             }
+
+                                            //Finally add SPO triple
                                             result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                            new RDFResource(triple.ChildNodes[1].InnerText),
                                                                            new RDFResource(triple.ChildNodes[2].InnerText)));
@@ -280,34 +270,28 @@ namespace RDFSharp.Model
                                         {
                                             if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
                                             {
-                                                XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[string.Concat(RDFVocabulary.XML.PREFIX, ":lang")];
+                                                XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[string.Concat("xml:lang")];
                                                 if (xmlLang != null)
                                                 {
-
-                                                    //Plain literal with language
+                                                    //Finally add SPL(L) triple
                                                     result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                    new RDFResource(triple.ChildNodes[1].InnerText),
                                                                                    new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
-
                                                 }
                                                 else
                                                 {
-
-                                                    //Plain literal without language
+                                                    //Finally add SPL triple
                                                     result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                    new RDFResource(triple.ChildNodes[1].InnerText),
                                                                                    new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
-
                                                 }
                                             }
                                             else
                                             {
-
-                                                //Plain literal without language
+                                                //Finally add SPL triple
                                                 result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                new RDFResource(triple.ChildNodes[1].InnerText),
                                                                                new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
-
                                             }
                                         }
                                         #endregion
@@ -317,12 +301,13 @@ namespace RDFSharp.Model
                                         {
                                             if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
                                             {
-                                                XmlAttribute rdfDtype = triple.ChildNodes[2].Attributes["datatype"];
-                                                if (rdfDtype != null)
+                                                XmlAttribute datatype = triple.ChildNodes[2].Attributes["datatype"];
+                                                if (datatype != null)
                                                 {
+                                                    //Finally add SPL(T) triple
                                                     result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                    new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(rdfDtype.Value))));
+                                                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
                                                 }
                                                 else
                                                 {
@@ -345,7 +330,6 @@ namespace RDFSharp.Model
                                             throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
                                         }
                                         #endregion
-
                                     }
                                     #endregion
 
@@ -355,19 +339,15 @@ namespace RDFSharp.Model
                                         throw new Exception("found a TriX element (" + triple.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
                                     }
                                     #endregion
-
                                 }
                                 #endregion
-
                             }
                         }
                         #endregion
-
                     }
                 }
                 return result;
                 #endregion
-
             }
             catch (Exception ex)
             {
