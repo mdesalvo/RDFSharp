@@ -1,0 +1,15 @@
+name: CodeCov
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Codecov
+      - uses: codecov/codecov-action@v2.1.0
