@@ -188,9 +188,14 @@ namespace RDFSharp.Model
                         #region graph
                         if (trixDoc.DocumentElement != null)
                         {
+                            #region Guards
+                            if (!trixDoc.DocumentElement.Name.Equals("TriX")
+                                    || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
+                                throw new Exception(" given file does not encode a TriX graph.");
                             if (trixDoc.DocumentElement.ChildNodes.Count > 1)
                                 throw new Exception(" given TriX file seems to encode more than one graph.");
-                            
+                            #endregion
+
                             IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                             while (graphEnum != null && graphEnum.MoveNext())
                             {
