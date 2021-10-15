@@ -217,7 +217,7 @@ namespace RDFSharp.Model
                                         if (encodedUris > 1)
                                             throw new Exception(" given file encodes a graph with more than one \"<uri>\" element.");
 
-                                        result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText));
+                                        result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0]?.InnerText) ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
                                     }
                                     #endregion
 
