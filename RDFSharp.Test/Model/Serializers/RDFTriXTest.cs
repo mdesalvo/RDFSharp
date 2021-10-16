@@ -615,6 +615,114 @@ namespace RDFSharp.Test.Model
             Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
         }
 
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://rdfsharp.codeplex.com/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedGraphWithBPLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://example.org/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+            Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://rdfsharp.codeplex.com/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedGraphWithBPLLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://example.org/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+            Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://rdfsharp.codeplex.com/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedGraphWithBPLTTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://example.org/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTripleEvenOnUnrecognizedDatatype()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://rdfsharp.codeplex.com/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeNamedGraphWithBPLTTripleEvenOnUnrecognizedDatatype()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>https://example.org/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph></TriX>");
+            RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+            Assert.IsFalse(graph.Context.Equals(new Uri("http://example.org/")));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
