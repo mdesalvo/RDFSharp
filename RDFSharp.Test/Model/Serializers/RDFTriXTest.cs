@@ -427,6 +427,24 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithMissingTripleDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></graph></TriX>");
+            Assert.ThrowsException<RDFModelException>(() => RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBadFormedTripleDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><traple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></traple></graph></TriX>");
+            Assert.ThrowsException<RDFModelException>(() => RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPBTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -787,20 +805,11 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseMissingSubjectNode()
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseMissingOneOfSPONodes()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
-            Assert.ThrowsException<RDFModelException>(() => RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseMissingPredicateNode()
-        {
-            MemoryStream stream = new MemoryStream();
-            using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://example.org/</uri><triple><uri>http://subj</uri><uri>http://obj/</uri></triple></graph></TriX>");
             Assert.ThrowsException<RDFModelException>(() => RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
