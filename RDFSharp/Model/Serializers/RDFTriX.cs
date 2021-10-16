@@ -230,6 +230,10 @@ namespace RDFSharp.Model
                                         if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal)
                                                 || triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                         {
+                                            //Subject is without value: exception must be raised
+                                            if (string.IsNullOrEmpty(triple.ChildNodes[0].InnerText))
+                                                throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
+
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                             {
@@ -237,7 +241,7 @@ namespace RDFSharp.Model
                                                     triple.ChildNodes[0].InnerText = string.Concat("bnode:", triple.ChildNodes[0].InnerText.Replace("_:", string.Empty));
                                             }
                                         }
-                                        //Subject is not valid: exception must be raised
+                                        //Subject is unrecognized: exception must be raised
                                         else
                                         {
                                             throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
@@ -245,9 +249,17 @@ namespace RDFSharp.Model
                                         #endregion
 
                                         #region pred
-                                        //Predicate is not valid: exception must be raised
-                                        if (!triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
+                                        if (triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
+                                        {
+                                            //Predicate is without value: exception must be raised
+                                            if (string.IsNullOrEmpty(triple.ChildNodes[1].InnerText))
+                                                throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element has \"<uri>\" element without value.");
+                                        }
+                                        //Predicate is unrecognized: exception must be raised
+                                        else
+                                        { 
                                             throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
+                                        }
                                         #endregion
 
                                         #region object
@@ -255,6 +267,10 @@ namespace RDFSharp.Model
                                         if (triple.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
                                                 || triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                         {
+                                            //Object is without value: exception must be raised
+                                            if (string.IsNullOrEmpty(triple.ChildNodes[2].InnerText))
+                                                throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
+
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                             {
