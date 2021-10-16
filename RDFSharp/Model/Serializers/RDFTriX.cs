@@ -192,6 +192,7 @@ namespace RDFSharp.Model
                             if (!trixDoc.DocumentElement.Name.Equals("TriX")
                                     || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
                                 throw new Exception(" given file does not encode a TriX graph.");
+
                             if (trixDoc.DocumentElement.ChildNodes.Count > 1)
                                 throw new Exception(" given TriX file seems to encode more than one graph.");
                             #endregion
