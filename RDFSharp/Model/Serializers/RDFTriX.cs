@@ -290,23 +290,13 @@ namespace RDFSharp.Model
                                         #region plain literal
                                         else if (triple.ChildNodes[2].Name.Equals("plainLiteral"))
                                         {
-                                            if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
+                                            XmlAttribute xmlLang = triple.ChildNodes[2].Attributes["xml:lang"];
+                                            if (xmlLang != null)
                                             {
-                                                XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[string.Concat("xml:lang")];
-                                                if (xmlLang != null)
-                                                {
-                                                    //Finally add SPL(L) triple
-                                                    result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                                   new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
-                                                }
-                                                else
-                                                {
-                                                    //Finally add SPL triple
-                                                    result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                                   new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
-                                                }
+                                                //Finally add SPL(L) triple
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
                                             }
                                             else
                                             {
@@ -321,20 +311,13 @@ namespace RDFSharp.Model
                                         #region typed literal
                                         else if (triple.ChildNodes[2].Name.Equals("typedLiteral", StringComparison.Ordinal))
                                         {
-                                            if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
+                                            XmlAttribute datatype = triple.ChildNodes[2].Attributes["datatype"];
+                                            if (datatype != null)
                                             {
-                                                XmlAttribute datatype = triple.ChildNodes[2].Attributes["datatype"];
-                                                if (datatype != null)
-                                                {
-                                                    //Finally add SPL(T) triple
-                                                    result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                                   new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
-                                                }
-                                                else
-                                                {
-                                                    throw new Exception(" found typed literal without required \"datatype\" attribute.");
-                                                }
+                                                //Finally add SPL(T) triple
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
                                             }
                                             else
                                             {
