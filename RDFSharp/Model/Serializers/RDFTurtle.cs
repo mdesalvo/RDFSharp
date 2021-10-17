@@ -54,17 +54,15 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.UTF8))
                 {
-
                     #region prefixes
                     //Write the namespaces collected by the graph
                     var prefixes = RDFModelUtilities.GetGraphNamespaces(graph);
-                    foreach (var ns in prefixes.OrderBy(n => n.NamespacePrefix))
-                        sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri.ToString(), ">."));
-                    sw.WriteLine(string.Concat("@base <", graph.Context.ToString(), ">.\n"));
+                    foreach (RDFNamespace ns in prefixes.OrderBy(n => n.NamespacePrefix))
+                        sw.WriteLine(string.Concat("@prefix ", ns.NamespacePrefix, ": <", ns.NamespaceUri, ">."));
+                    sw.WriteLine(string.Concat("@base <", graph.Context, $">.{Environment.NewLine}"));
                     #endregion
 
                     #region linq
@@ -90,11 +88,12 @@ namespace RDFSharp.Model
                     //Iterate over the calculated groups
                     foreach (var group in groupedList)
                     {
-                        var groupLast = group.Last();
+                        RDFTriple groupLast = group.Last();
 
                         #region subj
                         //Reset the flag of subj printing for the new iteration
                         bool subjPrint = false;
+
                         //New subj found: write the finished Turtle token to the file, then start collecting the new one
                         if (!actualSubj.Equals(group.Key.subj, StringComparison.Ordinal))
                         {
@@ -107,13 +106,9 @@ namespace RDFSharp.Model
                             actualSubj = group.Key.subj;
                             actualPred = string.Empty;
                             if (!actualSubj.StartsWith("_:"))
-                            {
                                 abbreviatedSubj = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubj), prefixes);
-                            }
                             else
-                            {
                                 abbreviatedSubj = actualSubj;
-                            }
                             result.Append(string.Concat(abbreviatedSubj, " "));
                             subjPrint = true;
                         }
@@ -121,17 +116,14 @@ namespace RDFSharp.Model
 
                         #region predObjList
                         //Iterate over the triples of the current group
-                        foreach (var triple in group)
+                        foreach (RDFTriple triple in group)
                         {
-
                             #region pred
                             //New pred found: collect it to the actual Turtle token.
                             if (!actualPred.Equals(triple.Predicate.ToString(), StringComparison.Ordinal))
                             {
                                 if (!subjPrint)
-                                {
                                     result.Append(spaceConst.PadRight(abbreviatedSubj.Length + 1)); //pretty-printing spaces to align the predList
-                                }
                                 actualPred = triple.Predicate.ToString();
                                 abbreviatedPred = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualPred), prefixes);
 
@@ -149,20 +141,15 @@ namespace RDFSharp.Model
                             {
                                 string obj = triple.Object.ToString();
                                 if (!obj.StartsWith("_:"))
-                                {
                                     result.Append(RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(obj), prefixes));
-                                }
                                 else
-                                {
                                     result.Append(obj);
-                                }
                             }
                             #endregion
 
                             #region literal
                             else
                             {
-
                                 //Detect presence of long-literals
                                 string litValDelim = "\"";
                                 if (regexTTL.Match(triple.Object.ToString()).Success)
@@ -183,7 +170,6 @@ namespace RDFSharp.Model
                                         pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
                                     result.Append(pLit);
                                 }
-
                             }
                             #endregion
 
@@ -194,7 +180,6 @@ namespace RDFSharp.Model
                             else
                                 result.AppendLine("; ");
                             #endregion
-
                         }
                         #endregion
 
@@ -206,13 +191,10 @@ namespace RDFSharp.Model
                             sw.Write(result.ToString());
                         }
                         #endregion
-
                     }
                     #endregion
-
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -236,7 +218,6 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region deserialize
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
 
@@ -267,7 +248,6 @@ namespace RDFSharp.Model
 
                 return result;
                 #endregion
-
             }
             catch (Exception ex)
             {
