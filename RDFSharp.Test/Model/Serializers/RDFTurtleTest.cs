@@ -381,6 +381,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLTripleUsingLongLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("What a \"long literal")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingLongLiteral.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingLongLiteral.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTripleUsingLongLiteral.ttl");
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\". {Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPLLTriple()
         {
             RDFGraph graph = new RDFGraph();
@@ -441,6 +453,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPLLTripleUsingLongLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("What a \"long literal", "en-US")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingLongLiteral.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingLongLiteral.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLLTripleUsingLongLiteral.ttl");
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\"@EN-US. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithSPLTTriple()
         {
             RDFGraph graph = new RDFGraph();
@@ -498,6 +522,18 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingMultipleRegisteredNamespacesSP.ttl"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingMultipleRegisteredNamespacesSP.ttl");
             Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}rdf:Alt xsd:string \"25\"^^xsd:integer. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPLTTripleUsingLongLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("What a \"long literal", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingLongLiteral.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingLongLiteral.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPLTTripleUsingLongLiteral.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> <http://pred/> \"\"\"What a \"long literal\"\"\"^^xsd:string. {Environment.NewLine}"));
         }
 
         [TestMethod]
