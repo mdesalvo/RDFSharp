@@ -167,7 +167,7 @@ namespace RDFSharp.Model
                                 else
                                 {
                                     string pLit = string.Concat(litValDelim, ((RDFPlainLiteral)triple.Object).Value.Replace("\\", "\\\\"), litValDelim);
-                                    if (((RDFPlainLiteral)triple.Object).Language != string.Empty)
+                                    if (((RDFPlainLiteral)triple.Object).HasLanguage())
                                         pLit = string.Concat(pLit, "@", ((RDFPlainLiteral)triple.Object).Language);
                                     result.Append(pLit);
                                 }
