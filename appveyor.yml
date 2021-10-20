@@ -1,0 +1,16 @@
+image: Visual Studio 2019
+
+branches:
+  only:
+  - master
+
+before_build:
+  - ps: dotnet restore RDFSharp.sln
+
+configuration: Release
+
+build_script:
+  - ps: dotnet build -c Release RDFSharp.sln
+  
+test_script:
+  - ps: dotnet test -c Release RDFSharp.Test\RDFSharp.Test.csproj
