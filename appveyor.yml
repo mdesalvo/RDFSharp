@@ -13,4 +13,4 @@ build_script:
   - ps: dotnet build -c Release RDFSharp.sln
   
 test_script:
-  - ps: dotnet test -c Release RDFSharp.Test\RDFSharp.Test.csproj
+  - ps: dotnet test --collect:"XPlat Code Coverage" -c Release RDFSharp.Test\RDFSharp.Test.csproj
