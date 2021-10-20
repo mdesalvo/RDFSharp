@@ -7,8 +7,6 @@ branches:
 environment:
   COVERALLS_REPO_TOKEN:
     secure: /PiLU85LQXTHDu9M30CGO9EWzNHjxuSD3SbP3wgMDaHFswAttPEOQ9OFzdlKEKhF
-  CODECOV_TOKEN:
-    secure: 6sIu2n3Ba+0ePJvS9SBYmgYkLiXbXAJd+L9eUrwG3n55vvhcTMi/DNspgcRx0UZM
 
 before_build:
   - ps: dotnet restore RDFSharp.sln
