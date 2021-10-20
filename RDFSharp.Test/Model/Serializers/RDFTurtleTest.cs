@@ -693,7 +693,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
-            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a <http://obj1/>; {Environment.NewLine}{" ",15}rdf:Bag <http://obj2/>. {Environment.NewLine}"));
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Bag <http://obj2/>; {Environment.NewLine}{" ",15}a <http://obj1/>. {Environment.NewLine}"));
         }
 
         [TestMethod]
