@@ -14,3 +14,8 @@ build_script:
   
 test_script:
   - ps: dotnet test --collect:"XPlat Code Coverage" -c Release RDFSharp.Test\RDFSharp.Test.csproj
+
+on_finish:
+  - sh: |
+      find "$APPVEYOR_BUILD_FOLDER" -type f -name 'coverage*.xml' -print0 | xargs -0 -I '{}' curl -F 'file=@{}' "https://ci.appveyor.com/api/testresults/mstest/$APPVEYOR_JOB_ID"
+  
