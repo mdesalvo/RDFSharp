@@ -1372,6 +1372,45 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> a _:12345, _:54321. {Environment.NewLine}"));
         }
 
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj1/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj2/")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred/> <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj1/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFResource("http://obj2/")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingRegisteredNamespaceInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj1/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFResource("http://obj2/")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPOTriplesHavingSameSubjectAndPredicateAndUsingTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 a <http://obj1/>, <http://obj2/>. {Environment.NewLine}"));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
