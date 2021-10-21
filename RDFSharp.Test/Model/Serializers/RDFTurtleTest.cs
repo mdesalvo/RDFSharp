@@ -1099,6 +1099,162 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",15}a \"25\"^^xsd:integer. {Environment.NewLine}"));
         }
 
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTriplesHavingSameSubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubject.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubject.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubject.ttl");
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"lit\"; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\". {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}{" ",8}rdf:Bag \"lit2\". {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"lit2\"; {Environment.NewLine}{" ",8}a \"lit\". {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}{" ",8}a \"lit2\". {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTriplesHavingSameSubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubject.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubject.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubject.ttl");
+            Assert.IsTrue(fileContent.Equals($"@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"lit\"@EN-US; {Environment.NewLine}{" ",8}<http://pred2/> \"lit2\"@EN-US. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",8}rdf:Bag \"lit2\"@EN-US. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"lit2\"@EN-US; {Environment.NewLine}{" ",8}a \"lit\"@EN-US. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"lit\"@EN-US; {Environment.NewLine}{" ",8}a \"lit2\"@EN-US. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTTriplesHavingSameSubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubject.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubject.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubject.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}<http://pred2/> \"25\"^^xsd:integer. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}rdf:Bag \"25\"^^xsd:integer. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Bag \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate.ttl");
+            Assert.IsTrue(fileContent.Equals($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{graph.Context}>.{Environment.NewLine}{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}{" ",8}a \"25\"^^xsd:integer. {Environment.NewLine}"));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
