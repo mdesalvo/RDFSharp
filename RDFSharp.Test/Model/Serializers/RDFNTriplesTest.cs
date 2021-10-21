@@ -861,7 +861,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"<_:12345> <http://pred/> .{Environment.NewLine}");
+                writer.WriteLine($"_:12345 <http://pred/> .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
@@ -871,7 +871,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"<_:12345> <http://pred/> <http://obj/> . <_:12345> <http://pred/> <http://obj/> .{Environment.NewLine}");
+                writer.WriteLine($"_:12345 <http://pred/> <http://obj/> . _:12345 <http://pred/> <http://obj/> .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFModelException>(() => RDFNTriples.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
