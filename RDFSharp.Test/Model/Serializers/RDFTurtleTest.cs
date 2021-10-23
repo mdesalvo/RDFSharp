@@ -2,6 +2,7 @@
 using RDFSharp.Model;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace RDFSharp.Test.Model
 {
@@ -1978,6 +1979,21 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPBAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> [].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject.Equals(new RDFResource("http://subj/")));
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object is RDFResource objRes && objRes.IsBlank);
         }
 
         [TestMethod]
