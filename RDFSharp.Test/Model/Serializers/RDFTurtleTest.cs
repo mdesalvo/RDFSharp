@@ -2329,6 +2329,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> <http://obj/> ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPOTripleEvenOnMissingBaseDeclaration()
         {
             MemoryStream stream = new MemoryStream();
@@ -2347,6 +2362,21 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"[] <http://pred/> <http://obj/>.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleEvenOnMissingBaseDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"[ <http://pred/> <http://obj/> ].");
             RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
             Assert.IsNotNull(graph);
@@ -2385,6 +2415,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleEvenOnEmptyBaseDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <>.{Environment.NewLine}[ <http://pred/> <http://obj/> ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithBPOTripleBecauseBadFormedBaseDeclaration()
         {
             MemoryStream stream = new MemoryStream();
@@ -2399,6 +2444,15 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> <http://obj/>.");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBPOAnonymousInlineTripleBecauseBadFormedBaseDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> <http://obj/> ].");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -2421,6 +2475,15 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBPOAnonymousInlineTripleBecauseBadFormedSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> <http://obj/>.");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithBPOTripleBecauseBadFormedPredicate()
         {
             MemoryStream stream = new MemoryStream();
@@ -2435,6 +2498,15 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] http://pred/> <http://obj/>.");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBPOAnonymousInlineTripleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ http://pred/> <http://obj/> ].");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -2457,6 +2529,15 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBPOAnonymousInlineTripleBecauseBadFormedObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> http://obj/> ].");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPOTripleUsingRegisteredNamespaceInPredicate()
         {
             MemoryStream stream = new MemoryStream();
@@ -2475,6 +2556,21 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt <http://obj/>.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt <http://obj/> ].");
             RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
             Assert.IsNotNull(graph);
@@ -2513,6 +2609,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleUsingTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ a <http://obj/> ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFResource("http://obj/")));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithBPOTripleBecauseUnrecognizedNamespaceInPredicate()
         {
             MemoryStream stream = new MemoryStream();
@@ -2527,6 +2638,15 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] flef:pred <http://obj/>.");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBPOAnonymousInlineTripleBecauseUnrecognizedNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ flef:pred <http://obj/> ].");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -2559,6 +2679,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleUsingRegisteredNamespaceInObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> rdf:Alt ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.RDF.ALT));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithBPOTripleBecauseUnrecognizedNamespaceInObject()
         {
             MemoryStream stream = new MemoryStream();
@@ -2573,6 +2708,15 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[] <http://pred/> flef:obj.");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithBPOAnonymousInlineTripleBecauseUnrecognizedNamespaceInObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}[ <http://pred/> flef:obj ].");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -2605,6 +2749,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleUsingMultipleRegisteredNamespacesPO()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt xsd:string ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.ALT));
+            Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.XSD.STRING));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPOTripleUsingMultipleRegisteredNamespacesBPOAndTypeInPredicate()
         {
             MemoryStream stream = new MemoryStream();
@@ -2623,6 +2782,21 @@ namespace RDFSharp.Test.Model
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] a xsd:string.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsTrue(graph.Single().Object.Equals(RDFVocabulary.XSD.STRING));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPOAnonymousInlineTripleUsingMultipleRegisteredNamespacesBPOAndTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@prefix xsd: <{RDFVocabulary.XSD.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ a xsd:string ].");
             RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
 
             Assert.IsNotNull(graph);
