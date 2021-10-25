@@ -3870,6 +3870,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLInlineAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> \"hello\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hello", "en-US")));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPLLQuotedTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -3880,6 +3895,21 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel\"lo", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLQuotedInlineAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> \"\"\"hel\"lo\"\"\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel\"lo", "en-US")));
         }
 
         [TestMethod]
@@ -3896,6 +3926,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLEscapedInlineAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> \"hel\\\\lo\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel\\lo", "en-US")));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPLLEscapedShortUnicodeTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -3909,6 +3954,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLEscapedShortUnicodeInlineAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> \"hel\\u007Elo\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel~lo", "en-US")));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithBPLLEscapedLongUnicodeTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -3919,6 +3979,21 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLEscapedLongUnicodeInlineAnonymousTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> \"hel\\U0001F603lo\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.Single().Subject is RDFResource subjRes && subjRes.IsBlank);
+            Assert.IsTrue(graph.Single().Predicate.Equals(new RDFResource("http://pred/")));
+            Assert.IsTrue(graph.Single().Object.Equals(new RDFPlainLiteral("hel😃lo", "en-US")));
         }
 
         [TestMethod]
