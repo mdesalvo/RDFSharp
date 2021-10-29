@@ -282,9 +282,7 @@ namespace RDFSharp.Test.Model
             string result = RDFModelUtilities.EscapeControlCharsForXML(input);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.ToList().TrueForAll(chr => !char.IsControl(chr)));
-            Assert.IsFalse(result.IndexOf("\0") == -1);
-            Assert.IsTrue(result.IndexOf("\\u0000") > -1);
+            Assert.IsFalse(result.ToList().Any(chr => char.IsControl(chr)));
         }
 
         [DataTestMethod]
@@ -295,8 +293,6 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.ToList().Any(chr => char.IsControl(chr)));
-            Assert.IsTrue(result.IndexOf('\n') > -1);
-            Assert.IsTrue(result.IndexOf('\u0009') == -1);
         }
 
         [DataTestMethod]
@@ -307,6 +303,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.ToList().Any(chr => char.IsControl(chr)));
+            Assert.IsTrue(result.Equals(input));
         }
 
         [DataTestMethod]
