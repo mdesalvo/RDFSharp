@@ -24,12 +24,13 @@ jobs:
       run: dotnet build --no-restore -c Release
     
     - name: Test
-      run: dotnet test --no-build --verbosity normal -c Release
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        files: ./coverage1.xml,./coverage2.xml # optional
+        token: b37fc79c-1d73-4172-863e-4613727f7cb6
+        files: ./TestResults/coverage.cobertura.xml # optional
         flags: unittests # optional
         name: codecov-umbrella # optional
         fail_ci_if_error: true # optional (default = false)
