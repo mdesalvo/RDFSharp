@@ -27,7 +27,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal -c Release
     
     - name: Upload coverage to Codecov
-    - uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v2
       with:
         files: ./coverage1.xml,./coverage2.xml # optional
         flags: unittests # optional
