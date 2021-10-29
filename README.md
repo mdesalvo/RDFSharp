@@ -1,4 +1,4 @@
-# RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp)
+# RDFSharp [![NuGet Badge](https://buildstats.info/nuget/RDFSharp)](https://www.nuget.org/packages/RDFSharp) [![codecov](https://codecov.io/gh/mdesalvo/RDFSharp/branch/master/graph/badge.svg?token=wtP1B77d3e)](https://codecov.io/gh/mdesalvo/RDFSharp)
 
 RDFSharp has a modular API made up of 4 layers ([Model-Store-Query](https://github.com/mdesalvo/RDFSharp/releases/download/v2.26.0/RDFSharp-2.26.0.pdf), [Semantics](https://github.com/mdesalvo/RDFSharp/releases/download/v2.26.0/RDFSharp.Semantics-2.26.0.pdf)): 
 
