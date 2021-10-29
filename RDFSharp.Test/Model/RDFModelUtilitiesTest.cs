@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RDFSharp.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFModelUtilitiesTest
@@ -283,8 +283,8 @@ namespace RDFSharp.Test
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.ToList().TrueForAll(chr => !char.IsControl(chr)));
-            Assert.IsFalse(result.Contains("\0"));
-            Assert.IsTrue(result.Contains("\\u0000"));
+            Assert.IsFalse(result.IndexOf("\0") == -1);
+            Assert.IsTrue(result.IndexOf("\\u0000") > -1);
         }
 
         [DataTestMethod]
@@ -295,8 +295,8 @@ namespace RDFSharp.Test
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.ToList().Any(chr => char.IsControl(chr)));
-            Assert.IsTrue(result.Contains("\n"));
-            Assert.IsFalse(result.Contains("\\u0009"));
+            Assert.IsTrue(result.IndexOf('\n') > -1);
+            Assert.IsTrue(result.IndexOf('\u0009') == -1);
         }
 
         [DataTestMethod]

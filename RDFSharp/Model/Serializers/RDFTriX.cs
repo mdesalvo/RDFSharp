@@ -15,6 +15,7 @@
 */
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -44,7 +45,6 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region serialize
                 using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
                 {
@@ -71,7 +71,7 @@ namespace RDFSharp.Model
                     graphElement.AppendChild(graphUriElement);
 
                     #region triple
-                    foreach (var t in graph)
+                    foreach (RDFTriple t in graph)
                     {
                         XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
 
@@ -104,15 +104,14 @@ namespace RDFSharp.Model
                         #region literal
                         else
                         {
-
                             #region plain literal
-                            if (t.Object is RDFPlainLiteral)
+                            if (t.Object is RDFPlainLiteral objLit)
                             {
                                 XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
-                                if (((RDFPlainLiteral)t.Object).Language != string.Empty)
+                                if (objLit.HasLanguage())
                                 {
                                     XmlAttribute xmlLang = trixDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
-                                    XmlText xmlLangText = trixDoc.CreateTextNode(((RDFPlainLiteral)t.Object).Language);
+                                    XmlText xmlLangText = trixDoc.CreateTextNode(objLit.Language);
                                     xmlLang.AppendChild(xmlLangText);
                                     plainLiteralElement.Attributes.Append(xmlLang);
                                 }
@@ -135,7 +134,6 @@ namespace RDFSharp.Model
                                 tripleElement.AppendChild(typedLiteralElement);
                             }
                             #endregion
-
                         }
                         #endregion
 
@@ -152,7 +150,6 @@ namespace RDFSharp.Model
                     trixDoc.Save(trixWriter);
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -174,7 +171,6 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region deserialize
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
@@ -192,23 +188,25 @@ namespace RDFSharp.Model
                         #region graph
                         if (trixDoc.DocumentElement != null)
                         {
-                            if (trixDoc.DocumentElement.ChildNodes.Count > 1)
-                            {
-                                throw new Exception(" given TriX file seems to encode more than one graph.");
-                            }
+                            #region Guards
+                            if (!trixDoc.DocumentElement.Name.Equals("TriX")
+                                    || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
+                                throw new Exception(" given file does not encode a TriX graph.");
 
-                            var graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
+                            if (trixDoc.DocumentElement.ChildNodes.Count > 1)
+                                throw new Exception(" given TriX file seems to encode more than one graph.");
+                            #endregion
+
+                            IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                             while (graphEnum != null && graphEnum.MoveNext())
                             {
                                 XmlNode graph = (XmlNode)graphEnum.Current;
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))
-                                {
                                     throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
-                                }
 
                                 #region triple
-                                var encodedUris = 0;
-                                var tripleEnum = graph.ChildNodes.GetEnumerator();
+                                long encodedUris = 0;
+                                IEnumerator tripleEnum = graph.ChildNodes.GetEnumerator();
                                 while (tripleEnum != null && tripleEnum.MoveNext())
                                 {
                                     XmlNode triple = (XmlNode)tripleEnum.Current;
@@ -218,32 +216,32 @@ namespace RDFSharp.Model
                                     {
                                         encodedUris++;
                                         if (encodedUris > 1)
-                                        {
                                             throw new Exception(" given file encodes a graph with more than one \"<uri>\" element.");
-                                        }
-                                        result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0].InnerText));
+
+                                        result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0]?.InnerText) ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
                                     }
                                     #endregion
 
                                     #region triple
                                     else if (triple.Name.Equals("triple", StringComparison.Ordinal) && triple.ChildNodes.Count == 3)
                                     {
-
                                         #region subj
                                         //Subject is a resource ("<uri>") or a blank node ("<id>")
-                                        if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal) ||
-                                            triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
+                                        if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal)
+                                                || triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                         {
+                                            //Subject is without value: exception must be raised
+                                            if (string.IsNullOrEmpty(triple.ChildNodes[0].InnerText))
+                                                throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
+
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                             {
                                                 if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:"))
-                                                {
                                                     triple.ChildNodes[0].InnerText = string.Concat("bnode:", triple.ChildNodes[0].InnerText.Replace("_:", string.Empty));
-                                                }
                                             }
                                         }
-                                        //Subject is not valid: exception must be raised
+                                        //Subject is unrecognized: exception must be raised
                                         else
                                         {
                                             throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
@@ -251,26 +249,36 @@ namespace RDFSharp.Model
                                         #endregion
 
                                         #region pred
-                                        //Predicate is not valid: exception must be raised
-                                        if (!triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
+                                        if (triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
                                         {
+                                            //Predicate is without value: exception must be raised
+                                            if (string.IsNullOrEmpty(triple.ChildNodes[1].InnerText))
+                                                throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element has \"<uri>\" element without value.");
+                                        }
+                                        //Predicate is unrecognized: exception must be raised
+                                        else
+                                        { 
                                             throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
                                         }
                                         #endregion
 
                                         #region object
                                         //Object is a resource ("<uri>") or a blank node ("<id>")
-                                        if (triple.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal) ||
-                                            triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
+                                        if (triple.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
+                                                || triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                         {
+                                            //Object is without value: exception must be raised
+                                            if (string.IsNullOrEmpty(triple.ChildNodes[2].InnerText))
+                                                throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
+
                                             //Sanitize eventual blank node value
                                             if (triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                             {
                                                 if (!triple.ChildNodes[2].InnerText.StartsWith("bnode:"))
-                                                {
                                                     triple.ChildNodes[2].InnerText = string.Concat("bnode:", triple.ChildNodes[2].InnerText.Replace("_:", string.Empty));
-                                                }
                                             }
+
+                                            //Finally add SPO triple
                                             result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                            new RDFResource(triple.ChildNodes[1].InnerText),
                                                                            new RDFResource(triple.ChildNodes[2].InnerText)));
@@ -282,36 +290,20 @@ namespace RDFSharp.Model
                                         #region plain literal
                                         else if (triple.ChildNodes[2].Name.Equals("plainLiteral"))
                                         {
-                                            if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
+                                            XmlAttribute xmlLang = triple.ChildNodes[2].Attributes["xml:lang"];
+                                            if (xmlLang != null)
                                             {
-                                                XmlAttribute xmlLang = triple.ChildNodes[2].Attributes[string.Concat(RDFVocabulary.XML.PREFIX, ":lang")];
-                                                if (xmlLang != null)
-                                                {
-
-                                                    //Plain literal with language
-                                                    result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                                   new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
-
-                                                }
-                                                else
-                                                {
-
-                                                    //Plain literal without language
-                                                    result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                                   new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
-
-                                                }
+                                                //Finally add SPL(L) triple
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
                                             }
                                             else
                                             {
-
-                                                //Plain literal without language
+                                                //Finally add SPL triple
                                                 result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
                                                                                new RDFResource(triple.ChildNodes[1].InnerText),
                                                                                new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
-
                                             }
                                         }
                                         #endregion
@@ -319,19 +311,13 @@ namespace RDFSharp.Model
                                         #region typed literal
                                         else if (triple.ChildNodes[2].Name.Equals("typedLiteral", StringComparison.Ordinal))
                                         {
-                                            if (triple.ChildNodes[2].Attributes != null && triple.ChildNodes[2].Attributes.Count > 0)
+                                            XmlAttribute datatype = triple.ChildNodes[2].Attributes["datatype"];
+                                            if (datatype != null)
                                             {
-                                                XmlAttribute rdfDtype = triple.ChildNodes[2].Attributes["datatype"];
-                                                if (rdfDtype != null)
-                                                {
-                                                    result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                                   new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                                   new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(rdfDtype.Value))));
-                                                }
-                                                else
-                                                {
-                                                    throw new Exception(" found typed literal without required \"datatype\" attribute.");
-                                                }
+                                                //Finally add SPL(T) triple
+                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
+                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
+                                                                               new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
                                             }
                                             else
                                             {
@@ -349,7 +335,6 @@ namespace RDFSharp.Model
                                             throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
                                         }
                                         #endregion
-
                                     }
                                     #endregion
 
@@ -359,19 +344,15 @@ namespace RDFSharp.Model
                                         throw new Exception("found a TriX element (" + triple.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
                                     }
                                     #endregion
-
                                 }
                                 #endregion
-
                             }
                         }
                         #endregion
-
                     }
                 }
                 return result;
                 #endregion
-
             }
             catch (Exception ex)
             {

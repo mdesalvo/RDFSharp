@@ -29,6 +29,10 @@ namespace RDFSharp.Model
     internal static class RDFNTriples
     {
         #region Properties
+        private const string TemplateSPO  = "<{SUBJ}> <{PRED}> <{OBJ}> .";
+        private const string TemplateSPLL = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} .";
+        private const string TemplateSPLT = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
+
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
         /// </summary>
@@ -111,41 +115,21 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
                     string tripleTemplate = string.Empty;
-                    foreach (var t in graph)
+                    foreach (RDFTriple t in graph)
                     {
-
                         #region template
-                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
-                            tripleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> .";
-                        }
-                        else
-                        {
-                            if (t.Object is RDFPlainLiteral)
-                            {
-                                tripleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} .";
-                            }
-                            else
-                            {
-                                tripleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
-                            }
-                        }
+                        tripleTemplate = t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? TemplateSPO
+                                            : t.Object is RDFPlainLiteral ? TemplateSPLL
+                                                : TemplateSPLT;
                         #endregion
 
                         #region subj
-                        if (((RDFResource)t.Subject).IsBlank)
-                        {
-                            tripleTemplate = tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"));
-                        }
-                        else
-                        {
-                            tripleTemplate = tripleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()));
-                        }
+                        tripleTemplate = ((RDFResource)t.Subject).IsBlank ? tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"))
+                                            : tripleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()));
                         #endregion
 
                         #region pred
@@ -154,48 +138,28 @@ namespace RDFSharp.Model
 
                         #region object
                         if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
-                            if (((RDFResource)t.Object).IsBlank)
-                            {
-                                tripleTemplate = tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:");
-                            }
-                            else
-                            {
-                                tripleTemplate = tripleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString()));
-                            }
-                        }
+                            tripleTemplate = ((RDFResource)t.Object).IsBlank ? tripleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString())).Replace("bnode:", "_:")
+                                                : tripleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Object.ToString()));
                         #endregion
 
                         #region literal
                         else
                         {
-
-                            tripleTemplate = tripleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))));
-                            tripleTemplate = tripleTemplate.Replace("\n", "\\n")
-                                                               .Replace("\t", "\\t")
-                                                               .Replace("\r", "\\r");
+                            tripleTemplate = tripleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))))
+                                                           .Replace("\n", "\\n")
+                                                           .Replace("\t", "\\t")
+                                                           .Replace("\r", "\\r");
 
                             #region plain literal
                             if (t.Object is RDFPlainLiteral)
-                            {
-                                if (((RDFPlainLiteral)t.Object).Language != string.Empty)
-                                {
-                                    tripleTemplate = tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language);
-                                }
-                                else
-                                {
-                                    tripleTemplate = tripleTemplate.Replace("@{LANG}", string.Empty);
-                                }
-                            }
+                                tripleTemplate = ((RDFPlainLiteral)t.Object).HasLanguage() ? tripleTemplate.Replace("{LANG}", ((RDFPlainLiteral)t.Object).Language)
+                                                    : tripleTemplate.Replace("@{LANG}", string.Empty);
                             #endregion
 
                             #region typed literal
                             else
-                            {
                                 tripleTemplate = tripleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
-                            }
                             #endregion
-
                         }
                         #endregion
 
@@ -203,7 +167,6 @@ namespace RDFSharp.Model
                     }
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -225,9 +188,9 @@ namespace RDFSharp.Model
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             long ntripleIndex = 0;
+
             try
             {
-
                 #region deserialize
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
@@ -238,22 +201,22 @@ namespace RDFSharp.Model
                     RDFResource P = null;
                     RDFResource O = null;
                     RDFLiteral L = null;
+                    char[] openingBrackets = new char[] { '<' };
+                    char[] closingBrackets = new char[] { '>' };
+                    char[] trimmableChars  = new char[] { ' ', '\t', '\r', '\n' };
+
                     while ((ntriple = sr.ReadLine()) != null)
                     {
                         ntripleIndex++;
 
                         #region sanitize  & tokenize
                         //Cleanup previous data
-                        S = null;
-                        tokens[0] = string.Empty;
-                        P = null;
-                        tokens[1] = string.Empty;
-                        O = null;
-                        L = null;
-                        tokens[2] = string.Empty;
+                        S = null; tokens[0] = string.Empty;
+                        P = null; tokens[1] = string.Empty;
+                        O = null; L = null; tokens[2] = string.Empty;
 
                         //Preliminary sanitizations: clean trailing space-like chars
-                        ntriple = ntriple.Trim(new char[] { ' ', '\t', '\r', '\n' });
+                        ntriple = ntriple.Trim(trimmableChars);
 
                         //Skip empty or comment lines
                         if (ntriple == string.Empty || ntriple.StartsWith("#"))
@@ -264,27 +227,27 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region subj
-                        string subj = tokens[0].TrimStart(new char[] { '<' })
-                                               .TrimEnd(new char[] { '>' })
+                        string subj = tokens[0].TrimStart(openingBrackets)
+                                               .TrimEnd(closingBrackets)
                                                .Replace("_:", "bnode:");
                         S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj));
                         #endregion
 
                         #region pred
-                        string pred = tokens[1].TrimStart(new char[] { '<' })
-                                               .TrimEnd(new char[] { '>' });
+                        string pred = tokens[1].TrimStart(openingBrackets)
+                                               .TrimEnd(closingBrackets);
                         P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred));
                         #endregion
 
                         #region object
-                        if (tokens[2].StartsWith("<") ||
-                            tokens[2].StartsWith("bnode:") ||
-                            tokens[2].StartsWith("_:"))
+                        if (tokens[2].StartsWith("<")
+                                || tokens[2].StartsWith("bnode:")
+                                    || tokens[2].StartsWith("_:"))
                         {
-                            string obj = tokens[2].TrimStart(new char[] { '<' })
-                                                  .TrimEnd(new char[] { '>' })
+                            string obj = tokens[2].TrimStart(openingBrackets)
+                                                  .TrimEnd(closingBrackets)
                                                   .Replace("_:", "bnode:")
-                                                  .Trim(new char[] { ' ', '\n', '\t', '\r' });
+                                                  .Trim(trimmableChars);
                             O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj));
                         }
                         #endregion
@@ -352,7 +315,6 @@ namespace RDFSharp.Model
                     return result;
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {

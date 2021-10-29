@@ -23,7 +23,7 @@ using System.Data;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace RDFSharp.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFGraphTest
@@ -1971,13 +1971,7 @@ namespace RDFSharp.Test
         [TestCleanup]
         public void Cleanup()
         {
-            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldExportToFile*"))
-                File.Delete(file);
-            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldExportEmptyToFile*"))
-                File.Delete(file);
-            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldImportFromFile*"))
-                File.Delete(file);
-            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_ShouldImportEmptyFromFile*"))
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFGraphTest_Should*"))
                 File.Delete(file);
         }
         #endregion
