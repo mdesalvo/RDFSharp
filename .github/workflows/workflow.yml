@@ -12,26 +12,21 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
     
-    - name: Setup .NET
+    - name: Setup
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
+ 
     - name: Build
-      run: dotnet build --no-restore -c Release
+      run: dotnet build -c Release
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release
     
-    - name: Upload coverage to Codecov
+    - name: Coverage (Codecov)
       uses: codecov/codecov-action@v2
       with:
         token: b37fc79c-1d73-4172-863e-4613727f7cb6
-        files: ./TestResults/coverage.cobertura.xml # optional
-        flags: unittests # optional
-        name: codecov-umbrella # optional
-        fail_ci_if_error: true # optional (default = false)
-        verbose: true # optional (default = false)
+        #files: ./TestResults/coverage.cobertura.xml # optional
+        fail_ci_if_error: true
+        verbose: true
