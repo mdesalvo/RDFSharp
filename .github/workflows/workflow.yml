@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     steps:
 
-    - name: Checkout Repository
+    - name: Checkout
       uses: actions/checkout@v2
     
     - name: Setup
@@ -23,10 +23,8 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release
     
-    - name: Coverage (Codecov)
+    - name: Coverage
       uses: codecov/codecov-action@v2
       with:
-        token: b37fc79c-1d73-4172-863e-4613727f7cb6
-        #files: ./TestResults/coverage.cobertura.xml # optional
         fail_ci_if_error: true
         verbose: true
