@@ -5214,6 +5214,762 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object is RDFResource objRes && objRes.IsBlank));
         }
 
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred1/> \"lit\"; {Environment.NewLine}<http://pred2/> \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"; {Environment.NewLine}<http://pred2/> \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> a \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"; {Environment.NewLine}a \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred1/> \"lit\"@en-US; {Environment.NewLine}<http://pred2/> \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"@en-US; {Environment.NewLine}<http://pred2/> \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> a \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> rdf:Alt \"lit\"@en-US; {Environment.NewLine}a \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}<http://pred2/> \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}rdf:Alt <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}<http://pred2/> \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> a \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}a \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred1/> \"lit\"; {Environment.NewLine}<http://pred2/> \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"; {Environment.NewLine}<http://pred2/> \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 a \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 rdf:Alt \"lit\"; {Environment.NewLine}a \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred1/> \"lit\"@en-US; {Environment.NewLine}<http://pred2/> \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}rdf:Alt <http://pred1/> \"lit\"@en-US; {Environment.NewLine}<http://pred2/> \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 rdf:Alt \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 a \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 rdf:Alt \"lit\"@en-US; {Environment.NewLine}a \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}<http://pred2/> \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}rdf:Alt <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}<http://pred2/> \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred1/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(RDFVocabulary.RDF.ALT, new RDFResource("http://pred2/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 a \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.BAG, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}_:12345 rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}a \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.ALT, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("bnode:12345"), RDFVocabulary.RDF.TYPE, new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred1/> \"lit\"; {Environment.NewLine}<http://pred2/> \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] a \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt \"lit\"; {Environment.NewLine}a \"lit2\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred1/> \"lit\"@en-US; {Environment.NewLine}<http://pred2/> \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] a \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt \"lit\"@en-US; {Environment.NewLine}a \"lit2\"@en-US.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}<http://pred2/> \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] a \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[] rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}a \"25\"^^xsd:integer.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousInlineTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred1/> \"lit\"; {Environment.NewLine}<http://pred2/> \"lit2\" ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousInlineTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\" ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousInlineTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ a \"lit\"; {Environment.NewLine}rdf:Bag \"lit2\" ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLAnonymousInlineTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt \"lit\"; {Environment.NewLine}a \"lit2\" ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousInlineTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred1/> \"lit\"@en-US; {Environment.NewLine}<http://pred2/> \"lit2\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousInlineTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousInlineTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ a \"lit\"@en-US; {Environment.NewLine}rdf:Bag \"lit2\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLLAnonymousInlineTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt \"lit\"@en-US; {Environment.NewLine}a \"lit2\"@en-US ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFPlainLiteral("lit2", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousInlineTriplesHavingSameSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred1/> \"25\"^^xsd:integer; {Environment.NewLine}<http://pred2/> \"25\"^^xsd:integer ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousInlineTriplesHavingSameSubjectAndUsingRegisteredNamespaceInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousInlineTriplesHavingSameSubjectAndUsingFirstTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ a \"25\"^^xsd:integer; {Environment.NewLine}rdf:Bag \"25\"^^xsd:integer ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.BAG) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTAnonymousInlineTriplesHavingSameSubjectAndUsingLastTypeInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.{Environment.NewLine}@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ rdf:Alt \"25\"^^xsd:integer; {Environment.NewLine}a \"25\"^^xsd:integer ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.ALT) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
