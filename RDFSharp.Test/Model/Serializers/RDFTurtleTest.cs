@@ -1945,6 +1945,20 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleGettingNameFromEmptyPrefixDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix : <http://example.org/>.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(new Uri("http://example.org/")));
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedBaseDeclaration()
         {
             MemoryStream stream = new MemoryStream();
