@@ -100,9 +100,9 @@ namespace RDFSharp.Model
                         {
                             if (result.Length > 0)
                             {
-                                result.Replace(";", ".", result.Length - 4, 1);
+                                result.Replace(";", ".", result.Length - (2+Environment.NewLine.Length), 1);
                                 sw.Write(result.ToString());
-                                result.Remove(0, result.Length - 1);
+                                result.Clear();
                             }
                             actualSubject = triplesGroup.Key.subj;
                             actualPredicate = string.Empty;
@@ -188,7 +188,7 @@ namespace RDFSharp.Model
                         //This is only for the last group, which is not written into the cycle as the others
                         if (triplesGroup.Key.Equals(lastGroupOfTriples.Key))
                         {
-                            result.Replace(";", ".", result.Length - 4, 1);
+                            result.Replace(";", ".", result.Length - (2 + Environment.NewLine.Length), 1);
                             sw.Write(result.ToString());
                         }
                         #endregion

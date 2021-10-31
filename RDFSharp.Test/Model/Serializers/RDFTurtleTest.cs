@@ -1869,6 +1869,21 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj2/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")));
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/")));
+            RDFTurtle.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates.ttl");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates.ttl"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFTurtleTest_ShouldSerializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates.ttl");
+            Assert.IsTrue(fileContent.Equals($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}{Environment.NewLine}<http://subj1/> <http://pred1/> <http://obj1/>, <http://obj2/>; {Environment.NewLine}{" ",16}<http://pred2/> <http://obj2/>. {Environment.NewLine}<http://subj2/> <http://pred1/> <http://obj1/>. {Environment.NewLine}"));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeEmptyGraph()
         {
             MemoryStream stream = new MemoryStream();
@@ -7794,6 +7809,22 @@ namespace RDFSharp.Test.Model
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}[ <http://pred/> (\"25\"^^xsd:integer ].");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTriplesHavingMultipleSameSubjectAndPredicates()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj1/> <http://pred1/> <http://obj1/>, <http://obj2/>; <http://pred2/> <http://obj2/>.{Environment.NewLine}<http://subj2/> <http://pred1/> <http://obj1/>.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 4);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred1/"), new RDFResource("http://obj1/"))));
         }
 
         [TestCleanup]
