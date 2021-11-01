@@ -79,7 +79,6 @@ namespace RDFSharp.Test.Model
         [DataRow("http:// hello/world")]
         [DataRow("http://hello\0")]
         [DataRow("http://hel\0lo/world")]
-        [DataRow("/hello/world")]
         public void ShouldNotCreateResourceDueToInvalidUri(string input)
             => Assert.ThrowsException<RDFModelException>(() => new RDFResource(input));
         #endregion

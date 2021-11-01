@@ -320,7 +320,6 @@ namespace RDFSharp.Test.Model
         [DataRow("http:// hello/world", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("http://hello\0", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("http://hel\0lo/world", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
-        [DataRow("/hello/world", RDFModelEnums.RDFDatatypes.XSD_ANYURI)]
         [DataRow("8value", RDFModelEnums.RDFDatatypes.XSD_NAME)]
         [DataRow("value,value", RDFModelEnums.RDFDatatypes.XSD_NAME)]
         [DataRow("value;value", RDFModelEnums.RDFDatatypes.XSD_NAME)]

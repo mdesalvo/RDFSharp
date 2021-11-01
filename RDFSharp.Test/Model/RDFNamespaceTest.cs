@@ -74,7 +74,6 @@ namespace RDFSharp.Test.Model
         [DataTestMethod]
         [DataRow("ex", "http:/example.org/")]
         [DataRow("ex", "hello")]
-        [DataRow("ex", "/hello/world")]
         public void ShouldNotCreateNamespaceBecauseOfInvalidUri(string prefix, string uri)
             => Assert.ThrowsException<RDFModelException>(() => new RDFNamespace(prefix, uri));
 

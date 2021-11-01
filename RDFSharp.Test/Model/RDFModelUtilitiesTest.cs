@@ -59,15 +59,9 @@ namespace RDFSharp.Test.Model
 
         [DataTestMethod]
         [DataRow(null)]
+        [DataRow("example")]
+        [DataRow("http:/example.org")]
         public void ShouldNotGetUriFromString(string uriString)
-        {
-            Uri result = RDFModelUtilities.GetUriFromString(uriString);
-            Assert.IsNull(result);
-        }
-
-        [DataTestMethod]
-        [DataRow("/file/system")]
-        public void ShouldNotGetRelativeUriFromString(string uriString)
         {
             Uri result = RDFModelUtilities.GetUriFromString(uriString);
             Assert.IsNull(result);
@@ -1641,7 +1635,6 @@ namespace RDFSharp.Test.Model
         [DataRow(null)]
         [DataRow("")]
         [DataRow("http:/example.org/test#")]
-        [DataRow("/file/system")]
         public void ShouldThrowExceptionOnGettingDatatypeFromString(string input)
             => Assert.ThrowsException<RDFModelException>(() => RDFModelUtilities.GetDatatypeFromString(input));
 
