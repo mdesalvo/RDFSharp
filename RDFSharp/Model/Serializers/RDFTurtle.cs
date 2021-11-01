@@ -100,7 +100,7 @@ namespace RDFSharp.Model
                         {
                             if (result.Length > 0)
                             {
-                                result.Replace(";", ".", result.Length - (2+Environment.NewLine.Length), 1);
+                                result.Replace(";", ".", result.Length - (2 + Environment.NewLine.Length), 1);
                                 sw.Write(result.ToString());
                                 result.Clear();
                             }
@@ -110,7 +110,7 @@ namespace RDFSharp.Model
                                 abbreviatedSubject = RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(actualSubject), prefixes);
                             else
                                 abbreviatedSubject = actualSubject;
-                            result.Append(string.Concat(abbreviatedSubject, " "));
+                            result.Append(string.Concat(abbreviatedSubject, spaceConst));
                             subjectHasBeenPrinted = true;
                         }
                         #endregion
