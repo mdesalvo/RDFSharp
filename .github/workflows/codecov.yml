@@ -1,4 +1,4 @@
-name: CI with CodeCov
+name: CodeCov
 
 on:
   push:
