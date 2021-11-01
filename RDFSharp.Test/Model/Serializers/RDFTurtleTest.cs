@@ -3574,6 +3574,19 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithSPLUnescapedLongUnicodeTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}<http://subj/> <http://pred/> \"hel😃lo\".");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hel😃lo"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPLLTriple()
         {
             MemoryStream stream = new MemoryStream();
