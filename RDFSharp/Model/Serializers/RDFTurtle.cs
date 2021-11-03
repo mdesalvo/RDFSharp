@@ -424,38 +424,16 @@ namespace RDFSharp.Model
         /// </summary>
         private static void ParseDirective(string turtleData, RDFTurtleContext turtleContext, RDFGraph result, string directive)
         {
-            if (directive.Length >= 7 && directive.Substring(0, 7).Equals("@prefix", StringComparison.Ordinal))
-            {
-                if (directive.Length > 7)
-                    UnreadCodePoint(turtleData, turtleContext, directive.Substring(7));
+            if (directive.Equals("@prefix", StringComparison.Ordinal)
+                    || directive.Equals("PREFIX", StringComparison.Ordinal))
                 ParsePrefixID(turtleData, turtleContext, result);
-            }
-            else if (directive.Length >= 5 && directive.Substring(0, 5).Equals("@base", StringComparison.Ordinal))
-            {
-                if (directive.Length > 5)
-                    UnreadCodePoint(turtleData, turtleContext, directive.Substring(5));
+            else if (directive.Equals("@base", StringComparison.Ordinal)
+                         || directive.Equals("BASE", StringComparison.Ordinal))
                 ParseBase(turtleData, turtleContext, result);
-            }
-            else if (directive.Length >= 6 && directive.Substring(0, 6).Equals("PREFIX", StringComparison.Ordinal))
-            {
-                if (directive.Length > 6)
-                    UnreadCodePoint(turtleData, turtleContext, directive.Substring(6));
-                ParsePrefixID(turtleData, turtleContext, result);
-            }
-            else if (directive.Length >= 4 && directive.Substring(0, 4).Equals("BASE", StringComparison.Ordinal))
-            {
-                if (directive.Length > 4)
-                    UnreadCodePoint(turtleData, turtleContext, directive.Substring(4));
-                ParseBase(turtleData, turtleContext, result);
-            }
             else if (directive.Length == 0)
-            {
                 throw new RDFModelException("Directive name is missing, expected @prefix or @base" + GetTurtleContextCoordinates(turtleContext));
-            }
             else
-            {
                 throw new RDFModelException("Found unknown directive \"" + directive + "\"" + GetTurtleContextCoordinates(turtleContext));
-            }
         }
 
         /// <summary>
