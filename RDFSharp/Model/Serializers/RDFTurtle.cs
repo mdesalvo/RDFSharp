@@ -810,17 +810,11 @@ namespace RDFSharp.Model
             {
                 bufChar = ReadCodePoint(turtleData, turtleContext);
                 if (bufChar == '>')
-                {
                     break;
-                }
                 else if (bufChar == -1)
-                {
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                }
                 else if (bufChar == ' ')
-                {
                     throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
-                }
 
                 uriBuf.Append(char.ConvertFromUtf32(bufChar));
 
@@ -829,23 +823,14 @@ namespace RDFSharp.Model
                     // This escapes the next character, which might be a '>'
                     bufChar = ReadCodePoint(turtleData, turtleContext);
                     if (bufChar == -1)
-                    {
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                    }
                     if (bufChar != 'u' && bufChar != 'U')
-                    {
                         throw new RDFModelException("Uri includes string escapes: '\\" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
-                    }
                     uriBuf.Append(char.ConvertFromUtf32(bufChar));
                 }
             }
 
-            if (bufChar == '.')
-            {
-                throw new RDFModelException("Uri must not end with '.'" + GetTurtleContextCoordinates(turtleContext));
-            }
-
-            var uriString = DecodeString(turtleData, turtleContext, uriBuf.ToString());
+            string uriString = DecodeString(turtleData, turtleContext, uriBuf.ToString());
             //Absolute: use as found
             if (Uri.IsWellFormedUriString(uriString, UriKind.Absolute))
                 return new Uri(uriString);

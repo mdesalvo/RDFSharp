@@ -2104,11 +2104,38 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedSPARQLBaseDeclaration()
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedSPARQLBaseDeclaration1()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"BASE <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
+                writer.Write($"BASE <");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedSPARQLBaseDeclaration2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"BASE <http://subj\\");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedSPARQLBaseDeclaration3()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"BASE <http://sub j");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedSPARQLBaseDeclaration4()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"BASE <#>.");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
@@ -3570,6 +3597,33 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/index.html~pag2"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPLTripleWithDirectEscapesBecauseMissingEndingPoint()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"<http://subj/> <http://pred> \"\"\"ciao \\t\\r\\n\\b\\f\\\"\\\'\\>\"\"\"");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPLTripleBecauseInvalidShortUnicodeEscapes()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"<http://subj/> <http://pred> \"\"\"ciao \\u000P\"\"\"");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPLTripleBecauseInvalidLongUnicodeEscapes()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"<http://subj/> <http://pred> \"\"\"ciao \\U0000000P\"\"\"");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
         [TestMethod]
