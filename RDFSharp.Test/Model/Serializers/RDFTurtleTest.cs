@@ -2099,7 +2099,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
+                writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>{Environment.NewLine}<http://subj/> <http://pred/> <http://obj/>.");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
