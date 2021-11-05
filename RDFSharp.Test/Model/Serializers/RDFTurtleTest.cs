@@ -2090,7 +2090,7 @@ namespace RDFSharp.Test.Model
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"@prefix rdf");
+                writer.Write($"@prefix rdf");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 
