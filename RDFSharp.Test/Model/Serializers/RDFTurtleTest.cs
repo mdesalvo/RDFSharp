@@ -2095,6 +2095,15 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedPrefixDeclaration2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"@prefix ex: <http://example.org/>.{Environment.NewLine}@prefix ex: <http://example.org2/>"); //Misses final "."
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseBadFormedBaseDeclaration()
         {
             MemoryStream stream = new MemoryStream();
