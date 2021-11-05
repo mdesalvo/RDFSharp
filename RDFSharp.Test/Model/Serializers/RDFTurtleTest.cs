@@ -2494,11 +2494,29 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingGraphWithSPBTripleBecauseBadFormedObject()
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPBTripleBecauseBadFormedObject1()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> _:.");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPBTripleBecauseBadFormedObject2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> _:");
+            Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPBTripleBecauseBadFormedObject3()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write($"@base <{RDFNamespaceRegister.DefaultNamespace}.{Environment.NewLine}<http://subj/> <http://pred/> _:5nn2.");
             Assert.ThrowsException<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
         }
 

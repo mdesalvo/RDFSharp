@@ -777,7 +777,7 @@ namespace RDFSharp.Model
             }
 
             //Support eventual redefinement of temporary namespaces
-            var registerNSpace = RDFNamespaceRegister.GetByPrefix(prefixStr);
+            RDFNamespace registerNSpace = RDFNamespaceRegister.GetByPrefix(prefixStr);
             if (registerNSpace == null)
             {
                 RDFNamespaceRegister.AddNamespace(new RDFNamespace(prefixStr, namespaceStr).SetTemporary(true));
