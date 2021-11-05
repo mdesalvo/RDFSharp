@@ -6712,6 +6712,22 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithBPBAnonymousInlineTriplesHavingNestedBPBAnonymousInlinesTriples()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"[ <http://pred1/> [ <http://pred2/> []; <http://pred3/> [] ], () ].");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 4);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object is RDFResource objres && objres.IsBlank) == 1);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred1/")) && t.Object.Equals(RDFVocabulary.RDF.NIL)) == 1);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred2/")) && t.Object is RDFResource objres && objres.IsBlank) == 1);
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred3/")) && t.Object is RDFResource objres && objres.IsBlank) == 1);
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPLTriplesHavingSameSubjectAndPredicate()
         {
             MemoryStream stream = new MemoryStream();
