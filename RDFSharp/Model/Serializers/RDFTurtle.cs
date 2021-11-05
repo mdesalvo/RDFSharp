@@ -424,16 +424,24 @@ namespace RDFSharp.Model
         /// </summary>
         private static void ParseDirective(string turtleData, RDFTurtleContext turtleContext, RDFGraph result, string directive)
         {
-            if (directive.Equals("@prefix", StringComparison.Ordinal)
-                    || directive.Equals("PREFIX", StringComparison.Ordinal))
-                ParsePrefixID(turtleData, turtleContext, result);
-            else if (directive.Equals("@base", StringComparison.Ordinal)
-                         || directive.Equals("BASE", StringComparison.Ordinal))
-                ParseBase(turtleData, turtleContext, result);
-            else if (directive.Length == 0)
-                throw new RDFModelException("Directive name is missing, expected @prefix or @base" + GetTurtleContextCoordinates(turtleContext));
-            else
-                throw new RDFModelException("Found unknown directive \"" + directive + "\"" + GetTurtleContextCoordinates(turtleContext));
+            switch (directive)
+            {
+                //Prefix directive exists in Turtle format or in SPARQL format
+                case "@prefix":
+                case "PREFIX":
+                    ParsePrefixID(turtleData, turtleContext, result);
+                    break;
+
+                //Base directive exists in Turtle format or in SPARQL format
+                case "@base":
+                case "BASE":
+                    ParseBase(turtleData, turtleContext, result);
+                    break;
+
+                //Any other directives are not allowed
+                default:
+                    throw new RDFModelException($"Found unknown directive: {directive} {GetTurtleContextCoordinates(turtleContext)}");
+            }
         }
 
         /// <summary>
