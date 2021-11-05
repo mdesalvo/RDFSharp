@@ -2251,19 +2251,6 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldDeserializeGraphWithSPOTripleUsingPredicateStartingWithA()
-        {
-            MemoryStream stream = new MemoryStream();
-            using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"@prefix ago: <http://pred/>.{Environment.NewLine}<http://subj/> ago:ago <http://obj/>.");
-            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
-
-            Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 1);
-            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/ago"), new RDFResource("http://obj/"))));
-        }
-
-        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseUnrecognizedNamespaceInPredicate()
         {
             MemoryStream stream = new MemoryStream();
@@ -2600,6 +2587,19 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
             Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPBTripleUsingPredicateStartingWithA()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"@prefix ago: <http://ago/>.{Environment.NewLine}ago:ago ago:ago _:12345.");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 1);
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://ago/ago"), new RDFResource("http://ago/ago"), new RDFResource("bnode:12345"))));
         }
 
         [TestMethod]
