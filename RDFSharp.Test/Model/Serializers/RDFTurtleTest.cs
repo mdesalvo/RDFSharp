@@ -1955,6 +1955,18 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeEmptyGraphBecauseOnlyCommentsEndingWithCarriageReturn()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.Write("#This is a comment! \r");
+            RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
         public void ShouldDeserializeEmptyNamedGraph()
         {
             MemoryStream stream = new MemoryStream();
