@@ -1332,13 +1332,9 @@ namespace RDFSharp.Model
         private static string DecodeString(string turtleData, RDFTurtleContext turtleContext, string s)
         {
             int backSlashIdx = s.IndexOf('\\');
-
             if (backSlashIdx == -1)
-            {
-                // No escaped characters found
-                return s;
-            }
-
+                return s; // No escaped characters found
+            
             int startIdx = 0;
             int sLength = s.Length;
             StringBuilder sb = new StringBuilder(sLength);
