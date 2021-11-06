@@ -907,13 +907,9 @@ namespace RDFSharp.Model
             // Read the node ID
             int bufChar = ReadCodePoint(turtleData, turtleContext);
             if (bufChar == -1)
-            {
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-            }
             else if (!IsBLANK_NODE_LABEL_StartChar(bufChar))
-            {
                 throw new RDFModelException("Expected a letter, found '" + (char)bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
-            }
 
             StringBuilder name = new StringBuilder(32);
             name.Append(char.ConvertFromUtf32(bufChar));
