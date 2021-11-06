@@ -943,8 +943,7 @@ namespace RDFSharp.Model
                 {
                     if (IsWhitespace(PeekCodePoint(turtleData, turtleContext)))
                     {
-                        // We're parsing an integer that did not have a space before the
-                        // period to end the statement
+                        // We're parsing an integer that did not have a space before the period to end the statement
                     }
                     else
                     {
