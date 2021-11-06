@@ -236,10 +236,9 @@ namespace RDFSharp.Model
                 while (bufferChar != -1)
                 {
                     ParseStatement(turtleData, turtleContext, result);
-                    if (turtleContext.Position < turtleData.Length)
-                        bufferChar = SkipWhitespace(turtleData, turtleContext, result);
-                    else
-                        bufferChar = -1;
+                    //After parsing of a statement we discard spaces and comments
+                    //and seek for the next eventual statement, until finally EOL
+                    bufferChar = SkipWhitespace(turtleData, turtleContext, result);
                 }
                 RDFNamespaceRegister.RemoveTemporaryNamespaces();
 
@@ -749,13 +748,9 @@ namespace RDFSharp.Model
                     break;
                 }
                 else if (IsWhitespace(bufChar))
-                {
                     break;
-                }
                 else if (bufChar == -1)
-                {
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                }
                 prefixID.Append(char.ConvertFromUtf32(bufChar));
             }
 
@@ -779,9 +774,7 @@ namespace RDFSharp.Model
             //Support eventual redefinement of temporary namespaces
             RDFNamespace registerNSpace = RDFNamespaceRegister.GetByPrefix(prefixStr);
             if (registerNSpace == null)
-            {
                 RDFNamespaceRegister.AddNamespace(new RDFNamespace(prefixStr, namespaceStr).SetTemporary(true));
-            }
             else
             {
                 if (registerNSpace.IsTemporary)
@@ -861,38 +854,19 @@ namespace RDFSharp.Model
         {
             int bufChar = PeekCodePoint(turtleData, turtleContext);
             if (bufChar == '<')
-            {
-                // uriref, e.g. <foo://bar>
-                return ParseURI(turtleData, turtleContext, result);
-            }
+                return ParseURI(turtleData, turtleContext, result); // uriref, e.g. <foo://bar>
             else if (bufChar == ':' || IsPrefixStartChar(bufChar))
-            {
-                // qname or boolean
-                return ParseQNameOrBoolean(turtleData, turtleContext, result);
-            }
+                return ParseQNameOrBoolean(turtleData, turtleContext, result); // qname or boolean
             else if (bufChar == '_')
-            {
-                // node ID, e.g. _:n1
-                return ParseNodeID(turtleData, turtleContext, result);
-            }
+                return ParseNodeID(turtleData, turtleContext, result); // node ID, e.g. _:n1
             else if (bufChar == '"' || bufChar == '\'')
-            {
-                // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
-                return ParseQuotedLiteral(turtleData, turtleContext, result);
-            }
+                return ParseQuotedLiteral(turtleData, turtleContext, result); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
             else if (IsNumber(bufChar) || bufChar == '.' || bufChar == '+' || bufChar == '-')
-            {
-                // integer or double, e.g. 123 or 1.2e3
-                return ParseNumber(turtleData, turtleContext, result);
-            }
+                return ParseNumber(turtleData, turtleContext, result); // integer or double, e.g. 123 or 1.2e3
             else if (bufChar == -1)
-            {
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-            }
             else
-            {
                 throw new RDFModelException("Expected an RDF value here, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
-            }
         }
 
         /// <summary>
@@ -1047,14 +1021,10 @@ namespace RDFSharp.Model
             // First character should be a ':' or a letter
             int bufChar = ReadCodePoint(turtleData, turtleContext);
             if (bufChar == -1)
-            {
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-            }
             if (bufChar != ':' && !IsPrefixStartChar(bufChar))
-            {
                 throw new RDFModelException("Expected a ':' or a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
-            }
-
+            
             int previousChar;
             string nspace = null;
             if (bufChar == ':')
@@ -1547,13 +1517,9 @@ namespace RDFSharp.Model
         {
             int bufChar = ReadCodePoint(turtleData, turtleContext);
             if (IsLocalEscapedChar(bufChar))
-            {
                 return (char)bufChar;
-            }
             else
-            {
                 throw new RDFModelException("Found '" + char.ConvertFromUtf32(bufChar) + "', expected one of: _~.-!$&\'()*+,;=/?#@%" + GetTurtleContextCoordinates(turtleContext));
-            }
         }
         #endregion
 
