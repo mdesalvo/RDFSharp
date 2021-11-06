@@ -295,7 +295,7 @@ namespace RDFSharp.Model
                                         //  xml:lang="plitLANG">
                                         if (pLit.Language != string.Empty)
                                         {
-                                            XmlAttribute plainLiteralLangNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
+                                            XmlAttribute plainLiteralLangNodeDesc = rdfDoc.CreateAttribute("xml:lang", RDFVocabulary.XML.BASE_URI);
                                             XmlText plainLiteralLangNodeDescText = rdfDoc.CreateTextNode(pLit.Language);
                                             plainLiteralLangNodeDesc.AppendChild(plainLiteralLangNodeDescText);
                                             predNode.Attributes.Append(plainLiteralLangNodeDesc);
@@ -308,7 +308,7 @@ namespace RDFSharp.Model
                                     else
                                     {
                                         RDFTypedLiteral tLit = (RDFTypedLiteral)triple.Object;
-                                        XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute(string.Concat(RDFVocabulary.RDF.PREFIX, ":datatype"), RDFVocabulary.RDF.BASE_URI);
+                                        XmlAttribute typedLiteralNodeDesc = rdfDoc.CreateAttribute("rdf:datatype", RDFVocabulary.RDF.BASE_URI);
                                         XmlText typedLiteralNodeDescText = rdfDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(tLit.Datatype));
                                         typedLiteralNodeDesc.AppendChild(typedLiteralNodeDescText);
                                         predNode.Attributes.Append(typedLiteralNodeDesc);
