@@ -185,6 +185,37 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldSerializeGraphWithSPBTripleHavingCollectionOfResourcesAsObject()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll.AddItem(new RDFResource("http://item1/"));
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred/"), coll.ReificationSubject));
+            graph.AddCollection(coll);
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfResourcesAsObject.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfResourcesAsObject.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfResourcesAsObject.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item1/\" />{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithSPBTripleHavingCollectionOfLiteralsAsObject()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(new RDFPlainLiteral("lit1"));
+            coll.ReificationSubject = new RDFResource("http://coll/");
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred/"), coll.ReificationSubject));
+            graph.AddCollection(coll);
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfLiteralsAsObject.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfLiteralsAsObject.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfLiteralsAsObject.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://coll/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://coll/\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>lit1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
         public void ShouldSerializeGraphWithBPOTripleHavingUnregisteredPredicate()
         {
             RDFGraph graph = new RDFGraph();

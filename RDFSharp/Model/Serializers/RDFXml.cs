@@ -92,29 +92,29 @@ namespace RDFSharp.Model
                     #region cont/coll
                     //Fetch data describing containers of the graph
                     var containers = graph.SelectTriplesByObject(RDFVocabulary.RDF.ALT)
-                                                         .UnionWith(graph.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
-                                                         .UnionWith(graph.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
-                                                         .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
-                                                         .Select(x => new
-                                                         {
-                                                             ContainerUri = (RDFResource)x.Subject,
-                                                             ContainerType = (x.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
-                                                                                x.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
-                                                                                                                           RDFModelEnums.RDFContainerTypes.Seq)
-                                                         }).ToList();
+                                          .UnionWith(graph.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
+                                          .UnionWith(graph.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
+                                          .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+                                          .Select(x => new
+                                          {
+                                              ContainerUri = (RDFResource)x.Subject,
+                                              ContainerType = (x.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
+                                                              x.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
+                                                                                                          RDFModelEnums.RDFContainerTypes.Seq)
+                                          }).ToList();
                     //Fetch data describing collections of the graph
                     var collections = graph.SelectTriplesByObject(RDFVocabulary.RDF.LIST)
-                                                         .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
-                                                         .Select(x => new
-                                                         {
-                                                             CollectionUri = (RDFResource)x.Subject,
-                                                             CollectionValue = graph.SelectTriplesBySubject((RDFResource)x.Subject)
-                                                                                    .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
-                                                                                    .FirstOrDefault()?.Object,
-                                                             CollectionNext = graph.SelectTriplesBySubject((RDFResource)x.Subject)
-                                                                                    .SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
-                                                                                    .FirstOrDefault()?.Object,
-                                                         }).ToList();
+                                           .SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+                                           .Select(x => new
+                                           {
+                                               CollectionUri = (RDFResource)x.Subject,
+                                               CollectionValue = graph.SelectTriplesBySubject((RDFResource)x.Subject)
+                                                                   .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+                                                                   .FirstOrDefault()?.Object,
+                                               CollectionNext = graph.SelectTriplesBySubject((RDFResource)x.Subject)
+                                                                   .SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
+                                                                   .FirstOrDefault()?.Object,
+                                           }).ToList();
                     #endregion
 
                     #region linq
@@ -1047,7 +1047,6 @@ namespace RDFSharp.Model
                     //This is a container of resources
                     if (elemUri != null)
                     {
-
                         //Sanitize eventual blank node value detected by presence of "nodeID" attribute
                         if (elemUri.LocalName.Equals("nodeID", StringComparison.OrdinalIgnoreCase))
                         {
@@ -1068,7 +1067,6 @@ namespace RDFSharp.Model
                         {
                             result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), new RDFResource(elemUri.Value)));
                         }
-
                     }
                     #endregion
 
@@ -1076,7 +1074,6 @@ namespace RDFSharp.Model
                     //This is a container of literals
                     else
                     {
-
                         //Parse the literal contained in the item
                         RDFLiteral literal = null;
                         XmlAttribute attr = GetRdfDatatypeAttribute(elem);
@@ -1103,7 +1100,6 @@ namespace RDFSharp.Model
                         {
                             result.AddTriple(new RDFTriple(obj, new RDFResource(string.Concat(RDFVocabulary.RDF.BASE_URI, elem.LocalName)), literal));
                         }
-
                     }
                     #endregion
 
