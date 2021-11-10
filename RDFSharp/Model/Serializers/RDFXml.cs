@@ -98,9 +98,9 @@ namespace RDFSharp.Model
                                           .Select(x => new
                                           {
                                               ContainerUri = (RDFResource)x.Subject,
-                                              ContainerType = (x.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
-                                                              x.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
-                                                                                                          RDFModelEnums.RDFContainerTypes.Seq)
+                                              ContainerType = x.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
+                                                                x.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag :
+                                                                                                          RDFModelEnums.RDFContainerTypes.Seq
                                           }).ToList();
                     //Fetch data describing collections of the graph
                     var collections = graph.SelectTriplesByObject(RDFVocabulary.RDF.LIST)
@@ -109,11 +109,11 @@ namespace RDFSharp.Model
                                            {
                                                CollectionUri = (RDFResource)x.Subject,
                                                CollectionValue = graph.SelectTriplesBySubject((RDFResource)x.Subject)
-                                                                   .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
-                                                                   .FirstOrDefault()?.Object,
+                                                                      .SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+                                                                      .FirstOrDefault()?.Object,
                                                CollectionNext = graph.SelectTriplesBySubject((RDFResource)x.Subject)
-                                                                   .SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
-                                                                   .FirstOrDefault()?.Object,
+                                                                     .SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
+                                                                     .FirstOrDefault()?.Object,
                                            }).ToList();
                     #endregion
 
@@ -249,10 +249,11 @@ namespace RDFSharp.Model
                                                 throw new RDFModelException(string.Format("Collection having '{0}' as subject is not well-formed. Please check presence of its 'rdf:type/rdf:first/rdf:rest' triples.", currentCollItem));
 
                                             collElementToAppend = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:Description", RDFVocabulary.RDF.BASE_URI);
-                                            collElementAttr = rdfDoc.CreateAttribute("rdf:about", RDFVocabulary.RDF.BASE_URI);
+                                            if (collElement.CollectionValue.ToString().StartsWith("bnode:"))
+                                                collElementAttr = rdfDoc.CreateAttribute("rdf:nodeID", RDFVocabulary.RDF.BASE_URI);
+                                            else
+                                                collElementAttr = rdfDoc.CreateAttribute("rdf:about", RDFVocabulary.RDF.BASE_URI);
                                             collElementAttrText = rdfDoc.CreateTextNode(collElement.CollectionValue.ToString());
-                                            if (collElementAttrText.InnerText.StartsWith("bnode:"))
-                                                collElementAttrText.InnerText = collElementAttrText.InnerText.Replace("bnode:", string.Empty);
                                             collElementAttr.AppendChild(collElementAttrText);
                                             collElementToAppend.Attributes.Append(collElementAttr);
                                             collElements.Add(collElementToAppend);
