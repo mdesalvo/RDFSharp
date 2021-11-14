@@ -12,6 +12,7 @@ namespace RDFSharp.Test.Model
         private const string XmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
         private const string XmlBaseDefault = "xml:base=\"https://rdfsharp.codeplex.com/\"";
         private const string XmlBaseExample = "xml:base=\"http://example.com/\"";
+        private const string XmlNsDefault = "xmlns=\"https://rdfsharp.codeplex.com/\"";
         private const string XmlNsRDF = "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"";
         private const string XmlNsXSD = "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"";
 
@@ -670,6 +671,32 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(new Uri("http://example.com/")));
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyGraphEvenOnXmlnsAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlNsDefault} />");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyGraphEvenOnMissingBaseAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} />");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
             Assert.IsTrue(graph.TriplesCount == 0);
         }
 
