@@ -645,6 +645,43 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"54321\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:nodeID=\"54321\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
+        //DESERIALIZE
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyGraph()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault} />");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeEmptyNamedGraph()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseExample} />");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(new Uri("http://example.com/")));
+            Assert.IsTrue(graph.TriplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseInvalidRDFRootNode()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDH {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDH>");
+            Assert.ThrowsException<RDFModelException>(() => RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {

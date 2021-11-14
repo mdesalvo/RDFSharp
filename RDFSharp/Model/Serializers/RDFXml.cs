@@ -375,7 +375,6 @@ namespace RDFSharp.Model
         {
             try
             {
-
                 #region deserialize
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
@@ -429,7 +428,6 @@ namespace RDFSharp.Model
 
                 return result;
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -666,9 +664,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static XmlNode GetRdfRootNode(XmlDocument xmlDoc, XmlNamespaceManager nsMgr)
         {
-            XmlNode rdf =
-                (xmlDoc.SelectSingleNode(string.Concat(RDFVocabulary.RDF.PREFIX, ":RDF"), nsMgr) ??
-                    xmlDoc.SelectSingleNode("RDF", nsMgr));
+            XmlNode rdf = xmlDoc.SelectSingleNode("rdf:RDF", nsMgr) ?? xmlDoc.SelectSingleNode("RDF", nsMgr);
 
             //Invalid RDF/XML file: root node is neither "rdf:RDF" or "RDF"
             if (rdf == null)
@@ -726,7 +722,7 @@ namespace RDFSharp.Model
                 // e.g.:  "http://www.w3.org/2001/XMLSchema#integer"
                 if (uriNS.Fragment != string.Empty)
                 {
-                    fragment = uriNS.Fragment.Replace("#", string.Empty);           //"integer"
+                    fragment = uriNS.Fragment.Replace("#", string.Empty);                           //"integer"
                     if (fragment != string.Empty)
                         nspace = Regex.Replace(nspace, string.Concat(fragment, "$"), string.Empty); //"http://www.w3.org/2001/XMLSchema#"
                 }
@@ -741,7 +737,7 @@ namespace RDFSharp.Model
                 }
 
                 //Check if a namespace with the extracted Uri is in the register, or generate an automatic one
-                return (RDFNamespaceRegister.GetByUri(nspace) ?? new RDFNamespace("autoNS", nspace));
+                return RDFNamespaceRegister.GetByUri(nspace) ?? new RDFNamespace("autoNS", nspace);
             }
             throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" parameter is null or empty");
         }
@@ -784,9 +780,7 @@ namespace RDFSharp.Model
             if (subjNode.Attributes != null && subjNode.Attributes.Count > 0)
             {
                 //We are interested in finding the "rdf:about" or "rdf:resource"
-                XmlAttribute rdfAbout =
-                    (GetRdfAboutAttribute(subjNode)
-                        ?? GetRdfResourceAttribute(subjNode));
+                XmlAttribute rdfAbout = GetRdfAboutAttribute(subjNode) ?? GetRdfResourceAttribute(subjNode);
                 if (rdfAbout != null)
                 {
                     //Attribute found, but we must check if it is "rdf:ID", "rdf:nodeID" or a relative Uri:
