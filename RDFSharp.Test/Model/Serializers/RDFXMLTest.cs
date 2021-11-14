@@ -87,7 +87,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingUnregisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingUnregisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:nodeID=\"bnode:12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:nodeID=\"12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingRegisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingRegisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:nodeID=\"bnode:12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:nodeID=\"12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -205,7 +205,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfResourcesAsObject.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithSPBTripleHavingCollectionOfResourcesAsObject.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item1/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"bnode:item2\" />{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item1/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -243,7 +243,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPOTripleHavingUnregisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPOTripleHavingUnregisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -255,7 +255,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPOTripleHavingRegisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPOTripleHavingRegisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -267,7 +267,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPBTripleHavingUnregisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPBTripleHavingUnregisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:nodeID=\"bnode:12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:nodeID=\"12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -279,7 +279,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPBTripleHavingRegisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPBTripleHavingRegisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:nodeID=\"bnode:12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:nodeID=\"12345\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -363,7 +363,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTripleHavingUnregisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTripleHavingUnregisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<autoNS1:pred>lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred>lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -375,7 +375,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTripleHavingRegisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTripleHavingRegisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<rdf:Alt>lit</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt>lit</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -387,7 +387,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingUnregisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingUnregisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"EN-US\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"EN-US\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -399,7 +399,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingRegisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLLTripleHavingRegisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<rdf:Alt xml:lang=\"EN-US\">lit</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt xml:lang=\"EN-US\">lit</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -411,7 +411,7 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTTripleHavingUnregisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTTripleHavingUnregisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlNsXSD} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlNsXSD} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestMethod]
@@ -423,7 +423,226 @@ namespace RDFSharp.Test.Model
 
             Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTTripleHavingRegisteredPredicate.rdf"));
             string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFXmlTest_ShouldSerializeGraphWithBPLTTripleHavingRegisteredPredicate.rdf");
-            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlNsXSD} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"bnode:12345\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlNsXSD} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:Alt rdf:datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</rdf:Alt>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithFloatingContainerOfResources()
+        {
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource);
+            cont.AddItem(new RDFResource("http://item1/"));
+            cont.AddItem(new RDFResource("http://item2/"));
+            cont.ReificationSubject = new RDFResource("bnode:12345");
+            RDFXml.Serialize(cont.ReifyContainer(), $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1 rdf:resource=\"http://item1/\" />{Environment.NewLine}{" ",4}<rdf:_2 rdf:resource=\"http://item2/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithFloatingContainerOfBlankResources()
+        {
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource);
+            cont.AddItem(new RDFResource("bnode:item1"));
+            cont.AddItem(new RDFResource("bnode:item2"));
+            cont.ReificationSubject = new RDFResource("bnode:12345");
+            RDFXml.Serialize(cont.ReifyContainer(), $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfBlankResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfBlankResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfBlankResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1 rdf:nodeID=\"item1\" />{Environment.NewLine}{" ",4}<rdf:_2 rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfResources()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource);
+            cont.AddItem(new RDFResource("http://item1/"));
+            cont.AddItem(new RDFResource("http://item2/"));
+            cont.ReificationSubject = new RDFResource("bnode:12345");
+            graph.AddContainer(cont);
+            RDFContainer cont2 = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource);
+            cont2.AddItem(new RDFResource("http://item1/"));
+            cont2.AddItem(new RDFResource("http://item2/"));
+            cont2.ReificationSubject = new RDFResource("bnode:54321");
+            graph.AddContainer(cont2);
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"),cont2.ReificationSubject));
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1 rdf:resource=\"http://item1/\" />{Environment.NewLine}{" ",4}<rdf:_2 rdf:resource=\"http://item2/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred>{Environment.NewLine}{" ",6}<rdf:Alt>{Environment.NewLine}{" ",8}<rdf:_1 rdf:resource=\"http://item1/\" />{Environment.NewLine}{" ",8}<rdf:_2 rdf:resource=\"http://item2/\" />{Environment.NewLine}{" ",6}</rdf:Alt>{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfBlankResources()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource);
+            cont.AddItem(new RDFResource("bnode:item1"));
+            cont.AddItem(new RDFResource("bnode:item2"));
+            cont.ReificationSubject = new RDFResource("bnode:12345");
+            graph.AddContainer(cont);
+            RDFContainer cont2 = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Resource);
+            cont2.AddItem(new RDFResource("bnode:item1"));
+            cont2.AddItem(new RDFResource("bnode:item2"));
+            cont2.ReificationSubject = new RDFResource("bnode:54321");
+            graph.AddContainer(cont2);
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), cont2.ReificationSubject));
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfBlankResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfBlankResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfBlankResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1 rdf:nodeID=\"item1\" />{Environment.NewLine}{" ",4}<rdf:_2 rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred>{Environment.NewLine}{" ",6}<rdf:Alt>{Environment.NewLine}{" ",8}<rdf:_1 rdf:nodeID=\"item1\" />{Environment.NewLine}{" ",8}<rdf:_2 rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",6}</rdf:Alt>{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithFloatingContainerOfLiterals()
+        {
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            cont.AddItem(new RDFPlainLiteral("item1"));
+            cont.AddItem(new RDFPlainLiteral("item2"));
+            cont.ReificationSubject = new RDFResource("bnode:12345");
+            RDFXml.Serialize(cont.ReifyContainer(), $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfLiterals.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfLiterals.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingContainerOfLiterals.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1>item1</rdf:_1>{Environment.NewLine}{" ",4}<rdf:_2>item2</rdf:_2>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfLiterals()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            cont.AddItem(new RDFPlainLiteral("item1"));
+            cont.AddItem(new RDFPlainLiteral("item2"));
+            cont.ReificationSubject = new RDFResource("bnode:12345");
+            graph.AddContainer(cont);
+            RDFContainer cont2 = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+            cont2.AddItem(new RDFPlainLiteral("item1"));
+            cont2.AddItem(new RDFPlainLiteral("item2"));
+            cont2.ReificationSubject = new RDFResource("bnode:54321");
+            graph.AddContainer(cont2);
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), cont2.ReificationSubject));
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfLiterals.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfLiterals.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNotFloatingContainersOfLiterals.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt\" />{Environment.NewLine}{" ",4}<rdf:_1>item1</rdf:_1>{Environment.NewLine}{" ",4}<rdf:_2>item2</rdf:_2>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred>{Environment.NewLine}{" ",6}<rdf:Alt>{Environment.NewLine}{" ",8}<rdf:_1>item1</rdf:_1>{Environment.NewLine}{" ",8}<rdf:_2>item2</rdf:_2>{Environment.NewLine}{" ",6}</rdf:Alt>{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithFloatingCollectionOfResources()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll.AddItem(new RDFResource("http://item1/"));
+            coll.AddItem(new RDFResource("http://item2/"));
+            coll.AddItem(new RDFResource("http://item3/"));
+            coll.ReificationSubject = new RDFResource("bnode:12345");
+            RDFXml.Serialize(coll.ReifyCollection(), $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first rdf:resource=\"http://item1/\" />{Environment.NewLine}{" ",4}<rdf:rest rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item2/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item3/\" />{Environment.NewLine}{" ",4}</rdf:rest>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithFloatingCollectionOfBlankResources()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll.AddItem(new RDFResource("bnode:item1"));
+            coll.AddItem(new RDFResource("bnode:item2"));
+            coll.AddItem(new RDFResource("bnode:item3"));
+            coll.ReificationSubject = new RDFResource("bnode:12345");
+            RDFXml.Serialize(coll.ReifyCollection(), $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfBlankResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfBlankResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfBlankResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first rdf:nodeID=\"item1\" />{Environment.NewLine}{" ",4}<rdf:rest rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item3\" />{Environment.NewLine}{" ",4}</rdf:rest>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfResources()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll.AddItem(new RDFResource("http://item1/"));
+            coll.AddItem(new RDFResource("http://item2/"));
+            coll.AddItem(new RDFResource("http://item3/"));
+            coll.ReificationSubject = new RDFResource("bnode:12345");
+            graph.AddCollection(coll);
+            RDFCollection coll2 = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll2.AddItem(new RDFResource("http://item1/"));
+            coll2.AddItem(new RDFResource("http://item2/"));
+            coll2.AddItem(new RDFResource("http://item3/"));
+            coll2.ReificationSubject = new RDFResource("bnode:54321");
+            graph.AddCollection(coll2);
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), coll2.ReificationSubject));
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first rdf:resource=\"http://item1/\" />{Environment.NewLine}{" ",4}<rdf:rest rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item2/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item3/\" />{Environment.NewLine}{" ",4}</rdf:rest>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item1/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item2/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item3/\" />{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfBlankResources()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll.AddItem(new RDFResource("bnode:item1"));
+            coll.AddItem(new RDFResource("bnode:item2"));
+            coll.AddItem(new RDFResource("bnode:item3"));
+            coll.ReificationSubject = new RDFResource("bnode:12345");
+            graph.AddCollection(coll);
+            RDFCollection coll2 = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+            coll2.AddItem(new RDFResource("bnode:item1"));
+            coll2.AddItem(new RDFResource("bnode:item2"));
+            coll2.AddItem(new RDFResource("bnode:item3"));
+            coll2.ReificationSubject = new RDFResource("bnode:54321");
+            graph.AddCollection(coll2);
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), coll2.ReificationSubject));
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfBlankResources.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfBlankResources.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfBlankResources.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first rdf:nodeID=\"item1\" />{Environment.NewLine}{" ",4}<rdf:rest rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item3\" />{Environment.NewLine}{" ",4}</rdf:rest>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item1\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item2\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:nodeID=\"item3\" />{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithFloatingCollectionOfLiterals()
+        {
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(new RDFPlainLiteral("item1"));
+            coll.ReificationSubject = new RDFResource("bnode:12345");
+            RDFXml.Serialize(coll.ReifyCollection(), $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfLiterals.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfLiterals.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithFloatingCollectionOfLiterals.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfLiterals()
+        {
+            RDFGraph graph = new RDFGraph();
+            RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll.AddItem(new RDFPlainLiteral("item1"));
+            coll.ReificationSubject = new RDFResource("bnode:12345");
+            graph.AddCollection(coll);
+            RDFCollection coll2 = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+            coll2.AddItem(new RDFPlainLiteral("item1"));
+            coll2.ReificationSubject = new RDFResource("bnode:54321");
+            graph.AddCollection(coll2);
+            graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), coll2.ReificationSubject));
+            RDFXml.Serialize(graph, $"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfLiterals.rdf");
+
+            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfLiterals.rdf"));
+            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\ShouldSerializeGraphWithBothFloatingAndNonFloatingCollectionsOfLiterals.rdf");
+            Assert.IsTrue(fileContent.Equals($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"54321\">{Environment.NewLine}{" ",4}<rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#List\" />{Environment.NewLine}{" ",4}<rdf:first>item1</rdf:first>{Environment.NewLine}{" ",4}<rdf:rest rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#nil\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:nodeID=\"54321\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>"));
         }
 
         [TestCleanup]

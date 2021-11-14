@@ -265,7 +265,6 @@ namespace RDFSharp.Test.Model
                                .TriplesCount == 2);
             Assert.IsTrue(graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
                                .TriplesCount == 2);
-            
         }
         #endregion
     }
