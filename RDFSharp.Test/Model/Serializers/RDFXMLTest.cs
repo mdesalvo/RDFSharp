@@ -908,7 +908,7 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldDeserializeGraphWithBPBTripleUsingParseTypeResourceAsObject()
+        public void ShouldDeserializeGraphWithBPBTripleUsingParseTypeResourceAttribute()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
@@ -919,6 +919,115 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object is RDFResource objRes && objRes.IsBlank));
             Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred/pred2")) && t.Object is RDFResource objRes && objRes.IsBlank));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTriple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred>Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("Hello"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTripleUsingParseTypeLiteralAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Literal\"><example>XML Literal!</example></autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFTypedLiteral("<example>XML Literal!</example>", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTripleUsingDatatypeAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFTypedLiteral("Hello", RDFModelEnums.RDFDatatypes.XSD_STRING))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTripleUsingLangAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"en-US\">Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("Hello", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTripleUsingParentLangAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\" xml:lang=\"en-US\">{Environment.NewLine}{" ",4}<autoNS1:pred>Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("Hello", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTripleUsingMixedLangAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:nodeID=\"12345\" xml:lang=\"en-US\">{Environment.NewLine}{" ",4}<autoNS1:pred xml:lang=\"en-UK\">Hello</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("bnode:12345")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("Hello", "en-UK"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPLTripleUsingIdAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:ID=\"snack\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"fruit/apple\"/>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "fruit/apple"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithBPBAnonymousNestedTriplesHavingCollection()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description>{Environment.NewLine}{" ",4}<autoNS1:pred rdf:parseType=\"Collection\">{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item1/\" />{Environment.NewLine}{" ",6}<rdf:Description rdf:about=\"http://item2/\" />{Environment.NewLine}{" ",4}</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object is RDFResource objRes && objRes.IsBlank));
+            Assert.IsTrue(graph.Count(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.LIST)) == 2);
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item1/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object is RDFResource objRes && objRes.IsBlank));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.FIRST) && t.Object.Equals(new RDFResource("http://item2/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject is RDFResource subjRes && subjRes.IsBlank && t.Predicate.Equals(RDFVocabulary.RDF.REST) && t.Object.Equals(RDFVocabulary.RDF.NIL)));
         }
 
         [TestCleanup]
