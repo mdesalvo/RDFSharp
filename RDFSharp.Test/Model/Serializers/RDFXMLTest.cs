@@ -737,6 +737,34 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingDirectTypeDescription()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Alt rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Alt>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT)));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithSPOTripleHavingUnprefixedDirectTypeDescription()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<Example rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:resource=\"http://obj/\" />{Environment.NewLine}{" ",2}</Example>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), RDFVocabulary.RDF.TYPE, new RDFResource(RDFNamespaceRegister.DefaultNamespace + "Example"))));
+            Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/pred"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
         public void ShouldDeserializeGraphWithSPOTripleHavingLiteralAttribute()
         {
             MemoryStream stream = new MemoryStream();
