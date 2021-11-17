@@ -1000,7 +1000,7 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldDeserializeGraphWithBPLTripleUsingIdAttribute()
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtSubjectLevel()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
@@ -1010,6 +1010,151 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
             Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "fruit/apple"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPO()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:resource=\"http://obj/\"/>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource("http://obj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPB()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:nodeID=\"bnode:12345\"/>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource("bnode:12345"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFResource("bnode:12345"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPL()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPLL1()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" xml:lang=\"en-US\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit","en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPLL2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\" xml:lang=\"en-US\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFPlainLiteral("lit", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPLT()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:datatype=\"{RDFVocabulary.XSD.STRING}\">lit</autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFTypedLiteral("lit", RDFModelEnums.RDFDatatypes.XSD_STRING))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeAtPredicateLevelSPLTParseTypeLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:parseType=\"Literal\"><hello>lit</hello></autoNS1:pred>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource("http://subj/")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFTypedLiteral("<hello>lit</hello>", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource("http://subj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFTypedLiteral("<hello>lit</hello>", RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL))));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingGraphWithTripleUsingIdAttributeAtPredicateLevelBecauseUnsupportedAboutAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:about=\"http://subj/\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:about=\"http://obj/\" />{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            Assert.ThrowsException<RDFModelException>(() => RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeGraphWithTripleUsingIdAttributeBothAtSubjectAndPredicateLevel()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"{XmlHeader}{Environment.NewLine}<rdf:RDF {XmlNsRDF} xmlns:autoNS1=\"http://pred/\" {XmlBaseDefault}>{Environment.NewLine}{" ",2}<rdf:Description rdf:ID=\"snack\">{Environment.NewLine}{" ",4}<autoNS1:pred rdf:ID=\"triple1\" rdf:resource=\"http://obj/\"/>{Environment.NewLine}{" ",2}</rdf:Description>{Environment.NewLine}</rdf:RDF>");
+            RDFGraph graph = RDFXml.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+            Assert.IsNotNull(graph);
+            Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack")) && t.Predicate.Equals(new RDFResource("http://pred/pred")) && t.Object.Equals(new RDFResource("http://obj/"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.TYPE) && t.Object.Equals(RDFVocabulary.RDF.STATEMENT)));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.SUBJECT) && t.Object.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "snack"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.PREDICATE) && t.Object.Equals(new RDFResource("http://pred/pred"))));
+            Assert.IsTrue(graph.Any(t => t.Subject.Equals(new RDFResource(RDFNamespaceRegister.DefaultNamespace + "triple1")) && t.Predicate.Equals(RDFVocabulary.RDF.OBJECT) && t.Object.Equals(new RDFResource("http://obj/"))));
         }
 
         [TestMethod]

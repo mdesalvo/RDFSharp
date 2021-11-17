@@ -560,9 +560,10 @@ namespace RDFSharp.Model
                         #region object
                         //Check if predicate has one of these specific attributes:
                         //"rdf:about", "rdf:resource", "rdf:nodeID", "rdf:ID", "rdf:parseType=Resource"
-                        XmlAttribute rdfObject = (GetRdfAboutAttribute(predNode)
-                                                    ?? GetRdfResourceAttribute(predNode)
-                                                        ?? GetParseTypeResourceAttribute(predNode));
+                        XmlAttribute rdfObject = GetRdfAboutAttribute(predNode)
+                                                   ?? GetRdfResourceAttribute(predNode)
+                                                       ?? GetParseTypeResourceAttribute(predNode);
+                        XmlAttribute rdfId = GetRdfIdAttribute(predNode);
                         if (rdfObject != null)
                         {
                             #region rdf:parseType=Resource
@@ -583,22 +584,29 @@ namespace RDFSharp.Model
                             #region rdf:about,rdf:resource,rdf:ID,rdf:nodeID
                             else
                             {
-                                string objValue = ResolveRelativeNode(rdfObject, xmlBase);
-                                RDFResource obj = new RDFResource(objValue);
-
                                 #region rdf:ID
-                                if (rdfObject.Name.ToLower().Equals("rdf:id"))
+                                if (rdfId != null)
                                 {
-                                    //"rdf:ID" at predicate level appends reified triple represented by object
-                                    RDFTriple objTriple = new RDFTriple(obj, pred, new RDFPlainLiteral(string.Empty));
-                                    foreach (RDFTriple reifObjTriple in ReifyRdfIdPredicateTriple(obj, subj, objTriple))
-                                        result.AddTriple(reifObjTriple);
+                                    //"rdf:ID" at predicate level appends the parsed triple and also its reification statements;
+                                    //The subject of reification is the value of "rdf:ID" attribute resolved against xmlBase
+                                    RDFTriple rdfIdTriple = GetRdfIdTriple(predNode, subj, pred, xmlBase, xmlLangPred);
+                                    if (rdfIdTriple != null)
+                                    {
+                                        result.AddTriple(rdfIdTriple);
+                                        RDFResource rdfIdReificationSubject = new RDFResource(string.Concat(xmlBase, rdfId.Value));
+                                        foreach (RDFTriple reifRDFIdTriple in ReifyRdfIdPredicateTriple(rdfIdReificationSubject, rdfIdTriple))
+                                            result.AddTriple(reifRDFIdTriple);
+                                    }
+                                    else
+                                        throw new RDFModelException($"Found rdf:ID attribute '{rdfId.Value}' at predicate level, but none of supported attributes (rdf:resource/rdf:nodeID/rdf:datatype/xml:lang) were found with him, so the described triple cannot be created.");
                                 }
                                 #endregion
 
                                 #region rdf:about,rdf:resource,rdf:nodeID
                                 else
                                 {
+                                    string objValue = ResolveRelativeNode(rdfObject, xmlBase);
+                                    RDFResource obj = new RDFResource(objValue);
                                     RDFTriple objTriple = new RDFTriple(subj, pred, obj);
                                     result.AddTriple(objTriple);
                                 }
@@ -867,6 +875,12 @@ namespace RDFSharp.Model
                 predNode.Attributes?["rdf:nodeID"] ?? predNode.Attributes?["nodeID"];
 
         /// <summary>
+        /// Given an element, return the attribute which can correspond to the RDF ID
+        /// </summary>
+        private static XmlAttribute GetRdfIdAttribute(XmlNode subjNode)
+            => subjNode.Attributes?["rdf:ID"] ?? subjNode.Attributes?["ID"];
+
+        /// <summary>
         /// Given an element, return the attribute which can correspond to the RDF typed literal datatype
         /// </summary>
         private static XmlAttribute GetRdfDatatypeAttribute(XmlNode predNode)
@@ -906,15 +920,55 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Given an element, return the triple corresponding to the RDF ID
+        /// </summary>
+        private static RDFTriple GetRdfIdTriple(XmlNode predNode, RDFResource subject, RDFResource predicate, Uri xmlBase, XmlAttribute xmlLangPred)
+        {
+            //Try to resolve SPO triple by "rdf:Resource" or "rdf:nodeID" attributes
+            XmlAttribute resOrNodeIdAttr = GetRdfResourceAttribute(predNode);
+            if (resOrNodeIdAttr != null)
+                return new RDFTriple(subject, predicate, new RDFResource(ResolveRelativeNode(resOrNodeIdAttr, xmlBase)));
+
+            //Try to resolve SPLT triple by "rdf:datatype" or "rdf:parseType=Literal" attributes
+            XmlAttribute rdfDatatypeAttr = GetRdfDatatypeAttribute(predNode);
+            if (rdfDatatypeAttr != null)
+            {
+                RDFModelEnums.RDFDatatypes dtype = RDFModelUtilities.GetDatatypeFromString(rdfDatatypeAttr.Value);
+                RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), dtype);
+                return new RDFTriple(subject, predicate, tLit);
+            }
+            XmlAttribute parseLiteral = GetParseTypeLiteralAttribute(predNode);
+            if (parseLiteral != null)
+            {
+                RDFTypedLiteral tLit = new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerXml)), RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL);
+                return new RDFTriple(subject, predicate, tLit);
+            }
+
+            //Try to resolve SPL triple (SPLL by "xml:lang")
+            if (predNode.HasChildNodes && predNode.ChildNodes.Count == 1 && predNode.ChildNodes[0].NodeType == XmlNodeType.Text)
+            {
+                RDFPlainLiteral pLit = new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(predNode.InnerText)), xmlLangPred?.Value);
+                return new RDFTriple(subject, predicate, pLit);
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Builds the reification graph of the special triple obtained from rdf:ID found at predicate level
         /// </summary>
-        private static RDFGraph ReifyRdfIdPredicateTriple(RDFResource reificationSubject, RDFResource subject, RDFTriple triple)
+        private static RDFGraph ReifyRdfIdPredicateTriple(RDFResource reificationSubject, RDFTriple triple)
         {
             RDFGraph reifGraph = new RDFGraph();
+
             reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-            reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.SUBJECT, subject));
+            reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)triple.Subject));
             reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)triple.Predicate));
-            reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object));
+            if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)triple.Object));
+            else
+                reifGraph.AddTriple(new RDFTriple(reificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)triple.Object));
+
             return reifGraph;
         }
 
