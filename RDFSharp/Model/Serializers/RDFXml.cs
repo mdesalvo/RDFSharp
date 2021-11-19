@@ -540,19 +540,21 @@ namespace RDFSharp.Model
 
                         #region container
                         //Check if predicate has "rdf:[Bag|Seq|Alt]" child node
-                        XmlNode container = GetContainerNode(predNode);
-                        if (container != null)
+                        XmlNode containerNode = GetContainerNode(predNode);
+                        if (containerNode != null)
                         {
+                            XmlAttribute xmlLangCont = GetXmlLangAttribute(containerNode) ?? xmlLangPred;
+
                             //Distinguish the right type of RDF container to build
-                            if (container.LocalName.Equals("rdf:Bag", StringComparison.OrdinalIgnoreCase)
-                                    || container.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, container, subj, pred, result);
-                            else if (container.LocalName.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
-                                    || container.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, container, subj, pred, result);
-                            else if (container.LocalName.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase)
-                                    || container.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase))
-                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, container, subj, pred, result);
+                            if (containerNode.LocalName.Equals("rdf:Bag", StringComparison.OrdinalIgnoreCase)
+                                    || containerNode.LocalName.Equals("Bag", StringComparison.OrdinalIgnoreCase))
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Bag, containerNode, subj, pred, result, xmlLangCont);
+                            else if (containerNode.LocalName.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
+                                    || containerNode.LocalName.Equals("Seq", StringComparison.OrdinalIgnoreCase))
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Seq, containerNode, subj, pred, result, xmlLangCont);
+                            else if (containerNode.LocalName.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase)
+                                    || containerNode.LocalName.Equals("Alt", StringComparison.OrdinalIgnoreCase))
+                                ParseContainerElements(RDFModelEnums.RDFContainerTypes.Alt, containerNode, subj, pred, result, xmlLangCont);
                             continue;
                         }
                         #endregion
@@ -1049,9 +1051,8 @@ namespace RDFSharp.Model
         /// to build its standard reification triples.
         /// </summary>
         private static void ParseContainerElements(RDFModelEnums.RDFContainerTypes contType, XmlNode container,
-                                                    RDFResource subj, RDFResource pred, RDFGraph result)
+                                                   RDFResource subj, RDFResource pred, RDFGraph result, XmlAttribute xmlLangPred)
         {
-
             //Attach the container as the blank object of the current pred
             RDFResource obj = new RDFResource();
             result.AddTriple(new RDFTriple(subj, pred, obj));
@@ -1125,7 +1126,7 @@ namespace RDFSharp.Model
                         }
                         else
                         {
-                            attr = GetXmlLangAttribute(elem);
+                            attr = GetXmlLangAttribute(elem) ?? xmlLangPred;
                             literal = new RDFPlainLiteral(elem.InnerText, (attr != null ? attr.InnerText : string.Empty));
                         }
 
@@ -1147,7 +1148,6 @@ namespace RDFSharp.Model
 
                 }
             }
-
         }
         #endregion
 
