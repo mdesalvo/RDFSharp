@@ -21,7 +21,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFTargetClass : RDFTarget
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a class target on the given resource
@@ -45,7 +44,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFGraph ToRDFGraph(RDFShape shape)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //sh:targetClass
             if (shape != null)
@@ -54,6 +53,5 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
-
     }
 }

@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFShape : RDFResource, IEnumerable<RDFConstraint>
     {
-
         #region Properties
         /// <summary>
         /// Indicates the severity level of this shape (sh:severity)
@@ -40,50 +39,32 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the human-readable messages of this shape
         /// </summary>
-        public long MessagesCount
-        {
-            get { return this.Messages.Count; }
-        }
+        public long MessagesCount => this.Messages.Count;
 
         /// <summary>
         /// Gets the enumerator on human-readable messages of this shape for iteration
         /// </summary>
-        public IEnumerator<RDFLiteral> MessagesEnumerator
-        {
-            get { return this.Messages.GetEnumerator(); }
-        }
+        public IEnumerator<RDFLiteral> MessagesEnumerator => this.Messages.GetEnumerator();
 
         /// <summary>
         /// Count of the targets of this shape
         /// </summary>
-        public long TargetsCount
-        {
-            get { return this.Targets.Count; }
-        }
+        public long TargetsCount => this.Targets.Count;
 
         /// <summary>
         /// Gets the enumerator on the targets of this shape for iteration
         /// </summary>
-        public IEnumerator<RDFTarget> TargetsEnumerator
-        {
-            get { return this.Targets.GetEnumerator(); }
-        }
+        public IEnumerator<RDFTarget> TargetsEnumerator => this.Targets.GetEnumerator();
 
         /// <summary>
         /// Count of the constraints of this shape
         /// </summary>
-        public long ConstraintsCount
-        {
-            get { return this.Constraints.Count; }
-        }
+        public long ConstraintsCount => this.Constraints.Count;
 
         /// <summary>
         /// Gets the enumerator on the constraints of this shape for iteration
         /// </summary>
-        public IEnumerator<RDFConstraint> ConstraintsEnumerator
-        {
-            get { return this.Constraints.GetEnumerator(); }
-        }
+        public IEnumerator<RDFConstraint> ConstraintsEnumerator => this.Constraints.GetEnumerator();
 
         /// <summary>
         /// Indicates the human-readable messages of this shape (sh:message)
@@ -119,18 +100,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on this shape's constraints
         /// </summary>
-        IEnumerator<RDFConstraint> IEnumerable<RDFConstraint>.GetEnumerator()
-        {
-            return this.ConstraintsEnumerator;
-        }
+        IEnumerator<RDFConstraint> IEnumerable<RDFConstraint>.GetEnumerator() => this.ConstraintsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on this shape's constraints
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ConstraintsEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ConstraintsEnumerator;
         #endregion
 
         #region Methods
@@ -168,7 +143,6 @@ namespace RDFSharp.Model
         {
             if (message != null)
             {
-
                 //Plain Literal
                 if (message is RDFPlainLiteral)
                     this.Messages.Add(message);
@@ -176,8 +150,7 @@ namespace RDFSharp.Model
                 //Typed Literal
                 else
                     if (((RDFTypedLiteral)message).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
-                    this.Messages.Add(message);
-
+                        this.Messages.Add(message);
             }
             return this;
         }
@@ -205,37 +178,11 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Selects the constraint represented by the given string from this shape
-        /// </summary>
-        public RDFConstraint SelectConstraint(string constraintName)
-        {
-            if (constraintName != null)
-            {
-                long constraintID = RDFModelUtilities.CreateHash(constraintName);
-                return this.Constraints.Find(c => c.PatternMemberID.Equals(constraintID));
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Selects the target represented by the given string from this shape
-        /// </summary>
-        public RDFTarget SelectTarget(string targetName)
-        {
-            if (targetName != null)
-            {
-                long targetID = RDFModelUtilities.CreateHash(targetName);
-                return this.Targets.Find(t => t.PatternMemberID.Equals(targetID));
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Gets a graph representation of this shape
         /// </summary>
         public virtual RDFGraph ToRDFGraph()
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //Severity
             switch (this.Severity)
@@ -267,6 +214,5 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
-
     }
 }
