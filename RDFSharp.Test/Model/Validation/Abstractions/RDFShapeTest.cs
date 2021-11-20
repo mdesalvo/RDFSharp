@@ -16,7 +16,6 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
-using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,10 +120,14 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.DEACTIVATED) && t.Object.Equals(RDFTypedLiteral.False)));
         }
 
-        [TestMethod]
-        public void ShouldExportShapeToGraph()
+        [DataTestMethod]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
+        public void ShouldExportShapeToGraph(RDFValidationEnums.RDFShapeSeverity severity)
         {
             RDFShape shape = new RDFShape(new RDFResource("ex:shape"));
+            shape.SetSeverity(severity);
             shape.AddMessage(new RDFPlainLiteral("This is an error", "en-US"));
             shape.AddTarget(new RDFTargetClass(new RDFResource("ex:class")));
             shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:class")));
@@ -132,7 +135,18 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(shapeGraph);
             Assert.IsTrue(shapeGraph.Context.Equals(new Uri("ex:shape")));
-            Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.SEVERITY_PROPERTY) && t.Object.Equals(RDFVocabulary.SHACL.VIOLATION)));
+            switch (severity)
+            {
+                case RDFValidationEnums.RDFShapeSeverity.Info:
+                    Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.SEVERITY_PROPERTY) && t.Object.Equals(RDFVocabulary.SHACL.INFO)));
+                    break;
+                case RDFValidationEnums.RDFShapeSeverity.Warning:
+                    Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.SEVERITY_PROPERTY) && t.Object.Equals(RDFVocabulary.SHACL.WARNING)));
+                    break;
+                case RDFValidationEnums.RDFShapeSeverity.Violation:
+                    Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.SEVERITY_PROPERTY) && t.Object.Equals(RDFVocabulary.SHACL.VIOLATION)));
+                    break;
+            }
             Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.DEACTIVATED) && t.Object.Equals(RDFTypedLiteral.False)));
             Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.MESSAGE) && t.Object.Equals(new RDFPlainLiteral("This is an error", "en-US"))));
             Assert.IsTrue(shapeGraph.Any(t => t.Subject.Equals(new RDFResource("ex:shape")) && t.Predicate.Equals(RDFVocabulary.SHACL.TARGET_CLASS) && t.Object.Equals(new RDFResource("ex:class"))));
