@@ -21,7 +21,6 @@ namespace RDFSharp.Model
     /// </summary>
     public abstract class RDFTarget : RDFResource
     {
-
         #region Properties
         /// <summary>
         /// Indicates the value of this target
@@ -42,6 +41,5 @@ namespace RDFSharp.Model
         /// </summary>
         internal abstract RDFGraph ToRDFGraph(RDFShape shape);
         #endregion
-
     }
 }

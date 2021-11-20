@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,23 +25,16 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFShapesGraph : RDFResource, IEnumerable<RDFShape>
     {
-
         #region Properties
         /// <summary>
         /// Count of the shapes composing this shapes graph
         /// </summary>
-        public long ShapesCount
-        {
-            get { return this.Shapes.Count; }
-        }
+        public long ShapesCount => this.Shapes.Count;
 
         /// <summary>
         /// Gets the enumerator on the shapes of this shapes graph for iteration
         /// </summary>
-        public IEnumerator<RDFShape> ShapesEnumerator
-        {
-            get { return this.Shapes.Values.GetEnumerator(); }
-        }
+        public IEnumerator<RDFShape> ShapesEnumerator => this.Shapes.Values.GetEnumerator();
 
         /// <summary>
         /// SHACL shapes contained in this shapes graph
@@ -55,9 +47,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a named shapes graph
         /// </summary>
         public RDFShapesGraph(RDFResource shapesGraphName) : base(shapesGraphName.ToString())
-        {
-            this.Shapes = new Dictionary<long, RDFShape>();
-        }
+            => this.Shapes = new Dictionary<long, RDFShape>();
 
         /// <summary>
         /// Default-ctor to build a blank shapes graph
@@ -69,18 +59,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the shapes of this shapes graph
         /// </summary>
-        IEnumerator<RDFShape> IEnumerable<RDFShape>.GetEnumerator()
-        {
-            return this.ShapesEnumerator;
-        }
+        IEnumerator<RDFShape> IEnumerable<RDFShape>.GetEnumerator() => this.ShapesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the shapes of this shapes graph
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ShapesEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ShapesEnumerator;
         #endregion
 
         #region Methods
@@ -91,13 +75,8 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFShapesGraph AddShape(RDFShape shape)
         {
-            if (shape != null)
-            {
-                if (!this.Shapes.ContainsKey(shape.PatternMemberID))
-                {
-                    this.Shapes.Add(shape.PatternMemberID, shape);
-                }
-            }
+            if (shape != null && !this.Shapes.ContainsKey(shape.PatternMemberID))
+                this.Shapes.Add(shape.PatternMemberID, shape);
             return this;
         }
 
@@ -108,13 +87,9 @@ namespace RDFSharp.Model
         {
             if (shapesGraph != null)
             {
-                foreach (var shape in shapesGraph)
-                {
+                foreach (RDFShape shape in shapesGraph)
                     if (!this.Shapes.ContainsKey(shape.PatternMemberID))
-                    {
                         this.Shapes.Add(shape.PatternMemberID, shape);
-                    }
-                }
             }
             return this;
         }
@@ -127,12 +102,7 @@ namespace RDFSharp.Model
         public RDFShapesGraph RemoveShape(RDFShape shape)
         {
             if (shape != null)
-            {
-                if (this.Shapes.ContainsKey(shape.PatternMemberID))
-                {
-                    this.Shapes.Remove(shape.PatternMemberID);
-                }
-            }
+                this.Shapes.Remove(shape.PatternMemberID);
             return this;
         }
         #endregion
@@ -147,9 +117,7 @@ namespace RDFSharp.Model
             {
                 long shapeID = RDFModelUtilities.CreateHash(shapeName);
                 if (this.Shapes.ContainsKey(shapeID))
-                {
                     return this.Shapes[shapeID];
-                }
             }
             return null;
         }
@@ -163,7 +131,7 @@ namespace RDFSharp.Model
         {
             RDFGraph result = new RDFGraph();
 
-            foreach (var shape in this)
+            foreach (RDFShape shape in this)
                 result = result.UnionWith(shape.ToRDFGraph());
 
             result.SetContext(this.URI);
@@ -190,6 +158,5 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 }

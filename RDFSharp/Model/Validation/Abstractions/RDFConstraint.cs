@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public abstract class RDFConstraint : RDFResource
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a generic constraint
@@ -47,6 +46,5 @@ namespace RDFSharp.Model
         /// </summary>
         internal abstract RDFGraph ToRDFGraph(RDFShape shape);
         #endregion
-
     }
 }
