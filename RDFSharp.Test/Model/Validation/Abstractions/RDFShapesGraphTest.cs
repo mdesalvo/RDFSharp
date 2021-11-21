@@ -75,7 +75,7 @@ namespace RDFSharp.Test.Model
 
             RDFShapesGraph shapesGraph2 = new RDFShapesGraph(new RDFResource("ex:shapesGraph2"));
             RDFShape shape2 = new RDFShape(new RDFResource("ex:shape2"));
-            shapesGraph1.AddShape(shape2);
+            shapesGraph2.AddShape(shape2);
             shapesGraph1.MergeShapes(shapesGraph2);
 
             Assert.IsTrue(shapesGraph1.ShapesCount == 2);

@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFValidationResult : RDFResource
     {
-
         #region Properties
         /// <summary>
         /// Indicates the severity level of this validation result (sh:resultSeverity)
@@ -90,7 +89,7 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFGraph ToRDFGraph()
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //ValidationResult
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT));
@@ -141,6 +140,5 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
-
     }
 }
