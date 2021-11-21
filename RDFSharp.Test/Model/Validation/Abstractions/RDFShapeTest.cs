@@ -102,9 +102,14 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(null); //This will not be accepted
             Assert.IsTrue(shape.ConstraintsCount == 1);
 
-            int j = 0;
+            int i = 0;
             IEnumerator<RDFConstraint> constraintsEnumerator = shape.ConstraintsEnumerator;
-            while (constraintsEnumerator.MoveNext()) j++;
+            while (constraintsEnumerator.MoveNext()) i++;
+            Assert.IsTrue(i == 1);
+
+            int j = 0;
+            foreach (RDFConstraint constraint in shape)
+                j++;
             Assert.IsTrue(j == 1);
         }
 

@@ -64,7 +64,7 @@ namespace RDFSharp.Test.Model
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
-        public void ShouldExportValidationResult(RDFValidationEnums.RDFShapeSeverity severity)
+        public void ShouldExportValidationResultWithLiteralValue(RDFValidationEnums.RDFShapeSeverity severity)
         {
             RDFConstraint constraint = new RDFMinLengthConstraint(8);
             RDFValidationResult result = new RDFValidationResult(
@@ -87,6 +87,47 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_PATH, new RDFResource("ex:resultPath"))));
             Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.VALUE, new RDFPlainLiteral("resultValue"))));
             Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_MESSAGE, new RDFPlainLiteral("resultMessage"))));
+            switch (severity)
+            {
+                case RDFValidationEnums.RDFShapeSeverity.Info:
+                    Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.INFO)));
+                    break;
+                case RDFValidationEnums.RDFShapeSeverity.Warning:
+                    Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.WARNING)));
+                    break;
+                case RDFValidationEnums.RDFShapeSeverity.Violation:
+                    Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.VIOLATION)));
+                    break;
+            }
+        }
+		
+		[DataTestMethod]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
+        public void ShouldExportValidationResultWithResourceValue(RDFValidationEnums.RDFShapeSeverity severity)
+        {
+            RDFConstraint constraint = new RDFMinLengthConstraint(8);
+            RDFValidationResult result = new RDFValidationResult(
+                new RDFNodeShape(new RDFResource("ex:sourceShape")),
+                constraint,
+                new RDFResource("ex:focusNode"),
+                new RDFResource("ex:resultPath"),
+                new RDFResource("ex:resultValue"),
+                new List<RDFLiteral>() { new RDFPlainLiteral("resultMessage","en") },
+                severity
+            );
+            RDFGraph vrGraph = result.ToRDFGraph();
+
+            Assert.IsNotNull(vrGraph);
+            Assert.IsTrue(vrGraph.TriplesCount.Equals(8));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT)));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.SOURCE_SHAPE, new RDFResource("ex:sourceShape"))));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, constraint)));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.FOCUS_NODE, new RDFResource("ex:focusNode"))));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_PATH, new RDFResource("ex:resultPath"))));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.VALUE, new RDFResource("ex:resultValue"))));
+            Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(result, RDFVocabulary.SHACL.RESULT_MESSAGE, new RDFPlainLiteral("resultMessage","en"))));
             switch (severity)
             {
                 case RDFValidationEnums.RDFShapeSeverity.Info:
