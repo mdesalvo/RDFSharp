@@ -27,31 +27,21 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFValidationReport : RDFResource, IEnumerable<RDFValidationResult>
     {
-
         #region Properties
         /// <summary>
         /// Indicates that the validation was successful (sh:conforms)
         /// </summary>
-        public bool Conforms
-        {
-            get { return this.ResultsCount == 0; }
-        }
+        public bool Conforms => this.ResultsCount == 0;
 
         /// <summary>
         /// Counter of the validator results
         /// </summary>
-        public int ResultsCount
-        {
-            get { return this.Results.Count; }
-        }
+        public int ResultsCount => this.Results.Count;
 
         /// <summary>
         /// Gets an enumerator on the validator results for iteration
         /// </summary>
-        public IEnumerator<RDFValidationResult> ResultsEnumerator
-        {
-            get { return this.Results.GetEnumerator(); }
-        }
+        public IEnumerator<RDFValidationResult> ResultsEnumerator => this.Results.GetEnumerator();
 
         /// <summary>
         /// List of validator results (sh:result)
@@ -64,9 +54,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a named validation report
         /// </summary>
         internal RDFValidationReport(RDFResource reportName) : base(reportName.ToString())
-        {
-            this.Results = new List<RDFValidationResult>();
-        }
+            => this.Results = new List<RDFValidationResult>();
 
         /// <summary>
         /// Default-ctor to build a blank validation report
@@ -78,18 +66,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the validation report's results
         /// </summary>
-        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator()
-        {
-            return this.ResultsEnumerator;
-        }
+        IEnumerator<RDFValidationResult> IEnumerable<RDFValidationResult>.GetEnumerator() => this.ResultsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the validation report's results
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ResultsEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.ResultsEnumerator;
         #endregion
 
         #region Methods
@@ -150,6 +132,5 @@ namespace RDFSharp.Model
         #endregion
 
         #endregion
-
     }
 }
