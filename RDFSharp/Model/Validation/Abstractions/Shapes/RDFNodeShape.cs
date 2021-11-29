@@ -21,7 +21,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFNodeShape : RDFShape
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a named node shape
@@ -40,7 +39,7 @@ namespace RDFSharp.Model
         /// </summary>
         public override RDFGraph ToRDFGraph()
         {
-            var result = base.ToRDFGraph();
+            RDFGraph result = base.ToRDFGraph();
 
             //NodeShape
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
@@ -48,6 +47,5 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
-
     }
 }
