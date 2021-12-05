@@ -21,7 +21,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFTargetSubjectsOf : RDFTarget
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a subjectsOf target on the given property
@@ -45,7 +44,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal override RDFGraph ToRDFGraph(RDFShape shape)
         {
-            var result = new RDFGraph();
+            RDFGraph result = new RDFGraph();
 
             //sh:targetSubjectsOf
             if (shape != null)
@@ -54,6 +53,5 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
-
     }
 }
