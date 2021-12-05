@@ -70,6 +70,10 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyShapeBecauseNullPath()
+            => Assert.ThrowsException<RDFModelException>(() => new RDFPropertyShape(null));
+
+        [TestMethod]
         public void ShouldEnumeratePropertyShape()
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
@@ -95,8 +99,9 @@ namespace RDFSharp.Test.Model
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
             propertyShape.AddName(new RDFPlainLiteral("hello"));
-            
-            Assert.IsTrue(propertyShape.Names.Count == 1);
+            propertyShape.AddName(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING));
+
+            Assert.IsTrue(propertyShape.Names.Count == 2);
         }
 
         [TestMethod]
@@ -105,8 +110,9 @@ namespace RDFSharp.Test.Model
         {
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.NAME);
             propertyShape.AddDescription(new RDFPlainLiteral("hello"));
+            propertyShape.AddDescription(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING));
 
-            Assert.IsTrue(propertyShape.Descriptions.Count == 1);
+            Assert.IsTrue(propertyShape.Descriptions.Count == 2);
         }
 
         [TestMethod]
