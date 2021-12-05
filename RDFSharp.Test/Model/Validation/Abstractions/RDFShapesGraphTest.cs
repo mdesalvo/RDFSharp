@@ -172,6 +172,35 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shapesGraph2.ShapesCount == 1);
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape") is RDFNodeShape);
             Assert.IsFalse(shapesGraph2.SelectShape("ex:shape").Deactivated);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").MessagesCount == 1);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages.Single().Equals(new RDFPlainLiteral("This is an error", "en-US")));
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").TargetsCount == 1);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets.Single().TargetValue.Equals(new RDFResource("ex:class")));
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").ConstraintsCount == 1);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints.Single() is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
+        }
+
+        [TestMethod]
+        public void ShouldImportShapesGraphHavingDeactivatedShape()
+        {
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
+            RDFNodeShape shape = new RDFNodeShape(new RDFResource("ex:shape"));
+            shape.Deactivate();
+            shape.AddMessage(new RDFPlainLiteral("This is an error", "en-US"));
+            shape.AddTarget(new RDFTargetClass(new RDFResource("ex:class")));
+            shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:class")));
+            shapesGraph.AddShape(shape);
+            RDFGraph graph = shapesGraph.ToRDFGraph();
+            RDFShapesGraph shapesGraph2 = RDFShapesGraph.FromRDFGraph(graph);
+
+            Assert.IsNotNull(shapesGraph2);
+            Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
+            Assert.IsNotNull(shapesGraph2.Shapes);
+            Assert.IsTrue(shapesGraph2.ShapesCount == 1);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape") is RDFNodeShape);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Deactivated);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").MessagesCount == 1);
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages.Single().Equals(new RDFPlainLiteral("This is an error", "en-US")));
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").TargetsCount == 1);
@@ -198,6 +227,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shapesGraph2.ShapesCount == 1);
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape") is RDFNodeShape);
             Assert.IsFalse(shapesGraph2.SelectShape("ex:shape").Deactivated);
+            Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").MessagesCount == 1);
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages.Single().Equals(new RDFPlainLiteral("This is an error", "en-US")));
             Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").TargetsCount == 1);

@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
@@ -24,7 +23,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFPropertyShape : RDFShape
     {
-
         #region Properties
         /// <summary>
         /// Indicates the property on which this property shape is applied (sh:path)
@@ -84,7 +82,6 @@ namespace RDFSharp.Model
         {
             if (description != null)
             {
-
                 //Plain Literal
                 if (description is RDFPlainLiteral)
                     this.Descriptions.Add(description);
@@ -93,7 +90,6 @@ namespace RDFSharp.Model
                 else
                     if (((RDFTypedLiteral)description).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
                     this.Descriptions.Add(description);
-
             }
             return this;
         }
@@ -105,7 +101,6 @@ namespace RDFSharp.Model
         {
             if (name != null)
             {
-
                 //Plain Literal
                 if (name is RDFPlainLiteral)
                     this.Names.Add(name);
@@ -114,7 +109,6 @@ namespace RDFSharp.Model
                 else
                     if (((RDFTypedLiteral)name).Datatype.Equals(RDFModelEnums.RDFDatatypes.XSD_STRING))
                     this.Names.Add(name);
-
             }
             return this;
         }
@@ -142,7 +136,7 @@ namespace RDFSharp.Model
         /// </summary>
         public override RDFGraph ToRDFGraph()
         {
-            var result = base.ToRDFGraph();
+            RDFGraph result = base.ToRDFGraph();
 
             //PropertyShape
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
@@ -167,6 +161,5 @@ namespace RDFSharp.Model
             return result;
         }
         #endregion
-
     }
 }
