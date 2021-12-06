@@ -24,7 +24,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -c Release
     
     - name: Coverage
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v2.1.0
       with:
         fail_ci_if_error: true
         verbose: true
