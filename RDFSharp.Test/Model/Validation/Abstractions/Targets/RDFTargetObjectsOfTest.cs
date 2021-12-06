@@ -15,8 +15,9 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RDFSharp.Model;
 
-namespace RDFSharp.Model.Test
+namespace RDFSharp.Test.Model
 {
     [TestClass]
     public class RDFTargetObjectsOfTest
