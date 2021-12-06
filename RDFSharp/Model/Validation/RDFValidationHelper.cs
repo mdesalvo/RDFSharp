@@ -12,7 +12,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -25,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFValidationHelper
     {
-
         #region Modeling
         /// <summary>
         /// Gets the focus nodes of the given shape
@@ -39,7 +37,6 @@ namespace RDFSharp.Model
                 {
                     switch (target)
                     {
-
                         //sh:targetClass
                         case RDFTargetClass targetClass:
                             result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue)
@@ -64,7 +61,6 @@ namespace RDFSharp.Model
                                                      .Select(x => x.Object)
                                                      .OfType<RDFResource>());
                             break;
-
                     }
                 }
             }
@@ -81,7 +77,6 @@ namespace RDFSharp.Model
             {
                 switch (shape)
                 {
-
                     //sh:NodeShape
                     case RDFNodeShape nodeShape:
                         result.Add(focusNode);
@@ -98,7 +93,6 @@ namespace RDFSharp.Model
                             }
                         }
                         break;
-
                 }
             }
             return RDFQueryUtilities.RemoveDuplicates(result);
@@ -112,7 +106,6 @@ namespace RDFSharp.Model
             var result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null)
             {
-
                 #region visitContext
                 if (visitContext == null)
                 {
@@ -132,15 +125,14 @@ namespace RDFSharp.Model
                 #endregion
 
                 //rdf:type
-                foreach (var triple in dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
-                                                .SelectTriplesByObject(className))
+                foreach (RDFTriple triple in dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+                                                      .SelectTriplesByObject(className))
                     result.Add(triple.Subject);
 
                 //rdfs:subClassOf
-                foreach (var triple in dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF)
-                                                .SelectTriplesByObject(className))
+                foreach (RDFTriple triple in dataGraph.SelectTriplesByPredicate(RDFVocabulary.RDFS.SUB_CLASS_OF)
+                                                      .SelectTriplesByObject(className))
                     result.AddRange(dataGraph.GetInstancesOfClass((RDFResource)triple.Subject, visitContext));
-
             }
             return result;
         }
@@ -645,6 +637,5 @@ namespace RDFSharp.Model
             }
         }
         #endregion
-
     }
 }

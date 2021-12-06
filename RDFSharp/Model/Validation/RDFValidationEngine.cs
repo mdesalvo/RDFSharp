@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     /// </summary>
     public static class RDFValidationEngine
     {
-
         #region Methods
         /// <summary>
         /// Validates the given data graph against the given SHACL shapes graph
@@ -56,26 +55,23 @@ namespace RDFSharp.Model
             RDFValidationReport report = new RDFValidationReport(new RDFResource());
             if (!shape.Deactivated)
             {
-
                 //Resolve focus nodes
                 if (focusNodes == null)
                     focusNodes = dataGraph.GetFocusNodesOf(shape);
+
+                //Evaluate focus nodes
                 foreach (RDFPatternMember focusNode in focusNodes)
                 {
-
                     //Resolve value nodes
                     List<RDFPatternMember> valueNodes = dataGraph.GetValueNodesOf(shape, focusNode);
 
                     //Evaluate constraints
                     foreach (RDFConstraint constraint in shape)
                         report.MergeResults(constraint.ValidateConstraint(shapesGraph, dataGraph, shape, focusNode, valueNodes));
-
                 }
-
             }
             return report;
         }
         #endregion
-
     }
 }
