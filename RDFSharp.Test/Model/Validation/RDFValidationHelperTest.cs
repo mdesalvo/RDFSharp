@@ -19,6 +19,7 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model
@@ -639,6 +640,90 @@ namespace RDFSharp.Test.Model
 
             Assert.IsNotNull(persons);
             Assert.IsTrue(persons.Count == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
+        public void ShouldParseNodeShapeWithTargetClassAndClassConstraintFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
+        {
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+            nodeShape.SetSeverity(severity);
+            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            nodeShape.AddMessage(new RDFPlainLiteral("message", "en-US"));
+            nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
+            shapesGraph.AddShape(nodeShape);
+            RDFGraph graph = shapesGraph.ToRDFGraph();
+            RDFShapesGraph shapesGraph2 = RDFValidationHelper.FromRDFGraph(graph);
+
+            Assert.IsNotNull(shapesGraph2);
+            Assert.IsTrue(shapesGraph.ShapesCount == 1);
+            RDFNodeShape nodeShape2 = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+            Assert.IsNotNull(nodeShape2);
+            Assert.IsFalse(nodeShape2.Deactivated);
+            Assert.IsTrue(nodeShape2.Severity == severity);
+            Assert.IsTrue(nodeShape2.ConstraintsCount == 1);
+            RDFClassConstraint nodeShape2ClassConstraint = nodeShape2.Constraints.Single() as RDFClassConstraint;
+            Assert.IsNotNull(nodeShape2ClassConstraint);
+            Assert.IsTrue(nodeShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
+            Assert.IsTrue(nodeShape2.TargetsCount == 1);
+            RDFTargetClass nodeShape2TargetClass = nodeShape2.Targets.Single() as RDFTargetClass;
+            Assert.IsNotNull(nodeShape2TargetClass);
+            Assert.IsTrue(nodeShape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
+            Assert.IsTrue(nodeShape2.MessagesCount == 1);
+            RDFPlainLiteral nodeShape2Message = nodeShape2.Messages.Single() as RDFPlainLiteral;
+            Assert.IsNotNull(nodeShape2Message);
+            Assert.IsTrue(nodeShape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
+        public void ShouldParsePropertyShapeWithTargetClassAndClassConstraintFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
+        {
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS);
+            propertyShape.SetSeverity(severity);
+            propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            propertyShape.AddMessage(new RDFPlainLiteral("message", "en-US"));
+            propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
+            propertyShape.AddDescription(new RDFPlainLiteral("description", "en-US"));
+            propertyShape.AddName(new RDFPlainLiteral("name", "en-US"));
+            propertyShape.SetOrder(1);
+            propertyShape.SetGroup(new RDFResource("ex:shapeGroup"));
+            shapesGraph.AddShape(propertyShape);
+            RDFGraph graph = shapesGraph.ToRDFGraph();
+            RDFShapesGraph shapesGraph2 = RDFValidationHelper.FromRDFGraph(graph);
+
+            Assert.IsNotNull(shapesGraph2);
+            Assert.IsTrue(shapesGraph.ShapesCount == 1);
+            RDFPropertyShape propertyShape2 = shapesGraph.SelectShape("ex:propertyShape") as RDFPropertyShape;
+            Assert.IsNotNull(propertyShape2);
+            Assert.IsFalse(propertyShape2.Deactivated);
+            Assert.IsTrue(propertyShape2.Severity == severity);
+            Assert.IsTrue(propertyShape2.Descriptions.Count == 1);
+            Assert.IsTrue(propertyShape2.Descriptions.Single().Equals(new RDFPlainLiteral("description", "en-US")));
+            Assert.IsTrue(propertyShape2.Names.Count == 1);
+            Assert.IsTrue(propertyShape2.Names.Single().Equals(new RDFPlainLiteral("name", "en-US")));
+            Assert.IsNotNull(propertyShape2.Order);
+            Assert.IsTrue(propertyShape2.Order.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsNotNull(propertyShape2.Group);
+            Assert.IsTrue(propertyShape2.Group.Equals(new RDFResource("ex:shapeGroup")));
+            Assert.IsTrue(propertyShape2.ConstraintsCount == 1);
+            RDFClassConstraint propertyShape2ClassConstraint = propertyShape2.Constraints.Single() as RDFClassConstraint;
+            Assert.IsNotNull(propertyShape2ClassConstraint);
+            Assert.IsTrue(propertyShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
+            Assert.IsTrue(propertyShape2.TargetsCount == 1);
+            RDFTargetClass propertyShape2TargetClass = propertyShape2.Targets.Single() as RDFTargetClass;
+            Assert.IsNotNull(propertyShape2TargetClass);
+            Assert.IsTrue(propertyShape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
+            Assert.IsTrue(propertyShape2.MessagesCount == 1);
+            RDFPlainLiteral propertyShape2Message = propertyShape2.Messages.Single() as RDFPlainLiteral;
+            Assert.IsNotNull(propertyShape2Message);
+            Assert.IsTrue(propertyShape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
         }
         #endregion
     }
