@@ -38,25 +38,25 @@ namespace RDFSharp.Model
                     switch (target)
                     {
                         //sh:targetClass
-                        case RDFTargetClass targetClass:
+                        case RDFTargetClass _:
                             result.AddRange(dataGraph.GetInstancesOfClass(target.TargetValue)
                                                      .OfType<RDFResource>());
                             break;
 
                         //sh:targetNode
-                        case RDFTargetNode targetNode:
+                        case RDFTargetNode _:
                             result.Add(target.TargetValue);
                             break;
 
                         //sh:targetSubjectsOf
-                        case RDFTargetSubjectsOf targetSubjectsOf:
+                        case RDFTargetSubjectsOf _:
                             result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue)
                                                      .Select(x => x.Subject)
                                                      .OfType<RDFResource>());
                             break;
 
                         //sh:targetObjectsOf
-                        case RDFTargetObjectsOf targetObjectsOf:
+                        case RDFTargetObjectsOf _:
                             result.AddRange(dataGraph.SelectTriplesByPredicate(target.TargetValue)
                                                      .Select(x => x.Object)
                                                      .OfType<RDFResource>());
@@ -73,21 +73,21 @@ namespace RDFSharp.Model
         internal static List<RDFPatternMember> GetValueNodesOf(this RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode)
         {
             List<RDFPatternMember> result = new List<RDFPatternMember>();
-            if (shape != null && dataGraph != null)
+            if (shape != null && dataGraph != null && focusNode != null)
             {
                 switch (shape)
                 {
                     //sh:NodeShape
-                    case RDFNodeShape nodeShape:
+                    case RDFNodeShape _:
                         result.Add(focusNode);
                         break;
 
                     //sh:PropertyShape
                     case RDFPropertyShape propertyShape:
-                        if (focusNode is RDFResource)
+                        if (focusNode is RDFResource focusNodeResource)
                         {
-                            foreach (var triple in dataGraph.SelectTriplesBySubject((RDFResource)focusNode)
-                                                            .SelectTriplesByPredicate(((RDFPropertyShape)shape).Path))
+                            foreach (RDFTriple triple in dataGraph.SelectTriplesBySubject(focusNodeResource)
+                                                                  .SelectTriplesByPredicate(propertyShape.Path))
                             {
                                 result.Add(triple.Object);
                             }
@@ -103,7 +103,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFPatternMember> GetInstancesOfClass(this RDFGraph dataGraph, RDFResource className, HashSet<long> visitContext = null)
         {
-            var result = new List<RDFPatternMember>();
+            List<RDFPatternMember> result = new List<RDFPatternMember>();
             if (className != null && dataGraph != null)
             {
                 #region visitContext
