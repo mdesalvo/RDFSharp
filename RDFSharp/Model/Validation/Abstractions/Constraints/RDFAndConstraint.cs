@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFAndConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Shapes required for the given RDF term
@@ -37,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build an and constraint
         /// </summary>
         public RDFAndConstraint() : base()
-        {
-            this.AndShapes = new Dictionary<long, RDFResource>();
-        }
+            => this.AndShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods
@@ -49,9 +46,7 @@ namespace RDFSharp.Model
         public RDFAndConstraint AddShape(RDFResource shapeUri)
         {
             if (shapeUri != null && !this.AndShapes.ContainsKey(shapeUri.PatternMemberID))
-            {
                 this.AndShapes.Add(shapeUri.PatternMemberID, shapeUri);
-            }
             return this;
         }
 
@@ -75,6 +70,7 @@ namespace RDFSharp.Model
             foreach (RDFPatternMember valueNode in valueNodes)
             {
                 bool valueNodeConforms = true;
+
                 foreach (RDFShape andShape in andShapes)
                 {
                     RDFValidationReport andShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, andShape, new List<RDFPatternMember>() { valueNode });
@@ -107,7 +103,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //Get collection from andShapes
                 RDFCollection andShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
                 foreach (RDFResource andShape in this.AndShapes.Values)
@@ -116,11 +111,9 @@ namespace RDFSharp.Model
 
                 //sh:and
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.AND, andShapes.ReificationSubject));
-
             }
             return result;
         }
         #endregion
-
     }
 }
