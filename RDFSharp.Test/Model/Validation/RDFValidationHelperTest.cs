@@ -642,16 +642,27 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(persons.Count == 0);
         }
 
+        [TestMethod]
+        public void ShouldParseFromNullGraph()
+        {
+            RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(null);
+
+            Assert.IsNull(shapesGraph);
+        }
+
         [DataTestMethod]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
-        public void ShouldParseNodeShapeWithTargetClassAndClassConstraintFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
+        public void ShouldParseNodeShapeWithClassConstraintFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
         {
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
             nodeShape.SetSeverity(severity);
             nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
+            nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
             nodeShape.AddMessage(new RDFPlainLiteral("message", "en-US"));
             nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
             shapesGraph.AddShape(nodeShape);
@@ -659,8 +670,9 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph2 = RDFValidationHelper.FromRDFGraph(graph);
 
             Assert.IsNotNull(shapesGraph2);
-            Assert.IsTrue(shapesGraph.ShapesCount == 1);
-            RDFNodeShape nodeShape2 = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+            Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
+            Assert.IsTrue(shapesGraph2.ShapesCount == 1);
+            RDFNodeShape nodeShape2 = shapesGraph2.SelectShape("ex:nodeShape") as RDFNodeShape;
             Assert.IsNotNull(nodeShape2);
             Assert.IsFalse(nodeShape2.Deactivated);
             Assert.IsTrue(nodeShape2.Severity == severity);
@@ -668,10 +680,19 @@ namespace RDFSharp.Test.Model
             RDFClassConstraint nodeShape2ClassConstraint = nodeShape2.Constraints.Single() as RDFClassConstraint;
             Assert.IsNotNull(nodeShape2ClassConstraint);
             Assert.IsTrue(nodeShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
-            Assert.IsTrue(nodeShape2.TargetsCount == 1);
-            RDFTargetClass nodeShape2TargetClass = nodeShape2.Targets.Single() as RDFTargetClass;
+            Assert.IsTrue(nodeShape2.TargetsCount == 4);
+            RDFTargetClass nodeShape2TargetClass = nodeShape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
             Assert.IsNotNull(nodeShape2TargetClass);
             Assert.IsTrue(nodeShape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
+            RDFTargetNode nodeShape2TargetNode = nodeShape2.Targets.Single(x => x is RDFTargetNode) as RDFTargetNode;
+            Assert.IsNotNull(nodeShape2TargetNode);
+            Assert.IsTrue(nodeShape2TargetNode.TargetValue.Equals(new RDFResource("ex:Alice")));
+            RDFTargetSubjectsOf nodeShape2TargetSubjectsOf = nodeShape2.Targets.Single(x => x is RDFTargetSubjectsOf) as RDFTargetSubjectsOf;
+            Assert.IsNotNull(nodeShape2TargetSubjectsOf);
+            Assert.IsTrue(nodeShape2TargetSubjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFTargetObjectsOf nodeShape2TargetObjectsOf = nodeShape2.Targets.Single(x => x is RDFTargetObjectsOf) as RDFTargetObjectsOf;
+            Assert.IsNotNull(nodeShape2TargetObjectsOf);
+            Assert.IsTrue(nodeShape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
             Assert.IsTrue(nodeShape2.MessagesCount == 1);
             RDFPlainLiteral nodeShape2Message = nodeShape2.Messages.Single() as RDFPlainLiteral;
             Assert.IsNotNull(nodeShape2Message);
@@ -682,12 +703,15 @@ namespace RDFSharp.Test.Model
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
-        public void ShouldParsePropertyShapeWithTargetClassAndClassConstraintFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
+        public void ShouldParsePropertyShapeWithClassConstraintFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
         {
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.SetSeverity(severity);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
+            propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
             propertyShape.AddMessage(new RDFPlainLiteral("message", "en-US"));
             propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
             propertyShape.AddDescription(new RDFPlainLiteral("description", "en-US"));
@@ -699,8 +723,9 @@ namespace RDFSharp.Test.Model
             RDFShapesGraph shapesGraph2 = RDFValidationHelper.FromRDFGraph(graph);
 
             Assert.IsNotNull(shapesGraph2);
-            Assert.IsTrue(shapesGraph.ShapesCount == 1);
-            RDFPropertyShape propertyShape2 = shapesGraph.SelectShape("ex:propertyShape") as RDFPropertyShape;
+            Assert.IsTrue(shapesGraph2.ShapesCount == 1);
+            Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
+            RDFPropertyShape propertyShape2 = shapesGraph2.SelectShape("ex:propertyShape") as RDFPropertyShape;
             Assert.IsNotNull(propertyShape2);
             Assert.IsFalse(propertyShape2.Deactivated);
             Assert.IsTrue(propertyShape2.Severity == severity);
@@ -716,10 +741,19 @@ namespace RDFSharp.Test.Model
             RDFClassConstraint propertyShape2ClassConstraint = propertyShape2.Constraints.Single() as RDFClassConstraint;
             Assert.IsNotNull(propertyShape2ClassConstraint);
             Assert.IsTrue(propertyShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
-            Assert.IsTrue(propertyShape2.TargetsCount == 1);
-            RDFTargetClass propertyShape2TargetClass = propertyShape2.Targets.Single() as RDFTargetClass;
+            Assert.IsTrue(propertyShape2.TargetsCount == 4);
+            RDFTargetClass propertyShape2TargetClass = propertyShape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
             Assert.IsNotNull(propertyShape2TargetClass);
             Assert.IsTrue(propertyShape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
+            RDFTargetNode propertyShape2TargetNode = propertyShape2.Targets.Single(x => x is RDFTargetNode) as RDFTargetNode;
+            Assert.IsNotNull(propertyShape2TargetNode);
+            Assert.IsTrue(propertyShape2TargetNode.TargetValue.Equals(new RDFResource("ex:Alice")));
+            RDFTargetSubjectsOf propertyShape2TargetSubjectsOf = propertyShape2.Targets.Single(x => x is RDFTargetSubjectsOf) as RDFTargetSubjectsOf;
+            Assert.IsNotNull(propertyShape2TargetSubjectsOf);
+            Assert.IsTrue(propertyShape2TargetSubjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFTargetObjectsOf propertyShape2TargetObjectsOf = propertyShape2.Targets.Single(x => x is RDFTargetObjectsOf) as RDFTargetObjectsOf;
+            Assert.IsNotNull(propertyShape2TargetObjectsOf);
+            Assert.IsTrue(propertyShape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
             Assert.IsTrue(propertyShape2.MessagesCount == 1);
             RDFPlainLiteral propertyShape2Message = propertyShape2.Messages.Single() as RDFPlainLiteral;
             Assert.IsNotNull(propertyShape2Message);
