@@ -672,6 +672,9 @@ namespace RDFSharp.Test.Model
             nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
             nodeShape.AddConstraint(new RDFAndConstraint().AddShape(nodeShape));
             nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
+            nodeShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+            nodeShape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
+            nodeShape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -710,7 +713,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(nodeShape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(nodeShape2.ConstraintsCount == 3);
+            Assert.IsTrue(nodeShape2.ConstraintsCount == 6);
             RDFClassConstraint nodeShape2ClassConstraint = nodeShape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(nodeShape2ClassConstraint);
             Assert.IsTrue(nodeShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -721,6 +724,15 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(nodeShape2ClosedConstraint);
             Assert.IsTrue(nodeShape2ClosedConstraint.Closed);
             Assert.IsTrue(nodeShape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
+            RDFDatatypeConstraint nodeShape2DatatypeConstraint = nodeShape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
+            Assert.IsNotNull(nodeShape2DatatypeConstraint);
+            Assert.IsTrue(nodeShape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            RDFDisjointConstraint nodeShape2DisjointConstraint = nodeShape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
+            Assert.IsNotNull(nodeShape2DisjointConstraint);
+            Assert.IsTrue(nodeShape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFEqualsConstraint nodeShape2EqualsConstraint = nodeShape2.Constraints.Single(x => x is RDFEqualsConstraint) as RDFEqualsConstraint;
+            Assert.IsNotNull(nodeShape2EqualsConstraint);
+            Assert.IsTrue(nodeShape2EqualsConstraint.EqualsPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
             #endregion
         }
 
@@ -752,6 +764,9 @@ namespace RDFSharp.Test.Model
             propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
             propertyShape.AddConstraint(new RDFAndConstraint().AddShape(propertyShape));
             propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
+            propertyShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+            propertyShape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
+            propertyShape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -800,7 +815,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(propertyShape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(propertyShape2.ConstraintsCount == 3);
+            Assert.IsTrue(propertyShape2.ConstraintsCount == 6);
             RDFClassConstraint propertyShape2ClassConstraint = propertyShape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(propertyShape2ClassConstraint);
             Assert.IsTrue(propertyShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -811,6 +826,15 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(propertyShape2ClosedConstraint);
             Assert.IsTrue(propertyShape2ClosedConstraint.Closed);
             Assert.IsTrue(propertyShape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
+            RDFDatatypeConstraint propertyShape2DatatypeConstraint = propertyShape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
+            Assert.IsNotNull(propertyShape2DatatypeConstraint);
+            Assert.IsTrue(propertyShape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            RDFDisjointConstraint propertyShape2DisjointConstraint = propertyShape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
+            Assert.IsNotNull(propertyShape2DisjointConstraint);
+            Assert.IsTrue(propertyShape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFEqualsConstraint propertyShape2EqualsConstraint = propertyShape2.Constraints.Single(x => x is RDFEqualsConstraint) as RDFEqualsConstraint;
+            Assert.IsNotNull(propertyShape2EqualsConstraint);
+            Assert.IsTrue(propertyShape2EqualsConstraint.EqualsPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
             #endregion
         }
         #endregion

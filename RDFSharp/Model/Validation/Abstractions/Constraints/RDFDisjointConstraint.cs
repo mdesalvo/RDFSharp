@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFDisjointConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Predicate for which value nodes of a given RDF term are checked for absence
@@ -64,7 +63,6 @@ namespace RDFSharp.Model
                 if (dataGraph.Any(t => t.Subject.Equals(focusNode)
                                            && t.Predicate.Equals(this.DisjointPredicate)
                                                && t.Object.Equals(valueNode)))
-                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -72,8 +70,6 @@ namespace RDFSharp.Model
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-
-                }
             }
             #endregion
 
@@ -88,14 +84,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:disjoint
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DISJOINT, this.DisjointPredicate));
-
             }
             return result;
         }
         #endregion
-
     }
 }

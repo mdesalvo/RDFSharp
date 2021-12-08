@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFEqualsConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Predicate for which value nodes of a given RDF term are checked for presence
@@ -67,7 +66,6 @@ namespace RDFSharp.Model
             foreach (RDFPatternMember predicateNode in predicateNodes)
             {
                 if (!valueNodes.Any(v => v.Equals(predicateNode)))
-                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -75,13 +73,11 @@ namespace RDFSharp.Model
                                                              predicateNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
             }
 
             foreach (RDFPatternMember valueNode in valueNodes)
             {
                 if (!predicateNodes.Any(p => p.Equals(valueNode)))
-                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -89,7 +85,6 @@ namespace RDFSharp.Model
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
             }
             #endregion
 
@@ -104,14 +99,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:equals
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, this.EqualsPredicate));
-
             }
             return result;
         }
         #endregion
-
     }
 }
