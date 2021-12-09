@@ -656,29 +656,34 @@ namespace RDFSharp.Test.Model
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
         public void ShouldParseNodeShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
         {
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+            RDFNodeShape shape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
 
             //Attributes
-            nodeShape.SetSeverity(severity);
-            nodeShape.AddMessage(new RDFPlainLiteral("message", "en-US"));
+            shape.SetSeverity(severity);
+            shape.AddMessage(new RDFPlainLiteral("message", "en-US"));
 
             //Targets
-            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
+            shape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            shape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            shape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
+            shape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
-            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(nodeShape));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-            nodeShape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
+            shape.AddConstraint(new RDFAndConstraint().AddShape(shape));
+            shape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+            shape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFHasValueConstraint(new RDFResource("ex:Alice")));
+            shape.AddConstraint(new RDFHasValueConstraint(new RDFPlainLiteral("Alice")));
+            shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Resource).AddValue(new RDFResource("ex:Alice")));
+            shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Literal).AddValue(new RDFPlainLiteral("Alice")));
+            shape.AddConstraint(new RDFLanguageInConstraint(new List<string>() { "en-US" }));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
-            shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(shape);
             RDFGraph graph = shapesGraph.ToRDFGraph();
             RDFShapesGraph shapesGraph2 = RDFValidationHelper.FromRDFGraph(graph);
 
@@ -686,53 +691,68 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(shapesGraph2);
             Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
             Assert.IsTrue(shapesGraph2.ShapesCount == 1);
-            RDFNodeShape nodeShape2 = shapesGraph2.SelectShape("ex:nodeShape") as RDFNodeShape;
-            Assert.IsNotNull(nodeShape2);
+            RDFNodeShape shape2 = shapesGraph2.SelectShape("ex:nodeShape") as RDFNodeShape;
+            Assert.IsNotNull(shape2);
             
             //Attributes
-            Assert.IsFalse(nodeShape2.Deactivated);
-            Assert.IsTrue(nodeShape2.Severity == severity);
-            Assert.IsTrue(nodeShape2.MessagesCount == 1);
-            RDFPlainLiteral nodeShape2Message = nodeShape2.Messages.Single() as RDFPlainLiteral;
-            Assert.IsNotNull(nodeShape2Message);
-            Assert.IsTrue(nodeShape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
+            Assert.IsFalse(shape2.Deactivated);
+            Assert.IsTrue(shape2.Severity == severity);
+            Assert.IsTrue(shape2.MessagesCount == 1);
+            RDFPlainLiteral shape2Message = shape2.Messages.Single() as RDFPlainLiteral;
+            Assert.IsNotNull(shape2Message);
+            Assert.IsTrue(shape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
 
             //Targets
-            Assert.IsTrue(nodeShape2.TargetsCount == 4);
-            RDFTargetClass nodeShape2TargetClass = nodeShape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
-            Assert.IsNotNull(nodeShape2TargetClass);
-            Assert.IsTrue(nodeShape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
-            RDFTargetNode nodeShape2TargetNode = nodeShape2.Targets.Single(x => x is RDFTargetNode) as RDFTargetNode;
-            Assert.IsNotNull(nodeShape2TargetNode);
-            Assert.IsTrue(nodeShape2TargetNode.TargetValue.Equals(new RDFResource("ex:Alice")));
-            RDFTargetSubjectsOf nodeShape2TargetSubjectsOf = nodeShape2.Targets.Single(x => x is RDFTargetSubjectsOf) as RDFTargetSubjectsOf;
-            Assert.IsNotNull(nodeShape2TargetSubjectsOf);
-            Assert.IsTrue(nodeShape2TargetSubjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
-            RDFTargetObjectsOf nodeShape2TargetObjectsOf = nodeShape2.Targets.Single(x => x is RDFTargetObjectsOf) as RDFTargetObjectsOf;
-            Assert.IsNotNull(nodeShape2TargetObjectsOf);
-            Assert.IsTrue(nodeShape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(shape2.TargetsCount == 4);
+            RDFTargetClass shape2TargetClass = shape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
+            Assert.IsNotNull(shape2TargetClass);
+            Assert.IsTrue(shape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
+            RDFTargetNode shape2TargetNode = shape2.Targets.Single(x => x is RDFTargetNode) as RDFTargetNode;
+            Assert.IsNotNull(shape2TargetNode);
+            Assert.IsTrue(shape2TargetNode.TargetValue.Equals(new RDFResource("ex:Alice")));
+            RDFTargetSubjectsOf shape2TargetSubjectsOf = shape2.Targets.Single(x => x is RDFTargetSubjectsOf) as RDFTargetSubjectsOf;
+            Assert.IsNotNull(shape2TargetSubjectsOf);
+            Assert.IsTrue(shape2TargetSubjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFTargetObjectsOf shape2TargetObjectsOf = shape2.Targets.Single(x => x is RDFTargetObjectsOf) as RDFTargetObjectsOf;
+            Assert.IsNotNull(shape2TargetObjectsOf);
+            Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(nodeShape2.ConstraintsCount == 6);
-            RDFClassConstraint nodeShape2ClassConstraint = nodeShape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
-            Assert.IsNotNull(nodeShape2ClassConstraint);
-            Assert.IsTrue(nodeShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
-            RDFAndConstraint nodeShape2AndConstraint = nodeShape2.Constraints.Single(x => x is RDFAndConstraint) as RDFAndConstraint;
-            Assert.IsNotNull(nodeShape2AndConstraint);
-            Assert.IsTrue(nodeShape2AndConstraint.AndShapes.ContainsKey(nodeShape2.PatternMemberID));
-            RDFClosedConstraint nodeShape2ClosedConstraint = nodeShape2.Constraints.Single(x => x is RDFClosedConstraint) as RDFClosedConstraint;
-            Assert.IsNotNull(nodeShape2ClosedConstraint);
-            Assert.IsTrue(nodeShape2ClosedConstraint.Closed);
-            Assert.IsTrue(nodeShape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
-            RDFDatatypeConstraint nodeShape2DatatypeConstraint = nodeShape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
-            Assert.IsNotNull(nodeShape2DatatypeConstraint);
-            Assert.IsTrue(nodeShape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-            RDFDisjointConstraint nodeShape2DisjointConstraint = nodeShape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
-            Assert.IsNotNull(nodeShape2DisjointConstraint);
-            Assert.IsTrue(nodeShape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
-            RDFEqualsConstraint nodeShape2EqualsConstraint = nodeShape2.Constraints.Single(x => x is RDFEqualsConstraint) as RDFEqualsConstraint;
-            Assert.IsNotNull(nodeShape2EqualsConstraint);
-            Assert.IsTrue(nodeShape2EqualsConstraint.EqualsPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(shape2.ConstraintsCount == 11);
+            RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
+            Assert.IsNotNull(shape2ClassConstraint);
+            Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
+            RDFAndConstraint shape2AndConstraint = shape2.Constraints.Single(x => x is RDFAndConstraint) as RDFAndConstraint;
+            Assert.IsNotNull(shape2AndConstraint);
+            Assert.IsTrue(shape2AndConstraint.AndShapes.ContainsKey(shape2.PatternMemberID));
+            RDFClosedConstraint shape2ClosedConstraint = shape2.Constraints.Single(x => x is RDFClosedConstraint) as RDFClosedConstraint;
+            Assert.IsNotNull(shape2ClosedConstraint);
+            Assert.IsTrue(shape2ClosedConstraint.Closed);
+            Assert.IsTrue(shape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
+            RDFDatatypeConstraint shape2DatatypeConstraint = shape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
+            Assert.IsNotNull(shape2DatatypeConstraint);
+            Assert.IsTrue(shape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            RDFDisjointConstraint shape2DisjointConstraint = shape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
+            Assert.IsNotNull(shape2DisjointConstraint);
+            Assert.IsTrue(shape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFEqualsConstraint shape2EqualsConstraint = shape2.Constraints.Single(x => x is RDFEqualsConstraint) as RDFEqualsConstraint;
+            Assert.IsNotNull(shape2EqualsConstraint);
+            Assert.IsTrue(shape2EqualsConstraint.EqualsPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFHasValueConstraint shape2HasValueConstraintRes = shape2.Constraints.Single(x => x is RDFHasValueConstraint hvc && hvc.Value is RDFResource) as RDFHasValueConstraint;
+            Assert.IsNotNull(shape2HasValueConstraintRes);
+            Assert.IsTrue(shape2HasValueConstraintRes.Value.Equals(new RDFResource("ex:Alice")));
+            RDFHasValueConstraint shape2HasValueConstraintLit = shape2.Constraints.Single(x => x is RDFHasValueConstraint hvc && hvc.Value is RDFLiteral) as RDFHasValueConstraint;
+            Assert.IsNotNull(shape2HasValueConstraintLit);
+            Assert.IsTrue(shape2HasValueConstraintLit.Value.Equals(new RDFPlainLiteral("Alice")));
+            RDFInConstraint shape2InConstraintRes = shape2.Constraints.Single(x => x is RDFInConstraint ic && ic.ItemType == RDFModelEnums.RDFItemTypes.Resource) as RDFInConstraint;
+            Assert.IsNotNull(shape2InConstraintRes);
+            Assert.IsTrue(shape2InConstraintRes.InValues.ContainsKey(new RDFResource("ex:Alice").PatternMemberID));
+            RDFInConstraint shape2InConstraintLit = shape2.Constraints.Single(x => x is RDFInConstraint ic && ic.ItemType == RDFModelEnums.RDFItemTypes.Literal) as RDFInConstraint;
+            Assert.IsNotNull(shape2InConstraintLit);
+            Assert.IsTrue(shape2InConstraintLit.InValues.ContainsKey(new RDFPlainLiteral("Alice").PatternMemberID));
+            RDFLanguageInConstraint shape2LanguageInConstraint = shape2.Constraints.Single(x => x is RDFLanguageInConstraint) as RDFLanguageInConstraint;
+            Assert.IsNotNull(shape2LanguageInConstraint);
+            Assert.IsTrue(shape2LanguageInConstraint.LanguageTags.Contains("EN-US"));
             #endregion
         }
 
@@ -742,35 +762,40 @@ namespace RDFSharp.Test.Model
         [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
         public void ShouldParsePropertyShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
         {
-            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS);
+            RDFPropertyShape shape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS);
 
             //Attributes
-            propertyShape.SetSeverity(severity);
-            propertyShape.AddMessage(new RDFPlainLiteral("message", "en-US"));
+            shape.SetSeverity(severity);
+            shape.AddMessage(new RDFPlainLiteral("message", "en-US"));
 
             //NonValidating
-            propertyShape.AddDescription(new RDFPlainLiteral("description", "en-US"));
-            propertyShape.AddName(new RDFPlainLiteral("name", "en-US"));
-            propertyShape.SetOrder(1);
-            propertyShape.SetGroup(new RDFResource("ex:shapeGroup"));
+            shape.AddDescription(new RDFPlainLiteral("description", "en-US"));
+            shape.AddName(new RDFPlainLiteral("name", "en-US"));
+            shape.SetOrder(1);
+            shape.SetGroup(new RDFResource("ex:shapeGroup"));
 
             //Targets
-            propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
+            shape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            shape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            shape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
+            shape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
             
             //Constraints
-            propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
-            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(propertyShape));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-            propertyShape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
+            shape.AddConstraint(new RDFAndConstraint().AddShape(shape));
+            shape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+            shape.AddConstraint(new RDFDisjointConstraint(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFEqualsConstraint(RDFVocabulary.FOAF.KNOWS));
+            shape.AddConstraint(new RDFHasValueConstraint(new RDFResource("ex:Alice")));
+            shape.AddConstraint(new RDFHasValueConstraint(new RDFPlainLiteral("Alice")));
+            shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Resource).AddValue(new RDFResource("ex:Alice")));
+            shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Literal).AddValue(new RDFPlainLiteral("Alice")));
+            shape.AddConstraint(new RDFLanguageInConstraint(new List<string>() { "en-US" }));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
-            shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(shape);
             RDFGraph graph = shapesGraph.ToRDFGraph();
             RDFShapesGraph shapesGraph2 = RDFValidationHelper.FromRDFGraph(graph);
 
@@ -778,63 +803,78 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(shapesGraph2);
             Assert.IsTrue(shapesGraph2.ShapesCount == 1);
             Assert.IsTrue(shapesGraph2.Equals(new RDFResource("ex:shapesGraph")));
-            RDFPropertyShape propertyShape2 = shapesGraph2.SelectShape("ex:propertyShape") as RDFPropertyShape;
-            Assert.IsNotNull(propertyShape2);
+            RDFPropertyShape shape2 = shapesGraph2.SelectShape("ex:propertyShape") as RDFPropertyShape;
+            Assert.IsNotNull(shape2);
 
             //Attributes
-            Assert.IsFalse(propertyShape2.Deactivated);
-            Assert.IsTrue(propertyShape2.Severity == severity);
-            Assert.IsTrue(propertyShape2.MessagesCount == 1);
-            RDFPlainLiteral propertyShape2Message = propertyShape2.Messages.Single() as RDFPlainLiteral;
-            Assert.IsNotNull(propertyShape2Message);
-            Assert.IsTrue(propertyShape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
+            Assert.IsFalse(shape2.Deactivated);
+            Assert.IsTrue(shape2.Severity == severity);
+            Assert.IsTrue(shape2.MessagesCount == 1);
+            RDFPlainLiteral shape2Message = shape2.Messages.Single() as RDFPlainLiteral;
+            Assert.IsNotNull(shape2Message);
+            Assert.IsTrue(shape2Message.Equals(new RDFPlainLiteral("message", "en-US")));
 
             //NonValidating
-            Assert.IsTrue(propertyShape2.Descriptions.Count == 1);
-            Assert.IsTrue(propertyShape2.Descriptions.Single().Equals(new RDFPlainLiteral("description", "en-US")));
-            Assert.IsTrue(propertyShape2.Names.Count == 1);
-            Assert.IsTrue(propertyShape2.Names.Single().Equals(new RDFPlainLiteral("name", "en-US")));
-            Assert.IsNotNull(propertyShape2.Order);
-            Assert.IsTrue(propertyShape2.Order.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsNotNull(propertyShape2.Group);
-            Assert.IsTrue(propertyShape2.Group.Equals(new RDFResource("ex:shapeGroup")));
+            Assert.IsTrue(shape2.Descriptions.Count == 1);
+            Assert.IsTrue(shape2.Descriptions.Single().Equals(new RDFPlainLiteral("description", "en-US")));
+            Assert.IsTrue(shape2.Names.Count == 1);
+            Assert.IsTrue(shape2.Names.Single().Equals(new RDFPlainLiteral("name", "en-US")));
+            Assert.IsNotNull(shape2.Order);
+            Assert.IsTrue(shape2.Order.Equals(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsNotNull(shape2.Group);
+            Assert.IsTrue(shape2.Group.Equals(new RDFResource("ex:shapeGroup")));
 
             //Targets
-            Assert.IsTrue(propertyShape2.TargetsCount == 4);
-            RDFTargetClass propertyShape2TargetClass = propertyShape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
-            Assert.IsNotNull(propertyShape2TargetClass);
-            Assert.IsTrue(propertyShape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
-            RDFTargetNode propertyShape2TargetNode = propertyShape2.Targets.Single(x => x is RDFTargetNode) as RDFTargetNode;
-            Assert.IsNotNull(propertyShape2TargetNode);
-            Assert.IsTrue(propertyShape2TargetNode.TargetValue.Equals(new RDFResource("ex:Alice")));
-            RDFTargetSubjectsOf propertyShape2TargetSubjectsOf = propertyShape2.Targets.Single(x => x is RDFTargetSubjectsOf) as RDFTargetSubjectsOf;
-            Assert.IsNotNull(propertyShape2TargetSubjectsOf);
-            Assert.IsTrue(propertyShape2TargetSubjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
-            RDFTargetObjectsOf propertyShape2TargetObjectsOf = propertyShape2.Targets.Single(x => x is RDFTargetObjectsOf) as RDFTargetObjectsOf;
-            Assert.IsNotNull(propertyShape2TargetObjectsOf);
-            Assert.IsTrue(propertyShape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(shape2.TargetsCount == 4);
+            RDFTargetClass shape2TargetClass = shape2.Targets.Single(x => x is RDFTargetClass) as RDFTargetClass;
+            Assert.IsNotNull(shape2TargetClass);
+            Assert.IsTrue(shape2TargetClass.TargetValue.Equals(new RDFResource("ex:Person")));
+            RDFTargetNode shape2TargetNode = shape2.Targets.Single(x => x is RDFTargetNode) as RDFTargetNode;
+            Assert.IsNotNull(shape2TargetNode);
+            Assert.IsTrue(shape2TargetNode.TargetValue.Equals(new RDFResource("ex:Alice")));
+            RDFTargetSubjectsOf shape2TargetSubjectsOf = shape2.Targets.Single(x => x is RDFTargetSubjectsOf) as RDFTargetSubjectsOf;
+            Assert.IsNotNull(shape2TargetSubjectsOf);
+            Assert.IsTrue(shape2TargetSubjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFTargetObjectsOf shape2TargetObjectsOf = shape2.Targets.Single(x => x is RDFTargetObjectsOf) as RDFTargetObjectsOf;
+            Assert.IsNotNull(shape2TargetObjectsOf);
+            Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(propertyShape2.ConstraintsCount == 6);
-            RDFClassConstraint propertyShape2ClassConstraint = propertyShape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
-            Assert.IsNotNull(propertyShape2ClassConstraint);
-            Assert.IsTrue(propertyShape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
-            RDFAndConstraint propertyShape2AndConstraint = propertyShape2.Constraints.Single(x => x is RDFAndConstraint) as RDFAndConstraint;
-            Assert.IsNotNull(propertyShape2AndConstraint);
-            Assert.IsTrue(propertyShape2AndConstraint.AndShapes.ContainsKey(propertyShape2.PatternMemberID));
-            RDFClosedConstraint propertyShape2ClosedConstraint = propertyShape2.Constraints.Single(x => x is RDFClosedConstraint) as RDFClosedConstraint;
-            Assert.IsNotNull(propertyShape2ClosedConstraint);
-            Assert.IsTrue(propertyShape2ClosedConstraint.Closed);
-            Assert.IsTrue(propertyShape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
-            RDFDatatypeConstraint propertyShape2DatatypeConstraint = propertyShape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
-            Assert.IsNotNull(propertyShape2DatatypeConstraint);
-            Assert.IsTrue(propertyShape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-            RDFDisjointConstraint propertyShape2DisjointConstraint = propertyShape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
-            Assert.IsNotNull(propertyShape2DisjointConstraint);
-            Assert.IsTrue(propertyShape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
-            RDFEqualsConstraint propertyShape2EqualsConstraint = propertyShape2.Constraints.Single(x => x is RDFEqualsConstraint) as RDFEqualsConstraint;
-            Assert.IsNotNull(propertyShape2EqualsConstraint);
-            Assert.IsTrue(propertyShape2EqualsConstraint.EqualsPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(shape2.ConstraintsCount == 11);
+            RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
+            Assert.IsNotNull(shape2ClassConstraint);
+            Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
+            RDFAndConstraint shape2AndConstraint = shape2.Constraints.Single(x => x is RDFAndConstraint) as RDFAndConstraint;
+            Assert.IsNotNull(shape2AndConstraint);
+            Assert.IsTrue(shape2AndConstraint.AndShapes.ContainsKey(shape2.PatternMemberID));
+            RDFClosedConstraint shape2ClosedConstraint = shape2.Constraints.Single(x => x is RDFClosedConstraint) as RDFClosedConstraint;
+            Assert.IsNotNull(shape2ClosedConstraint);
+            Assert.IsTrue(shape2ClosedConstraint.Closed);
+            Assert.IsTrue(shape2ClosedConstraint.IgnoredProperties.ContainsKey(RDFVocabulary.FOAF.KNOWS.PatternMemberID));
+            RDFDatatypeConstraint shape2DatatypeConstraint = shape2.Constraints.Single(x => x is RDFDatatypeConstraint) as RDFDatatypeConstraint;
+            Assert.IsNotNull(shape2DatatypeConstraint);
+            Assert.IsTrue(shape2DatatypeConstraint.Datatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+            RDFDisjointConstraint shape2DisjointConstraint = shape2.Constraints.Single(x => x is RDFDisjointConstraint) as RDFDisjointConstraint;
+            Assert.IsNotNull(shape2DisjointConstraint);
+            Assert.IsTrue(shape2DisjointConstraint.DisjointPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFEqualsConstraint shape2EqualsConstraint = shape2.Constraints.Single(x => x is RDFEqualsConstraint) as RDFEqualsConstraint;
+            Assert.IsNotNull(shape2EqualsConstraint);
+            Assert.IsTrue(shape2EqualsConstraint.EqualsPredicate.Equals(RDFVocabulary.FOAF.KNOWS));
+            RDFHasValueConstraint shape2HasValueConstraintRes = shape2.Constraints.Single(x => x is RDFHasValueConstraint hvc && hvc.Value is RDFResource) as RDFHasValueConstraint;
+            Assert.IsNotNull(shape2HasValueConstraintRes);
+            Assert.IsTrue(shape2HasValueConstraintRes.Value.Equals(new RDFResource("ex:Alice")));
+            RDFHasValueConstraint shape2HasValueConstraintLit = shape2.Constraints.Single(x => x is RDFHasValueConstraint hvc && hvc.Value is RDFLiteral) as RDFHasValueConstraint;
+            Assert.IsNotNull(shape2HasValueConstraintLit);
+            Assert.IsTrue(shape2HasValueConstraintLit.Value.Equals(new RDFPlainLiteral("Alice")));
+            RDFInConstraint shape2InConstraintRes = shape2.Constraints.Single(x => x is RDFInConstraint ic && ic.ItemType == RDFModelEnums.RDFItemTypes.Resource) as RDFInConstraint;
+            Assert.IsNotNull(shape2InConstraintRes);
+            Assert.IsTrue(shape2InConstraintRes.InValues.ContainsKey(new RDFResource("ex:Alice").PatternMemberID));
+            RDFInConstraint shape2InConstraintLit = shape2.Constraints.Single(x => x is RDFInConstraint ic && ic.ItemType == RDFModelEnums.RDFItemTypes.Literal) as RDFInConstraint;
+            Assert.IsNotNull(shape2InConstraintLit);
+            Assert.IsTrue(shape2InConstraintLit.InValues.ContainsKey(new RDFPlainLiteral("Alice").PatternMemberID));
+            RDFLanguageInConstraint shape2LanguageInConstraint = shape2.Constraints.Single(x => x is RDFLanguageInConstraint) as RDFLanguageInConstraint;
+            Assert.IsNotNull(shape2LanguageInConstraint);
+            Assert.IsTrue(shape2LanguageInConstraint.LanguageTags.Contains("EN-US"));
             #endregion
         }
         #endregion
