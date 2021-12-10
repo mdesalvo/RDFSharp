@@ -651,10 +651,13 @@ namespace RDFSharp.Test.Model
         }
 
         [DataTestMethod]
-        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
-        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
-        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
-        public void ShouldParseNodeShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation, RDFValidationEnums.RDFNodeKinds.BlankNode)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning, RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation, RDFValidationEnums.RDFNodeKinds.IRI)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning, RDFValidationEnums.RDFNodeKinds.IRIOrLiteral)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.Literal)]
+        public void ShouldParseNodeShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity, RDFValidationEnums.RDFNodeKinds nodeKind)
         {
             RDFNodeShape shape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
 
@@ -690,6 +693,9 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shape.AddConstraint(new RDFMinInclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shape.AddConstraint(new RDFMinLengthConstraint(2));
+            shape.AddConstraint(new RDFNodeConstraint(new RDFResource("ex:nodeShape")));
+            shape.AddConstraint(new RDFNodeKindConstraint(nodeKind));
+            shape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:notShape")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -728,7 +734,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(shape2.ConstraintsCount == 21);
+            Assert.IsTrue(shape2.ConstraintsCount == 24);
             RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(shape2ClassConstraint);
             Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -793,14 +799,26 @@ namespace RDFSharp.Test.Model
             RDFMinLengthConstraint shape2MinLengthConstraint = shape2.Constraints.Single(x => x is RDFMinLengthConstraint) as RDFMinLengthConstraint;
             Assert.IsNotNull(shape2MinLengthConstraint);
             Assert.IsTrue(shape2MinLengthConstraint.MinLength == 2);
+            RDFNodeConstraint shape2NodeConstraint = shape2.Constraints.Single(x => x is RDFNodeConstraint) as RDFNodeConstraint;
+            Assert.IsNotNull(shape2NodeConstraint);
+            Assert.IsTrue(shape2NodeConstraint.NodeShapeUri.Equals(new RDFResource("ex:nodeShape")));
+            RDFNodeKindConstraint shape2NodeKindConstraint = shape2.Constraints.Single(x => x is RDFNodeKindConstraint) as RDFNodeKindConstraint;
+            Assert.IsNotNull(shape2NodeKindConstraint);
+            Assert.IsTrue(shape2NodeKindConstraint.NodeKind == nodeKind);
+            RDFNotConstraint shape2NotConstraint = shape2.Constraints.Single(x => x is RDFNotConstraint) as RDFNotConstraint;
+            Assert.IsNotNull(shape2NotConstraint);
+            Assert.IsTrue(shape2NotConstraint.NotShape.Equals(new RDFResource("ex:notShape")));
             #endregion
         }
 
         [DataTestMethod]
-        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation)]
-        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning)]
-        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info)]
-        public void ShouldParsePropertyShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity)
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation, RDFValidationEnums.RDFNodeKinds.BlankNode)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning, RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Violation, RDFValidationEnums.RDFNodeKinds.IRI)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Warning, RDFValidationEnums.RDFNodeKinds.IRIOrLiteral)]
+        [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.Literal)]
+        public void ShouldParsePropertyShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity, RDFValidationEnums.RDFNodeKinds nodeKind)
         {
             RDFPropertyShape shape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS);
 
@@ -842,6 +860,9 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shape.AddConstraint(new RDFMinInclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shape.AddConstraint(new RDFMinLengthConstraint(2));
+            shape.AddConstraint(new RDFNodeConstraint(new RDFResource("ex:nodeShape")));
+            shape.AddConstraint(new RDFNodeKindConstraint(nodeKind));
+            shape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:notShape")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -890,7 +911,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(shape2.ConstraintsCount == 21);
+            Assert.IsTrue(shape2.ConstraintsCount == 24);
             RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(shape2ClassConstraint);
             Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -955,6 +976,15 @@ namespace RDFSharp.Test.Model
             RDFMinLengthConstraint shape2MinLengthConstraint = shape2.Constraints.Single(x => x is RDFMinLengthConstraint) as RDFMinLengthConstraint;
             Assert.IsNotNull(shape2MinLengthConstraint);
             Assert.IsTrue(shape2MinLengthConstraint.MinLength == 2);
+            RDFNodeConstraint shape2NodeConstraint = shape2.Constraints.Single(x => x is RDFNodeConstraint) as RDFNodeConstraint;
+            Assert.IsNotNull(shape2NodeConstraint);
+            Assert.IsTrue(shape2NodeConstraint.NodeShapeUri.Equals(new RDFResource("ex:nodeShape")));
+            RDFNodeKindConstraint shape2NodeKindConstraint = shape2.Constraints.Single(x => x is RDFNodeKindConstraint) as RDFNodeKindConstraint;
+            Assert.IsNotNull(shape2NodeKindConstraint);
+            Assert.IsTrue(shape2NodeKindConstraint.NodeKind == nodeKind);
+            RDFNotConstraint shape2NotConstraint = shape2.Constraints.Single(x => x is RDFNotConstraint) as RDFNotConstraint;
+            Assert.IsNotNull(shape2NotConstraint);
+            Assert.IsTrue(shape2NotConstraint.NotShape.Equals(new RDFResource("ex:notShape")));
             #endregion
         }
         #endregion
