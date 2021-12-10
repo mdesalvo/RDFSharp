@@ -680,6 +680,16 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Resource).AddValue(new RDFResource("ex:Alice")));
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Literal).AddValue(new RDFPlainLiteral("Alice")));
             shape.AddConstraint(new RDFLanguageInConstraint(new List<string>() { "en-US" }));
+            shape.AddConstraint(new RDFLessThanConstraint(new RDFResource("ex:prop")));
+            shape.AddConstraint(new RDFLessThanOrEqualsConstraint(new RDFResource("ex:prop")));
+            shape.AddConstraint(new RDFMaxCountConstraint(2));
+            shape.AddConstraint(new RDFMaxExclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMaxLengthConstraint(2));
+            shape.AddConstraint(new RDFMinCountConstraint(2));
+            shape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMinInclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMinLengthConstraint(2));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -718,7 +728,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(shape2.ConstraintsCount == 11);
+            Assert.IsTrue(shape2.ConstraintsCount == 21);
             RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(shape2ClassConstraint);
             Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -753,6 +763,36 @@ namespace RDFSharp.Test.Model
             RDFLanguageInConstraint shape2LanguageInConstraint = shape2.Constraints.Single(x => x is RDFLanguageInConstraint) as RDFLanguageInConstraint;
             Assert.IsNotNull(shape2LanguageInConstraint);
             Assert.IsTrue(shape2LanguageInConstraint.LanguageTags.Contains("EN-US"));
+            RDFLessThanConstraint shape2LessThanConstraint = shape2.Constraints.Single(x => x is RDFLessThanConstraint) as RDFLessThanConstraint;
+            Assert.IsNotNull(shape2LessThanConstraint);
+            Assert.IsTrue(shape2LessThanConstraint.LessThanPredicate.Equals(new RDFResource("ex:prop")));
+            RDFLessThanOrEqualsConstraint shape2LessThanOrEqualsConstraint = shape2.Constraints.Single(x => x is RDFLessThanOrEqualsConstraint) as RDFLessThanOrEqualsConstraint;
+            Assert.IsNotNull(shape2LessThanOrEqualsConstraint);
+            Assert.IsTrue(shape2LessThanOrEqualsConstraint.LessThanOrEqualsPredicate.Equals(new RDFResource("ex:prop")));
+            RDFMaxCountConstraint shape2MaxCountConstraint = shape2.Constraints.Single(x => x is RDFMaxCountConstraint) as RDFMaxCountConstraint;
+            Assert.IsNotNull(shape2MaxCountConstraint);
+            Assert.IsTrue(shape2MaxCountConstraint.MaxCount == 2);
+            RDFMaxExclusiveConstraint shape2MaxExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMaxExclusiveConstraint) as RDFMaxExclusiveConstraint;
+            Assert.IsNotNull(shape2MaxExclusiveConstraint);
+            Assert.IsTrue(shape2MaxExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMaxInclusiveConstraint shape2MaxInclusiveConstraint = shape2.Constraints.Single(x => x is RDFMaxInclusiveConstraint) as RDFMaxInclusiveConstraint;
+            Assert.IsNotNull(shape2MaxInclusiveConstraint);
+            Assert.IsTrue(shape2MaxInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMaxLengthConstraint shape2MaxLengthConstraint = shape2.Constraints.Single(x => x is RDFMaxLengthConstraint) as RDFMaxLengthConstraint;
+            Assert.IsNotNull(shape2MaxLengthConstraint);
+            Assert.IsTrue(shape2MaxLengthConstraint.MaxLength == 2);
+            RDFMinCountConstraint shape2MinCountConstraint = shape2.Constraints.Single(x => x is RDFMinCountConstraint) as RDFMinCountConstraint;
+            Assert.IsNotNull(shape2MinCountConstraint);
+            Assert.IsTrue(shape2MinCountConstraint.MinCount == 2);
+            RDFMinExclusiveConstraint shape2MinExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMinExclusiveConstraint) as RDFMinExclusiveConstraint;
+            Assert.IsNotNull(shape2MinExclusiveConstraint);
+            Assert.IsTrue(shape2MinExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMinInclusiveConstraint shape2MinInclusiveConstraint = shape2.Constraints.Single(x => x is RDFMinInclusiveConstraint) as RDFMinInclusiveConstraint;
+            Assert.IsNotNull(shape2MinInclusiveConstraint);
+            Assert.IsTrue(shape2MinInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMinLengthConstraint shape2MinLengthConstraint = shape2.Constraints.Single(x => x is RDFMinLengthConstraint) as RDFMinLengthConstraint;
+            Assert.IsNotNull(shape2MinLengthConstraint);
+            Assert.IsTrue(shape2MinLengthConstraint.MinLength == 2);
             #endregion
         }
 
@@ -792,6 +832,16 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Resource).AddValue(new RDFResource("ex:Alice")));
             shape.AddConstraint(new RDFInConstraint(RDFModelEnums.RDFItemTypes.Literal).AddValue(new RDFPlainLiteral("Alice")));
             shape.AddConstraint(new RDFLanguageInConstraint(new List<string>() { "en-US" }));
+            shape.AddConstraint(new RDFLessThanConstraint(new RDFResource("ex:prop")));
+            shape.AddConstraint(new RDFLessThanOrEqualsConstraint(new RDFResource("ex:prop")));
+            shape.AddConstraint(new RDFMaxCountConstraint(2));
+            shape.AddConstraint(new RDFMaxExclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMaxLengthConstraint(2));
+            shape.AddConstraint(new RDFMinCountConstraint(2));
+            shape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMinInclusiveConstraint(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shape.AddConstraint(new RDFMinLengthConstraint(2));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -840,7 +890,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(shape2.ConstraintsCount == 11);
+            Assert.IsTrue(shape2.ConstraintsCount == 21);
             RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(shape2ClassConstraint);
             Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -875,6 +925,36 @@ namespace RDFSharp.Test.Model
             RDFLanguageInConstraint shape2LanguageInConstraint = shape2.Constraints.Single(x => x is RDFLanguageInConstraint) as RDFLanguageInConstraint;
             Assert.IsNotNull(shape2LanguageInConstraint);
             Assert.IsTrue(shape2LanguageInConstraint.LanguageTags.Contains("EN-US"));
+            RDFLessThanConstraint shape2LessThanConstraint = shape2.Constraints.Single(x => x is RDFLessThanConstraint) as RDFLessThanConstraint;
+            Assert.IsNotNull(shape2LessThanConstraint);
+            Assert.IsTrue(shape2LessThanConstraint.LessThanPredicate.Equals(new RDFResource("ex:prop")));
+            RDFLessThanOrEqualsConstraint shape2LessThanOrEqualsConstraint = shape2.Constraints.Single(x => x is RDFLessThanOrEqualsConstraint) as RDFLessThanOrEqualsConstraint;
+            Assert.IsNotNull(shape2LessThanOrEqualsConstraint);
+            Assert.IsTrue(shape2LessThanOrEqualsConstraint.LessThanOrEqualsPredicate.Equals(new RDFResource("ex:prop")));
+            RDFMaxCountConstraint shape2MaxCountConstraint = shape2.Constraints.Single(x => x is RDFMaxCountConstraint) as RDFMaxCountConstraint;
+            Assert.IsNotNull(shape2MaxCountConstraint);
+            Assert.IsTrue(shape2MaxCountConstraint.MaxCount == 2);
+            RDFMaxExclusiveConstraint shape2MaxExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMaxExclusiveConstraint) as RDFMaxExclusiveConstraint;
+            Assert.IsNotNull(shape2MaxExclusiveConstraint);
+            Assert.IsTrue(shape2MaxExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMaxInclusiveConstraint shape2MaxInclusiveConstraint = shape2.Constraints.Single(x => x is RDFMaxInclusiveConstraint) as RDFMaxInclusiveConstraint;
+            Assert.IsNotNull(shape2MaxInclusiveConstraint);
+            Assert.IsTrue(shape2MaxInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMaxLengthConstraint shape2MaxLengthConstraint = shape2.Constraints.Single(x => x is RDFMaxLengthConstraint) as RDFMaxLengthConstraint;
+            Assert.IsNotNull(shape2MaxLengthConstraint);
+            Assert.IsTrue(shape2MaxLengthConstraint.MaxLength == 2);
+            RDFMinCountConstraint shape2MinCountConstraint = shape2.Constraints.Single(x => x is RDFMinCountConstraint) as RDFMinCountConstraint;
+            Assert.IsNotNull(shape2MinCountConstraint);
+            Assert.IsTrue(shape2MinCountConstraint.MinCount == 2);
+            RDFMinExclusiveConstraint shape2MinExclusiveConstraint = shape2.Constraints.Single(x => x is RDFMinExclusiveConstraint) as RDFMinExclusiveConstraint;
+            Assert.IsNotNull(shape2MinExclusiveConstraint);
+            Assert.IsTrue(shape2MinExclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMinInclusiveConstraint shape2MinInclusiveConstraint = shape2.Constraints.Single(x => x is RDFMinInclusiveConstraint) as RDFMinInclusiveConstraint;
+            Assert.IsNotNull(shape2MinInclusiveConstraint);
+            Assert.IsTrue(shape2MinInclusiveConstraint.Value.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            RDFMinLengthConstraint shape2MinLengthConstraint = shape2.Constraints.Single(x => x is RDFMinLengthConstraint) as RDFMinLengthConstraint;
+            Assert.IsNotNull(shape2MinLengthConstraint);
+            Assert.IsTrue(shape2MinLengthConstraint.MinLength == 2);
             #endregion
         }
         #endregion
