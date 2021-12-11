@@ -1048,6 +1048,35 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2XoneConstraint.XoneShapes.ContainsKey(shape2.PatternMemberID));
             #endregion
         }
+        
+        [TestMethod]
+        public void ShouldDetectInlinePropertyShapes()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:propertyShape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:propertyShape"), RDFVocabulary.SHACL.PATH, RDFVocabulary.FOAF.KNOWS));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:propertyShape"), RDFVocabulary.SHACL.PROPERTY, new RDFResource("bnode:inlinePropertyShape")));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:inlinePropertyShape"), RDFVocabulary.SHACL.PATH, RDFVocabulary.FOAF.AGE));
+            graph.AddTriple(new RDFTriple(new RDFResource("bnode:inlinePropertyShape"), RDFVocabulary.SHACL.CLASS, new RDFResource("ex:Class")));
+            RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(graph);
+
+            Assert.IsNotNull(shapesGraph);
+            Assert.IsTrue(shapesGraph.ShapesCount == 2);
+
+            RDFPropertyShape propertyShape = shapesGraph.SelectShape("ex:propertyShape") as RDFPropertyShape;
+            Assert.IsNotNull(propertyShape);
+            Assert.IsTrue(propertyShape.Path.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(propertyShape.ConstraintsCount == 1);
+            Assert.IsTrue(propertyShape.Constraints.Single() is RDFPropertyConstraint propertyShapeConstraint
+                            && propertyShapeConstraint.PropertyShapeUri.Equals(new RDFResource("bnode:inlinePropertyShape")));
+
+            RDFPropertyShape inlinePropertyShape = shapesGraph.SelectShape("bnode:inlinePropertyShape") as RDFPropertyShape;
+            Assert.IsNotNull(inlinePropertyShape);
+            Assert.IsTrue(inlinePropertyShape.Path.Equals(RDFVocabulary.FOAF.AGE));
+            Assert.IsTrue(inlinePropertyShape.ConstraintsCount == 1);
+            Assert.IsTrue(inlinePropertyShape.Constraints.Single() is RDFClassConstraint classConstraint
+                            && classConstraint.ClassType.Equals(new RDFResource("ex:Class")));
+        }
         #endregion
     }
 }
