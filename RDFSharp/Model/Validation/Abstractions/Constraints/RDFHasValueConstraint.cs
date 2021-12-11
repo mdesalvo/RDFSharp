@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFHasValueConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Value required on the given RDF term
@@ -97,17 +96,14 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:hasValue
                 if (this.Value is RDFResource)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFResource)this.Value));
                 else
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFLiteral)this.Value));
-
             }
             return result;
         }
         #endregion
-
     }
 }

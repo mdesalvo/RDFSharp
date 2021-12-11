@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFLessThanConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Predicate for which value nodes of a given RDF term are compared for minority
@@ -71,7 +70,6 @@ namespace RDFSharp.Model
                 {
                     int comparison = RDFQueryUtilities.CompareRDFPatternMembers(valueNode, predicateNode);
                     if (comparison == -99 || comparison >= 0)
-                    {
                         report.AddResult(new RDFValidationResult(shape,
                                                                  RDFVocabulary.SHACL.LESS_THAN_CONSTRAINT_COMPONENT,
                                                                  focusNode,
@@ -79,7 +77,6 @@ namespace RDFSharp.Model
                                                                  valueNode,
                                                                  shape.Messages,
                                                                  shape.Severity));
-                    }
                 }
             }
             #endregion
@@ -95,14 +92,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:lessThan
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LESS_THAN, this.LessThanPredicate));
-
             }
             return result;
         }
         #endregion
-
     }
 }

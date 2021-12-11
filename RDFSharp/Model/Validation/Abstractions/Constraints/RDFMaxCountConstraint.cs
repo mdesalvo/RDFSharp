@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFMaxCountConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Indicates the maximum required occurrences for a given RDF term
@@ -37,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a maxCount constraint with the given maxCount
         /// </summary>
         public RDFMaxCountConstraint(int maxCount) : base()
-        {
-            this.MaxCount = maxCount < 0 ? 0 : maxCount;
-        }
+            => this.MaxCount = maxCount < 0 ? 0 : maxCount;
         #endregion
 
         #region Methods
@@ -52,7 +49,6 @@ namespace RDFSharp.Model
 
             #region Evaluation
             if (valueNodes.Count > this.MaxCount)
-            {
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.MAX_COUNT_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -60,7 +56,6 @@ namespace RDFSharp.Model
                                                          null,
                                                          shape.Messages,
                                                          shape.Severity));
-            }
             #endregion
 
             return report;
@@ -74,14 +69,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:maxCount
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_COUNT, new RDFTypedLiteral(this.MaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-
             }
             return result;
         }
         #endregion
-
     }
 }

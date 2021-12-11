@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFLanguageInConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Language Tags allowed on the given RDF term
@@ -72,7 +71,6 @@ namespace RDFSharp.Model
                         var langTagsEnumerator = this.LanguageTags.GetEnumerator();
                         while (langTagsEnumerator.MoveNext() && !langMatches)
                         {
-
                             //NO language is found in the variable
                             if (langTagsEnumerator.Current == string.Empty)
                                 langMatches = !Regex.IsMatch(valueNodePlainLiteral.ToString(), "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -84,7 +82,6 @@ namespace RDFSharp.Model
                             //GIVEN language is found in the variable
                             else
                                 langMatches = Regex.IsMatch(valueNodePlainLiteral.ToString(), string.Concat("@", langTagsEnumerator.Current, "(-[a-zA-Z0-9]{1,8})*$"), RegexOptions.IgnoreCase);
-
                         }
                         if (!langMatches)
                         {
@@ -124,7 +121,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //Get collection from language tags
                 RDFCollection languageTags = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal) { InternalReificationSubject = this };
                 foreach (string languageTag in this.LanguageTags)
@@ -133,11 +129,9 @@ namespace RDFSharp.Model
 
                 //sh:languageIn
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.LANGUAGE_IN, languageTags.ReificationSubject));
-
             }
             return result;
         }
         #endregion
-
     }
 }

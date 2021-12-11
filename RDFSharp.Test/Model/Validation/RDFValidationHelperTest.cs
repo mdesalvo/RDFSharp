@@ -20,6 +20,7 @@ using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model
@@ -696,6 +697,12 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFNodeConstraint(new RDFResource("ex:nodeShape")));
             shape.AddConstraint(new RDFNodeKindConstraint(nodeKind));
             shape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:notShape")));
+            shape.AddConstraint(new RDFOrConstraint().AddShape(shape));
+            shape.AddConstraint(new RDFPatternConstraint(new Regex("^hello$", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace)));
+            shape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:propertyShape")));
+            shape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:qvShape"), 2, 3));
+            shape.AddConstraint(new RDFUniqueLangConstraint(true));
+            shape.AddConstraint(new RDFXoneConstraint().AddShape(shape));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -734,7 +741,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(shape2.ConstraintsCount == 24);
+            Assert.IsTrue(shape2.ConstraintsCount == 30);
             RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(shape2ClassConstraint);
             Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -808,6 +815,30 @@ namespace RDFSharp.Test.Model
             RDFNotConstraint shape2NotConstraint = shape2.Constraints.Single(x => x is RDFNotConstraint) as RDFNotConstraint;
             Assert.IsNotNull(shape2NotConstraint);
             Assert.IsTrue(shape2NotConstraint.NotShape.Equals(new RDFResource("ex:notShape")));
+            RDFOrConstraint shape2OrConstraint = shape2.Constraints.Single(x => x is RDFOrConstraint) as RDFOrConstraint;
+            Assert.IsNotNull(shape2OrConstraint);
+            Assert.IsTrue(shape2OrConstraint.OrShapes.ContainsKey(shape2.PatternMemberID));
+            RDFPatternConstraint shape2PatternConstraint = shape2.Constraints.Single(x => x is RDFPatternConstraint) as RDFPatternConstraint;
+            Assert.IsNotNull(shape2PatternConstraint);
+            Assert.IsTrue(shape2PatternConstraint.RegEx.ToString().Equals("^hello$"));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.IgnoreCase));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Singleline));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Multiline));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace));
+            RDFPropertyConstraint shape2PropertyConstraint = shape2.Constraints.Single(x => x is RDFPropertyConstraint) as RDFPropertyConstraint;
+            Assert.IsNotNull(shape2PropertyConstraint);
+            Assert.IsTrue(shape2PropertyConstraint.PropertyShapeUri.Equals(new RDFResource("ex:propertyShape")));
+            RDFQualifiedValueShapeConstraint shape2QualifiedValueShapeConstraint = shape2.Constraints.Single(x => x is RDFQualifiedValueShapeConstraint) as RDFQualifiedValueShapeConstraint;
+            Assert.IsNotNull(shape2QualifiedValueShapeConstraint);
+            Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueShapeUri.Equals(new RDFResource("ex:qvShape")));
+            Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMinCount == 2);
+            Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMaxCount == 3);
+            RDFUniqueLangConstraint shape2UniqueLangConstraint = shape2.Constraints.Single(x => x is RDFUniqueLangConstraint) as RDFUniqueLangConstraint;
+            Assert.IsNotNull(shape2UniqueLangConstraint);
+            Assert.IsTrue(shape2UniqueLangConstraint.UniqueLang);
+            RDFXoneConstraint shape2XoneConstraint = shape2.Constraints.Single(x => x is RDFXoneConstraint) as RDFXoneConstraint;
+            Assert.IsNotNull(shape2XoneConstraint);
+            Assert.IsTrue(shape2XoneConstraint.XoneShapes.ContainsKey(shape2.PatternMemberID));
             #endregion
         }
 
@@ -863,6 +894,12 @@ namespace RDFSharp.Test.Model
             shape.AddConstraint(new RDFNodeConstraint(new RDFResource("ex:nodeShape")));
             shape.AddConstraint(new RDFNodeKindConstraint(nodeKind));
             shape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:notShape")));
+            shape.AddConstraint(new RDFOrConstraint().AddShape(shape));
+            shape.AddConstraint(new RDFPatternConstraint(new Regex("^hello$", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace)));
+            shape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:propertyShape")));
+            shape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:qvShape"), 2, 3));
+            shape.AddConstraint(new RDFUniqueLangConstraint(true));
+            shape.AddConstraint(new RDFXoneConstraint().AddShape(shape));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:shapesGraph"));
@@ -911,7 +948,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(shape2TargetObjectsOf.TargetValue.Equals(RDFVocabulary.FOAF.KNOWS));
 
             //Constraints
-            Assert.IsTrue(shape2.ConstraintsCount == 24);
+            Assert.IsTrue(shape2.ConstraintsCount == 30);
             RDFClassConstraint shape2ClassConstraint = shape2.Constraints.Single(x => x is RDFClassConstraint) as RDFClassConstraint;
             Assert.IsNotNull(shape2ClassConstraint);
             Assert.IsTrue(shape2ClassConstraint.ClassType.Equals(new RDFResource("ex:Human")));
@@ -985,6 +1022,30 @@ namespace RDFSharp.Test.Model
             RDFNotConstraint shape2NotConstraint = shape2.Constraints.Single(x => x is RDFNotConstraint) as RDFNotConstraint;
             Assert.IsNotNull(shape2NotConstraint);
             Assert.IsTrue(shape2NotConstraint.NotShape.Equals(new RDFResource("ex:notShape")));
+            RDFOrConstraint shape2OrConstraint = shape2.Constraints.Single(x => x is RDFOrConstraint) as RDFOrConstraint;
+            Assert.IsNotNull(shape2OrConstraint);
+            Assert.IsTrue(shape2OrConstraint.OrShapes.ContainsKey(shape2.PatternMemberID));
+            RDFPatternConstraint shape2PatternConstraint = shape2.Constraints.Single(x => x is RDFPatternConstraint) as RDFPatternConstraint;
+            Assert.IsNotNull(shape2PatternConstraint);
+            Assert.IsTrue(shape2PatternConstraint.RegEx.ToString().Equals("^hello$"));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.IgnoreCase));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Singleline));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.Multiline));
+            Assert.IsTrue(shape2PatternConstraint.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace));
+            RDFPropertyConstraint shape2PropertyConstraint = shape2.Constraints.Single(x => x is RDFPropertyConstraint) as RDFPropertyConstraint;
+            Assert.IsNotNull(shape2PropertyConstraint);
+            Assert.IsTrue(shape2PropertyConstraint.PropertyShapeUri.Equals(new RDFResource("ex:propertyShape")));
+            RDFQualifiedValueShapeConstraint shape2QualifiedValueShapeConstraint = shape2.Constraints.Single(x => x is RDFQualifiedValueShapeConstraint) as RDFQualifiedValueShapeConstraint;
+            Assert.IsNotNull(shape2QualifiedValueShapeConstraint);
+            Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueShapeUri.Equals(new RDFResource("ex:qvShape")));
+            Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMinCount == 2);
+            Assert.IsTrue(shape2QualifiedValueShapeConstraint.QualifiedValueMaxCount == 3);
+            RDFUniqueLangConstraint shape2UniqueLangConstraint = shape2.Constraints.Single(x => x is RDFUniqueLangConstraint) as RDFUniqueLangConstraint;
+            Assert.IsNotNull(shape2UniqueLangConstraint);
+            Assert.IsTrue(shape2UniqueLangConstraint.UniqueLang);
+            RDFXoneConstraint shape2XoneConstraint = shape2.Constraints.Single(x => x is RDFXoneConstraint) as RDFXoneConstraint;
+            Assert.IsNotNull(shape2XoneConstraint);
+            Assert.IsTrue(shape2XoneConstraint.XoneShapes.ContainsKey(shape2.PatternMemberID));
             #endregion
         }
         #endregion

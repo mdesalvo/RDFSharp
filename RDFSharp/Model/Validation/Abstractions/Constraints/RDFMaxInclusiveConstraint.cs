@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
@@ -25,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFMaxInclusiveConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Inclusive upper-bound value required on the given RDF term
@@ -78,7 +76,6 @@ namespace RDFSharp.Model
             {
                 int comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
                 if (comparison == -99 || comparison < 0)
-                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -86,7 +83,6 @@ namespace RDFSharp.Model
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
             }
             #endregion
 
@@ -101,17 +97,14 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:maxInclusive
                 if (this.Value is RDFResource)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_INCLUSIVE, (RDFResource)this.Value));
                 else
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_INCLUSIVE, (RDFLiteral)this.Value));
-
             }
             return result;
         }
         #endregion
-
     }
 }

@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFUniqueLangConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Flag indicating that uniqueness of language tags is required or not
@@ -39,9 +37,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a uniqueLang constraint with the given behavior
         /// </summary>
         public RDFUniqueLangConstraint(bool uniqueLang) : base()
-        {
-            this.UniqueLang = uniqueLang;
-        }
+            => this.UniqueLang = uniqueLang;
         #endregion
 
         #region Methods
@@ -57,7 +53,7 @@ namespace RDFSharp.Model
             {
                 HashSet<string> reportedLangs = new HashSet<string>();
                 List<RDFPlainLiteral> langlitValueNodes = valueNodes.OfType<RDFPlainLiteral>()
-                                                                    .Where(vn => !string.IsNullOrEmpty(vn.Language))
+                                                                    .Where(vn => vn.HasLanguage())
                                                                     .ToList();
 
                 foreach (RDFPlainLiteral innerlanglitValueNode in langlitValueNodes)
@@ -67,7 +63,6 @@ namespace RDFSharp.Model
                         if (!innerlanglitValueNode.Equals(outerlanglitValueNode)
                                 && innerlanglitValueNode.Language.Equals(outerlanglitValueNode.Language))
                         {
-
                             //Ensure to not report twice the same language tag
                             if (!reportedLangs.Contains(innerlanglitValueNode.Language))
                             {
@@ -80,7 +75,6 @@ namespace RDFSharp.Model
                                                                          shape.Messages,
                                                                          shape.Severity));
                             }
-
                         }
                     }
                 }
@@ -98,14 +92,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:uniqueLang
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.UNIQUE_LANG, this.UniqueLang ? RDFTypedLiteral.True : RDFTypedLiteral.False));
-
             }
             return result;
         }
         #endregion
-
     }
 }

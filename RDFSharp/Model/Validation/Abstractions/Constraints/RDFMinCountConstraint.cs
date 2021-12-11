@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFMinCountConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Indicates the minimum required occurrences for a given RDF term
@@ -37,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a minCount constraint with the given minCount
         /// </summary>
         public RDFMinCountConstraint(int minCount) : base()
-        {
-            this.MinCount = minCount < 0 ? 0 : minCount;
-        }
+            => this.MinCount = minCount < 0 ? 0 : minCount;
         #endregion
 
         #region Methods
@@ -52,7 +49,6 @@ namespace RDFSharp.Model
 
             #region Evaluation
             if (valueNodes.Count < this.MinCount)
-            {
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT,
                                                          focusNode,
@@ -60,7 +56,6 @@ namespace RDFSharp.Model
                                                          null,
                                                          shape.Messages,
                                                          shape.Severity));
-            }
             #endregion
 
             return report;
@@ -74,14 +69,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:minCount
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_COUNT, new RDFTypedLiteral(this.MinCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-
             }
             return result;
         }
         #endregion
-
     }
 }

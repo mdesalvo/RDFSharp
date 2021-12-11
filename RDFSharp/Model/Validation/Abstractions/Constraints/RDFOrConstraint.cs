@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFOrConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Shapes required for the given RDF term
@@ -38,9 +37,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build an or constraint
         /// </summary>
         public RDFOrConstraint() : base()
-        {
-            this.OrShapes = new Dictionary<long, RDFResource>();
-        }
+            => this.OrShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods
@@ -50,9 +47,7 @@ namespace RDFSharp.Model
         public RDFOrConstraint AddShape(RDFResource shapeUri)
         {
             if (shapeUri != null && !this.OrShapes.ContainsKey(shapeUri.PatternMemberID))
-            {
                 this.OrShapes.Add(shapeUri.PatternMemberID, shapeUri);
-            }
             return this;
         }
 
@@ -108,7 +103,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //Get collection from OrShapes
                 RDFCollection orShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
                 foreach (RDFResource orShape in this.OrShapes.Values)
@@ -117,11 +111,9 @@ namespace RDFSharp.Model
 
                 //sh:or
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.OR, orShapes.ReificationSubject));
-
             }
             return result;
         }
         #endregion
-
     }
 }

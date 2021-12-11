@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFMinExclusiveConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Exclusive lower-bound value required on the given RDF term
@@ -78,7 +77,6 @@ namespace RDFSharp.Model
             {
                 int comparison = RDFQueryUtilities.CompareRDFPatternMembers(this.Value, valueNode);
                 if (comparison == -99 || comparison >= 0)
-                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -86,7 +84,6 @@ namespace RDFSharp.Model
                                                              valueNode,
                                                              shape.Messages,
                                                              shape.Severity));
-                }
             }
             #endregion
 
@@ -101,17 +98,14 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:minExclusive
                 if (this.Value is RDFResource)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, (RDFResource)this.Value));
                 else
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_EXCLUSIVE, (RDFLiteral)this.Value));
-
             }
             return result;
         }
         #endregion
-
     }
 }

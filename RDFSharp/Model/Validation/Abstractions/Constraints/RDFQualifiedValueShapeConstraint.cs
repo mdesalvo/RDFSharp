@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFQualifiedValueShapeConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Identifier of the shape against which the given RDF term must be validated
@@ -120,7 +119,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:qualifiedValueShape
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE, this.QualifiedValueShapeUri));
 
@@ -131,11 +129,9 @@ namespace RDFSharp.Model
                 //sh:qualifiedMaxCount
                 if (this.QualifiedValueMaxCount.HasValue)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT, new RDFTypedLiteral(this.QualifiedValueMaxCount.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-
             }
             return result;
         }
         #endregion
-
     }
 }

@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFNodeKindConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Allowed type of node for the given RDF term
@@ -37,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a nodeKind constraint of the given kind
         /// </summary>
         public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind) : base()
-        {
-            this.NodeKind = nodeKind;
-        }
+            => this.NodeKind = nodeKind;
         #endregion
 
         #region Methods
@@ -55,7 +52,6 @@ namespace RDFSharp.Model
             {
                 switch (valueNode)
                 {
-
                     //Resource
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank)
@@ -105,7 +101,6 @@ namespace RDFSharp.Model
                                                                      shape.Severity));
                         }
                         break;
-
                 }
             }
             #endregion
@@ -121,7 +116,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:nodeKind
                 switch (this.NodeKind)
                 {
@@ -144,11 +138,9 @@ namespace RDFSharp.Model
                         result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE_KIND, RDFVocabulary.SHACL.LITERAL));
                         break;
                 }
-
             }
             return result;
         }
         #endregion
-
     }
 }

@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFMinLengthConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Indicates the minimum allowed length for a given RDF term
@@ -37,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a minLength constraint with the given minLength
         /// </summary>
         public RDFMinLengthConstraint(int minLength) : base()
-        {
-            this.MinLength = minLength < 0 ? 0 : minLength;
-        }
+            => this.MinLength = minLength < 0 ? 0 : minLength;
         #endregion
 
         #region Methods
@@ -55,7 +52,6 @@ namespace RDFSharp.Model
             {
                 switch (valueNode)
                 {
-
                     //Resource
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank
@@ -84,7 +80,6 @@ namespace RDFSharp.Model
                                                                      shape.Severity));
                         }
                         break;
-
                 }
             }
             #endregion
@@ -100,14 +95,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:minLength
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MIN_LENGTH, new RDFTypedLiteral(this.MinLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-
             }
             return result;
         }
         #endregion
-
     }
 }

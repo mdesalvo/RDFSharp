@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFNodeConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Identifier of the node shape against which the given RDF term must be validated
@@ -88,14 +87,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:node
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NODE, this.NodeShapeUri));
-
             }
             return result;
         }
         #endregion
-
     }
 }

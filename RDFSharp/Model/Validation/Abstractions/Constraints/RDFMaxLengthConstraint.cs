@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFMaxLengthConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Indicates the maximum allowed length for a given RDF term
@@ -37,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a named maxLength constraint with the given maxLength
         /// </summary>
         public RDFMaxLengthConstraint(int maxLength) : base()
-        {
-            this.MaxLength = maxLength < 0 ? 0 : maxLength;
-        }
+            => this.MaxLength = maxLength < 0 ? 0 : maxLength;
         #endregion
 
         #region Methods
@@ -55,7 +52,6 @@ namespace RDFSharp.Model
             {
                 switch (valueNode)
                 {
-
                     //Resource
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank
@@ -84,7 +80,6 @@ namespace RDFSharp.Model
                                                                      shape.Severity));
                         }
                         break;
-
                 }
             }
             #endregion
@@ -100,14 +95,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:maxLength
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MAX_LENGTH, new RDFTypedLiteral(this.MaxLength.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-
             }
             return result;
         }
         #endregion
-
     }
 }

@@ -24,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFNotConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Shape not allowed for the given RDF term
@@ -88,14 +87,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:not
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.NOT, this.NotShape));
-
             }
             return result;
         }
         #endregion
-
     }
 }

@@ -27,7 +27,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFPatternConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Regular Expression to be applied on the given RDF term
@@ -65,7 +64,6 @@ namespace RDFSharp.Model
             {
                 switch (valueNode)
                 {
-
                     //Resource
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank
@@ -94,7 +92,6 @@ namespace RDFSharp.Model
                                                                      shape.Severity));
                         }
                         break;
-
                 }
             }
             #endregion
@@ -110,7 +107,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:pattern
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(this.RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
@@ -126,11 +122,9 @@ namespace RDFSharp.Model
                     regexFlags.Append("x");
                 if (regexFlags.ToString() != string.Empty)
                     result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
-
             }
             return result;
         }
         #endregion
-
     }
 }

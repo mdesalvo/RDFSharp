@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 
 namespace RDFSharp.Model
@@ -25,7 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFXoneConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Shapes required for the given RDF term
@@ -38,9 +36,7 @@ namespace RDFSharp.Model
         /// Default-ctor to build a xone constraint
         /// </summary>
         public RDFXoneConstraint() : base()
-        {
-            this.XoneShapes = new Dictionary<long, RDFResource>();
-        }
+            => this.XoneShapes = new Dictionary<long, RDFResource>();
         #endregion
 
         #region Methods
@@ -50,9 +46,7 @@ namespace RDFSharp.Model
         public RDFXoneConstraint AddShape(RDFResource shapeUri)
         {
             if (shapeUri != null && !this.XoneShapes.ContainsKey(shapeUri.PatternMemberID))
-            {
                 this.XoneShapes.Add(shapeUri.PatternMemberID, shapeUri);
-            }
             return this;
         }
 
@@ -105,7 +99,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //Get collection from xoneShapes
                 RDFCollection xoneShapes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource) { InternalReificationSubject = this };
                 foreach (RDFResource xoneShape in this.XoneShapes.Values)
@@ -114,11 +107,9 @@ namespace RDFSharp.Model
 
                 //sh:xone
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.XONE, xoneShapes.ReificationSubject));
-
             }
             return result;
         }
         #endregion
-
     }
 }

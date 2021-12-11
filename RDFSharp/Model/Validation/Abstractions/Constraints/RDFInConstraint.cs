@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Query;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFInConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Values allowed on the given RDF term
@@ -115,7 +113,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //Get collection from inValues
                 RDFCollection inValues = new RDFCollection(this.ItemType) { InternalReificationSubject = this };
                 foreach (RDFPatternMember inValue in this.InValues.Values)
@@ -129,11 +126,9 @@ namespace RDFSharp.Model
 
                 //sh:in
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IN, inValues.ReificationSubject));
-
             }
             return result;
         }
         #endregion
-
     }
 }
