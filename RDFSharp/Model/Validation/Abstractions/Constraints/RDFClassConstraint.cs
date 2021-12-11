@@ -25,7 +25,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFClassConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// ClassType of the given RDF term
@@ -105,14 +104,11 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:class
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, this.ClassType));
-
             }
             return result;
         }
         #endregion
-
     }
 }

@@ -26,7 +26,6 @@ namespace RDFSharp.Model
     /// </summary>
     public class RDFClosedConstraint : RDFConstraint
     {
-
         #region Properties
         /// <summary>
         /// Flag indicating that closure of predicates is required or not
@@ -114,7 +113,6 @@ namespace RDFSharp.Model
             RDFGraph result = new RDFGraph();
             if (shape != null)
             {
-
                 //sh:closed
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLOSED, this.Closed ? RDFTypedLiteral.True : RDFTypedLiteral.False));
 
@@ -126,11 +124,9 @@ namespace RDFSharp.Model
 
                 //sh:ignoredProperties
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.IGNORED_PROPERTIES, ignoredProperties.ReificationSubject));
-
             }
             return result;
         }
         #endregion
-
     }
 }
