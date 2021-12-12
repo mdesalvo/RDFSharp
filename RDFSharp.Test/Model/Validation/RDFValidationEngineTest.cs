@@ -30,7 +30,7 @@ namespace RDFSharp.Test.Model
     {
         #region Tests
         [TestMethod]
-        public void ShouldConformNodeShapeWithClassTargetAndClassConstraint()
+        public void ShouldConformNodeShape()
         {
             //DataGraph
             RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
@@ -53,7 +53,30 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
-        public void ShouldNotConformNodeShapeWithClassTargetAndClassConstraint()
+        public async Task ShouldConformNodeShapeAsync()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Person"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
+            nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
+            shapesGraph.AddShape(nodeShape);
+
+            //Validate
+            RDFValidationReport validationReport = await shapesGraph.ValidateAsync(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldNotConformNodeShape()
         {
             //DataGraph
             RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
@@ -81,30 +104,90 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results.Single().ResultValue.Equals(new RDFResource("ex:Alice")));
             Assert.IsNull(validationReport.Results.Single().ResultPath);            
             Assert.IsTrue(validationReport.Results.Single().SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
-            Assert.IsTrue(validationReport.Results.Single().SourceShape.Equals(new RDFResource("ex:NodeShape")));            
+            Assert.IsTrue(validationReport.Results.Single().SourceShape.Equals(new RDFResource("ex:NodeShape")));
         }
 
         [TestMethod]
-        public async Task ShouldConformNodeShapeWithClassTargetAndClassConstraintAsync()
+        public void ShouldConformPropertyShape()
         {
             //DataGraph
             RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Person"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Human")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
-            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
-            nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Human")));
-            shapesGraph.AddShape(nodeShape);
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
+            propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
+            propertyShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shapesGraph.AddShape(propertyShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public async Task ShouldConformPropertyShapeAsync()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Person"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
+            propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
+            propertyShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shapesGraph.AddShape(propertyShape);
 
             //Validate
             RDFValidationReport validationReport = await shapesGraph.ValidateAsync(dataGraph);
 
             Assert.IsNotNull(validationReport);
             Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldNotConformPropertyShape()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Person"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
+            propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
+            propertyShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER))); //Bob will violate this
+            shapesGraph.AddShape(propertyShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results.Single().Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results.Single().ResultMessages.Count == 0);
+            Assert.IsTrue(validationReport.Results.Single().FocusNode.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results.Single().ResultValue.Equals(new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(validationReport.Results.Single().ResultPath.Equals(RDFVocabulary.FOAF.AGE));
+            Assert.IsTrue(validationReport.Results.Single().SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results.Single().SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
         #endregion
     }

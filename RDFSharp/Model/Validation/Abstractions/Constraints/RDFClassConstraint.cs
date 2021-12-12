@@ -63,7 +63,6 @@ namespace RDFSharp.Model
             {
                 switch (valueNode)
                 {
-
                     //Resource
                     case RDFResource valueNodeResource:
                         if (!classInstances.Any(x => x.Equals(valueNodeResource)))
@@ -88,7 +87,6 @@ namespace RDFSharp.Model
                                                                  shape.Messages,
                                                                  shape.Severity));
                         break;
-
                 }
             }
             #endregion
