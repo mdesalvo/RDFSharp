@@ -71,7 +71,6 @@ namespace RDFSharp.Model
             #region Evaluation
             if (this.Closed)
             {
-
                 //Extend ignored properties with paths of property constraints
                 List<RDFResource> allowedProperties = new List<RDFResource>(this.IgnoredProperties.Values);
                 IEnumerable<RDFPropertyConstraint> propertyConstraints = shape.Constraints.OfType<RDFPropertyConstraint>();
@@ -81,6 +80,11 @@ namespace RDFSharp.Model
                     if (propertyShape != null)
                         allowedProperties.Add(propertyShape.Path);
                 }
+
+                //In case no shape messages have been provided, this constraint emits a default one (for usability)
+                List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+                if (shapeMessages.Count == 0)
+                    shapeMessages.Add(new RDFPlainLiteral($"Predicate is not allowed (closed shape)"));
 
                 //Detect unallowed predicates
                 foreach (RDFPatternMember valueNode in valueNodes)
@@ -95,7 +99,7 @@ namespace RDFSharp.Model
                                                                      valueNodeResource,
                                                                      unallowedTriple.Predicate as RDFResource,
                                                                      unallowedTriple.Object,
-                                                                     shape.Messages,
+                                                                     shapeMessages,
                                                                      shape.Severity));
                     }
                 }
