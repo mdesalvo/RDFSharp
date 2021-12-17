@@ -591,6 +591,46 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
+
+        //MIXED-CONFORMS:FALSE
+        [TestMethod]
+        public void ShouldNotConformNodeShapeWithPropertyShapes()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), new RDFResource("ex:firstName"), new RDFPlainLiteral("Alice")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), new RDFResource("ex:firstName"), new RDFPlainLiteral("Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), new RDFResource("ex:middleInitial"), new RDFPlainLiteral("J")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:ClosedShapeExampleShape"));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
+            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), new RDFResource("ex:firstName"));
+            nodeShape.AddConstraint(new RDFPropertyConstraint(propShape1));
+            RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), new RDFResource("ex:lastName"));
+            nodeShape.AddConstraint(new RDFPropertyConstraint(propShape2));
+            shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(propShape1);
+            shapesGraph.AddShape(propShape2);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("J")));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:middleInitial")));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:ClosedShapeExampleShape")));
+        }
         #endregion
     }
 }

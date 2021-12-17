@@ -575,6 +575,47 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
+
+        //MIXED-CONFORMS:FALSE
+        [TestMethod]
+        public void ShouldNotConformNodeShapeWithPropertyShape()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), new RDFResource("ex:address"), new RDFResource("bnode:address1")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("bnode:address1"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:PostalAddress")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("bnode:address1"), new RDFResource("ex:city"), new RDFResource("ex:Berlin")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Carol"), new RDFResource("ex:address"), new RDFResource("bnode:address2")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("bnode:address2"), new RDFResource("ex:city"), new RDFResource("ex:Cairo")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:ClassExampleShape"));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Carol")));
+            RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:address"));
+            propShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:PostalAddress")));
+            nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
+            shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(propShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have class <ex:PostalAddress>")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Carol")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("bnode:address2")));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:address")));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
+        }
         #endregion
     }
 }
