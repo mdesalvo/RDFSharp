@@ -577,6 +577,7 @@ namespace RDFSharp.Test.Model
         }
 
         //MIXED-CONFORMS:FALSE
+
         [TestMethod]
         public void ShouldNotConformNodeShapeWithPropertyShape()
         {
