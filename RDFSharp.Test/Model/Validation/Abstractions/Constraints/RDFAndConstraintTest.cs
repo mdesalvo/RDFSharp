@@ -18,59 +18,63 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RDFSharp.Test.Model
 {
     [TestClass]
-    public class RDFClosedConstraintTest
+    public class RDFAndConstraintTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateClosedConstraint()
+        public void ShouldCreateAndConstraint()
         {
-            RDFClosedConstraint closedConstraint = new RDFClosedConstraint(true);
+            RDFAndConstraint andConstraint = new RDFAndConstraint();
 
-            Assert.IsNotNull(closedConstraint);
-            Assert.IsTrue(closedConstraint.Closed);
-            Assert.IsNotNull(closedConstraint.IgnoredProperties);
-            Assert.IsTrue(closedConstraint.IgnoredProperties.Count == 0);
+            Assert.IsNotNull(andConstraint);
+            Assert.IsNotNull(andConstraint.AndShapes);
+            Assert.IsTrue(andConstraint.AndShapes.Count == 0);
         }
 
         [TestMethod]
-        public void ShouldAddIgnoredProperty()
+        public void ShouldAddShape()
         {
-            RDFClosedConstraint closedConstraint = new RDFClosedConstraint(true);
-            closedConstraint.AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS);
-            closedConstraint.AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS); //Duplicates discarded
-            closedConstraint.AddIgnoredProperty(null); //Null discarded
+            RDFAndConstraint andConstraint = new RDFAndConstraint();
+            andConstraint.AddShape(new RDFNodeShape(new RDFResource("ex:NodeShape1")));
+            andConstraint.AddShape(new RDFNodeShape(new RDFResource("ex:NodeShape2")));
+            andConstraint.AddShape(new RDFNodeShape(new RDFResource("ex:NodeShape1"))); //Will be discarded
+            andConstraint.AddShape(null); //Will be discarded
 
-            Assert.IsNotNull(closedConstraint);
-            Assert.IsTrue(closedConstraint.Closed);
-            Assert.IsNotNull(closedConstraint.IgnoredProperties);
-            Assert.IsTrue(closedConstraint.IgnoredProperties.Count == 1);
+            Assert.IsNotNull(andConstraint);
+            Assert.IsNotNull(andConstraint.AndShapes);
+            Assert.IsTrue(andConstraint.AndShapes.Count == 2);
         }
 
         [TestMethod]
-        public void ShouldExportClosedConstraint()
+        public void ShouldExportAndConstraint()
         {
-            RDFClosedConstraint closedConstraint = new RDFClosedConstraint(true);
-            closedConstraint.AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS);
-            RDFGraph graph = closedConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
+            RDFAndConstraint andConstraint = new RDFAndConstraint();
+            andConstraint.AddShape(new RDFNodeShape(new RDFResource("ex:NodeShape1")));
+            andConstraint.AddShape(new RDFNodeShape(new RDFResource("ex:NodeShape2")));
+            RDFGraph graph = andConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
             Assert.IsNotNull(graph);
-            Assert.IsTrue(graph.TriplesCount == 5);
+            Assert.IsTrue(graph.TriplesCount == 7);
             Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.CLOSED)
-                                                        && t.Value.Object.Equals(RDFTypedLiteral.True)));
-            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject.Equals(new RDFResource("ex:NodeShape"))
-                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.IGNORED_PROPERTIES)
+                                                    && t.Value.Predicate.Equals(RDFVocabulary.SHACL.AND)
                                                         && t.Value.Object is RDFResource objRes && objRes.IsBlank));
             Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
                                                     && t.Value.Predicate.Equals(RDFVocabulary.RDF.TYPE)
-                                                        && t.Value.Object.Equals(RDFVocabulary.RDF.LIST)));
+                                                        && t.Value.Object.Equals(RDFVocabulary.RDF.LIST))); //2 occurrences of this
             Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
                                                     && t.Value.Predicate.Equals(RDFVocabulary.RDF.FIRST)
-                                                        && t.Value.Object.Equals(RDFVocabulary.FOAF.KNOWS)));
+                                                        && t.Value.Object.Equals(new RDFResource("ex:NodeShape1"))));
+            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
+                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.REST)
+                                                        && t.Value.Object is RDFResource objRes && objRes.IsBlank));
+            Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
+                                                    && t.Value.Predicate.Equals(RDFVocabulary.RDF.FIRST)
+                                                        && t.Value.Object.Equals(new RDFResource("ex:NodeShape2"))));
             Assert.IsTrue(graph.Triples.Any(t => t.Value.Subject is RDFResource subjRes && subjRes.IsBlank
                                                     && t.Value.Predicate.Equals(RDFVocabulary.RDF.REST)
                                                         && t.Value.Object.Equals(RDFVocabulary.RDF.NIL)));
@@ -91,11 +95,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
             nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -117,11 +127,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -143,11 +159,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
             nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -166,15 +188,20 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
             nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -199,11 +226,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -226,11 +259,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -253,11 +292,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -280,11 +325,17 @@ namespace RDFSharp.Test.Model
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -305,16 +356,20 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(7));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
-            nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
             nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -324,11 +379,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         }
 
@@ -342,17 +397,20 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER))); //Not in target, so will pass the shape
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(7));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
-            nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -362,11 +420,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         }
 
@@ -380,16 +438,20 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(7));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
-            nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
             nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -399,11 +461,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         }
 
@@ -417,16 +479,20 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(7));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
-            nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
             nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                 .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                          .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -436,11 +502,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         }
 
@@ -456,15 +522,21 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(7));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -474,11 +546,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Predicate is not allowed (closed shape)")));
-            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
 
@@ -492,15 +564,21 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(7));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -510,11 +588,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Predicate is not allowed (closed shape)")));
-            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
 
@@ -528,15 +606,21 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(7));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -546,11 +630,11 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Predicate is not allowed (closed shape)")));
-            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
 
@@ -565,16 +649,20 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:NodeShape1"));
+            nodeShape1.AddConstraint(new RDFMinLengthConstraint(7));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
+            nodeShape2.AddConstraint(new RDFMaxLengthConstraint(8));
             RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
             propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
-            propertyShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.FOAF.KNOWS)
-                                                                     .AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:NodeShape1"))
+                                                              .AddShape(new RDFResource("ex:NodeShape2")));
             shapesGraph.AddShape(propertyShape);
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
 
             //Validate
             RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
@@ -584,35 +672,80 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Predicate is not allowed (closed shape)")));
-            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
 
         //MIXED-CONFORMS:FALSE
 
         [TestMethod]
-        public void ShouldNotConformNodeShapeWithPropertyShapes()
+        public void ShouldNotConformNodeShapeWithPropertyShapes1()
         {
             //DataGraph
             RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), new RDFResource("ex:firstName"), new RDFPlainLiteral("Alice")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), new RDFResource("ex:firstName"), new RDFPlainLiteral("Bob")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), new RDFResource("ex:middleInitial"), new RDFPlainLiteral("J")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:ValidInstance"), new RDFResource("ex:property"), new RDFPlainLiteral("One")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:InvalidInstance"), new RDFResource("ex:property"), new RDFPlainLiteral("One")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:InvalidInstance"), new RDFResource("ex:property"), new RDFPlainLiteral("Two")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:ClosedShapeExampleShape"));
+            RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:SuperShape"));
+            nodeShape1.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropShape1")));
+            RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), new RDFResource("ex:property"));
+            propShape1.AddConstraint(new RDFMinCountConstraint(1));
+            RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), new RDFResource("ex:property"));
+            propShape2.AddConstraint(new RDFMaxCountConstraint(1));
+            RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:ExampleAndShape"));
+            nodeShape2.AddTarget(new RDFTargetNode(new RDFResource("ex:ValidInstance")));
+            nodeShape2.AddTarget(new RDFTargetNode(new RDFResource("ex:InvalidInstance")));
+            nodeShape2.AddConstraint(new RDFAndConstraint().AddShape(nodeShape1)
+                                                           .AddShape(propShape2));
+            shapesGraph.AddShape(nodeShape1);
+            shapesGraph.AddShape(nodeShape2);
+            shapesGraph.AddShape(propShape1);
+            shapesGraph.AddShape(propShape2);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsFalse(validationReport.Conforms);
+            Assert.IsTrue(validationReport.ResultsCount == 1);
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:InvalidInstance")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:InvalidInstance")));
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:ExampleAndShape")));
+        }
+
+        [TestMethod]
+        public void ShouldNotConformNodeShapeWithPropertyShapes2()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
             nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
-            nodeShape.AddConstraint(new RDFClosedConstraint(true).AddIgnoredProperty(RDFVocabulary.RDF.TYPE));
-            RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), new RDFResource("ex:firstName"));
-            nodeShape.AddConstraint(new RDFPropertyConstraint(propShape1));
-            RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), new RDFResource("ex:lastName"));
-            nodeShape.AddConstraint(new RDFPropertyConstraint(propShape2));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:PropShape1"))
+                                                          .AddShape(new RDFResource("ex:PropShape2")));
+            RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFVocabulary.FOAF.KNOWS);
+            propShape1.AddConstraint(new RDFPatternConstraint(new Regex(@"^ex:", RegexOptions.IgnoreCase)));
+            RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFVocabulary.FOAF.AGE);
+            propShape2.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             shapesGraph.AddShape(nodeShape);
             shapesGraph.AddShape(propShape1);
             shapesGraph.AddShape(propShape2);
@@ -625,12 +758,12 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Predicate is not allowed (closed shape)")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Value does not have all the shapes in sh:and enumeration")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("J")));
-            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:middleInitial")));
-            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT));
-            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:ClosedShapeExampleShape")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
+            Assert.IsNull(validationReport.Results[0].ResultPath);
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.AND_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
         }
         #endregion
     }
