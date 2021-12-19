@@ -680,6 +680,40 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
 
+        //MIXED-CONFORMS:TRUE
+
+        [TestMethod]
+        public void ShouldConformNodeShapeWithPropertyShapes()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
+            nodeShape.AddConstraint(new RDFAndConstraint().AddShape(new RDFResource("ex:PropShape1"))
+                                                          .AddShape(new RDFResource("ex:PropShape2")));
+            RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFVocabulary.FOAF.KNOWS);
+            propShape1.AddConstraint(new RDFPatternConstraint(new Regex(@"^ex:", RegexOptions.IgnoreCase)));
+            RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFVocabulary.FOAF.AGE);
+            propShape2.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            shapesGraph.AddShape(nodeShape);
+            shapesGraph.AddShape(propShape1);
+            shapesGraph.AddShape(propShape2);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
         //MIXED-CONFORMS:FALSE
 
         [TestMethod]
