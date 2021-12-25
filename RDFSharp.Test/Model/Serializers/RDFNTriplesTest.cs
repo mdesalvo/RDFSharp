@@ -29,10 +29,10 @@ namespace RDFSharp.Test.Model
         public void ShouldSerializeEmptyGraph()
         {
             RDFGraph graph = new RDFGraph();
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeEmptyGraph.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeEmptyGraph.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeEmptyGraph.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeEmptyGraph.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeEmptyGraph.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeEmptyGraph.nt"));
             Assert.IsTrue(fileContent.Equals(string.Empty));
         }
 
@@ -41,10 +41,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
         }
 
@@ -53,10 +53,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPBTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> _:12345 .{Environment.NewLine}"));
         }
 
@@ -65,10 +65,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPOTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> <http://obj/> .{Environment.NewLine}"));
         }
 
@@ -77,10 +77,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFResource("bnode:12345")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPBTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> _:12345 .{Environment.NewLine}"));
         }
 
@@ -89,10 +89,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\" .{Environment.NewLine}"));
         }
 
@@ -101,10 +101,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello","en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLLTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"hello\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -113,10 +113,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> .{Environment.NewLine}"));
         }
 
@@ -125,10 +125,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\" .{Environment.NewLine}"));
         }
 
@@ -137,10 +137,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLLTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"hello\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -149,10 +149,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithBPLTTriple.nt"));
             Assert.IsTrue(fileContent.Equals($"_:54321 <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> .{Environment.NewLine}"));
         }
 
@@ -161,10 +161,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj😃/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInSubject.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> .{Environment.NewLine}"));
         }
 
@@ -173,10 +173,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred😃/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInPredicate.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> .{Environment.NewLine}"));
         }
 
@@ -185,10 +185,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj😃/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingLongUnicodeCharInObject.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> .{Environment.NewLine}"));
         }
 
@@ -197,10 +197,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃","en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingLongUnicodeCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -209,10 +209,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/frag#pageβ2"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInSubject.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> .{Environment.NewLine}"));
         }
 
@@ -221,10 +221,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/frag#pageβ2"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInPredicate.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> .{Environment.NewLine}"));
         }
 
@@ -233,10 +233,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/frag#pageβ2")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPOTripleHavingShortUnicodeCharInObject.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> .{Environment.NewLine}"));
         }
 
@@ -245,10 +245,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingShortUnicodeCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -257,10 +257,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Return!\r", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingCarriageReturnCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Return!\\r\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -269,10 +269,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("NewLine!\n", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingNewLineCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"NewLine!\\n\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -281,10 +281,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Tab!\t", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingTabCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Tab!\\t\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -293,10 +293,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Slash!\\", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Slash!\\\\\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -305,10 +305,10 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("DoubleQuotes!\"", "en-US")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt"));
-            string fileContent = File.ReadAllText($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt");
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingDoubleQuotesCharInLiteral.nt"));
             Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US .{Environment.NewLine}"));
         }
 
@@ -343,8 +343,8 @@ namespace RDFSharp.Test.Model
         public void ShouldDeserializeEmptyGraphFromFile()
         {
             RDFGraph graph = new RDFGraph();
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeEmptyGraph.nt");
-            RDFGraph graph2 = RDFNTriples.Deserialize($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeEmptyGraph.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldDeserializeEmptyGraph.nt"));
+            RDFGraph graph2 = RDFNTriples.Deserialize(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldDeserializeEmptyGraph.nt"));
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 0);
@@ -355,8 +355,8 @@ namespace RDFSharp.Test.Model
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFNTriples.Serialize(graph, $"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeGraph.nt");
-            RDFGraph graph2 = RDFNTriples.Deserialize($"{Environment.CurrentDirectory}\\RDFNTriplesTest_ShouldDeserializeGraph.nt");
+            RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldDeserializeGraph.nt"));
+            RDFGraph graph2 = RDFNTriples.Deserialize(Path.Combine(Environment.CurrentDirectory, $"RDFNTriplesTest_ShouldDeserializeGraph.nt"));
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 1);

@@ -1249,10 +1249,10 @@ namespace RDFSharp.Test.Model
             RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
             graph.AddTriple(triple1).AddTriple(triple2);
-            graph.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}");
+            graph.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}"));
-            Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFile{fileExtension}").Length > 100);
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}")));
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFile{fileExtension}")).Length > 100);
         }
 
         [TestMethod]
@@ -1270,10 +1270,10 @@ namespace RDFSharp.Test.Model
             RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
             graph.AddTriple(triple1).AddTriple(triple2);
-            await graph.ToFileAsync(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}");
+            await graph.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
 
-            Assert.IsTrue(File.Exists($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}"));
-            Assert.IsTrue(File.ReadAllText($"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldExportToFileAsync{fileExtension}").Length > 100);
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")));
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldExportToFileAsync{fileExtension}")).Length > 100);
         }
 
         [TestMethod]
@@ -1407,8 +1407,8 @@ namespace RDFSharp.Test.Model
             RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
             graph1.AddTriple(triple1).AddTriple(triple2);
-            graph1.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportFromFile{fileExtension}");
-            RDFGraph graph2 = RDFGraph.FromFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportFromFile{fileExtension}");
+            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
+            RDFGraph graph2 = RDFGraph.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 2);
@@ -1435,8 +1435,8 @@ namespace RDFSharp.Test.Model
         public void ShouldImportEmptyFromFile(string fileExtension, RDFModelEnums.RDFFormats format)
         {
             RDFGraph graph1 = new RDFGraph();
-            graph1.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}");
-            RDFGraph graph2 = RDFGraph.FromFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}");
+            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
+            RDFGraph graph2 = RDFGraph.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 0);
@@ -1462,8 +1462,8 @@ namespace RDFSharp.Test.Model
             RDFTriple triple1 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
             RDFTriple triple2 = new RDFTriple(new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
             graph1.AddTriple(triple1).AddTriple(triple2);
-            graph1.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportFromFile{fileExtension}");
-            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportFromFile{fileExtension}");
+            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
+            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportFromFile{fileExtension}"));
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 2);
@@ -1490,8 +1490,8 @@ namespace RDFSharp.Test.Model
         public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFModelEnums.RDFFormats format)
         {
             RDFGraph graph1 = new RDFGraph();
-            graph1.ToFile(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}");
-            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, $"{Environment.CurrentDirectory}\\RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}");
+            graph1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
+            RDFGraph graph2 = await RDFGraph.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFGraphTest_ShouldImportEmptyFromFile{fileExtension}"));
 
             Assert.IsNotNull(graph2);
             Assert.IsTrue(graph2.TriplesCount == 0);
