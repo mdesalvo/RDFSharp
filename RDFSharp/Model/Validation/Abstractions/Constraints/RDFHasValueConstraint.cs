@@ -72,17 +72,20 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport();
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Does not have value <{this.Value}>"));
+
             #region Evaluation
             if (!valueNodes.Any(v => v.Equals(this.Value)))
-            {
                 report.AddResult(new RDFValidationResult(shape,
                                                          RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
                                                          focusNode,
                                                          shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                          null,
-                                                         shape.Messages,
+                                                         shapeMessages,
                                                          shape.Severity));
-            }
             #endregion
 
             return report;

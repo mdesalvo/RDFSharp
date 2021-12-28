@@ -41,8 +41,8 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldExportEqualsConstraint()
         {
-            RDFEqualsConstraint EqualsConstraint = new RDFEqualsConstraint(new RDFResource("ex:prop"));
-            RDFGraph graph = EqualsConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
+            RDFEqualsConstraint equalsConstraint = new RDFEqualsConstraint(new RDFResource("ex:prop"));
+            RDFGraph graph = equalsConstraint.ToRDFGraph(new RDFNodeShape(new RDFResource("ex:NodeShape")));
 
             Assert.IsNotNull(graph);
             Assert.IsTrue(graph.TriplesCount == 1);
