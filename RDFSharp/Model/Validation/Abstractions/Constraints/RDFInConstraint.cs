@@ -57,9 +57,7 @@ namespace RDFSharp.Model
             if (this.ItemType == RDFModelEnums.RDFItemTypes.Resource)
             {
                 if (resource != null && !this.InValues.ContainsKey(resource.PatternMemberID))
-                {
                     this.InValues.Add(resource.PatternMemberID, resource);
-                }
             }
             return this;
         }
@@ -72,9 +70,7 @@ namespace RDFSharp.Model
             if (this.ItemType == RDFModelEnums.RDFItemTypes.Literal)
             {
                 if (literal != null && !this.InValues.ContainsKey(literal.PatternMemberID))
-                {
                     this.InValues.Add(literal.PatternMemberID, literal);
-                }
             }
             return this;
         }
@@ -86,19 +82,22 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport();
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Not a value from the sh:in enumeration"));
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
                 if (!this.InValues.Any(v => v.Value.Equals(valueNode)))
-                {
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              valueNode,
-                                                             shape.Messages,
+                                                             shapeMessages,
                                                              shape.Severity));
-                }
             }
             #endregion
 
