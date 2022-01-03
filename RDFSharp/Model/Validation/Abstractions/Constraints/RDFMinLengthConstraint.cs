@@ -47,6 +47,11 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport();
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum length of {this.MinLength} characters and can't be a blank node"));
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
@@ -56,29 +61,25 @@ namespace RDFSharp.Model
                     case RDFResource valueNodeResource:
                         if (valueNodeResource.IsBlank
                                 || (this.MinLength > 0 && valueNodeResource.ToString().Length < this.MinLength))
-                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
                                                                      shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                      valueNode,
-                                                                     shape.Messages,
+                                                                     shapeMessages,
                                                                      shape.Severity));
-                        }
                         break;
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
                         if (this.MinLength > 0 && valueNodeLiteral.Value.Length < this.MinLength)
-                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
                                                                      shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                      valueNode,
-                                                                     shape.Messages,
+                                                                     shapeMessages,
                                                                      shape.Severity));
-                        }
                         break;
                 }
             }
