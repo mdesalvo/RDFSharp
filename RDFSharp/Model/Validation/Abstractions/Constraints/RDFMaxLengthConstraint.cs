@@ -47,6 +47,11 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport();
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Must have a maximum length of {this.MaxLength} characters and can't be a blank node"));
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
@@ -54,31 +59,26 @@ namespace RDFSharp.Model
                 {
                     //Resource
                     case RDFResource valueNodeResource:
-                        if (valueNodeResource.IsBlank
-                                || valueNodeResource.ToString().Length > this.MaxLength)
-                        {
+                        if (valueNodeResource.IsBlank || valueNodeResource.ToString().Length > this.MaxLength)
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
                                                                      shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                      valueNode,
-                                                                     shape.Messages,
+                                                                     shapeMessages,
                                                                      shape.Severity));
-                        }
                         break;
 
                     //Literal
                     case RDFLiteral valueNodeLiteral:
                         if (valueNodeLiteral.Value.Length > this.MaxLength)
-                        {
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.MAX_LENGTH_CONSTRAINT_COMPONENT,
                                                                      focusNode,
                                                                      shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                      valueNode,
-                                                                     shape.Messages,
+                                                                     shapeMessages,
                                                                      shape.Severity));
-                        }
                         break;
                 }
             }
