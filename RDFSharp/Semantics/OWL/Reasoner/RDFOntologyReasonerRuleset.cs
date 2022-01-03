@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2021 Marco De Salvo
+   Copyright 2012-2022 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -718,7 +718,7 @@ namespace RDFSharp.Semantics.OWL
                 Dictionary<string, List<string>> hasKeyRelationLookup = new Dictionary<string, List<string>>();
                 foreach (KeyValuePair<string, List<RDFOntologyResource>> hasKeyRelationMemberValue in hasKeyRelationMemberValues)
                 {
-                    string hasKeyRelationMemberValueKey = string.Join("§§", hasKeyRelationMemberValue.Value);
+                    string hasKeyRelationMemberValueKey = string.Join("ï¿½ï¿½", hasKeyRelationMemberValue.Value);
                     if (!hasKeyRelationLookup.ContainsKey(hasKeyRelationMemberValueKey))
                         hasKeyRelationLookup.Add(hasKeyRelationMemberValueKey, new List<string>() { hasKeyRelationMemberValue.Key });
                     else
