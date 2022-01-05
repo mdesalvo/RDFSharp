@@ -181,13 +181,14 @@ namespace RDFSharp.Test.Model
             Assert.IsNotNull(validationReport);
             Assert.IsFalse(validationReport.Conforms);
             Assert.IsTrue(validationReport.ResultsCount == 1);
-            Assert.IsTrue(validationReport.Results.Single().Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
-            Assert.IsTrue(validationReport.Results.Single().ResultMessages.Count == 0);
-            Assert.IsTrue(validationReport.Results.Single().FocusNode.Equals(new RDFResource("ex:Bob")));
-            Assert.IsTrue(validationReport.Results.Single().ResultValue.Equals(new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            Assert.IsTrue(validationReport.Results.Single().ResultPath.Equals(RDFVocabulary.FOAF.AGE));
-            Assert.IsTrue(validationReport.Results.Single().SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT));
-            Assert.IsTrue(validationReport.Results.Single().SourceShape.Equals(new RDFResource("ex:PropertyShape")));
+            Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <20^^http://www.w3.org/2001/XMLSchema#integer>")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
+            Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT));
+            Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         }
         #endregion
     }
