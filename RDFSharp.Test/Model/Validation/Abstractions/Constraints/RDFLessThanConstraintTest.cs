@@ -464,7 +464,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -502,7 +502,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -540,7 +540,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -578,7 +578,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -647,7 +647,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 1);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than <ex:endDate>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than values of property <ex:endDate>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Event2")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("1992-01-04", RDFModelEnums.RDFDatatypes.XSD_DATE)));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:startDate")));

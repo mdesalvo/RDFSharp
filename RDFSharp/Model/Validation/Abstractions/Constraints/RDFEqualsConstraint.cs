@@ -60,7 +60,7 @@ namespace RDFSharp.Model
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
             List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
             if (shapeMessages.Count == 0)
-                shapeMessages.Add(new RDFPlainLiteral($"Must have same values as <{this.EqualsPredicate}>"));
+                shapeMessages.Add(new RDFPlainLiteral($"Must have same values as property <{this.EqualsPredicate}>"));
 
             #region Evaluation
             List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)

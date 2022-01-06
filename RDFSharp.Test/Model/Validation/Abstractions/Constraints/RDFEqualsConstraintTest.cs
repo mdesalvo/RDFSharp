@@ -529,7 +529,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 2);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -537,7 +537,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
             Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -574,7 +574,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 3);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.DEPICTS}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.DEPICTS}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
@@ -582,7 +582,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
             Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.DEPICTS}>")));
+            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.DEPICTS}>")));
             Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
@@ -590,7 +590,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
             Assert.IsTrue(validationReport.Results[2].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[2].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[2].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.DEPICTS}>")));
+            Assert.IsTrue(validationReport.Results[2].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.DEPICTS}>")));
             Assert.IsTrue(validationReport.Results[2].FocusNode.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[2].ResultValue.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             Assert.IsTrue(validationReport.Results[2].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
@@ -627,7 +627,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 2);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -635,7 +635,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
             Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -673,7 +673,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 2);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -681,7 +681,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
             Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -719,7 +719,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 2);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -727,7 +727,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
             Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <{RDFVocabulary.FOAF.AGENT}>")));
+            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <{RDFVocabulary.FOAF.AGENT}>")));
             Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Bob")));
             Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFResource("ex:Alice")));
             Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
@@ -766,7 +766,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.ResultsCount == 2);
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <ex:altLabel>")));
+            Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <ex:altLabel>")));
             Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:USA")));
             Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFPlainLiteral("United States")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:prefLabel")));
@@ -774,7 +774,7 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
             Assert.IsTrue(validationReport.Results[1].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[1].ResultMessages.Count == 1);
-            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as <ex:altLabel>")));
+            Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have same values as property <ex:altLabel>")));
             Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:USA")));
             Assert.IsTrue(validationReport.Results[1].ResultValue.Equals(new RDFPlainLiteral("USA")));
             Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(new RDFResource("ex:prefLabel")));
