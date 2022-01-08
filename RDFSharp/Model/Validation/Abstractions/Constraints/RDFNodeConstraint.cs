@@ -61,6 +61,11 @@ namespace RDFSharp.Model
             if (nodeShape == null)
                 return report;
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Value does not have shape <{this.NodeShapeUri}>"));
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
@@ -71,7 +76,7 @@ namespace RDFSharp.Model
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              valueNode,
-                                                             shape.Messages,
+                                                             shapeMessages,
                                                              shape.Severity));
             }
             #endregion
