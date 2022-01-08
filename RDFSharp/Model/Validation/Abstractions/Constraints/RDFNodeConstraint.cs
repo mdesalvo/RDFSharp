@@ -71,6 +71,11 @@ namespace RDFSharp.Model
             {
                 RDFValidationReport nodeShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, nodeShape, new List<RDFPatternMember>() { valueNode });
                 if (!nodeShapeReport.Conforms)
+                {
+                    //Report evidences from linked node shape
+                    report.MergeResults(nodeShapeReport);
+
+                    //Report evidence from working shape
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.NODE_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -78,6 +83,7 @@ namespace RDFSharp.Model
                                                              valueNode,
                                                              shapeMessages,
                                                              shape.Severity));
+                }
             }
             #endregion
 
