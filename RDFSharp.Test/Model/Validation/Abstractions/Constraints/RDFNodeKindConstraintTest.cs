@@ -558,7 +558,7 @@ namespace RDFSharp.Test.Model
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.DOCUMENT, new RDFResource("ex:AliceDocs")));
             dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Alice")));
-            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.DOCUMENT, new RDFResource()));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.DOCUMENT, new RDFResource("bnode:12345")));
 
             //ShapesGraph
             RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
@@ -576,8 +576,8 @@ namespace RDFSharp.Test.Model
             Assert.IsTrue(validationReport.Results[0].Severity == RDFValidationEnums.RDFShapeSeverity.Violation);
             Assert.IsTrue(validationReport.Results[0].ResultMessages.Count == 1);
             Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value is not of required kind <IRI>")));
-            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
-            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:AliceDocs")));
+            Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
+            Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("bnode:12345")));
             Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.DOCUMENT));
             Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.NODE_KIND_CONSTRAINT_COMPONENT));
             Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
