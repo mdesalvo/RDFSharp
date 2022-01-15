@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
@@ -56,7 +57,7 @@ namespace RDFSharp.Query
             {
 
                 #region serialize
-                using (XmlTextWriter sparqlWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
+                using (XmlTextWriter sparqlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     XmlDocument sparqlDoc = new XmlDocument();
                     sparqlWriter.Formatting = Formatting.Indented;
@@ -129,7 +130,7 @@ namespace RDFSharp.Query
 
                 #region deserialize
                 RDFAskQueryResult result = new RDFAskQueryResult();
-                using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
+                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
                     {

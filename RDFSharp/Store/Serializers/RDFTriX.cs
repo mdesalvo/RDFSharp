@@ -48,7 +48,7 @@ namespace RDFSharp.Store
             {
 
                 #region serialize
-                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
+                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     XmlDocument trixDoc = new XmlDocument();
                     trixWriter.Formatting = Formatting.Indented;
@@ -184,7 +184,7 @@ namespace RDFSharp.Store
                 #region deserialize
                 RDFMemoryStore result = new RDFMemoryStore();
                 Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-                using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
+                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     using (XmlTextReader trixReader = new XmlTextReader(streamReader))
                     {

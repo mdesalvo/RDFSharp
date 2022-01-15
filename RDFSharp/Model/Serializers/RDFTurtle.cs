@@ -55,7 +55,7 @@ namespace RDFSharp.Model
             try
             {
                 #region serialize
-                using (StreamWriter sw = new StreamWriter(outputStream, Encoding.UTF8))
+                using (StreamWriter sw = new StreamWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     #region prefixes
                     //Write the namespaces collected by the graph
@@ -228,7 +228,7 @@ namespace RDFSharp.Model
 
                 //Fetch Turtle data
                 string turtleData = string.Empty;
-                using (StreamReader sReader = new StreamReader(inputStream, Encoding.UTF8))
+                using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
                     turtleData = sReader.ReadToEnd();
 
                 //Parse Turtle data

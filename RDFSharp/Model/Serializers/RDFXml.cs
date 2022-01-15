@@ -49,7 +49,7 @@ namespace RDFSharp.Model
             try
             {
                 #region serialize
-                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
+                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     XmlDocument rdfDoc = new XmlDocument();
                     rdfxmlWriter.Formatting = Formatting.Indented;
@@ -377,7 +377,7 @@ namespace RDFSharp.Model
             {
                 #region deserialize
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
-                using (StreamReader streamReader = new StreamReader(inputStream, Encoding.UTF8))
+                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
                     {
