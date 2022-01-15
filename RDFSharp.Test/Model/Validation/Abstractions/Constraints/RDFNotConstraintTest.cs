@@ -83,6 +83,34 @@ namespace RDFSharp.Test.Model
         }
 
         [TestMethod]
+        public void ShouldConformNodeShapeWithClassTargetOnNotDeclaredConstraintShape()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShapeConstraint = new RDFNodeShape(new RDFResource("ex:NodeShapeConstraint"));
+            nodeShapeConstraint.AddConstraint(new RDFMinLengthConstraint(10));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:NodeShapeConstraint")));
+            shapesGraph.AddShape(nodeShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
         public void ShouldConformNodeShapeWithNodeTarget()
         {
             //DataGraph
