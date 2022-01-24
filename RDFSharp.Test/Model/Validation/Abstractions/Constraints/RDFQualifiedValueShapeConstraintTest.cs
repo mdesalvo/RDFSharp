@@ -79,11 +79,276 @@ namespace RDFSharp.Test.Model
 
         //NS-CONFORMS:TRUE
 
+        [TestMethod]
+        public void ShouldConformNodeShapeWithClassTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
 
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
+            shapesGraph.AddShape(nodeShape);
+            RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+            qvShape.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformNodeShapeWithClassTargetWhenQVShapeNotFound()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
+            shapesGraph.AddShape(nodeShape);
+            RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+            qvShape.AddConstraint(new RDFMinLengthConstraint(6));
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformNodeShapeWithNodeTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
+            shapesGraph.AddShape(nodeShape);
+            RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+            qvShape.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformNodeShapeWithSubjectsOfTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
+            nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
+            shapesGraph.AddShape(nodeShape);
+            RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+            qvShape.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformNodeShapeWithObjectsOfTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+            nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
+            nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
+            shapesGraph.AddShape(nodeShape);
+            RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+            qvShape.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShape);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
 
         //PS-CONFORMS:TRUE
 
+        [TestMethod]
+        public void ShouldConformPropertyShapeWithClassTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
 
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+            propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
+            propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 2));
+            shapesGraph.AddShape(propertyShape);
+            RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+            qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShapeConstraint);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformPropertyShapeWithNodeTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+            propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+            propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 2));
+            shapesGraph.AddShape(propertyShape);
+            RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+            qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShapeConstraint);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformPropertyShapeWithSubjectsOfTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+            propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
+            propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 2));
+            shapesGraph.AddShape(propertyShape);
+            RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+            qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(6));
+            shapesGraph.AddShape(qvShapeConstraint);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
+
+        [TestMethod]
+        public void ShouldConformPropertyShapeWithObjectsOfTarget()
+        {
+            //DataGraph
+            RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Man"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Woman"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:Person")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Woman")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Steve"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Man")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+            dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Steve")));
+
+            //ShapesGraph
+            RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+            RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+            propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
+            propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 2));
+            shapesGraph.AddShape(propertyShape);
+            RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.RDF.TYPE);
+            qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
+            shapesGraph.AddShape(qvShapeConstraint);
+
+            //Validate
+            RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+            Assert.IsNotNull(validationReport);
+            Assert.IsTrue(validationReport.Conforms);
+        }
 
         //NS-CONFORMS:FALSE
 
