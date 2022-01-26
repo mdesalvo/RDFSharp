@@ -810,11 +810,6 @@ namespace RDFSharp.Model
             public static readonly RDFResource QUALIFIED_VALUE_SHAPE = new RDFResource(string.Concat(SHACL.BASE_URI,"qualifiedValueShape"));
 
             /// <summary>
-            /// sh:qualifiedValueShapesDisjoint
-            /// </summary>
-            public static readonly RDFResource QUALIFIED_VALUE_SHAPES_DISJOINT = new RDFResource(string.Concat(SHACL.BASE_URI,"qualifiedValueShapesDisjoint"));
-
-            /// <summary>
             /// sh:UniqueLangConstraintComponent
             /// </summary>
             public static readonly RDFResource UNIQUE_LANG_CONSTRAINT_COMPONENT = new RDFResource(string.Concat(SHACL.BASE_URI,"UniqueLangConstraintComponent"));

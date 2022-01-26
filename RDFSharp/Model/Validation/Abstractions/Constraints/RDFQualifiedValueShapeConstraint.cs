@@ -77,6 +77,18 @@ namespace RDFSharp.Model
             if (qualifiedValueShape == null)
                 return report;
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+            {
+                if (this.QualifiedValueMinCount.HasValue && this.QualifiedValueMaxCount.HasValue)
+                    shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {this.QualifiedValueMinCount} and a maximum of {this.QualifiedValueMaxCount} conforming values for the shape <{this.QualifiedValueShapeUri}>"));
+                else if (this.QualifiedValueMinCount.HasValue)
+                    shapeMessages.Add(new RDFPlainLiteral($"Must have a minimum of {this.QualifiedValueMinCount} conforming values for the shape <{this.QualifiedValueShapeUri}>"));
+                else if (this.QualifiedValueMaxCount.HasValue)
+                    shapeMessages.Add(new RDFPlainLiteral($"Must have a maximum of {this.QualifiedValueMaxCount} conforming values for the shape <{this.QualifiedValueShapeUri}>"));
+            }
+
             #region Evaluation
             if (this.QualifiedValueMinCount.HasValue || this.QualifiedValueMaxCount.HasValue)
             {
@@ -94,7 +106,7 @@ namespace RDFSharp.Model
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              null,
-                                                             shape.Messages,
+                                                             shapeMessages,
                                                              shape.Severity));
 
                 if (this.QualifiedValueMaxCount.HasValue && conformingValues > this.QualifiedValueMaxCount)
@@ -103,7 +115,7 @@ namespace RDFSharp.Model
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              null,
-                                                             shape.Messages,
+                                                             shapeMessages,
                                                              shape.Severity));
             }
             #endregion
