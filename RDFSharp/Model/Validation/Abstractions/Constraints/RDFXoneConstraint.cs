@@ -66,6 +66,11 @@ namespace RDFSharp.Model
                     xoneShapes.Add(xoneShape);
             }
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Value does not have exactly one of the shapes in sh:xone enumeration"));
+
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
             {
@@ -74,7 +79,12 @@ namespace RDFSharp.Model
                 {
                     RDFValidationReport xoneShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, xoneShape, new List<RDFPatternMember>() { valueNode });
                     if (xoneShapeReport.Conforms)
+                    {
                         valueNodeConformsCounter++;
+                        //No need to evaluate remaining shapes, since value has broken sh:xone enumeration
+                        if (valueNodeConformsCounter > 1)
+                            break;
+                    }
                 }
 
                 if (valueNodeConformsCounter != 1)
@@ -83,7 +93,7 @@ namespace RDFSharp.Model
                                                              focusNode,
                                                              shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                              valueNode,
-                                                             shape.Messages,
+                                                             shapeMessages,
                                                              shape.Severity));
             }
             #endregion
