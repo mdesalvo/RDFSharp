@@ -161,7 +161,7 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldNotGetNamespaceByPrefix()
         {
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exx", false));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exxx", false));
             Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, false));
         }
 
@@ -169,7 +169,7 @@ namespace RDFSharp.Test.Model
         [TestProperty("Warning", "This is a physical test! It tries to contact prefix.cc service, which may be unavailable! We are not going to mock tests like this.")]
         public void ShouldNotGetNamespaceByPrefixWithLookupService()
         {
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exx", true));
+            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("exxx", true));
             Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, true));
         }
 
@@ -199,15 +199,15 @@ namespace RDFSharp.Test.Model
         [TestMethod]
         public void ShouldNotGetNamespaceByUri()
         {
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("http://exx.org/", false));
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, false));
+            Assert.IsNull(RDFNamespaceRegister.GetByUri("http://exx.org/", false));
+            Assert.IsNull(RDFNamespaceRegister.GetByUri(null, false));
         }
 
         [TestMethod]
         public void ShouldNotGetNamespaceByUriWithLookupService()
         {
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix("http://exx.org/", true));
-            Assert.IsNull(RDFNamespaceRegister.GetByPrefix(null, true));
+            Assert.IsNull(RDFNamespaceRegister.GetByUri("http://exx.org/", true));
+            Assert.IsNull(RDFNamespaceRegister.GetByUri(null, true));
         }
         #endregion
     }
