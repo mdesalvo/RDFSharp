@@ -48,6 +48,11 @@ namespace RDFSharp.Model
         {
             RDFValidationReport report = new RDFValidationReport();
 
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Must not have the same language tag more than one time per value"));
+
             #region Evaluation
             if (this.UniqueLang)
             {
@@ -72,7 +77,7 @@ namespace RDFSharp.Model
                                                                          focusNode,
                                                                          shape is RDFPropertyShape ? ((RDFPropertyShape)shape).Path : null,
                                                                          null,
-                                                                         shape.Messages,
+                                                                         shapeMessages,
                                                                          shape.Severity));
                             }
                         }
