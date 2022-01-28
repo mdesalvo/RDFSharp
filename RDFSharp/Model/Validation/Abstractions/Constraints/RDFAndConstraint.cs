@@ -83,6 +83,7 @@ namespace RDFSharp.Model
                     if (!andShapeReport.Conforms)
                     {
                         valueNodeConforms = false;
+                        //No need to evaluate remaining shapes, since value has broken sh:and enumeration
                         break;
                     }
                 }

@@ -82,6 +82,7 @@ namespace RDFSharp.Model
                     if (orShapeReport.Conforms)
                     {
                         valueNodeConforms = true;
+                        //No need to evaluate remaining shapes, since value has succeeded sh:or enumeration
                         break;
                     }
                 }
