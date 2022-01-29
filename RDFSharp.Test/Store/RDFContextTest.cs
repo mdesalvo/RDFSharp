@@ -70,7 +70,7 @@ namespace RDFSharp.Test.Store
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingContextFromUriBecauseInvalidUri()
-            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext("test"));
+            => Assert.ThrowsException<RDFStoreException>(() => new RDFContext(new Uri("test", UriKind.Relative)));
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingContextFromUriBecauseNull()
