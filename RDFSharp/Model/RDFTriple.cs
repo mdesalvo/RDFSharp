@@ -75,9 +75,7 @@ namespace RDFSharp.Model
             if (pred != null)
             {
                 if (pred.IsBlank)
-                {
                     throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
-                }
                 this.Predicate = pred;
             }
             else
@@ -110,9 +108,7 @@ namespace RDFSharp.Model
             if (pred != null)
             {
                 if (pred.IsBlank)
-                {
                     throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
-                }
                 this.Predicate = pred;
             }
             else

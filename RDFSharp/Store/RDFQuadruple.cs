@@ -84,9 +84,7 @@ namespace RDFSharp.Store
             if (pred != null)
             {
                 if (pred.IsBlank)
-                {
                     throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
-                }
                 this.Predicate = pred;
             }
             else
@@ -122,9 +120,7 @@ namespace RDFSharp.Store
             if (pred != null)
             {
                 if (pred.IsBlank)
-                {
                     throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
-                }
                 this.Predicate = pred;
             }
             else
@@ -163,16 +159,15 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFMemoryStore ReifyQuadruple()
         {
-            var reifStore = new RDFMemoryStore();
-            var reifSubj = this.ReificationSubject;
-
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
-            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
+            RDFMemoryStore reifStore = new RDFMemoryStore();
+            
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.STATEMENT));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.SUBJECT, (RDFResource)this.Subject));
+            reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.PREDICATE, (RDFResource)this.Predicate));
             if (this.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
+                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFResource)this.Object));
             else
-                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, reifSubj, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
+                reifStore.AddQuadruple(new RDFQuadruple((RDFContext)this.Context, this.ReificationSubject, RDFVocabulary.RDF.OBJECT, (RDFLiteral)this.Object));
 
             return reifStore;
         }
