@@ -98,10 +98,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the store context
         /// </summary>
-        public override string ToString()
-        {
-            return this.Context.ToString();
-        }
+        public override string ToString() => this.Context.ToString();
         #endregion
     }
 
