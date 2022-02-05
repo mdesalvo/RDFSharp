@@ -35,7 +35,6 @@ namespace RDFSharp.Store
         /// </summary>
         internal static RDFQuadruple ParseQuadruple(IDataReader fetchedQuadruples)
         {
-
             if (fetchedQuadruples != null)
             {
                 RDFContext qContext = new RDFContext(fetchedQuadruples["Context"].ToString());
@@ -81,7 +80,6 @@ namespace RDFSharp.Store
                 return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
             }
             throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
-
         }
 
         /// <summary>
