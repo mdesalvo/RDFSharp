@@ -66,6 +66,820 @@ namespace RDFSharp.Test.Store
         [TestMethod]
         public void ShouldThrowExceptionOnParsingQuadrupleBecauseNull()
             => Assert.ThrowsException<RDFStoreException>(() => RDFStoreUtilities.ParseQuadruple(null));
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesBecauseNullStore()
+        {
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(null, null, null, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByNullParameters()
+        {
+            RDFContext ctx = new RDFContext("ex:ctx");
+            RDFResource subj = new RDFResource("ex:subj");
+            RDFResource pred = new RDFResource("ex:pred");
+            RDFResource obj = new RDFResource("ex:obj");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx, subj, pred, obj),
+                    new RDFQuadruple(ctx, subj, pred, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, null); //select *
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContext()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesBySubject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByPredicate()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit1 = new RDFPlainLiteral("lit");
+            RDFPlainLiteral lit2 = new RDFPlainLiteral("lit", "en-US");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit1),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit2)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, lit2);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextSubject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextPredicate()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, null, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextSubjectPredicate()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextSubjectObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, null, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextSubjectLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj2, null, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextPredicateObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextPredicateLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, null, pred1, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextSubjectPredicateObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByContextSubjectPredicateLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj2, pred1, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesBySubjectPredicate()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, pred1, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesBySubjectObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, null, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesBySubjectLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, null, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByPredicateObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesByPredicateLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred1, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesBySubjectPredicateObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj1, pred1, obj1, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldSelectQuadruplesBySubjectPredicateLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, pred1, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesByContext()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx1, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx2, null, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesBySubject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj1, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred2, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, subj2, null, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesByPredicate()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred1, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, pred2, null, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesByObject()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred2, lit),
+                    new RDFQuadruple(ctx2, subj1, pred1, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, obj2, null);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesByLiteral()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj2, pred2, lit),
+                    new RDFQuadruple(ctx2, subj1, pred1, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, null, null, null, null, lit2);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesAtMiddle()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj1, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred1, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred2, null, lit);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldNotSelectQuadruplesAtLast()
+        {
+            RDFContext ctx1 = new RDFContext("ex:ctx1");
+            RDFContext ctx2 = new RDFContext("ex:ctx2");
+            RDFResource subj1 = new RDFResource("ex:subj1");
+            RDFResource subj2 = new RDFResource("ex:subj2");
+            RDFResource pred1 = new RDFResource("ex:pred1");
+            RDFResource pred2 = new RDFResource("ex:pred2");
+            RDFResource obj1 = new RDFResource("ex:obj1");
+            RDFResource obj2 = new RDFResource("ex:obj2");
+            RDFPlainLiteral lit = new RDFPlainLiteral("lit");
+            RDFPlainLiteral lit2 = new RDFPlainLiteral("lit2");
+            RDFMemoryStore data = new RDFMemoryStore(
+                new List<RDFQuadruple>()
+                {
+                    new RDFQuadruple(ctx1, subj1, pred1, obj1),
+                    new RDFQuadruple(ctx1, subj1, pred1, lit),
+                    new RDFQuadruple(ctx2, subj1, pred1, lit)
+                }
+            );
+            List<RDFQuadruple> result = RDFStoreUtilities.SelectQuadruples(data, ctx1, subj1, pred1, null, lit2);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
         #endregion
     }
 }

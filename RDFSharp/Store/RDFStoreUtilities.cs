@@ -214,7 +214,6 @@ namespace RDFSharp.Store
                         matchResult = store.ToList();
                         break;
                 }
-
             }
             return matchResult;
         }
