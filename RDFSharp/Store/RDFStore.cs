@@ -49,17 +49,13 @@ namespace RDFSharp.Store
         /// Gives the string representation of the store
         /// </summary>
         public override string ToString()
-        {
-            return this.StoreType;
-        }
+            => this.StoreType;
 
         /// <summary>
         /// Performs the equality comparison between two stores
         /// </summary>
         public bool Equals(RDFStore other)
-        {
-            return (other != null && this.StoreID.Equals(other.StoreID));
-        }
+            => other != null && this.StoreID.Equals(other.StoreID);
         #endregion
 
         #region Methods
@@ -188,7 +184,6 @@ namespace RDFSharp.Store
         /// </summary>
         public void UnreifyQuadruples()
         {
-
             //Create SPARQL SELECT query for detecting reified quadruples
             RDFVariable T = new RDFVariable("T");
             RDFVariable C = new RDFVariable("C");
@@ -214,7 +209,6 @@ namespace RDFSharp.Store
             IEnumerator reifiedQuadruples = R.SelectResults.Rows.GetEnumerator();
             while (reifiedQuadruples.MoveNext())
             {
-
                 //Get reification data (T, C, S, P, O)
                 RDFPatternMember tRepresent = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?T"].ToString());
                 RDFPatternMember tContext = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)reifiedQuadruples.Current)["?C"].ToString());
@@ -239,9 +233,7 @@ namespace RDFSharp.Store
                     this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.PREDICATE, (RDFResource)tPredicate));
                     this.RemoveQuadruple(new RDFQuadruple(new RDFContext(((RDFResource)tContext).URI), (RDFResource)tRepresent, RDFVocabulary.RDF.OBJECT, (RDFLiteral)tObject));
                 }
-
             }
-
         }
         #endregion
 
@@ -263,17 +255,9 @@ namespace RDFSharp.Store
 
                 // Step 2: Result-Update
                 if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                {
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
-                                                                              (RDFResource)q.Predicate,
-                                                                              (RDFResource)q.Object));
-                }
+                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object));
                 else
-                {
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject,
-                                                                              (RDFResource)q.Predicate,
-                                                                              (RDFLiteral)q.Object));
-                }
+                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
             }
             return graphs.Values.ToList();
         }
