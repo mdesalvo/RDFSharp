@@ -92,15 +92,14 @@ namespace RDFSharp.Store
         public bool Equals(RDFMemoryStore other)
         {
             if (other == null || this.QuadruplesCount != other.QuadruplesCount)
-            {
                 return false;
-            }
+            if (base.Equals(other))
+                return true;
+
             foreach (RDFQuadruple q in this)
             {
                 if (!other.ContainsQuadruple(q))
-                {
                     return false;
-                }
             }
             return true;
         }

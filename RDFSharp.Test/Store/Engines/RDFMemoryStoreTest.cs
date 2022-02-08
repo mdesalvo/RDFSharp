@@ -66,6 +66,27 @@ namespace RDFSharp.Test.Store
             while (quads.MoveNext()) j++;
             Assert.IsTrue(j == 1);
         }
+
+        [TestMethod]
+        public void ShouldEqualsMemoryStores()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            Assert.IsTrue(store1.Equals(store1));
+            Assert.IsFalse(store1.Equals(null));
+
+            RDFMemoryStore store2 = new RDFMemoryStore();
+            Assert.IsTrue(store1.Equals(store2));
+            
+            store2.AddQuadruple(new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")));
+            Assert.IsFalse(store1.Equals(store2));
+
+            store1.AddQuadruple(new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")));
+            Assert.IsTrue(store1.Equals(store2));
+
+            store1.AddQuadruple(new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o1")));
+            store2.AddQuadruple(new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o2")));
+            Assert.IsFalse(store1.Equals(store2));
+        }
         #endregion
     }
 }
