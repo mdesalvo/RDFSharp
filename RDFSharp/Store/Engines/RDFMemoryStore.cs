@@ -142,15 +142,12 @@ namespace RDFSharp.Store
         /// </summary>
         public override RDFStore AddQuadruple(RDFQuadruple quadruple)
         {
-            if (quadruple != null)
+            if (quadruple != null && !this.Quadruples.ContainsKey(quadruple.QuadrupleID))
             {
-                if (!this.Quadruples.ContainsKey(quadruple.QuadrupleID))
-                {
-                    //Add quadruple
-                    this.Quadruples.Add(quadruple.QuadrupleID, quadruple);
-                    //Add index
-                    this.StoreIndex.AddIndex(quadruple);
-                }
+                //Add quadruple
+                this.Quadruples.Add(quadruple.QuadrupleID, quadruple);
+                //Add index
+                this.StoreIndex.AddIndex(quadruple);
             }
             return this;
         }

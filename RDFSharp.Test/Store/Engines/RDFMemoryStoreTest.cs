@@ -87,6 +87,38 @@ namespace RDFSharp.Test.Store
             store2.AddQuadruple(new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o2")));
             Assert.IsFalse(store1.Equals(store2));
         }
+
+        [TestMethod]
+        public void ShouldMergeGraph()
+        {
+            RDFGraph graph = new RDFGraph(new List<RDFTriple>() {
+                new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:obj"),new RDFResource("ex:obj")),
+                new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:obj"),new RDFPlainLiteral("lit"))
+            }).SetContext(new Uri("ex:ctx"));
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.MergeGraph(graph);
+
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:obj"), new RDFResource("ex:obj"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:obj"), new RDFPlainLiteral("lit"))));
+
+            store.MergeGraph(null);
+            Assert.IsTrue(store.QuadruplesCount == 2);
+        }
+
+        [TestMethod]
+        public void ShouldAddQuadruple()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:obj"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:obj"), new RDFResource("ex:obj")));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:obj"), new RDFResource("ex:obj"))));
+            
+            store.AddQuadruple(null);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
         #endregion
     }
 }
