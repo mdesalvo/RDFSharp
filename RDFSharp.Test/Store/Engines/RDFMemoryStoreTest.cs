@@ -512,7 +512,18 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldContainNotQuadruples()
+        public void ShouldContainQuadruplesAsSQLStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            
+            Assert.IsTrue(((RDFStore)store).ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"))));
+            Assert.IsTrue(((RDFStore)store).ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+        }
+
+        [TestMethod]
+        public void ShouldNotContainQuadruples()
         {
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
@@ -520,6 +531,17 @@ namespace RDFSharp.Test.Store
             
             Assert.IsFalse(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"))));
             Assert.IsFalse(store.ContainsQuadruple(null));
+        }
+
+        [TestMethod]
+        public void ShouldNotContainQuadruplesAsSQLStore()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            
+            Assert.IsFalse(((RDFStore)store).ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"))));
+            Assert.IsFalse(((RDFStore)store).ContainsQuadruple(null));
         }
 
         [TestMethod]
