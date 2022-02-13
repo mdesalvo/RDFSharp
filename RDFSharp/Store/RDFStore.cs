@@ -284,21 +284,17 @@ namespace RDFSharp.Store
             if (quadruple != null)
             {
                 if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                {
                     return (this.SelectQuadruples((RDFContext)quadruple.Context,
                                                   (RDFResource)quadruple.Subject,
                                                   (RDFResource)quadruple.Predicate,
                                                   (RDFResource)quadruple.Object,
                                                   null)).QuadruplesCount > 0;
-                }
                 else
-                {
                     return (this.SelectQuadruples((RDFContext)quadruple.Context,
                                                   (RDFResource)quadruple.Subject,
                                                   (RDFResource)quadruple.Predicate,
                                                   null,
                                                   (RDFLiteral)quadruple.Object)).QuadruplesCount > 0;
-                }
             }
             return false;
         }
