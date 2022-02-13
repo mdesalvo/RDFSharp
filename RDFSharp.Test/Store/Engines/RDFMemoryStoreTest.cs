@@ -227,6 +227,277 @@ namespace RDFSharp.Test.Store
             store.RemoveQuadruplesByLiteral(null);
             Assert.IsTrue(store.QuadruplesCount == 1);
         }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextSubject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextSubject(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextSubject(new RDFContext("ex:ctx2"), new RDFResource("ex:subj1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextSubject(null, new RDFResource("ex:subj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextPredicate()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextPredicate(new RDFContext("ex:ctx1"), new RDFResource("ex:pred"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextPredicate(new RDFContext("ex:ctx2"), new RDFResource("ex:pred11"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextPredicate(null, new RDFResource("ex:pred"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextObject(new RDFContext("ex:ctx1"), new RDFResource("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextObject(new RDFContext("ex:ctx2"), new RDFResource("ex:obj1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextObject(null, new RDFResource("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextLiteral(new RDFContext("ex:ctx1"), new RDFPlainLiteral("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextLiteral(new RDFContext("ex:ctx2"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextLiteral(null, new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextSubjectPredicate()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextSubjectPredicate(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextSubjectPredicate(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextSubjectPredicate(null, new RDFResource("ex:subj"), new RDFResource("ex:pred"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextSubjectObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextSubjectObject(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextSubjectObject(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:obj1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextSubjectObject(null, new RDFResource("ex:subj"), new RDFResource("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextSubjectLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextSubjectLiteral(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFPlainLiteral("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextSubjectLiteral(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextSubjectLiteral(null, new RDFResource("ex:subj"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextPredicateObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextPredicateObject(new RDFContext("ex:ctx1"), new RDFResource("ex:pred"), new RDFResource("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextPredicateObject(new RDFContext("ex:ctx2"), new RDFResource("ex:pred"), new RDFResource("ex:obj1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextPredicateObject(null, new RDFResource("ex:pred"), new RDFResource("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByContextPredicateLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByContextPredicateLiteral(new RDFContext("ex:ctx1"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByContextPredicateLiteral(new RDFContext("ex:ctx2"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByContextPredicateLiteral(null, new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+                [TestMethod]
+        public void ShouldRemoveQuadruplesBySubjectPredicate()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesBySubjectPredicate(new RDFResource("ex:subj"), new RDFResource("ex:pred"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesBySubjectPredicate(new RDFResource("ex:subj"), new RDFResource("ex:pred"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesBySubjectPredicate(null, new RDFResource("ex:pred"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesBySubjectObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesBySubjectObject(new RDFResource("ex:subj"), new RDFResource("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesBySubjectObject(new RDFResource("ex:subj1"), new RDFResource("ex:obj1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesBySubjectObject(null, new RDFResource("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesBySubjectLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesBySubjectLiteral(new RDFResource("ex:subj"), new RDFPlainLiteral("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesBySubjectLiteral(new RDFResource("ex:subj"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesBySubjectLiteral(null, new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByPredicateObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByPredicateObject(new RDFResource("ex:pred"), new RDFResource("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByPredicateObject(new RDFResource("ex:pred1"), new RDFResource("ex:obj1"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByPredicateObject(null, new RDFResource("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldRemoveQuadruplesByPredicateLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.RemoveQuadruplesByPredicateLiteral(new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"));
+
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+            
+            store.RemoveQuadruplesByPredicateLiteral(new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+
+            store.RemoveQuadruplesByPredicateLiteral(null, new RDFPlainLiteral("ex:obj"));
+            Assert.IsTrue(store.QuadruplesCount == 1);
+        }
+
+        [TestMethod]
+        public void ShouldClearQuadruples()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("ex:obj")));
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+            store.ClearQuadruples();
+
+            Assert.IsTrue(store.QuadruplesCount == 0);
+            Assert.IsTrue(store.StoreIndex.Contexts.Count == 0);
+            Assert.IsTrue(store.StoreIndex.Subjects.Count == 0);
+            Assert.IsTrue(store.StoreIndex.Predicates.Count == 0);
+            Assert.IsTrue(store.StoreIndex.Objects.Count == 0);
+            Assert.IsTrue(store.StoreIndex.Literals.Count == 0);
+        }
         #endregion
     }
 }
