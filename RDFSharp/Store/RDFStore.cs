@@ -279,6 +279,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public virtual bool ContainsQuadruple(RDFQuadruple quadruple)
         {
             if (quadruple != null)

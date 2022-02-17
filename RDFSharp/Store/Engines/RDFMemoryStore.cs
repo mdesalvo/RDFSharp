@@ -567,6 +567,7 @@ namespace RDFSharp.Store
         public RDFMemoryStore IntersectWith(RDFStore store)
         {
             RDFMemoryStore result = new RDFMemoryStore();
+
             if (store != null)
             {
                 //Add intersection quadruples
@@ -576,6 +577,7 @@ namespace RDFSharp.Store
                         result.AddQuadruple(q);
                 }
             }
+
             return result;
         }
 
@@ -607,6 +609,7 @@ namespace RDFSharp.Store
         public RDFMemoryStore DifferenceWith(RDFStore store)
         {
             RDFMemoryStore result = new RDFMemoryStore();
+
             if (store != null)
             {
                 //Add difference quadruples
@@ -622,6 +625,7 @@ namespace RDFSharp.Store
                 foreach (RDFQuadruple q in this)
                     result.AddQuadruple(q);
             }
+
             return result;
         }
         #endregion
