@@ -813,9 +813,9 @@ namespace RDFSharp.Store
         public static RDFMemoryStore FromUri(Uri uri, int timeoutMilliseconds = 20000)
         {
             if (uri == null)
-                throw new RDFModelException("Cannot read RDF memory store from Uri because given \"uri\" parameter is null.");
+                throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter is null.");
             if (!uri.IsAbsoluteUri)
-                throw new RDFModelException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
+                throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
 
             RDFMemoryStore result = new RDFMemoryStore();
             try

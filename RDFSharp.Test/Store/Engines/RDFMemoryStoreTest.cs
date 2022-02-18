@@ -1073,6 +1073,504 @@ namespace RDFSharp.Test.Store
         public void ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
             => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
 
+                [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        public void ShouldImportFromStream(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            store1.ToStream(format, stream);
+            RDFMemoryStore store2 = RDFMemoryStore.FromStream(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        public void ShouldImportFromEmptyStream(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            store1.ToStream(format, stream);
+            RDFMemoryStore store2 = RDFMemoryStore.FromStream(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullStream()
+            => Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromStream(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        public async Task ShouldImportFromStreamAsync(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            store1.ToStream(format, stream);
+            RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        public async Task ShouldImportFromEmptyStreamAsync(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            store1.ToStream(format, stream);
+            RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullStreamAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [TestMethod]
+        public void ShouldImportFromDataTable()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            DataTable table = store1.ToDataTable();
+            RDFMemoryStore store2 = RDFMemoryStore.FromDataTable(table);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public void ShouldImportEmptyFromDataTable()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            DataTable table = store1.ToDataTable();
+            RDFMemoryStore store2 = RDFMemoryStore.FromDataTable(table);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 0);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullDataTable()
+            => Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHaving4Columns()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingExactColumns()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECTTTTT", typeof(string));
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullContext()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add(null, "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyContext()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("", "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralContext()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("hello@en", "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullSubject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", null, "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptySubject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx", "", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralSubject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "hello@en", "http://pred/", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", null, "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithBlankPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "bnode:12345", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralPredicate()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "hello@en", "http://obj/");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullObject()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "http://pred/", null);
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromDataTable(table));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportFromDataTableAsync()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            DataTable table = store1.ToDataTable();
+            RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public async Task ShouldImportEmptyFromDataTableAsync()
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            DataTable table = store1.ToDataTable();
+            RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table);
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 0);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullDataTableAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHaving4ColumnsAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableNotHavingExactColumnsAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECTTTTT", typeof(string));
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullContextAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add(null, "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyContextAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("", "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralContextAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("hello@en", "http://subj/", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullSubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", null, "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptySubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralSubjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "hello@en", "http://pred/", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", null, "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithEmptyPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithBlankPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "bnode:12345", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithLiteralPredicateAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "hello@en", "http://obj/");
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromDataTableHavingRowWithNullObjectAsync()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?CONTEXT", typeof(string));
+            table.Columns.Add("?SUBJECT", typeof(string));
+            table.Columns.Add("?PREDICATE", typeof(string));
+            table.Columns.Add("?OBJECT", typeof(string));
+            table.Rows.Add("http://ctx/", "http://subj/", "http://pred/", null);
+
+            Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromDataTableAsync(table));
+        }
+
+        [TestMethod]
+        public void ShouldImportFromUri()
+        {
+            RDFMemoryStore store = RDFMemoryStore.FromUri(new Uri("https://w3c.github.io/rdf-tests/nquads/nq-syntax-uri-01.nq"));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount > 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullUri()
+            => Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromUri(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromRelativeUri()
+            => Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromUri(new Uri("/file/system", UriKind.Relative)));
+
+        [TestMethod]
+        public async Task ShouldImportFromUriAsync()
+        {
+            RDFMemoryStore store = await RDFMemoryStore.FromUriAsync(new Uri("https://w3c.github.io/rdf-tests/nquads/nq-syntax-uri-01.nq"));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount > 0);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullUriAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
+
         [TestCleanup]
         public void Cleanup()
         {
