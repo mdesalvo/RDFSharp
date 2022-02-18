@@ -816,6 +816,23 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(differenceNull);
             Assert.IsTrue(differenceNull.QuadruplesCount == 3);
         }
+
+        [TestMethod]
+        public void ShouldUnreifyQuadruples()
+        {
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"));
+            RDFMemoryStore store = new RDFMemoryStore(new List<RDFQuadruple>() { quadruple1, quadruple2 });
+            RDFMemoryStore storeQuadruple1 = quadruple1.ReifyQuadruple();
+            RDFMemoryStore storeQuadruple2 = quadruple2.ReifyQuadruple();
+            RDFMemoryStore reifiedStore = storeQuadruple1.UnionWith(storeQuadruple2);
+
+            Assert.IsFalse(reifiedStore.Equals(store));
+
+            reifiedStore.UnreifyQuadruples();            
+
+            Assert.IsTrue(reifiedStore.Equals(store));
+        }
         #endregion
     }
 }
