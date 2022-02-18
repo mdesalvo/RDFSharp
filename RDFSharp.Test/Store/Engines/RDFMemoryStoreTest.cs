@@ -20,7 +20,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Store
 {
@@ -832,6 +835,249 @@ namespace RDFSharp.Test.Store
             reifiedStore.UnreifyQuadruples();            
 
             Assert.IsTrue(reifiedStore.Equals(store));
+        }
+
+        [DataTestMethod]
+        [DataRow(".nq",RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        public void ShouldExportToFile(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            store.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")));
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFile{fileExtension}")).Length > 100);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepath()
+            => Assert.ThrowsException<RDFStoreException>(() => new RDFMemoryStore().ToFile(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        public async Task ShouldExportToFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
+            Assert.IsTrue(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")).Length > 100);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullOrEmptyFilepathAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => new RDFMemoryStore().ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        public void ShouldExportToStream(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            store.ToStream(format, stream);
+
+            Assert.IsTrue(stream.ToArray().Length > 100);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullStream()
+            => Assert.ThrowsException<RDFStoreException>(() => new RDFMemoryStore().ToStream(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [DataTestMethod]
+        [DataRow(RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(RDFStoreEnums.RDFFormats.TriX)]
+        public async Task ShouldExportToStreamAsync(RDFStoreEnums.RDFFormats format)
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            await store.ToStreamAsync(format, stream);
+
+            Assert.IsTrue(stream.ToArray().Length > 100);
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnExportingToNullStreamAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => new RDFMemoryStore().ToStreamAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [TestMethod]
+        public void ShouldExportToDataTable()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit","en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            DataTable table = store.ToDataTable();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 4);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 2);
+            Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/"));
+            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/"));
+            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        }
+
+        [TestMethod]
+        public void ShouldExportEmptyToDataTable()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            DataTable table = store.ToDataTable();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 4);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 0);
+        }
+
+        [TestMethod]
+        public async Task ShouldExportToDataTableAsync()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+            store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            DataTable table = await store.ToDataTableAsync();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 4);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 2);
+            Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/"));
+            Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US"));
+            Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/"));
+            Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/"));
+            Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/"));
+            Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/"));
+        }
+
+        [TestMethod]
+        public async Task ShouldExportEmptyToDataTableAsync()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            DataTable table = await store.ToDataTableAsync();
+
+            Assert.IsNotNull(table);
+            Assert.IsTrue(table.Columns.Count == 4);
+            Assert.IsTrue(table.Columns[0].ColumnName.Equals("?CONTEXT"));
+            Assert.IsTrue(table.Columns[1].ColumnName.Equals("?SUBJECT"));
+            Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE"));
+            Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT"));
+            Assert.IsTrue(table.Rows.Count == 0);
+        }
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        public void ShouldImportFromFile(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}"));
+            RDFMemoryStore store2 = RDFMemoryStore.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}"));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        public void ShouldImportEmptyFromFile(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFile{fileExtension}"));
+            RDFMemoryStore store2 = RDFMemoryStore.FromFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFile{fileExtension}"));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 0);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepath()
+            => Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromUnexistingFilepath()
+            => Assert.ThrowsException<RDFStoreException>(() => RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        public async Task ShouldImportFromFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
+            RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
+            store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}"));
+            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFile{fileExtension}"));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 2);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [DataTestMethod]
+        [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
+        [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
+        public async Task ShouldImportEmptyFromFileAsync(string fileExtension, RDFStoreEnums.RDFFormats format)
+        {
+            RDFMemoryStore store1 = new RDFMemoryStore();
+            store1.ToFile(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFile{fileExtension}"));
+            RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportEmptyFromFile{fileExtension}"));
+
+            Assert.IsNotNull(store2);
+            Assert.IsTrue(store2.QuadruplesCount == 0);
+            Assert.IsTrue(store2.Equals(store1));
+        }
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromNullOrEmptyFilepathAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, null));
+
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromUnexistingFilepathAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "blablabla"));
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFMemoryStoreTest_Should*"))
+                File.Delete(file);
         }
         #endregion
     }
