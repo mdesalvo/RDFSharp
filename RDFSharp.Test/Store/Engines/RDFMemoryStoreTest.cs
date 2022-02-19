@@ -1571,6 +1571,10 @@ namespace RDFSharp.Test.Store
         public void ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
             => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
 
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
+            => Assert.ThrowsExceptionAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("http://rdfsharp.test/")));
+
         [TestCleanup]
         public void Cleanup()
         {

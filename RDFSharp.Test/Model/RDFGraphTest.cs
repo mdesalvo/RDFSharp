@@ -1968,6 +1968,10 @@ namespace RDFSharp.Test.Model
         public void ShouldRaiseExceptionOnImportingFromRelativeUriAsync()
             => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(new Uri("/file/system", UriKind.Relative)));
 
+        [TestMethod]
+        public void ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
+            => Assert.ThrowsExceptionAsync<RDFModelException>(() => RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/")));
+
         [TestCleanup]
         public void Cleanup()
         {
