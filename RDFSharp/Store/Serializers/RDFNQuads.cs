@@ -97,14 +97,12 @@ namespace RDFSharp.Store
         {
             try
             {
-
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
                     string quadrupleTemplate = string.Empty;
-                    foreach (var q in store.SelectAllQuadruples())
+                    foreach (RDFQuadruple q in store.SelectAllQuadruples())
                     {
-
                         #region template
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
@@ -158,8 +156,8 @@ namespace RDFSharp.Store
 
                             quadrupleTemplate = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))));
                             quadrupleTemplate = quadrupleTemplate.Replace("\n", "\\n")
-                                                                     .Replace("\t", "\\t")
-                                                                     .Replace("\r", "\\r");
+                                                                 .Replace("\t", "\\t")
+                                                                 .Replace("\r", "\\r");
 
                             #region plain literal
                             if (q.Object is RDFPlainLiteral)
@@ -193,7 +191,6 @@ namespace RDFSharp.Store
                     }
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -217,7 +214,6 @@ namespace RDFSharp.Store
             long nquadIndex = 0;
             try
             {
-
                 #region deserialize
                 using (StreamReader sr = new StreamReader(inputStream, Encoding.ASCII))
                 {
@@ -363,7 +359,6 @@ namespace RDFSharp.Store
                     return result;
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -383,11 +378,9 @@ namespace RDFSharp.Store
             //A legal N-Quad starts with "_:" of blanks or "<" of non-blanks
             if (nquad.StartsWith("_:") || nquad.StartsWith("<"))
             {
-
                 //S->->-> quadruple
                 if (nquad.StartsWith("<"))
                 {
-
                     //S->P->O->C
                     if (SPOC.Match(nquad).Success)
                     {
@@ -629,7 +622,6 @@ namespace RDFSharp.Store
                 //B->->-> quadruple
                 else
                 {
-
                     //B->P->O->C
                     if (BPOC.Match(nquad).Success)
                     {
@@ -867,13 +859,11 @@ namespace RDFSharp.Store
 
                     throw new Exception("found illegal N-Quad, unrecognized 'B->->->' structure");
                 }
-
             }
             else
             {
                 throw new Exception("found illegal N-Quad, must start with \"_:\" or with \"<\"");
             }
-
         }
         #endregion
 

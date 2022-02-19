@@ -173,7 +173,6 @@ namespace RDFSharp.Store
         /// </summary>
         public abstract RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource predicateResource, RDFLiteral objectLiteral);
 
-
         /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
@@ -239,66 +238,9 @@ namespace RDFSharp.Store
 
         #region Select
         /// <summary>
-        /// Gets a list containing the graphs saved in the store
-        /// </summary>
-        public List<RDFGraph> ExtractGraphs()
-        {
-            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
-            {
-                // Step 1: Cache-Update
-                if (!graphs.ContainsKey(q.Context.PatternMemberID))
-                {
-                    graphs.Add(q.Context.PatternMemberID, new RDFGraph());
-                    graphs[q.Context.PatternMemberID].SetContext(((RDFContext)q.Context).Context);
-                }
-
-                // Step 2: Result-Update
-                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object));
-                else
-                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
-            }
-            return graphs.Values.ToList();
-        }
-
-        /// <summary>
-        /// Gets a list containing the contexts saved in the store
-        /// </summary>
-        public List<RDFContext> ExtractContexts()
-        {
-            Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
-            {
-                if (!contexts.ContainsKey(q.Context.PatternMemberID))
-                    contexts.Add(q.Context.PatternMemberID, q.Context);
-            }
-            return contexts.Values.OfType<RDFContext>().ToList();
-        }
-
-        /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        public virtual bool ContainsQuadruple(RDFQuadruple quadruple)
-        {
-            if (quadruple != null)
-            {
-                if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                    return (this.SelectQuadruples((RDFContext)quadruple.Context,
-                                                  (RDFResource)quadruple.Subject,
-                                                  (RDFResource)quadruple.Predicate,
-                                                  (RDFResource)quadruple.Object,
-                                                  null)).QuadruplesCount > 0;
-                else
-                    return (this.SelectQuadruples((RDFContext)quadruple.Context,
-                                                  (RDFResource)quadruple.Subject,
-                                                  (RDFResource)quadruple.Predicate,
-                                                  null,
-                                                  (RDFLiteral)quadruple.Object)).QuadruplesCount > 0;
-            }
-            return false;
-        }
+        public abstract bool ContainsQuadruple(RDFQuadruple quadruple);
 
         /// <summary>
         /// Gets a store containing all quadruples
@@ -344,6 +286,44 @@ namespace RDFSharp.Store
                                                           RDFResource predicateResource,
                                                           RDFResource objectResource,
                                                           RDFLiteral objectLiteral);
+
+        /// <summary>
+        /// Gets a list containing the graphs saved in the store
+        /// </summary>
+        public List<RDFGraph> ExtractGraphs()
+        {
+            Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
+            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
+            {
+                // Step 1: Cache-Update
+                if (!graphs.ContainsKey(q.Context.PatternMemberID))
+                {
+                    graphs.Add(q.Context.PatternMemberID, new RDFGraph());
+                    graphs[q.Context.PatternMemberID].SetContext(((RDFContext)q.Context).Context);
+                }
+
+                // Step 2: Result-Update
+                if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFResource)q.Object));
+                else
+                    graphs[q.Context.PatternMemberID].AddTriple(new RDFTriple((RDFResource)q.Subject, (RDFResource)q.Predicate, (RDFLiteral)q.Object));
+            }
+            return graphs.Values.ToList();
+        }
+
+        /// <summary>
+        /// Gets a list containing the contexts saved in the store
+        /// </summary>
+        public List<RDFContext> ExtractContexts()
+        {
+            Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
+            foreach (RDFQuadruple q in (this is RDFMemoryStore ? (RDFMemoryStore)this : this.SelectAllQuadruples()))
+            {
+                if (!contexts.ContainsKey(q.Context.PatternMemberID))
+                    contexts.Add(q.Context.PatternMemberID, q.Context);
+            }
+            return contexts.Values.OfType<RDFContext>().ToList();
+        }
         #endregion
 
         #region Convert
