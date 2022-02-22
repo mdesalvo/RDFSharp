@@ -157,6 +157,213 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(fileContent.Equals($"_:12345 <http://pred/> \"25\"^^<{RDFVocabulary.XSD.INTEGER}> <http://ctx/> .{Environment.NewLine}"));
         }
 
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInContext()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx😃/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInContext.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInContext.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInContext.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx\\U0001F603/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInSubject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj😃/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInSubject.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInSubject.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInSubject.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInPredicate()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred😃/"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInPredicate.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInPredicate.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInPredicate.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj😃/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInObject.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInObject.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingLongUnicodeCharInObject.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLTripleHavingLongUnicodeCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃","en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLTripleHavingLongUnicodeCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLTripleHavingLongUnicodeCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLTripleHavingLongUnicodeCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+                [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInContext()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/frag#pageβ2"), new RDFResource("http://subj"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInContext.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInContext.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInContext.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/frag#page\\u03B22> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInSubject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/frag#pageβ2"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInSubject.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInSubject.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInSubject.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInPredicate()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/frag#pageβ2"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInPredicate.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInPredicate.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInPredicate.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInObject()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/frag#pageβ2")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInObject.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInObject.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPOTripleHavingShortUnicodeCharInObject.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLTripleHavingShortUnicodeCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLTripleHavingShortUnicodeCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLTripleHavingShortUnicodeCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLTripleHavingShortUnicodeCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLQuadrupleHavingCarriageReturnCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Return!\r", "en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingCarriageReturnCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingCarriageReturnCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingCarriageReturnCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Return!\\r\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLQuadrupleHavingNewlineCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("NewLine!\n", "en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingNewLineCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingNewLineCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingNewLineCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"NewLine!\\n\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLQuadrupleHavingTabCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Tab!\t", "en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingTabCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingTabCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingTabCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Tab!\\t\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLQuadrupleHavingSlashCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Slash!\\", "en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingSlashCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingSlashCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingSlashCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"Slash!\\\\\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreWithCSPLQuadrupleHavingDoubleQuotesCharInLiteral()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("DoubleQuotes!\"", "en-US")));
+            RDFNQuads.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingDoubleQuotesCharInLiteral.nq"));
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingDoubleQuotesCharInLiteral.nq")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFNQuadsTest_ShouldSerializeStoreWithCSPLQuadrupleHavingDoubleQuotesCharInLiteral.nq"));
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"DoubleQuotes!\\\"\"@EN-US <http://ctx/> .{Environment.NewLine}"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeEmptyStoreToStream()
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store = new RDFMemoryStore();
+            RDFNQuads.Serialize(store, stream);
+
+            string fileContent;
+            using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
+                fileContent = reader.ReadToEnd();
+            Assert.IsTrue(fileContent.Equals(string.Empty));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeStoreToStream()
+        {
+            MemoryStream stream = new MemoryStream();
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+            RDFNQuads.Serialize(store, stream);
+
+            string fileContent;
+            using (StreamReader reader = new StreamReader(new MemoryStream(stream.ToArray())))
+                fileContent = reader.ReadToEnd();
+            Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> .{Environment.NewLine}"));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {

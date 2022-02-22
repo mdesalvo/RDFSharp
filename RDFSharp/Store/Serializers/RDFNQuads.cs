@@ -105,31 +105,21 @@ namespace RDFSharp.Store
                     {
                         #region template
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
                             quadrupleTemplate = "<{SUBJ}> <{PRED}> <{OBJ}> <{CTX}> .";
-                        }
                         else
                         {
                             if (q.Object is RDFPlainLiteral)
-                            {
                                 quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} <{CTX}> .";
-                            }
                             else
-                            {
                                 quadrupleTemplate = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> <{CTX}> .";
-                            }
                         }
                         #endregion
 
                         #region subj
                         if (((RDFResource)q.Subject).IsBlank)
-                        {
                             quadrupleTemplate = quadrupleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()).Replace("bnode:", "_:"));
-                        }
                         else
-                        {
                             quadrupleTemplate = quadrupleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Subject.ToString()));
-                        }
                         #endregion
 
                         #region pred
@@ -140,20 +130,15 @@ namespace RDFSharp.Store
                         if (q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                         {
                             if (((RDFResource)q.Object).IsBlank)
-                            {
                                 quadrupleTemplate = quadrupleTemplate.Replace("<{OBJ}>", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString())).Replace("bnode:", "_:");
-                            }
                             else
-                            {
                                 quadrupleTemplate = quadrupleTemplate.Replace("{OBJ}", RDFModelUtilities.Unicode_To_ASCII(q.Object.ToString()));
-                            }
                         }
                         #endregion
 
                         #region literal
                         else
                         {
-
                             quadrupleTemplate = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\\", "\\\\").Replace("\"", "\\\""))));
                             quadrupleTemplate = quadrupleTemplate.Replace("\n", "\\n")
                                                                  .Replace("\t", "\\t")
@@ -163,13 +148,9 @@ namespace RDFSharp.Store
                             if (q.Object is RDFPlainLiteral)
                             {
                                 if (((RDFPlainLiteral)q.Object).Language != string.Empty)
-                                {
                                     quadrupleTemplate = quadrupleTemplate.Replace("{LANG}", ((RDFPlainLiteral)q.Object).Language);
-                                }
                                 else
-                                {
                                     quadrupleTemplate = quadrupleTemplate.Replace("@{LANG}", string.Empty);
-                                }
                             }
                             #endregion
 
@@ -179,7 +160,6 @@ namespace RDFSharp.Store
                                 quadrupleTemplate = quadrupleTemplate.Replace("{DTYPE}", RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)q.Object).Datatype));
                             }
                             #endregion
-
                         }
                         #endregion
 
