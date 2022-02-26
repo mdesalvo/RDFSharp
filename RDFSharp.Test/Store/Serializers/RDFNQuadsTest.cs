@@ -847,16 +847,6 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingCSPLQuadrupleBecauseLiteralContext()
-        {
-            MemoryStream stream = new MemoryStream();
-            using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"<http://subj> <http://pred/> \"hello\" \"hello\" .{Environment.NewLine}");
-
-            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
-        }
-
-        [TestMethod]
         public void ShouldThrowExceptionOnDeserializingCSPLQuadrupleBecauseBadFormedSubject()
         {
             MemoryStream stream = new MemoryStream();
@@ -1032,16 +1022,6 @@ namespace RDFSharp.Test.Store
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
                 writer.WriteLine($"_:12345 <http://pred/> \"hello\" _:12345 .{Environment.NewLine}");
-
-            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnDeserializingCBPLQuadrupleBecauseLiteralContext()
-        {
-            MemoryStream stream = new MemoryStream();
-            using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine($"_:12345 <http://pred/> \"hello\" \"hello\" .{Environment.NewLine}");
 
             Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
         }
@@ -1289,6 +1269,743 @@ namespace RDFSharp.Test.Store
             Assert.IsNotNull(store);
             Assert.IsTrue(store.QuadruplesCount == 1);
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\""))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedSPOQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#<http://subj/> <http://pred/> <http://obj/> .");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPBQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> _:12345 .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedSPBQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#<http://subj/> <http://pred/> _:12345 .");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPOQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> <http://obj/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedBPOQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> <http://obj/> .");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPBQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> _:12345 .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedBPBQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> _:12345 .");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"hello\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPLQuadrupleEvenIfEmptyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedSPLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#<http://subj/> <http://pred/> \"hello\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPLLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"hello\"@en-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPLLQuadrupleEvenIfEmptyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"\"@en-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedSPLLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#<http://subj/> <http://pred/> \"hello\"@en-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPLTQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPLTQuadrupleEvenIfEmptyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"\"^^<http://www.w3.org/2001/XMLSchema#string> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedSPLTQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#<http://subj/> <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPLQuadrupleEvenIfEmptyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedBPLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> \"hello\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPLLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"@en-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPLLQuadrupleEvenIfEmptyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"\"@en-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedBPLLQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> \"hello\"@en-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPLTQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithBPLTQuadrupleEvenIfEmptyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"\"^^<http://www.w3.org/2001/XMLSchema#string> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCommentedBPLTQuadruple()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"#_:12345 <http://pred/> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPOQuadrupleBecauseBadFormedSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"http://subj <http://pred/> <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPOQuadrupleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> http://pred/ <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPOQuadrupleBecauseBlankPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> _:12345 <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPOQuadrupleBecauseBadFormedObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> http://obj .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBadFormedPLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> \"hello .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBadFormedPLLiteral1()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBadFormedPLLiteral2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> \"hello\"@ .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBadFormedTLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> \"hello\"^^ .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBadFormedSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"http://subj <http://pred/> \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> http://pred/ \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSPLQuadrupleBecauseBlankPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> _:12345 \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAttachedSQuadruplesWithoutContext()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj> <http://pred/> <http://obj/> . <http://subj> <http://pred/> <http://obj/> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOQuadrupleBecauseBadFormedSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:< <http://pred/> <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOQuadrupleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 http://pred/ <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOQuadrupleBecauseBlankPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 _:12345 <http://obj> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPOQuadrupleBecauseBadFormedObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> http://obj .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBadFormedPLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBadFormedPLLiteral1()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"@EN@US .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBadFormedPLLiteral2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"@ .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBadFormedTLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> \"hello\"^^ .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBadFormedSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:< <http://pred/> \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBadFormedPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 http://pred/ \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingBPLQuadrupleBecauseBlankPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 _:12345 \"hello\" .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAttachedBQuadruplesWithoutContext()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"_:12345 <http://pred/> <http://obj/> . _:12345 <http://pred/> <http://obj/> .{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingLongUnicodeCharInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj\\U0001F603/> <http://pred/> <http://obj/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj😃/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingLongUnicodeCharInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred\\U0001F603/> <http://obj/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred😃/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingLongUnicodeCharInObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> <http://obj\\U0001F603/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj😃/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingLongUnicodeCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Smile!\\U0001F603\"@EN-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Smile!😃", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingShortUnicodeCharInSubject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/frag#page\\u03B22> <http://pred/> <http://obj/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/frag#pageβ2"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingShortUnicodeCharInPredicate()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/frag#page\\u03B22> <http://obj/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/frag#pageβ2"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingShortUnicodeCharInObject()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/frag#page\\u03B22> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/frag#pageβ2"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingShortUnicodeCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Beta!\\u03B2\"@EN-US .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Beta!β", "en-US"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingCarriageReturnCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\r\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\r"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingNewLineCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\n\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\n"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingTabCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\t\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\t"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingSlashCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\\\\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\\"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithSPOQuadrupleHavingDoubleQuotesCharInLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\\"\" .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\""))));
         }
 
         [TestCleanup]
