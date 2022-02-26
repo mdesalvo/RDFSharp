@@ -2008,6 +2008,39 @@ namespace RDFSharp.Test.Store
             Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\""))));
         }
 
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCSPLQuadrupleHavingTrickyLiteral()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> \"Hello\\\" \\\"\" <http://ctx/> .{Environment.NewLine}");
+            RDFMemoryStore store = RDFNQuads.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 1);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("Hello\" \""))));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingTrickySPOQuadruple1()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> ..{Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingTrickySPOQuadruple2()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine($"<http://subj/> <http://pred/> <http://obj/> <http://ctx/> {Environment.NewLine}");
+
+            Assert.ThrowsException<RDFStoreException>(() => RDFNQuads.Deserialize(new MemoryStream(stream.ToArray())));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
