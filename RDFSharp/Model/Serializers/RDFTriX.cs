@@ -32,6 +32,7 @@ namespace RDFSharp.Model
         #region Methods
 
         #region Write
+
         /// <summary>
         /// Serializes the given graph to the given filepath using TriX data format.
         /// </summary>
@@ -46,6 +47,7 @@ namespace RDFSharp.Model
             try
             {
                 #region serialize
+
                 using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
                 {
                     XmlDocument trixDoc = new XmlDocument();
@@ -72,7 +74,8 @@ namespace RDFSharp.Model
 
                     trixDoc.Save(trixWriter);
                 }
-                #endregion
+
+                #endregion serialize
             }
             catch (Exception ex)
             {
@@ -92,26 +95,32 @@ namespace RDFSharp.Model
             graphElement.AppendChild(graphUriElement);
 
             #region triple
+
             foreach (RDFTriple t in graph)
             {
                 XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
 
-                #region subj
+                #region subject
+
                 XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
                                                                                 trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
                 XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
                 subjElement.AppendChild(subjElementText);
                 tripleElement.AppendChild(subjElement);
-                #endregion
 
-                #region pred
+                #endregion subject
+
+                #region predicate
+
                 XmlNode uriElementP = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
                 XmlText uriTextP = trixDoc.CreateTextNode(t.Predicate.ToString());
                 uriElementP.AppendChild(uriTextP);
                 tripleElement.AppendChild(uriElementP);
-                #endregion
+
+                #endregion predicate
 
                 #region object
+
                 if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
                 {
                     XmlNode objElement = (((RDFResource)t.Object).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
@@ -120,12 +129,15 @@ namespace RDFSharp.Model
                     objElement.AppendChild(objElementText);
                     tripleElement.AppendChild(objElement);
                 }
-                #endregion
+
+                #endregion object
 
                 #region literal
+
                 else
                 {
                     #region plain literal
+
                     if (t.Object is RDFPlainLiteral objLit)
                     {
                         XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
@@ -140,9 +152,11 @@ namespace RDFSharp.Model
                         plainLiteralElement.AppendChild(plainLiteralText);
                         tripleElement.AppendChild(plainLiteralElement);
                     }
-                    #endregion
+
+                    #endregion plain literal
 
                     #region typed literal
+
                     else
                     {
                         XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", null);
@@ -154,19 +168,24 @@ namespace RDFSharp.Model
                         typedLiteralElement.AppendChild(typedLiteralText);
                         tripleElement.AppendChild(typedLiteralElement);
                     }
-                    #endregion
+
+                    #endregion typed literal
                 }
-                #endregion
+
+                #endregion literal
 
                 graphElement.AppendChild(tripleElement);
             }
-            #endregion
+
+            #endregion triple
 
             trixRoot.AppendChild(graphElement);
         }
-        #endregion
+
+        #endregion Write
 
         #region Read
+
         /// <summary>
         /// Deserializes the given TriX filepath to a graph.
         /// </summary>
@@ -180,6 +199,7 @@ namespace RDFSharp.Model
             try
             {
                 #region deserialize
+
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
                 {
@@ -187,23 +207,23 @@ namespace RDFSharp.Model
                     {
                         trixReader.DtdProcessing = DtdProcessing.Parse;
                         trixReader.Normalization = false;
-
-                        #region document
                         XmlDocument trixDoc = new XmlDocument();
                         trixDoc.Load(trixReader);
-                        #endregion
+                        
+                        #region <TriX>
 
-                        #region graph
                         if (trixDoc.DocumentElement != null)
                         {
                             #region Guards
+
                             if (!trixDoc.DocumentElement.Name.Equals("TriX")
                                     || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
                                 throw new Exception(" given file does not encode a TriX graph.");
 
                             if (trixDoc.DocumentElement.ChildNodes.Count > 1)
                                 throw new Exception(" given TriX file seems to encode more than one graph.");
-                            #endregion
+
+                            #endregion Guards
 
                             IEnumerator graphEnum = trixDoc.DocumentElement.ChildNodes.GetEnumerator();
                             while (graphEnum != null && graphEnum.MoveNext())
@@ -212,164 +232,150 @@ namespace RDFSharp.Model
                                 if (!graph.Name.Equals("graph", StringComparison.Ordinal))
                                     throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
 
-                                #region triple
-                                long encodedUris = 0;
-                                IEnumerator tripleEnum = graph.ChildNodes.GetEnumerator();
-                                while (tripleEnum != null && tripleEnum.MoveNext())
-                                {
-                                    XmlNode triple = (XmlNode)tripleEnum.Current;
+                                #region <graph>
 
-                                    #region uri
-                                    if (triple.Name.Equals("uri", StringComparison.Ordinal))
+                                long encodedUris = 0;
+                                IEnumerator graphChildren = graph.ChildNodes.GetEnumerator();
+                                while (graphChildren != null && graphChildren.MoveNext())
+                                {
+                                    XmlNode graphChild = (XmlNode)graphChildren.Current;
+
+                                    #region <uri>
+
+                                    //<uri> gives the context of the graph
+                                    if (graphChild.Name.Equals("uri", StringComparison.Ordinal))
                                     {
                                         encodedUris++;
                                         if (encodedUris > 1)
                                             throw new Exception(" given file encodes a graph with more than one \"<uri>\" element.");
 
-                                        result.SetContext(RDFModelUtilities.GetUriFromString(triple.ChildNodes[0]?.InnerText) ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
+                                        result.SetContext(RDFModelUtilities.GetUriFromString(graphChild.ChildNodes[0]?.InnerText)
+                                                            ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
                                     }
-                                    #endregion
 
-                                    #region triple
-                                    else if (triple.Name.Equals("triple", StringComparison.Ordinal) && triple.ChildNodes.Count == 3)
+                                    #endregion <uri>
+
+                                    #region <triple>
+
+                                    //<triple> gives a triple of the graph
+                                    else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
                                     {
-                                        #region subj
                                         //Subject is a resource ("<uri>") or a blank node ("<id>")
-                                        if (triple.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal)
-                                                || triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
+                                        if (graphChild.ChildNodes[0].Name.Equals("uri", StringComparison.Ordinal)
+                                                || graphChild.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                         {
-                                            //Subject is without value: exception must be raised
-                                            if (string.IsNullOrEmpty(triple.ChildNodes[0].InnerText))
-                                                throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
+                                            //Subject without value: exception must be raised
+                                            if (string.IsNullOrEmpty(graphChild.ChildNodes[0].InnerText))
+                                                throw new Exception("subject (" + graphChild.ChildNodes[0].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
 
                                             //Sanitize eventual blank node value
-                                            if (triple.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
+                                            if (graphChild.ChildNodes[0].Name.Equals("id", StringComparison.Ordinal))
                                             {
-                                                if (!triple.ChildNodes[0].InnerText.StartsWith("bnode:"))
-                                                    triple.ChildNodes[0].InnerText = string.Concat("bnode:", triple.ChildNodes[0].InnerText.Replace("_:", string.Empty));
+                                                if (!graphChild.ChildNodes[0].InnerText.StartsWith("bnode:"))
+                                                    graphChild.ChildNodes[0].InnerText = string.Concat("bnode:", graphChild.ChildNodes[0].InnerText.Replace("_:", string.Empty));
                                             }
                                         }
-                                        //Subject is unrecognized: exception must be raised
+                                        //Subject unrecognized: exception must be raised
                                         else
+                                            throw new Exception("subject (" + graphChild.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
+                                        
+                                        //Predicate is a resource ("<uri>") 
+                                        if (graphChild.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
                                         {
-                                            throw new Exception("subject (" + triple.ChildNodes[0].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\".");
+                                            //Predicate without value: exception must be raised
+                                            if (string.IsNullOrEmpty(graphChild.ChildNodes[1].InnerText))
+                                                throw new Exception("predicate (" + graphChild.ChildNodes[1].Name + ") of \"<triple>\" element has \"<uri>\" element without value.");
                                         }
-                                        #endregion
-
-                                        #region pred
-                                        if (triple.ChildNodes[1].Name.Equals("uri", StringComparison.Ordinal))
-                                        {
-                                            //Predicate is without value: exception must be raised
-                                            if (string.IsNullOrEmpty(triple.ChildNodes[1].InnerText))
-                                                throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element has \"<uri>\" element without value.");
-                                        }
-                                        //Predicate is unrecognized: exception must be raised
+                                        //Predicate unrecognized: exception must be raised
                                         else
-                                        { 
-                                            throw new Exception("predicate (" + triple.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
-                                        }
-                                        #endregion
-
-                                        #region object
+                                            throw new Exception("predicate (" + graphChild.ChildNodes[1].Name + ") of \"<triple>\" element must be \"<uri>\".");
+                                        
                                         //Object is a resource ("<uri>") or a blank node ("<id>")
-                                        if (triple.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
-                                                || triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
+                                        if (graphChild.ChildNodes[2].Name.Equals("uri", StringComparison.Ordinal)
+                                                || graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                         {
-                                            //Object is without value: exception must be raised
-                                            if (string.IsNullOrEmpty(triple.ChildNodes[2].InnerText))
-                                                throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
+                                            //Object without value: exception must be raised
+                                            if (string.IsNullOrEmpty(graphChild.ChildNodes[2].InnerText))
+                                                throw new Exception("object (" + graphChild.ChildNodes[2].Name + ") of \"<triple>\" element has \"<uri>\" or \"<id>\" element without value.");
 
                                             //Sanitize eventual blank node value
-                                            if (triple.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
+                                            if (graphChild.ChildNodes[2].Name.Equals("id", StringComparison.Ordinal))
                                             {
-                                                if (!triple.ChildNodes[2].InnerText.StartsWith("bnode:"))
-                                                    triple.ChildNodes[2].InnerText = string.Concat("bnode:", triple.ChildNodes[2].InnerText.Replace("_:", string.Empty));
+                                                if (!graphChild.ChildNodes[2].InnerText.StartsWith("bnode:"))
+                                                    graphChild.ChildNodes[2].InnerText = string.Concat("bnode:", graphChild.ChildNodes[2].InnerText.Replace("_:", string.Empty));
                                             }
 
-                                            //Finally add SPO triple
-                                            result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                           new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                           new RDFResource(triple.ChildNodes[2].InnerText)));
+                                            result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
+                                                                           new RDFResource(graphChild.ChildNodes[1].InnerText),
+                                                                           new RDFResource(graphChild.ChildNodes[2].InnerText)));
                                         }
-                                        #endregion
 
-                                        #region literal
-
-                                        #region plain literal
-                                        else if (triple.ChildNodes[2].Name.Equals("plainLiteral"))
+                                        //Object is a plain literal ("<plainLiteral>")
+                                        else if (graphChild.ChildNodes[2].Name.Equals("plainLiteral"))
                                         {
-                                            XmlAttribute xmlLang = triple.ChildNodes[2].Attributes["xml:lang"];
+                                            XmlAttribute xmlLang = graphChild.ChildNodes[2].Attributes["xml:lang"];
+
+                                            //Plain literal has language
                                             if (xmlLang != null)
-                                            {
-                                                //Finally add SPL(L) triple
-                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), xmlLang.Value)));
-                                            }
+                                                result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
+                                                                               new RDFResource(graphChild.ChildNodes[1].InnerText),
+                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), xmlLang.Value)));
+                                            
+                                            //Plain literal has not language
                                             else
-                                            {
-                                                //Finally add SPL triple
-                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)))));
-                                            }
+                                                result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
+                                                                               new RDFResource(graphChild.ChildNodes[1].InnerText),
+                                                                               new RDFPlainLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)))));
                                         }
-                                        #endregion
 
-                                        #region typed literal
-                                        else if (triple.ChildNodes[2].Name.Equals("typedLiteral", StringComparison.Ordinal))
+                                        //Object is a typed literal ("<typedLiteral>")
+                                        else if (graphChild.ChildNodes[2].Name.Equals("typedLiteral", StringComparison.Ordinal))
                                         {
-                                            XmlAttribute datatype = triple.ChildNodes[2].Attributes["datatype"];
+                                            XmlAttribute datatype = graphChild.ChildNodes[2].Attributes["datatype"];
+
+                                            //Typed literal has datatype
                                             if (datatype != null)
-                                            {
-                                                //Finally add SPL(T) triple
-                                                result.AddTriple(new RDFTriple(new RDFResource(triple.ChildNodes[0].InnerText),
-                                                                               new RDFResource(triple.ChildNodes[1].InnerText),
-                                                                               new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(triple.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
-                                            }
+                                                result.AddTriple(new RDFTriple(new RDFResource(graphChild.ChildNodes[0].InnerText),
+                                                                               new RDFResource(graphChild.ChildNodes[1].InnerText),
+                                                                               new RDFTypedLiteral(RDFModelUtilities.ASCII_To_Unicode(HttpUtility.HtmlDecode(graphChild.ChildNodes[2].InnerText)), RDFModelUtilities.GetDatatypeFromString(datatype.Value))));
+
+                                            //Typed literal has not datatype: exception must be raised
                                             else
-                                            {
                                                 throw new Exception(" found typed literal without required \"datatype\" attribute.");
-                                            }
                                         }
-                                        #endregion
 
-                                        #endregion
-
-                                        #region exception
-                                        //Object is not valid: exception must be raised
+                                        //Object unrecognized: exception must be raised
                                         else
-                                        {
-                                            throw new Exception("object (" + triple.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
-                                        }
-                                        #endregion
+                                            throw new Exception("object (" + graphChild.ChildNodes[2].Name + ") of \"<triple>\" element is neither \"<uri>\" or \"<id>\" or \"<plainLiteral>\" or \"<typedLiteral>\".");
                                     }
-                                    #endregion
 
-                                    #region exception
+                                    //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else
-                                    {
-                                        throw new Exception("found a TriX element (" + triple.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
-                                    }
-                                    #endregion
+                                        throw new Exception("found a TriX element (" + graphChild.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
+
+                                    #endregion <triple>
                                 }
-                                #endregion
+
+                                #endregion <graph>
                             }
                         }
-                        #endregion
+
+                        #endregion <TriX>
                     }
                 }
                 return result;
-                #endregion
+
+                #endregion deserialize
             }
             catch (Exception ex)
             {
                 throw new RDFModelException("Cannot deserialize TriX because: " + ex.Message, ex);
             }
         }
-        #endregion
 
-        #endregion
+        #endregion Read
+
+        #endregion Methods
     }
 
 }
