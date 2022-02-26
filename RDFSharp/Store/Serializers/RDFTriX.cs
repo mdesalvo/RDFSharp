@@ -46,7 +46,6 @@ namespace RDFSharp.Store
         {
             try
             {
-
                 #region serialize
                 using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
                 {
@@ -66,89 +65,8 @@ namespace RDFSharp.Store
                     trixRoot.Attributes.Append(trixRootNS);
 
                     #region graphs
-                    foreach (var graph in store.ExtractGraphs())
-                    {
-                        XmlNode graphElement = trixDoc.CreateNode(XmlNodeType.Element, "graph", null);
-                        XmlNode graphUriElement = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                        XmlText graphUriElementT = trixDoc.CreateTextNode(graph.ToString());
-                        graphUriElement.AppendChild(graphUriElementT);
-                        graphElement.AppendChild(graphUriElement);
-
-                        #region triple
-                        foreach (var t in graph)
-                        {
-                            XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
-
-                            #region subj
-                            XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                                                                                          trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
-                            XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
-                            subjElement.AppendChild(subjElementText);
-                            tripleElement.AppendChild(subjElement);
-                            #endregion
-
-                            #region pred
-                            XmlNode uriElementP = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                            XmlText uriTextP = trixDoc.CreateTextNode(t.Predicate.ToString());
-                            uriElementP.AppendChild(uriTextP);
-                            tripleElement.AppendChild(uriElementP);
-                            #endregion
-
-                            #region object
-                            if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                            {
-                                XmlNode objElement = (((RDFResource)t.Object).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                                                                                         trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
-                                XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
-                                objElement.AppendChild(objElementText);
-                                tripleElement.AppendChild(objElement);
-                            }
-                            #endregion
-
-                            #region literal
-                            else
-                            {
-
-                                #region plain literal
-                                if (t.Object is RDFPlainLiteral)
-                                {
-                                    XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
-                                    if (((RDFPlainLiteral)t.Object).Language != string.Empty)
-                                    {
-                                        XmlAttribute xmlLang = trixDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
-                                        XmlText xmlLangText = trixDoc.CreateTextNode(((RDFPlainLiteral)t.Object).Language);
-                                        xmlLang.AppendChild(xmlLangText);
-                                        plainLiteralElement.Attributes.Append(xmlLang);
-                                    }
-                                    XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
-                                    plainLiteralElement.AppendChild(plainLiteralText);
-                                    tripleElement.AppendChild(plainLiteralElement);
-                                }
-                                #endregion
-
-                                #region typed literal
-                                else
-                                {
-                                    XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", null);
-                                    XmlAttribute datatype = trixDoc.CreateAttribute("datatype");
-                                    XmlText datatypeText = trixDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
-                                    datatype.AppendChild(datatypeText);
-                                    typedLiteralElement.Attributes.Append(datatype);
-                                    XmlText typedLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
-                                    typedLiteralElement.AppendChild(typedLiteralText);
-                                    tripleElement.AppendChild(typedLiteralElement);
-                                }
-                                #endregion
-
-                            }
-                            #endregion
-
-                            graphElement.AppendChild(tripleElement);
-                        }
-                        #endregion
-
-                        trixRoot.AppendChild(graphElement);
-                    }
+                    foreach (RDFGraph graph in store.ExtractGraphs())
+                        RDFSharp.Model.RDFTriX.AppendTriXGraph(trixDoc, trixRoot, graph);
                     #endregion
 
                     trixDoc.AppendChild(trixRoot);
@@ -157,7 +75,6 @@ namespace RDFSharp.Store
                     trixDoc.Save(trixWriter);
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {

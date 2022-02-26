@@ -64,84 +64,7 @@ namespace RDFSharp.Model
                     trixRoot.Attributes.Append(trixRootNS);
 
                     #region graph
-                    XmlNode graphElement = trixDoc.CreateNode(XmlNodeType.Element, "graph", null);
-                    XmlNode graphUriElement = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                    XmlText graphUriElementT = trixDoc.CreateTextNode(graph.ToString());
-                    graphUriElement.AppendChild(graphUriElementT);
-                    graphElement.AppendChild(graphUriElement);
-
-                    #region triple
-                    foreach (RDFTriple t in graph)
-                    {
-                        XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
-
-                        #region subj
-                        XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                                                                                      trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
-                        XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
-                        subjElement.AppendChild(subjElementText);
-                        tripleElement.AppendChild(subjElement);
-                        #endregion
-
-                        #region pred
-                        XmlNode uriElementP = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                        XmlText uriTextP = trixDoc.CreateTextNode(t.Predicate.ToString());
-                        uriElementP.AppendChild(uriTextP);
-                        tripleElement.AppendChild(uriElementP);
-                        #endregion
-
-                        #region object
-                        if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                        {
-                            XmlNode objElement = (((RDFResource)t.Object).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                                                                                     trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
-                            XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
-                            objElement.AppendChild(objElementText);
-                            tripleElement.AppendChild(objElement);
-                        }
-                        #endregion
-
-                        #region literal
-                        else
-                        {
-                            #region plain literal
-                            if (t.Object is RDFPlainLiteral objLit)
-                            {
-                                XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
-                                if (objLit.HasLanguage())
-                                {
-                                    XmlAttribute xmlLang = trixDoc.CreateAttribute(string.Concat(RDFVocabulary.XML.PREFIX, ":lang"), RDFVocabulary.XML.BASE_URI);
-                                    XmlText xmlLangText = trixDoc.CreateTextNode(objLit.Language);
-                                    xmlLang.AppendChild(xmlLangText);
-                                    plainLiteralElement.Attributes.Append(xmlLang);
-                                }
-                                XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
-                                plainLiteralElement.AppendChild(plainLiteralText);
-                                tripleElement.AppendChild(plainLiteralElement);
-                            }
-                            #endregion
-
-                            #region typed literal
-                            else
-                            {
-                                XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", null);
-                                XmlAttribute datatype = trixDoc.CreateAttribute("datatype");
-                                XmlText datatypeText = trixDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
-                                datatype.AppendChild(datatypeText);
-                                typedLiteralElement.Attributes.Append(datatype);
-                                XmlText typedLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
-                                typedLiteralElement.AppendChild(typedLiteralText);
-                                tripleElement.AppendChild(typedLiteralElement);
-                            }
-                            #endregion
-                        }
-                        #endregion
-
-                        graphElement.AppendChild(tripleElement);
-                    }
-                    #endregion
-
-                    trixRoot.AppendChild(graphElement);
+                    AppendTriXGraph(trixDoc, trixRoot, graph);
                     #endregion
 
                     trixDoc.AppendChild(trixRoot);
@@ -155,6 +78,91 @@ namespace RDFSharp.Model
             {
                 throw new RDFModelException("Cannot serialize TriX because: " + ex.Message, ex);
             }
+        }
+
+        /// <summary>
+        /// Serializes the TriX structure corresponding to the given graph, appending it to the given XML root node.
+        /// </summary>
+        internal static void AppendTriXGraph(XmlDocument trixDoc, XmlNode trixRoot, RDFGraph graph)
+        {
+            XmlNode graphElement = trixDoc.CreateNode(XmlNodeType.Element, "graph", null);
+            XmlNode graphUriElement = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
+            XmlText graphUriElementT = trixDoc.CreateTextNode(graph.ToString());
+            graphUriElement.AppendChild(graphUriElementT);
+            graphElement.AppendChild(graphUriElement);
+
+            #region triple
+            foreach (RDFTriple t in graph)
+            {
+                XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
+
+                #region subj
+                XmlNode subjElement = (((RDFResource)t.Subject).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
+                                                                                trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
+                subjElement.AppendChild(subjElementText);
+                tripleElement.AppendChild(subjElement);
+                #endregion
+
+                #region pred
+                XmlNode uriElementP = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
+                XmlText uriTextP = trixDoc.CreateTextNode(t.Predicate.ToString());
+                uriElementP.AppendChild(uriTextP);
+                tripleElement.AppendChild(uriElementP);
+                #endregion
+
+                #region object
+                if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                {
+                    XmlNode objElement = (((RDFResource)t.Object).IsBlank ? trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
+                                                                                trixDoc.CreateNode(XmlNodeType.Element, "uri", null));
+                    XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
+                    objElement.AppendChild(objElementText);
+                    tripleElement.AppendChild(objElement);
+                }
+                #endregion
+
+                #region literal
+                else
+                {
+                    #region plain literal
+                    if (t.Object is RDFPlainLiteral objLit)
+                    {
+                        XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
+                        if (objLit.HasLanguage())
+                        {
+                            XmlAttribute xmlLang = trixDoc.CreateAttribute("xml:lang", RDFVocabulary.XML.BASE_URI);
+                            XmlText xmlLangText = trixDoc.CreateTextNode(objLit.Language);
+                            xmlLang.AppendChild(xmlLangText);
+                            plainLiteralElement.Attributes.Append(xmlLang);
+                        }
+                        XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
+                        plainLiteralElement.AppendChild(plainLiteralText);
+                        tripleElement.AppendChild(plainLiteralElement);
+                    }
+                    #endregion
+
+                    #region typed literal
+                    else
+                    {
+                        XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", null);
+                        XmlAttribute datatype = trixDoc.CreateAttribute("datatype");
+                        XmlText datatypeText = trixDoc.CreateTextNode(RDFModelUtilities.GetDatatypeFromEnum(((RDFTypedLiteral)t.Object).Datatype));
+                        datatype.AppendChild(datatypeText);
+                        typedLiteralElement.Attributes.Append(datatype);
+                        XmlText typedLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
+                        typedLiteralElement.AppendChild(typedLiteralText);
+                        tripleElement.AppendChild(typedLiteralElement);
+                    }
+                    #endregion
+                }
+                #endregion
+
+                graphElement.AppendChild(tripleElement);
+            }
+            #endregion
+
+            trixRoot.AppendChild(graphElement);
         }
         #endregion
 
