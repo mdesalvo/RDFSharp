@@ -24,7 +24,6 @@ using System.Xml;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
@@ -46,7 +45,6 @@ namespace RDFSharp.Query
 
             #region Plain Literal
             int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
-            int lastIndexOfLanguage = pMember.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
             if (!pMember.Contains("^^")
                     || pMember.EndsWith("^^")
                         || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
@@ -54,6 +52,7 @@ namespace RDFSharp.Query
                 RDFPlainLiteral pLit = null;
                 if (RDFNTriples.regexLPL.Match(pMember).Success)
                 {
+                    int lastIndexOfLanguage = pMember.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
                     string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
                     string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
                     pLit = new RDFPlainLiteral(pLitVal, pLitLng);
@@ -98,7 +97,6 @@ namespace RDFSharp.Query
             #region RESOURCE/CONTEXT
             if (left is RDFResource || left is RDFContext)
             {
-
                 //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                 {
@@ -114,14 +112,12 @@ namespace RDFSharp.Query
                     }
                     return -99; //Type Error
                 }
-
             }
             #endregion
 
             #region PLAINLITERAL
             else if (left is RDFPlainLiteral)
             {
-
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                 {
@@ -137,14 +133,12 @@ namespace RDFSharp.Query
                     }
                     return -99; //Type Error
                 }
-
             }
             #endregion
 
             #region TYPEDLITERAL
             else
             {
-
                 //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                 {
@@ -193,7 +187,6 @@ namespace RDFSharp.Query
                         return -99; //Type Error
                     }
                 }
-
             }
             #endregion
         }
@@ -294,5 +287,4 @@ namespace RDFSharp.Query
         }
         #endregion
     }
-
 }
