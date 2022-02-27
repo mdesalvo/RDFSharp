@@ -173,10 +173,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPOQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPOQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPOQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPOQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPOQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPOQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj1/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <uri>http://obj/</uri>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj2/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <uri>http://obj/</uri>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -186,10 +186,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPBQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPBQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPBQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPBQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPBQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPBQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj1/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj2/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -199,10 +199,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPOQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPOQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPOQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPOQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPOQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPOQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <uri>http://obj/</uri>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:54321</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <uri>http://obj/</uri>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -212,10 +212,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFResource("bnode:12345")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPBQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPBQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPBQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPBQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPBQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPBQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:54321</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -225,10 +225,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj1/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral>hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj2/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral>hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -238,10 +238,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLLQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLLQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLLQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLLQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLLQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLLQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj1/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj2/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -251,10 +251,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLTQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLTQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLTQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLTQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLTQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCSPLTQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj1/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <uri>http://subj2/</uri>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -264,10 +264,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral>hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:54321</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral>hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -277,10 +277,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US")));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US")));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLLQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLLQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLLQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLLQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLLQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLLQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:54321</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <plainLiteral xml:lang=\"EN-US\">hello</plainLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -290,10 +290,10 @@ namespace RDFSharp.Test.Store
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
             store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:54321"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLTQuadrupleOnSameGraph.trix"));
+            RDFSharp.Store.RDFTriX.Serialize(store, Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLTQuadruplesOnSameGraph.trix"));
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLTQuadrupleOnSameGraph.trix")));
-            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLTQuadrupleOnSameGraph.trix"));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLTQuadruplesOnSameGraph.trix")));
+            string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, $"RDFTriXTest_ShouldSerializeStoreWithCBPLTQuadruplesOnSameGraph.trix"));
             Assert.IsTrue(fileContent.Equals($"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">{Environment.NewLine}  <graph>{Environment.NewLine}    <uri>http://ctx1/</uri>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:12345</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}    <triple>{Environment.NewLine}      <id>bnode:54321</id>{Environment.NewLine}      <uri>http://pred/</uri>{Environment.NewLine}      <typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral>{Environment.NewLine}    </triple>{Environment.NewLine}  </graph>{Environment.NewLine}</TriX>"));
         }
 
@@ -353,25 +353,55 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         }
 
         [TestMethod]
-        public void ShouldDeserializeStoreWithCSPOQuadrupleEvenOnMissingXmlDeclaration()
+        public void ShouldDeserializeStoreWithCSPOQuadruplesEvenOnMissingXmlDeclaration()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
+                writer.WriteLine("<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCSPOQuadruplesOnSameGraph()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj1/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple><triple><uri>http://subj2/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
+            RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        }
+
+        [TestMethod]
+        public void ShouldDeserializeStoreWithCSPOQuadruplesOnSameGraphEvenOnMissingXmlDeclaration()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine("<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj1/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple><triple><uri>http://subj2/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
+            RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
+
+            Assert.IsNotNull(store);
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         }
 
         [TestMethod]
@@ -402,16 +432,17 @@ namespace RDFSharp.Test.Store
         }
 
         [TestMethod]
-        public void ShouldDeserializeStoreWithCSPOQuadrupleEvenOnMissingStoreUri()
+        public void ShouldDeserializeStoreWithCSPOQuadruplesEvenOnMissingStoreUri()
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><triple><uri>http://subj/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><triple><uri>http://subj1/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph><graph><triple><uri>http://subj2/</uri><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj1/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         }
 
         [TestMethod]
@@ -455,12 +486,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><id>_:12345</id></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><id>_:12345</id></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><id>_:12345</id></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         }
 
         [TestMethod]
@@ -468,12 +500,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><id>bnode:12345</id><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><id>bnode:12345</id><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph><graph><uri>http://ctx2/</uri><triple><id>bnode:12345</id><uri>http://pred/</uri><uri>http://obj/</uri></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
         }
 
         [TestMethod]
@@ -481,12 +514,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><id>bnode:12345</id><uri>http://pred/</uri><id>_:12345</id></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><id>bnode:12345</id><uri>http://pred/</uri><id>_:12345</id></triple></graph><graph><uri>http://ctx2/</uri><triple><id>bnode:12345</id><uri>http://pred/</uri><id>_:12345</id></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFResource("bnode:12345"))));
         }
 
         [TestMethod]
@@ -494,12 +528,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
         }
 
         [TestMethod]
@@ -507,12 +542,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral/></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral/></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral/></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty))));
         }
 
         [TestMethod]
@@ -520,12 +556,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
         }
 
         [TestMethod]
@@ -533,12 +570,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\"/></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\"/></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\"/></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral(string.Empty, "en-US"))));
         }
 
         [TestMethod]
@@ -546,12 +584,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         }
 
         [TestMethod]
@@ -559,12 +598,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#string\"/></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#string\"/></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#string\"/></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral(string.Empty, RDFModelEnums.RDFDatatypes.XSD_STRING))));
         }
 
         [TestMethod]
@@ -572,12 +612,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><uri>http://subj/</uri><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
         }
 
         [TestMethod]
@@ -585,12 +626,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral>hello</plainLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello"))));
         }
 
         [TestMethod]
@@ -598,12 +640,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><id>_:12345</id><uri>http://pred/</uri><plainLiteral xml:lang=\"en-US\">hello</plainLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en-US"))));
         }
 
         [TestMethod]
@@ -611,12 +654,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integer\">25</typedLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
         }
 
         [TestMethod]
@@ -624,12 +668,13 @@ namespace RDFSharp.Test.Store
         {
             MemoryStream stream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(stream))
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph></TriX>");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?><TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\"><graph><uri>http://ctx1/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph><graph><uri>http://ctx2/</uri><triple><id>_:12345</id><uri>http://pred/</uri><typedLiteral datatype=\"http://www.w3.org/2001/XMLSchema#integers\">25</typedLiteral></triple></graph></TriX>");
             RDFMemoryStore store = RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray()));
 
             Assert.IsNotNull(store);
-            Assert.IsTrue(store.QuadruplesCount == 1);
-            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+            Assert.IsTrue(store.QuadruplesCount == 2);
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
+            Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("bnode:12345"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.RDFS_LITERAL))));
         }
 
         [TestMethod]
