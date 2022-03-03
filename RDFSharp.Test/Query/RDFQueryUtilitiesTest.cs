@@ -70,6 +70,102 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pMember is RDFTypedLiteral pMemberLiteral && pMemberLiteral.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         }
 
+        [DataTestMethod]
+        [DataRow(null, null, 0)]
+        [DataRow(null, "ex:res1", -1)]
+        [DataRow(null, "lit1", -1)]
+        [DataRow(null, "lit1@en-US", -1)]
+        [DataRow(null, "lit^^http://www.w3.org/2001/XMLSchema#string", -1)]
+        [DataRow("ex:res1", null, 1)]
+        [DataRow("lit1", null, 1)]
+        [DataRow("lit1@en-US", null, 1)]
+        [DataRow("lit^^http://www.w3.org/2001/XMLSchema#string", null, 1)]      
+        public void ShouldCompareNullPatternMembers(string leftVal, string rightVal, int expectedCompare)
+        {
+            RDFPatternMember leftPMember = null, rightPMember = null;
+            if (leftVal != null)
+                leftPMember = RDFQueryUtilities.ParseRDFPatternMember(leftVal);
+            if (rightVal != null)
+                rightPMember = RDFQueryUtilities.ParseRDFPatternMember(rightVal);
+            Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) == expectedCompare);
+        }
+
+        [DataTestMethod]
+        [DataRow("ex:res1", "ex:res2", -1)]
+        [DataRow("ex:res1", "ex:res1", 0)]
+        [DataRow("ex:res2", "ex:res1", 1)]
+        [DataRow("ex:res1", "lit", -1)]
+        [DataRow("ex:res1", "alit", 1)]
+        [DataRow("ex:res1", "lit@en-US", -1)]
+        [DataRow("ex:res1", "alit@en-US", 1)]
+        [DataRow("ex:res1", "lit^^http://www.w3.org/2001/XMLSchema#string", -1)]
+        [DataRow("ex:res1", "alit^^http://www.w3.org/2001/XMLSchema#string", 1)]
+        [DataRow("ex:res1", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+        [DataRow("lit1", "ex:res1", 1)]
+        [DataRow("lit1", "lit2", -1)]
+        [DataRow("lit1", "lit1@en-US", -1)]
+        [DataRow("lit1", "lit1", 0)]
+        [DataRow("lit2", "lit1", 1)]
+        [DataRow("lit1", "lit^^http://www.w3.org/2001/XMLSchema#string", 1)]
+        [DataRow("lit1", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+        [DataRow("lit1@en-US", "ex:res1", 1)]
+        [DataRow("lit1@en-US", "lit2", -1)]
+        [DataRow("lit1@en-US", "lit1@en-US", 0)]
+        [DataRow("lit1@en-US", "lit1", 1)]
+        [DataRow("lit1@en", "lit1@en-US", -1)]
+        [DataRow("lit1@en", "lit^^http://www.w3.org/2001/XMLSchema#string", 1)]
+        [DataRow("lit1@en", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+        [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "true^^http://www.w3.org/2001/XMLSchema#boolean", -1)]
+        [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "false^^http://www.w3.org/2001/XMLSchema#boolean", 0)]
+        [DataRow("true^^http://www.w3.org/2001/XMLSchema#boolean", "false^^http://www.w3.org/2001/XMLSchema#boolean", 1)]
+        [DataRow("true^^http://www.w3.org/2001/XMLSchema#boolean", "true^^http://www.w3.org/2001/XMLSchema#boolean", 0)]
+        [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "ex:res", -99)]
+        [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit", -99)]
+        [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit@en-US", -99)]
+        [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit^^http://www.w3.org/2001/XMLSchema#string", -99)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "25.8^^http://www.w3.org/2001/XMLSchema#float", -1)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "25.0^^http://www.w3.org/2001/XMLSchema#double", 0)]
+        [DataRow("25.8^^http://www.w3.org/2001/XMLSchema#float", "25^^http://www.w3.org/2001/XMLSchema#integer", 1)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "ex:res", -99)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit", -99)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit@en-US", -99)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit^^http://www.w3.org/2001/XMLSchema#string", -99)]
+        [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hellu^^http://www.w3.org/2001/XMLSchema#string", -1)]
+        [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello^^http://www.w3.org/2001/XMLSchema#string", 0)]
+        [DataRow("hellu^^http://www.w3.org/2001/XMLSchema#string", "hello^^http://www.w3.org/2001/XMLSchema#string", 1)]
+        [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "ex:res", 1)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "ex:res", -99)]
+        [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello", 0)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello", -99)]
+        [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello@en-US", -1)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello@en-US", -99)]
+        [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+        [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello^^http://www.w3.org/2001/XMLSchema#string", -99)]
+        public void ShouldCompareNotNullPatternMembers(string leftVal, string rightVal, int expectedCompare)
+        {
+            RDFPatternMember leftPMember = RDFQueryUtilities.ParseRDFPatternMember(leftVal);
+            RDFPatternMember rightPMember = RDFQueryUtilities.ParseRDFPatternMember(rightVal);
+            switch (expectedCompare)
+            {
+                //Type Error
+                case -99:
+                    Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) == -99);
+                    break;
+                //LowerThan
+                case -1:
+                    Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) < 0);
+                    break;
+                //EqualsTo
+                case 0:
+                    Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) == 0);
+                    break;
+                //GreaterThan
+                case 1:
+                    Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) > 0);
+                    break;
+            }
+        }
+
         [TestMethod]
         public void ShouldThrowExceptionOnParsingNullPatternMember()
             => Assert.ThrowsException<RDFQueryException>(() => RDFQueryUtilities.ParseRDFPatternMember(null));

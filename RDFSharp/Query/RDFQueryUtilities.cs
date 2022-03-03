@@ -83,33 +83,25 @@ namespace RDFSharp.Query
             if (left == null)
             {
                 if (right == null)
-                {
                     return 0;
-                }
                 return -1;
             }
             if (right == null)
-            {
                 return 1;
-            }
             #endregion
-
+            
             #region RESOURCE/CONTEXT
             if (left is RDFResource || left is RDFContext)
             {
                 //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
-                {
                     return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
-                }
-
+                
                 //RESOURCE/CONTEXT VS TYPEDLITERAL
                 else
                 {
                     if (((RDFTypedLiteral)right).HasStringDatatype())
-                    {
                         return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
-                    }
                     return -99; //Type Error
                 }
             }
@@ -120,17 +112,13 @@ namespace RDFSharp.Query
             {
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
-                {
                     return string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal);
-                }
-
+                
                 //PLAINLITERAL VS TYPEDLITERAL
                 else
                 {
                     if (((RDFTypedLiteral)right).HasStringDatatype())
-                    {
                         return string.Compare(left.ToString(), ((RDFTypedLiteral)right).Value, StringComparison.Ordinal);
-                    }
                     return -99; //Type Error
                 }
             }
@@ -143,49 +131,75 @@ namespace RDFSharp.Query
                 if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                 {
                     if (((RDFTypedLiteral)left).HasStringDatatype())
-                    {
                         return string.Compare(((RDFTypedLiteral)left).Value, right.ToString(), StringComparison.Ordinal);
-                    }
                     return -99; //Type Error
                 }
 
                 //TYPEDLITERAL VS TYPEDLITERAL
                 else
                 {
-                    if (((RDFTypedLiteral)left).HasBooleanDatatype() && ((RDFTypedLiteral)right).HasBooleanDatatype())
+                    //DATETIME
+                    if (((RDFTypedLiteral)left).HasDatetimeDatatype())
                     {
-                        bool leftValueBoolean = bool.Parse(((RDFTypedLiteral)left).Value);
-                        bool rightValueBoolean = bool.Parse(((RDFTypedLiteral)right).Value);
-                        return leftValueBoolean.CompareTo(rightValueBoolean);
-                    }
-                    else if (((RDFTypedLiteral)left).HasDatetimeDatatype() && ((RDFTypedLiteral)right).HasDatetimeDatatype())
-                    {
-                        DateTime leftValueDateTime = DateTime.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                        DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                        return leftValueDateTime.CompareTo(rightValueDateTime);
-                    }
-                    else if (((RDFTypedLiteral)left).HasDecimalDatatype() && ((RDFTypedLiteral)right).HasDecimalDatatype())
-                    {
-                        decimal leftValueDecimal = decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
-                        decimal rightValueDecimal = decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
-                        return leftValueDecimal.CompareTo(rightValueDecimal);
-                    }
-                    else if (((RDFTypedLiteral)left).HasStringDatatype() && ((RDFTypedLiteral)right).HasStringDatatype())
-                    {
-                        string leftValueString = ((RDFTypedLiteral)left).Value;
-                        string rightValueString = ((RDFTypedLiteral)right).Value;
-                        return leftValueString.CompareTo(rightValueString);
-                    }
-                    else if (((RDFTypedLiteral)left).HasTimespanDatatype() && ((RDFTypedLiteral)right).HasTimespanDatatype())
-                    {
-                        TimeSpan leftValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
-                        TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
-                        return leftValueDuration.CompareTo(rightValueDuration);
-                    }
-                    else
-                    {
+                        if (((RDFTypedLiteral)right).HasDatetimeDatatype())
+                        {
+                            DateTime leftValueDateTime = DateTime.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                            DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                            return leftValueDateTime.CompareTo(rightValueDateTime);
+                        }
                         return -99; //Type Error
                     }
+
+                    //DECIMAL
+                    if (((RDFTypedLiteral)left).HasDecimalDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasDecimalDatatype())
+                        {
+                            decimal leftValueDecimal = decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
+                            decimal rightValueDecimal = decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                            return leftValueDecimal.CompareTo(rightValueDecimal);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //STRING
+                    if (((RDFTypedLiteral)left).HasStringDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasStringDatatype())
+                        {
+                            string leftValueString = ((RDFTypedLiteral)left).Value;
+                            string rightValueString = ((RDFTypedLiteral)right).Value;
+                            return string.Compare(leftValueString, rightValueString, StringComparison.Ordinal);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //TIMESPAN
+                    if (((RDFTypedLiteral)left).HasTimespanDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasTimespanDatatype())
+                        {
+                            TimeSpan leftValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
+                            TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
+                            return leftValueDuration.CompareTo(rightValueDuration);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //BOOLEAN
+                    if (((RDFTypedLiteral)left).HasBooleanDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasBooleanDatatype())
+                        {
+                            bool leftValueBoolean = bool.Parse(((RDFTypedLiteral)left).Value);
+                            bool rightValueBoolean = bool.Parse(((RDFTypedLiteral)right).Value);
+                            return leftValueBoolean.CompareTo(rightValueBoolean);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //Fallback (not possible)
+                    return -99; //Type Error
                 }
             }
             #endregion
