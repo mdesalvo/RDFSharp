@@ -242,6 +242,25 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldRemoveDuplicates()
+        {
+            List<RDFPatternMember> pMembers = new List<RDFPatternMember>() {
+                new RDFResource("ex:res1"),
+                new RDFResource("ex:res1"),
+                new RDFPlainLiteral("lit1"),
+                new RDFPlainLiteral("lit1"),
+                new RDFPlainLiteral("lit1", "en-US"),
+                new RDFPlainLiteral("lit1", "en-US"),
+                new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER),
+                new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)
+            };
+            List<RDFPatternMember> pMembersWithoutDuplicates = RDFQueryUtilities.RemoveDuplicates<RDFPatternMember>(pMembers);
+
+            Assert.IsNotNull(pMembersWithoutDuplicates);
+            Assert.IsTrue(pMembersWithoutDuplicates.Count == 4);
+        }
+
+        [TestMethod]
         public void ShouldThrowExceptionOnParsingNullPatternMember()
             => Assert.ThrowsException<RDFQueryException>(() => RDFQueryUtilities.ParseRDFPatternMember(null));
         #endregion
