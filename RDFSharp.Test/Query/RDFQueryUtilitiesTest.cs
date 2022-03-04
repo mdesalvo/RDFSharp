@@ -15,6 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -184,6 +185,60 @@ namespace RDFSharp.Test.Query
                     Assert.IsTrue(RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember) > 0);
                     break;
             }
+        }
+
+        [TestMethod]
+        public void ShouldAbbreviateNamespaceByPrefixSearch()
+        {
+            (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("test:HTML"),
+                                        new List<RDFNamespace>() { new RDFNamespace("test","http://test/") });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1);
+            Assert.IsTrue(result.Item2.Equals("test:HTML"));
+        }
+
+        [TestMethod]
+        public void ShouldAbbreviateNamespaceByNamespaceSearch()
+        {
+            (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"),
+                                        new List<RDFNamespace>() { new RDFNamespace("test","http://test/") });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1);
+            Assert.IsTrue(result.Item2.Equals("test:HTML"));
+        }
+
+        [TestMethod]
+        public void ShouldAbbreviateNamespaceByNamespaceSearchMatchingFirst()
+        {
+            (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"),
+                                        new List<RDFNamespace>() { new RDFNamespace("test1","http://test"), new RDFNamespace("test2","http://test") });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1);
+            Assert.IsTrue(result.Item2.Equals("test1:HTML"));
+        }
+
+        [TestMethod]
+        public void ShouldAbbreviateNamespaceByNamespaceSearchAtSecondAttempt()
+        {
+            (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML1"),
+                                        new List<RDFNamespace>() { new RDFNamespace("test1","http://test/HTML"), new RDFNamespace("test2","http://test/") });
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Item1);
+            Assert.IsTrue(result.Item2.Equals("test2:HTML1"));
+        }
+
+        [TestMethod]
+        public void ShouldNotAbbreviateNamespaceBecauseNullPrefixes()
+        {
+            (bool, string) result = RDFQueryUtilities.AbbreviateRDFPatternMember(new RDFResource("http://test/HTML"), null);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Item1);
+            Assert.IsTrue(result.Item2.Equals("http://test/HTML"));
         }
 
         [TestMethod]

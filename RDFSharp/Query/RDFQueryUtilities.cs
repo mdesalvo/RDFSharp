@@ -212,46 +212,45 @@ namespace RDFSharp.Query
         {
             if (prefixes == null)
                 prefixes = new List<RDFNamespace>();
+            string pmemberString = patternMember.ToString();
+            string pmemberStringOriginal = patternMember.ToString();
 
             #region Prefix Search
             //Check if the pattern member starts with a known prefix, if so just return it
-            string prefixToSearch = patternMember.ToString().Split(':')[0];
+            string prefixToSearch = pmemberString.Split(':')[0];
             RDFNamespace searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
             if (searchedPrefix != null)
-                return (true, patternMember.ToString());
+                return (true, pmemberString);
             #endregion
 
             #region Namespace Search
-            //Check if the pattern member starts with a known namespace, if so replace it with its prefix
-            string pmString = patternMember.ToString();
-            bool abbrev = false;
-            prefixes.ForEach(ns =>
+            //Check if the pattern member starts with a known namespace, if so replace it with its prefix            
+            bool hasAbbreviation = false;
+            foreach (RDFNamespace nsp in prefixes)
             {
-                if (!abbrev)
+                string nspString = nsp.ToString();
+                if (!pmemberString.Equals(nspString, StringComparison.OrdinalIgnoreCase))
                 {
-                    string nS = ns.ToString();
-                    if (!pmString.Equals(nS, StringComparison.OrdinalIgnoreCase))
+                    if (pmemberString.StartsWith(nspString))
                     {
-                        if (pmString.StartsWith(nS))
-                        {
-                            pmString = pmString.Replace(nS, string.Concat(ns.NamespacePrefix, ":")).TrimEnd(new char[] { '/' });
+                        pmemberString = pmemberString.Replace(nspString, string.Concat(nsp.NamespacePrefix, ":"))
+                                                     .TrimEnd(new char[] { '/' });
 
-                            //Accept the abbreviation only if it has generated a valid XSD QName
-                            try
-                            {
-                                _ = new RDFTypedLiteral(pmString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
-                                abbrev = true;
-                            }
-                            catch
-                            {
-                                pmString = patternMember.ToString();
-                                abbrev = false;
-                            }
+                        //Accept the abbreviation only if it has generated a valid XSD QName
+                        try
+                        {
+                            _ = new RDFTypedLiteral(pmemberString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                            hasAbbreviation = true;
+                            break;
+                        }
+                        catch
+                        {
+                            pmemberString = pmemberStringOriginal;
                         }
                     }
                 }
-            });
-            return (abbrev, pmString);
+            }
+            return (hasAbbreviation, pmemberString);
             #endregion
         }
 
