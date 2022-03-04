@@ -18,6 +18,7 @@ using RDFSharp.Model;
 using RDFSharp.Store;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Xml;
@@ -278,6 +279,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFWebClient extends WebClient with support for customization of timeout
         /// </summary>
+        [ExcludeFromCodeCoverage]
         internal class RDFWebClient : WebClient
         {
             #region Properties
