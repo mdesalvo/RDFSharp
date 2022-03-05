@@ -19,13 +19,11 @@ using System;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
     /// </summary>
     public class RDFVariable : RDFPatternMember
     {
-
         #region Properties
         /// <summary>
         /// Name of the variable
@@ -39,13 +37,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFVariable(string variableName)
         {
-            if (variableName != null && variableName.Trim(new char[] { ' ', '?', '$' }) != string.Empty)
+            if (!string.IsNullOrWhiteSpace(variableName?.Trim(new char[] { ' ', '?', '$' })))
             {
                 this.VariableName = string.Concat("?", variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant());
             }
             else
             {
-                throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty.");
+                throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
             }
         }
         #endregion
@@ -56,7 +54,5 @@ namespace RDFSharp.Query
         /// </summary>
         public override string ToString() => this.VariableName;
         #endregion
-
     }
-
 }
