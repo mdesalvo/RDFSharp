@@ -497,6 +497,494 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED ?OBJ"));
             Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
         }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSPOPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 0);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> <ex:obj> }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSPLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 0);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> \"lit\" }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSPLLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 0);
+            Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"lit\"@EN-US }")));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSPLTPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 0);
+            Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }")));
+            Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"25\"^^xsd:integer }")));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVPOPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> <ex:obj> }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVPLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"lit\" }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVPLLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"lit\"@EN-US }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVPLTPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFResource("ex:pred"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
+            Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { ?SUBJ <ex:pred> \"25\"^^xsd:integer }")));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSVOPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("pred"), new RDFResource("ex:obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED <ex:obj> }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSVLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("pred"), new RDFPlainLiteral("lit")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"lit\" }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSVLLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("pred"), new RDFPlainLiteral("lit", "en-US")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"lit\"@EN-US }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSVLTPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("pred"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
+            Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { <ex:subj> ?PRED \"25\"^^xsd:integer }")));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSPVPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 1);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> ?OBJ }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVVOPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFResource("ex:obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED <ex:obj> }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVVLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFPlainLiteral("lit")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"lit\" }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVVLLPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFPlainLiteral("lit", "en-US")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"lit\"@EN-US }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVVLTPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
+            Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { ?SUBJ ?PRED \"25\"^^xsd:integer }")));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalSVVPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("pred"), new RDFVariable("obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFResource("ex:subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED ?OBJ }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVPVPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFResource("ex:pred"), new RDFVariable("obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFResource("ex:pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> ?OBJ }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalVVVPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFVariable("obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 3);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED ?OBJ }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldCreateOptionalPatternWithSharedVariable()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("subj"), new RDFVariable("obj")).Optional();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsTrue(pattern.IsOptional);
+            Assert.IsFalse(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?SUBJ ?OBJ }"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
+
+        [TestMethod]
+        public void ShouldSetUnionWithNextPattern()
+        {
+            RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("subj"), new RDFVariable("obj")).UnionWithNext();
+
+            Assert.IsNotNull(pattern);
+            Assert.IsNull(pattern.Context);
+            Assert.IsNotNull(pattern.Subject);
+            Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Predicate);
+            Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("subj")));
+            Assert.IsNotNull(pattern.Object);
+            Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
+            Assert.IsTrue(pattern.IsEvaluable);
+            Assert.IsFalse(pattern.IsOptional);
+            Assert.IsTrue(pattern.JoinAsUnion);
+            Assert.IsNotNull(pattern.Variables);
+            Assert.IsTrue(pattern.Variables.Count == 2);
+            Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?SUBJ ?OBJ"));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+        }
         #endregion
     }
 }
