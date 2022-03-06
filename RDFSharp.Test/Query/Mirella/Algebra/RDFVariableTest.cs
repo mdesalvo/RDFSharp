@@ -23,77 +23,40 @@ namespace RDFSharp.Test.Query
     public class RDFVariableTest
     {
         #region Tests
-        [TestMethod]
-        public void ShouldCreateVariable()
+        [DataTestMethod]
+        [DataRow("var")]
+        [DataRow("vaR")]
+        [DataRow("?var")]
+        [DataRow(" ?var ")]
+        [DataRow("?var?")]
+        [DataRow("$var$")]
+        public void ShouldCreateVariable(string variableName)
         {
-            RDFVariable variable1 = new RDFVariable("var");
+            string effectiveVariableName = string.Concat("?", variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant());
+            RDFVariable variable1 = new RDFVariable(variableName);
 
             Assert.IsNotNull(variable1);
-            Assert.IsTrue(variable1.VariableName.Equals("?VAR"));
-            Assert.IsTrue(variable1.ToString().Equals("?VAR"));
+            Assert.IsTrue(variable1.VariableName.Equals(effectiveVariableName));
+            Assert.IsTrue(variable1.ToString().Equals(effectiveVariableName));
 
-            RDFVariable variable2 = new RDFVariable("?var");
+            RDFVariable variable2 = new RDFVariable(variableName.ToUpperInvariant());
 
             Assert.IsNotNull(variable2);
-            Assert.IsTrue(variable2.VariableName.Equals("?VAR"));
-            Assert.IsTrue(variable2.ToString().Equals("?VAR"));
+            Assert.IsTrue(variable2.VariableName.Equals(effectiveVariableName));
+            Assert.IsTrue(variable2.ToString().Equals(effectiveVariableName));
 
             Assert.IsTrue(variable1.Equals(variable2));
         }
 
-        [TestMethod]
-        public void ShouldCreateVariableTrimmingUndesiredSpaces()
-        {
-            RDFVariable variable = new RDFVariable(" ?var ");
-
-            Assert.IsNotNull(variable);
-            Assert.IsTrue(variable.VariableName.Equals("?VAR"));
-            Assert.IsTrue(variable.ToString().Equals("?VAR"));
-        }
-
-        [TestMethod]
-        public void ShouldCreateVariableTrimmingUndesiredQuestionMarks()
-        {
-            RDFVariable variable = new RDFVariable("?var?");
-
-            Assert.IsNotNull(variable);
-            Assert.IsTrue(variable.VariableName.Equals("?VAR"));
-            Assert.IsTrue(variable.ToString().Equals("?VAR"));
-        }
-
-        [TestMethod]
-        public void ShouldCreateVariableTrimmingUndesiredDollars()
-        {
-            RDFVariable variable = new RDFVariable("$var$");
-
-            Assert.IsNotNull(variable);
-            Assert.IsTrue(variable.VariableName.Equals("?VAR"));
-            Assert.IsTrue(variable.ToString().Equals("?VAR"));
-        }
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingVariableBecauseNullName()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable(null));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingVariableBecauseEmptyName()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable(string.Empty));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingVariableBecauseTrimmedEmptyNameQuestionMarks()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable("??"));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingVariableBecauseTrimmedEmptyNameDollars()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable("$$"));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingVariableBecauseTrimmedEmptyNameSpaces()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable("  "));
-
-        [TestMethod]
-        public void ShouldThrowExceptionOnCreatingVariableBecauseTrimmedEmptyMixed()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable("?  $"));
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("  ")]
+        [DataRow("??")]
+        [DataRow("$$")]
+        [DataRow("?  $")]
+        public void ShouldThrowExceptionOnCreatingVariable(string varname)
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFVariable(varname));
         #endregion
     }
 }

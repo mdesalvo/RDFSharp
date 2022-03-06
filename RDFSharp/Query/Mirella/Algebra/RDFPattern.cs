@@ -22,13 +22,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFPattern represents a search pattern over a collection of RDF data.
     /// </summary>
     public class RDFPattern : RDFPatternGroupMember
     {
-
         #region Properties
         /// <summary>
         /// Member acting as context token of the pattern
@@ -205,7 +203,5 @@ namespace RDFSharp.Query
             return this;
         }
         #endregion
-
     }
-
 }
