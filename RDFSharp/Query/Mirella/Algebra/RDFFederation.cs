@@ -22,13 +22,11 @@ using System.Collections.Generic;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFFederation represents a logically integrated collection of RDF data sources
     /// </summary>
-    public sealed class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
+    public class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
     {
-
         #region Properties
         /// <summary>
         /// Name of the federation
@@ -107,7 +105,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation AddFederation(RDFFederation federation)
         {
-            if (federation != null)
+            if (federation != null && !federation.Equals(this))
                 this.DataSources.Add(federation);
             return this;
         }
@@ -131,7 +129,5 @@ namespace RDFSharp.Query
         #endregion
 
         #endregion
-
     }
-
 }
