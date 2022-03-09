@@ -889,11 +889,11 @@ namespace RDFSharp.Query
             StringBuilder result = new StringBuilder();
             if (patternGroup.IsOptional && !skipOptional)
             {
-                result.Append(string.Concat("  ", spaces, "OPTIONAL {\n"));
+                result.Append(string.Concat("  ", spaces, "OPTIONAL {", Environment.NewLine));
                 spaces = string.Concat(spaces, "  ");
             }
-            //result.Append("  " + spaces + "#" + patternGroup.PatternGroupName + "\n");
-            result.Append(string.Concat(spaces, "  {\n"));
+            //result.Append(string.Concat("  ", spaces, "#", patternGroup.PatternGroupName, Environment.NewLine));
+            result.Append(string.Concat(spaces, "  {", Environment.NewLine));
             #endregion
 
             #region MEMBERS
@@ -902,11 +902,9 @@ namespace RDFSharp.Query
             RDFPatternGroupMember lastPGMember = evaluablePGMembers.LastOrDefault();
             foreach (RDFPatternGroupMember pgMember in evaluablePGMembers)
             {
-
                 #region PATTERNS
                 if (pgMember is RDFPattern)
                 {
-
                     //Union pattern
                     if (((RDFPattern)pgMember).JoinAsUnion)
                     {
@@ -914,7 +912,7 @@ namespace RDFSharp.Query
                         {
                             //Begin a new Union block
                             printingUnion = true;
-                            result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }\n", spaces, "    UNION\n"));
+                            result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }", Environment.NewLine, spaces, "    UNION", Environment.NewLine));
                         }
                         else
                         {
@@ -922,15 +920,14 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }\n"));
+                                result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }", Environment.NewLine));
                             }
                             else
                             {
-                                result.Append(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " .\n"));
+                                result.Append(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " .", Environment.NewLine));
                             }
                         }
                     }
-
                     //Intersect pattern
                     else
                     {
@@ -938,14 +935,13 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }\n"));
+                            result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }", Environment.NewLine));
                         }
                         else
                         {
-                            result.Append(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " .\n"));
+                            result.Append(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " .", Environment.NewLine));
                         }
                     }
-
                 }
                 #endregion
 
@@ -956,11 +952,11 @@ namespace RDFSharp.Query
                     if (printingUnion)
                     {
                         printingUnion = false;
-                        result.Append(string.Concat(spaces, "    { ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " }\n"));
+                        result.Append(string.Concat(spaces, "    { ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " }", Environment.NewLine));
                     }
                     else
                     {
-                        result.Append(string.Concat(spaces, "    ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " .\n"));
+                        result.Append(string.Concat(spaces, "    ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " .", Environment.NewLine));
                     }
                 }
                 #endregion
@@ -972,28 +968,27 @@ namespace RDFSharp.Query
                     if (printingUnion)
                     {
                         printingUnion = false;
-                        result.Append(string.Concat(spaces, "    { ", PrintValues((RDFValues)pgMember, prefixes, spaces), " }\n"));
+                        result.Append(string.Concat(spaces, "    { ", PrintValues((RDFValues)pgMember, prefixes, spaces), " }", Environment.NewLine));
                     }
                     else
                     {
-                        result.Append(string.Concat(spaces, "    ", PrintValues((RDFValues)pgMember, prefixes, spaces), " .\n"));
+                        result.Append(string.Concat(spaces, "    ", PrintValues((RDFValues)pgMember, prefixes, spaces), " .", Environment.NewLine));
                     }
                 }
                 #endregion
-
             }
             #endregion
 
             #region FILTERS
             patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
                                      .ToList()
-                                     .ForEach(f => result.Append(string.Concat(spaces, "    ", f.ToString(prefixes), " \n")));
+                                     .ForEach(f => result.Append(string.Concat(spaces, "    ", f.ToString(prefixes), " ", Environment.NewLine)));
             #endregion
 
             #region FOOTER
-            result.Append(string.Concat(spaces, "  }\n"));
+            result.Append(string.Concat(spaces, "  }", Environment.NewLine));
             if (patternGroup.IsOptional && !skipOptional)
-                result.Append(string.Concat(spaces, "}\n"));
+                result.Append(string.Concat(spaces, "}", Environment.NewLine));
             #endregion
 
             return result.ToString();

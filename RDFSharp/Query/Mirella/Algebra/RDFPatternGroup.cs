@@ -21,13 +21,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFPatternGroup represents a named group of patterns having its own filters.
     /// </summary>
     public class RDFPatternGroup : RDFQueryMember
     {
-
         #region Properties
         /// <summary>
         /// Name of the pattern group, which must be unique in a query
@@ -61,7 +59,7 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup(string patternGroupName)
         {
-            if (patternGroupName != null && patternGroupName.Trim() != string.Empty)
+            if (!string.IsNullOrWhiteSpace(patternGroupName?.Trim()))
             {
                 this.PatternGroupName = patternGroupName.Trim().ToUpperInvariant();
                 this.IsEvaluable = true;
@@ -145,7 +143,6 @@ namespace RDFSharp.Query
                         if (!this.Variables.Any(v => v.Equals(pattern.Object)))
                             this.Variables.Add((RDFVariable)pattern.Object);
                     }
-
                 }
             }
             return this;
@@ -267,7 +264,5 @@ namespace RDFSharp.Query
         #endregion
 
         #endregion
-
     }
-
 }
