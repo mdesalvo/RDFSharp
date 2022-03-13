@@ -79,6 +79,68 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetModifiers().Count() == 0);
             Assert.IsTrue(query.GetPrefixes().Count() == 0);
         }
+
+        [TestMethod]
+        public void ShouldAddModifier()
+        {
+            RDFQuery query = new RDFQuery()
+                .AddModifier<RDFQuery>(new RDFDistinctModifier())
+                .AddModifier<RDFQuery>(null as RDFDistinctModifier) //Will not be accepted, since null modifiers are not allowed
+                .AddModifier<RDFQuery>(new RDFDistinctModifier()) //Will not be accepted, since duplicate distinct modifiers are not allowed
+                .AddModifier<RDFQuery>(new RDFLimitModifier(10))
+                .AddModifier<RDFQuery>(null as RDFLimitModifier) //Will not be accepted, since null modifiers are not allowed
+                .AddModifier<RDFQuery>(new RDFLimitModifier(8)) //Will not be accepted, since duplicate limit modifiers are not allowed
+                .AddModifier<RDFQuery>(new RDFOffsetModifier(10))
+                .AddModifier<RDFQuery>(null as RDFOffsetModifier) //Will not be accepted, since null modifiers are not allowed
+                .AddModifier<RDFQuery>(new RDFOffsetModifier(8)); //Will not be accepted, since duplicate offset modifiers are not allowed
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 3);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals(string.Empty));
+            Assert.IsTrue(query.GetQueryMemberString().Equals(string.Empty));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.ToString())));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 3);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
+        public void ShouldAddPrefix()
+        {
+            RDFQuery query = new RDFQuery()
+                .AddPrefix<RDFQuery>(RDFNamespaceRegister.GetByPrefix("rdf"))
+                .AddPrefix<RDFQuery>(null) //Will not be accepted, since null prefixes are not allowed
+                .AddPrefix<RDFQuery>(RDFNamespaceRegister.GetByPrefix("rdf")); //Will not be accepted, since duplicate prefixes are not allowed
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 1);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals(string.Empty));
+            Assert.IsTrue(query.GetQueryMemberString().Equals(string.Empty));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.ToString())));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 1);
+        }
         #endregion
     }
 }
