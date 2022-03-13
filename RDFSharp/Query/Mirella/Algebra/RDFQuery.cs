@@ -22,13 +22,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFQuery is the foundation class for modeling SPARQL queries
     /// </summary>
     public class RDFQuery : RDFQueryMember
     {
-
         #region Properties
         /// <summary>
         /// List of members carried by the query
@@ -67,7 +65,15 @@ namespace RDFSharp.Query
             this.IsEvaluable = true;
             this.IsOptional = false;
             this.JoinAsUnion = false;
+            this.IsSubQuery = false;
         }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gets the string representation of the query
+        /// </summary>
+        public override string ToString() => string.Empty;
         #endregion
 
         #region Methods
@@ -233,7 +239,5 @@ namespace RDFSharp.Query
             return this;
         }
         #endregion
-
     }
-
 }
