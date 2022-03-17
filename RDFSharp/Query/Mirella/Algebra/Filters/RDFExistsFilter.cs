@@ -22,13 +22,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFExistsFilter represents a filter for checking existence of given RDF pattern.
     /// </summary>
     public class RDFExistsFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Pattern to be evaluated
@@ -47,22 +45,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFExistsFilter(RDFPattern pattern)
         {
-            if (pattern != null)
-            {
-                if (pattern.Variables.Any())
-                {
-                    this.Pattern = pattern;
-                    this.IsEvaluable = true;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is a ground pattern.");
-                }
-            }
-            else
-            {
+            if (pattern == null)
                 throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is null.");
-            }
+            if (pattern.Variables.Count == 0)
+                throw new RDFQueryException("Cannot create RDFExistsFilter because given \"pattern\" parameter is a ground pattern.");
+
+            this.Pattern = pattern;
+            this.IsEvaluable = true;
         }
         #endregion
 
@@ -86,7 +75,6 @@ namespace RDFSharp.Query
             EnumerableRowCollection<DataRow> patternResultsEnumerable = this.PatternResults?.AsEnumerable();
             if (patternResultsEnumerable?.Any() ?? false)
             {
-
                 #region Disjoint Evaluation
                 //In case of disjointess between the query and the filter's pattern, all solutions are compatible
                 bool disjointSubject = this.Pattern.Subject is RDFVariable ?
@@ -168,7 +156,6 @@ namespace RDFSharp.Query
 
                 }
                 #endregion
-
             }
 
             //Apply the eventual negation
@@ -178,7 +165,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

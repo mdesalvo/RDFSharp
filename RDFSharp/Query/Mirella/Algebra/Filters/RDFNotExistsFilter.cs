@@ -21,13 +21,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFNotExistsFilter represents a filter for checking absence of given RDF pattern.
     /// </summary>
     public class RDFNotExistsFilter : RDFExistsFilter
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a filter on the given pattern
@@ -60,7 +58,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

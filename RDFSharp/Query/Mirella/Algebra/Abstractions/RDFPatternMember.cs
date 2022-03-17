@@ -19,16 +19,14 @@ using System;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFPatternMember defines an object which can be member of a pattern
     /// </summary>
     public abstract class RDFPatternMember : IEquatable<RDFPatternMember>
     {
-
         #region Properties
         /// <summary>
-        /// Unique representation of the pattern member
+        /// Unique identifier of the pattern member
         /// </summary>
         public long PatternMemberID => LazyPatternMemberID.Value;
 
@@ -43,7 +41,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern member
         /// </summary>
         public override string ToString()
-            => base.ToString();
+            => string.Empty;
 
         /// <summary>
         /// Performs the equality comparison between two pattern members
@@ -59,7 +57,5 @@ namespace RDFSharp.Query
         internal RDFPatternMember()
             => this.LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
         #endregion
-
     }
-
 }

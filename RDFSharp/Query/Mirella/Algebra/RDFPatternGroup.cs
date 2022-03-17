@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -255,12 +254,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFPatternGroupMember> GetEvaluablePatternGroupMembers()
             => this.GroupMembers.Where(g => g.IsEvaluable);
-
-        /// <summary>
-        /// Gets the string representation of the query member
-        /// </summary>
-        internal override string GetQueryMemberString()
-            => this.PatternGroupName;
         #endregion
 
         #endregion

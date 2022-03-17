@@ -27,7 +27,6 @@ using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFDescribeQuery is the SPARQL "DESCRIBE" query implementation.
     /// </summary>
@@ -248,5 +247,4 @@ namespace RDFSharp.Query
             => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
         #endregion
     }
-
 }

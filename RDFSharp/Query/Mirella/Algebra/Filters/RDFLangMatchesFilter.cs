@@ -21,13 +21,11 @@ using System.Text.RegularExpressions;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFLangMatchesFilter represents a filter on the language of a variable.
     /// </summary>
     public class RDFLangMatchesFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -46,28 +44,19 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFLangMatchesFilter(RDFVariable variable, string language)
         {
-            if (variable != null)
+            if (variable == null)
+                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"variable\" parameter is null.");
+            if (language == null)
+                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter is null.");
+
+            if (language == string.Empty || language == "*" || RDFPlainLiteral.LangTag.Match(language).Success)
             {
-                if (language != null)
-                {
-                    if (language == string.Empty || language == "*" || RDFPlainLiteral.LangTag.Match(language).Success)
-                    {
-                        this.Variable = variable;
-                        this.Language = language.ToUpperInvariant();
-                    }
-                    else
-                    {
-                        throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent a valid language.");
-                    }
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter is null.");
-                }
+                this.Variable = variable;
+                this.Language = language.ToUpperInvariant();
             }
             else
             {
-                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"variable\" parameter is null.");
+                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent a valid language.");
             }
         }
         #endregion
@@ -115,7 +104,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

@@ -22,13 +22,11 @@ using System.Text.RegularExpressions;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFRegexFilter represents a filter applying a regular expression on the values of a variable.
     /// </summary>
     public class RDFRegexFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -47,22 +45,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFRegexFilter(RDFVariable variable, Regex regex)
         {
-            if (variable != null)
-            {
-                if (regex != null)
-                {
-                    this.Variable = variable;
-                    this.RegEx = regex;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");
-                }
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFRegexFilter because given \"variable\" parameter is null.");
-            }
+            if (regex == null)
+                throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");
+
+            this.Variable = variable;
+            this.RegEx = regex;
         }
         #endregion
 
@@ -115,7 +104,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -67,13 +66,6 @@ namespace RDFSharp.Query
             this.JoinAsUnion = false;
             this.IsSubQuery = false;
         }
-        #endregion
-
-        #region Interfaces
-        /// <summary>
-        /// Gets the string representation of the query
-        /// </summary>
-        public override string ToString() => string.Empty;
         #endregion
 
         #region Methods
@@ -223,12 +215,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFQueryMember> GetEvaluableQueryMembers()
             => this.QueryMembers.Where(q => q.IsEvaluable);
-
-        /// <summary>
-        /// Gets the strin representation of the query member
-        /// </summary>
-        internal override string GetQueryMemberString()
-            => this.ToString();
 
         /// <summary>
         /// Sets the query as a subquery

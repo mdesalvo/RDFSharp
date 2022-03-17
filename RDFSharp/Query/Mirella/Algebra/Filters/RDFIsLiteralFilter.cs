@@ -21,13 +21,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFIsLiteralFilter represents a filter for literal values of a variable.
     /// </summary>
     public class RDFIsLiteralFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -41,14 +39,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFIsLiteralFilter(RDFVariable variable)
         {
-            if (variable != null)
-            {
-                this.Variable = variable;
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsLiteralFilter because given \"variable\" parameter is null.");
-            }
+
+            this.Variable = variable;
         }
         #endregion
 
@@ -73,7 +67,6 @@ namespace RDFSharp.Query
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString()))
             {
-
                 //Apply a negation logic on result of an "IsUri" filter
                 RDFIsUriFilter isUriFilter = new RDFIsUriFilter(this.Variable);
                 keepRow = isUriFilter.ApplyFilter(row, true);
@@ -86,7 +79,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

@@ -42,7 +42,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pGroup.Variables);
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -69,7 +69,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pGroup.Variables);
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  OPTIONAL {", Environment.NewLine, "    {", Environment.NewLine, "    }", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -92,7 +92,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pGroup.Variables);
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -103,14 +103,18 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreatePatternGroupWithPatterns()
         {
+            RDFPattern pattern1 = new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
+            RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ", 
                 new List<RDFPattern>() {
-                    new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS),
-                    new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")),
-                    new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS),
-                    new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS), //Will not be added, since duplicate patterns are not allowed
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern1, //Will not be added, since duplicate patterns are not allowed
                     null, //Will not be added, since null is not allowed
-                    new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS), //Will not be added, since ground patterns are not allowed
+                    groundPattern, //Will not be added, since ground patterns are not allowed
                 });
 
             Assert.IsNotNull(pGroup);
@@ -124,7 +128,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 4);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine, "    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine,"    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S rdf:type <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 3);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -135,19 +139,24 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldCreatePatternGroupWithPatternsAndFilters()
         {
+            RDFPattern pattern1 = new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
+            RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("s"));
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ", 
                 new List<RDFPattern>() {
-                    new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS),
-                    new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")),
-                    new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS),
-                    new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS), //Will not be added, since duplicate patterns are not allowed
+                    pattern1,
+                    pattern2,
+                    pattern3,
+                    pattern1, //Will not be added, since duplicate patterns are not allowed
                     null, //Will not be added, since null is not allowed
-                    new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS), //Will not be added, since ground patterns are not allowed
+                    groundPattern, //Will not be added, since ground patterns are not allowed
                 },
                 new List<RDFFilter>() {
-                    new RDFIsUriFilter(new RDFVariable("s")),
+                    filter,
                     null, //Will not be added, since null is not allowed
-                    new RDFIsUriFilter(new RDFVariable("s")) //Will not be added, since duplicate filters are not allowed
+                    filter, //Will not be added, since duplicate filters are not allowed
                 });
 
             Assert.IsNotNull(pGroup);
@@ -161,7 +170,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 4);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine, "    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine,"    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S rdf:type <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 3);
             Assert.IsTrue(pGroup.GetFilters().Count() == 1);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -172,13 +181,17 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddPattern()
         {
+            RDFPattern pattern1 = new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
+            RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
+            RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
-            pGroup.AddPattern(new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
-            pGroup.AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")));
-            pGroup.AddPattern(new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS));
-            pGroup.AddPattern(new RDFPattern(new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)); //Will not be added, since duplicate patterns are not allowed
+            pGroup.AddPattern(pattern1);
+            pGroup.AddPattern(pattern2);
+            pGroup.AddPattern(pattern3);
+            pGroup.AddPattern(pattern1); //Will not be added, since duplicate patterns are not allowed
             pGroup.AddPattern(null); //Will not be added, since null is not allowed
-            pGroup.AddPattern(new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS)); //Will not be added, since ground patterns are not allowed
+            pGroup.AddPattern(groundPattern); //Will not be added, since ground patterns are not allowed
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
@@ -191,7 +204,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 4);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine, "    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type <http://www.w3.org/2002/07/owl#Class> .", Environment.NewLine,"    ?S ?P ?O .", Environment.NewLine, "    GRAPH ?C { ?S rdf:type <http://www.w3.org/2002/07/owl#Class> } .", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 3);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -202,10 +215,11 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddFilter()
         {
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("s"));
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
-            pGroup.AddFilter(new RDFIsUriFilter(new RDFVariable("s")));
+            pGroup.AddFilter(filter);
             pGroup.AddFilter(null); //Will not be added, since null is not allowed
-            pGroup.AddFilter(new RDFIsUriFilter(new RDFVariable("s"))); //Will not be added, since duplicate filters are not allowed
+            pGroup.AddFilter(filter); //Will not be added, since duplicate filters are not allowed
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
@@ -218,7 +232,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    FILTER ( ISURI(?S) ) ", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 1);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -229,12 +243,12 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddPropertyPath()
         {
+            RDFPropertyPath pPath = new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("e")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))
+                                                                                                   .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE)); 
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
-            pGroup.AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("e")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))
-                                                                                                  .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE)));
+            pGroup.AddPropertyPath(pPath);
             pGroup.AddPropertyPath(null); //Will not be added, since null is not allowed
-            pGroup.AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("e")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))
-                                                                                                  .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))); //Will not be added, since duplicate property paths are not allowed
+            pGroup.AddPropertyPath(pPath); //Will not be added, since duplicate property paths are not allowed
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
@@ -247,7 +261,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?E .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    ?S rdf:type/rdf:type ?E .", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 1);
@@ -258,10 +272,11 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddValues()
         {
+            RDFValues values = new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") });
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
-            pGroup.AddValues(new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") }));
+            pGroup.AddValues(values);
             pGroup.AddValues(null); //Will not be added, since null is not allowed
-            pGroup.AddValues(new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") })); //Will not be added, since duplicate values are not allowed
+            pGroup.AddValues(values); //Will not be added, since duplicate values are not allowed
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
@@ -274,7 +289,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "    VALUES ?S { \"lit\" } .", Environment.NewLine, "  }", Environment.NewLine)));
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "    VALUES ?S { \"lit\" } .", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);
@@ -286,10 +301,10 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddInjectedValues()
         {
+            RDFValues values = new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") });
             RDFPatternGroup pGroup = new RDFPatternGroup(" pGroup ");
-            pGroup.AddInjectedValues(new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") }));
+            pGroup.AddInjectedValues(values);
             pGroup.AddInjectedValues(null); //Will not be added, since null is not allowed
-            pGroup.AddInjectedValues(new RDFValues().AddColumn(new RDFVariable("s"), new List<RDFPatternMember>() { new RDFPlainLiteral("lit") })); //Will not be added, since duplicate values are not allowed
 
             Assert.IsNotNull(pGroup);
             Assert.IsTrue(pGroup.PatternGroupName.Equals("PGROUP"));
@@ -302,7 +317,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pGroup.Variables.Count == 0);
             Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine))); //Injected values are not printed since they are hidden
             Assert.IsTrue(pGroup.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals(string.Concat("  {", Environment.NewLine, "  }", Environment.NewLine)));
-            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.PatternGroupName)));
+            Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
             Assert.IsTrue(pGroup.GetPatterns().Count() == 0);
             Assert.IsTrue(pGroup.GetFilters().Count() == 0);
             Assert.IsTrue(pGroup.GetPropertyPaths().Count() == 0);

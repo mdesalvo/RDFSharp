@@ -21,14 +21,12 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFValuesFilter represents an explicit binding of variables provided for filtering a SPARQL query.
     /// (This filter is NOT intended to be public: in fact, it is injected by RDFValues during evaluation).
     /// </summary>
     internal class RDFValuesFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// SPARQL values wrapped by the filter
@@ -41,9 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a SPARQL values filter
         /// </summary>
         internal RDFValuesFilter(RDFValues values)
-        {
-            this.Values = values;
-        }
+            => this.Values = values;
         #endregion
 
         #region Interfaces
@@ -65,7 +61,6 @@ namespace RDFSharp.Query
             List<string> filterColumns = this.Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
             if (filterColumns.Any())
             {
-
                 //Get the enumerable representation of the filter table
                 EnumerableRowCollection<DataRow> bindingsTable = this.Values.GetDataTable().AsEnumerable();
 
@@ -83,7 +78,6 @@ namespace RDFSharp.Query
 
                 //Analyze the response of the check
                 keepRow = bindingsTable.Any();
-
             }
 
             //Apply the eventual negation
@@ -93,7 +87,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

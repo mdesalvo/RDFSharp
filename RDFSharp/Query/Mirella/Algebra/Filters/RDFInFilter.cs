@@ -22,13 +22,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFInFilter represents a filter checking if a RDF term is found in a given set of RDF terms.
     /// </summary>
     public class RDFInFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// RDF term to be searched
@@ -47,17 +45,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFInFilter(RDFPatternMember termToSearch, List<RDFPatternMember> inTerms)
         {
-            if (termToSearch != null)
-            {
-                this.TermToSearch = termToSearch;
-                this.InTerms = inTerms ?? new List<RDFPatternMember>();
-                //Do not accept null values in input list
-                this.InTerms.RemoveAll(t => t == null);
-            }
-            else
-            {
+            if (termToSearch == null)
                 throw new RDFQueryException("Cannot create RDFInFilter because given \"termToSearch\" parameter is null.");
-            }
+
+            this.TermToSearch = termToSearch;
+            this.InTerms = inTerms ?? new List<RDFPatternMember>();
+            //Do not accept null values in input list
+            this.InTerms.RemoveAll(t => t == null);
         }
         #endregion
 
@@ -101,7 +95,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

@@ -19,13 +19,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable.
     /// </summary>
     public class RDFOrderByModifier : RDFModifier
     {
-
         #region Properties
         /// <summary>
         /// Variable to be ordered
@@ -44,15 +42,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
         {
-            if (variable != null)
-            {
-                this.OrderByFlavor = orderbyFlavor;
-                this.Variable = variable;
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
-            }
+            
+            this.OrderByFlavor = orderbyFlavor;
+            this.Variable = variable;
         }
         #endregion
 
@@ -80,7 +74,5 @@ namespace RDFSharp.Query
             return table;
         }
         #endregion
-
     }
-
 }

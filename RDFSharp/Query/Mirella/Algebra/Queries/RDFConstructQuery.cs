@@ -27,7 +27,6 @@ using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
     /// </summary>
@@ -259,5 +258,4 @@ namespace RDFSharp.Query
             => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
         #endregion
     }
-
 }

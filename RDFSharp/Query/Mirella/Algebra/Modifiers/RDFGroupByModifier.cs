@@ -27,7 +27,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFGroupByModifier : RDFModifier
     {
-
         #region Properties
         /// <summary>
         /// List of variables on which query results are grouped
@@ -46,26 +45,22 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFGroupByModifier(List<RDFVariable> partitionVariables)
         {
-            if (partitionVariables != null && partitionVariables.Any())
-            {
-                this.PartitionVariables = new List<RDFVariable>();
-                this.Aggregators = new List<RDFAggregator>();
-                partitionVariables.ForEach(pv1 =>
-                {
-                    if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
-                    {
-                        this.PartitionVariables.Add(pv1);
-                        this.IsEvaluable = true;
-
-                        //At every partition variable must correspond a partition aggregator
-                        this.Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
-                    }
-                });
-            }
-            else
-            {
+            if (partitionVariables == null || partitionVariables.Count == 0)
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter is null or empty.");
-            }
+
+            this.PartitionVariables = new List<RDFVariable>();
+            this.Aggregators = new List<RDFAggregator>();
+            partitionVariables.ForEach(pv1 =>
+            {
+                if (!this.PartitionVariables.Any(pv2 => pv2.Equals(pv1)))
+                {
+                    this.PartitionVariables.Add(pv1);
+                    this.IsEvaluable = true;
+
+                    //At every partition variable must correspond a partition aggregator
+                    this.Aggregators.Add(new RDFPartitionAggregator(pv1, pv1));
+                }
+            });
         }
         #endregion
 
@@ -236,6 +231,5 @@ namespace RDFSharp.Query
             return string.Join("§PK§", partitionKey);
         }
         #endregion
-
     }
 }

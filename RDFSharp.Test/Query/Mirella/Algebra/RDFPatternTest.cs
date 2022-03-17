@@ -45,7 +45,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> <ex:pred> <ex:obj>"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> <ex:pred> \"lit\""));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("<ex:subj> <ex:pred> \"lit\"@EN-US")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -112,7 +112,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("<ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>")));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("<ex:subj> <ex:pred> \"25\"^^xsd:integer")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -162,7 +162,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> <ex:obj>"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -184,7 +184,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> \"lit\""));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -206,7 +206,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> \"lit\"@EN-US"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -229,7 +229,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("?SUBJ <ex:pred> \"25\"^^xsd:integer")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -251,7 +251,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED <ex:obj>"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -273,7 +273,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED \"lit\""));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -295,7 +295,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED \"lit\"@EN-US"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -318,7 +318,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("<ex:subj> ?PRED \"25\"^^xsd:integer")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -340,7 +340,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> <ex:pred> ?OBJ"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -362,7 +362,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED <ex:obj>"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -384,7 +384,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED \"lit\""));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -406,7 +406,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED \"lit\"@EN-US"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -429,7 +429,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("?SUBJ ?PRED \"25\"^^xsd:integer")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -451,7 +451,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED ?OBJ"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -473,7 +473,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> ?OBJ"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -495,7 +495,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED ?OBJ"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -517,7 +517,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -539,7 +539,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -561,7 +561,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"lit\"@EN-US }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -584,7 +584,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }")));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -606,7 +606,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -628,7 +628,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -650,7 +650,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -673,7 +673,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { ?SUBJ <ex:pred> \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -695,7 +695,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -717,7 +717,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -739,7 +739,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -762,7 +762,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { <ex:subj> ?PRED \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -784,7 +784,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -806,7 +806,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -828,7 +828,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -850,7 +850,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -873,7 +873,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { ?SUBJ ?PRED \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -895,7 +895,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -917,7 +917,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -939,7 +939,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -961,7 +961,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?SUBJ ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -983,7 +983,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?SUBJ ?OBJ"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         //PATTERN WITH CONTEXT
@@ -1008,7 +1008,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> <ex:pred> <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1031,7 +1031,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1054,7 +1054,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\"@EN-US }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1078,7 +1078,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }")));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1137,7 +1137,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1160,7 +1160,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1183,7 +1183,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1207,7 +1207,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1230,7 +1230,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1253,7 +1253,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1276,7 +1276,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1300,7 +1300,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH <ex:ctx> { <ex:subj> ?PRED \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1323,7 +1323,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> <ex:pred> ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1346,7 +1346,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1369,7 +1369,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1392,7 +1392,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1416,7 +1416,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH <ex:ctx> { ?SUBJ ?PRED \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1439,7 +1439,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1462,7 +1462,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1485,7 +1485,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1508,7 +1508,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1531,7 +1531,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1554,7 +1554,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\"@EN-US } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1578,7 +1578,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 0);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1601,7 +1601,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1624,7 +1624,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1647,7 +1647,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\"@EN-US } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1671,7 +1671,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1694,7 +1694,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1717,7 +1717,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1740,7 +1740,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\"@EN-US } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1764,7 +1764,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1787,7 +1787,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1810,7 +1810,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1833,7 +1833,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1856,7 +1856,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\"@EN-US } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1880,7 +1880,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1903,7 +1903,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1926,7 +1926,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1949,7 +1949,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -1972,7 +1972,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?SUBJ ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         //PATTERN WITH VARIABLE CONTEXT
@@ -1997,7 +1997,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> <ex:pred> <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2020,7 +2020,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2043,7 +2043,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\"@EN-US }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2067,7 +2067,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH ?CTX { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }")));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH ?CTX { <ex:subj> <ex:pred> \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2090,7 +2090,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2113,7 +2113,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2136,7 +2136,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2160,7 +2160,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH ?CTX { ?SUBJ <ex:pred> \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2183,7 +2183,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2206,7 +2206,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2229,7 +2229,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2253,7 +2253,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH ?CTX { <ex:subj> ?PRED \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2276,7 +2276,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> <ex:pred> ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2299,7 +2299,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED <ex:obj> }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2322,7 +2322,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED \"lit\" }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2345,7 +2345,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED \"lit\"@EN-US }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2369,7 +2369,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("GRAPH ?CTX { ?SUBJ ?PRED \"25\"^^xsd:integer }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2392,7 +2392,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2415,7 +2415,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2438,7 +2438,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 4);
             Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED ?OBJ }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2461,7 +2461,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2484,7 +2484,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2507,7 +2507,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\"@EN-US } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2531,7 +2531,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 1);
             Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }")));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2554,7 +2554,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2577,7 +2577,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2600,7 +2600,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\"@EN-US } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2624,7 +2624,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2647,7 +2647,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2670,7 +2670,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2693,7 +2693,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"lit\"@EN-US } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2717,7 +2717,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2740,7 +2740,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 2);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2763,7 +2763,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED <ex:obj> } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2786,7 +2786,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"lit\" } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2809,7 +2809,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"lit\"@EN-US } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2833,7 +2833,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"));
             Assert.IsTrue(pattern.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("xsd") }).Equals(string.Concat("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"25\"^^xsd:integer } }")));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2856,7 +2856,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2879,7 +2879,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2902,7 +2902,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 4);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
@@ -2925,7 +2925,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(pattern.Variables);
             Assert.IsTrue(pattern.Variables.Count == 3);
             Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?SUBJ ?OBJ } }"));
-            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.ToString())));
+            Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
         }
         #endregion
     }

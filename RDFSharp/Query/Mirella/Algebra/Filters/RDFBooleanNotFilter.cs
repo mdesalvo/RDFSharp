@@ -20,13 +20,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFBooleanNotFilter represents a filter applying a negation on the logics of the given filter.
     /// </summary>
     public class RDFBooleanNotFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Filter to be negated
@@ -40,21 +38,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBooleanNotFilter(RDFFilter filter)
         {
-            if (filter != null)
-            {
-                if (filter is RDFExistsFilter)
-                {
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
-                }
-                else
-                {
-                    this.Filter = filter;
-                }
-            }
-            else
-            {
+            if (filter == null)
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
-            }
+            if (filter is RDFExistsFilter)
+                throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
+            
+            this.Filter = filter;
         }
         #endregion
 
@@ -84,7 +73,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

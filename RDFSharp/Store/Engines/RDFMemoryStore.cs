@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
@@ -66,7 +65,7 @@ namespace RDFSharp.Store
         public RDFMemoryStore()
         {
             this.StoreType = "MEMORY";
-            this.StoreGUID = Guid.NewGuid().ToString();
+            this.StoreGUID = Guid.NewGuid().ToString("N");
             this.StoreIndex = new RDFStoreIndex();
             this.StoreID = RDFModelUtilities.CreateHash(this.ToString());
             this.Quadruples = new Dictionary<long, RDFQuadruple>();
@@ -864,5 +863,4 @@ namespace RDFSharp.Store
 
         #endregion
     }
-
 }

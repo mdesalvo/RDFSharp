@@ -20,13 +20,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFDistinctModifier is a modifier which drops duplicate rows for the level of detail of a SELECT query.
     /// </summary>
     public class RDFDistinctModifier : RDFModifier
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a Distinct modifier on a query
@@ -38,7 +36,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the modifier
         /// </summary>
-        public override string ToString() => "DISTINCT";
+        public override string ToString()
+            => "DISTINCT";
         #endregion
 
         #region Methods
@@ -57,7 +56,5 @@ namespace RDFSharp.Query
             return table;
         }
         #endregion
-
     }
-
 }

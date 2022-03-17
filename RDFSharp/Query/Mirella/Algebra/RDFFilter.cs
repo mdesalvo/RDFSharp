@@ -21,13 +21,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFFilter represents a filter to be applied on a query results table.
     /// </summary>
     public abstract class RDFFilter : RDFPatternGroupMember
     {
-
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the filter
@@ -43,7 +41,5 @@ namespace RDFSharp.Query
         /// </summary>
         internal abstract bool ApplyFilter(DataRow row, bool applyNegation);
         #endregion
-
     }
-
 }

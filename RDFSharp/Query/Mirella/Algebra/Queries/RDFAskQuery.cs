@@ -26,7 +26,6 @@ using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFAskQuery is the SPARQL "ASK" query implementation.
     /// </summary>
@@ -170,5 +169,4 @@ namespace RDFSharp.Query
             => Task.Run(() => this.ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
         #endregion
     }
-
 }

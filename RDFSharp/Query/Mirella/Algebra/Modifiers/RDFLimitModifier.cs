@@ -20,13 +20,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFLimitModifier is a modifier which applies an upper-bound counter to the number of query results to be considered.
     /// </summary>
     public class RDFLimitModifier : RDFModifier
     {
-
         #region Properties
         /// <summary>
         /// Maximum number of results taken from the query
@@ -40,14 +38,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFLimitModifier(int limit)
         {
-            if (limit >= 0)
-            {
-                this.Limit = limit;
-            }
-            else
-            {
+            if (limit < 0)
                 throw new RDFQueryException("Cannot create RDFLimitModifier because given \"limit\" parameter (" + limit + ") is negative.");
-            }
+            
+            this.Limit = limit;
         }
         #endregion
 
@@ -76,7 +70,5 @@ namespace RDFSharp.Query
             return table;
         }
         #endregion
-
     }
-
 }

@@ -20,13 +20,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFOffsetModifier is a modifier which makes the first N query results to be not considered.
     /// </summary>
     public class RDFOffsetModifier : RDFModifier
     {
-
         #region Properties
         /// <summary>
         /// Number of results not considered from the query
@@ -40,14 +38,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFOffsetModifier(int offset)
         {
-            if (offset >= 0)
-            {
-                this.Offset = offset;
-            }
-            else
-            {
+            if (offset < 0)
                 throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");
-            }
+
+            this.Offset = offset;
         }
         #endregion
 
@@ -76,7 +70,5 @@ namespace RDFSharp.Query
             return table;
         }
         #endregion
-
     }
-
 }

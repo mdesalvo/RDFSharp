@@ -20,13 +20,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFBoundFilter represents a filter checking if a variable is bound to a value.
     /// </summary>
     public class RDFBoundFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -40,14 +38,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBoundFilter(RDFVariable variable)
         {
-            if (variable != null)
-            {
-                this.Variable = variable;
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFBoundFilter because given \"variable\" parameter is null.");
-            }
+            
+            this.Variable = variable;
         }
         #endregion
 
@@ -84,7 +78,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

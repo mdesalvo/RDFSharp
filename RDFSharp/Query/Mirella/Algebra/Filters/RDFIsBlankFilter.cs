@@ -21,13 +21,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFIsBlankFilter represents a filter for Blank Uri values of a variable.
     /// </summary>
     public class RDFIsBlankFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -41,14 +39,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFIsBlankFilter(RDFVariable variable)
         {
-            if (variable != null)
-            {
-                this.Variable = variable;
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsBlankFilter because given \"variable\" parameter is null.");
-            }
+
+            this.Variable = variable;
         }
         #endregion
 
@@ -87,7 +81,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

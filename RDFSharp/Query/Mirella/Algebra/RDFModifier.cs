@@ -14,38 +14,20 @@
    limitations under the License.
 */
 
-using RDFSharp.Model;
-using System;
 using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFModifier represents a modifier to be applied on a query results table.
     /// </summary>
     public abstract class RDFModifier : RDFQueryMember
     {
-
-        #region Interfaces
-        /// <summary>
-        /// Gives the string representation of the modifier
-        /// </summary>
-        public override string ToString() => base.ToString();
-        #endregion
-
         #region Methods
         /// <summary>
         /// Applies the modifier on the given datatable
         /// </summary>
         internal abstract DataTable ApplyModifier(DataTable tableToFilter);
-
-        /// <summary>
-        /// Gets the string representation of the query member
-        /// </summary>
-        internal override string GetQueryMemberString() => this.ToString();
         #endregion
-
     }
-
 }

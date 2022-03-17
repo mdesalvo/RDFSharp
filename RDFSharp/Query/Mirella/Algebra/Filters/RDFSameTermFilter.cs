@@ -21,13 +21,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFSameTermFilter represents an equality filter between a variable and a RDF term.
     /// </summary>
     public class RDFSameTermFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -46,22 +44,13 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSameTermFilter(RDFVariable variable, RDFPatternMember rdfTerm)
         {
-            if (variable != null)
-            {
-                if (rdfTerm != null)
-                {
-                    this.Variable = variable;
-                    this.RDFTerm = rdfTerm;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"rdfTerm\" parameter is null.");
-                }
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"variable\" parameter is null.");
-            }
+            if (rdfTerm == null)
+                throw new RDFQueryException("Cannot create RDFSameTermFilter because given \"rdfTerm\" parameter is null.");
+
+            this.Variable = variable;
+            this.RDFTerm = rdfTerm;
         }
         #endregion
 
@@ -115,7 +104,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

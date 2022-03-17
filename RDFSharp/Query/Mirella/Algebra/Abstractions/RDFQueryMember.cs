@@ -19,16 +19,14 @@ using System;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFQueryMember defines an object which can be member of a query
     /// </summary>
     public abstract class RDFQueryMember : IEquatable<RDFQueryMember>
     {
-
         #region Properties
         /// <summary>
-        /// Unique representation of the query member
+        /// Unique identifier of the query member
         /// </summary>
         public long QueryMemberID => LazyQueryMemberID.Value;
 
@@ -36,6 +34,11 @@ namespace RDFSharp.Query
         /// Lazy evaluation of the query member identifier
         /// </summary>
         protected Lazy<long> LazyQueryMemberID;
+
+        /// <summary>
+        /// Unique identifier of the query member (string)
+        /// </summary>
+        internal string QueryMemberStringID { get; set;}
 
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine
@@ -48,7 +51,10 @@ namespace RDFSharp.Query
         /// Default-ctor to build a query member
         /// </summary>
         internal RDFQueryMember()
-            => this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.GetQueryMemberString()));
+        {
+            this.QueryMemberStringID = Guid.NewGuid().ToString("N");
+            this.LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.QueryMemberStringID));
+        }
         #endregion
 
         #region Interfaces
@@ -56,7 +62,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the query member
         /// </summary>
         public override string ToString()
-            => base.ToString();
+            => string.Empty;
 
         /// <summary>
         /// Performs the equality comparison between two query members
@@ -64,14 +70,5 @@ namespace RDFSharp.Query
         public bool Equals(RDFQueryMember other)
             => other != null && this.QueryMemberID.Equals(other.QueryMemberID);
         #endregion
-
-        #region Methods
-        /// <summary>
-        /// Gets the string representation of the query member
-        /// </summary>
-        internal abstract string GetQueryMemberString();
-        #endregion
-
     }
-
 }

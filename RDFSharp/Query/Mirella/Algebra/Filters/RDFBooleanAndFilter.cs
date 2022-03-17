@@ -20,13 +20,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFBooleanAndFilter represents a filter applying an "AND" on the logics of the given filters.
     /// </summary>
     public class RDFBooleanAndFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Left Filter
@@ -45,36 +43,17 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFBooleanAndFilter(RDFFilter leftFilter, RDFFilter rightFilter)
         {
-            if (leftFilter != null)
-            {
-                if (leftFilter is RDFExistsFilter)
-                {
-                    throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
-                }
-                else
-                {
-                    if (rightFilter != null)
-                    {
-                        if (rightFilter is RDFExistsFilter)
-                        {
-                            throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
-                        }
-                        else
-                        {
-                            this.LeftFilter = leftFilter;
-                            this.RightFilter = rightFilter;
-                        }
-                    }
-                    else
-                    {
-                        throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
-                    }
-                }
-            }
-            else
-            {
+            if (leftFilter == null)
                 throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is null.");
-            }
+            if (leftFilter is RDFExistsFilter)
+                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+            if (rightFilter == null)
+                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is null.");
+            if (rightFilter is RDFExistsFilter)
+                throw new RDFQueryException("Cannot create RDFBooleanAndFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not allowed.");
+
+            this.LeftFilter = leftFilter;
+            this.RightFilter = rightFilter;
         }
         #endregion
 
@@ -106,7 +85,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

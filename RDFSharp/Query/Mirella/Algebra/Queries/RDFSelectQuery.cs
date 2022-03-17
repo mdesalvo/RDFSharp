@@ -27,7 +27,6 @@ using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFSelectQuery is the SPARQL "SELECT" query implementation.
     /// </summary>
@@ -282,5 +281,4 @@ namespace RDFSharp.Query
         }
         #endregion
     }
-
 }

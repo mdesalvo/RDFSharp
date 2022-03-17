@@ -20,13 +20,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFComparisonFilter represents a filter applying a comparison between the given RDF terms.
     /// </summary>
     public class RDFComparisonFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Comparison to be applied between the given pattern members
@@ -50,23 +48,14 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember leftMember, RDFPatternMember rightMember)
         {
-            if (leftMember != null)
-            {
-                if (rightMember != null)
-                {
-                    this.ComparisonFlavor = comparisonFlavor;
-                    this.LeftMember = leftMember;
-                    this.RightMember = rightMember;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"rightMember\" parameter is null.");
-                }
-            }
-            else
-            {
+            if (leftMember == null)
                 throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"leftMember\" parameter is null.");
-            }
+            if (rightMember == null)
+                throw new RDFQueryException("Cannot create RDFComparisonFilter because given \"rightMember\" parameter is null.");
+
+            this.ComparisonFlavor = comparisonFlavor;
+            this.LeftMember = leftMember;
+            this.RightMember = rightMember;
         }
         #endregion
 
@@ -188,7 +177,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

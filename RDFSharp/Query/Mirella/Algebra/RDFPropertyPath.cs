@@ -21,13 +21,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFPropertyPath represents a chain of properties connecting two terms in a RDF datasource.
     /// </summary>
     public class RDFPropertyPath : RDFPatternGroupMember
     {
-
         #region Properties
         /// <summary>
         /// Start of the path
@@ -56,45 +54,19 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPath(RDFPatternMember start, RDFPatternMember end)
         {
-            //Start
-            if (start != null)
-            {
-                if (start is RDFResource || start is RDFVariable)
-                {
-                    this.Start = start;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is neither a resource or a variable.");
-                }
-            }
-            else
-            {
+            if (start == null)
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is null.");
-            }
-
-            //Steps
-            this.Steps = new List<RDFPropertyPathStep>();
-
-            //Depth
-            this.Depth = 0;
-
-            //End
-            if (end != null)
-            {
-                if (end is RDFResource || end is RDFVariable)
-                {
-                    this.End = end;
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
-                }
-            }
-            else
-            {
+            if (!(start is RDFResource || start is RDFVariable))
+                throw new RDFQueryException("Cannot create RDFPropertyPath because given \"start\" parameter is neither a resource or a variable.");
+            if (end == null)
                 throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is null.");
-            }
+            if (!(end is RDFResource || end is RDFVariable))
+                throw new RDFQueryException("Cannot create RDFPropertyPath because given \"end\" parameter is neither a resource or a variable.");
+
+            this.Start = start;
+            this.End = end;
+            this.Steps = new List<RDFPropertyPathStep>();
+            this.Depth = 0;
         }
         #endregion
 
@@ -263,7 +235,6 @@ namespace RDFSharp.Query
             return patterns;
         }
         #endregion
-
     }
 
     /// <summary>
@@ -271,7 +242,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFPropertyPathStep
     {
-
         #region Properties
         /// <summary>
         /// Property of the step
@@ -339,7 +309,5 @@ namespace RDFSharp.Query
             return this;
         }
         #endregion
-
     }
-
 }

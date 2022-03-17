@@ -38,7 +38,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Represents the current max length of the bindings
         /// </summary>
-        internal int MaxBindingsLength => this.Bindings?.Select(x => x.Value.Count).Max() ?? 0;
+        internal int MaxBindingsLength => this.Bindings?.Select(x => x.Value.Count)?.Max() ?? 0;
 
         /// <summary>
         /// Flag indicating that the SPARQL values has been injected by Mirella
@@ -76,7 +76,6 @@ namespace RDFSharp.Query
         {
             if (variable != null)
             {
-
                 //Initialize bindings of the given variable
                 if (!this.Bindings.ContainsKey(variable.ToString()))
                     this.Bindings.Add(variable.ToString(), new List<RDFPatternMember>());
@@ -90,7 +89,6 @@ namespace RDFSharp.Query
 
                 //Mark the SPARQL values as evaluable
                 this.IsEvaluable = true;
-
             }
             return this;
         }
@@ -134,7 +132,5 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFValuesFilter GetValuesFilter() => new RDFValuesFilter(this);
         #endregion
-
     }
-
 }

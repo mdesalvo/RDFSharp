@@ -42,8 +42,7 @@ namespace RDFSharp.Test.Query
             Assert.IsFalse(query.JoinAsUnion);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
-            Assert.IsTrue(query.GetQueryMemberString().Equals(string.Empty));
-            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.ToString())));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
             Assert.IsTrue(query.GetPatternGroups().Count() == 0);
             Assert.IsTrue(query.GetSubQueries().Count() == 0);
@@ -55,10 +54,11 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldAddPatternGroup()
         {
+            RDFPatternGroup pg1 = new RDFPatternGroup("PG1");
             RDFQuery query = new RDFQuery()
-                .AddPatternGroup<RDFQuery>(new RDFPatternGroup("PG1"))
+                .AddPatternGroup<RDFQuery>(pg1)
                 .AddPatternGroup<RDFQuery>(null) //Will not be accepted, since null pattern groups are not allowed
-                .AddPatternGroup<RDFQuery>(new RDFPatternGroup("PG1")); //Will not be accepted, since duplicate pattern groups are not allowed
+                .AddPatternGroup<RDFQuery>(pg1); //Will not be accepted, since duplicate pattern groups are not allowed
 
             Assert.IsNotNull(query);
             Assert.IsNotNull(query.QueryMembers);
@@ -70,8 +70,6 @@ namespace RDFSharp.Test.Query
             Assert.IsFalse(query.JoinAsUnion);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
-            Assert.IsTrue(query.GetQueryMemberString().Equals(string.Empty));
-            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.ToString())));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 1);
             Assert.IsTrue(query.GetPatternGroups().Count() == 1);
             Assert.IsTrue(query.GetSubQueries().Count() == 0);
@@ -104,8 +102,7 @@ namespace RDFSharp.Test.Query
             Assert.IsFalse(query.JoinAsUnion);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
-            Assert.IsTrue(query.GetQueryMemberString().Equals(string.Empty));
-            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.ToString())));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
             Assert.IsTrue(query.GetPatternGroups().Count() == 0);
             Assert.IsTrue(query.GetSubQueries().Count() == 0);
@@ -132,8 +129,7 @@ namespace RDFSharp.Test.Query
             Assert.IsFalse(query.JoinAsUnion);
             Assert.IsFalse(query.IsSubQuery);
             Assert.IsTrue(query.ToString().Equals(string.Empty));
-            Assert.IsTrue(query.GetQueryMemberString().Equals(string.Empty));
-            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.ToString())));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
             Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
             Assert.IsTrue(query.GetPatternGroups().Count() == 0);
             Assert.IsTrue(query.GetSubQueries().Count() == 0);

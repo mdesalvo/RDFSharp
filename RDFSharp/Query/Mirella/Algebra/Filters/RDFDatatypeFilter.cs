@@ -21,13 +21,11 @@ using System.Text.RegularExpressions;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFDatatypeFilter represents a filter on the datatype of a variable.
     /// </summary>
     public class RDFDatatypeFilter : RDFFilter
     {
-
         #region Properties
         /// <summary>
         /// Variable to be filtered
@@ -46,15 +44,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDatatypeFilter(RDFVariable variable, RDFModelEnums.RDFDatatypes datatype)
         {
-            if (variable != null)
-            {
-                this.Variable = variable;
-                this.Datatype = datatype;
-            }
-            else
-            {
+            if (variable == null)
                 throw new RDFQueryException("Cannot create RDFDatatypeFilter because given \"variable\" parameter is null.");
-            }
+
+            this.Variable = variable;
+            this.Datatype = datatype;
         }
         #endregion
 
@@ -94,7 +88,5 @@ namespace RDFSharp.Query
             return keepRow;
         }
         #endregion
-
     }
-
 }

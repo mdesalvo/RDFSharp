@@ -19,16 +19,14 @@ using System;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFPatternGroupMember defines an object which can be member of a pattern group
     /// </summary>
     public abstract class RDFPatternGroupMember : IEquatable<RDFPatternGroupMember>
     {
-
         #region Properties
         /// <summary>
-        /// Unique representation of the pattern group member
+        /// Unique identifier of the pattern group member
         /// </summary>
         public long PatternGroupMemberID => LazyPatternGroupMemberID.Value;
 
@@ -36,6 +34,11 @@ namespace RDFSharp.Query
         /// Lazy evaluation of the pattern group member identifier
         /// </summary>
         protected Lazy<long> LazyPatternGroupMemberID;
+
+        /// <summary>
+        /// Unique identifier of the pattern group member (string)
+        /// </summary>
+        internal string PatternGroupMemberStringID { get; set;}
 
         /// <summary>
         /// Flag indicating that the pattern group member is evaluable by the engine
@@ -48,7 +51,10 @@ namespace RDFSharp.Query
         /// Default-ctor to build a pattern group member
         /// </summary>
         internal RDFPatternGroupMember()
-            => this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
+        {
+            this.PatternGroupMemberStringID = Guid.NewGuid().ToString("N");
+            this.LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.PatternGroupMemberStringID));
+        }
         #endregion
 
         #region Interfaces
@@ -56,7 +62,7 @@ namespace RDFSharp.Query
         /// Gives the string representation of the pattern group member
         /// </summary>
         public override string ToString()
-            => base.ToString();
+            => string.Empty;
 
         /// <summary>
         /// Performs the equality comparison between two pattern group members
@@ -64,7 +70,5 @@ namespace RDFSharp.Query
         public bool Equals(RDFPatternGroupMember other)
             => other != null && this.PatternGroupMemberID.Equals(other.PatternGroupMemberID);
         #endregion
-
     }
-
 }
