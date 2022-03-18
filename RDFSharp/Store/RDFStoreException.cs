@@ -19,7 +19,6 @@ using System.Runtime.Serialization;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFStoreException represents an exception thrown during manipulation of RDF data stores.
     /// </summary>
@@ -48,5 +47,4 @@ namespace RDFSharp.Store
         protected RDFStoreException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
     }
-
 }

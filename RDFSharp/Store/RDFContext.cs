@@ -20,7 +20,6 @@ using System;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFContext represents an object which can act as C-token of a pattern.
 	/// It cannot start with "bnode:" because blank contexts are not supported.
@@ -46,21 +45,12 @@ namespace RDFSharp.Store
         public RDFContext(string ctxUri)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri);
-            if (tempUri != null)
-            {
-                if (!tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
-                {
-                    this.Context = tempUri;
-                }
-                else
-                {
-                    throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
-                }
-            }
-            else
-            {
+            if (tempUri == null)
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter is null or does not represent a valid Uri.");
-            }
+            if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
+            
+            this.Context = tempUri;
         }
 
         /// <summary>
@@ -68,29 +58,16 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFContext(Uri ctxUri)
         {
-            if (ctxUri != null)
-            {
-                Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri.ToString());
-                if (tempUri != null)
-                {
-                    if (!tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase))
-                    {
-                        this.Context = tempUri;
-                    }
-                    else
-                    {
-                        throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
-                    }
-                }
-                else
-                {
-                    throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter does not represent a valid Uri.");
-                }
-            }
-            else
-            {
+            if (ctxUri == null)
                 throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter is null.");
-            }
+            
+            Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri.ToString());
+            if (tempUri == null)
+                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter does not represent a valid Uri.");
+            if (tempUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase) || tempUri.ToString().StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
+            
+            this.Context = tempUri;
         }
         #endregion
 
@@ -98,8 +75,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Gives the string representation of the store context
         /// </summary>
-        public override string ToString() => this.Context.ToString();
+        public override string ToString()
+            => this.Context.ToString();
         #endregion
     }
-
 }

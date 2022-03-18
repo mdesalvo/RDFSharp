@@ -19,13 +19,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Web;
 using System.Xml;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFTriX is responsible for managing serialization to and from TriX data format.
     /// </summary>
@@ -199,5 +196,4 @@ namespace RDFSharp.Store
 
         #endregion
     }
-
 }

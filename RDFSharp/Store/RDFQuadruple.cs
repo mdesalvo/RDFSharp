@@ -20,7 +20,6 @@ using System;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFQuadruple represents a quadruple in the RDF store.
     /// </summary>
@@ -71,34 +70,17 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)
         {
-            //TripleFlavor
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-
-            //Context
-            this.Context = context ?? new RDFContext();
-
-            //Subject
-            this.Subject = subj ?? new RDFResource();
-
-            //Predicate
-            if (pred != null)
-            {
-                if (pred.IsBlank)
-                    throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
-                this.Predicate = pred;
-            }
-            else
-            {
+            if (pred == null)
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
-            }
+            if (pred.IsBlank)
+                throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
 
-            //Object
+            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
+            this.Context = context ?? new RDFContext();
+            this.Subject = subj ?? new RDFResource();
+            this.Predicate = pred;
             this.Object = obj ?? new RDFResource();
-
-            //LazyQuadrupleID
             this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-
-            //LazyReificationSubject
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
         }
 
@@ -107,34 +89,17 @@ namespace RDFSharp.Store
         /// </summary>
         public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit)
         {
-            //TripleFlavor
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-
-            //Context
-            this.Context = context ?? new RDFContext();
-
-            //Subject
-            this.Subject = subj ?? new RDFResource();
-
-            //Predicate
-            if (pred != null)
-            {
-                if (pred.IsBlank)
-                    throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
-                this.Predicate = pred;
-            }
-            else
-            {
+            if (pred == null)
                 throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
-            }
+            if (pred.IsBlank)
+                throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
 
-            //Object
+            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            this.Context = context ?? new RDFContext();
+            this.Subject = subj ?? new RDFResource();
+            this.Predicate = pred;
             this.Object = lit ?? new RDFPlainLiteral(string.Empty);
-
-            //LazyQuadrupleID
             this.LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-
-            //LazyReificationSubject
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.QuadrupleID.ToString())));
         }
         #endregion
@@ -173,5 +138,4 @@ namespace RDFSharp.Store
         }
         #endregion
     }
-
 }

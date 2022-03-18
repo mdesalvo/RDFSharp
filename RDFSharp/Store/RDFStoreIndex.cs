@@ -19,7 +19,6 @@ using System.Collections.Generic;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFStoreIndex represents an automatically managed in-memory index structure for the quadruples of a store.
     /// </summary>
@@ -81,7 +80,6 @@ namespace RDFSharp.Store
         {
             if (quadruple != null)
             {
-
                 //Context
                 if (!this.Contexts.ContainsKey(quadruple.Context.PatternMemberID))
                     this.Contexts.Add(quadruple.Context.PatternMemberID, new HashSet<long>() { quadruple.QuadrupleID });
@@ -132,7 +130,6 @@ namespace RDFSharp.Store
                             this.Literals[quadruple.Object.PatternMemberID].Add(quadruple.QuadrupleID);
                     }
                 }
-
             }
             return this;
         }
@@ -146,7 +143,6 @@ namespace RDFSharp.Store
         {
             if (quadruple != null)
             {
-
                 //Context
                 if (this.Contexts.ContainsKey(quadruple.Context.PatternMemberID))
                 {
@@ -207,7 +203,6 @@ namespace RDFSharp.Store
                         }
                     }
                 }
-
             }
             return this;
         }
@@ -264,5 +259,4 @@ namespace RDFSharp.Store
 
         #endregion
     }
-
 }

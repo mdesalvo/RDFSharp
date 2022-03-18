@@ -35,12 +35,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Count of the store's quadruples
         /// </summary>
-        public long QuadruplesCount => this.Quadruples.Count;
+        public long QuadruplesCount
+            => this.Quadruples.Count;
 
         /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
         /// </summary>
-        public IEnumerator<RDFQuadruple> QuadruplesEnumerator => this.Quadruples.Values.GetEnumerator();
+        public IEnumerator<RDFQuadruple> QuadruplesEnumerator
+            => this.Quadruples.Values.GetEnumerator();
 
         /// <summary>
         /// Identifier of the memory store
@@ -106,12 +108,14 @@ namespace RDFSharp.Store
         /// <summary>
         /// Exposes a typed enumerator on the store's quadruples
         /// </summary>
-        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator() => this.QuadruplesEnumerator;
+        IEnumerator<RDFQuadruple> IEnumerable<RDFQuadruple>.GetEnumerator()
+            => this.QuadruplesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the store's quadruples
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.QuadruplesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.QuadruplesEnumerator;
         #endregion
 
         #region Methods
@@ -637,21 +641,20 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!string.IsNullOrEmpty(filepath))
-            {
-                if (File.Exists(filepath))
-                {
-                    switch (rdfFormat)
-                    {
-                        case RDFStoreEnums.RDFFormats.NQuads:
-                            return RDFNQuads.Deserialize(filepath);
-                        case RDFStoreEnums.RDFFormats.TriX:
-                            return RDFTriX.Deserialize(filepath);
-                    }
-                }
+            if (string.IsNullOrWhiteSpace(filepath))
+                throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter is null or empty.");
+            if (!File.Exists(filepath))
                 throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter (" + filepath + ") does not indicate an existing file.");
+            
+            switch (rdfFormat)
+            {
+                case RDFStoreEnums.RDFFormats.NQuads:
+                    return RDFNQuads.Deserialize(filepath);
+                case RDFStoreEnums.RDFFormats.TriX:
+                    return RDFTriX.Deserialize(filepath);
+                default:
+                    throw new RDFStoreException("Cannot read RDF memory store from file because given \"rdfFormat\" parameter is not supported.");
             }
-            throw new RDFStoreException("Cannot read RDF memory store from file because given \"filepath\" parameter is null or empty.");
         }
 
         /// <summary>
@@ -665,17 +668,18 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromStream(RDFStoreEnums.RDFFormats rdfFormat, Stream inputStream)
         {
-            if (inputStream != null)
+            if (inputStream == null)
+                throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
+            
+            switch (rdfFormat)
             {
-                switch (rdfFormat)
-                {
-                    case RDFStoreEnums.RDFFormats.NQuads:
-                        return RDFNQuads.Deserialize(inputStream);
-                    case RDFStoreEnums.RDFFormats.TriX:
-                        return RDFTriX.Deserialize(inputStream);
-                }
+                case RDFStoreEnums.RDFFormats.NQuads:
+                    return RDFNQuads.Deserialize(inputStream);
+                case RDFStoreEnums.RDFFormats.TriX:
+                    return RDFTriX.Deserialize(inputStream);
+                default:
+                    throw new RDFStoreException("Cannot read RDF memory store from stream because given \"rdfFormat\" parameter is not supported.");
             }
-            throw new RDFStoreException("Cannot read RDF memory store from stream because given \"inputStream\" parameter is null.");
         }
 
         /// <summary>
@@ -689,112 +693,59 @@ namespace RDFSharp.Store
         /// </summary>
         public static RDFMemoryStore FromDataTable(DataTable table)
         {
+            if (table == null)
+                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter is null.");
+            if (table.Columns.Count != 4)
+                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have exactly 4 columns.");
+            if (!(table.Columns.Contains("?CONTEXT") && table.Columns.Contains("?SUBJECT") && table.Columns.Contains("?PREDICATE") && table.Columns.Contains("?OBJECT")))
+                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"?CONTEXT\", \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
+
             RDFMemoryStore result = new RDFMemoryStore();
 
-            //Check the structure of the datatable for consistency against the "C-S-P-O" RDF model
-            if (table != null && table.Columns.Count == 4)
+            //Iterate the rows of the datatable
+            foreach (DataRow tableRow in table.Rows)
             {
-                if (table.Columns.Contains("?CONTEXT")
-                        && table.Columns.Contains("?SUBJECT")
-                            && table.Columns.Contains("?PREDICATE")
-                                && table.Columns.Contains("?OBJECT"))
-                {
+                #region CONTEXT
+                if (tableRow.IsNull("?CONTEXT") || string.IsNullOrEmpty(tableRow["?CONTEXT"].ToString()))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?CONTEXT\" column.");
+                
+                RDFPatternMember rowCtx = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?CONTEXT"].ToString());
+                if (!(rowCtx is RDFResource))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?CONTEXT\" column.");
+                if (((RDFResource)rowCtx).IsBlank)
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource in the \"?CONTEXT\" column.");
+                #endregion
 
-                    //Iterate the rows of the datatable
-                    foreach (DataRow tableRow in table.Rows)
-                    {
+                #region SUBJECT
+                if (tableRow.IsNull("?SUBJECT") || string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?SUBJECT\" column.");
+                
+                RDFPatternMember rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
+                if (!(rowSubj is RDFResource))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
+                #endregion
 
-                        #region CONTEXT
-                        //Parse the quadruple context
-                        if (!tableRow.IsNull("?CONTEXT") && !string.IsNullOrEmpty(tableRow["?CONTEXT"].ToString()))
-                        {
-                            var rowCont = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?CONTEXT"].ToString());
-                            if (rowCont is RDFResource && !((RDFResource)rowCont).IsBlank)
-                            {
+                #region PREDICATE
+                if (tableRow.IsNull("?PREDICATE") || string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having null or empty value in the \"?PREDICATE\" column.");
 
-                                #region SUBJECT
-                                //Parse the quadruple subject
-                                if (!tableRow.IsNull("?SUBJECT") && !string.IsNullOrEmpty(tableRow["?SUBJECT"].ToString()))
-                                {
-                                    var rowSubj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?SUBJECT"].ToString());
-                                    if (rowSubj is RDFResource)
-                                    {
+                RDFPatternMember rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
+                if (!(rowPred is RDFResource))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?PREDICATE\" column.");
+                if (((RDFResource)rowPred).IsBlank)
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource in the \"?PREDICATE\" column.");
+                #endregion
 
-                                        #region PREDICATE
-                                        //Parse the quadruple predicate
-                                        if (!tableRow.IsNull("?PREDICATE") && !string.IsNullOrEmpty(tableRow["?PREDICATE"].ToString()))
-                                        {
-                                            var rowPred = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?PREDICATE"].ToString());
-                                            if (rowPred is RDFResource && !((RDFResource)rowPred).IsBlank)
-                                            {
-
-                                                #region OBJECT
-                                                //Parse the quadruple object
-                                                if (!tableRow.IsNull("?OBJECT"))
-                                                {
-                                                    var rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
-                                                    if (rowObj is RDFResource)
-                                                    {
-                                                        result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCont.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
-                                                    }
-                                                    else
-                                                    {
-                                                        result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCont.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
-                                                }
-                                                #endregion
-
-                                            }
-                                            else
-                                            {
-                                                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"?PREDICATE\" column.");
-                                            }
-                                        }
-                                        else
-                                        {
-                                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL or empty value in the \"?PREDICATE\" column.");
-                                        }
-                                        #endregion
-
-                                    }
-                                    else
-                                    {
-                                        throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row not having a resource in the \"?SUBJECT\" column.");
-                                    }
-                                }
-                                else
-                                {
-                                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL or empty value in the \"?SUBJECT\" column.");
-                                }
-                                #endregion
-
-                            }
-                            else
-                            {
-                                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having a blank resource or a literal in the \"?CONTEXT\" column.");
-                            }
-                        }
-                        else
-                        {
-                            throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL or empty value in the \"?CONTEXT\" column.");
-                        }
-                        #endregion
-
-                    }
-
-                }
+                #region OBJECT
+                if (tableRow.IsNull("?OBJECT"))
+                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter contains a row having NULL value in the \"?OBJECT\" column.");
+                
+                RDFPatternMember rowObj = RDFQueryUtilities.ParseRDFPatternMember(tableRow["?OBJECT"].ToString());
+                if (rowObj is RDFResource)
+                    result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFResource)rowObj));
                 else
-                {
-                    throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter does not have the required columns \"?CONTEXT\", \"?SUBJECT\", \"?PREDICATE\", \"?OBJECT\".");
-                }
-            }
-            else
-            {
-                throw new RDFStoreException("Cannot read RDF memory store from datatable because given \"table\" parameter is null, or it does not have exactly 4 columns.");
+                    result.AddQuadruple(new RDFQuadruple(new RDFContext(rowCtx.ToString()), (RDFResource)rowSubj, (RDFResource)rowPred, (RDFLiteral)rowObj));
+                #endregion
             }
 
             return result;
@@ -817,6 +768,7 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
 
             RDFMemoryStore result = new RDFMemoryStore();
+
             try
             {
                 //Grab eventual dereference Uri

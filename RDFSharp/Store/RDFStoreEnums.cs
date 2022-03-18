@@ -16,7 +16,6 @@
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFStoreEnums represents a collector for all the enumerations used by the "RDFSharp.Store" namespace
     /// </summary>
@@ -56,5 +55,4 @@ namespace RDFSharp.Store
             TriX = 2
         };
     }
-
 }

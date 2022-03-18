@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFStore represents an abstract store in the RDF model.
     /// </summary>
@@ -334,21 +333,17 @@ namespace RDFSharp.Store
         /// </summary>
         public void ToFile(RDFStoreEnums.RDFFormats rdfFormat, string filepath)
         {
-            if (!string.IsNullOrEmpty(filepath))
-            {
-                switch (rdfFormat)
-                {
-                    case RDFStoreEnums.RDFFormats.NQuads:
-                        RDFNQuads.Serialize(this, filepath);
-                        break;
-                    case RDFStoreEnums.RDFFormats.TriX:
-                        RDFTriX.Serialize(this, filepath);
-                        break;
-                }
-            }
-            else
-            {
+            if (string.IsNullOrWhiteSpace(filepath))
                 throw new RDFStoreException("Cannot write RDF store to file because given \"filepath\" parameter is null or empty.");
+            
+            switch (rdfFormat)
+            {
+                case RDFStoreEnums.RDFFormats.NQuads:
+                    RDFNQuads.Serialize(this, filepath);
+                    break;
+                case RDFStoreEnums.RDFFormats.TriX:
+                    RDFTriX.Serialize(this, filepath);
+                    break;
             }
         }
 
@@ -363,21 +358,17 @@ namespace RDFSharp.Store
         /// </summary>
         public void ToStream(RDFStoreEnums.RDFFormats rdfFormat, Stream outputStream)
         {
-            if (outputStream != null)
-            {
-                switch (rdfFormat)
-                {
-                    case RDFStoreEnums.RDFFormats.NQuads:
-                        RDFNQuads.Serialize(this, outputStream);
-                        break;
-                    case RDFStoreEnums.RDFFormats.TriX:
-                        RDFTriX.Serialize(this, outputStream);
-                        break;
-                }
-            }
-            else
-            {
+            if (outputStream == null)
                 throw new RDFStoreException("Cannot write RDF store to stream because given \"outputStream\" parameter is null.");
+            
+            switch (rdfFormat)
+            {
+                case RDFStoreEnums.RDFFormats.NQuads:
+                    RDFNQuads.Serialize(this, outputStream);
+                    break;
+                case RDFStoreEnums.RDFFormats.TriX:
+                    RDFTriX.Serialize(this, outputStream);
+                    break;
             }
         }
 
@@ -428,5 +419,4 @@ namespace RDFSharp.Store
 
         #endregion
     }
-
 }

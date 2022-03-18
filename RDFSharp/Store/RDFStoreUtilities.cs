@@ -23,7 +23,6 @@ using System.Text;
 
 namespace RDFSharp.Store
 {
-
     /// <summary>
     /// RDFStoreUtilities is a collector of reusable utility methods for RDF store management
     /// </summary>
@@ -35,51 +34,50 @@ namespace RDFSharp.Store
         /// </summary>
         internal static RDFQuadruple ParseQuadruple(IDataReader fetchedQuadruples)
         {
-            if (fetchedQuadruples != null)
+            if (fetchedQuadruples == null)
+                throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
+            
+            RDFContext qContext = new RDFContext(fetchedQuadruples["Context"].ToString());
+            RDFResource qSubject = new RDFResource(fetchedQuadruples["Subject"].ToString());
+            RDFResource qPredicate = new RDFResource(fetchedQuadruples["Predicate"].ToString());
+
+            //SPO-flavour quadruple
+            if (fetchedQuadruples["TripleFlavor"].ToString().Equals("1"))
             {
-                RDFContext qContext = new RDFContext(fetchedQuadruples["Context"].ToString());
-                RDFResource qSubject = new RDFResource(fetchedQuadruples["Subject"].ToString());
-                RDFResource qPredicate = new RDFResource(fetchedQuadruples["Predicate"].ToString());
-
-                //SPO-flavour quadruple
-                if (fetchedQuadruples["TripleFlavor"].ToString().Equals("1"))
-                {
-                    RDFResource qObject = new RDFResource(fetchedQuadruples["Object"].ToString());
-                    return new RDFQuadruple(qContext, qSubject, qPredicate, qObject);
-                }
-
-                //SPL-flavour quadruple
-                string literal = fetchedQuadruples["Object"].ToString();
-
-                //PlainLiteral
-                int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
-                if (!literal.Contains("^^")
-                        || literal.EndsWith("^^")
-                            || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
-                {
-                    RDFPlainLiteral pLit = null;
-                    if (RDFNTriples.regexLPL.Match(literal).Success)
-                    {
-                        int lastIndexOfLanguage = literal.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
-                        string pLitValue = literal.Substring(0, lastIndexOfLanguage);
-                        string pLitLang = literal.Substring(lastIndexOfLanguage + 1);
-                        pLit = new RDFPlainLiteral(pLitValue, pLitLang);
-                    }
-                    else
-                    {
-                        pLit = new RDFPlainLiteral(literal);
-                    }
-                    return new RDFQuadruple(qContext, qSubject, qPredicate, pLit);
-                }
-
-                //TypedLiteral
-                string tLitValue = literal.Substring(0, lastIndexOfDatatype);
-                string tLitDatatype = literal.Substring(lastIndexOfDatatype + 2);
-                RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
-                RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
-                return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
+                RDFResource qObject = new RDFResource(fetchedQuadruples["Object"].ToString());
+                return new RDFQuadruple(qContext, qSubject, qPredicate, qObject);
             }
-            throw new RDFStoreException("Cannot parse quadruple because given \"fetchedQuadruples\" parameter is null.");
+
+            //SPL-flavour quadruple
+            string literal = fetchedQuadruples["Object"].ToString();
+
+            //PlainLiteral
+            int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+            if (!literal.Contains("^^")
+                    || literal.EndsWith("^^")
+                        || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
+            {
+                RDFPlainLiteral pLit = null;
+                if (RDFNTriples.regexLPL.Match(literal).Success)
+                {
+                    int lastIndexOfLanguage = literal.LastIndexOf("@", StringComparison.OrdinalIgnoreCase);
+                    string pLitValue = literal.Substring(0, lastIndexOfLanguage);
+                    string pLitLang = literal.Substring(lastIndexOfLanguage + 1);
+                    pLit = new RDFPlainLiteral(pLitValue, pLitLang);
+                }
+                else
+                {
+                    pLit = new RDFPlainLiteral(literal);
+                }
+                return new RDFQuadruple(qContext, qSubject, qPredicate, pLit);
+            }
+
+            //TypedLiteral
+            string tLitValue = literal.Substring(0, lastIndexOfDatatype);
+            string tLitDatatype = literal.Substring(lastIndexOfDatatype + 2);
+            RDFModelEnums.RDFDatatypes dt = RDFModelUtilities.GetDatatypeFromString(tLitDatatype);
+            RDFTypedLiteral tLit = new RDFTypedLiteral(tLitValue, dt);
+            return new RDFQuadruple(qContext, qSubject, qPredicate, tLit);
         }
 
         /// <summary>
@@ -219,5 +217,4 @@ namespace RDFSharp.Store
         }
         #endregion
     }
-
 }
