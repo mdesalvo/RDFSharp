@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a xone constraint
         /// </summary>
-        public RDFXoneConstraint() : base()
+        public RDFXoneConstraint()
             => this.XoneShapes = new Dictionary<long, RDFResource>();
         #endregion
 

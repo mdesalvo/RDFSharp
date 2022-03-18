@@ -19,7 +19,6 @@ using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFPlainLiteral represents a literal eventually decorated with a language tag.
     /// </summary>
@@ -73,5 +72,4 @@ namespace RDFSharp.Model
             => !string.IsNullOrEmpty(this.Language);
         #endregion
     }
-
 }

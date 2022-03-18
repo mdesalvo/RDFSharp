@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a minLength constraint with the given minLength
         /// </summary>
-        public RDFMinLengthConstraint(int minLength) : base()
+        public RDFMinLengthConstraint(int minLength)
             => this.MinLength = minLength < 0 ? 0 : minLength;
         #endregion
 

@@ -21,7 +21,6 @@ using static RDFSharp.Query.RDFQueryUtilities;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFNamespaceRegister is a singleton in-memory container for registered RDF namespaces.
     /// </summary>
@@ -51,12 +50,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the register's namespaces
         /// </summary>
-        public static int NamespacesCount => Instance.Register.Count;
+        public static int NamespacesCount
+            => Instance.Register.Count;
 
         /// <summary>
         /// Gets the enumerator on the register's namespaces for iteration
         /// </summary>
-        public static IEnumerator<RDFNamespace> NamespacesEnumerator => Instance.Register.GetEnumerator();
+        public static IEnumerator<RDFNamespace> NamespacesEnumerator
+            => Instance.Register.GetEnumerator();
         #endregion
 
         #region Ctors
@@ -106,12 +107,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the register's namespaces
         /// </summary>
-        IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator() => NamespacesEnumerator;
+        IEnumerator<RDFNamespace> IEnumerable<RDFNamespace>.GetEnumerator()
+            => NamespacesEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the register's namespaces
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => NamespacesEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => NamespacesEnumerator;
         #endregion
 
         #region Methods
@@ -132,7 +135,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Resets the default namespace of the library.
         /// </summary>
-        public static void ResetDefaultNamespace() => DefaultNamespace = RDFSharpNS;
+        public static void ResetDefaultNamespace()
+            => DefaultNamespace = RDFSharpNS;
 
         /// <summary>
         /// Adds the given namespace to the register, if it has unique prefix and uri.
@@ -228,5 +232,4 @@ namespace RDFSharp.Model
             => Instance.Register.RemoveAll(x => x.IsTemporary);
         #endregion
     }
-
 }

@@ -19,7 +19,6 @@ using System.Runtime.Serialization;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFModelException represents an exception thrown during manipulation of RDF data models.
     /// </summary>
@@ -48,5 +47,4 @@ namespace RDFSharp.Model
         protected RDFModelException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
     }
-
 }

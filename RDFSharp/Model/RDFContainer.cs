@@ -20,7 +20,6 @@ using System.Collections.Generic;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFContainer represents a generic container in the RDF model.
     /// </summary>
@@ -45,12 +44,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the container's items
         /// </summary>
-        public int ItemsCount => this.Items.Count;
+        public int ItemsCount
+            => this.Items.Count;
 
         /// <summary>
         /// Gets the enumerator on the container's items for iteration
         /// </summary>
-        public IEnumerator<RDFPatternMember> ItemsEnumerator => this.Items.GetEnumerator();
+        public IEnumerator<RDFPatternMember> ItemsEnumerator
+            => this.Items.GetEnumerator();
 
         /// <summary>
         /// List of the items contained in the container
@@ -75,12 +76,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the container's items
         /// </summary>
-        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() => this.ItemsEnumerator;
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
+            => this.ItemsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the container's items
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.ItemsEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.ItemsEnumerator;
         #endregion
 
         #region Methods
@@ -150,7 +153,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Removes all the items from the container
         /// </summary>
-        public void ClearItems() => this.Items.Clear();
+        public void ClearItems()
+            => this.Items.Clear();
         #endregion
 
         #region Reify
@@ -194,5 +198,4 @@ namespace RDFSharp.Model
 
         #endregion
     }
-
 }

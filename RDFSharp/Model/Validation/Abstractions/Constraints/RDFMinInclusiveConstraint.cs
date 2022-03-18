@@ -35,31 +35,23 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a minInclusive constraint with the given resource value
         /// </summary>
-        public RDFMinInclusiveConstraint(RDFResource value) : base()
+        public RDFMinInclusiveConstraint(RDFResource value)
         {
-            if (value != null)
-            {
-                this.Value = value;
-            }
-            else
-            {
+            if (value == null)
                 throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            }
+            
+            this.Value = value;
         }
 
         /// <summary>
         /// Default-ctor to build a minInclusive constraint with the given literal value
         /// </summary>
-        public RDFMinInclusiveConstraint(RDFLiteral value) : base()
+        public RDFMinInclusiveConstraint(RDFLiteral value)
         {
-            if (value != null)
-            {
-                this.Value = value;
-            }
-            else
-            {
+            if (value == null)
                 throw new RDFModelException("Cannot create RDFMinInclusiveConstraint because given \"value\" parameter is null.");
-            }
+            
+            this.Value = value;
         }
         #endregion
 

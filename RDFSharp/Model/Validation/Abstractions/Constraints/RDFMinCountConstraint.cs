@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a minCount constraint with the given minCount
         /// </summary>
-        public RDFMinCountConstraint(int minCount) : base()
+        public RDFMinCountConstraint(int minCount)
             => this.MinCount = minCount < 0 ? 0 : minCount;
         #endregion
 

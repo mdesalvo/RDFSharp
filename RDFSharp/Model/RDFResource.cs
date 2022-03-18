@@ -19,7 +19,6 @@ using System;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFResource represents a generic resource in the RDF model.
     /// </summary>
@@ -49,15 +48,11 @@ namespace RDFSharp.Model
         public RDFResource(string uriString)
         {
             Uri tempUri = RDFModelUtilities.GetUriFromString(uriString);
-            if (tempUri != null)
-            {
-                this.URI = tempUri;
-                this.IsBlank = this.URI.ToString().StartsWith("bnode:");
-            }
-            else
-            {
+            if (tempUri == null)
                 throw new RDFModelException("Cannot create RDFResource because given \"uriString\" parameter is null or cannot be converted to a valid Uri");
-            }
+
+            this.URI = tempUri;
+            this.IsBlank = this.URI.ToString().StartsWith("bnode:");
         }
         #endregion
 
@@ -65,8 +60,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the resource
         /// </summary>
-        public override string ToString() => this.URI.ToString();
+        public override string ToString()
+            => this.URI.ToString();
         #endregion
     }
-
 }

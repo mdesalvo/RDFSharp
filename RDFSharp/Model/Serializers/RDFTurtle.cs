@@ -25,7 +25,6 @@ using System.Text.RegularExpressions;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFTurtle is responsible for managing serialization to and from Turtle data format.
     /// </summary>
@@ -55,7 +54,7 @@ namespace RDFSharp.Model
             try
             {
                 #region serialize
-                using (StreamWriter sw = new StreamWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
+                using (StreamWriter sw = new StreamWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     #region prefixes
                     //Write the namespaces collected by the graph
@@ -228,7 +227,7 @@ namespace RDFSharp.Model
 
                 //Fetch Turtle data
                 string turtleData = string.Empty;
-                using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
+                using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                     turtleData = sReader.ReadToEnd();
 
                 //Parse Turtle data
@@ -1644,5 +1643,4 @@ namespace RDFSharp.Model
 
         #endregion
     }
-
 }

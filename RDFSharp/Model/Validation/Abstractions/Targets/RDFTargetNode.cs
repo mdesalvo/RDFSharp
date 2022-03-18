@@ -27,14 +27,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTargetNode(RDFResource targetResource) : base()
         {
-            if (targetResource != null)
-            {
-                this.TargetValue = targetResource;
-            }
-            else
-            {
+            if (targetResource == null)
                 throw new RDFModelException("Cannot create RDFTargetNode because given \"targetNode\" parameter is null.");
-            }
+            
+            this.TargetValue = targetResource;
         }
         #endregion
 

@@ -31,24 +31,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Represents an handy typed literal for boolean True
         /// </summary>
-        public static RDFTypedLiteral True { get; internal set; }
+        public static RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
 
         /// <summary>
         /// Represents an handy typed literal for boolean False
         /// </summary>
-        public static RDFTypedLiteral False { get; internal set; }
+        public static RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
         #endregion
 
         #region Ctors
-        /// <summary>
-        /// Static-ctor to initialize the handy typed literals
-        /// </summary>
-        static RDFTypedLiteral()
-        {
-            True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-            False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-        }
-
         /// <summary>
         /// Default-ctor to build a typed literal with given value and given datatype
         /// (semantic validation of given value against given datatype is performed).

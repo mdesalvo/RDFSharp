@@ -37,16 +37,12 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a lessThanOrEquals constraint with the given predicate
         /// </summary>
-        public RDFLessThanOrEqualsConstraint(RDFResource lessThanOrEqualsPredicate) : base()
+        public RDFLessThanOrEqualsConstraint(RDFResource lessThanOrEqualsPredicate)
         {
-            if (lessThanOrEqualsPredicate != null)
-            {
-                this.LessThanOrEqualsPredicate = lessThanOrEqualsPredicate;
-            }
-            else
-            {
+            if (lessThanOrEqualsPredicate == null)
                 throw new RDFModelException("Cannot create RDFLessThanOrEqualsConstraint because given \"lessThanOrEqualsPredicate\" parameter is null.");
-            }
+            
+            this.LessThanOrEqualsPredicate = lessThanOrEqualsPredicate;
         }
         #endregion
 

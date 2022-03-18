@@ -56,16 +56,12 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path) : base(propertyShapeName)
         {
-            if (path != null)
-            {
-                this.Path = path;
-                this.Descriptions = new List<RDFLiteral>();
-                this.Names = new List<RDFLiteral>();
-            }
-            else
-            {
+            if (path == null)
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
-            }
+            
+            this.Path = path;
+            this.Descriptions = new List<RDFLiteral>();
+            this.Names = new List<RDFLiteral>();
         }
 
         /// <summary>

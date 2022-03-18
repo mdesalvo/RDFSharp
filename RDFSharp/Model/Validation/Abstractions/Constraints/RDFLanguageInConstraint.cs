@@ -37,7 +37,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a languageIn constraint with the given list of language tags
         /// </summary>
-        public RDFLanguageInConstraint(List<string> languageTags) : base()
+        public RDFLanguageInConstraint(List<string> languageTags)
         {
             this.LanguageTags = new HashSet<string>();
 

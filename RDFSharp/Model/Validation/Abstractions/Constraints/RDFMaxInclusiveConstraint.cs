@@ -35,31 +35,23 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a maxInclusive constraint with the given resource value
         /// </summary>
-        public RDFMaxInclusiveConstraint(RDFResource value) : base()
+        public RDFMaxInclusiveConstraint(RDFResource value)
         {
-            if (value != null)
-            {
-                this.Value = value;
-            }
-            else
-            {
+            if (value == null)
                 throw new RDFModelException("Cannot create RDFMaxInclusiveConstraint because given \"value\" parameter is null.");
-            }
+            
+            this.Value = value;
         }
 
         /// <summary>
         /// Default-ctor to build a maxInclusive constraint with the given literal value
         /// </summary>
-        public RDFMaxInclusiveConstraint(RDFLiteral value) : base()
+        public RDFMaxInclusiveConstraint(RDFLiteral value)
         {
-            if (value != null)
-            {
-                this.Value = value;
-            }
-            else
-            {
+            if (value == null)
                 throw new RDFModelException("Cannot create RDFMaxInclusiveConstraint because given \"value\" parameter is null.");
-            }
+            
+            this.Value = value;
         }
         #endregion
 

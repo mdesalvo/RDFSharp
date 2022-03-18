@@ -19,7 +19,6 @@ using RDFSharp.Store;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFDataSource is the foundation class for modeling RDF data sources
     /// </summary>
@@ -47,5 +46,4 @@ namespace RDFSharp.Model
         internal bool IsSPARQLEndpoint() => this is RDFSPARQLEndpoint;
         #endregion
     }
-
 }

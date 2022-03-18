@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a datatype constraint with the given datatype
         /// </summary>
-        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype) : base()
+        public RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes datatype)
 			=> this.Datatype = datatype;
         #endregion
 

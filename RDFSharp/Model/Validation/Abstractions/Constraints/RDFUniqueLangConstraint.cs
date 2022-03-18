@@ -36,7 +36,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a uniqueLang constraint with the given behavior
         /// </summary>
-        public RDFUniqueLangConstraint(bool uniqueLang) : base()
+        public RDFUniqueLangConstraint(bool uniqueLang)
             => this.UniqueLang = uniqueLang;
         #endregion
 

@@ -19,14 +19,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFXml is responsible for managing serialization to and from XML data format.
     /// </summary>
@@ -49,7 +47,7 @@ namespace RDFSharp.Model
             try
             {
                 #region serialize
-                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
+                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     XmlDocument rdfDoc = new XmlDocument();
                     rdfxmlWriter.Formatting = Formatting.Indented;
@@ -377,7 +375,7 @@ namespace RDFSharp.Model
             {
                 #region deserialize
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
-                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
+                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
                     {
@@ -723,9 +721,8 @@ namespace RDFSharp.Model
                 //Extract the prefixable part from the Uri
                 Uri uriNS = RDFModelUtilities.GetUriFromString(namespaceString);
                 if (uriNS == null)
-                {
                     throw new RDFModelException("Cannot create RDFNamespace because given \"namespaceString\" (" + namespaceString + ") parameter cannot be converted to a valid Uri");
-                }
+
                 string fragment = null;
                 string nspace = uriNS.AbsoluteUri;
 
@@ -1153,5 +1150,4 @@ namespace RDFSharp.Model
 
         #endregion
     }
-
 }

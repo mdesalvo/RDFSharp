@@ -41,7 +41,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a in constraint of the given type (Resource/Literal)
         /// </summary>
-        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType) : base()
+        public RDFInConstraint(RDFModelEnums.RDFItemTypes itemType)
         {
             this.InValues = new Dictionary<long, RDFPatternMember>();
             this.ItemType = itemType;

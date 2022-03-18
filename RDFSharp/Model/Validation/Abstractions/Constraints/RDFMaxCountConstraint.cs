@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a maxCount constraint with the given maxCount
         /// </summary>
-        public RDFMaxCountConstraint(int maxCount) : base()
+        public RDFMaxCountConstraint(int maxCount)
             => this.MaxCount = maxCount < 0 ? 0 : maxCount;
         #endregion
 

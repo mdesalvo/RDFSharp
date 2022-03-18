@@ -19,7 +19,6 @@ using System.Collections.Generic;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFGraphIndex represents an automatically managed in-memory index structure for the triples of a graph.
     /// </summary>
@@ -75,7 +74,6 @@ namespace RDFSharp.Model
         {
             if (triple != null)
             {
-
                 //Subject
                 if (!this.Subjects.ContainsKey(triple.Subject.PatternMemberID))
                     this.Subjects.Add(triple.Subject.PatternMemberID, new HashSet<long>() { triple.TripleID });
@@ -117,7 +115,6 @@ namespace RDFSharp.Model
                             this.Literals[triple.Object.PatternMemberID].Add(triple.TripleID);
                     }
                 }
-
             }
             return this;
         }
@@ -131,7 +128,6 @@ namespace RDFSharp.Model
         {
             if (triple != null)
             {
-
                 //Subject
                 if (this.Subjects.ContainsKey(triple.Subject.PatternMemberID))
                 {
@@ -181,7 +177,6 @@ namespace RDFSharp.Model
                         }
                     }
                 }
-
             }
             return this;
         }
@@ -230,5 +225,4 @@ namespace RDFSharp.Model
 
         #endregion
     }
-
 }

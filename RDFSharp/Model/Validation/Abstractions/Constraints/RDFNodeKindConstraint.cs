@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a nodeKind constraint of the given kind
         /// </summary>
-        public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind) : base()
+        public RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds nodeKind)
             => this.NodeKind = nodeKind;
         #endregion
 

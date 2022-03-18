@@ -42,7 +42,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a closed constraint with the given behavior
         /// </summary>
-        public RDFClosedConstraint(bool closed) : base()
+        public RDFClosedConstraint(bool closed)
         {
             this.Closed = closed;
             this.IgnoredProperties = new Dictionary<long, RDFResource>();

@@ -27,14 +27,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTargetClass(RDFResource targetClass) : base()
         {
-            if (targetClass != null)
-            {
-                this.TargetValue = targetClass;
-            }
-            else
-            {
+            if (targetClass == null)
                 throw new RDFModelException("Cannot create RDFTargetClass because given \"targetClass\" parameter is null.");
-            }
+            
+            this.TargetValue = targetClass;
         }
         #endregion
 

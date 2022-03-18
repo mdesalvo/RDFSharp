@@ -27,14 +27,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTargetSubjectsOf(RDFResource targetProperty) : base()
         {
-            if (targetProperty != null)
-            {
-                this.TargetValue = targetProperty;
-            }
-            else
-            {
+            if (targetProperty == null)
                 throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
-            }
+            
+            this.TargetValue = targetProperty;
         }
         #endregion
 

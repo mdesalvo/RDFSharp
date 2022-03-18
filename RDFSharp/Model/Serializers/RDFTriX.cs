@@ -17,13 +17,11 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Text;
 using System.Web;
 using System.Xml;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFTriX is responsible for managing serialization to and from TriX data format.
     /// </summary>
@@ -48,7 +46,7 @@ namespace RDFSharp.Model
             {
                 #region serialize
 
-                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBom))
+                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     XmlDocument trixDoc = new XmlDocument();
                     trixWriter.Formatting = Formatting.Indented;
@@ -201,7 +199,7 @@ namespace RDFSharp.Model
                 #region deserialize
 
                 RDFGraph result = new RDFGraph().SetContext(graphContext);
-                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBom))
+                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader trixReader = new XmlTextReader(streamReader))
                     {
@@ -383,5 +381,4 @@ namespace RDFSharp.Model
 
         #endregion Methods
     }
-
 }

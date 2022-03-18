@@ -16,7 +16,6 @@
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFModelEnums represents a collector for all the enumerations used by the "RDFSharp.Model" namespace
     /// </summary>
@@ -277,5 +276,4 @@ namespace RDFSharp.Model
             Literal = 2
         };
     }
-
 }

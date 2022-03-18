@@ -20,7 +20,6 @@ using System.Collections.Generic;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFCollection represents a generic collection in the RDF model.
     /// </summary>
@@ -45,12 +44,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Count of the collection's items
         /// </summary>
-        public int ItemsCount => this.Items.Count;
+        public int ItemsCount
+            => this.Items.Count;
 
         /// <summary>
         /// Gets the enumerator on the collection's items for iteration
         /// </summary>
-        public IEnumerator<RDFPatternMember> ItemsEnumerator => this.Items.GetEnumerator();
+        public IEnumerator<RDFPatternMember> ItemsEnumerator
+            => this.Items.GetEnumerator();
 
         /// <summary>
         /// Flag indicating that this collection exceptionally accepts duplicates
@@ -83,12 +84,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Exposes a typed enumerator on the collection's items
         /// </summary>
-        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator() => this.ItemsEnumerator;
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
+            => this.ItemsEnumerator;
 
         /// <summary>
         /// Exposes an untyped enumerator on the collection's items
         /// </summary>
-        IEnumerator IEnumerable.GetEnumerator() => this.ItemsEnumerator;
+        IEnumerator IEnumerable.GetEnumerator()
+            => this.ItemsEnumerator;
         #endregion
 
         #region Methods
@@ -220,5 +223,4 @@ namespace RDFSharp.Model
 
         #endregion
     }
-
 }

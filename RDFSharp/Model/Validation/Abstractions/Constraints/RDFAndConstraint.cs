@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build an and constraint
         /// </summary>
-        public RDFAndConstraint() : base()
+        public RDFAndConstraint()
             => this.AndShapes = new Dictionary<long, RDFResource>();
         #endregion
 

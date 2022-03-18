@@ -35,7 +35,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a named maxLength constraint with the given maxLength
         /// </summary>
-        public RDFMaxLengthConstraint(int maxLength) : base()
+        public RDFMaxLengthConstraint(int maxLength)
             => this.MaxLength = maxLength < 0 ? 0 : maxLength;
         #endregion
 

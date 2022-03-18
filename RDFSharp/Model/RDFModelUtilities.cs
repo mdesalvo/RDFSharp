@@ -43,7 +43,7 @@ namespace RDFSharp.Model
 
             using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
             {
-                byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBom.GetBytes(input));
+                byte[] hashBytes = md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(input));
                 return BitConverter.ToInt64(hashBytes, 0);
             }
         }
@@ -53,7 +53,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// UTF8 encoding which does not emit BOM (for better OS interoperability)
         /// </summary>
-        internal static UTF8Encoding UTF8_NoBom = new UTF8Encoding(false);
+        internal static UTF8Encoding UTF8_NoBOM = new UTF8Encoding(false);
 
         /// <summary>
         /// Regex to catch 8-byte unicodes

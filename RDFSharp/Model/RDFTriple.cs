@@ -19,7 +19,6 @@ using System;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFTriple represents a triple in the RDF model.
     /// </summary>
@@ -65,31 +64,16 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj)
         {
-            //TripleFlavor
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-
-            //Subject
-            this.Subject = subj ?? new RDFResource();
-
-            //Predicate
-            if (pred != null)
-            {
-                if (pred.IsBlank)
-                    throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
-                this.Predicate = pred;
-            }
-            else
-            {
+            if (pred == null)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
-            }
+            if (pred.IsBlank)
+                throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
 
-            //Object
+            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
+            this.Subject = subj ?? new RDFResource();
+            this.Predicate = pred;
             this.Object = obj ?? new RDFResource();
-
-            //LazyTripleID
             this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-
-            //LazyReificationSubject
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
         }
 
@@ -98,31 +82,16 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit)
         {
-            //TripleFlavor
-            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-
-            //Subject
-            this.Subject = subj ?? new RDFResource();
-
-            //Predicate
-            if (pred != null)
-            {
-                if (pred.IsBlank)
-                    throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
-                this.Predicate = pred;
-            }
-            else
-            {
+            if (pred == null)
                 throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is null");
-            }
+            if (pred.IsBlank)
+                throw new RDFModelException("Cannot create RDFTriple because \"pred\" parameter is a blank resource");
 
-            //Object
+            this.TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            this.Subject = subj ?? new RDFResource();
+            this.Predicate = pred;
             this.Object = lit ?? new RDFPlainLiteral(string.Empty);
-
-            //LazyTripleID
             this.LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(this.ToString()));
-
-            //LazyReificationSubject
             this.LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource(string.Concat("bnode:", this.TripleID.ToString())));
         }
         #endregion
@@ -161,5 +130,4 @@ namespace RDFSharp.Model
         }
         #endregion
     }
-
 }

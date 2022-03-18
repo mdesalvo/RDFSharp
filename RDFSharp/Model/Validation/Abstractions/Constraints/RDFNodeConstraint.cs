@@ -37,14 +37,10 @@ namespace RDFSharp.Model
         /// </summary>
         public RDFNodeConstraint(RDFResource nodeShapeUri) : base()
         {
-            if (nodeShapeUri != null)
-            {
-                this.NodeShapeUri = nodeShapeUri;
-            }
-            else
-            {
+            if (nodeShapeUri == null)
                 throw new RDFModelException("Cannot create RDFNodeConstraint because given \"nodeShapeUri\" parameter is null.");
-            }
+            
+            this.NodeShapeUri = nodeShapeUri;
         }
         #endregion
 

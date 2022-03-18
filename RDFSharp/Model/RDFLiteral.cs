@@ -18,7 +18,6 @@ using RDFSharp.Query;
 
 namespace RDFSharp.Model
 {
-
     /// <summary>
     /// RDFLiteral represents a generic literal in the RDF model.
     /// </summary>
@@ -35,8 +34,8 @@ namespace RDFSharp.Model
         /// <summary>
         /// Gives the string representation of the literal
         /// </summary>
-        public override string ToString() => this.Value;
+        public override string ToString()
+          => this.Value;
         #endregion
     }
-
 }

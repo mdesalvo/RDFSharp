@@ -36,31 +36,23 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build a hasValue constraint with the given resource value
         /// </summary>
-        public RDFHasValueConstraint(RDFResource value) : base()
+        public RDFHasValueConstraint(RDFResource value)
         {
-            if (value != null)
-            {
-                this.Value = value;
-            }
-            else
-            {
+            if (value == null)
                 throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
-            }
+            
+            this.Value = value;
         }
 
         /// <summary>
         /// Default-ctor to build a hasValue constraint with the given literal value
         /// </summary>
-        public RDFHasValueConstraint(RDFLiteral value) : base()
+        public RDFHasValueConstraint(RDFLiteral value)
         {
-            if (value != null)
-            {
-                this.Value = value;
-            }
-            else
-            {
+            if (value == null)
                 throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
-            }
+            
+            this.Value = value;
         }
         #endregion
 
