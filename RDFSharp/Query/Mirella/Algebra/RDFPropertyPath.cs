@@ -168,7 +168,6 @@ namespace RDFSharp.Query
                 RDFPatternMember currEnd = new RDFVariable("__PP0");
                 for (int i = 0; i < this.Steps.Count; i++)
                 {
-
                     #region Alternative
                     if (this.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                     {
@@ -227,7 +226,6 @@ namespace RDFSharp.Query
                         }
                     }
                     #endregion
-
                 }
             }
             #endregion
@@ -270,14 +268,10 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPropertyPathStep(RDFResource stepProperty)
         {
-            if (stepProperty != null)
-            {
-                this.StepProperty = stepProperty;
-            }
-            else
-            {
+            if (stepProperty == null)
                 throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
-            }
+            
+            this.StepProperty = stepProperty;
         }
         #endregion
 

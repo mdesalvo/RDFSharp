@@ -58,19 +58,16 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPatternGroup(string patternGroupName)
         {
-            if (!string.IsNullOrWhiteSpace(patternGroupName?.Trim()))
-            {
-                this.PatternGroupName = patternGroupName.Trim().ToUpperInvariant();
-                this.IsEvaluable = true;
-                this.IsOptional = false;
-                this.JoinAsUnion = false;
-                this.GroupMembers = new List<RDFPatternGroupMember>();
-                this.Variables = new List<RDFVariable>();
-            }
-            else
-            {
+            string trimmedPatternGroupName = patternGroupName?.Trim();
+            if (string.IsNullOrWhiteSpace(trimmedPatternGroupName))
                 throw new RDFQueryException("Cannot create RDFPatternGroup because given \"patternGroupName\" parameter is null or empty.");
-            }
+            
+            this.PatternGroupName = trimmedPatternGroupName.ToUpperInvariant();
+            this.IsEvaluable = true;
+            this.IsOptional = false;
+            this.JoinAsUnion = false;
+            this.GroupMembers = new List<RDFPatternGroupMember>();
+            this.Variables = new List<RDFVariable>();
         }
 
         /// <summary>

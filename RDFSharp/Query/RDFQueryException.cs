@@ -19,14 +19,12 @@ using System.Runtime.Serialization;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFQueryException represents an exception thrown during creation and execution of SPARQL queries.
     /// </summary>
     [Serializable]
     public class RDFQueryException : Exception
     {
-
         #region Ctors
         /// <summary>
         /// Basic ctor to throw an empty RDFQueryException
@@ -48,7 +46,5 @@ namespace RDFSharp.Query
         /// </summary>
         protected RDFQueryException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         #endregion
-
     }
-
 }

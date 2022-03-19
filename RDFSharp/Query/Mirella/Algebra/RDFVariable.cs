@@ -37,14 +37,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFVariable(string variableName)
         {
-            if (!string.IsNullOrWhiteSpace(variableName?.Trim(new char[] { ' ', '?', '$' })))
-            {
-                this.VariableName = string.Concat("?", variableName.Trim(new char[] { ' ', '?', '$' }).ToUpperInvariant());
-            }
-            else
-            {
+            string trimmedVariableName = variableName?.Trim(new char[] { ' ', '?', '$' });
+            if (string.IsNullOrWhiteSpace(trimmedVariableName))
                 throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
-            }
+            
+            this.VariableName = string.Concat("?", trimmedVariableName.ToUpperInvariant());
         }
         #endregion
 
@@ -52,7 +49,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the variable
         /// </summary>
-        public override string ToString() => this.VariableName;
+        public override string ToString()
+            => this.VariableName;
         #endregion
     }
 }

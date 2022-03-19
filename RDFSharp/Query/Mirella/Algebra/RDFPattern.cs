@@ -70,78 +70,48 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern(RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit)
         {
+            if (subject == null)
+                throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter is null");
+            if (!(subject is RDFResource || subject is RDFVariable))
+                throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter (" + subject + ") is neither a resource or a variable");
+            if (predicate == null)
+                throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is null");
+            if (!(predicate is RDFResource || predicate is RDFVariable))
+                throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter (" + predicate + ") is neither a resource or a variable");
+            if (predicate is RDFResource && ((RDFResource)predicate).IsBlank)
+                throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is a blank resource");
+            if (objLit == null)
+                throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
+            if (!(objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable))
+                throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
+
             this.Variables = new List<RDFVariable>();
             this.IsEvaluable = true;
             this.IsOptional = false;
             this.JoinAsUnion = false;
-
+            
             //Subject
-            if (subject != null)
+            this.Subject = subject;
+            if (subject is RDFVariable)
             {
-                if (subject is RDFResource || subject is RDFVariable)
-                {
-                    this.Subject = subject;
-                    if (subject is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(subject)))
-                            this.Variables.Add((RDFVariable)subject);
-                    }
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter (" + subject + ") is neither a resource or a variable");
-                }
-            }
-            else
-            {
-                throw new RDFQueryException("Cannot create RDFPattern because given \"subject\" parameter is null");
+                if (!this.Variables.Any(v => v.Equals(subject)))
+                    this.Variables.Add((RDFVariable)subject);
             }
 
             //Predicate
-            if (predicate != null)
+            this.Predicate = predicate;
+            if (predicate is RDFVariable)
             {
-                if (predicate is RDFResource || predicate is RDFVariable)
-                {
-                    if (predicate is RDFResource && ((RDFResource)predicate).IsBlank)
-                        throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is a blank resource");
-
-                    this.Predicate = predicate;
-                    if (predicate is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(predicate)))
-                            this.Variables.Add((RDFVariable)predicate);
-                    }
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter (" + predicate + ") is neither a resource or a variable");
-                }
-            }
-            else
-            {
-                throw new RDFQueryException("Cannot create RDFPattern because given \"predicate\" parameter is null");
+                if (!this.Variables.Any(v => v.Equals(predicate)))
+                    this.Variables.Add((RDFVariable)predicate);
             }
 
             //Object/Literal
-            if (objLit != null)
+            this.Object = objLit;
+            if (objLit is RDFVariable)
             {
-                if (objLit is RDFResource || objLit is RDFLiteral || objLit is RDFVariable)
-                {
-                    this.Object = objLit;
-                    if (objLit is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(objLit)))
-                            this.Variables.Add((RDFVariable)objLit);
-                    }
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter (" + objLit + ") is neither a resource, or a literal or a variable");
-                }
-            }
-            else
-            {
-                throw new RDFQueryException("Cannot create RDFPattern because given \"objLit\" parameter is null");
+                if (!this.Variables.Any(v => v.Equals(objLit)))
+                    this.Variables.Add((RDFVariable)objLit);
             }
         }
 
@@ -150,26 +120,17 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFPattern(RDFPatternMember context, RDFPatternMember subject, RDFPatternMember predicate, RDFPatternMember objLit) : this(subject, predicate, objLit)
         {
-            //Context
-            if (context != null)
-            {
-                if (context is RDFContext || context is RDFVariable)
-                {
-                    this.Context = context;
-                    if (context is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(context)))
-                            this.Variables.Add((RDFVariable)context);
-                    }
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter (" + context + ") is neither a context or a variable");
-                }
-            }
-            else
-            {
+            if (context == null)
                 throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter is null");
+            if (!(context is RDFContext || context is RDFVariable))
+                throw new RDFQueryException("Cannot create RDFPattern because given \"context\" parameter (" + context + ") is neither a context or a variable");
+
+            //Context
+            this.Context = context;
+            if (context is RDFVariable)
+            {
+                if (!this.Variables.Any(v => v.Equals(context)))
+                    this.Variables.Add((RDFVariable)context);
             }
         }
         #endregion

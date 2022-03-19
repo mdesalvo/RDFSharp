@@ -22,13 +22,11 @@ using System.Linq;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFValues represents a binding of variables provided directly inside a SPARQL query.
     /// </summary>
     public class RDFValues : RDFPatternGroupMember
     {
-
         #region Properties
         /// <summary>
         /// Dictionary of bindings representing the SPARQL values
@@ -130,7 +128,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the filter representation of the SPARQL values
         /// </summary>
-        internal RDFValuesFilter GetValuesFilter() => new RDFValuesFilter(this);
+        internal RDFValuesFilter GetValuesFilter()
+            => new RDFValuesFilter(this);
         #endregion
     }
 }

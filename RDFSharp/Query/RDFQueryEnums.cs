@@ -16,13 +16,11 @@
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFQueryEnums represents a collector for all the enumerations used by the "RDFSharp.Query" namespace
     /// </summary>
     public static class RDFQueryEnums
     {
-
         /// <summary>
         /// RDFPatternHoles represents an enumeration for possible positions of holes in a pattern.
         /// </summary>
@@ -152,7 +150,5 @@ namespace RDFSharp.Query
             /// </summary>
             ALL = 2
         }
-
     }
-
 }
