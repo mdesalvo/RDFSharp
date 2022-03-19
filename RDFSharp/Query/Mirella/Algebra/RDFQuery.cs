@@ -190,7 +190,7 @@ namespace RDFSharp.Query
         {
             //Inject SPARQL values into pattern groups
             foreach (RDFPatternGroup patternGroup in this.GetPatternGroups())
-                values.ForEach(v => patternGroup.AddInjectedValues(v));
+                values?.ForEach(v => patternGroup.AddInjectedValues(v));
 
             //Inject SPARQL values into subqueries
             foreach (RDFQuery subQuery in this.GetSubQueries())
