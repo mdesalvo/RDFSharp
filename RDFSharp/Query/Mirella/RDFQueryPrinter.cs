@@ -1145,8 +1145,8 @@ namespace RDFSharp.Query
             else
             {
                 result.Append(string.Format("VALUES ({0})", string.Join(" ", values.Bindings.Keys)));
-                result.Append(" {\n");
-                for (int i = 0; i < values.MaxBindingsLength; i++)
+                result.AppendLine(" {");
+                for (int i = 0; i < values.MaxBindingsLength(); i++)
                 {
                     result.Append(string.Concat(spaces, "      ( "));
                     values.Bindings.ToList().ForEach(binding =>
@@ -1158,7 +1158,7 @@ namespace RDFSharp.Query
                             result.Append(RDFQueryPrinter.PrintPatternMember(bindingValue, prefixes));
                         result.Append(" ");
                     });
-                    result.Append(")\n");
+                    result.AppendLine(")");
                 }
                 result.Append(string.Concat(spaces, "    }"));
             }

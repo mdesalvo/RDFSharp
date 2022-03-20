@@ -34,11 +34,6 @@ namespace RDFSharp.Query
         internal Dictionary<string, List<RDFPatternMember>> Bindings { get; set; }
 
         /// <summary>
-        /// Represents the current max length of the bindings
-        /// </summary>
-        internal int MaxBindingsLength => this.Bindings?.Select(x => x.Value.Count)?.Max() ?? 0;
-
-        /// <summary>
         /// Flag indicating that the SPARQL values has been injected by Mirella
         /// </summary>
         internal bool IsInjected { get; set; }
@@ -74,16 +69,18 @@ namespace RDFSharp.Query
         {
             if (variable != null)
             {
+                string variableString = variable.ToString();
+
                 //Initialize bindings of the given variable
-                if (!this.Bindings.ContainsKey(variable.ToString()))
-                    this.Bindings.Add(variable.ToString(), new List<RDFPatternMember>());
+                if (!this.Bindings.ContainsKey(variableString))
+                    this.Bindings.Add(variableString, new List<RDFPatternMember>());
 
                 //Populate bindings of the given variable
                 //(null indicates the special UNDEF binding)
                 if (bindings?.Any() ?? false)
-                    bindings.ForEach(b => this.Bindings[variable.ToString()].Add((b is RDFResource || b is RDFLiteral) ? b : null));
+                    bindings.ForEach(b => this.Bindings[variableString].Add((b is RDFResource || b is RDFLiteral) ? b : null));
                 else
-                    this.Bindings[variable.ToString()].Add(null);
+                    this.Bindings[variableString].Add(null);
 
                 //Mark the SPARQL values as evaluable
                 this.IsEvaluable = true;
@@ -107,7 +104,7 @@ namespace RDFSharp.Query
 
             //Create the rows of the SPARQL values
             result.BeginLoadData();
-            for (int i = 0; i < this.MaxBindingsLength; i++)
+            for (int i = 0; i < this.MaxBindingsLength(); i++)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
                 this.Bindings.ToList()
@@ -123,6 +120,17 @@ namespace RDFSharp.Query
             result.EndLoadData();
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets the current max length of the bindings
+        /// </summary>
+        internal int MaxBindingsLength()
+        {
+            if (this.Bindings?.Count > 0)
+                return this.Bindings.Select(x => x.Value.Count).Max();
+            else
+                return 0;
         }
 
         /// <summary>
