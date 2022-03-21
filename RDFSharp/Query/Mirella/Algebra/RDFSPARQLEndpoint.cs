@@ -25,7 +25,6 @@ namespace RDFSharp.Query
     /// </summary>
     public class RDFSPARQLEndpoint : RDFDataSource
     {
-
         #region Properties
         /// <summary>
         /// Base address of the SPARQL endpoint
@@ -44,15 +43,11 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSPARQLEndpoint(Uri baseAddress)
         {
-            if (baseAddress != null)
-            {
-                this.BaseAddress = baseAddress;
-                this.QueryParams = new NameValueCollection();
-            }
-            else
-            {
+            if (baseAddress == null)
                 throw new RDFQueryException("Cannot create RDFSPARQLEndpoint because given \"baseAddress\" parameter is null.");
-            }
+
+            this.BaseAddress = baseAddress;
+            this.QueryParams = new NameValueCollection();
         }
         #endregion
 
@@ -83,7 +78,6 @@ namespace RDFSharp.Query
             return this;
         }
         #endregion
-
     }
 
     /// <summary>
