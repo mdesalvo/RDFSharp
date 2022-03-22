@@ -1032,28 +1032,24 @@ namespace RDFSharp.Query
             #region Single Property
             if (propertyPath.Steps.Count == 1)
             {
-
                 //InversePath (will swap start/end)
                 if (propertyPath.Steps[0].IsInverseStep)
                     result.Append("^");
 
                 var propPath = propertyPath.Steps[0].StepProperty;
                 result.Append(PrintPatternMember(propPath, prefixes));
-
             }
             #endregion
 
             #region Multiple Properties
             else
             {
-
                 //Initialize printing
                 bool openedParenthesis = false;
 
                 //Iterate properties
                 for (int i = 0; i < propertyPath.Steps.Count; i++)
                 {
-
                     //Alternative: generate union pattern
                     if (propertyPath.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                     {
@@ -1105,9 +1101,7 @@ namespace RDFSharp.Query
                             result.Append(PrintPatternMember(propPath, prefixes));
                         }
                     }
-
                 }
-
             }
             #endregion
 
