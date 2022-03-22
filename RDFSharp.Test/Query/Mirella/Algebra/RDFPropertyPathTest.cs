@@ -67,7 +67,6 @@ namespace RDFSharp.Test.Query
         {
             RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
             propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
-            propertyPath.AddSequenceStep(null); //Will not be accepted, since null steps are not allowed
 
             Assert.IsNotNull(propertyPath);
             Assert.IsNotNull(propertyPath.Start);
@@ -84,7 +83,12 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStep()
+        public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullSequenceStep()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                                                                    .AddSequenceStep(null));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInSequenceStep()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
                                                                     .AddSequenceStep(new RDFPropertyPathStep(null)));
 
@@ -94,7 +98,6 @@ namespace RDFSharp.Test.Query
             RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
             propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
             propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.BAG));
-            propertyPath.AddSequenceStep(null); //Will not be accepted, since null steps are not allowed
 
             Assert.IsNotNull(propertyPath);
             Assert.IsNotNull(propertyPath.Start);
@@ -109,6 +112,41 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START rdf:Alt/rdf:Bag rdf:type"));
             Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
         }
+
+        [TestMethod]
+        public void ShouldAddSingleAlternativeStep()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
+            propertyPath.AddAlternativeSteps(new List<RDFPropertyPathStep>() { new RDFPropertyPathStep(RDFVocabulary.RDF.ALT) });
+            
+            Assert.IsNotNull(propertyPath);
+            Assert.IsNotNull(propertyPath.Start);
+            Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
+            Assert.IsNotNull(propertyPath.End);
+            Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsNotNull(propertyPath.Steps);
+            Assert.IsTrue(propertyPath.Steps.Count == 1);
+            Assert.IsTrue(propertyPath.Depth == 1);
+            Assert.IsTrue(propertyPath.IsEvaluable);
+            Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
+            Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START rdf:Alt rdf:type"));
+            Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullAlternativeStep()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                                                                    .AddAlternativeSteps(null));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyPathBecauseEmptyAlternativeStep()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                                                                    .AddAlternativeSteps(new List<RDFPropertyPathStep>()));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInAlternativeSteps()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                                                                    .AddAlternativeSteps(new List<RDFPropertyPathStep>() { null }));
         #endregion
     }
 }
