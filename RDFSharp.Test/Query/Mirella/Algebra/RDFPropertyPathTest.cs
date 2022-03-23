@@ -114,7 +114,28 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldAddSingleAlternativeStep()
+        public void ShouldAddMultipleSequenceStepWithInverse()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
+            propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
+            propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse());
+
+            Assert.IsNotNull(propertyPath);
+            Assert.IsNotNull(propertyPath.Start);
+            Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
+            Assert.IsNotNull(propertyPath.End);
+            Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsNotNull(propertyPath.Steps);
+            Assert.IsTrue(propertyPath.Steps.Count == 2);
+            Assert.IsTrue(propertyPath.Depth == 2);
+            Assert.IsTrue(propertyPath.IsEvaluable);
+            Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>"));
+            Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START rdf:Alt/^rdf:Bag rdf:type"));
+            Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
+        }
+
+        [TestMethod]
+        public void ShouldAddSingleAlternativeSteps()
         {
             RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
             propertyPath.AddAlternativeSteps(new List<RDFPropertyPathStep>() { new RDFPropertyPathStep(RDFVocabulary.RDF.ALT) });
@@ -130,6 +151,48 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(propertyPath.IsEvaluable);
             Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>"));
             Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START rdf:Alt rdf:type"));
+            Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
+        }
+
+        [TestMethod]
+        public void ShouldAddMultipleAlternativeSteps()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
+            propertyPath.AddAlternativeSteps(new List<RDFPropertyPathStep>() { new RDFPropertyPathStep(RDFVocabulary.RDF.ALT), 
+                                                                               new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) });
+            
+            Assert.IsNotNull(propertyPath);
+            Assert.IsNotNull(propertyPath.Start);
+            Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
+            Assert.IsNotNull(propertyPath.End);
+            Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsNotNull(propertyPath.Steps);
+            Assert.IsTrue(propertyPath.Steps.Count == 2);
+            Assert.IsTrue(propertyPath.Depth == 1);
+            Assert.IsTrue(propertyPath.IsEvaluable);
+            Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>"));
+            Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START (rdf:Alt|rdf:Bag) rdf:type"));
+            Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
+        }
+
+        [TestMethod]
+        public void ShouldAddMultipleAlternativeStepsWithInverse()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
+            propertyPath.AddAlternativeSteps(new List<RDFPropertyPathStep>() { new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(), 
+                                                                               new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) });
+            
+            Assert.IsNotNull(propertyPath);
+            Assert.IsNotNull(propertyPath.Start);
+            Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
+            Assert.IsNotNull(propertyPath.End);
+            Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
+            Assert.IsNotNull(propertyPath.Steps);
+            Assert.IsTrue(propertyPath.Steps.Count == 2);
+            Assert.IsTrue(propertyPath.Depth == 1);
+            Assert.IsTrue(propertyPath.IsEvaluable);
+            Assert.IsTrue(propertyPath.ToString().Equals($"?START (^<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>"));
+            Assert.IsTrue(propertyPath.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdf") }).Equals($"?START (^rdf:Alt|rdf:Bag) rdf:type"));
             Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
         }
 
