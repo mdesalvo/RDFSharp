@@ -142,6 +142,7 @@ namespace RDFSharp.Query
             if (this.Start is RDFVariable || this.End is RDFVariable || this.Depth > 1)
                 this.IsEvaluable = true;
             #endregion
+
             return this;
         }
 
