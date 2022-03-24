@@ -430,6 +430,40 @@ namespace RDFSharp.Test.Query
         public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInAlternativeSteps()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
                                                                     .AddAlternativeSteps(new List<RDFPropertyPathStep>() { null }));
+        
+        [TestMethod]
+        public void ShouldGetPatternListFromEmptyPropertyPath()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
+            List<RDFPattern> patterns = propertyPath.GetPatternList();
+
+            Assert.IsNotNull(patterns);
+            Assert.IsTrue(patterns.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldGetPatternListFromSingleSequencePropertyPath()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
+            propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE));
+            List<RDFPattern> patterns = propertyPath.GetPatternList();
+
+            Assert.IsNotNull(patterns);
+            Assert.IsTrue(patterns.Count == 1);
+            Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?START")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?END")));
+        }
+
+        [TestMethod]
+        public void ShouldGetPatternListFromSingleSequenceInversePropertyPath()
+        {
+            RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
+            propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE).Inverse());
+            List<RDFPattern> patterns = propertyPath.GetPatternList();
+
+            Assert.IsNotNull(patterns);
+            Assert.IsTrue(patterns.Count == 1);
+            Assert.IsTrue(patterns[0].Subject.Equals(new RDFVariable("?END")) && patterns[0].Predicate.Equals(RDFVocabulary.RDF.TYPE) && patterns[0].Object.Equals(new RDFVariable("?START")));
+        }
         #endregion
     }
 }
