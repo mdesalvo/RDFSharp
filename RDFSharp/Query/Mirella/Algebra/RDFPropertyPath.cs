@@ -181,6 +181,7 @@ namespace RDFSharp.Query
                             //Adjust start/end
                             if (!this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
                                 currEnd = this.End;
+
                             //InversePath (swap start/end)
                             if (this.Steps[i].IsInverseStep)
                                 patterns.Add(new RDFPattern(currEnd, this.Steps[i].StepProperty, currStart).UnionWithNext());
@@ -197,6 +198,7 @@ namespace RDFSharp.Query
                             //Path
                             else
                                 patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
+
                             //Adjust start/end
                             if (i < this.Steps.Count - 1)
                             {
@@ -204,7 +206,7 @@ namespace RDFSharp.Query
                                 if (i == this.Steps.Count - 2 || !this.Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
                                     currEnd = this.End;
                                 else
-                                    currEnd = new RDFVariable(string.Concat("__PP", (i + 1).ToString()));
+                                    currEnd = new RDFVariable($"__PP{i+1}");
                             }
                         }
                     }
@@ -219,6 +221,7 @@ namespace RDFSharp.Query
                         //Path
                         else
                             patterns.Add(new RDFPattern(currStart, this.Steps[i].StepProperty, currEnd));
+
                         //Adjust start/end
                         if (i < this.Steps.Count - 1)
                         {
@@ -226,7 +229,7 @@ namespace RDFSharp.Query
                             if (i == this.Steps.Count - 2)
                                 currEnd = this.End;
                             else
-                                currEnd = new RDFVariable(string.Concat("__PP", (i + 1).ToString()));
+                                currEnd = new RDFVariable($"__PP{i+1}");
                         }
                     }
                     #endregion
