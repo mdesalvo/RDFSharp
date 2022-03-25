@@ -24,13 +24,11 @@ using System.Text;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFAggregator represents an aggregation function applied by a GroupBy modifier
     /// </summary>
-    public abstract class RDFAggregator
+    public class RDFAggregator
     {
-
         #region Properties
         /// <summary>
         /// Variable on which the aggregator is applied
@@ -64,24 +62,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
-            if (aggregatorVariable != null)
-            {
-                if (projectionVariable != null)
-                {
-                    this.AggregatorVariable = aggregatorVariable;
-                    this.ProjectionVariable = projectionVariable;
-                    this.HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);
-                    this.AggregatorContext = new RDFAggregatorContext();
-                }
-                else
-                {
-                    throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
-                }
-            }
-            else
-            {
+            if (aggregatorVariable == null)
                 throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
-            }
+            if (projectionVariable == null)
+                throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
+            
+            this.AggregatorVariable = aggregatorVariable;
+            this.ProjectionVariable = projectionVariable;
+            this.HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);
+            this.AggregatorContext = new RDFAggregatorContext();
         }
         #endregion
 
@@ -89,24 +78,25 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gives the string representation of the aggregator function
         /// </summary>
-        public override string ToString() => base.ToString();
+        public override string ToString()
+            => string.Empty;
         #endregion
 
         #region Methods
         /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
-        internal abstract void ExecutePartition(string partitionKey, DataRow tableRow);
+        internal virtual void ExecutePartition(string partitionKey, DataRow tableRow) { }
 
         /// <summary>
         /// Executes the projection producing result's table
         /// </summary>
-        internal abstract DataTable ExecuteProjection(List<RDFVariable> partitionVariables);
+        internal virtual DataTable ExecuteProjection(List<RDFVariable> partitionVariables) => null;
 
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal abstract void UpdateProjectionTable(string partitionKey, DataTable projFuncTable);
+        internal virtual void UpdateProjectionTable(string partitionKey, DataTable projFuncTable) { }
 
         /// <summary>
         /// Gets the row value for the aggregator as number
@@ -200,7 +190,6 @@ namespace RDFSharp.Query
             return this;
         }
         #endregion
-
     }
 
     #region RDFAggregatorContext
@@ -209,7 +198,6 @@ namespace RDFSharp.Query
     /// </summary>
     internal class RDFAggregatorContext
     {
-
         #region Properties
         /// <summary>
         /// Registry to keep track of aggregator execution flow
@@ -240,13 +228,11 @@ namespace RDFSharp.Query
         internal void AddPartitionKey<T>(string partitionKey, T initValue)
         {
             if (!this.ExecutionRegistry.ContainsKey(partitionKey))
-            {
                 this.ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>()
                 {
                     { "ExecutionResult", initValue },
                     { "ExecutionCounter", 0d }
                 });
-            }
         }
 
         /// <summary>
@@ -294,8 +280,6 @@ namespace RDFSharp.Query
         internal void UpdatePartitionKeyRowValueCache<T>(string partitionKey, T newValue)
             => this.ExecutionCache[partitionKey].Add(newValue);
         #endregion
-
     }
     #endregion
-
 }
