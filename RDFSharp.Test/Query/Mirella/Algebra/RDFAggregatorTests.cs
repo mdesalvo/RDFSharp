@@ -16,7 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Reflection;
+using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -89,6 +89,50 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(aggregator.AggregatorContext);
             Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
             Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        }
+
+        [TestMethod]
+        public void ShouldGetRowValueAsNumber()
+        {
+            RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+            DataTable table = new DataTable();
+            DataColumn column = new DataColumn("?AGGVAR", typeof(string));
+            table.Columns.Add(column);
+
+            DataRow row0 = table.NewRow();
+            row0["?AGGVAR"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            table.Rows.Add(row0);
+            table.AcceptChanges();
+            double value0 = aggregator.GetRowValueAsNumber(table.Rows[0]);
+            Assert.IsTrue(value0.Equals(25.0d));
+
+            DataRow row1 = table.NewRow();
+            row1["?AGGVAR"] = DBNull.Value;
+            table.Rows.Add(row1);
+            table.AcceptChanges();
+            double value1 = aggregator.GetRowValueAsNumber(table.Rows[1]);
+            Assert.IsTrue(value1.Equals(double.NaN));
+
+            DataRow row2 = table.NewRow();
+            row2["?AGGVAR"] = new RDFResource("ex:res").ToString();
+            table.Rows.Add(row2);
+            table.AcceptChanges();
+            double value2 = aggregator.GetRowValueAsNumber(table.Rows[2]);
+            Assert.IsTrue(value2.Equals(double.NaN));
+
+            DataRow row3 = table.NewRow();
+            row3["?AGGVAR"] = new RDFTypedLiteral("2012", RDFModelEnums.RDFDatatypes.XSD_GYEAR).ToString();
+            table.Rows.Add(row3);
+            table.AcceptChanges();
+            double value3 = aggregator.GetRowValueAsNumber(table.Rows[3]);
+            Assert.IsTrue(value3.Equals(double.NaN));
+
+            DataRow row4 = table.NewRow();
+            row4["?AGGVAR"] = "73523534763524347325732573573257673257382568732587638756328756387563875638756587537567356735";
+            table.Rows.Add(row4);
+            table.AcceptChanges();
+            double value4 = aggregator.GetRowValueAsNumber(table.Rows[4]);
+            Assert.IsTrue(value4.Equals(double.NaN));
         }
         #endregion
     }
