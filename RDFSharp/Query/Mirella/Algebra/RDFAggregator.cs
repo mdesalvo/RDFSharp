@@ -109,9 +109,9 @@ namespace RDFSharp.Query
                 {
                     RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[this.AggregatorVariable.VariableName].ToString());
                     //Only numeric typedliterals are suitable for processing
-                    if (rowAggregatorValue is RDFTypedLiteral && ((RDFTypedLiteral)rowAggregatorValue).HasDecimalDatatype())
+                    if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
-                        if (double.TryParse(((RDFTypedLiteral)rowAggregatorValue).Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
+                        if (double.TryParse(rowAggregatorValueTLit.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
                             return result;
                     }
                 }

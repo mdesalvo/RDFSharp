@@ -49,6 +49,47 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingAggregatorBecauseNullPartitionVariable()
             =>  Assert.ThrowsException<RDFQueryException>(() => new RDFAggregator(new RDFVariable("?AGGVAR"), null as RDFVariable));
+        
+        [TestMethod]
+        public void ShouldSetDistinct()
+        {
+            RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+            aggregator.Distinct();
+
+            Assert.IsNotNull(aggregator);
+            Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+            Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+            Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
+            Assert.IsTrue(aggregator.IsDistinct);
+            Assert.IsTrue(aggregator.ToString().Equals(string.Empty));
+            Assert.IsNotNull(aggregator.AggregatorContext);
+            Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
+            Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        }
+
+        [DataTestMethod]
+        [DataRow(RDFQueryEnums.RDFComparisonFlavors.LessThan)]
+        [DataRow(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan)]
+        [DataRow(RDFQueryEnums.RDFComparisonFlavors.EqualTo)]
+        [DataRow(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo)]
+        [DataRow(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan)]
+        [DataRow(RDFQueryEnums.RDFComparisonFlavors.GreaterThan)]
+        public void ShouldSetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor)
+        {
+            RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+            aggregator.SetHavingClause(comparisonFlavor, new RDFVariable("?X"));
+            aggregator.SetHavingClause(comparisonFlavor, null); //Will not set the having clause, since null values are not allowed
+
+            Assert.IsNotNull(aggregator);
+            Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+            Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+            Assert.IsTrue(aggregator.HavingClause.Equals((true, comparisonFlavor, new RDFVariable("?X"))));
+            Assert.IsFalse(aggregator.IsDistinct);
+            Assert.IsTrue(aggregator.ToString().Equals(string.Empty));
+            Assert.IsNotNull(aggregator.AggregatorContext);
+            Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
+            Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        }
         #endregion
     }
 }
