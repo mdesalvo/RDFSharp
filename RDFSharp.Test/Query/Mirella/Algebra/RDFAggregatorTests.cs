@@ -185,6 +185,108 @@ namespace RDFSharp.Test.Query
             string value4 = aggregator.GetRowValueAsString(table.Rows[4]);
             Assert.IsTrue(value4.Equals("hello@EN-US"));
         }
+
+        [TestMethod]
+        public void ShouldAddPartitionKeyToAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            aggCtx.AddPartitionKey<string>("testPKey", "value");
+
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals("value"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(0d));
+        }
+
+        [TestMethod]
+        public void ShouldGetPartitionKeyExecutionResultFromAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            string value = aggCtx.GetPartitionKeyExecutionResult<string>("testPKey", "value");
+
+            Assert.IsTrue(value.Equals("value"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals(value));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(0d));
+        }
+
+        [TestMethod]
+        public void ShouldGetPartitionKeyExecutionCounterFromAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            double execCounter = aggCtx.GetPartitionKeyExecutionCounter("testPKey");
+
+            Assert.IsTrue(execCounter.Equals(0d));
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals("value"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(execCounter));
+        }
+
+        [TestMethod]
+        public void ShouldUpdatePartitionKeyExecutionResultToAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.UpdatePartitionKeyExecutionResult<string>("testPKey", "value2");
+
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals("value2"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(0d));
+        }
+
+        [TestMethod]
+        public void ShouldUpdatePartitionKeyExecutionCounterToAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            aggCtx.AddPartitionKey<string>("testPKey", "value");
+            aggCtx.UpdatePartitionKeyExecutionCounter("testPKey");
+
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals("value"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(1d));
+        }
+
+        [TestMethod]
+        public void ShouldCheckPartitionKeyRowValueCacheFromAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            aggCtx.AddPartitionKey<string>("testPKey", "value");
+
+            Assert.IsFalse(aggCtx.CheckPartitionKeyRowValueCache<string>("testPKey", "value"));
+
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals("value"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(0d));
+        }
+
+        [TestMethod]
+        public void ShouldUpdatePartitionKeyRowValueCacheToAggregatorContext()
+        {
+            RDFAggregatorContext aggCtx = new RDFAggregatorContext();
+            aggCtx.AddPartitionKey<string>("testPKey", "value");
+
+            Assert.IsFalse(aggCtx.CheckPartitionKeyRowValueCache<string>("testPKey", "value"));
+            aggCtx.UpdatePartitionKeyRowValueCache<string>("testPKey", "value");
+            Assert.IsTrue(aggCtx.CheckPartitionKeyRowValueCache<string>("testPKey", "value"));
+
+            Assert.IsTrue(aggCtx.ExecutionRegistry.ContainsKey("testPKey"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionResult"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionResult"].Equals("value"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"].ContainsKey("ExecutionCounter"));
+            Assert.IsTrue(aggCtx.ExecutionRegistry["testPKey"]["ExecutionCounter"].Equals(0d));
+        }
         #endregion
     }
 }
