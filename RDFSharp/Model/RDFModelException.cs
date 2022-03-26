@@ -29,7 +29,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Basic ctor to throw an empty RDFModelException
         /// </summary>
-        public RDFModelException() : base() { }
+        public RDFModelException() { }
 
         /// <summary>
         /// Basic ctor to throw an RDFModelException with message

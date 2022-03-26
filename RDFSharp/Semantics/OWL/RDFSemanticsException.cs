@@ -31,7 +31,7 @@ namespace RDFSharp.Semantics.OWL
         /// <summary>
         /// Basic ctor to throw an empty RDFSemanticsException
         /// </summary>
-        public RDFSemanticsException() : base() { }
+        public RDFSemanticsException() { }
 
         /// <summary>
         /// Basic ctor to throw an RDFSemanticsException with message

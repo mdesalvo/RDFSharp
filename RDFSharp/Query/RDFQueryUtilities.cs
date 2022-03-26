@@ -287,7 +287,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region Ctors
-            internal RDFWebClient(int timeoutMilliseconds) : base()
+            internal RDFWebClient(int timeoutMilliseconds)
                 => this.TimeOut = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
             #endregion
 

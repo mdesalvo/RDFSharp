@@ -29,7 +29,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Basic ctor to throw an empty RDFQueryException
         /// </summary>
-        public RDFQueryException() : base() { }
+        public RDFQueryException() { }
 
         /// <summary>
         /// Basic ctor to throw an RDFQueryException with message

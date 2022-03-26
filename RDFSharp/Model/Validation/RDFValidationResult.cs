@@ -71,7 +71,7 @@ namespace RDFSharp.Model
                                      RDFResource resultPath,
                                      RDFPatternMember resultValue,
                                      List<RDFLiteral> resultMessages,
-                                     RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation) : base()
+                                     RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation)
         {
             this.SourceShape = sourceShape;
             this.SourceConstraintComponent = sourceConstraintComponent;

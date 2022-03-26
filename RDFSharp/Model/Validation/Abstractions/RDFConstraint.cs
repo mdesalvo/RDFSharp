@@ -24,13 +24,6 @@ namespace RDFSharp.Model
     /// </summary>
     public abstract class RDFConstraint : RDFResource
     {
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to build a generic constraint
-        /// </summary>
-        internal RDFConstraint() : base() { }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Evaluates this constraint against the given data graph

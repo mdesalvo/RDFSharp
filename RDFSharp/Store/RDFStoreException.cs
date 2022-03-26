@@ -29,7 +29,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Basic ctor to throw an empty RDFStoreException
         /// </summary>
-        public RDFStoreException() : base() { }
+        public RDFStoreException() { }
 
         /// <summary>
         /// Basic ctor to throw an RDFStoreException with message
