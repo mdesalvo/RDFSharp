@@ -22,13 +22,14 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFQueryMember defines an object which can be member of a query
     /// </summary>
-    public abstract class RDFQueryMember : IEquatable<RDFQueryMember>
+    public class RDFQueryMember : IEquatable<RDFQueryMember>
     {
         #region Properties
         /// <summary>
         /// Unique identifier of the query member
         /// </summary>
-        public long QueryMemberID => LazyQueryMemberID.Value;
+        public long QueryMemberID
+            => LazyQueryMemberID.Value;
 
         /// <summary>
         /// Lazy evaluation of the query member identifier
@@ -43,7 +44,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the query member is evaluable by the engine
         /// </summary>
-        public bool IsEvaluable { get; internal set; }
+        internal bool IsEvaluable { get; set; }
         #endregion
 
         #region Ctors

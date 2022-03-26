@@ -22,13 +22,14 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPatternMember defines an object which can be member of a pattern
     /// </summary>
-    public abstract class RDFPatternMember : IEquatable<RDFPatternMember>
+    public class RDFPatternMember : IEquatable<RDFPatternMember>
     {
         #region Properties
         /// <summary>
         /// Unique identifier of the pattern member
         /// </summary>
-        public long PatternMemberID => LazyPatternMemberID.Value;
+        public long PatternMemberID
+            => LazyPatternMemberID.Value;
 
         /// <summary>
         /// Lazy evaluation of the pattern member identifier

@@ -25,7 +25,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Default-ctor to build an objectsOf target on the given property
         /// </summary>
-        public RDFTargetObjectsOf(RDFResource targetProperty) : base()
+        public RDFTargetObjectsOf(RDFResource targetProperty)
         {
             if (targetProperty == null)
                 throw new RDFModelException("Cannot create RDFTargetObjectsOf because given \"targetProperty\" parameter is null.");

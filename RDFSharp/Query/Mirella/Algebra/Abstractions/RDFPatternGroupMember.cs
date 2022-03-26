@@ -22,13 +22,14 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFPatternGroupMember defines an object which can be member of a pattern group
     /// </summary>
-    public abstract class RDFPatternGroupMember : IEquatable<RDFPatternGroupMember>
+    public class RDFPatternGroupMember : IEquatable<RDFPatternGroupMember>
     {
         #region Properties
         /// <summary>
         /// Unique identifier of the pattern group member
         /// </summary>
-        public long PatternGroupMemberID => LazyPatternGroupMemberID.Value;
+        public long PatternGroupMemberID
+            => LazyPatternGroupMemberID.Value;
 
         /// <summary>
         /// Lazy evaluation of the pattern group member identifier
@@ -43,7 +44,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Flag indicating that the pattern group member is evaluable by the engine
         /// </summary>
-        public bool IsEvaluable { get; internal set; }
+        internal bool IsEvaluable { get; set; }
         #endregion
 
         #region Ctors

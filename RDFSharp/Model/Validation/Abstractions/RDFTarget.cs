@@ -28,13 +28,6 @@ namespace RDFSharp.Model
         public RDFResource TargetValue { get; internal set; }
         #endregion
 
-        #region Ctors
-        /// <summary>
-        /// Default-ctor to build a generic target
-        /// </summary>
-        internal RDFTarget() : base() { }
-        #endregion
-
         #region Properties
         /// <summary>
         /// Gets a graph representation of this target
