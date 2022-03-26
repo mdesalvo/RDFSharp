@@ -186,6 +186,37 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(value4.Equals("hello@EN-US"));
         }
 
+        //Virtuals (for test completeness, since they're just no-op at this level)
+
+        [TestMethod]
+        public void ShouldExecutePartition()
+        {
+            RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+            aggregator.ExecutePartition(null, null); //Just no-op
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public void ShouldExecuteProjection()
+        {
+            RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+            DataTable projectionTable = aggregator.ExecuteProjection(null); //Just no-op
+
+            Assert.IsNull(projectionTable);
+        }
+
+        [TestMethod]
+        public void ShouldUpdateProjectionTable()
+        {
+            RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+            aggregator.UpdateProjectionTable(null, null); //Just no-op
+
+            Assert.IsTrue(true);
+        }
+
+        //AggregatorContext
+
         [TestMethod]
         public void ShouldAddPartitionKeyToAggregatorContext()
         {
