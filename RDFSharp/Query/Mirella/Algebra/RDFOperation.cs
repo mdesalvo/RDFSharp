@@ -115,13 +115,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddDeleteGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
-            if (template?.Variables.Count == 0)
-            {
-                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
-                    this.DeleteTemplates.Add(template);
-                return (T)this;
-            }
-            throw new RDFQueryException("Cannot add DELETE template to DATA operation because it is not ground. Please ensure it doesn't contain any variables.");
+            if (template == null)
+                throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
+            if (template.Variables.Count > 0)
+                throw new RDFQueryException($"Cannot add DELETE template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
+
+            if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
+                this.DeleteTemplates.Add(template);
+
+            return (T)this;
         }
 
         /// <summary>
@@ -129,14 +131,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddDeleteNonGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
-            if (template != null)
+            if (template == null)
+                throw new RDFQueryException($"Cannot add DELETE template to operation because it is null.");
+
+            if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
             {
-                if (!this.DeleteTemplates.Any(tp => tp.Equals(template)))
-                {
-                    this.DeleteTemplates.Add(template);
-                    this.CollectVariables(template);
-                }
+                this.DeleteTemplates.Add(template);
+                this.CollectVariables(template);
             }
+
             return (T)this;
         }
 
@@ -145,13 +148,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddInsertGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
-            if (template?.Variables.Count == 0)
-            {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                    this.InsertTemplates.Add(template);
-                return (T)this;
-            }
-            throw new RDFQueryException("Cannot add INSERT template to DATA operation because it is not ground. Please ensure it doesn't contain any variables.");
+            if (template == null)
+                throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
+            if (template.Variables.Count > 0)
+                throw new RDFQueryException($"Cannot add INSERT template '{template}' to operation because it is not ground: please ensure it does not contain variables.");
+
+            if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
+                this.InsertTemplates.Add(template);
+
+            return (T)this;
         }
 
         /// <summary>
@@ -159,14 +164,15 @@ namespace RDFSharp.Query
         /// </summary>
         internal T AddInsertNonGroundTemplate<T>(RDFPattern template) where T : RDFOperation
         {
-            if (template != null)
+            if (template == null)
+                throw new RDFQueryException($"Cannot add INSERT template to operation because it is null.");
+
+            if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
             {
-                if (!this.InsertTemplates.Any(tp => tp.Equals(template)))
-                {
-                    this.InsertTemplates.Add(template);
-                    this.CollectVariables(template);
-                }
+                this.InsertTemplates.Add(template);
+                this.CollectVariables(template);
             }
+
             return (T)this;
         }
 
@@ -175,11 +181,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddPrefix<T>(RDFNamespace prefix) where T : RDFOperation
         {
-            if (prefix != null)
-            {
-                if (!this.Prefixes.Any(p => p.Equals(prefix)))
-                    this.Prefixes.Add(prefix);
-            }
+            if (prefix == null)
+                throw new RDFQueryException($"Cannot add prefix to operation because it is null.");
+
+            if (!this.Prefixes.Any(p => p.Equals(prefix)))
+                this.Prefixes.Add(prefix);
+
             return (T)this;
         }
 
@@ -188,11 +195,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T : RDFOperation
         {
-            if (patternGroup != null)
-            {
-                if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
-                    this.QueryMembers.Add(patternGroup);
-            }
+            if (patternGroup == null)
+                throw new RDFQueryException($"Cannot add pattern group to operation because it is null.");
+
+            if (!this.GetPatternGroups().Any(q => q.Equals(patternGroup)))
+                this.QueryMembers.Add(patternGroup);
+
             return (T)this;
         }
 
@@ -201,11 +209,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddModifier<T>(RDFDistinctModifier modifier) where T : RDFOperation
         {
-            if (modifier != null)
-            {
-                if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
-                    this.QueryMembers.Add(modifier);
-            }
+            if (modifier == null)
+                throw new RDFQueryException($"Cannot add modifier to operation because it is null.");
+
+            if (!this.GetModifiers().Any(m => m is RDFDistinctModifier))
+                this.QueryMembers.Add(modifier);
+
             return (T)this;
         }
 
@@ -214,11 +223,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal new T AddSubQuery<T>(RDFSelectQuery subQuery) where T : RDFOperation
         {
-            if (subQuery != null)
-            {
-                if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
-                    this.QueryMembers.Add(subQuery.SubQuery());
-            }
+            if (subQuery == null)
+                throw new RDFQueryException($"Cannot add sub query to operation because it is null.");
+
+            if (!this.GetSubQueries().Any(q => q.Equals(subQuery)))
+                this.QueryMembers.Add(subQuery.SubQuery());
+
             return (T)this;
         }
 
