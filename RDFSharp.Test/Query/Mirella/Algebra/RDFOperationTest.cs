@@ -142,6 +142,25 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldThrowExceptionOnAddingInsertNonGroundTemplateBecauseNullPattern()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertNonGroundTemplate<RDFOperation>(null));
+
+        [TestMethod]
+        public void ShouldAddPrefix()
+        {
+            RDFOperation operation = new RDFOperation();
+            operation.AddPrefix<RDFOperation>(RDFNamespaceRegister.GetByPrefix("rdf"));
+            operation.AddPrefix<RDFOperation>(RDFNamespaceRegister.GetByPrefix("rdf")); //Will be discarded, since duplicate prefixes are not allowed
+            operation.AddPrefix<RDFOperation>(new RDFNamespace("rdf", $"{RDFVocabulary.RDF.BASE_URI}")); //Will be discarded, since duplicate prefixes are not allowed
+            operation.AddPrefix<RDFOperation>(RDFNamespaceRegister.GetByPrefix("rdfs"));
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddPrefix<RDFOperation>(null));
         #endregion
     }
 }
