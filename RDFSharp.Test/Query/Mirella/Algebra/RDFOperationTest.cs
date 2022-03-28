@@ -15,10 +15,9 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store;
 
 namespace RDFSharp.Test.Query
 {
@@ -61,6 +60,88 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldThrowExceptionOnAddingDeleteGroundTemplateBecauseNotGroundPattern()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddDeleteGroundTemplate<RDFOperation>(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+        
+        [TestMethod]
+        public void ShouldAddDeleteNonGroundTemplate()
+        {
+            RDFPattern pattern1 = new RDFPattern(new RDFVariable("?C"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS);
+            RDFPattern pattern2 = new RDFPattern(RDFVocabulary.RDF.LIST, new RDFVariable("?C"), RDFVocabulary.RDFS.CLASS);
+            RDFPattern pattern3 = new RDFPattern(RDFVocabulary.RDF.LIST, RDFVocabulary.RDF.TYPE, new RDFVariable("?C"));
+            RDFPattern pattern4 = new RDFPattern(new RDFVariable("?C"), RDFVocabulary.RDF.LIST, RDFVocabulary.RDF.TYPE, new RDFVariable("?C2"));
+            RDFPattern pattern5 = new RDFPattern(new RDFContext("ex:context"), RDFVocabulary.RDF.LIST, RDFVocabulary.RDF.TYPE, new RDFVariable("?C2"));
+            RDFOperation operation = new RDFOperation();
+            operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern1);
+            operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern1); //Will be discarded, since duplicate patterns are not allowed
+            operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern2);
+            operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern3);
+            operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern4);
+            operation.AddDeleteNonGroundTemplate<RDFOperation>(pattern5);
+
+            Assert.IsTrue(operation.DeleteTemplates.Count == 5);
+            Assert.IsTrue(operation.DeleteTemplates[0].Equals(pattern1));
+            Assert.IsTrue(operation.DeleteTemplates[1].Equals(pattern2));
+            Assert.IsTrue(operation.DeleteTemplates[2].Equals(pattern3));
+            Assert.IsTrue(operation.DeleteTemplates[3].Equals(pattern4));
+            Assert.IsTrue(operation.DeleteTemplates[4].Equals(pattern5));
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingDeleteNonGroundTemplateBecauseNullPattern()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddDeleteNonGroundTemplate<RDFOperation>(null));
+
+        [TestMethod]
+        public void ShouldAddInsertGroundTemplate()
+        {
+            RDFPattern pattern = new RDFPattern(RDFVocabulary.RDF.ALT, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS);
+            RDFOperation operation = new RDFOperation();
+            operation.AddInsertGroundTemplate<RDFOperation>(pattern);
+            operation.AddInsertGroundTemplate<RDFOperation>(pattern); //Will be discarded, since duplicate patterns are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 1);
+            Assert.IsTrue(operation.InsertTemplates[0].Equals(pattern));
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingInsertGroundTemplateBecauseNullPattern()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertGroundTemplate<RDFOperation>(null));
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingInsertGroundTemplateBecauseNotGroundPattern()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertGroundTemplate<RDFOperation>(new RDFPattern(new RDFVariable("?X"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+        
+        [TestMethod]
+        public void ShouldAddInsertNonGroundTemplate()
+        {
+            RDFPattern pattern1 = new RDFPattern(new RDFVariable("?C"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS);
+            RDFPattern pattern2 = new RDFPattern(RDFVocabulary.RDF.LIST, new RDFVariable("?C"), RDFVocabulary.RDFS.CLASS);
+            RDFPattern pattern3 = new RDFPattern(RDFVocabulary.RDF.LIST, RDFVocabulary.RDF.TYPE, new RDFVariable("?C"));
+            RDFPattern pattern4 = new RDFPattern(new RDFVariable("?C"), RDFVocabulary.RDF.LIST, RDFVocabulary.RDF.TYPE, new RDFVariable("?C2"));
+            RDFPattern pattern5 = new RDFPattern(new RDFContext("ex:context"), RDFVocabulary.RDF.LIST, RDFVocabulary.RDF.TYPE, new RDFVariable("?C2"));
+            RDFOperation operation = new RDFOperation();
+            operation.AddInsertNonGroundTemplate<RDFOperation>(pattern1);
+            operation.AddInsertNonGroundTemplate<RDFOperation>(pattern1); //Will be discarded, since duplicate patterns are not allowed
+            operation.AddInsertNonGroundTemplate<RDFOperation>(pattern2);
+            operation.AddInsertNonGroundTemplate<RDFOperation>(pattern3);
+            operation.AddInsertNonGroundTemplate<RDFOperation>(pattern4);
+            operation.AddInsertNonGroundTemplate<RDFOperation>(pattern5);
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 5);
+            Assert.IsTrue(operation.InsertTemplates[0].Equals(pattern1));
+            Assert.IsTrue(operation.InsertTemplates[1].Equals(pattern2));
+            Assert.IsTrue(operation.InsertTemplates[2].Equals(pattern3));
+            Assert.IsTrue(operation.InsertTemplates[3].Equals(pattern4));
+            Assert.IsTrue(operation.InsertTemplates[4].Equals(pattern5));
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 2);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingInsertNonGroundTemplateBecauseNullPattern()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddInsertNonGroundTemplate<RDFOperation>(null));
         #endregion
     }
 }
