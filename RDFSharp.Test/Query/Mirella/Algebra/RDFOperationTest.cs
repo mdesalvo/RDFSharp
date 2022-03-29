@@ -37,6 +37,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.InsertTemplates.Count == 0);
             Assert.IsNotNull(operation.Variables);
             Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 0);
         }
 
         [TestMethod]
@@ -51,6 +52,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.DeleteTemplates[0].Equals(pattern));
             Assert.IsTrue(operation.InsertTemplates.Count == 0);
             Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 0);
         }
 
         [TestMethod]
@@ -85,6 +87,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.DeleteTemplates[4].Equals(pattern5));
             Assert.IsTrue(operation.InsertTemplates.Count == 0);
             Assert.IsTrue(operation.Variables.Count == 2);
+            Assert.IsTrue(operation.QueryMembers.Count == 0);
         }
 
         [TestMethod]
@@ -103,6 +106,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.InsertTemplates[0].Equals(pattern));
             Assert.IsTrue(operation.DeleteTemplates.Count == 0);
             Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 0);
         }
 
         [TestMethod]
@@ -137,6 +141,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.InsertTemplates[4].Equals(pattern5));
             Assert.IsTrue(operation.DeleteTemplates.Count == 0);
             Assert.IsTrue(operation.Variables.Count == 2);
+            Assert.IsTrue(operation.QueryMembers.Count == 0);
         }
 
         [TestMethod]
@@ -156,11 +161,68 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(operation.DeleteTemplates.Count == 0);
             Assert.IsTrue(operation.Variables.Count == 0);
             Assert.IsTrue(operation.Prefixes.Count == 2);
+            Assert.IsTrue(operation.QueryMembers.Count == 0);
         }
 
         [TestMethod]
         public void ShouldThrowExceptionOnAddingPrefixBecauseNullPrefix()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddPrefix<RDFOperation>(null));
+
+        [TestMethod]
+        public void ShouldAddPatternGroup()
+        {
+            RDFPatternGroup patternGroup = new RDFPatternGroup("PG1");
+            RDFOperation operation = new RDFOperation();
+            operation.AddPatternGroup<RDFOperation>(patternGroup);
+            operation.AddPatternGroup<RDFOperation>(patternGroup); //Will be discarded, since duplicate pattern groups are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddPatternGroup<RDFOperation>(null));
+
+        [TestMethod]
+        public void ShouldAddModifier()
+        {
+            RDFOperation operation = new RDFOperation();
+            operation.AddModifier<RDFOperation>(new RDFDistinctModifier());
+            operation.AddModifier<RDFOperation>(new RDFDistinctModifier()); //Will be discarded, since duplicate modifiers are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingModifierBecauseNullModifier()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddModifier<RDFOperation>(null));
+
+        [TestMethod]
+        public void ShouldAddSubQuery()
+        {
+            RDFSelectQuery subQuery = new RDFSelectQuery();
+            RDFOperation operation = new RDFOperation();
+            operation.AddSubQuery<RDFOperation>(subQuery);
+            operation.AddSubQuery<RDFOperation>(subQuery); //Will be discarded, since duplicate sub queries are not allowed
+
+            Assert.IsTrue(operation.InsertTemplates.Count == 0);
+            Assert.IsTrue(operation.DeleteTemplates.Count == 0);
+            Assert.IsTrue(operation.Variables.Count == 0);
+            Assert.IsTrue(operation.Prefixes.Count == 0);
+            Assert.IsTrue(operation.QueryMembers.Count == 1);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingSubQueryBecauseNullSubQuery()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFOperation().AddSubQuery<RDFOperation>(null));
         #endregion
     }
 }
