@@ -911,7 +911,7 @@ namespace RDFSharp.Query
                             //Begin a new Union block
                             printingUnion = true;
                             result.AppendLine(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }"));
-                            result.Append(string.Concat(spaces, "    UNION"));
+                            result.AppendLine(string.Concat(spaces, "    UNION"));
                         }
                         else
                         {
