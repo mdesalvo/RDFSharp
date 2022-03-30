@@ -53,8 +53,8 @@ namespace RDFSharp.Query
                 {
                     if (prefixes.Any())
                     {
-                        prefixes.ForEach(pf => sb.Append(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">\n")));
-                        sb.Append("\n");
+                        prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString())));
+                        sb.AppendLine();
                     }
                 }
                 #endregion
@@ -65,13 +65,9 @@ namespace RDFSharp.Query
                 if (selectQuery.IsSubQuery)
                 {
                     if (selectQuery.IsOptional && !fromUnion)
-                    {
-                        sb.Append(string.Concat(subquerySpaces, "OPTIONAL {\n"));
-                    }
+                        sb.AppendLine(string.Concat(subquerySpaces, "OPTIONAL {"));
                     else
-                    {
-                        sb.Append(string.Concat(subquerySpaces, "{\n"));
-                    }
+                        sb.AppendLine(string.Concat(subquerySpaces, "{"));
                 }
                 sb.Append(string.Concat(subqueryBodySpaces, "SELECT"));
                 #endregion
@@ -112,13 +108,13 @@ namespace RDFSharp.Query
                         sb.Append(" *");
                     }
                 }
-                sb.Append("\n");
+                sb.AppendLine();
                 #endregion
 
                 #endregion
 
                 #region BODY
-                sb.Append(string.Concat(subqueryBodySpaces, "WHERE {\n"));
+                sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
 
                 #region MEMBERS
                 bool printingUnion = false;
@@ -143,10 +139,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append(string.Concat(subqueryBodySpaces, "  {\n"));
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                                 }
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.Append(string.Concat(subqueryBodySpaces, "    UNION\n"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                             }
 
                             //Current pattern group IS the last of the query
@@ -158,7 +154,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                    sb.Append(string.Concat(subqueryBodySpaces, "  }\n"));
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                                 }
                                 else
                                 {
@@ -176,7 +172,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, subqueryBodySpaces.Length + 2, true, prefixes));
-                                sb.Append(string.Concat(subqueryBodySpaces, "  }\n"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
                             {
@@ -206,10 +202,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append(string.Concat(subqueryBodySpaces, "  {\n"));
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
                                 }
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                                sb.Append(string.Concat(subqueryBodySpaces, "    UNION\n"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "    UNION"));
                             }
 
                             //Current query IS the last of the query
@@ -221,7 +217,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                                    sb.Append(string.Concat(subqueryBodySpaces, "  }\n"));
+                                    sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                                 }
                                 else
                                 {
@@ -239,7 +235,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), true));
-                                sb.Append(string.Concat(subqueryBodySpaces, "  }\n"));
+                                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
                             {
@@ -266,12 +262,12 @@ namespace RDFSharp.Query
                              .ForEach(gm =>
                              {
                                  //GROUP BY
-                                 sb.Append("\n");
+                                 sb.AppendLine();
                                  sb.Append(subqueryBodySpaces + gm);
                                  //HAVING
                                  if (((RDFGroupByModifier)gm).Aggregators.Any(ag => ag.HavingClause.Item1))
                                  {
-                                     sb.Append("\n");
+                                     sb.AppendLine();
                                      sb.Append(string.Format(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", ((RDFGroupByModifier)gm).Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes)))));
                                  }
                              });
@@ -280,7 +276,7 @@ namespace RDFSharp.Query
                 // ORDER BY
                 if (modifiers.Any(mod => mod is RDFOrderByModifier))
                 {
-                    sb.Append("\n");
+                    sb.AppendLine();
                     sb.Append(string.Concat(subqueryBodySpaces, "ORDER BY"));
                     modifiers.Where(mod => mod is RDFOrderByModifier)
                              .ToList()
@@ -292,17 +288,17 @@ namespace RDFSharp.Query
                 {
                     modifiers.Where(mod => mod is RDFLimitModifier)
                              .ToList()
-                             .ForEach(lim => { sb.Append("\n"); sb.Append(string.Concat(subqueryBodySpaces, lim.ToString())); });
+                             .ForEach(lim => { sb.AppendLine(); sb.Append(string.Concat(subqueryBodySpaces, lim.ToString())); });
                     modifiers.Where(mod => mod is RDFOffsetModifier)
                              .ToList()
-                             .ForEach(off => { sb.Append("\n"); sb.Append(string.Concat(subqueryBodySpaces, off.ToString())); });
+                             .ForEach(off => { sb.AppendLine(); sb.Append(string.Concat(subqueryBodySpaces, off.ToString())); });
                 }
                 #endregion
 
                 #region ENDSELECT
-                sb.Append("\n");
+                sb.AppendLine();
                 if (selectQuery.IsSubQuery)
-                    sb.Append(string.Concat(subquerySpaces, "}\n"));
+                    sb.AppendLine(string.Concat(subquerySpaces, "}"));
                 #endregion
 
                 #endregion
@@ -322,8 +318,8 @@ namespace RDFSharp.Query
                 List<RDFNamespace> prefixes = describeQuery.GetPrefixes();
                 if (prefixes.Any())
                 {
-                    prefixes.ForEach(pf => sb.Append(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">\n")));
-                    sb.Append("\n");
+                    prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString())));
+                    sb.AppendLine();
                 }
                 #endregion
 
@@ -345,13 +341,13 @@ namespace RDFSharp.Query
                 {
                     sb.Append(" *");
                 }
-                sb.Append("\n");
+                sb.AppendLine();
                 #endregion
 
                 #endregion
 
                 #region BODY
-                sb.Append("WHERE {\n");
+                sb.AppendLine("WHERE {");
 
                 #region MEMBERS
                 bool printingUnion = false;
@@ -376,10 +372,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.AppendLine("  {");
                                 }
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                sb.Append("    UNION\n");
+                                sb.AppendLine("    UNION");
                             }
 
                             //Current pattern group IS the last of the query
@@ -391,7 +387,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                    sb.Append("  }\n");
+                                    sb.AppendLine("  }");
                                 }
                                 else
                                 {
@@ -409,7 +405,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                sb.Append("  }\n");
+                                sb.AppendLine("  }");
                             }
                             else
                             {
@@ -439,10 +435,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.AppendLine("  {");
                                 }
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                sb.Append("    UNION\n");
+                                sb.AppendLine("    UNION");
                             }
 
                             //Current query IS the last of the query
@@ -454,7 +450,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                    sb.Append("  }\n");
+                                    sb.AppendLine("  }");
                                 }
                                 else
                                 {
@@ -472,7 +468,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                sb.Append("  }\n");
+                                sb.AppendLine("  }");
                             }
                             else
                             {
@@ -498,10 +494,10 @@ namespace RDFSharp.Query
                 {
                     modifiers.Where(mod => mod is RDFLimitModifier)
                              .ToList()
-                             .ForEach(lim => { sb.Append("\n"); sb.Append(lim); });
+                             .ForEach(lim => { sb.AppendLine(); sb.Append(lim); });
                     modifiers.Where(mod => mod is RDFOffsetModifier)
                              .ToList()
-                             .ForEach(off => { sb.Append("\n"); sb.Append(off); });
+                             .ForEach(off => { sb.AppendLine(); sb.Append(off); });
                 }
                 #endregion
 
@@ -522,8 +518,8 @@ namespace RDFSharp.Query
                 List<RDFNamespace> prefixes = constructQuery.GetPrefixes();
                 if (prefixes.Any())
                 {
-                    prefixes.ForEach(pf => sb.Append(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">\n")));
-                    sb.Append("\n");
+                    prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
+                    sb.AppendLine();
                 }
                 #endregion
 
@@ -534,7 +530,8 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region TEMPLATES
-                sb.Append("\n{\n");
+                sb.AppendLine();
+                sb.AppendLine("{");
                 constructQuery.Templates.ForEach(tp =>
                 {
                     string tpString = PrintPattern(tp, constructQuery.Prefixes);
@@ -547,15 +544,15 @@ namespace RDFSharp.Query
                     if (tp.IsOptional)
                         tpString = tpString.Replace("OPTIONAL { ", string.Empty).TrimEnd(new char[] { ' ', '}' });
 
-                    sb.Append(string.Concat("  ", tpString, " .\n"));
+                    sb.AppendLine(string.Concat("  ", tpString, " ."));
                 });
-                sb.Append("}\n");
+                sb.AppendLine("}");
                 #endregion
 
                 #endregion
 
                 #region BODY
-                sb.Append("WHERE {\n");
+                sb.AppendLine("WHERE {");
 
                 #region MEMBERS
                 bool printingUnion = false;
@@ -579,10 +576,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.AppendLine("  {");
                                 }
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                sb.Append("    UNION\n");
+                                sb.AppendLine("    UNION");
                             }
 
                             //Current pattern group IS the last of the query
@@ -594,7 +591,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                    sb.Append("  }\n");
+                                    sb.AppendLine("  }");
                                 }
                                 else
                                 {
@@ -612,7 +609,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                sb.Append("  }\n");
+                                sb.AppendLine("  }");
                             }
                             else
                             {
@@ -642,10 +639,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.AppendLine("  {");
                                 }
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                sb.Append("    UNION\n");
+                                sb.AppendLine("    UNION");
                             }
 
                             //Current query IS the last of the query
@@ -657,7 +654,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                    sb.Append("  }\n");
+                                    sb.AppendLine("  }");
                                 }
                                 else
                                 {
@@ -675,7 +672,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                sb.Append("  }\n");
+                                sb.AppendLine("  }");
                             }
                             else
                             {
@@ -700,10 +697,10 @@ namespace RDFSharp.Query
                 {
                     modifiers.Where(mod => mod is RDFLimitModifier)
                              .ToList()
-                             .ForEach(lim => { sb.Append("\n"); sb.Append(lim); });
+                             .ForEach(lim => { sb.AppendLine(); sb.Append(lim); });
                     modifiers.Where(mod => mod is RDFOffsetModifier)
                              .ToList()
-                             .ForEach(off => { sb.Append("\n"); sb.Append(off); });
+                             .ForEach(off => { sb.AppendLine(); sb.Append(off); });
                 }
                 #endregion
 
@@ -724,8 +721,8 @@ namespace RDFSharp.Query
                 List<RDFNamespace> prefixes = askQuery.GetPrefixes();
                 if (prefixes.Any())
                 {
-                    prefixes.ForEach(pf => sb.Append(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">\n")));
-                    sb.Append("\n");
+                    prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
+                    sb.AppendLine();
                 }
                 #endregion
 
@@ -738,7 +735,8 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region BODY
-                sb.Append("\nWHERE {\n");
+                sb.AppendLine();
+                sb.AppendLine("WHERE {");
 
                 #region MEMBERS
                 bool printingUnion = false;
@@ -763,10 +761,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.AppendLine("  {");
                                 }
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                sb.Append("    UNION\n");
+                                sb.AppendLine("    UNION");
                             }
 
                             //Current pattern group IS the last of the query
@@ -778,7 +776,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                    sb.Append("  }\n");
+                                    sb.AppendLine("  }");
                                 }
                                 else
                                 {
@@ -796,7 +794,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 2, true, prefixes));
-                                sb.Append("  }\n");
+                                sb.AppendLine("  }");
                             }
                             else
                             {
@@ -826,10 +824,10 @@ namespace RDFSharp.Query
                                 if (!printingUnion)
                                 {
                                     printingUnion = true;
-                                    sb.Append("  {\n");
+                                    sb.AppendLine("  {");
                                 }
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                sb.Append("    UNION\n");
+                                sb.AppendLine("    UNION");
                             }
 
                             //Current query IS the last of the query
@@ -841,7 +839,7 @@ namespace RDFSharp.Query
                                 {
                                     printingUnion = false;
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                    sb.Append("  }\n");
+                                    sb.AppendLine("  }");
                                 }
                                 else
                                 {
@@ -859,7 +857,7 @@ namespace RDFSharp.Query
                             {
                                 printingUnion = false;
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
-                                sb.Append("  }\n");
+                                sb.AppendLine("  }");
                             }
                             else
                             {
@@ -889,11 +887,11 @@ namespace RDFSharp.Query
             StringBuilder result = new StringBuilder();
             if (patternGroup.IsOptional && !skipOptional)
             {
-                result.Append(string.Concat("  ", spaces, "OPTIONAL {", Environment.NewLine));
+                result.AppendLine(string.Concat("  ", spaces, "OPTIONAL {"));
                 spaces = string.Concat(spaces, "  ");
             }
-            //result.Append(string.Concat("  ", spaces, "#", patternGroup.PatternGroupName, Environment.NewLine));
-            result.Append(string.Concat(spaces, "  {", Environment.NewLine));
+            //result.AppendLine(string.Concat("  ", spaces, "#", patternGroup.PatternGroupName));
+            result.AppendLine(string.Concat(spaces, "  {"));
             #endregion
 
             #region MEMBERS
@@ -912,7 +910,8 @@ namespace RDFSharp.Query
                         {
                             //Begin a new Union block
                             printingUnion = true;
-                            result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }", Environment.NewLine, spaces, "    UNION", Environment.NewLine));
+                            result.AppendLine(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }"));
+                            result.Append(string.Concat(spaces, "    UNION"));
                         }
                         else
                         {
@@ -920,11 +919,11 @@ namespace RDFSharp.Query
                             if (printingUnion)
                             {
                                 printingUnion = false;
-                                result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }", Environment.NewLine));
+                                result.AppendLine(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }"));
                             }
                             else
                             {
-                                result.Append(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " .", Environment.NewLine));
+                                result.AppendLine(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " ."));
                             }
                         }
                     }
@@ -935,11 +934,11 @@ namespace RDFSharp.Query
                         if (printingUnion)
                         {
                             printingUnion = false;
-                            result.Append(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }", Environment.NewLine));
+                            result.AppendLine(string.Concat(spaces, "    { ", PrintPattern((RDFPattern)pgMember, prefixes), " }"));
                         }
                         else
                         {
-                            result.Append(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " .", Environment.NewLine));
+                            result.AppendLine(string.Concat(spaces, "    ", PrintPattern((RDFPattern)pgMember, prefixes), " ."));
                         }
                     }
                 }
@@ -952,11 +951,11 @@ namespace RDFSharp.Query
                     if (printingUnion)
                     {
                         printingUnion = false;
-                        result.Append(string.Concat(spaces, "    { ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " }", Environment.NewLine));
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " }"));
                     }
                     else
                     {
-                        result.Append(string.Concat(spaces, "    ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " .", Environment.NewLine));
+                        result.AppendLine(string.Concat(spaces, "    ", PrintPropertyPath((RDFPropertyPath)pgMember, prefixes), " ."));
                     }
                 }
                 #endregion
@@ -968,11 +967,11 @@ namespace RDFSharp.Query
                     if (printingUnion)
                     {
                         printingUnion = false;
-                        result.Append(string.Concat(spaces, "    { ", PrintValues((RDFValues)pgMember, prefixes, spaces), " }", Environment.NewLine));
+                        result.AppendLine(string.Concat(spaces, "    { ", PrintValues((RDFValues)pgMember, prefixes, spaces), " }"));
                     }
                     else
                     {
-                        result.Append(string.Concat(spaces, "    ", PrintValues((RDFValues)pgMember, prefixes, spaces), " .", Environment.NewLine));
+                        result.AppendLine(string.Concat(spaces, "    ", PrintValues((RDFValues)pgMember, prefixes, spaces), " ."));
                     }
                 }
                 #endregion
@@ -982,13 +981,13 @@ namespace RDFSharp.Query
             #region FILTERS
             patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter))
                                      .ToList()
-                                     .ForEach(f => result.Append(string.Concat(spaces, "    ", f.ToString(prefixes), " ", Environment.NewLine)));
+                                     .ForEach(f => result.AppendLine(string.Concat(spaces, "    ", f.ToString(prefixes), " ")));
             #endregion
 
             #region FOOTER
-            result.Append(string.Concat(spaces, "  }", Environment.NewLine));
+            result.AppendLine(string.Concat(spaces, "  }"));
             if (patternGroup.IsOptional && !skipOptional)
-                result.Append(string.Concat(spaces, "}", Environment.NewLine));
+                result.AppendLine(string.Concat(spaces, "}"));
             #endregion
 
             return result.ToString();
