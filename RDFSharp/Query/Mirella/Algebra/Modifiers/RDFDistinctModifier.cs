@@ -49,9 +49,7 @@ namespace RDFSharp.Query
             List<string> colNames = new List<string>();
             int columnsCount = table.Columns.Count;
             for (int i = 0; i < columnsCount; i++)
-            {
                 colNames.Add(table.Columns[i].ColumnName);
-            }
             table = table.DefaultView.ToTable(true, colNames.ToArray<string>());
             return table;
         }
