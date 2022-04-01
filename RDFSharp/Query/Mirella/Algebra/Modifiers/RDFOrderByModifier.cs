@@ -66,7 +66,7 @@ namespace RDFSharp.Query
         {
             if (table.Columns.Contains(this.Variable.ToString()))
             {
-                if (table.DefaultView.Sort != string.Empty)
+                if (!string.IsNullOrEmpty(table.DefaultView.Sort))
                     table.DefaultView.Sort = string.Concat(table.DefaultView.Sort, ", ", this.Variable, " ", this.OrderByFlavor);
                 else
                     table.DefaultView.Sort = string.Concat(this.Variable, " ", this.OrderByFlavor);

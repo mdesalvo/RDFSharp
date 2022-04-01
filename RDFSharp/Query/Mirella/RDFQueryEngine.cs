@@ -396,24 +396,24 @@ namespace RDFSharp.Query
             if (query is RDFSelectQuery)
             {
                 #region GROUPBY
-                var grbModifier = modifiers.SingleOrDefault(m => m is RDFGroupByModifier);
-                if (grbModifier != null)
+                var groupbyModifier = modifiers.SingleOrDefault(m => m is RDFGroupByModifier);
+                if (groupbyModifier != null)
                 {
-                    table = grbModifier.ApplyModifier(table);
+                    table = groupbyModifier.ApplyModifier(table);
 
                     #region PROJECTION
                     ((RDFSelectQuery)query).ProjectionVars.Clear();
-                    ((RDFGroupByModifier)grbModifier).PartitionVariables.ForEach(pv => ((RDFSelectQuery)query).AddProjectionVariable(pv));
-                    ((RDFGroupByModifier)grbModifier).Aggregators.ForEach(ag => ((RDFSelectQuery)query).AddProjectionVariable(ag.ProjectionVariable));
+                    ((RDFGroupByModifier)groupbyModifier).PartitionVariables.ForEach(pv => ((RDFSelectQuery)query).AddProjectionVariable(pv));
+                    ((RDFGroupByModifier)groupbyModifier).Aggregators.ForEach(ag => ((RDFSelectQuery)query).AddProjectionVariable(ag.ProjectionVariable));
                     #endregion
                 }
                 #endregion
 
                 #region ORDERBY
-                var ordModifiers = modifiers.Where(m => m is RDFOrderByModifier);
-                if (ordModifiers.Any())
+                var orderbyModifiers = modifiers.Where(m => m is RDFOrderByModifier);
+                if (orderbyModifiers.Any())
                 {
-                    table = ordModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
+                    table = orderbyModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
                     table = table.DefaultView.ToTable();
                 }
                 #endregion

@@ -40,7 +40,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplyModifier()
+        public void ShouldApplyDistinctModifier()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
