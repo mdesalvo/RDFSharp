@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -47,6 +46,8 @@ namespace RDFSharp.Query
         {
             if (partitionVariables == null || partitionVariables.Count == 0)
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter is null or empty.");
+            if (partitionVariables.Any(pv => pv == null))
+                throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter contains null elements.");
 
             this.PartitionVariables = new List<RDFVariable>();
             this.Aggregators = new List<RDFAggregator>();
@@ -81,14 +82,10 @@ namespace RDFSharp.Query
             if (aggregator != null)
             {
                 //There cannot exist two aggregators projecting the same variable
-                if (!this.Aggregators.Any(af => af.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
-                {
-                    this.Aggregators.Add(aggregator);
-                }
-                else
-                {
+                if (this.Aggregators.Any(af => af.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                     throw new RDFQueryException(string.Format("Cannot add aggregator to GroupBy modifier because the given projection variable '{0}' is already used by another aggregator.", aggregator.ProjectionVariable));
-                }
+
+                this.Aggregators.Add(aggregator);
             }
             return this;
         }
@@ -117,14 +114,15 @@ namespace RDFSharp.Query
         /// </summary>
         private void ConsistencyChecks(DataTable table)
         {
-            //1 - Every partition variable must be found in the working table as a column
+            //Every partition variable must be found in the working table as a column
             if (!this.PartitionVariables.TrueForAll(pv => table.Columns.Contains(pv.ToString())))
             {
                 string notfoundPartitionVars = string.Join(",", this.PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
                                                                                        .Select(pv => pv.ToString()));
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {0}", notfoundPartitionVars));
             }
-            //2 - Every aggregation variable must be found in the working table as a column
+
+            //Every aggregation variable must be found in the working table as a column
             if (!this.Aggregators.TrueForAll(ag => table.Columns.Contains(ag.AggregatorVariable.ToString())))
             {
                 //Use lookup hashset to ensure distinctness of result variables
@@ -134,10 +132,11 @@ namespace RDFSharp.Query
                     if (!notfoundAggregatorVarsLookup.Contains(notfoundAggregatorVar.AggregatorVariable.ToString()))
                         notfoundAggregatorVarsLookup.Add(notfoundAggregatorVar.AggregatorVariable.ToString());
                 }
-                var notfoundAggregatorVars = string.Join(",", notfoundAggregatorVarsLookup);
+                string notfoundAggregatorVars = string.Join(",", notfoundAggregatorVarsLookup);
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", notfoundAggregatorVars));
             }
-            //3 - There should NOT be intersection between partition variables and projection variables
+
+            //There should NOT be intersection between partition variables and projection variables
             if (this.PartitionVariables.Any(pv => this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable))))
             {
                 string commonPartitionProjectionVars = string.Join(",", this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => pv.Equals(ag.ProjectionVariable)))
@@ -189,13 +188,10 @@ namespace RDFSharp.Query
                 bool keepRow = false;
                 while (rowsEnum.MoveNext())
                 {
-
                     keepRow = true;
-                    var filtersEnum = havingFilters.GetEnumerator();
+                    IEnumerator<RDFComparisonFilter> filtersEnum = havingFilters.GetEnumerator();
                     while (keepRow && filtersEnum.MoveNext())
-                    {
                         keepRow = filtersEnum.Current.ApplyFilter((DataRow)rowsEnum.Current, false);
-                    }
 
                     if (keepRow)
                     {
@@ -203,7 +199,6 @@ namespace RDFSharp.Query
                         newRow.ItemArray = ((DataRow)rowsEnum.Current).ItemArray;
                         filteredTable.Rows.Add(newRow);
                     }
-
                 }
                 #endregion
 

@@ -33,6 +33,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(modifier);
             Assert.IsTrue(modifier.Offset == 25);
+            Assert.IsFalse(modifier.IsEvaluable);
             Assert.IsTrue(modifier.ToString().Equals("OFFSET 25"));
             Assert.IsNotNull(modifier.QueryMemberStringID);
             Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));

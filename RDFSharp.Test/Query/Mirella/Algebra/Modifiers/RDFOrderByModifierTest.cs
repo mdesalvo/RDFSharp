@@ -34,6 +34,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(modifier);
             Assert.IsTrue(modifier.Variable.Equals(new RDFVariable("?VAR")));
             Assert.IsTrue(modifier.OrderByFlavor.Equals(RDFQueryEnums.RDFOrderByFlavors.ASC));
+            Assert.IsFalse(modifier.IsEvaluable);
             Assert.IsTrue(modifier.ToString().Equals("ASC(?VAR)"));
             Assert.IsNotNull(modifier.QueryMemberStringID);
             Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
@@ -49,6 +50,7 @@ namespace RDFSharp.Test.Query
             Assert.IsNotNull(modifier);
             Assert.IsTrue(modifier.Variable.Equals(new RDFVariable("?VAR")));
             Assert.IsTrue(modifier.OrderByFlavor.Equals(RDFQueryEnums.RDFOrderByFlavors.DESC));
+            Assert.IsFalse(modifier.IsEvaluable);
             Assert.IsTrue(modifier.ToString().Equals("DESC(?VAR)"));
             Assert.IsNotNull(modifier.QueryMemberStringID);
             Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));

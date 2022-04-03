@@ -32,6 +32,7 @@ namespace RDFSharp.Test.Query
             RDFDistinctModifier modifier = new RDFDistinctModifier();
 
             Assert.IsNotNull(modifier);
+            Assert.IsFalse(modifier.IsEvaluable);
             Assert.IsTrue(modifier.ToString().Equals("DISTINCT"));
             Assert.IsNotNull(modifier.QueryMemberStringID);
             Assert.IsTrue(modifier.QueryMemberID.Equals(RDFModelUtilities.CreateHash(modifier.QueryMemberStringID)));
