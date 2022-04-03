@@ -91,6 +91,19 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(modifier.Equals(modifier));
             Assert.IsFalse(modifier.Equals(new RDFGroupByModifier(partitionVariables).AddAggregator(aggregator)));
         }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnAddingAggregatorBecauseDuplicatePartitionVariable()
+        {
+            RDFVariable variable1 = new RDFVariable("?VAR1");
+            RDFVariable variable2 = new RDFVariable("?VAR2");
+            RDFVariable variable3 = new RDFVariable("?VAR3");
+            List<RDFVariable> partitionVariables = new List<RDFVariable>() { variable1 };
+            RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
+            RDFAggregator aggregator = new RDFAggregator(variable2, variable1);
+
+            Assert.ThrowsException<RDFQueryException>(() => modifier.AddAggregator(aggregator));
+        }
         #endregion
     }
 }
