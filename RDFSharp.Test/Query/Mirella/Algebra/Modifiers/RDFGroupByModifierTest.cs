@@ -100,9 +100,102 @@ namespace RDFSharp.Test.Query
             RDFVariable variable3 = new RDFVariable("?VAR3");
             List<RDFVariable> partitionVariables = new List<RDFVariable>() { variable1 };
             RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
-            RDFAggregator aggregator = new RDFAggregator(variable2, variable1);
+            RDFAggregator aggregator1 = new RDFAggregator(variable1, variable3);
+            RDFAggregator aggregator2 = new RDFAggregator(variable2, variable3);
+            modifier.AddAggregator(aggregator1);
 
-            Assert.ThrowsException<RDFQueryException>(() => modifier.AddAggregator(aggregator));
+            Assert.ThrowsException<RDFQueryException>(() => modifier.AddAggregator(aggregator2), "Cannot add aggregator to GroupBy modifier because the given projection variable '?VAR3' is already used by another aggregator.");
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionDuringConsistencyChecksBecauseUnavailablePartitionVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row0 = table.NewRow();
+            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row0["?C"] = new RDFResource("ex:value1").ToString();
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row1["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row2["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row2);
+            table.AcceptChanges();
+
+            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?D") });
+            
+            Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: ?D");
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionDuringConsistencyChecksBecauseUnavailableAggregatorVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row0 = table.NewRow();
+            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row0["?C"] = new RDFResource("ex:value1").ToString();
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row1["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row2["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row2);
+            table.AcceptChanges();
+
+            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?A")));
+            modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?B")));
+            
+            Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: ?D");
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionDuringConsistencyChecksBecauseCommonPartitionProjectionVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row0 = table.NewRow();
+            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row0["?C"] = new RDFResource("ex:value1").ToString();
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row1["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row2["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row2);
+            table.AcceptChanges();
+
+            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?B") });
+            modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?A")));
+            modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?B")));
+            
+            Assert.ThrowsException<RDFQueryException>(() => modifier.ApplyModifier(table), "Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): ?B");
         }
         #endregion
     }
