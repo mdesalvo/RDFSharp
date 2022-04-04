@@ -256,6 +256,11 @@ namespace RDFSharp.Test.Query
             row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
             row2["?C"] = new RDFResource("ex:value0").ToString();
             table.Rows.Add(row2);
+            DataRow row3 = table.NewRow();
+            row3["?A"] = new RDFTypedLiteral("36.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row3["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row3["?C"] = DBNull.Value;
+            table.Rows.Add(row3);
             table.AcceptChanges();
 
             //This will behave like a partition aggregator on column "?C" with an having clause "?C = ex:value0"
