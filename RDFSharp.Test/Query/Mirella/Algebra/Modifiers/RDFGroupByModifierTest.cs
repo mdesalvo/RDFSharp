@@ -222,7 +222,7 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row2);
             table.AcceptChanges();
 
-            //This will behave like an implicit partition aggregator on column "?C"
+            //This will behave like a partition aggregator on column "?C"
             RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
             DataTable result = modifier.ApplyModifier(table);
 
@@ -232,6 +232,42 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.Rows.Count == 2);
             Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1"));
             Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyModifierWithHavingClause()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            table.Columns.Add("?C", typeof(string));
+            DataRow row0 = table.NewRow();
+            row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row0["?C"] = new RDFResource("ex:value1").ToString();
+            table.Rows.Add(row0);
+            DataRow row1 = table.NewRow();
+            row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            row1["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row1);
+            DataRow row2 = table.NewRow();
+            row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
+            row2["?C"] = new RDFResource("ex:value0").ToString();
+            table.Rows.Add(row2);
+            table.AcceptChanges();
+
+            //This will behave like a partition aggregator on column "?C" with an having clause "?C = ex:value0"
+            RDFGroupByModifier modifier = new RDFGroupByModifier(new List<RDFVariable>() { new RDFVariable("?C") });
+            modifier.Aggregators[0].SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFResource("ex:value0"));
+            DataTable result = modifier.ApplyModifier(table);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Columns.Count == 1);
+            Assert.IsTrue(result.Columns[0].ColumnName == "?C");
+            Assert.IsTrue(result.Rows.Count == 1);
+            Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0"));
         }
         #endregion
     }
