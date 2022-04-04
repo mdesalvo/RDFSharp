@@ -127,10 +127,10 @@ namespace RDFSharp.Query
                 throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {0}", string.Join(",", unavailableAggregatorVariables.Distinct())));
             
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            IEnumerable<string> commonPartitionAggregatorVariables = this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
+            IEnumerable<string> commonPartitionProjectionVariables = this.PartitionVariables.Where(pv => this.Aggregators.Any(ag => (!(ag is RDFPartitionAggregator)) && pv.Equals(ag.ProjectionVariable)))
                                                                                             .Select(pav => pav.ToString());
-            if (commonPartitionAggregatorVariables.Any())
-                throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {0}", string.Join(",", commonPartitionAggregatorVariables.Distinct())));
+            if (commonPartitionProjectionVariables.Any())
+                throw new RDFQueryException(string.Format("Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {0}", string.Join(",", commonPartitionProjectionVariables.Distinct())));
         }
 
         /// <summary>
@@ -154,6 +154,7 @@ namespace RDFSharp.Query
             List<DataTable> projFuncTables = new List<DataTable>();
             this.Aggregators.ForEach(ag =>
                 projFuncTables.Add(ag.ExecuteProjection(this.PartitionVariables)));
+            projFuncTables.RemoveAll(pft => pft == null);
 
             DataTable resultTable = new RDFQueryEngine().CombineTables(projFuncTables, false);
             return resultTable;
