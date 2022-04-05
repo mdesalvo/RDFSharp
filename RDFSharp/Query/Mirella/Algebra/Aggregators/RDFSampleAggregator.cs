@@ -20,13 +20,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFSampleAggregator represents a SAMPLE aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFSampleAggregator : RDFAggregator
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a SAMPLE aggregator on the given variable and with the given projection name
@@ -110,7 +108,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }

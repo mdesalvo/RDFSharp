@@ -15,7 +15,6 @@
 */
 
 using RDFSharp.Model;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -172,7 +171,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the aggregator in order to discard duplicates
+        /// Sets the aggregator to discard duplicates
         /// </summary>
         public RDFAggregator Distinct()
         {
@@ -181,7 +180,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the aggregator in order to also represent an having-clause
+        /// Sets the aggregator to also represent an having-clause
         /// </summary>
         public RDFAggregator SetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember comparisonValue)
         {

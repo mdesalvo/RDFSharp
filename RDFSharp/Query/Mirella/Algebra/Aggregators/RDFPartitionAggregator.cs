@@ -38,7 +38,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the string representation of the PARTITION aggregator
         /// </summary>
-        public override string ToString() => string.Empty;
+        public override string ToString()
+            => string.Empty;
         #endregion
 
         #region Methods
