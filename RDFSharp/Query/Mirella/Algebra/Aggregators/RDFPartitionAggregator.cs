@@ -20,13 +20,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFPartitionAggregator represents a PARTITION aggregation function applied by a GroupBy modifier
     /// </summary>
     internal class RDFPartitionAggregator : RDFSampleAggregator
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a PARTITION aggregator on the given variable and with the given projection name
@@ -99,7 +97,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
