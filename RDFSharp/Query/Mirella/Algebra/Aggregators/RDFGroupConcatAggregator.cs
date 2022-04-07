@@ -21,13 +21,11 @@ using System.Data;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFGroupConcatAggregator represents a GROUP_CONCAT aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFGroupConcatAggregator : RDFAggregator
     {
-
         #region Properties
         /// <summary>
         /// Separator of the group values
@@ -40,12 +38,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a GROUP_CONCAT aggregator on the given variable, with the given projection name and given separator
         /// </summary>
         public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, string separator) : base(aggrVariable, projVariable)
-        {
-            if (string.IsNullOrEmpty(separator))
-                this.Separator = " ";
-            else
-                this.Separator = separator;
-        }
+            => this.Separator = string.IsNullOrEmpty(separator) ? " " : separator;
         #endregion
 
         #region Interfaces
@@ -123,7 +116,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
