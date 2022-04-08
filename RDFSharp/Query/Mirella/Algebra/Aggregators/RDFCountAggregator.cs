@@ -22,13 +22,11 @@ using System.Globalization;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFCountAggregator represents a COUNT aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFCountAggregator : RDFAggregator
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a COUNT aggregator on the given variable and with the given projection name
@@ -112,7 +110,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
