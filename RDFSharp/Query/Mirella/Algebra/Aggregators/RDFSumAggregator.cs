@@ -23,13 +23,11 @@ using System.Globalization;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFSumAggregator represents a SUM aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFSumAggregator : RDFAggregator
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build a SUM aggregator on the given variable and with the given projection name
@@ -119,7 +117,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
