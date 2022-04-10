@@ -22,13 +22,11 @@ using System.Globalization;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFMinAggregator represents a MIN aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFMinAggregator : RDFAggregator
     {
-
         #region Properties
         /// <summary>
         /// Flavor of the aggregator
@@ -41,9 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a MIN aggregator on the given variable, with the given projection name and given flavor
         /// </summary>
         public RDFMinAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
-        {
-            this.AggregatorFlavor = aggregatorFlavor;
-        }
+            => this.AggregatorFlavor = aggregatorFlavor;
         #endregion
 
         #region Interfaces
@@ -119,7 +115,6 @@ namespace RDFSharp.Query
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, rowValue);
             else
                 this.AggregatorContext.UpdatePartitionKeyExecutionResult<string>(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
-
         }
 
         /// <summary>
@@ -203,7 +198,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
