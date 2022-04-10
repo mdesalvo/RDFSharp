@@ -22,13 +22,11 @@ using System.Globalization;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFAvgAggregator represents an AVG aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFAvgAggregator : RDFAggregator
     {
-
         #region Ctors
         /// <summary>
         /// Default-ctor to build an AVG aggregator on the given variable and with the given projection name
@@ -129,7 +127,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
