@@ -22,13 +22,11 @@ using System.Globalization;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFMinAggregator represents a MAX aggregation function applied by a GroupBy modifier
     /// </summary>
     public class RDFMaxAggregator : RDFAggregator
     {
-
         #region Properties
         /// <summary>
         /// Flavor of the aggregator
@@ -41,9 +39,7 @@ namespace RDFSharp.Query
         /// Default-ctor to build a MAX aggregator on the given variable, with the given projection name and given flavor
         /// </summary>
         public RDFMaxAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
-        {
-            this.AggregatorFlavor = aggregatorFlavor;
-        }
+            => this.AggregatorFlavor = aggregatorFlavor;
         #endregion
 
         #region Interfaces
@@ -202,7 +198,5 @@ namespace RDFSharp.Query
             RDFQueryEngine.AddRow(projFuncTable, bindings);
         }
         #endregion
-
     }
-
 }
