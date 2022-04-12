@@ -66,7 +66,6 @@ namespace RDFSharp.Query
             //Check is performed only if the row contains a column named like the filter's variable
             if (row.Table.Columns.Contains(this.Variable.ToString()))
             {
-
                 //Successfull match if the variable is bound to a value
                 keepRow = !row.IsNull(this.Variable.ToString());
 
