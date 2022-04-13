@@ -65,7 +65,8 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            string variableString = this.Variable.ToString();
+            if (row.Table.Columns.Contains(variableString))
             {
                 //Apply a negation logic on result of an "IsUri" filter
                 RDFIsUriFilter isUriFilter = new RDFIsUriFilter(this.Variable);

@@ -15,6 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
@@ -23,64 +24,46 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFBoundFilterTest
+    public class RDFIsUriFilterTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateBoundFilter()
+        public void ShouldCreateIsUriFilter()
         {
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?VAR"));
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?VAR"));
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.Variable);
             Assert.IsTrue(filter.Variable.Equals(new RDFVariable("?VAR")));
-            Assert.IsTrue(filter.ToString().Equals("FILTER ( BOUND(?VAR) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( BOUND(?VAR) )"));
+            Assert.IsTrue(filter.ToString().Equals("FILTER ( ISURI(?VAR) )"));
+            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( ISURI(?VAR) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingBoundFilterBecauseNullVariable()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFBoundFilter(null));
+        public void ShouldThrowExceptionOnCreatingIsUriFilterBecauseNullVariable()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFIsUriFilter(null));
 
         [TestMethod]
-        public void ShouldCreateBoundFilterAndKeepRow()
+        public void ShouldCreateIsUriFilterAndKeepRow()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?A"] = new RDFResource("http://example.org/").ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?A"));
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?A"));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
         }
         
         [TestMethod]
-        public void ShouldCreateBoundFilterAndKeepRowWithEmptyVariable()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = string.Empty;
-            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?Q"));
-            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
-
-            Assert.IsTrue(keepRow);
-        }
-
-        [TestMethod]
-        public void ShouldCreateBoundFilterAndKeepRowWithUnknownVariable()
+        public void ShouldCreateIsUriFilterAndKeepRowWithUnknownVariable()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -91,32 +74,50 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?Q"));
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?Q"));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateBoundFilterAndKeepRowBecauseNegation()
+        public void ShouldCreateIsUriFilterAndKeepRowBecauseNegation()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = null;
+            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?A"));
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?A"));
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsTrue(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateBoundFilterAndNotKeepRow()
+        public void ShouldCreateIsUriFilterAndNotKeepRow()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?A"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsFalse(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateIsUriFilterAndNotKeepRowWithNullVariable()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -127,25 +128,25 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?A"));
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?A"));
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateBoundFilterAndNotKeepRowBecauseNegation()
+        public void ShouldCreateIsUriFilterAndNotKeepRowBecauseNegation()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?A"] = new RDFResource("http://example.org/").ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?A"));
+            RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?A"));
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsFalse(keepRow);

@@ -65,12 +65,13 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            string variableString = this.Variable.ToString();
+            if (row.Table.Columns.Contains(variableString))
             {
-                string variableValue = row[this.Variable.ToString()].ToString();
+                string variableValue = row[variableString].ToString();
 
-                //Successfull match if an Uri can be created with the variable value
-                if (!Uri.TryCreate(variableValue, UriKind.Absolute, out Uri testUri))
+                //Successful match if an absolute Uri can be created with the variable value
+                if (!Uri.TryCreate(variableValue, UriKind.Absolute, out _))
                     keepRow = false;
 
                 //Apply the eventual negation
