@@ -28,14 +28,19 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable to be filtered
+        /// Name of the variable to be filtered
         /// </summary>
-        public RDFVariable Variable { get; internal set; }
+        public string VariableName { get; internal set; }
 
         /// <summary>
         /// Datatype to be filtered
         /// </summary>
         public RDFModelEnums.RDFDatatypes Datatype { get; internal set; }
+
+        /// <summary>
+        /// Regex to be applied for datatype filtering
+        /// </summary>
+        internal Regex DatatypeRegex {get; set;}
         #endregion
 
         #region Ctors
@@ -47,8 +52,9 @@ namespace RDFSharp.Query
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFDatatypeFilter because given \"variable\" parameter is null.");
 
-            this.Variable = variable;
+            this.VariableName = variable.ToString();
             this.Datatype = datatype;
+            this.DatatypeRegex = new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)}$");
         }
         #endregion
 
@@ -60,7 +66,7 @@ namespace RDFSharp.Query
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
             => string.Concat(
-                "FILTER ( DATATYPE(", this.Variable, ") = ",
+                "FILTER ( DATATYPE(", this.VariableName, ") = ",
                 RDFQueryPrinter.PrintPatternMember(RDFQueryUtilities.ParseRDFPatternMember(RDFModelUtilities.GetDatatypeFromEnum(this.Datatype)), prefixes), " )");
         #endregion
 
@@ -73,12 +79,12 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            if (row.Table.Columns.Contains(this.VariableName))
             {
-                string variableValue = row[this.Variable.ToString()].ToString();
+                string variableValue = row[this.VariableName].ToString();
 
                 //Successfull match if given datatype is found in the variable
-                keepRow = Regex.IsMatch(variableValue, string.Concat("\\^\\^", RDFModelUtilities.GetDatatypeFromEnum(this.Datatype), "$"));
+                keepRow = this.DatatypeRegex.IsMatch(variableValue);
 
                 //Apply the eventual negation
                 if (applyNegation)

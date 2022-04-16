@@ -18,70 +18,56 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFIsLiteralFilterTest
+    public class RDFDatatypeFilterTest
     {
         #region Tests
         [TestMethod]
-        public void ShouldCreateIsLiteralFilter()
+        public void ShouldCreateDatatypeFilter()
         {
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?VAR"));
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?VAR"), RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
 
             Assert.IsNotNull(filter);
             Assert.IsNotNull(filter.VariableName);
             Assert.IsTrue(filter.VariableName.Equals("?VAR"));
-            Assert.IsTrue(filter.ToString().Equals("FILTER ( ISLITERAL(?VAR) )"));
-            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( ISLITERAL(?VAR) )"));
+            Assert.IsTrue(filter.Datatype == RDFModelEnums.RDFDatatypes.RDFS_LITERAL);
+            Assert.IsNotNull(filter.DatatypeRegex);
+            Assert.IsTrue(filter.DatatypeRegex.ToString().Equals(new Regex($"\\^\\^{RDFModelUtilities.GetDatatypeFromEnum(filter.Datatype)}$").ToString()));
+            Assert.IsTrue(filter.ToString().Equals($"FILTER ( DATATYPE(?VAR) = <{RDFVocabulary.RDFS.LITERAL}> )"));
+            Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { RDFNamespaceRegister.GetByPrefix("rdfs") }).Equals("FILTER ( DATATYPE(?VAR) = rdfs:Literal )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
         }
 
         [TestMethod]
-        public void ShouldThrowExceptionOnCreatingIsLiteralFilterBecauseNullVariable()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFIsLiteralFilter(null));
+        public void ShouldThrowExceptionOnCreatingDatatypeFilterBecauseNullVariable()
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFDatatypeFilter(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL));
 
         [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndKeepRow()
+        public void ShouldCreateDatatypeFilterAndKeepRow()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFPlainLiteral("Hi!").ToString();
+            row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?A"));
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_STRING);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndKeepRowWithNullVariable()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = null;
-            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?A"));
-            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
-
-            Assert.IsTrue(keepRow);
-        }
-
-        [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndKeepRowWithUnknownVariable()
+        public void ShouldCreateDatatypeFilterAndKeepRowWithUnknownVariable()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -92,68 +78,50 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?Q"));
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?Q"), RDFModelEnums.RDFDatatypes.XSD_STRING);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsTrue(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndKeepRowBecauseNegation()
+        public void ShouldCreateDatatypeFilterAndKeepRowBecauseNegation()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFResource().ToString();
+            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?A"));
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_STRING);
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsTrue(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndNotKeepRow()
+        public void ShouldCreateDatatypeFilterAndNotKeepRow()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
             table.Columns.Add("?B", typeof(string));
             DataRow row = table.NewRow();
-            row["?A"] = new RDFResource("ex:novo").ToString();
+            row["?A"] = RDFTypedLiteral.True.ToString();
             row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?A"));
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_STRING);
             bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
             Assert.IsFalse(keepRow);
         }
 
         [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndNotKeepRowBecauseNegation()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("?A", typeof(string));
-            table.Columns.Add("?B", typeof(string));
-            DataRow row = table.NewRow();
-            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-            table.Rows.Add(row);
-            table.AcceptChanges();
-
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?A"));
-            bool keepRow = filter.ApplyFilter(table.Rows[0], true);
-
-            Assert.IsFalse(keepRow);
-        }
-
-        [TestMethod]
-        public void ShouldCreateIsLiteralFilterAndNotKeepRowWithNullVariableBecauseNegation()
+        public void ShouldCreateDatatypeFilterAndNotKeepRowWithNullVariable()
         {
             DataTable table = new DataTable();
             table.Columns.Add("?A", typeof(string));
@@ -164,7 +132,25 @@ namespace RDFSharp.Test.Query
             table.Rows.Add(row);
             table.AcceptChanges();
 
-            RDFIsLiteralFilter filter = new RDFIsLiteralFilter(new RDFVariable("?A"));
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_STRING);
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsFalse(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateDatatypeFilterAndNotKeepRowBecauseNegation()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFDatatypeFilter filter = new RDFDatatypeFilter(new RDFVariable("?A"), RDFModelEnums.RDFDatatypes.XSD_INT);
             bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
             Assert.IsFalse(keepRow);
