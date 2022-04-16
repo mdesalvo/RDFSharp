@@ -32,8 +32,8 @@ namespace RDFSharp.Test.Query
             RDFBoundFilter filter = new RDFBoundFilter(new RDFVariable("?VAR"));
 
             Assert.IsNotNull(filter);
-            Assert.IsNotNull(filter.Variable);
-            Assert.IsTrue(filter.Variable.Equals(new RDFVariable("?VAR")));
+            Assert.IsNotNull(filter.VariableName);
+            Assert.IsTrue(filter.VariableName.Equals("?VAR"));
             Assert.IsTrue(filter.ToString().Equals("FILTER ( BOUND(?VAR) )"));
             Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( BOUND(?VAR) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));

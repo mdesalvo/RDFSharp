@@ -27,9 +27,9 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable to be filtered
+        /// Name of the variable to be filtered
         /// </summary>
-        public RDFVariable Variable { get; internal set; }
+        public string VariableName { get; internal set; }
         #endregion
 
         #region Ctors
@@ -41,7 +41,7 @@ namespace RDFSharp.Query
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFBoundFilter because given \"variable\" parameter is null.");
             
-            this.Variable = variable;
+            this.VariableName = variable.ToString();
         }
         #endregion
 
@@ -52,7 +52,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( BOUND(", this.Variable, ") )");
+            => $"FILTER ( BOUND({this.VariableName}) )";
         #endregion
 
         #region Methods
@@ -64,11 +64,10 @@ namespace RDFSharp.Query
             bool keepRow = true;
             
             //Check is performed only if the row contains a column named like the filter's variable
-            string variableString = this.Variable.ToString();
-            if (row.Table.Columns.Contains(variableString))
+            if (row.Table.Columns.Contains(this.VariableName))
             {
                 //Successfull match if the variable is bound to a value (so does not strictly contain null)
-                keepRow = !row.IsNull(variableString);
+                keepRow = !row.IsNull(this.VariableName);
 
                 //Apply the eventual negation
                 if (applyNegation)

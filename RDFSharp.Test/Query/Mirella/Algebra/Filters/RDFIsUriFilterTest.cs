@@ -33,8 +33,8 @@ namespace RDFSharp.Test.Query
             RDFIsUriFilter filter = new RDFIsUriFilter(new RDFVariable("?VAR"));
 
             Assert.IsNotNull(filter);
-            Assert.IsNotNull(filter.Variable);
-            Assert.IsTrue(filter.Variable.Equals(new RDFVariable("?VAR")));
+            Assert.IsNotNull(filter.VariableName);
+            Assert.IsTrue(filter.VariableName.Equals("?VAR"));
             Assert.IsTrue(filter.ToString().Equals("FILTER ( ISURI(?VAR) )"));
             Assert.IsTrue(filter.ToString(new List<RDFNamespace>() { }).Equals("FILTER ( ISURI(?VAR) )"));
             Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));

@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -28,9 +29,9 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable to be filtered
+        /// Name of the variable to be filtered
         /// </summary>
-        public RDFVariable Variable { get; internal set; }
+        public string VariableName { get; internal set; }
         #endregion
 
         #region Ctors
@@ -42,7 +43,7 @@ namespace RDFSharp.Query
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFIsLiteralFilter because given \"variable\" parameter is null.");
 
-            this.Variable = variable;
+            this.VariableName = variable.ToString();
         }
         #endregion
 
@@ -53,7 +54,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( ISLITERAL(", this.Variable, ") )");
+            => $"FILTER ( ISLITERAL({this.VariableName}) )";
         #endregion
 
         #region Methods
@@ -65,12 +66,13 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            string variableString = this.Variable.ToString();
-            if (row.Table.Columns.Contains(variableString))
+            if (row.Table.Columns.Contains(this.VariableName))
             {
-                //Apply a negation logic on result of an "IsUri" filter
-                RDFIsUriFilter isUriFilter = new RDFIsUriFilter(this.Variable);
-                keepRow = isUriFilter.ApplyFilter(row, true);
+                string variableValue = row[this.VariableName].ToString();
+
+                //Successful match if an absolute Uri cannot be created with the variable value
+                if (Uri.TryCreate(variableValue, UriKind.Absolute, out _))
+                    keepRow = false;
 
                 //Apply the eventual negation
                 if (applyNegation)
