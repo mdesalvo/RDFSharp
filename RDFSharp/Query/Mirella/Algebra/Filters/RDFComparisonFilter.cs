@@ -35,11 +35,13 @@ namespace RDFSharp.Query
         /// Left Pattern Member
         /// </summary>
         public RDFPatternMember LeftMember { get; internal set; }
+        internal string LeftMemberString { get; set; }
 
         /// <summary>
         /// Right Pattern Member
         /// </summary>
         public RDFPatternMember RightMember { get; internal set; }
+        internal string RightMemberString { get; set; }
         #endregion
 
         #region Ctors
@@ -55,7 +57,9 @@ namespace RDFSharp.Query
 
             this.ComparisonFlavor = comparisonFlavor;
             this.LeftMember = leftMember;
+            this.LeftMemberString = leftMember.ToString();
             this.RightMember = rightMember;
+            this.RightMemberString = rightMember.ToString();
         }
         #endregion
 
@@ -95,34 +99,26 @@ namespace RDFSharp.Query
         /// </summary>
         internal override bool ApplyFilter(DataRow row, bool applyNegation)
         {
-            var keepRow = true;
-            var leftValue = this.LeftMember;
-            var rightValue = this.RightMember;
+            bool keepRow = true;
 
             //In case LeftMember is a variable, try to get the value corresponding to its column; if column not found, the filter fails
+            RDFPatternMember leftValue = this.LeftMember;
             if (this.LeftMember is RDFVariable)
             {
-                if (row.Table.Columns.Contains(this.LeftMember.ToString()))
-                {
-                    leftValue = RDFQueryUtilities.ParseRDFPatternMember(row[this.LeftMember.ToString()].ToString());
-                }
+                if (row.Table.Columns.Contains(this.LeftMemberString))
+                    leftValue = RDFQueryUtilities.ParseRDFPatternMember(row[this.LeftMemberString].ToString());
                 else
-                {
                     keepRow = false;
-                }
             }
 
             //In case RightMember is a variable, try to get the value corresponding to its column; if column not found, the filter fails
+            RDFPatternMember rightValue = this.RightMember;
             if (keepRow && this.RightMember is RDFVariable)
             {
-                if (row.Table.Columns.Contains(this.RightMember.ToString()))
-                {
-                    rightValue = RDFQueryUtilities.ParseRDFPatternMember(row[this.RightMember.ToString()].ToString());
-                }
+                if (row.Table.Columns.Contains(this.RightMemberString))
+                    rightValue = RDFQueryUtilities.ParseRDFPatternMember(row[this.RightMemberString].ToString());
                 else
-                {
                     keepRow = false;
-                }
             }
 
             //Perform the comparison between leftValue and rightValue
@@ -130,13 +126,11 @@ namespace RDFSharp.Query
             {
                 try
                 {
-                    var comparison = RDFQueryUtilities.CompareRDFPatternMembers(leftValue, rightValue);
+                    int comparison = RDFQueryUtilities.CompareRDFPatternMembers(leftValue, rightValue);
 
                     //Type Error
                     if (comparison == -99)
-                    {
                         keepRow = false;
-                    }
 
                     //Type Correct
                     else
