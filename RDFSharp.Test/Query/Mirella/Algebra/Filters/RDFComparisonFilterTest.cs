@@ -90,6 +90,222 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingComparisonFilterBecauseNullRightMember()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?LEFT"), null));
+        
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsLiteralAndKeepRow1()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?A"), new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsLiteralAndKeepRow2()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?A"), new RDFTypedLiteral("27.70", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsLiteralAndKeepRow3()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo, new RDFVariable("?A"), new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_DOUBLE));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsLiteralAndNotKeepRowBecauseUnknownVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariable("?Q"), new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsFalse(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithLiteralVsVariableAndKeepRow()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.LessThan,  new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_DECIMAL), new RDFVariable("?A"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsVariableAndKeepRow1()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan, new RDFVariable("?A"), new RDFVariable("?B"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsVariableAndKeepRow2()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariable("?B"), new RDFVariable("?A"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithLiteralVsVariableAndNotKeepRowBecauseUnknownVariable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_DECIMAL), new RDFVariable("?Q"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsFalse(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithVariableVsVariableAndNotKeepRowBecauseTypeError()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
+            row["?B"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFVariable("?A"), new RDFVariable("?B"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsFalse(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithResourceVsResourceAndKeepRow()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("ex:novo").ToString();
+            row["?B"] = new RDFResource("ex:novum").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo, new RDFVariable("?A"), new RDFVariable("?B"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithResourceVsResourceAndNotKeepRowBecauseNegation()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFResource("ex:novo").ToString();
+            row["?B"] = new RDFResource("ex:novum").ToString();
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo, new RDFVariable("?A"), new RDFVariable("?B"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], true);
+
+            Assert.IsFalse(keepRow);
+        }
+
+        [TestMethod]
+        public void ShouldCreateComparisonFilterWithEmptyPlainLiteralVsNullAndKeepRow()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("?A", typeof(string));
+            table.Columns.Add("?B", typeof(string));
+            DataRow row = table.NewRow();
+            row["?A"] = new RDFPlainLiteral(string.Empty).ToString();
+            row["?B"] = null;
+            table.Rows.Add(row);
+            table.AcceptChanges();
+
+            RDFComparisonFilter filter = new RDFComparisonFilter(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariable("?A"), new RDFVariable("?B"));
+            bool keepRow = filter.ApplyFilter(table.Rows[0], false);
+
+            Assert.IsTrue(keepRow);
+        }
         #endregion
     }
 }
