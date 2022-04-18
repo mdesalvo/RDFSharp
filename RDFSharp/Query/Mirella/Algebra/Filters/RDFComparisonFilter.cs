@@ -158,10 +158,7 @@ namespace RDFSharp.Query
                         }
                     }
                 }
-                catch
-                {
-                    keepRow = false; //Type Error
-                }
+                catch { keepRow = false; /*Type Error*/ }
             }
 
             //Apply the eventual negation
