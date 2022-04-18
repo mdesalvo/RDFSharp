@@ -28,14 +28,24 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable to be filtered
+        /// Name of the variable to be filtered
         /// </summary>
-        public RDFVariable Variable { get; internal set; }
+        public string VariableName { get; internal set; }
 
         /// <summary>
         /// Language to be filtered
         /// </summary>
         public string Language { get; internal set; }
+
+        /// <summary>
+        /// Regex to intercept values having any language tag
+        /// </summary>
+        internal static readonly Regex AnyLanguageRegex = new Regex("@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// Regex to intercept values having specific language tag
+        /// </summary>
+        internal Regex ExactLanguageRegex { get; set; }
         #endregion
 
         #region Ctors
@@ -46,18 +56,17 @@ namespace RDFSharp.Query
         {
             if (variable == null)
                 throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"variable\" parameter is null.");
-            if (language == null)
-                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter is null.");
 
-            if (language == string.Empty || language == "*" || RDFPlainLiteral.LangTag.Match(language).Success)
+            bool acceptsNoneOrAnyLanguageTag = (string.IsNullOrEmpty(language) || language == "*");
+            if (acceptsNoneOrAnyLanguageTag || RDFPlainLiteral.LangTag.Match(language).Success)
             {
-                this.Variable = variable;
-                this.Language = language.ToUpperInvariant();
+                this.VariableName = variable.ToString();
+                this.Language = language?.ToUpperInvariant() ?? string.Empty;
+                if (!acceptsNoneOrAnyLanguageTag)
+                    this.ExactLanguageRegex = new Regex($"@{this.Language}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
-            {
-                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent a valid language.");
-            }
+                throw new RDFQueryException("Cannot create RDFLangMatchesFilter because given \"language\" parameter (" + language + ") does not represent an acceptable language.");
         }
         #endregion
 
@@ -68,7 +77,7 @@ namespace RDFSharp.Query
         public override string ToString()
             => this.ToString(new List<RDFNamespace>());
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( LANGMATCHES(LANG(", this.Variable, "), \"", this.Language, "\") )");
+            => string.Concat("FILTER ( LANGMATCHES(LANG(", this.VariableName, "), \"", this.Language, "\") )");
         #endregion
 
         #region Methods
@@ -80,21 +89,27 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            if (row.Table.Columns.Contains(this.VariableName))
             {
-                string variableValue = row[this.Variable.ToString()].ToString();
+                string variableValue = row[this.VariableName].ToString();
 
-                //NO language is found in the variable
-                if (this.Language == string.Empty)
-                    keepRow = !Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                switch (this.Language)
+                {
+                    //NO language is acceptable in the variable
+                    case "":
+                        keepRow = !AnyLanguageRegex.IsMatch(variableValue);
+                        break;
+                    
+                    //ANY language is acceptable in the variable
+                    case "*":
+                        keepRow = AnyLanguageRegex.IsMatch(variableValue);
+                        break;
 
-                //ANY language is found in the variable
-                else if (this.Language == "*")
-                    keepRow = Regex.IsMatch(variableValue, "@[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                //GIVEN language is found in the variable
-                else
-                    keepRow = Regex.IsMatch(variableValue, string.Concat("@", this.Language, "(-[a-zA-Z0-9]{1,8})*$"), RegexOptions.IgnoreCase);
+                    //GIVEN language is acceptable in the variable
+                    default:
+                        keepRow = this.ExactLanguageRegex.IsMatch(variableValue);
+                        break;
+                }
 
                 //Apply the eventual negation
                 if (applyNegation)
