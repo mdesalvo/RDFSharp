@@ -80,7 +80,7 @@ namespace RDFSharp.Test.Query
 
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingLangMatchesFilterBecauseInvalidLanguage()
-            => Assert.ThrowsException<RDFQueryException>(() => new RDFLangMatchesFilter(null, "756"));
+            => Assert.ThrowsException<RDFQueryException>(() => new RDFLangMatchesFilter(new RDFVariable("?VAR"), "756"));
 
         [TestMethod]
         public void ShouldCreateNoneLangMatchesFilterAndKeepRow()
