@@ -29,9 +29,9 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable to be filtered
+        /// Name of the variable to be filtered
         /// </summary>
-        public RDFVariable Variable { get; internal set; }
+        public string VariableName { get; internal set; }
 
         /// <summary>
         /// Regular Expression to be filtered
@@ -50,7 +50,7 @@ namespace RDFSharp.Query
             if (regex == null)
                 throw new RDFQueryException("Cannot create RDFRegexFilter because given \"regex\" parameter is null.");
 
-            this.Variable = variable;
+            this.VariableName = variable.ToString();
             this.RegEx = regex;
         }
         #endregion
@@ -73,10 +73,10 @@ namespace RDFSharp.Query
             if (this.RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
                 regexFlags.Append("x");
 
-            if (regexFlags.ToString() != string.Empty)
-                return string.Concat("FILTER ( REGEX(STR(", this.Variable, "), \"", this.RegEx, "\", \"", regexFlags, "\") )");
+            if (!string.IsNullOrEmpty(regexFlags.ToString()))
+                return string.Concat("FILTER ( REGEX(STR(", this.VariableName, "), \"", this.RegEx, "\", \"", regexFlags, "\") )");
             else
-                return string.Concat("FILTER ( REGEX(STR(", this.Variable, "), \"", this.RegEx, "\") )");
+                return string.Concat("FILTER ( REGEX(STR(", this.VariableName, "), \"", this.RegEx, "\") )");
         }
         #endregion
 
@@ -89,12 +89,12 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only if the row contains a column named like the filter's variable
-            if (row.Table.Columns.Contains(this.Variable.ToString()))
+            if (row.Table.Columns.Contains(this.VariableName))
             {
-                var varValue = row[this.Variable.ToString()].ToString();
+                string variableValue = row[this.VariableName].ToString();
 
                 //Successfull match if the regular expression is satisfied by the variable
-                keepRow = this.RegEx.IsMatch(varValue);
+                keepRow = this.RegEx.IsMatch(variableValue);
 
                 //Apply the eventual negation
                 if (applyNegation)
