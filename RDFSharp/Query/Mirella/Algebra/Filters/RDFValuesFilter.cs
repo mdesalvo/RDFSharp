@@ -15,6 +15,7 @@
 */
 
 using RDFSharp.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -67,13 +68,11 @@ namespace RDFSharp.Query
                 //Perform the iterative check on the filter columns
                 filterColumns.ForEach(filterColumn =>
                 {
-
                     //Take the value of the column
                     string filterColumnValue = row[filterColumn].ToString();
 
                     //Filter the enumerable representation of the filter table
-                    bindingsTable = bindingsTable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue));
-
+                    bindingsTable = bindingsTable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue, StringComparison.Ordinal));
                 });
 
                 //Analyze the response of the check
