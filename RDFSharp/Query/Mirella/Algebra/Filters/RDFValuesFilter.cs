@@ -33,6 +33,11 @@ namespace RDFSharp.Query
         /// SPARQL values wrapped by the filter
         /// </summary>
         internal RDFValues Values { get; set; }
+
+        /// <summary>
+        /// Tabular representation of the SPARQL values wrapped by the filter
+        /// </summary>
+        internal DataTable ValuesTable { get; set; }
         #endregion
 
         #region Ctors
@@ -40,7 +45,10 @@ namespace RDFSharp.Query
         /// Default-ctor to build a SPARQL values filter
         /// </summary>
         internal RDFValuesFilter(RDFValues values)
-            => this.Values = values;
+        {
+            this.Values = values;
+            this.ValuesTable = values.GetDataTable();
+        }
         #endregion
 
         #region Interfaces
@@ -63,7 +71,7 @@ namespace RDFSharp.Query
             if (filterColumns.Any())
             {
                 //Get the enumerable representation of the filter table
-                EnumerableRowCollection<DataRow> bindingsTable = this.Values.GetDataTable().AsEnumerable();
+                EnumerableRowCollection<DataRow> valuesTableEnumerable = this.ValuesTable.AsEnumerable();
 
                 //Perform the iterative check on the filter columns
                 filterColumns.ForEach(filterColumn =>
@@ -72,11 +80,11 @@ namespace RDFSharp.Query
                     string filterColumnValue = row[filterColumn].ToString();
 
                     //Filter the enumerable representation of the filter table
-                    bindingsTable = bindingsTable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue, StringComparison.Ordinal));
+                    valuesTableEnumerable = valuesTableEnumerable.Where(binding => binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue, StringComparison.Ordinal));
                 });
 
                 //Analyze the response of the check
-                keepRow = bindingsTable.Any();
+                keepRow = valuesTableEnumerable.Any();
             }
 
             //Apply the eventual negation

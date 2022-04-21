@@ -291,13 +291,14 @@ namespace RDFSharp.Query
                 #region Values
                 else if (evaluablePGMember is RDFValues values)
                 {
-                    DataTable valuesResultsTable = values.GetDataTable();
-
+                    //Transform SPARQL values into an equivalent filter
+                    RDFValuesFilter valuesFilter = values.GetValuesFilter();
+                    
                     //Save result datatable
-                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesResultsTable);
+                    QueryMemberTemporaryResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
 
                     //Inject SPARQL values filter
-                    patternGroup.AddFilter(values.GetValuesFilter());
+                    patternGroup.AddFilter(valuesFilter);
                 }
                 #endregion
 
