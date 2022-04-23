@@ -68,7 +68,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsRight()
             => Assert.ThrowsException<RDFQueryException>(() => new RDFBooleanAndFilter(new RDFIsUriFilter(new RDFVariable("?VAR")), new RDFExistsFilter(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))));
-        
+
         [TestMethod]
         public void ShouldCreateBooleanAndFilterAndKeepRow()
         {
