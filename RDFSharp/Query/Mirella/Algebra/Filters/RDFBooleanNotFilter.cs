@@ -42,7 +42,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
             if (filter is RDFExistsFilter)
                 throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not allowed.");
-            
+
             this.Filter = filter;
         }
         #endregion
