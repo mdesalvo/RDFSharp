@@ -744,15 +744,12 @@ namespace RDFSharp.Query
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
-
                     #region PATTERNGROUPS
                     if (queryMember is RDFPatternGroup)
                     {
-
                         //Current pattern group is set as UNION with the next one
                         if (((RDFPatternGroup)queryMember).JoinAsUnion)
                         {
-
                             //Current pattern group IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -779,13 +776,9 @@ namespace RDFSharp.Query
                                     sb.AppendLine("  }");
                                 }
                                 else
-                                {
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
-                                }
                             }
-
                         }
-
                         //Current pattern group is set as INTERSECT with the next one
                         else
                         {
@@ -797,11 +790,8 @@ namespace RDFSharp.Query
                                 sb.AppendLine("  }");
                             }
                             else
-                            {
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
-                            }
                         }
-
                     }
                     #endregion
 
@@ -815,7 +805,6 @@ namespace RDFSharp.Query
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-
                             //Current subquery IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -829,7 +818,6 @@ namespace RDFSharp.Query
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, true));
                                 sb.AppendLine("    UNION");
                             }
-
                             //Current query IS the last of the query
                             //(so UNION keyword must not be appended at last)
                             else
@@ -842,11 +830,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine("  }");
                                 }
                                 else
-                                {
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
-                                }
                             }
-
                         }
 
                         //Current query is set as INTERSECT with the next one
@@ -860,13 +845,10 @@ namespace RDFSharp.Query
                                 sb.AppendLine("  }");
                             }
                             else
-                            {
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
-                            }
                         }
                     }
                     #endregion
-
                 }
                 #endregion
 

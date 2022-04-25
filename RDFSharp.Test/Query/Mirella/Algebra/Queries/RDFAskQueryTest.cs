@@ -16,6 +16,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using WireMock.RequestBuilders;
@@ -29,19 +31,43 @@ namespace RDFSharp.Test.Query
     [TestClass]
     public class RDFAskQueryTests
     {
-        private WireMockServer sparqlAskServer;
+        private WireMockServer server;
 
         [TestInitialize]
-        public void Initialize() => sparqlAskServer = WireMockServer.Start();
+        public void Initialize() { server = WireMockServer.Start(); }
 
         [TestCleanup]
-        public void Cleanup() => sparqlAskServer.Stop();
+        public void Cleanup()  { server.Stop(); server.Dispose(); }
         
         #region Tests
         [TestMethod]
+        public void ShouldCreateAskQuery()
+        {
+            RDFAskQuery query = new RDFAskQuery();
+
+            Assert.IsNotNull(query);
+            Assert.IsNotNull(query.QueryMembers);
+            Assert.IsTrue(query.QueryMembers.Count == 0);
+            Assert.IsNotNull(query.Prefixes);
+            Assert.IsTrue(query.Prefixes.Count == 0);
+            Assert.IsTrue(query.IsEvaluable);
+            Assert.IsFalse(query.IsOptional);
+            Assert.IsFalse(query.JoinAsUnion);
+            Assert.IsFalse(query.IsSubQuery);
+            Assert.IsTrue(query.ToString().Equals("ASK" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}"));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 0);
+            Assert.IsTrue(query.GetPatternGroups().Count() == 0);
+            Assert.IsTrue(query.GetSubQueries().Count() == 0);
+            Assert.IsTrue(query.GetValues().Count() == 0);
+            Assert.IsTrue(query.GetModifiers().Count() == 0);
+            Assert.IsTrue(query.GetPrefixes().Count() == 0);
+        }
+
+        [TestMethod]
         public void ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResult()
         {
-            sparqlAskServer
+            server
                 .Given(
                     Request.Create()
                            .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResult/sparql")
@@ -62,7 +88,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(sparqlAskServer.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResult/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResult/sparql"));
             RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
             Assert.IsNotNull(result);
@@ -72,7 +98,7 @@ namespace RDFSharp.Test.Query
         [TestMethod]
         public void ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResult()
         {
-            sparqlAskServer
+            server
                 .Given(
                     Request.Create()
                            .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResult/sparql")
@@ -93,7 +119,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(sparqlAskServer.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResult/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAndHaveFalseResult/sparql"));
             RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
             Assert.IsNotNull(result);
