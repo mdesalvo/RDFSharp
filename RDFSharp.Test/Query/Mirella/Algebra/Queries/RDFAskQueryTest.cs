@@ -65,6 +65,34 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
+        public void ShouldCreateAskQueryWithQueryMembers()
+        {
+            RDFAskQuery query = new RDFAskQuery();
+            query.AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"));
+            query.AddPatternGroup(
+                new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddFilter(new RDFIsUriFilter(new RDFVariable("?S"))));
+            query.AddSubQuery(
+                new RDFSelectQuery()
+                    .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
+                    .AddPatternGroup(
+                        new RDFPatternGroup("PG1")
+                            .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                            .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), new List<RDFPatternMember>() { RDFVocabulary.RDFS.CLASS })))
+                    .AddProjectionVariable(new RDFVariable("?S")));
+
+            Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+Environment.NewLine+"PREFIX owl: <http://www.w3.org/2002/07/owl#>"+Environment.NewLine+Environment.NewLine+"ASK"+Environment.NewLine+"WHERE {"+Environment.NewLine+"  {"+Environment.NewLine+"    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ."+Environment.NewLine+"    FILTER ( ISURI(?S) ) "+Environment.NewLine+"  }"+Environment.NewLine+"  {"+Environment.NewLine+"    SELECT ?S"+Environment.NewLine+"    WHERE {"+Environment.NewLine+"      {"+Environment.NewLine+"        ?S ?P owl:Class ."+Environment.NewLine+"        VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ."+Environment.NewLine+"      }"+Environment.NewLine+"    }"+Environment.NewLine+"  }"+Environment.NewLine+"}"));
+            Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
+            Assert.IsTrue(query.GetEvaluableQueryMembers().Count() == 2); //SPARQL Values is managed by Mirella
+            Assert.IsTrue(query.GetPatternGroups().Count() == 1);
+            Assert.IsTrue(query.GetSubQueries().Count() == 1);
+            Assert.IsTrue(query.GetValues().Count() == 1);
+            Assert.IsTrue(query.GetModifiers().Count() == 0); //ASK query doesn't have modifiers
+            Assert.IsTrue(query.GetPrefixes().Count() == 2);
+        }
+
+        [TestMethod]
         public void ShouldApplyAskQueryToSPARQLEndpointAndHaveTrueResult()
         {
             server
