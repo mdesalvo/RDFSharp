@@ -26,6 +26,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store;
 
 namespace RDFSharp.Test.Query
 {
@@ -137,43 +138,88 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public async Task ShouldApplyAskQueryToGraphAsyncAndHaveTrueResult()
+        public void ShouldApplyAskQueryToStoreAndHaveTrueResult()
         {
-            RDFGraph graph = new RDFGraph();
-            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFAskQueryResult result = await query.ApplyToGraphAsync(graph);
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = query.ApplyToStore(store);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.AskResult);
         }
 
         [TestMethod]
-        public async Task ShouldApplyAskQueryToGraphAsyncAndHaveFalseResult()
+        public void ShouldApplyAskQueryToStoreAndHaveFalseResult()
         {
-            RDFGraph graph = new RDFGraph();
-            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFAskQueryResult result = await query.ApplyToGraphAsync(graph);
+                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = query.ApplyToStore(store);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
         }
 
         [TestMethod]
-        public async Task ShouldApplyAskQueryToNullGraphAsyncAndHaveFalseResult()
+        public void ShouldApplyAskQueryToNullStoreAndHaveFalseResult()
         {
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFAskQueryResult result = await query.ApplyToGraphAsync(null);
+            RDFAskQueryResult result = query.ApplyToStore(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyAskQueryToFederationAndHaveTrueResult()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation().AddGraph(graph);
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyAskQueryToFederationAndHaveFalseResult()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            RDFFederation federation = new RDFFederation().AddGraph(graph);
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = query.ApplyToFederation(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public void ShouldApplyAskQueryToNullFederationAndHaveFalseResult()
+        {
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = query.ApplyToFederation(null);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
@@ -242,186 +288,13 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public async Task ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveTrueResult()
+        public void ShouldApplyAskQueryToNullSPARQLEndpointAndHaveFalseResult()
         {
-            server
-                .Given(
-                    Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveTrueResult/sparql")
-                           .UsingGet()
-                           .WithParam(queryParams => queryParams.ContainsKey("query")))
-                .RespondWith(
-                    Response.Create()
-                            .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
             RDFAskQuery query = new RDFAskQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveTrueResult/sparql"));
-            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
-
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
-        }
-
-        [TestMethod]
-        public async Task ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveFalseResult()
-        {
-            server
-                .Given(
-                    Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveFalseResult/sparql")
-                           .UsingGet()
-                           .WithParam(queryParams => queryParams.ContainsKey("query")))
-                .RespondWith(
-                    Response.Create()
-                            .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
-            RDFAskQuery query = new RDFAskQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveFalseResult/sparql"));
-            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
-
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAndHaveTrueResult()
-        {
-            server
-                .Given(
-                    Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAndHaveTrueResult/sparql")
-                           .UsingGet()
-                           .WithParam(queryParams => queryParams.ContainsKey("query")))
-                .RespondWith(
-                    Response.Create()
-                            .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
-            RDFAskQuery query = new RDFAskQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAndHaveTrueResult/sparql"));
-            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions());
-
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
-        }
-
-        [TestMethod]
-        public void ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAndHaveFalseResult()
-        {
-            server
-                .Given(
-                    Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAndHaveFalseResult/sparql")
-                           .UsingGet()
-                           .WithParam(queryParams => queryParams.ContainsKey("query")))
-                .RespondWith(
-                    Response.Create()
-                            .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
-            RDFAskQuery query = new RDFAskQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAndHaveFalseResult/sparql"));
-            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions());
-
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
-        }
-
-        [TestMethod]
-        public async Task ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAsyncAndHaveTrueResult()
-        {
-            server
-                .Given(
-                    Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAsyncAndHaveTrueResult/sparql")
-                           .UsingGet()
-                           .WithParam(queryParams => queryParams.ContainsKey("query")))
-                .RespondWith(
-                    Response.Create()
-                            .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
-</sparql>", encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
-            RDFAskQuery query = new RDFAskQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAsyncAndHaveTrueResult/sparql"));
-            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint, new RDFSPARQLEndpointQueryOptions());
-
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
-        }
-
-        [TestMethod]
-        public async Task ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAsyncAndHaveFalseResult()
-        {
-            server
-                .Given(
-                    Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAsyncAndHaveFalseResult/sparql")
-                           .UsingGet()
-                           .WithParam(queryParams => queryParams.ContainsKey("query")))
-                .RespondWith(
-                    Response.Create()
-                            .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
-</sparql>", encoding: Encoding.UTF8)
-                            .WithHeader("Content-Type", "application/sparql-results+xml")
-                            .WithStatusCode(HttpStatusCode.OK));
-
-            RDFAskQuery query = new RDFAskQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-                .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithDefaultOptionsAsyncAndHaveFalseResult/sparql"));
-            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint, new RDFSPARQLEndpointQueryOptions());
+            RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(null);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
@@ -534,6 +407,214 @@ namespace RDFSharp.Test.Query
             RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
             RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        //ASYNC
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToGraphAsyncAndHaveTrueResult()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToGraphAsync(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToGraphAsyncAndHaveFalseResult()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToGraphAsync(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToNullGraphAsyncAndHaveFalseResult()
+        {
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToGraphAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToStoreAsyncAndHaveTrueResult()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToStoreAsyncAndHaveFalseResult()
+        {
+            RDFMemoryStore store = new RDFMemoryStore();
+            store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToStoreAsync(store);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToNullStoreAsyncAndHaveFalseResult()
+        {
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToStoreAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToFederationAsyncAndHaveTrueResult()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFFederation federation = new RDFFederation().AddGraph(graph);
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToFederationAsync(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToFederationAsyncAndHaveFalseResult()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            RDFFederation federation = new RDFFederation().AddGraph(graph);
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToFederationAsync(federation);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToNullFederationAsyncAndHaveFalseResult()
+        {
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToFederationAsync(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveTrueResult()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveTrueResult/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>true</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveTrueResult/sparql"));
+            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveFalseResult()
+        {
+            server
+                .Given(
+                    Request.Create()
+                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveFalseResult/sparql")
+                           .UsingGet()
+                           .WithParam(queryParams => queryParams.ContainsKey("query")))
+                .RespondWith(
+                    Response.Create()
+                            .WithBody(
+@"<?xml version=""1.0""?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+    <head />
+    <boolean>false</boolean>
+</sparql>", encoding: Encoding.UTF8)
+                            .WithHeader("Content-Type", "application/sparql-results+xml")
+                            .WithStatusCode(HttpStatusCode.OK));
+
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointAsyncAndHaveFalseResult/sparql"));
+            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.AskResult);
+        }
+
+        [TestMethod]
+        public async Task ShouldApplyAskQueryToNullSPARQLEndpointAsyncAndHaveFalseResult()
+        {
+            RDFAskQuery query = new RDFAskQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+            RDFAskQueryResult result = await query.ApplyToSPARQLEndpointAsync(null);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.AskResult);
