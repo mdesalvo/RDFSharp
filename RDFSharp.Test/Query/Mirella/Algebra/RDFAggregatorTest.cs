@@ -23,7 +23,7 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFAggregatorTests
+    public class RDFAggregatorTest
     {
         #region Tests
         [TestMethod]

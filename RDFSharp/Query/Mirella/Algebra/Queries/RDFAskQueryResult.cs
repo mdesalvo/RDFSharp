@@ -15,21 +15,19 @@
 */
 
 using System;
+using System.Collections;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
-
     /// <summary>
     /// RDFAskResult is a container for SPARQL "ASK" query results.
     /// </summary>
     public class RDFAskQueryResult
     {
-
         #region Properties
         /// <summary>
         /// Boolean response of the ASK query
@@ -55,14 +53,13 @@ namespace RDFSharp.Query
         {
             try
             {
-
                 #region serialize
                 using (XmlTextWriter sparqlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    XmlDocument sparqlDoc = new XmlDocument();
                     sparqlWriter.Formatting = Formatting.Indented;
 
                     #region xmlDecl
+                    XmlDocument sparqlDoc = new XmlDocument();
                     XmlDeclaration sparqlDecl = sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
                     sparqlDoc.AppendChild(sparqlDecl);
                     #endregion
@@ -92,7 +89,6 @@ namespace RDFSharp.Query
                     sparqlDoc.Save(sparqlWriter);
                 }
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -125,11 +121,11 @@ namespace RDFSharp.Query
         /// </summary>
         public static RDFAskQueryResult FromSparqlXmlResult(Stream inputStream)
         {
+            RDFAskQueryResult result = new RDFAskQueryResult();
+
             try
             {
-
-                #region deserialize
-                RDFAskQueryResult result = new RDFAskQueryResult();
+                #region deserialize                
                 using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
                     using (XmlTextReader xmlReader = new XmlTextReader(streamReader))
@@ -145,62 +141,45 @@ namespace RDFSharp.Query
                         #region parse
                         bool foundHead = false;
                         bool foundBoolean = false;
-                        var nodesEnum = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
-                        while (nodesEnum != null && nodesEnum.MoveNext())
+                        IEnumerator nodesEnum = srxDoc.DocumentElement.ChildNodes.GetEnumerator();
+                        while (nodesEnum?.MoveNext() ?? false)
                         {
                             XmlNode node = (XmlNode)nodesEnum.Current;
 
                             #region HEAD
-                            if (node.Name.ToUpperInvariant().Equals("HEAD", StringComparison.Ordinal))
-                            {
+                            if (string.Equals(node.Name, "HEAD", StringComparison.OrdinalIgnoreCase))
                                 foundHead = true;
-                            }
                             #endregion
 
                             #region BOOLEAN
-                            else if (node.Name.ToUpperInvariant().Equals("BOOLEAN", StringComparison.Ordinal))
+                            else if (string.Equals(node.Name, "BOOLEAN", StringComparison.OrdinalIgnoreCase))
                             {
-                                foundBoolean = true;
-                                if (foundHead)
-                                {
-                                    if (bool.TryParse(node.InnerText, out bool bRes))
-                                    {
-                                        result.AskResult = bRes;
-                                    }
-                                    else
-                                    {
-                                        throw new Exception("\"boolean\" node contained data not corresponding to a valid Boolean.");
-                                    }
-                                }
-                                else
-                                {
+                                if (!foundHead)
                                     throw new Exception("\"head\" node was not found, or was after \"boolean\" node.");
-                                }
+                                if (!bool.TryParse(node.InnerText, out bool bRes))
+                                    throw new Exception("\"boolean\" node contained data not corresponding to a valid Boolean.");
+
+                                foundBoolean = true;
+                                result.AskResult = bRes;
                             }
                             #endregion
-
                         }
 
                         if (!foundHead)
-                        {
                             throw new Exception("mandatory \"head\" node was not found");
-                        }
                         if (!foundBoolean)
-                        {
                             throw new Exception("mandatory \"boolean\" node was not found");
-                        }
                         #endregion
-
                     }
-                }
-                return result;
+                }                
                 #endregion
-
             }
             catch (Exception ex)
             {
                 throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
             }
+
+            return result;
         }
 
         /// <summary>
@@ -223,7 +202,5 @@ namespace RDFSharp.Query
         #endregion
 
         #endregion
-
     }
-
 }

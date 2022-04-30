@@ -31,7 +31,7 @@ using RDFSharp.Store;
 namespace RDFSharp.Test.Query
 {
     [TestClass]
-    public class RDFAskQueryTests
+    public class RDFAskQueryTest
     {
         private WireMockServer server;
 
