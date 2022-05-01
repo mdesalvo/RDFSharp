@@ -49,12 +49,11 @@ namespace RDFSharp.Model
                 #region serialize
                 using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    XmlDocument rdfDoc = new XmlDocument();
                     rdfxmlWriter.Formatting = Formatting.Indented;
 
                     #region xmlDecl
-                    XmlDeclaration xmlDecl = rdfDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
-                    rdfDoc.AppendChild(xmlDecl);
+                    XmlDocument rdfDoc = new XmlDocument();
+                    rdfDoc.AppendChild(rdfDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
                     #endregion
 
                     #region rdfRoot

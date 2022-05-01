@@ -60,8 +60,7 @@ namespace RDFSharp.Query
 
                     #region xmlDecl
                     XmlDocument sparqlDoc = new XmlDocument();
-                    XmlDeclaration sparqlDecl = sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
-                    sparqlDoc.AppendChild(sparqlDecl);
+                    sparqlDoc.AppendChild(sparqlDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
                     #endregion
 
                     #region sparqlRoot
@@ -90,10 +89,7 @@ namespace RDFSharp.Query
                 }
                 #endregion
             }
-            catch (Exception ex)
-            {
-                throw new RDFQueryException("Cannot serialize SPARQL XML RESULT because: " + ex.Message, ex);
-            }
+            catch (Exception ex) { throw new RDFQueryException("Cannot serialize SPARQL XML RESULT because: " + ex.Message, ex); }
         }
 
         /// <summary>
@@ -174,10 +170,7 @@ namespace RDFSharp.Query
                 }                
                 #endregion
             }
-            catch (Exception ex)
-            {
-                throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex);
-            }
+            catch (Exception ex) { throw new RDFQueryException("Cannot read given \"SPARQL Query Results XML Format\" source because: " + ex.Message, ex); }
 
             return result;
         }

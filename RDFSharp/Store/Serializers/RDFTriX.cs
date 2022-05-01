@@ -47,12 +47,11 @@ namespace RDFSharp.Store
                 #region serialize
                 using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    XmlDocument trixDoc = new XmlDocument();
                     trixWriter.Formatting = Formatting.Indented;
 
                     #region xmlDecl
-                    XmlDeclaration trixDecl = trixDoc.CreateXmlDeclaration("1.0", "UTF-8", null);
-                    trixDoc.AppendChild(trixDecl);
+                    XmlDocument trixDoc = new XmlDocument();
+                    trixDoc.AppendChild(trixDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
                     #endregion
 
                     #region trixRoot
