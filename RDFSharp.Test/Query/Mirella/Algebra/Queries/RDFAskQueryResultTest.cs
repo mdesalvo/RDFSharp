@@ -162,6 +162,77 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(askResult2.AskResult);
         }
 
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAskQueryResultBecauseMissingHead()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <boolean>TRUE</boolean>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAskQueryResultBecauseMissingBoolean()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head />
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAskQueryResultBecauseHeadAfterBoolean()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <boolean>TRUE</boolean>
+  <head />
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAskQueryResultBecauseInvalidBoolean()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head />
+  <boolean>hello</boolean>  
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingAskQueryResultBecauseMissingHeadAndBoolean()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
