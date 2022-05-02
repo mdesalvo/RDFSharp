@@ -53,7 +53,7 @@ namespace RDFSharp.Query
                 {
                     if (prefixes.Any())
                     {
-                        prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString())));
+                        prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
                         sb.AppendLine();
                     }
                 }
@@ -122,15 +122,12 @@ namespace RDFSharp.Query
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
-
                     #region PATTERNGROUPS
                     if (queryMember is RDFPatternGroup)
                     {
-
                         //Current pattern group is set as UNION with the next one
                         if (((RDFPatternGroup)queryMember).JoinAsUnion)
                         {
-
                             //Current pattern group IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -157,11 +154,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                                 }
                                 else
-                                {
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, subqueryBodySpaces.Length, false, prefixes));
-                                }
                             }
-
                         }
 
                         //Current pattern group is set as INTERSECT with the next one
@@ -175,11 +169,8 @@ namespace RDFSharp.Query
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
-                            {
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, subqueryBodySpaces.Length, false, prefixes));
-                            }
                         }
-
                     }
                     #endregion
 
@@ -193,7 +184,6 @@ namespace RDFSharp.Query
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-
                             //Current subquery IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -220,11 +210,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                                 }
                                 else
-                                {
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
-                                }
                             }
-
                         }
 
                         //Current query is set as INTERSECT with the next one
@@ -238,9 +225,7 @@ namespace RDFSharp.Query
                                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
                             }
                             else
-                            {
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, indentLevel + 1 + (fromUnion ? 0.5 : 0), false));
-                            }
                         }
                     }
                     #endregion
@@ -318,7 +303,7 @@ namespace RDFSharp.Query
                 List<RDFNamespace> prefixes = describeQuery.GetPrefixes();
                 if (prefixes.Any())
                 {
-                    prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString())));
+                    prefixes.ForEach(pf => sb.AppendLine(string.Concat("PREFIX ", pf.NamespacePrefix, ": <", pf.NamespaceUri.ToString(), ">")));
                     sb.AppendLine();
                 }
                 #endregion
@@ -355,15 +340,12 @@ namespace RDFSharp.Query
                 RDFQueryMember lastQueryMbr = evaluableQueryMembers.LastOrDefault();
                 foreach (RDFQueryMember queryMember in evaluableQueryMembers)
                 {
-
                     #region PATTERNGROUPS
                     if (queryMember is RDFPatternGroup)
                     {
-
                         //Current pattern group is set as UNION with the next one
                         if (((RDFPatternGroup)queryMember).JoinAsUnion)
                         {
-
                             //Current pattern group IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -390,11 +372,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine("  }");
                                 }
                                 else
-                                {
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
-                                }
                             }
-
                         }
 
                         //Current pattern group is set as INTERSECT with the next one
@@ -408,9 +387,7 @@ namespace RDFSharp.Query
                                 sb.AppendLine("  }");
                             }
                             else
-                            {
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
-                            }
                         }
 
                     }
@@ -426,7 +403,6 @@ namespace RDFSharp.Query
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-
                             //Current subquery IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -453,11 +429,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine("  }");
                                 }
                                 else
-                                {
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
-                                }
                             }
-
                         }
 
                         //Current query is set as INTERSECT with the next one
@@ -471,13 +444,10 @@ namespace RDFSharp.Query
                                 sb.AppendLine("  }");
                             }
                             else
-                            {
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
-                            }
                         }
                     }
                     #endregion
-
                 }
                 #endregion
 
@@ -563,11 +533,9 @@ namespace RDFSharp.Query
                     #region PATTERNGROUPS
                     if (queryMember is RDFPatternGroup)
                     {
-
                         //Current pattern group is set as UNION with the next one
                         if (((RDFPatternGroup)queryMember).JoinAsUnion)
                         {
-
                             //Current pattern group IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -594,11 +562,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine("  }");
                                 }
                                 else
-                                {
                                     sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
-                                }
                             }
-
                         }
 
                         //Current pattern group is set as INTERSECT with the next one
@@ -612,9 +577,7 @@ namespace RDFSharp.Query
                                 sb.AppendLine("  }");
                             }
                             else
-                            {
                                 sb.Append(PrintPatternGroup((RDFPatternGroup)queryMember, 0, false, prefixes));
-                            }
                         }
 
                     }
@@ -630,7 +593,6 @@ namespace RDFSharp.Query
                         //Current subquery is set as UNION with the next one
                         if (((RDFSelectQuery)queryMember).JoinAsUnion)
                         {
-
                             //Current subquery IS NOT the last of the query
                             //(so UNION keyword must be appended at last)
                             if (!queryMember.Equals(lastQueryMbr))
@@ -657,11 +619,8 @@ namespace RDFSharp.Query
                                     sb.AppendLine("  }");
                                 }
                                 else
-                                {
                                     sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
-                                }
                             }
-
                         }
 
                         //Current query is set as INTERSECT with the next one
@@ -675,9 +634,7 @@ namespace RDFSharp.Query
                                 sb.AppendLine("  }");
                             }
                             else
-                            {
                                 sb.Append(PrintSelectQuery((RDFSelectQuery)queryMember, 1, false));
-                            }
                         }
                     }
                     #endregion
