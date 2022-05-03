@@ -102,9 +102,7 @@ namespace RDFSharp.Query
                 if (modifier is RDFOrderByModifier && this.GetModifiers().Any(m => m is RDFOrderByModifier && ((RDFOrderByModifier)m).Variable.Equals(((RDFOrderByModifier)modifier).Variable)))
                     return this;
 
-                //Add the modifier, avoiding duplicates
-                if (!this.GetModifiers().Any(m => m.Equals(modifier)))
-                    this.QueryMembers.Add(modifier);
+                this.QueryMembers.Add(modifier);
             }
             return this;
         }
