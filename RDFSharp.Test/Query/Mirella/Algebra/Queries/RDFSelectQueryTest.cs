@@ -163,50 +163,67 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
-        /*
         [TestMethod]
-        public void ShouldApplySelectQueryToStoreAndHaveTrueResult()
+        public void ShouldApplySelectQueryToStoreAndHaveResults()
         {
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?C"))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToStore(store);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
+            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
-        public void ShouldApplySelectQueryToStoreAndHaveFalseResult()
+        public void ShouldApplySelectQueryToStoreAndNotHaveResults()
         {
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToStore(store);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
-
+        
         [TestMethod]
-        public void ShouldApplySelectQueryToNullStoreAndHaveFalseResult()
+        public void ShouldApplySelectQueryToNullStoreAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToStore(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
+        /*
         [TestMethod]
         public void ShouldApplySelectQueryToFederationAndHaveTrueResult()
         {
