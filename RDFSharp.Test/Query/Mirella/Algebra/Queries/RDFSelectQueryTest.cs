@@ -223,9 +223,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
-        /*
         [TestMethod]
-        public void ShouldApplySelectQueryToFederationAndHaveTrueResult()
+        public void ShouldApplySelectQueryToFederationAndHaveResults()
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
@@ -233,49 +232,64 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToFederation(federation);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
-        public void ShouldApplySelectQueryToFederationAndHaveFalseResult()
+        public void ShouldApplySelectQueryToFederationAndNotHaveResults()
         {
             RDFGraph graph = new RDFGraph();
-            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFFederation federation = new RDFFederation().AddGraph(graph);
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToFederation(federation);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
-
+        
         [TestMethod]
-        public void ShouldApplySelectQueryToNullFederationAndHaveFalseResult()
+        public void ShouldApplySelectQueryToNullFederationAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToFederation(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
+        /*
         [TestMethod]
-        public void ShouldApplySelectQueryToSPARQLEndpointAndHaveTrueResult()
+        public void ShouldApplySelectQueryToSPARQLEndpointAndHaveResults()
         {
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveTrueResult/sparql")
+                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResults/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
@@ -293,7 +307,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveTrueResult/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveResults/sparql"));
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
             Assert.IsNotNull(result);
@@ -301,12 +315,12 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplySelectQueryToSPARQLEndpointAndHaveFalseResult()
+        public void ShouldApplySelectQueryToSPARQLEndpointAndNotHaveResults()
         {
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveFalseResult/sparql")
+                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndNotHaveResults/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
@@ -324,7 +338,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndHaveFalseResult/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAndNotHaveResults/sparql"));
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
             Assert.IsNotNull(result);
@@ -332,7 +346,7 @@ namespace RDFSharp.Test.Query
         }
 
         [TestMethod]
-        public void ShouldApplySelectQueryToNullSPARQLEndpointAndHaveFalseResult()
+        public void ShouldApplySelectQueryToNullSPARQLEndpointAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
