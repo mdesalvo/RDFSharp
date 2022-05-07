@@ -156,7 +156,7 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToGraph(null);
-
+            
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResultsCount == 0);
@@ -282,7 +282,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
-        /*
         [TestMethod]
         public void ShouldApplySelectQueryToSPARQLEndpointAndHaveResults()
         {
@@ -295,10 +294,18 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
 </sparql>", encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
@@ -311,7 +318,12 @@ namespace RDFSharp.Test.Query
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
@@ -326,10 +338,12 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results />
 </sparql>", encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
@@ -342,7 +356,11 @@ namespace RDFSharp.Test.Query
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -355,9 +373,12 @@ namespace RDFSharp.Test.Query
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
+        /*
         [TestMethod]
         public void ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehavior()
         {
