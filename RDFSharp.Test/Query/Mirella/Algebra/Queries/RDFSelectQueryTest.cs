@@ -40,7 +40,7 @@ namespace RDFSharp.Test.Query
 
         [TestCleanup]
         public void Cleanup()  { server.Stop(); server.Dispose(); }
-        
+
         #region Tests
         [TestMethod]
         public void ShouldCreateSelectQuery()
@@ -146,7 +146,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
             Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
-        
+
         [TestMethod]
         public void ShouldApplySelectQueryToNullGraphAndNotHaveResults()
         {
@@ -156,7 +156,7 @@ namespace RDFSharp.Test.Query
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
                 .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = query.ApplyToGraph(null);
-            
+
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.SelectResults);
             Assert.IsTrue(result.SelectResultsCount == 0);
@@ -206,7 +206,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
             Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
-        
+
         [TestMethod]
         public void ShouldApplySelectQueryToNullStoreAndNotHaveResults()
         {
@@ -265,7 +265,7 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
             Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
-        
+
         [TestMethod]
         public void ShouldApplySelectQueryToNullFederationAndNotHaveResults()
         {
@@ -378,7 +378,6 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
-        /*
         [TestMethod]
         public void ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehavior()
         {
@@ -391,10 +390,18 @@ namespace RDFSharp.Test.Query
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
 </sparql>", encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(1000));
@@ -414,16 +421,24 @@ namespace RDFSharp.Test.Query
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
+                           .WithPath("/RDFSelectQueryTest/ShouldGiveEmptyResultWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
 </sparql>", encoding: Encoding.UTF8)
                             .WithStatusCode(HttpStatusCode.OK)
                             .WithDelay(1000));
@@ -432,12 +447,15 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldGiveEmptyResultWhenApplyingSelectQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
 
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
@@ -446,7 +464,7 @@ namespace RDFSharp.Test.Query
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointWithOptionsToThrowException/sparql")
+                           .WithPath("/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToBehavior/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
@@ -459,7 +477,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointWithOptionsToThrowException/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldThrowExceptionWhenApplyingSelectQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
             Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
         }
@@ -488,11 +506,15 @@ namespace RDFSharp.Test.Query
             RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         //ASYNC
 
+        /*
         [TestMethod]
         public async Task ShouldApplySelectQueryToGraphAsyncAndHaveTrueResult()
         {

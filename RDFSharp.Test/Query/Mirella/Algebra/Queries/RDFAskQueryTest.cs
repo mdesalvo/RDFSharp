@@ -335,7 +335,7 @@ namespace RDFSharp.Test.Query
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
+                           .WithPath("/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
@@ -353,7 +353,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldGiveEmptyResultWhenApplyingAskQueryToSPARQLEndpointAccordingToTimingAndBehavior/sparql"));
 
             RDFAskQueryResult result = query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(250, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
 
@@ -367,7 +367,7 @@ namespace RDFSharp.Test.Query
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithOptionsToThrowException/sparql")
+                           .WithPath("/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
@@ -380,7 +380,7 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldApplyAskQueryToSPARQLEndpointWithOptionsToThrowException/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFAskQueryTest/ShouldThrowExceptionWhenApplyingAskQueryToSPARQLEndpointAccordingToBehavior/sparql"));
 
             Assert.ThrowsException<RDFQueryException>(() => query.ApplyToSPARQLEndpoint(endpoint, new RDFSPARQLEndpointQueryOptions(1000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
         }
