@@ -742,7 +742,7 @@ namespace RDFSharp.Test.Query
                         .AddPatternGroup(new RDFPatternGroup("PG1")
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
                     RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToDataSourceAndHaveResults/sparql"));
-                    RDFSelectQueryResult result = query.ApplyToSPARQLEndpoint(endpoint);
+                    RDFSelectQueryResult result = query.ApplyToDataSource(endpoint);
 
                     Assert.IsNotNull(result);
                     Assert.IsNotNull(result.SelectResults);
@@ -1150,7 +1150,7 @@ namespace RDFSharp.Test.Query
                         .AddPatternGroup(new RDFPatternGroup("PG1")
                             .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
                     RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToDataSourceAsyncAndHaveResults/sparql"));
-                    RDFSelectQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
+                    RDFSelectQueryResult result = await query.ApplyToDataSourceAsync(endpoint);
 
                     Assert.IsNotNull(result);
                     Assert.IsNotNull(result.SelectResults);
