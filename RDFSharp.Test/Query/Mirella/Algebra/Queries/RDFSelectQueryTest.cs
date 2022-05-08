@@ -514,95 +514,125 @@ namespace RDFSharp.Test.Query
 
         //ASYNC
 
-        /*
         [TestMethod]
-        public async Task ShouldApplySelectQueryToGraphAsyncAndHaveTrueResult()
+        public async Task ShouldApplySelectQueryToGraphAsyncAndHaveResults()
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToGraphAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToGraphAsyncAndNotHaveResults()
         {
             RDFGraph graph = new RDFGraph();
-            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToNullGraphAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToNullGraphAsyncAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToGraphAsync(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToStoreAsyncAndHaveTrueResult()
+        public async Task ShouldApplySelectQueryToStoreAsyncAndHaveResults()
         {
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?C"))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToStoreAsync(store);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?C"));
+            Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?C"].Equals(RDFNamespaceRegister.DefaultNamespace.ToString()));
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToStoreAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToStoreAsyncAndNotHaveResults()
         {
             RDFMemoryStore store = new RDFMemoryStore();
             store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToStoreAsync(store);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToNullStoreAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToNullStoreAsyncAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToStoreAsync(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToFederationAsyncAndHaveTrueResult()
+        public async Task ShouldApplySelectQueryToFederationAsyncAndHaveResults()
         {
             RDFGraph graph = new RDFGraph();
             graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
@@ -610,58 +640,80 @@ namespace RDFSharp.Test.Query
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToFederationAsync(federation);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToFederationAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToFederationAsyncAndNotHaveResults()
         {
             RDFGraph graph = new RDFGraph();
-            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
             RDFFederation federation = new RDFFederation().AddGraph(graph);
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToFederationAsync(federation);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToNullFederationAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToNullFederationAsyncAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
             RDFSelectQueryResult result = await query.ApplyToFederationAsync(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveTrueResult()
+        public async Task ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveResults()
         {
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveTrueResult/sparql")
+                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveResults/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>true</boolean>
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:flower</uri>
+      </binding>
+    </result>
+  </results>
 </sparql>", encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
@@ -670,29 +722,36 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveTrueResult/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveResults/sparql"));
             RDFSelectQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 1);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 1);
+            Assert.IsTrue(result.SelectResults.Rows[0]["?S"].Equals("ex:flower"));
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToSPARQLEndpointAsyncAndNotHaveResults()
         {
             server
                 .Given(
                     Request.Create()
-                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveFalseResult/sparql")
+                           .WithPath("/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndNotHaveResults/sparql")
                            .UsingGet()
                            .WithParam(queryParams => queryParams.ContainsKey("query")))
                 .RespondWith(
                     Response.Create()
                             .WithBody(
-@"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head />
-    <boolean>false</boolean>
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S"" />
+  </head>
+  <results />
 </sparql>", encoding: Encoding.UTF8)
                             .WithHeader("Content-Type", "application/sparql-results+xml")
                             .WithStatusCode(HttpStatusCode.OK));
@@ -701,15 +760,19 @@ namespace RDFSharp.Test.Query
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
                 .AddPatternGroup(new RDFPatternGroup("PG1")
                     .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS)));
-            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndHaveFalseResult/sparql"));
+            RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryToSPARQLEndpointAsyncAndNotHaveResults/sparql"));
             RDFSelectQueryResult result = await query.ApplyToSPARQLEndpointAsync(endpoint);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 1);
+            Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?S"));
+            Assert.IsTrue(result.SelectResults.Rows.Count == 0);
         }
 
         [TestMethod]
-        public async Task ShouldApplySelectQueryToNullSPARQLEndpointAsyncAndHaveFalseResult()
+        public async Task ShouldApplySelectQueryToNullSPARQLEndpointAsyncAndNotHaveResults()
         {
             RDFSelectQuery query = new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -718,9 +781,10 @@ namespace RDFSharp.Test.Query
             RDFSelectQueryResult result = await query.ApplyToSPARQLEndpointAsync(null);
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.AskResult);
+            Assert.IsNotNull(result.SelectResults);
+            Assert.IsTrue(result.SelectResultsCount == 0);
+            Assert.IsTrue(result.SelectResults.Columns.Count == 0);
         }
-        */
         #endregion
     }
 }
