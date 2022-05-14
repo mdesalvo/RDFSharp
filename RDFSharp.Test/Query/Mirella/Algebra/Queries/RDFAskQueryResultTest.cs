@@ -16,11 +16,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
-using RDFSharp.Model;
 using RDFSharp.Query;
 
 namespace RDFSharp.Test.Query

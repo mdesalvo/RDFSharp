@@ -46,10 +46,14 @@ namespace RDFSharp.Test.Query
             RDFSelectQueryResult selectResult = new RDFSelectQueryResult();
             selectResult.SelectResults.Columns.Add(new DataColumn("?S", typeof(string)));
             selectResult.SelectResults.Columns.Add(new DataColumn("?T", typeof(string)));
-            DataRow row = selectResult.SelectResults.NewRow();
-            row["?S"] = "ex:org";
-            row["?T"] = "hello@EN-US";
-            selectResult.SelectResults.Rows.Add(row);
+            DataRow row0 = selectResult.SelectResults.NewRow();
+            row0["?S"] = "ex:org";
+            row0["?T"] = "hello@EN-US";
+            selectResult.SelectResults.Rows.Add(row0);
+            DataRow row1 = selectResult.SelectResults.NewRow();
+            row1["?S"] = "bnode:12345";
+            row1["?T"] = $"hello^^{RDFVocabulary.XSD.STRING}";
+            selectResult.SelectResults.Rows.Add(row1);
             selectResult.SelectResults.AcceptChanges();
             
             MemoryStream stream = new MemoryStream();
@@ -62,12 +66,14 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(selectResult2);
             Assert.IsNotNull(selectResult2.SelectResults);
-            Assert.IsTrue(selectResult2.SelectResultsCount == 1);
+            Assert.IsTrue(selectResult2.SelectResultsCount == 2);
             Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
             Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
             Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
             Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
             Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?T"].Equals("hello@EN-US"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[1]["?S"].Equals("bnode:12345"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[1]["?T"].Equals($"hello^^{RDFVocabulary.XSD.STRING}"));
         }
 
         [TestMethod]
@@ -98,6 +104,69 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
             Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
             Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?T"].Equals("hello@EN-US"));
+        }
+
+        [TestMethod]
+        public void ShouldSerializeSelectQueryResultToFile()
+        {
+            RDFSelectQueryResult selectResult = new RDFSelectQueryResult();
+            selectResult.SelectResults.Columns.Add(new DataColumn("?S", typeof(string)));
+            selectResult.SelectResults.Columns.Add(new DataColumn("?T", typeof(string)));
+            DataRow row = selectResult.SelectResults.NewRow();
+            row["?S"] = "ex:org";
+            row["?T"] = "hello@EN-US";
+            selectResult.SelectResults.Rows.Add(row);
+            selectResult.SelectResults.AcceptChanges();
+            
+            selectResult.ToSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFile.srx"));
+            
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFile.srx")));
+
+            RDFSelectQueryResult selectResult2 = RDFSelectQueryResult.FromSparqlXmlResult(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFile.srx"));
+
+            Assert.IsNotNull(selectResult2);
+            Assert.IsNotNull(selectResult2.SelectResults);
+            Assert.IsTrue(selectResult2.SelectResultsCount == 1);
+            Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
+            Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?T"].Equals("hello@EN-US"));
+        }
+
+        [TestMethod]
+        public async Task ShouldSerializeSelectQueryResultToFileAsync()
+        {
+            RDFSelectQueryResult selectResult = new RDFSelectQueryResult();
+            selectResult.SelectResults.Columns.Add(new DataColumn("?S", typeof(string)));
+            selectResult.SelectResults.Columns.Add(new DataColumn("?T", typeof(string)));
+            DataRow row = selectResult.SelectResults.NewRow();
+            row["?S"] = "ex:org";
+            row["?T"] = "hello@EN-US";
+            selectResult.SelectResults.Rows.Add(row);
+            selectResult.SelectResults.AcceptChanges();
+            
+            await selectResult.ToSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFileAsync.srx"));
+            
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFileAsync.srx")));
+
+            RDFSelectQueryResult selectResult2 = await RDFSelectQueryResult.FromSparqlXmlResultAsync(Path.Combine(Environment.CurrentDirectory, "RDFSelectQueryResultTest_ShouldSerializeSelectQueryResultToFileAsync.srx"));
+
+            Assert.IsNotNull(selectResult2);
+            Assert.IsNotNull(selectResult2.SelectResults);
+            Assert.IsTrue(selectResult2.SelectResultsCount == 1);
+            Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
+            Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
+            Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?S"].Equals("ex:org"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?T"].Equals("hello@EN-US"));
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            foreach (string file in Directory.EnumerateFiles(Environment.CurrentDirectory, "RDFSelectQueryResultTest_Should*"))
+                File.Delete(file);
         }
         #endregion
     }
