@@ -162,6 +162,268 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?T"].Equals("hello@EN-US"));
         }
 
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseMissingHead()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseMissingResults()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseHeadWithoutChildren()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head/>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseHeadHavingVariableWithoutAttributes()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseHeadHavingVariableWithEmptyAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""""/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseHeadAfterResults()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+  <head>
+    <variable name=""?S""/>
+  </head>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseBindingWithoutAttributes()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding>
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseBindingWithEmptyAttribute()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding name="""">
+        <uri>ex:org</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseBindingWithoutChildren()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S""/>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseUriBindingWithInvalidUri()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <uri>hello</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseBnodeBindingWithInvalidUri()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <bnode>hello</bnode>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseLiteralWithInvalidAttributes()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <literal hello=""yes"">hello</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
