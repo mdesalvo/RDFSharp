@@ -54,6 +54,10 @@ namespace RDFSharp.Test.Query
             row1["?S"] = "bnode:12345";
             row1["?T"] = $"hello^^{RDFVocabulary.XSD.STRING}";
             selectResult.SelectResults.Rows.Add(row1);
+            DataRow row2 = selectResult.SelectResults.NewRow();
+            row2["?S"] = "ex:org";
+            row2["?T"] = "hello";
+            selectResult.SelectResults.Rows.Add(row2);
             selectResult.SelectResults.AcceptChanges();
             
             MemoryStream stream = new MemoryStream();
@@ -66,7 +70,7 @@ namespace RDFSharp.Test.Query
 
             Assert.IsNotNull(selectResult2);
             Assert.IsNotNull(selectResult2.SelectResults);
-            Assert.IsTrue(selectResult2.SelectResultsCount == 2);
+            Assert.IsTrue(selectResult2.SelectResultsCount == 3);
             Assert.IsTrue(selectResult2.SelectResults.Columns.Count == 2);
             Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?S"));
             Assert.IsTrue(selectResult2.SelectResults.Columns.Contains("?T"));
@@ -74,6 +78,8 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(selectResult2.SelectResults.Rows[0]["?T"].Equals("hello@EN-US"));
             Assert.IsTrue(selectResult2.SelectResults.Rows[1]["?S"].Equals("bnode:12345"));
             Assert.IsTrue(selectResult2.SelectResults.Rows[1]["?T"].Equals($"hello^^{RDFVocabulary.XSD.STRING}"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[2]["?S"].Equals("ex:org"));
+            Assert.IsTrue(selectResult2.SelectResults.Rows[2]["?T"].Equals("hello"));
         }
 
         [TestMethod]
