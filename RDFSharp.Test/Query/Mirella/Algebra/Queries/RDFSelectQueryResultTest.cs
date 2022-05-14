@@ -430,6 +430,29 @@ namespace RDFSharp.Test.Query
             Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
         }
 
+        [TestMethod]
+        public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseBindingWithInvalidNode()
+        {
+            MemoryStream stream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(stream))
+                writer.WriteLine(
+@"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""?S""/>
+  </head>
+  <results>
+    <result>
+      <binding name=""?S"">
+        <hello>ex:org</hello>
+      </binding>
+    </result>
+  </results>
+</sparql>");
+
+            Assert.ThrowsException<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+        }
+
         [TestCleanup]
         public void Cleanup()
         {
