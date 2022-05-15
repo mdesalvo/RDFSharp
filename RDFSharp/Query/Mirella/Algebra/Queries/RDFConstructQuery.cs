@@ -69,39 +69,36 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery AddTemplate(RDFPattern template)
         {
-            if (template != null)
+            if (template != null && !this.Templates.Any(tp => tp.ToString().Equals(template.ToString())))
             {
-                if (!this.Templates.Any(tp => tp.Equals(template)))
+                this.Templates.Add(template);
+
+                //Context
+                if (template.Context != null && template.Context is RDFVariable)
                 {
-                    this.Templates.Add(template);
+                    if (!this.Variables.Any(v => v.Equals(template.Context)))
+                        this.Variables.Add((RDFVariable)template.Context);
+                }
 
-                    //Context
-                    if (template.Context != null && template.Context is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Context)))
-                            this.Variables.Add((RDFVariable)template.Context);
-                    }
+                //Subject
+                if (template.Subject is RDFVariable)
+                {
+                    if (!this.Variables.Any(v => v.Equals(template.Subject)))
+                        this.Variables.Add((RDFVariable)template.Subject);
+                }
 
-                    //Subject
-                    if (template.Subject is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Subject)))
-                            this.Variables.Add((RDFVariable)template.Subject);
-                    }
+                //Predicate
+                if (template.Predicate is RDFVariable)
+                {
+                    if (!this.Variables.Any(v => v.Equals(template.Predicate)))
+                        this.Variables.Add((RDFVariable)template.Predicate);
+                }
 
-                    //Predicate
-                    if (template.Predicate is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Predicate)))
-                            this.Variables.Add((RDFVariable)template.Predicate);
-                    }
-
-                    //Object
-                    if (template.Object is RDFVariable)
-                    {
-                        if (!this.Variables.Any(v => v.Equals(template.Object)))
-                            this.Variables.Add((RDFVariable)template.Object);
-                    }
+                //Object
+                if (template.Object is RDFVariable)
+                {
+                    if (!this.Variables.Any(v => v.Equals(template.Object)))
+                        this.Variables.Add((RDFVariable)template.Object);
                 }
             }
             return this;
