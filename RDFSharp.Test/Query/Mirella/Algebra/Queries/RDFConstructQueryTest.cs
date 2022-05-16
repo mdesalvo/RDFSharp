@@ -193,6 +193,315 @@ namespace RDFSharp.Test.Query
             Assert.IsTrue(query.GetModifiers().Count() == 3);
             Assert.IsTrue(query.GetPrefixes().Count() == 2);
         }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndHaveResults()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndHaveResultsWithTemplateHavingFixedSubject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFResource("ex:flower"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndHaveResultsWithTemplateHavingFixedPredicate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndHaveResultsWithTemplateHavingFixedObject()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDF.TYPE}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{RDFVocabulary.OWL.CLASS}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndHaveResultsWithGroundTemplate()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFResource("ex:flower"), RDFVocabulary.RDFS.SUB_CLASS_OF, new RDFResource("ex:plant")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 1);
+            Assert.IsTrue(result.ConstructResults.Rows.Count == 1);
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?SUBJECT"].Equals("ex:flower"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?PREDICATE"].Equals($"{RDFVocabulary.RDFS.SUB_CLASS_OF}"));
+            Assert.IsTrue(result.ConstructResults.Rows[0]["?OBJECT"].Equals($"{new RDFResource("ex:plant")}"));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResults()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseNoTemplates()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseUnknownSubjectVariable()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?Q"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseSubjectVariableContainsLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("flower")));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("ex:flower"), new RDFVariable("?P"), new RDFVariable("?S"))));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseSubjectVariableContainsNullValue()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?L"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.LABEL))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseUnknownPredicateVariable()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?Q"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecausePredicateVariableContainsLiteral()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFPlainLiteral("flower")));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("ex:flower"), new RDFVariable("?S"), new RDFVariable("?P"))));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecausePredicateVariableContainsBlankNode()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, new RDFResource("bnode:12345")));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("ex:flower"), new RDFVariable("?S"), new RDFVariable("?P"))));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecausePredicateVariableContainsNullValue()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(RDFVocabulary.RDF.TYPE, new RDFVariable("?L"), RDFVocabulary.RDFS.LABEL))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseUnknownObjectVariable()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?Q")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.DATATYPE)));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToGraphAndNotHaveResultsBecauseObjectVariableContainsNullValue()
+        {
+            RDFGraph graph = new RDFGraph();
+            graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?L")).Optional()));
+            RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
+
+        [TestMethod]
+        public void ShouldApplyConstructQueryToNullGraphAndNotHaveResults()
+        {
+            RDFConstructQuery query = new RDFConstructQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
+                .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                .AddPatternGroup(new RDFPatternGroup("PG1")
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)));
+            RDFConstructQueryResult result = query.ApplyToGraph(null);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ConstructResults);
+            Assert.IsTrue(result.ConstructResultsCount == 0);
+        }
         #endregion
     }
 }

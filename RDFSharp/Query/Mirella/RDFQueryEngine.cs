@@ -472,14 +472,19 @@ namespace RDFSharp.Query
             foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
                                                                     || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
             {
+                string templateCtx = template.Context?.ToString();
+                string templateSubj = template.Subject.ToString();
+                string templatePred = template.Predicate.ToString();
+                string templateObj = template.Object.ToString();
+
                 #region GROUND TEMPLATE
                 if (template.Variables.Count == 0)
                 {
                     if (needsContext)
-                        bindings["?CONTEXT"] = template.Context?.ToString() ?? RDFNamespaceRegister.DefaultNamespace.ToString();
-                    bindings["?SUBJECT"] = template.Subject.ToString();
-                    bindings["?PREDICATE"] = template.Predicate.ToString();
-                    bindings["?OBJECT"] = template.Object.ToString();
+                        bindings["?CONTEXT"] = templateCtx ?? RDFNamespaceRegister.DefaultNamespace.ToString();
+                    bindings["?SUBJECT"] = templateSubj;
+                    bindings["?PREDICATE"] = templatePred;
+                    bindings["?OBJECT"] = templateObj;
                     AddRow(result, bindings);
                     continue;
                 }
@@ -497,10 +502,10 @@ namespace RDFSharp.Query
                         {
                             //Check if the template must be skipped, in order to not produce illegal triples
                             //Row contains an unbound value in position of the variable corresponding to the template context
-                            if (((DataRow)rowsEnum.Current).IsNull(template.Context.ToString()))
+                            if (((DataRow)rowsEnum.Current).IsNull(templateCtx))
                                 continue;
 
-                            RDFPatternMember ctx = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[template.Context.ToString()].ToString());
+                            RDFPatternMember ctx = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateCtx].ToString());
                             //Row contains a literal in position of the variable corresponding to the template context
                             if (ctx is RDFLiteral)
                                 continue;
@@ -509,9 +514,7 @@ namespace RDFSharp.Query
                         }
                         //Context of the template is a resource
                         else
-                        {
-                            bindings["?CONTEXT"] = template.Context?.ToString() ?? RDFNamespaceRegister.DefaultNamespace.ToString();
-                        }
+                            bindings["?CONTEXT"] = templateCtx ?? RDFNamespaceRegister.DefaultNamespace.ToString();
                     }
                     #endregion
 
@@ -521,10 +524,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template subject
-                        if (((DataRow)rowsEnum.Current).IsNull(template.Subject.ToString()))
+                        if (((DataRow)rowsEnum.Current).IsNull(templateSubj))
                             continue;
 
-                        RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[template.Subject.ToString()].ToString());
+                        RDFPatternMember subj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateSubj].ToString());
                         //Row contains a literal in position of the variable corresponding to the template subject
                         if (subj is RDFLiteral)
                             continue;
@@ -533,9 +536,7 @@ namespace RDFSharp.Query
                     }
                     //Subject of the template is a resource
                     else
-                    {
-                        bindings["?SUBJECT"] = template.Subject.ToString();
-                    }
+                        bindings["?SUBJECT"] = templateSubj;
                     #endregion
 
                     #region PREDICATE
@@ -544,21 +545,19 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template predicate
-                        if (((DataRow)rowsEnum.Current).IsNull(template.Predicate.ToString()))
+                        if (((DataRow)rowsEnum.Current).IsNull(templatePred))
                             continue;
 
-                        RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[template.Predicate.ToString()].ToString());
+                        RDFPatternMember pred = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templatePred].ToString());
                         //Row contains a blank resource or a literal in position of the variable corresponding to the template predicate
-                        if ((pred is RDFResource && ((RDFResource)pred).IsBlank) || pred is RDFLiteral)
+                        if ((pred is RDFResource predRes && predRes.IsBlank) || pred is RDFLiteral)
                             continue;
                         //Row contains a non-blank resource in position of the variable corresponding to the template predicate
                         bindings["?PREDICATE"] = pred.ToString();
                     }
                     //Predicate of the template is a resource
                     else
-                    {
-                        bindings["?PREDICATE"] = template.Predicate.ToString();
-                    }
+                        bindings["?PREDICATE"] = templatePred;
                     #endregion
 
                     #region OBJECT
@@ -567,18 +566,16 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template object
-                        if (((DataRow)rowsEnum.Current).IsNull(template.Object.ToString()))
+                        if (((DataRow)rowsEnum.Current).IsNull(templateObj))
                             continue;
 
-                        RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[template.Object.ToString()].ToString());
+                        RDFPatternMember obj = RDFQueryUtilities.ParseRDFPatternMember(((DataRow)rowsEnum.Current)[templateObj].ToString());
                         //Row contains a resource or a literal in position of the variable corresponding to the template object
                         bindings["?OBJECT"] = obj.ToString();
                     }
                     //Object of the template is a resource or a literal
                     else
-                    {
-                        bindings["?OBJECT"] = template.Object.ToString();
-                    }
+                        bindings["?OBJECT"] = templateObj;
                     #endregion
 
                     //Insert the triple into the final table
