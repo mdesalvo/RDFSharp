@@ -159,7 +159,7 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable = FillTemplates(constructQuery.Templates, queryResultTable, false);
+            DataTable filledResultTable = FillTemplates(constructQuery.Templates, queryResultTable, datasource.IsStore());
 
             //Apply the modifiers of the query to the result table
             constructResult.ConstructResults = ApplyModifiers(constructQuery, filledResultTable);
